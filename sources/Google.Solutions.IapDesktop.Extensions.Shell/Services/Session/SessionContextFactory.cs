@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<SshCredential, ISshSessionParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<SshCredential, SshSessionParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// Create a new RDP session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<RdpCredential, IRdpSessionParameters>> CreateRdpSessionContextAsync(
+        Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
             IProjectModelInstanceNode node,
             RdpCreateSessionFlags flags,
             CancellationToken cancellationToken);
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// Create a new RDP session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<RdpCredential, IRdpSessionParameters>> CreateRdpSessionContextAsync(
+        Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
             IapRdpUrl url,
             CancellationToken cancellationToken);
     }
@@ -129,42 +129,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 (SecureString)settings.RdpPassword.Value);
         }
 
-        private RdpSessionContext CreateRdpSession(
+        private RdpSessionContext CreateRdpSession(//TODO: rename to CreateRdpContext
             InstanceLocator instance,
             RdpCredential credential,
             InstanceConnectionSettings settings,
             RdpSessionContext.ParameterSources sources)
         {
-            return new RdpSessionContext(
-                this.tunnelBrokerService, 
-                instance, 
-                credential, 
-                sources)
-            {
-                Port = (ushort)settings.RdpPort.IntValue,
-                ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue),
+            var context = new RdpSessionContext(
+                this.tunnelBrokerService,
+                instance,
+                credential,
+                sources);
 
-                ConnectionBar = settings.RdpConnectionBar.EnumValue,
-                DesktopSize = settings.RdpDesktopSize.EnumValue,
-                AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue,
-                ColorDepth = settings.RdpColorDepth.EnumValue,
-                AudioMode = settings.RdpAudioMode.EnumValue,
-                BitmapPersistence = settings.RdpBitmapPersistence.EnumValue,
-                NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue,
-
-                UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue,
-
-                RedirectClipboard = settings.RdpRedirectClipboard.EnumValue,
-                RedirectPrinter = settings.RdpRedirectPrinter.EnumValue,
-                RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue,
-                RedirectPort = settings.RdpRedirectPort.EnumValue,
-                RedirectDrive = settings.RdpRedirectDrive.EnumValue,
-                RedirectDevice = settings.RdpRedirectDevice.EnumValue,
-                HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue,
-            };
+            context.Parameters.Port = (ushort)settings.RdpPort.IntValue;
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
+            
+            context.Parameters.ConnectionBar = settings.RdpConnectionBar.EnumValue;
+            context.Parameters.DesktopSize = settings.RdpDesktopSize.EnumValue;
+            context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue;
+            context.Parameters.ColorDepth = settings.RdpColorDepth.EnumValue;
+            context.Parameters.AudioMode = settings.RdpAudioMode.EnumValue;
+            context.Parameters.BitmapPersistence = settings.RdpBitmapPersistence.EnumValue;
+            context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue;
+            
+            context.Parameters.UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue;
+            
+            context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.EnumValue;
+            context.Parameters.RedirectPrinter = settings.RdpRedirectPrinter.EnumValue;
+            context.Parameters.RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue;
+            context.Parameters.RedirectPort = settings.RdpRedirectPort.EnumValue;
+            context.Parameters.RedirectDrive = settings.RdpRedirectDrive.EnumValue;
+            context.Parameters.RedirectDevice = settings.RdpRedirectDevice.EnumValue;
+            context.Parameters.HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue;
+            
+            return context;
         }
 
-        public async Task<ISessionContext<RdpCredential, IRdpSessionParameters>> CreateRdpSessionContextAsync(
+        public async Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
             IProjectModelInstanceNode node,
             RdpCreateSessionFlags flags,
             CancellationToken _)
@@ -213,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 RdpSessionContext.ParameterSources.Inventory);
         }
 
-        public async Task<ISessionContext<RdpCredential, IRdpSessionParameters>> CreateRdpSessionContextAsync(
+        public async Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
             IapRdpUrl url,
             CancellationToken cancellationToken)
         {
@@ -295,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
         }
 
-        public Task<ISessionContext<SshCredential, ISshSessionParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<SshCredential, SshSessionParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
@@ -324,18 +325,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 this.tunnelBrokerService,
                 this.keyAuthorizationService,
                 node.Instance,
-                localKeyPair)
-            {
-                ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue),
-                Port = (ushort)settings.SshPort.IntValue,
-                PreferredUsername = settings.SshUsername.StringValue,
-                PublicKeyValidity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue),
-                Language = sshSettings.IsPropagateLocaleEnabled.BoolValue
-                    ? CultureInfo.CurrentUICulture
-                    : null
-            };
+                localKeyPair);
 
-            return Task.FromResult<ISessionContext<SshCredential, ISshSessionParameters>>(context);
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
+            context.Parameters.Port = (ushort)settings.SshPort.IntValue;
+            context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
+            context.Parameters.PublicKeyValidity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+            context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.BoolValue
+                ? CultureInfo.CurrentUICulture
+                : null;
+
+            return Task.FromResult<ISessionContext<SshCredential, SshSessionParameters>>(context);
         }
     }
 }

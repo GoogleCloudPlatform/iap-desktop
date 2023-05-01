@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 "(empty)",
                 new RdpCredential("", null, new SecureString()).ToString());
             Assert.AreEqual(
-                "user",
+                "(empty)",
                 new RdpCredential("", "", new SecureString()).ToString());
         }
 

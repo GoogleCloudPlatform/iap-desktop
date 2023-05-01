@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
@@ -69,8 +70,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         private readonly IPEndPoint UnboundEndpoint =
             new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23);
 
-        private static async Task<IPAddress> PublicAddressFromLocator(
-            InstanceLocator instanceLocator)
+        private static async Task<Transport> CreateTransportForPublicAddress(
+            InstanceLocator instanceLocator,
+            ushort port)
         {
             using (var service = TestProject.CreateComputeService())
             {
@@ -81,7 +83,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                             instanceLocator.Name)
                     .ExecuteAsync()
                     .ConfigureAwait(true);
-                return instance.PublicAddress();
+                return await Transport
+                    .CreateDirectTransport(
+                        instanceLocator,
+                        new IPEndPoint(instance.PublicAddress(), port))
+                    .ConfigureAwait(false);
             }
         }
 
@@ -119,7 +125,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 new ResourceManagerAdapter(credential.ToAuthorization()),
                 new Mock<IOsLoginService>().Object);
 
-            var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
+            var authorizedKey = await keyAdapter
+                .AuthorizeKeyAsync(
                     instanceLocator,
                     SshKeyPair.NewEphemeralKeyPair(keyType),
                     TimeSpan.FromMinutes(10),
@@ -130,27 +137,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var address = await PublicAddressFromLocator(instanceLocator)
-                .ConfigureAwait(true);
+            var sshCredential = new SshCredential(authorizedKey);
+            var sshParameters = new SshSessionParameters()
+            {
+                ConnectionTimeout = TimeSpan.FromSeconds(10)
+            };
 
-            var template = new ConnectionTemplate<SshSessionParameters>(
-                new TransportParameters(
-                    TransportParameters.TransportType.IapTunnel,
-                    instanceLocator,
-                    new IPEndPoint(address, 22)),
-                new SshSessionParameters(
-                    authorizedKey,
-                    language,
-                    TimeSpan.FromSeconds(10)));
+            var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
+                .ConfigureAwait(false);
 
             SshTerminalView pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
-                async () =>
-                {
-                    pane = (SshTerminalView)await broker
-                        .ConnectSshSessionAsync(template)
-                        .ConfigureAwait(true);
-                })
+                async () => pane = (SshTerminalView)await broker
+                    .ConnectSshSessionAsync(transport, sshParameters, sshCredential)
+                    .ConfigureAwait(true))
                 .ConfigureAwait(true);
 
             PumpWindowMessages();
@@ -204,23 +204,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var serviceProvider = CreateServiceProvider();
-            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
+            var sshCredential = new SshCredential(
+                AuthorizedKeyPair.ForMetadata(
+                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    "test",
+                    true,
+                    null));
+            var sshParameters = new SshSessionParameters()
+            {
+                ConnectionTimeout = TimeSpan.FromSeconds(10)
+            };
 
+            var transport = await Transport
+                .CreateDirectTransport(
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    this.UnboundEndpoint)
+                .ConfigureAwait(false);
+
+            var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var template = new ConnectionTemplate<SshSessionParameters>(
-                new TransportParameters(
-                    TransportParameters.TransportType.IapTunnel,
-                    new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    this.UnboundEndpoint),
-                new SshSessionParameters(
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10)));
-
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectSshSessionAsync(template))
+                () => broker.ConnectSshSessionAsync(transport, sshParameters, sshCredential))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -235,22 +240,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
+            var sshCredential = new SshCredential(
+                AuthorizedKeyPair.ForMetadata(
+                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    "test",
+                    true,
+                    null));
+            var sshParameters = new SshSessionParameters()
+            {
+                ConnectionTimeout = TimeSpan.FromSeconds(10)
+            };
+
+
+            var transport = await Transport
+                .CreateDirectTransport(
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    this.NonSshEndpoint)
+                .ConfigureAwait(false);
+
             var serviceProvider = CreateServiceProvider();
-            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var template = new ConnectionTemplate<SshSessionParameters>(
-                new TransportParameters(
-                    TransportParameters.TransportType.IapTunnel,
-                    new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    this.NonSshEndpoint),
-                new SshSessionParameters(
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10)));
-
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectSshSessionAsync(template))
+                () => broker.ConnectSshSessionAsync(transport, sshParameters, sshCredential))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -266,27 +278,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var serviceProvider = CreateServiceProvider();
-            var instanceLocator = await instanceLocatorTask;
-            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
+            var sshCredential = new SshCredential(
+                AuthorizedKeyPair.ForMetadata(
+                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    "test",
+                    true,
+                    null));
+            var sshParameters = new SshSessionParameters()
+            {
+                ConnectionTimeout = TimeSpan.FromSeconds(10)
+            };
 
+            var instanceLocator = await instanceLocatorTask;
+            var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
+                .ConfigureAwait(false);
+
+            var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var address = await PublicAddressFromLocator(instanceLocator)
-                .ConfigureAwait(true);
-
-            var template = new ConnectionTemplate<SshSessionParameters>(
-                new TransportParameters(
-                    TransportParameters.TransportType.IapTunnel,
-                    instanceLocator,
-                    new IPEndPoint(address, 22)),
-                new SshSessionParameters(
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10)));
-
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectSshSessionAsync(template))
+                () => broker.ConnectSshSessionAsync(transport, sshParameters, sshCredential))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(MetadataKeyAuthenticationFailedException), this.ExceptionShown);

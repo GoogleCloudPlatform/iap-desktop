@@ -54,12 +54,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
+        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock(OperatingSystems os)
         {
             var vmNode = new Mock<IProjectModelInstanceNode>();
-            vmNode.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
-            vmNode.SetupGet(n => n.Instance)
-                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+            vmNode.SetupGet(n => n.OperatingSystem).Returns(os);
+            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
 
             return vmNode;
         }
@@ -97,14 +96,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             return authz;
         }
 
-        private Mock<IProjectModelService> CreateProjectModelServiceMock()
+        private Mock<IProjectModelService> CreateProjectModelServiceMock(OperatingSystems os)
         {
             var modelService = new Mock<IProjectModelService>();
             modelService
                 .Setup(p => p.GetNodeAsync(
                     It.Is<ResourceLocator>(l => l == (ResourceLocator)SampleLocator),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(CreateInstanceNodeMock().Object);
+                .ReturnsAsync(CreateInstanceNodeMock(os).Object);
 
             return modelService;
         }
@@ -124,13 +123,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                         .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = CreateInstanceNodeMock();
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
             var keyStore = CreateKeyStoreAdapterMock();
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 keyStore.Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -167,12 +166,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .Returns(settings
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = CreateInstanceNodeMock();
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 CreateKeyStoreAdapterMock().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -194,7 +193,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         // CreateSshSessionContext - global settings.
         //---------------------------------------------------------------------
 
-
         [Test]
         public async Task CreateSshSessionContextUsesSshSettings()
         {
@@ -211,12 +209,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                         .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = CreateInstanceNodeMock();
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 CreateKeyStoreAdapterMock().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,

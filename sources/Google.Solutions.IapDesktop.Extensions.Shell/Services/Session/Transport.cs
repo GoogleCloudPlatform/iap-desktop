@@ -70,7 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public enum TransportType
         {
-            IapTunnel
+            IapTunnel,
+            Direct
         }
 
         //---------------------------------------------------------------------
@@ -131,6 +132,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                     "server allows WebSocket connections.",
                     HelpTopics.ProxyConfiguration);
             }
+        }
+
+        internal static Task<Transport> CreateDirectTransport(
+            InstanceLocator targetInstance,
+            IPEndPoint endpoint)
+        {
+            targetInstance.ExpectNotNull(nameof(targetInstance));
+
+            return Task.FromResult(new Transport(
+                TransportType.Direct, 
+                targetInstance,
+                endpoint));
         }
     }
 }

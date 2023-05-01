@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         public InstanceLocator Instance { get; set; }
         public string Server { get; set; }
         public ushort Port { get; set; }
-        public IRdpSessionParameters Parameters { get; set; }
+        public RdpSessionParameters Parameters { get; set; }
         public RdpCredential Credential { get; set; }
 
         protected override void OnValidate()

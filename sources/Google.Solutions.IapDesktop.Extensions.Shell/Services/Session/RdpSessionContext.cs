@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
@@ -30,203 +29,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public interface IRdpSessionParameters
+    
+    internal sealed class RdpSessionContext : ISessionContext<RdpCredential, RdpSessionParameters>
     {
-        ushort Port { get; set; }
-        TimeSpan ConnectionTimeout { get; set; }
-        RdpAudioMode AudioMode { get; set; }
-        RdpAuthenticationLevel AuthenticationLevel { get; set; }
-        RdpBitmapPersistence BitmapPersistence { get; set; }
-        RdpColorDepth ColorDepth { get; set; }
-        RdpConnectionBarState ConnectionBar { get; set; }
-        RdpDesktopSize DesktopSize { get; set; }
-        RdpHookWindowsKeys HookWindowsKeys { get; set; }
-        RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; }
-        RdpRedirectClipboard RedirectClipboard { get; set; }
-        RdpRedirectDevice RedirectDevice { get; set; }
-        RdpRedirectDrive RedirectDrive { get; set; }
-        RdpRedirectPort RedirectPort { get; set; }
-        RdpRedirectPrinter RedirectPrinter { get; set; }
-        RdpRedirectSmartCard RedirectSmartCard { get; set; }
-        RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; }
-    }
-
-    //-------------------------------------------------------------------------
-    // Enums.
-    //
-    // NB. The values do not map to RDP interface values. But the numeric values
-    // must be kept unchanged as they are persisted in the registry.
-    //
-    //-------------------------------------------------------------------------
-
-    public enum RdpConnectionBarState
-    {
-        AutoHide = 0,
-        Pinned = 1,
-        Off = 2,
-
-        [Browsable(false)]
-        _Default = AutoHide
-    }
-
-    public enum RdpDesktopSize
-    {
-        ClientSize = 0,
-        ScreenSize = 1,
-        AutoAdjust = 2,
-
-        [Browsable(false)]
-        _Default = AutoAdjust
-    }
-
-    public enum RdpAuthenticationLevel
-    {
-        // Likely to fail when using IAP unless the cert has been issued
-        // for "localhost".
-        AttemptServerAuthentication = 0,
-
-        // Almsot guaranteed to fail, so do not even display it.
-        [Browsable(false)]
-        RequireServerAuthentication = 1,
-
-        NoServerAuthentication = 3,
-
-        [Browsable(false)]
-        _Default = NoServerAuthentication
-    }
-
-    public enum RdpColorDepth
-    {
-        HighColor = 0,
-        TrueColor = 1,
-        DeepColor = 2,
-
-        [Browsable(false)]
-        _Default = TrueColor
-    }
-
-    public enum RdpAudioMode
-    {
-        PlayLocally = 0,
-        PlayOnServer = 1,
-        DoNotPlay = 2,
-
-        [Browsable(false)]
-        _Default = PlayLocally
-    }
-
-    public enum RdpRedirectClipboard
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Enabled
-    }
-
-    public enum RdpUserAuthenticationBehavior
-    {
-        PromptOnFailure = 0,
-        AbortOnFailure = 1,
-
-        [Browsable(false)]
-        _Default = PromptOnFailure
-    }
-
-    public enum RdpBitmapPersistence
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpCredentialGenerationBehavior
-    {
-        Allow = 0,
-        AllowIfNoCredentialsFound = 1,
-        Disallow = 2,
-        Force = 3,
-
-        [Browsable(false)]
-        _Default = AllowIfNoCredentialsFound
-    }
-
-    public enum RdpRedirectPrinter
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectSmartCard
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectPort
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectDrive
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectDevice
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpNetworkLevelAuthentication
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Enabled
-    }
-
-    public enum RdpHookWindowsKeys
-    {
-        //
-        // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
-        //
-        Never = 0,
-        Always = 1,
-        FullScreenOnly = 2,
-
-
-        [Browsable(false)]
-        _Default = FullScreenOnly
-    }
-
-    internal sealed class RdpSessionContext
-        : IRdpSessionParameters, ISessionContext<RdpCredential, IRdpSessionParameters>
-    {
-        internal const ushort DefaultPort = 3389;
-        internal static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(30);
-
         private readonly ITunnelBrokerService tunnelBroker;
 
         internal RdpSessionContext(
@@ -239,32 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Credential = credential.ExpectNotNull(nameof(credential));
             this.Sources = sources;
+            this.Parameters = new RdpSessionParameters();
         }
 
         public ParameterSources Sources { get; }
         public RdpCredential Credential { get; }
-
-        //---------------------------------------------------------------------
-        // Parameters.
-        //---------------------------------------------------------------------
-
-        public ushort Port { get; set; } = DefaultPort;
-        public TimeSpan ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
-        public RdpConnectionBarState ConnectionBar { get; set; } = RdpConnectionBarState._Default;
-        public RdpDesktopSize DesktopSize { get; set; } = RdpDesktopSize._Default;
-        public RdpAuthenticationLevel AuthenticationLevel { get; set; } = RdpAuthenticationLevel._Default;
-        public RdpColorDepth ColorDepth { get; set; } = RdpColorDepth._Default;
-        public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
-        public RdpBitmapPersistence BitmapPersistence { get; set; } = RdpBitmapPersistence._Default;
-        public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
-        public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
-        public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
-        public RdpRedirectPrinter RedirectPrinter { get; set; } = RdpRedirectPrinter._Default;
-        public RdpRedirectSmartCard RedirectSmartCard { get; set; } = RdpRedirectSmartCard._Default;
-        public RdpRedirectPort RedirectPort { get; set; } = RdpRedirectPort._Default;
-        public RdpRedirectDrive RedirectDrive { get; set; } = RdpRedirectDrive._Default;
-        public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
-        public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
 
         //---------------------------------------------------------------------
         // ISessionContext.
@@ -272,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public InstanceLocator Instance { get; }
 
-        public IRdpSessionParameters Parameters => this;
+        public RdpSessionParameters Parameters { get; }
 
         public Task<RdpCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken)
         {
@@ -289,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 .CreateIapTransportAsync(
                     this.tunnelBroker,
                     this.Instance,
-                    this.Port,
-                    this.ConnectionTimeout)
+                    this.Parameters.Port,
+                    this.Parameters.ConnectionTimeout)
                 .ConfigureAwait(false);
         }
 

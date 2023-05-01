@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                         "PublicKeyValidity",
                         "Validity of (OS Login/Metadata) keys in seconds",
                         null,
-                        (int)SshSessionContext.DefaultPublicKeyValidity.TotalSeconds,
+                        (int)SshSessionParameters.DefaultPublicKeyValidity.TotalSeconds,
                         settingsKey,
                         (int)TimeSpan.FromMinutes(1).TotalSeconds,
                         int.MaxValue)

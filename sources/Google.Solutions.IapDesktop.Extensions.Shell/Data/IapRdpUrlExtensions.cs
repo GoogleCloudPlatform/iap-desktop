@@ -71,10 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         }
 
         public static void ApplyUrlParameterIfSet<TEnum>(
-            this IRdpSessionParameters context,
+            this RdpSessionParameters context,
             IapRdpUrl url,
             string queryParameterName,
-            Action<IRdpSessionParameters, TEnum> apply)
+            Action<RdpSessionParameters, TEnum> apply)
             where TEnum : struct
         {
             Precondition.ExpectNotNull(context, nameof(context));

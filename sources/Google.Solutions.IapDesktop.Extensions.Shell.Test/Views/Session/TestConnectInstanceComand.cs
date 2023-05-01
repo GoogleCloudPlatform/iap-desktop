@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var instance = CreateInstanceNode(OperatingSystems.Windows).Object;
 
-            var context = new Mock<ISessionContext<RdpCredential, IRdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenSshSessionFoundAndForceNewIsFalse_ThenExecuteDoesNotCreateNewSession()
         {
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
             
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(

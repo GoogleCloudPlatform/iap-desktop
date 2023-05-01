@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;

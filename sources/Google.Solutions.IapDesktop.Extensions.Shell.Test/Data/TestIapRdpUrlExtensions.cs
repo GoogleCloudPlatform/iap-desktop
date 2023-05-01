@@ -23,7 +23,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Moq;
 using NUnit.Framework;
 using System.Collections.Specialized;
 
@@ -166,64 +165,72 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
         [Test]
         public void WhenQueryParameterMissing_ThenApplyLeavesOriginalValue()
         {
-            var context = new Mock<IRdpSessionParameters>();
+            var parameters = new RdpSessionParameters();
+            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
-            context.Object.ApplyUrlParameterIfSet<RdpAudioMode>(
+            parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, new NameValueCollection()),
                 "AudioMode",
                 (p, v) => p.AudioMode = v);
 
-            context.VerifyNoOtherCalls();
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, parameters.AudioMode);
         }
 
         [Test]
         public void WhenQueryParameterIsNullOrEmpty_ThenApplyLeavesOriginalValue(
             [Values(null, "", " ")] string emptyValue)
         {
-            var context = new Mock<IRdpSessionParameters>();
+            var parameters = new RdpSessionParameters();
+            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
             var queryParameters = new NameValueCollection();
             queryParameters.Add("AudioMode", emptyValue);
 
-            context.Object.ApplyUrlParameterIfSet<RdpAudioMode>(
+            parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, queryParameters),
                 "AudioMode",
                 (p, v) => p.AudioMode = v);
 
-            context.VerifyNoOtherCalls();
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, parameters.AudioMode);
         }
 
         [Test]
         public void WhenQueryParameterOutOfRange_ThenApplyLeavesOriginalValue(
             [Values("-1", "999999999")] string wrongValue)
         {
-            var context = new Mock<IRdpSessionParameters>();
+            var parameters = new RdpSessionParameters();
+            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
             var queryParameters = new NameValueCollection();
             queryParameters.Add("AudioMode", wrongValue);
 
-            context.Object.ApplyUrlParameterIfSet<RdpAudioMode>(
+            parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, queryParameters),
                 "AudioMode",
                 (p, v) => p.AudioMode = v);
 
-            context.VerifyNoOtherCalls();
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, parameters.AudioMode);
         }
 
         [Test]
         public void WhenQueryParameterValid_ThenApplyReplacesOriginalValue()
         {
-            var context = new Mock<IRdpSessionParameters>();
-            
+            var parameters = new RdpSessionParameters();
+            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
+
             var queryParameters = new NameValueCollection();
             queryParameters.Add("AudioMode", "2");
 
-            context.Object.ApplyUrlParameterIfSet<RdpAudioMode>(
+            parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, queryParameters),
                 "AudioMode",
                 (p, v) => p.AudioMode = v);
 
-            context.VerifySet(c => c.AudioMode = RdpAudioMode.DoNotPlay);
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, parameters.AudioMode);
         }
     }
 }

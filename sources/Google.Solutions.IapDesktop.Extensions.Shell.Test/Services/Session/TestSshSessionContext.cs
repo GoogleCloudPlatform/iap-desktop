@@ -39,22 +39,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         [Test]
-        public void ParametersUseDefaults()
-        {
-            var parameters = new SshSessionContext(
-                new Mock<ITunnelBrokerService>().Object,
-                new Mock<IKeyAuthorizationService>().Object,
-                SampleInstance,
-                new Mock<ISshKeyPair>().Object).Parameters;
-
-            Assert.IsNull(parameters.Language);
-            Assert.AreEqual(SshSessionContext.DefaultPort, parameters.Port);
-            Assert.AreEqual(SshSessionContext.DefaultConnectionTimeout, parameters.ConnectionTimeout);
-            Assert.IsNull(parameters.PreferredUsername);
-            Assert.AreEqual(SshSessionContext.DefaultPublicKeyValidity, parameters.PublicKeyValidity);
-        }
-
-        [Test]
         public void AuthorizeCredentialReturnsCredential()
         {
             var authorizedKey = AuthorizedKeyPair.ForMetadata(

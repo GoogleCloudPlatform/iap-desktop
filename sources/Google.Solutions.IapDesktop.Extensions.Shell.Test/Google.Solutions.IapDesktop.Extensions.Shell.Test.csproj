@@ -133,10 +133,12 @@
     <Compile Include="Services\Connection\TestRdpCredentialCallbackService.cs" />
     <Compile Include="Services\Session\TestRdpCredential.cs" />
     <Compile Include="Services\Session\TestRdpSessionContext.cs" />
+    <Compile Include="Services\Session\TestRdpSessionParameters.cs" />
     <Compile Include="Services\Session\TestSessionContextFactoryForRdp.cs" />
     <Compile Include="Services\Session\TestSessionContextFactoryForSsh.cs" />
     <Compile Include="Services\Session\TestSshCredential.cs" />
     <Compile Include="Services\Session\TestSshSessionContext.cs" />
+    <Compile Include="Services\Session\TestSshSessionParameters.cs" />
     <Compile Include="Services\Session\TestTransport.cs" />
     <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\TestProjectMetadataAuthorizedPublicKeyProcessor.cs" />

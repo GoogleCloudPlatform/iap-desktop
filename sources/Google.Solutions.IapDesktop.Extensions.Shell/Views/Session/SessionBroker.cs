@@ -49,13 +49,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         /// Create a new SSH session.
         /// </summary>
         Task<ISession> CreateSessionAsync(
-            ISessionContext<SshCredential, ISshSessionParameters> context);
+            ISessionContext<SshCredential, SshSessionParameters> context);
 
         /// <summary>
         /// Create a new RDP session.
         /// </summary>
         Task<ISession> CreateSessionAsync(
-            ISessionContext<RdpCredential, IRdpSessionParameters> context);
+            ISessionContext<RdpCredential, RdpSessionParameters> context);
     }
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
@@ -97,10 +97,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 () => this.ActiveSession);
         }
 
-        public IRemoteDesktopSession ConnectRdpSession(
+        internal IRemoteDesktopSession ConnectRdpSession( // TODO: make asnyc
             ITransport transport,
-            IRdpSessionParameters parameters,
+            RdpSessionParameters parameters,
             RdpCredential credential)
+        {
+            throw new NotImplementedException(); // TODO: implement
+        }
+
+        internal Task<ISshTerminalSession> ConnectSshSessionAsync(
+            ITransport transport,
+            SshSessionParameters parameters,
+            SshCredential credential)
         {
             throw new NotImplementedException(); // TODO: implement
         }
@@ -211,12 +219,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         //}
 
 
-        public Task<ISession> CreateSessionAsync(ISessionContext<SshCredential, ISshSessionParameters> context)
+        public Task<ISession> CreateSessionAsync(ISessionContext<SshCredential, SshSessionParameters> context)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ISession> CreateSessionAsync(ISessionContext<RdpCredential, IRdpSessionParameters> context)
+        public Task<ISession> CreateSessionAsync(ISessionContext<RdpCredential, RdpSessionParameters> context)
         {
             throw new NotImplementedException();
         }

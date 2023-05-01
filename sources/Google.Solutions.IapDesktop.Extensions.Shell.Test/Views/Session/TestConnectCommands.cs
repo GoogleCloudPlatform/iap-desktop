@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task LaunchRdpUrlCommandConnectsInstance()
         {
-            var context = new Mock<ISessionContext<RdpCredential, IRdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenInstanceSupportsRdp_ThenToolbarActivateOrConnectInstanceUsesRdp()
         {
-            var context = new Mock<ISessionContext<RdpCredential, IRdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
         {
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenInstanceSupportsRdp_ThenContextMenuActivateOrConnectInstanceUsesRdp()
         {
-            var context = new Mock<ISessionContext<RdpCredential, IRdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(
@@ -377,7 +377,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
         {
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -481,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task ContextMenuConnectAsUserDisallowsPersistentCredentials()
         {
-            var context = new Mock<ISessionContext<RdpCredential, IRdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(
@@ -593,7 +593,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task ContextMenuConnectSshInNewTerminalForcesNewConnection()
         {
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -680,7 +680,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             connectedSession.SetupGet(s => s.Instance).Returns(locator);
 
 
-            var context = new Mock<ISessionContext<SshCredential, ISshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(

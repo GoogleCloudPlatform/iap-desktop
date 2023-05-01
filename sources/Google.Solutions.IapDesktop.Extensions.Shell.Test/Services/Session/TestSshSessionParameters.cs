@@ -19,36 +19,32 @@
 // under the License.
 //
 
-
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
+using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
-using System.Security;
+using System;
 using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
     [TestFixture]
-    public class TestRdpSessionContext
+    public class TestSshSessionParameters
     {
-        private static readonly InstanceLocator SampleInstance
-            = new InstanceLocator("project-1", "zone-1", "instance-1");
-
         [Test]
-        public void AuthorizeCredentialReturnsCredential()
+        public void ParametersUseDefaults()
         {
-            var credential = new RdpCredential("user", null, null);
-            var context = new RdpSessionContext(
-                new Mock<ITunnelBrokerService>().Object,
-                SampleInstance,
-                credential,
-                RdpSessionContext.ParameterSources.Inventory);
+            var parameters = new SshSessionParameters();
 
-            Assert.AreSame(
-                credential, 
-                context.AuthorizeCredentialAsync(CancellationToken.None).Result);
+            Assert.IsNull(parameters.Language);
+            Assert.AreEqual(SshSessionParameters.DefaultPort, parameters.Port);
+            Assert.AreEqual(SshSessionParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
+            Assert.IsNull(parameters.PreferredUsername);
+            Assert.AreEqual(SshSessionParameters.DefaultPublicKeyValidity, parameters.PublicKeyValidity);
         }
     }
 }
