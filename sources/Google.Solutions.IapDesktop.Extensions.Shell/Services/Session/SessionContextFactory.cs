@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly IConnectionSettingsService settingsService;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private readonly ISelectCredentialsWorkflow credentialDialog;
+        private readonly ISelectCredentialsDialog credentialDialog;
         private readonly IRdpCredentialCallbackService rdpCredentialCallbackService;
 
         public SessionContextFactory(
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             IKeyAuthorizationService keyAuthService,
             IConnectionSettingsService settingsService,
             ITunnelBrokerService tunnelBrokerService,
-            ISelectCredentialsWorkflow credentialDialog,
+            ISelectCredentialsDialog credentialDialog,
             IRdpCredentialCallbackService credentialCallbackService,
             SshSettingsRepository sshSettingsRepository)
         {

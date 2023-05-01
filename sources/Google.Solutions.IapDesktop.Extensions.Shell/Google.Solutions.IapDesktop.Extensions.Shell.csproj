@@ -129,10 +129,7 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
-    <Compile Include="Services\Connection\ConnectionServiceBase.cs" />
     <Compile Include="Services\Connection\ConnectionTemplate.cs" />
-    <Compile Include="Data\RdpSessionParameters.cs" />
-    <Compile Include="Data\SshSessionParameters.cs" />
     <Compile Include="Services\Connection\RdpCredentialCallbackService.cs" />
     <Compile Include="Services\Session\ISessionContext.cs" />
     <Compile Include="Services\Session\RdpSessionParameters.cs" />
@@ -157,10 +154,8 @@
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\OsLoginService.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettingsService.cs" />
-    <Compile Include="Services\Connection\RdpConnectionService.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettings.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettingsRepository.cs" />
-    <Compile Include="Services\Connection\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />
@@ -176,7 +171,7 @@
     <Compile Include="Views\Diagnostics\DiagnosticsCommands.cs" />
     <Compile Include="Views\Credentials\ConfigureCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\NewCredentialsDialog.cs" />
-    <Compile Include="Views\Credentials\SelectCredentialsWorkflow.cs" />
+    <Compile Include="Views\Credentials\SelectCredentialsDialog.cs" />
     <Compile Include="Views\Credentials\CreateCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\NewCredentialsView.cs">
       <SubType>Form</SubType>

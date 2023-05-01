@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
                 new Mock<ITunnelBrokerService>().Object,
-                new Mock<ISelectCredentialsWorkflow>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 CreateSshSettingsRepository());
 
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
                 new Mock<ITunnelBrokerService>().Object,
-                new Mock<ISelectCredentialsWorkflow>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 CreateSshSettingsRepository());
 
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         {
             var settingsService = new Mock<IConnectionSettingsService>();
 
-            var credentialDialog = new Mock<ISelectCredentialsWorkflow>();
+            var credentialDialog = new Mock<ISelectCredentialsDialog>();
             credentialDialog.Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         {
             var settingsService = new Mock<IConnectionSettingsService>();
 
-            var credentialDialog = new Mock<ISelectCredentialsWorkflow>();
+            var credentialDialog = new Mock<ISelectCredentialsDialog>();
             credentialDialog
                 .Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            var credentialDialog = new Mock<ISelectCredentialsWorkflow>();
+            var credentialDialog = new Mock<ISelectCredentialsDialog>();
             credentialDialog
                 .Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
@@ -368,7 +368,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IConnectionSettingsService>().Object,
                 new Mock<ITunnelBrokerService>().Object,
-                new Mock<ISelectCredentialsWorkflow>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
                 callbackService.Object,
                 CreateSshSettingsRepository());
 
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IConnectionSettingsService>().Object,
                 new Mock<ITunnelBrokerService>().Object,
-                new Mock<ISelectCredentialsWorkflow>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
                 callbackService.Object,
                 CreateSshSettingsRepository());
 
