@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 (SecureString)settings.RdpPassword.Value);
         }
 
-        private RdpSessionContext CreateRdpSession(//TODO: rename to CreateRdpContext
+        private RdpSessionContext CreateRdpContext(
             InstanceLocator instance,
             RdpCredential credential,
             InstanceConnectionSettings settings,
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                     null);
             }
 
-            return CreateRdpSession(
+            return CreateRdpContext(
                 node.Instance, 
                 credential, 
                 instanceSettings,
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                     .GetCredentialsAsync(callbackUrl, cancellationToken)
                     .ConfigureAwait(false);
 
-                return CreateRdpSession(
+                return CreateRdpContext(
                     url.Instance,
                     credential,
                     settings,
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                         false)
                     .ConfigureAwait(true);
 
-                return CreateRdpSession(
+                return CreateRdpContext(
                     url.Instance,
                     CreateRdpCredentialFromSettings(settings),
                     settings,

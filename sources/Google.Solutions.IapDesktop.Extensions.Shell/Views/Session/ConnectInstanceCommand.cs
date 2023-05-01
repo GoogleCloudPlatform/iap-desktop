@@ -43,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     {
         private readonly Service<ISessionContextFactory> sessionContextFactory;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
+        private readonly Service<IProjectModelService> modelService;
 
         public bool AvailableForSsh { get; set; } = false;
         public bool AvailableForRdp { get; set; } = false;
@@ -52,11 +53,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public ConnectInstanceCommand(
             string text,
             Service<ISessionContextFactory> sessionContextFactory,
-            Service<IInstanceSessionBroker> sessionBroker)
+            Service<IInstanceSessionBroker> sessionBroker,
+            Service<IProjectModelService> modelService)
             : base(text)
         {
             this.sessionContextFactory = sessionContextFactory;
             this.sessionBroker = sessionBroker;
+            this.modelService = modelService;
         }
 
         protected override bool IsAvailable(IProjectModelNode node)
@@ -81,8 +84,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             var instanceNode = (IProjectModelInstanceNode)node;
             ISession session = null;
 
-            //TODO: Select node so that tracking windows are updated.
+            //
+            // Select node so that tracking windows are updated.
+            //
+            await this.modelService
+                .GetInstance()
+                .SetActiveNodeAsync(
+                    node,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
+            //
+            // Try to activate existing session, if any.
+            //
             if (!this.ForceNewConnection && this.sessionBroker
                 .GetInstance()
                 .TryActivate(instanceNode.Instance, out session))

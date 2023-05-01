@@ -35,7 +35,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
-    public interface ISelectCredentialsDialog // TODO: Rename to dialog
+    public interface ISelectCredentialsDialog
     {
         Task SelectCredentialsAsync(
            IWin32Window owner,

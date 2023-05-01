@@ -52,7 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             this.ToolbarActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextFactory,
-                sessionBroker)
+                sessionBroker,
+                modelService)
             {
                 CommandType = MenuCommandType.ToolbarCommand, // Never hide to avoid flicker.
                 AvailableForSsh = true,
@@ -63,7 +64,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             this.ContextMenuActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextFactory,
-                sessionBroker)
+                sessionBroker,
+                modelService)
             {
                 AvailableForSsh = true,
                 AvailableForRdp = true,
@@ -74,7 +76,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             this.ContextMenuConnectRdpAsUser = new ConnectInstanceCommand(
                 "Connect &as user...",
                 sessionContextFactory,
-                sessionBroker)
+                sessionBroker,
+                modelService)
             {
                 AvailableForSsh = false,
                 AvailableForRdp = true,                  // Windows/RDP only.
@@ -85,7 +88,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             this.ContextMenuConnectSshInNewTerminal = new ConnectInstanceCommand(
                 "Connect in &new terminal",
                 sessionContextFactory,
-                sessionBroker)
+                sessionBroker,
+                modelService)
             {
                 AvailableForSsh = true,                  // Linux/SSH only.
                 AvailableForRdp = false,
