@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .CreateDirectTransport(
                         instanceLocator,
                         new IPEndPoint(instance.PublicAddress(), port))
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(true);
             }
         }
 
