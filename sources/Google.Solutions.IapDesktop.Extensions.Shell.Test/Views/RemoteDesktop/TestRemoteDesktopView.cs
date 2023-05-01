@@ -77,14 +77,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         [Test]
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
-            var transport = new Mock<ITransport>();
-            transport.SetupGet(t => t.Endpoint).Returns(new IPEndPoint(IPAddress.Loopback, 1));
+            var transport = await Transport
+                .CreateDirectTransport(
+                    SampleLocator,
+                    new IPEndPoint(IPAddress.Loopback, 1))
+                .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectRdpSession(
-                    transport.Object,
+                    transport,
                     new RdpSessionParameters()
                     {
                         ConnectionTimeout = TimeSpan.FromSeconds(5)
@@ -101,15 +104,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
             // That one will be listening, but it is RPC, not RDP.
-            var transport = new Mock<ITransport>();
-            transport.SetupGet(t => t.Endpoint).Returns(new IPEndPoint(IPAddress.Loopback, 135));
+            var transport = await Transport
+                .CreateDirectTransport(
+                    SampleLocator,
+                    new IPEndPoint(IPAddress.Loopback, 135))
+                .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectRdpSession(
-                    transport.Object,
+                    transport,
                     new RdpSessionParameters(),
                     RdpCredential.Empty))
                 .ConfigureAwait(true);
