@@ -25,7 +25,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.Net;
@@ -107,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
             catch (SshRelayDeniedException e)
             {
-                throw new ConnectionFailedException(
+                throw new TransportFailedException(
                     "You are not authorized to connect to this VM instance.\n\n" +
                     $"Verify that the Cloud IAP API is enabled in the project {targetInstance.ProjectId} " +
                     "and that your user has the 'IAP-secured Tunnel User' role.",
@@ -116,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
             catch (NetworkStreamClosedException e)
             {
-                throw new ConnectionFailedException(
+                throw new TransportFailedException(
                     "Connecting to the instance failed. Make sure that you have " +
                     "configured your firewall rules to permit IAP-TCP access " +
                     $"to {targetInstance.Name}",
@@ -125,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
             catch (WebSocketConnectionDeniedException)
             {
-                throw new ConnectionFailedException(
+                throw new TransportFailedException(
                     "Establishing an IAP-TCP tunnel failed because the server " +
                     "denied access.\n\n" +
                     "If you are using a proxy server, make sure that the proxy " +

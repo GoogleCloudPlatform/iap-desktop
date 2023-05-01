@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
@@ -52,13 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         private static readonly IapRdpUrl SampleUrl = new IapRdpUrl(
             SampleLocator,
             new NameValueCollection());
-
-        private static readonly TransportParameters SampleTransportParameters =
-            new TransportParameters(
-                TransportParameters.TransportType.IapTunnel,
-                SampleLocator,
-                new IPEndPoint(IPAddress.Loopback, 1234));
-
 
         private static ConnectCommands CreateConnectCommands(
             UrlCommands urlCommands,

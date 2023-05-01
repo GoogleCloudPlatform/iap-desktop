@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
@@ -46,12 +45,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
-
-        private static readonly TransportParameters SampleTransportParameters =
-            new TransportParameters(
-                TransportParameters.TransportType.IapTunnel,
-                SampleLocator,
-                new IPEndPoint(IPAddress.Loopback, 1234));
 
         private static ConnectInstanceCommand CreateCommand(
             Mock<ISessionContextFactory> sessionContextFactory,

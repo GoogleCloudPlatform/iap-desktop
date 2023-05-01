@@ -129,8 +129,7 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
-    <Compile Include="Services\Connection\ConnectionTemplate.cs" />
-    <Compile Include="Services\Connection\RdpCredentialCallbackService.cs" />
+    <Compile Include="Services\Session\RdpCredentialCallbackService.cs" />
     <Compile Include="Services\Session\ISessionContext.cs" />
     <Compile Include="Services\Session\RdpSessionParameters.cs" />
     <Compile Include="Services\Session\SessionContextFactory.cs" />
@@ -144,7 +143,7 @@
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
-    <Compile Include="Services\Connection\ConnectionFailedException.cs" />
+    <Compile Include="Services\Session\TransportFailedException.cs" />
     <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Services\Settings\SshSettings.cs" />
     <Compile Include="Services\Settings\TerminalSettings.cs" />

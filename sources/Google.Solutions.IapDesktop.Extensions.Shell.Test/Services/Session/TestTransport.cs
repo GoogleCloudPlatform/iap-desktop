@@ -23,7 +23,6 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Testing.Common;
@@ -58,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     timeout))
                 .ThrowsAsync(new SshRelayDeniedException("mock"));
 
-            ExceptionAssert.ThrowsAggregateException<ConnectionFailedException>(
+            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateIapTransportAsync(
                     tunnelBroker.Object,
                     SampleInstance,
@@ -78,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     timeout))
                 .ThrowsAsync(new NetworkStreamClosedException("mock"));
 
-            ExceptionAssert.ThrowsAggregateException<ConnectionFailedException>(
+            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateIapTransportAsync(
                     tunnelBroker.Object,
                     SampleInstance,
@@ -98,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     timeout))
                 .ThrowsAsync(new WebSocketConnectionDeniedException());
 
-            ExceptionAssert.ThrowsAggregateException<ConnectionFailedException>(
+            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateIapTransportAsync(
                     tunnelBroker.Object,
                     SampleInstance,

@@ -25,20 +25,20 @@ using System;
 #pragma warning disable CA1058 // Types should not extend certain base types
 #pragma warning disable CA2237 // Mark ISerializable types with serializable
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public class ConnectionFailedException : ApplicationException, IExceptionWithHelpTopic
+    public class TransportFailedException : ApplicationException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 
-        public ConnectionFailedException(
+        public TransportFailedException(
             string message,
             IHelpTopic helpTopic) : base(message)
         {
             this.Help = helpTopic;
         }
 
-        public ConnectionFailedException(
+        public TransportFailedException(
             string message,
             IHelpTopic helpTopic,
             Exception innerException)

@@ -130,7 +130,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IapTunnel.cs" />
     <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
-    <Compile Include="Services\Connection\TestRdpCredentialCallbackService.cs" />
+    <Compile Include="Services\Session\TestRdpCredentialCallbackService.cs" />
     <Compile Include="Services\Session\TestRdpCredential.cs" />
     <Compile Include="Services\Session\TestRdpSessionContext.cs" />
     <Compile Include="Services\Session\TestRdpSessionParameters.cs" />

@@ -30,7 +30,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
     public interface IRdpCredentialCallbackService
     {
