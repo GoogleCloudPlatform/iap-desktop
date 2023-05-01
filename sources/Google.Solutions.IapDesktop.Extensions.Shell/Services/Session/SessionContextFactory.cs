@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             InstanceLocator instance,
             RdpCredential credential,
             InstanceConnectionSettings settings,
-            RdpSessionContext.ParameterSources sources)
+            RdpSessionParameters.ParameterSources sources)
         {
             var context = new RdpSessionContext(
                 this.tunnelBrokerService,
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 node.Instance, 
                 credential, 
                 instanceSettings,
-                RdpSessionContext.ParameterSources.Inventory);
+                RdpSessionParameters.ParameterSources.Inventory);
         }
 
         public async Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         {
             url.ExpectNotNull(nameof(url));
 
-            RdpSessionContext.ParameterSources sources;
+            RdpSessionParameters.ParameterSources sources;
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService
                 .GetNodeAsync(url.Instance, cancellationToken)
@@ -238,8 +238,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 //
                 settings.ApplySettingsFromUrl(url);
 
-                sources = RdpSessionContext.ParameterSources.Inventory
-                    | RdpSessionContext.ParameterSources.Url;
+                sources = RdpSessionParameters.ParameterSources.Inventory
+                    | RdpSessionParameters.ParameterSources.Url;
             }
             else
             {
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 // We don't have that VM in the inventory, all we have is the URL.
                 //
                 settings = InstanceConnectionSettings.FromUrl(url);
-                sources = RdpSessionContext.ParameterSources.Url;
+                sources = RdpSessionParameters.ParameterSources.Url;
             }
 
 

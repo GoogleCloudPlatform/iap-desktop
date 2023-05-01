@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
-            Assert.AreEqual(RdpSessionContext.ParameterSources.Inventory, context.Sources);
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Inventory, context.Parameters.Sources);
             Assert.AreEqual("existinguser", context.Credential.User);
             Assert.AreEqual("", context.Credential.Password.AsClearText());
         }
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             Assert.IsNotNull(context);
 
 
-            Assert.AreEqual(RdpSessionContext.ParameterSources.Inventory, context.Sources);
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Inventory, context.Parameters.Sources);
             Assert.AreEqual("existinguser", context.Credential.User);
             Assert.AreEqual("password", context.Credential.Password.AsClearText());
 
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
-            Assert.AreEqual(RdpSessionContext.ParameterSources.Url, context.Sources);
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Url, context.Parameters.Sources);
             Assert.IsNull(context.Credential.User);
 
             settingsService.Verify(s => s.GetConnectionSettings(
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
-            Assert.AreEqual(RdpSessionContext.ParameterSources.Url, context.Sources);
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Url, context.Parameters.Sources);
             Assert.AreEqual("john doe", context.Credential.User);
 
             settingsService.Verify(s => s.GetConnectionSettings(
@@ -335,8 +335,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             Assert.IsNotNull(context);
 
             Assert.AreEqual(
-                RdpSessionContext.ParameterSources.Inventory | RdpSessionContext.ParameterSources.Url,
-                context.Sources);
+                RdpSessionParameters.ParameterSources.Inventory | RdpSessionParameters.ParameterSources.Url,
+                context.Parameters.Sources);
             Assert.AreEqual("john doe", context.Credential.User);
 
             settingsService.Verify(s => s.GetConnectionSettings(
@@ -415,7 +415,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context);
-            Assert.AreEqual(RdpSessionContext.ParameterSources.Url, context.Sources);
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Url, context.Parameters.Sources);
             Assert.AreEqual("user", context.Credential.User);
             Assert.AreEqual("domain", context.Credential.Domain);
             Assert.AreEqual("password", context.Credential.Password.AsClearText());

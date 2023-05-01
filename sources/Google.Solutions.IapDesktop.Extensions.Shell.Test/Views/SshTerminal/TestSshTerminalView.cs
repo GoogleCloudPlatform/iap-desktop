@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             };
 
             var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             SshTerminalView pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .CreateDirectTransport(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     this.UnboundEndpoint)
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
@@ -251,12 +251,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
 
-
             var transport = await Transport
                 .CreateDirectTransport(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     this.NonSshEndpoint)
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
@@ -291,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var instanceLocator = await instanceLocatorTask;
             var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);

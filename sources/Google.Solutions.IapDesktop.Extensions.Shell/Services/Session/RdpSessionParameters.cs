@@ -46,6 +46,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         public RdpRedirectDrive RedirectDrive { get; set; } = RdpRedirectDrive._Default;
         public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
+
+        public ParameterSources Sources { get; set; } = ParameterSources.Inventory;
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        [Flags]
+        public enum ParameterSources
+        {
+            /// <summary>
+            /// One or more parameter is sourced from a iap-rdp:/// URL.
+            /// </summary>
+            Url = 1,
+
+            /// <summary>
+            ///One or more parameter is sourced from the inventory.
+            /// </summary>
+            Inventory = 2
+        }
     }
 
 

@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<ITunnelBrokerService>().Object,
                 SampleInstance,
                 credential,
-                RdpSessionContext.ParameterSources.Inventory);
+                RdpSessionParameters.ParameterSources.Inventory);
 
             Assert.AreSame(
                 credential, 

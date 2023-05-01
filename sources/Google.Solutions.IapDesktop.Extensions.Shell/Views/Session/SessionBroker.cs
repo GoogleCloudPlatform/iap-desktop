@@ -97,20 +97,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 () => this.ActiveSession);
         }
 
-        internal IRemoteDesktopSession ConnectRdpSession( // TODO: make asnyc
+        internal IRemoteDesktopSession ConnectRdpSession(
             ITransport transport,
             RdpSessionParameters parameters,
             RdpCredential credential)
         {
-            throw new NotImplementedException(); // TODO: implement
+            var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
+
+            window.ViewModel.Instance = transport.Instance;
+            window.ViewModel.Server = IPAddress.IsLoopback(transport.Endpoint.Address)
+                ? "localhost"
+                : transport.Endpoint.Address.ToString();
+            window.ViewModel.Port = (ushort)transport.Endpoint.Port;
+            window.ViewModel.Parameters = parameters;
+            window.ViewModel.Credential = credential;
+
+            var session = window.Bind();
+
+            //
+            // Apply accent color if the session was initiated from a URL.
+            //
+            if (parameters.Sources.HasFlag(Services.Session.RdpSessionParameters.ParameterSources.Url))
+            {
+                session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
+            }
+
+            window.Show();
+            session.Connect();
+
+            OnSessionConnected(session);
+
+            return session;
         }
 
-        internal Task<ISshTerminalSession> ConnectSshSessionAsync(
+        internal async Task<ISshTerminalSession> ConnectSshSessionAsync(
             ITransport transport,
             SshSessionParameters parameters,
             SshCredential credential)
         {
-            throw new NotImplementedException(); // TODO: implement
+            var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
+
+            window.ViewModel.Instance = transport.Instance;
+            window.ViewModel.Endpoint = transport.Endpoint;
+            window.ViewModel.AuthorizedKey = credential.Key;
+            window.ViewModel.Language = parameters.Language;
+            window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
+
+            var session = window.Bind();
+            window.Show();
+
+            await session.ConnectAsync()
+                .ConfigureAwait(false);
+
+            OnSessionConnected(session);
+
+            return session;
         }
 
         //---------------------------------------------------------------------
@@ -164,68 +205,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         public ICommandContainer<ISession> SessionMenu { get; }
 
-        //TODO: Refactor
-        //public async Task<ISshTerminalSession> ConnectSshSessionAsync(
-        //    ConnectionTemplate<SshSessionParameters> template)
-        //{
-        //    var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
-
-        //    window.ViewModel.Instance = template.Transport.Instance;
-        //    window.ViewModel.Endpoint = template.Transport.Endpoint;
-        //    window.ViewModel.AuthorizedKey = template.Session.AuthorizedKey;
-        //    window.ViewModel.Language = template.Session.Language;
-        //    window.ViewModel.ConnectionTimeout = template.Session.ConnectionTimeout;
-
-        //    var session = window.Bind();
-        //    window.Show();
-
-        //    await session.ConnectAsync()
-        //        .ConfigureAwait(false);
-
-        //    OnSessionConnected(session);
-
-        //    return session;
-        //}
-
-        //public IRemoteDesktopSession ConnectRdpSession(
-        //    ConnectionTemplate<RdpSessionParameters> template)
-        //{
-        //    var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
-
-        //    window.ViewModel.Instance = template.Transport.Instance;
-        //    window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address)
-        //        ? "localhost"
-        //        : template.Transport.Endpoint.Address.ToString();
-        //    window.ViewModel.Port = (ushort)template.Transport.Endpoint.Port;
-        //    window.ViewModel.Parameters = template.Session;
-        //    window.ViewModel.Credential = ...
-
-        //    var session = window.Bind();
-
-        //    //
-        //    // Apply accent color if the session was initiated from a URL.
-        //    //
-        //    if (template.Session.Sources.HasFlag(Services.Session.RdpSessionContext.ParameterSources.Url))
-        //    {
-        //        session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
-        //    }
-
-        //    window.Show();
-        //    session.Connect();
-
-        //    OnSessionConnected(session);
-
-        //    return session;
-        //}
-
-
         public Task<ISession> CreateSessionAsync(ISessionContext<SshCredential, SshSessionParameters> context)
         {
+            // TODO: spawn job: authorize, create transport
             throw new NotImplementedException();
         }
 
         public Task<ISession> CreateSessionAsync(ISessionContext<RdpCredential, RdpSessionParameters> context)
         {
+            // TODO: spawn job: authorize, create transport
+            // TODO: dispose context
             throw new NotImplementedException();
         }
     }

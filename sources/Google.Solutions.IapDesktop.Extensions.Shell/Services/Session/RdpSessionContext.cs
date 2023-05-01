@@ -38,16 +38,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             ITunnelBrokerService tunnelBroker,
             InstanceLocator instance,
             RdpCredential credential,
-            ParameterSources sources)
+            RdpSessionParameters.ParameterSources sources)
         {
             this.tunnelBroker = tunnelBroker.ExpectNotNull(nameof(tunnelBroker));
             this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Credential = credential.ExpectNotNull(nameof(credential));
-            this.Sources = sources;
-            this.Parameters = new RdpSessionParameters();
+            this.Parameters = new RdpSessionParameters()
+            {
+                Sources = sources
+            };
         }
 
-        public ParameterSources Sources { get; }
         public RdpCredential Credential { get; }
 
         //---------------------------------------------------------------------
@@ -80,24 +81,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public void Dispose()
         {
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        [Flags]
-        public enum ParameterSources
-        {
-            /// <summary>
-            /// One or more parameter is sourced from a iap-rdp:/// URL.
-            /// </summary>
-            Url = 1,
-
-            /// <summary>
-            ///One or more parameter is sourced from the inventory.
-            /// </summary>
-            Inventory = 2
         }
     }
 }
