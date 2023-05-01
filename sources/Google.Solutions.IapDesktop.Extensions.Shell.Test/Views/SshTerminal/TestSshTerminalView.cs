@@ -138,7 +138,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var sshCredential = new SshCredential(authorizedKey);
             var sshParameters = new SshSessionParameters()
             {
-                ConnectionTimeout = TimeSpan.FromSeconds(10)
+                ConnectionTimeout = TimeSpan.FromSeconds(10),
+                Language = language
             };
 
             var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
