@@ -19,13 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.Mvvm.Binding;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
@@ -47,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
 #if DEBUG
             this.DiagnosticsStatusText = ObservableProperty.Build(
-                this.State, 
+                this.State,
                 s => s.ToString() + "\n\n" + this.Parameters.DumpProperties());
 #endif
         }

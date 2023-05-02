@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 RdpSessionParameters.ParameterSources.Inventory);
 
             Assert.AreSame(
-                credential, 
+                credential,
                 context.AuthorizeCredentialAsync(CancellationToken.None).Result);
         }
 

@@ -35,7 +35,6 @@ using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Testing.Common.Mocks;
 using NUnit.Framework;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session

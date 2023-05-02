@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Platform.Net;
 using System.Net;

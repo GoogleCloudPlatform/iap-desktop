@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;

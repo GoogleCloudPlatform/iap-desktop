@@ -31,7 +31,6 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session

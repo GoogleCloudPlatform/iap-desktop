@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Protocol;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

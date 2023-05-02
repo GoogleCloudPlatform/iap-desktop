@@ -138,7 +138,7 @@ namespace Google.Solutions.Apis.Client
                         }
                     }
                 }
-                catch (OperationCanceledException) 
+                catch (OperationCanceledException)
                     when (!cancellationToken.IsCancellationRequested)
                 {
                     //

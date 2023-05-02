@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
             return Task.FromResult(new Transport(
-                TransportType.Test, 
+                TransportType.Test,
                 targetInstance,
                 endpoint));
         }

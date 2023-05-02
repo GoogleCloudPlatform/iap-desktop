@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System.Threading;

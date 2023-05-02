@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Text = this.TabSelectedActive.Text,
                     Button = this.TabSelectedActive.Button
                 };
-                this.CommandBarMenuTopLevelHeaderHovered.Border 
+                this.CommandBarMenuTopLevelHeaderHovered.Border
                     = GetColor(xml, "Environment", "CommandBarMenuItemMouseOverBorder", "Background");
             }
 

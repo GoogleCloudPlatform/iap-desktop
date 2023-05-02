@@ -22,7 +22,6 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
-using System;
 using System.Linq;
 using System.Reflection;
 

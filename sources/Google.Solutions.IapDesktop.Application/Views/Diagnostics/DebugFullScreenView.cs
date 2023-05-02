@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             viewModel.TabAccentColor.PropertyChanged += (_, __) =>
             {
-                this.DockHandler.TabAccentColor = 
+                this.DockHandler.TabAccentColor =
                     (TabAccentColorIndex)viewModel.TabAccentColor.Value;
             };
         }

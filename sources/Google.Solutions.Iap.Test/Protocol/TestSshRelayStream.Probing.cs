@@ -21,8 +21,8 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;

@@ -54,7 +54,7 @@ namespace Google.Solutions.Testing.Application.Views
             where TContext : class
         {
             return new CommandContainer<TContext>(
-                ToolStripItemDisplayStyle.Text, 
+                ToolStripItemDisplayStyle.Text,
                 new Mock<IContextSource<TContext>>().Object,
                 new Mock<IBindingContext>().Object);
         }

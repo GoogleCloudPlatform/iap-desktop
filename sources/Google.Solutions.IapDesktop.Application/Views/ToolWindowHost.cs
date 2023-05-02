@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 {
     public interface IToolWindowHost
     {
-        IToolWindow<TView, TViewModel> 
+        IToolWindow<TView, TViewModel>
             GetToolWindow<TView, TViewModel>()
             where TView : ToolWindowViewBase, IView<TViewModel>
             where TViewModel : ViewModelBase;
