@@ -125,7 +125,7 @@ namespace Google.Solutions.Iap.Protocol
             {
                 // NB. User-Agent is a restricted header, so this call will fail
                 // unless un-restricted using RestrictedHeaderConfigPatch.
-                websocket.Options.SetRequestHeader("User-Agent", this.UserAgent.ToHeaderValue());
+                websocket.Options.SetRequestHeader("User-Agent", this.UserAgent.ToString());
             }
             catch (ArgumentException)
             {
