@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -30,6 +31,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -68,15 +70,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         private readonly IMainWindow mainForm;
         private readonly IJobService jobService;
 
-        private void OnSessionConnected(SessionViewBase session)
-        {
-            //
-            // Add context menu.
-            //
-            Debug.Assert(session.ContextCommands == null);
-            session.ContextCommands = this.SessionMenu;
-        }
-
         public InstanceSessionBroker(
             IMainWindow mainForm,
             IToolWindowHost toolWindowHost,
@@ -110,6 +103,89 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         }
 
+        //---------------------------------------------------------------------
+        // Session initialization.
+        //---------------------------------------------------------------------
+
+        private struct AuthorizationResult<TCredential>
+        {
+            public TCredential Credential;
+            public ITransport Transport;
+        }
+
+        private void OnSessionConnected(SessionViewBase session)
+        {
+            //
+            // Add context menu.
+            //
+            Debug.Assert(session.ContextCommands == null);
+            session.ContextCommands = this.SessionMenu;
+        }
+
+        private void ApplyTabStyle<TParameters>(
+            DockContentHandler dockHandler, 
+            Transport.TransportType transportType,
+            bool isCreatedFromUrl,
+            InstanceLocator instance,
+            ISessionCredential credential,
+            TParameters sessionParameters)
+        {
+            //
+            // Apply accent color if the session deviates from the norm.
+            //
+            if (isCreatedFromUrl)
+            {
+                dockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
+            }
+            else if (transportType == Transport.TransportType.Vpc)
+            {
+                dockHandler.TabAccentColor = AccentColorForNonIapSessions;
+            }
+
+            var toolTip = new StringBuilder();
+            toolTip.AppendLine($"User: {credential}");
+            toolTip.AppendLine($"Instance: {instance.Name}");
+            toolTip.AppendLine($"Project: {instance.ProjectId}");
+            
+            if (transportType == Transport.TransportType.IapTunnel)
+            {
+                toolTip.AppendLine();
+                toolTip.AppendLine("Connected through Identity-Aware Proxy");
+            }
+
+#if DEBUG
+            toolTip.AppendLine();
+            toolTip.AppendLine(sessionParameters.DumpProperties());
+#endif
+
+            dockHandler.ToolTipText = toolTip.ToString();
+        }
+
+        private Task<AuthorizationResult<TCredential>> CreateTransportAndAuthorizeAsync
+            <TCredential, TParameters>(
+            ISessionContext<TCredential, TParameters> context)
+            where TCredential : ISessionCredential
+        {
+            return this.jobService.RunInBackground(
+                new JobDescription(
+                    $"Connecting to {context.Instance.Name}...",
+                    JobUserFeedbackType.BackgroundFeedback),
+                async cancellationToken =>
+                {
+                    var credentialTask = context.AuthorizeCredentialAsync(cancellationToken);
+                    var transportTask = context.ConnectTransportAsync(cancellationToken);
+
+                    await Task.WhenAll(credentialTask, transportTask)
+                        .ConfigureAwait(true);
+
+                    return new AuthorizationResult<TCredential>
+                    {
+                        Credential = credentialTask.Result,
+                        Transport = transportTask.Result
+                    };
+                });
+        }
+
         internal IRemoteDesktopSession ConnectRdpSession(
             ITransport transport,
             RdpSessionParameters parameters,
@@ -129,17 +205,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             var session = window.Bind();
 
-            //
-            // Apply accent color if the session deviates from the norm.
-            //
-            if (parameters.Sources.HasFlag(Services.Session.RdpSessionParameters.ParameterSources.Url))
-            {
-                session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
-            }
-            else if (parameters.TransportType == Transport.TransportType.Vpc)
-            {
-                session.DockHandler.TabAccentColor = AccentColorForNonIapSessions;
-            }
+            ApplyTabStyle(
+                session.DockHandler,
+                parameters.TransportType,
+                parameters.Sources.HasFlag(RdpSessionParameters.ParameterSources.Url),
+                session.Instance,
+                credential,
+                parameters);
 
             window.Show();
             session.Connect();
@@ -166,13 +238,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             var session = window.Bind();
 
-            //
-            // Apply accent color if the session deviates from the norm.
-            //
-            if (parameters.TransportType == Transport.TransportType.Vpc)
-            {
-                session.DockHandler.TabAccentColor = AccentColorForNonIapSessions;
-            }
+            ApplyTabStyle(
+                session.DockHandler,
+                parameters.TransportType,
+                false,
+                session.Instance,
+                credential,
+                parameters);
 
             window.Show();
 
@@ -227,37 +299,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 session = null;
                 return false;
             }
-        }
-
-        private struct AuthorizationResult<TCredential>
-        {
-            public TCredential Credential;
-            public ITransport Transport;
-        }
-
-        private Task<AuthorizationResult<TCredential>> CreateTransportAndAuthorizeAsync
-            <TCredential, TParameters>(
-            ISessionContext<TCredential, TParameters> context)
-            where TCredential : ISessionCredential
-        {
-            return this.jobService.RunInBackground(
-                new JobDescription(
-                    $"Connecting to {context.Instance.Name}...",
-                    JobUserFeedbackType.BackgroundFeedback),
-                async cancellationToken =>
-                {
-                    var credentialTask = context.AuthorizeCredentialAsync(cancellationToken);
-                    var transportTask = context.ConnectTransportAsync(cancellationToken);
-
-                    await Task.WhenAll(credentialTask, transportTask)
-                        .ConfigureAwait(true);
-
-                    return new AuthorizationResult<TCredential>
-                    {
-                        Credential = credentialTask.Result,
-                        Transport = transportTask.Result
-                    };
-                });
         }
 
         //---------------------------------------------------------------------
