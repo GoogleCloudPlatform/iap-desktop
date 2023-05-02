@@ -24,17 +24,14 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Common.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -173,8 +170,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             contextFactory.Verify(
                 s => s.CreateRdpSessionContextAsync(
-                    instance, 
-                    RdpCreateSessionFlags.None, 
+                    instance,
+                    RdpCreateSessionFlags.None,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -230,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         public async Task WhenSshSessionFoundAndForceNewIsTrue_ThenExecuteCreatesNewSession()
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
-            
+
             var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
@@ -260,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 Times.Never);
             contextFactory.Verify(
                 s => s.CreateSshSessionContextAsync(
-                    instance, 
+                    instance,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }

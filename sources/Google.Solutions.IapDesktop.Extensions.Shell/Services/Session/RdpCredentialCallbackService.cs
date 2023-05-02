@@ -22,8 +22,6 @@
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;

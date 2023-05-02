@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Management.Properties;
 using Google.Solutions.Mvvm.Binding.Commands;
-using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog

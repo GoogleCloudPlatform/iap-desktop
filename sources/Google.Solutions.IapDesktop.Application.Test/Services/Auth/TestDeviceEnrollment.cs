@@ -151,10 +151,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Auth
             Assert.IsNull(enrollment.Certificate);
 
             certificateStore.Verify(
-                s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()), 
+                s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()),
                 Times.Never);
             certificateStore.Verify(
-                s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()), 
+                s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()),
                 Times.Never);
         }
 
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Auth
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
-                .Returns((Predicate<X509Certificate2> predicate) => 
+                .Returns((Predicate<X509Certificate2> predicate) =>
                     new[] { CertificateUtil.CertificateFromPem(CustomCertificateForServerAuth) }
                     .Where(c => predicate(c)));
             certificateStore

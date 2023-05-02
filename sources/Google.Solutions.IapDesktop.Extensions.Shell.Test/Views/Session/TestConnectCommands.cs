@@ -25,9 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -36,7 +34,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Specialized;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -218,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             contextFactory.Verify(
                 s => s.CreateRdpSessionContextAsync(
-                    runningInstance.Object, 
+                    runningInstance.Object,
                     RdpCreateSessionFlags.None,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -503,13 +500,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             contextFactory.Verify(
                 s => s.CreateRdpSessionContextAsync(
-                    runningInstance.Object, 
-                    RdpCreateSessionFlags.ForcePasswordPrompt, 
+                    runningInstance.Object,
+                    RdpCreateSessionFlags.ForcePasswordPrompt,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
             contextFactory.Verify(
                 s => s.CreateRdpSessionContextAsync(
-                    runningInstance.Object, 
+                    runningInstance.Object,
                     RdpCreateSessionFlags.None,
                     It.IsAny<CancellationToken>()),
                 Times.Never);

@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             context.Parameters.RedirectDrive = settings.RdpRedirectDrive.EnumValue;
             context.Parameters.RedirectDevice = settings.RdpRedirectDevice.EnumValue;
             context.Parameters.HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue;
-            
+
             return context;
         }
 
@@ -210,8 +210,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
 
             return CreateRdpContext(
-                node.Instance, 
-                credential, 
+                node.Instance,
+                credential,
                 instanceSettings,
                 RdpSessionParameters.ParameterSources.Inventory);
         }

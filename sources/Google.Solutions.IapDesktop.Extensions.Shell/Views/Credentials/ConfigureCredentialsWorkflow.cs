@@ -22,7 +22,6 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {

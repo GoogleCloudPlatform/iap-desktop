@@ -20,13 +20,8 @@
 //
 
 
-using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Moq;
 using NUnit.Framework;
-using System.Security;
-using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {

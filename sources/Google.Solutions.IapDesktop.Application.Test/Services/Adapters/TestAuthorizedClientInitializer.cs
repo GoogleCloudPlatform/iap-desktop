@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
-            
+
             var initializer = new AuthorizedClientInitializer(
                 new Mock<ICredential>().Object,
                 enrollment.Object,

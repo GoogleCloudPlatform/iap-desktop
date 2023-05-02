@@ -32,7 +32,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Net;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -205,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     22,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            
+
             Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
             Assert.AreEqual(SampleInstance, transport.Instance);
             Assert.AreEqual(22, transport.Endpoint.Port);

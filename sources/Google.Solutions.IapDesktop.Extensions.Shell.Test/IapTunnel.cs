@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test
 
         private IapTunnel(
             InstanceLocator instance,
-            SshRelayListener listener, 
+            SshRelayListener listener,
             CancellationTokenSource tokenSource)
         {
             this.Instance = instance;

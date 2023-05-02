@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 {

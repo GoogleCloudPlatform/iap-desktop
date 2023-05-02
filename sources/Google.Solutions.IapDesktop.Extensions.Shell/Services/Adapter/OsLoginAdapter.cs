@@ -22,9 +22,8 @@
 using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis;
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;

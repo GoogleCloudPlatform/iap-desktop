@@ -19,16 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.Ssh.Auth;
-using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
@@ -41,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var parameters = new SshSessionParameters();
 
             Assert.IsNull(parameters.Language);
-            
+
             Assert.AreEqual(Transport.TransportType._Default, parameters.TransportType);
             Assert.AreEqual(SshSessionParameters.DefaultPort, parameters.Port);
             Assert.AreEqual(SshSessionParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);

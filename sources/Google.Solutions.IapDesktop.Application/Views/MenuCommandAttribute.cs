@@ -28,7 +28,7 @@ using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
-    public interface IMenu 
+    public interface IMenu
     {
     }
 
@@ -141,8 +141,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private class SubMenu : Menu<TContext>
         {
             public SubMenu(
-                MenuCommandType commandType, 
-                ICommandContainer<TContext> commands) 
+                MenuCommandType commandType,
+                ICommandContainer<TContext> commands)
                 : base(commandType, commands)
             {
             }
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// Declare class as a command that extends a menu.
         /// </summary>
         /// <param name="menu">Marker type for the menu to extend</param>
-        public MenuCommandAttribute(Type menu) 
+        public MenuCommandAttribute(Type menu)
             : base(typeof(IMenuCommand<>).MakeGenericType(menu))
         {
             this.Menu = menu.ExpectNotNull(nameof(menu));

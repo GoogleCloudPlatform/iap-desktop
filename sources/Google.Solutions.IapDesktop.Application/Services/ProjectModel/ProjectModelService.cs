@@ -19,8 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -34,8 +36,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Apis;
-using Google.Solutions.Apis.Compute;
 
 namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {

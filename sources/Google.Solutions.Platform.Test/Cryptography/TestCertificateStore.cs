@@ -28,7 +28,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Google.Solutions.Platform.Test.Cryptography
 {
     [TestFixture]
-    public class TestCertificateStore 
+    public class TestCertificateStore
     {
         //
         // Self-signed certificate, created using:

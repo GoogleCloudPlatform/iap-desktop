@@ -26,8 +26,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
-using Google.Solutions.Mvvm.Binding.Commands;
-using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -123,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Debug.Assert(this.Flags == RdpCreateSessionFlags.None || 
+                Debug.Assert(this.Flags == RdpCreateSessionFlags.None ||
                     (context as RdpSessionContext)?.Credential.Password == null);
 
                 try
@@ -147,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                     .ConfigureAwait(true);
 
                 try
-                { 
+                {
                     session = await this.sessionBroker
                         .GetInstance()
                         .CreateSessionAsync(context)

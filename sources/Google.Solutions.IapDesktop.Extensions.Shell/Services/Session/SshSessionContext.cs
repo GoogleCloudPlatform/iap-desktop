@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Ssh.Auth;
 using System;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
     /// <summary>
     /// Encapsulates settings and logic to create an SSH session.
     /// </summary>
-    internal sealed class SshSessionContext 
+    internal sealed class SshSessionContext
         : SessionContextBase<SshCredential, SshSessionParameters>
     {
         private readonly IKeyAuthorizationService keyAuthorizationService;

@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             public SampleMenu(
                 MenuCommandType commandType,
-                ICommandContainer<IRightContext> commandContainer) 
+                ICommandContainer<IRightContext> commandContainer)
                 : base(commandType, commandContainer)
             {
             }
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
             var menu = new SampleMenu(MenuCommandType.MenuCommand, commandContainer.Object);
             menu.AddCommands(serviceRegistry);
-            
+
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Never);
         }
 
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         //---------------------------------------------------------------------
 
         [MenuCommand(typeof(SampleMenu))]
-        internal class ContextCommandWithSubMenu: SampleCommandBase<IRightContext>, IMenuCommand<SampleMenu>, IMenu
+        internal class ContextCommandWithSubMenu : SampleCommandBase<IRightContext>, IMenuCommand<SampleMenu>, IMenu
         {
         }
 

@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance()
                 {
-                        NetworkInterfaces = new[]
+                    NetworkInterfaces = new[]
                     {
                         new NetworkInterface()
                         {
