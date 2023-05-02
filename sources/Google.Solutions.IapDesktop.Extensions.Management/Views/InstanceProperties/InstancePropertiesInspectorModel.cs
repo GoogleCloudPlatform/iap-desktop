@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         [DisplayName("IP address (internal)")]
         [Description("Primary internal IP addresses, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#networkaddresses")]
-        public string InternalIp => this.instanceDetails.InternalAddress()?.ToString();
+        public string InternalIp => this.instanceDetails.PrimaryInternalAddress()?.ToString();
 
         [Browsable(true)]
         [Category(NetworkCategory)]

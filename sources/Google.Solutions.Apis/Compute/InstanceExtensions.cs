@@ -98,14 +98,16 @@ namespace Google.Solutions.Apis.Compute
                 .FirstOrDefault();
         }
 
-        public static IPAddress InternalAddress(this Instance instance)
+        /// <summary>
+        /// Return the IPv4 address of nic0, or null if that doesn't exist.
+        /// </summary>
+        public static IPAddress PrimaryInternalAddress(this Instance instance)
         {
             return instance
                 .NetworkInterfaces
                 .EnsureNotNull()
-                .Select(nic => nic.NetworkIP)
-                .Where(ip => ip != null)
-                .Select(ip => IPAddress.Parse(ip))
+                .Where(nic => nic.Name == "nic0" && nic.NetworkIP != null)
+                .Select(ip => IPAddress.Parse(ip.NetworkIP))
                 .FirstOrDefault();
         }
     }

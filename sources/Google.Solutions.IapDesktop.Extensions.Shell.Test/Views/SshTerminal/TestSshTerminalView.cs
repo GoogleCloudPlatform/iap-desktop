@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ExecuteAsync()
                     .ConfigureAwait(true);
                 return await Transport
-                    .CreateDirectTransport(
+                    .CreateTestTransport(
                         instanceLocator,
                         new IPEndPoint(instance.PublicAddress(), port))
                     .ConfigureAwait(true);
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             };
 
             var transport = await Transport
-                .CreateDirectTransport(
+                .CreateTestTransport(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     this.UnboundEndpoint)
                 .ConfigureAwait(true);
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             };
 
             var transport = await Transport
-                .CreateDirectTransport(
+                .CreateTestTransport(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     this.NonSshEndpoint)
                 .ConfigureAwait(true);

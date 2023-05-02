@@ -93,6 +93,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
            "Track VM and sole-tenant node usage for license reporting",
            "https://cloud.google.com/compute/docs/nodes/determining-server-usage");
 
+        public static readonly IHelpTopic LocateInstanceIpAddress = new HelpTopic(
+            "Locating IP addresses for an instance",
+            "https://cloud.google.com/compute/docs/instances/view-ip-address#console");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }
