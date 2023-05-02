@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     [ServiceCategory(typeof(ISessionBroker))]
     public class InstanceSessionBroker : IInstanceSessionBroker
     {
-        private const TabAccentColorIndex AccentColorForUrlBasedSessions 
-            = TabAccentColorIndex.Hightlight2;
+        private const TabAccentColorIndex AccentColorForNonIapSessions = TabAccentColorIndex.Hightlight1;
+        private const TabAccentColorIndex AccentColorForUrlBasedSessions = TabAccentColorIndex.Hightlight2;
 
         private readonly IToolWindowHost toolWindowHost;
         private readonly IMainWindow mainForm;
@@ -128,11 +128,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             var session = window.Bind();
 
             //
-            // Apply accent color if the session was initiated from a URL.
+            // Apply accent color if the session deviates from the norm.
             //
             if (parameters.Sources.HasFlag(Services.Session.RdpSessionParameters.ParameterSources.Url))
             {
                 session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
+            }
+            else if (parameters.TransportType == Transport.TransportType.Vpc)
+            {
+                session.DockHandler.TabAccentColor = AccentColorForNonIapSessions;
             }
 
             window.Show();

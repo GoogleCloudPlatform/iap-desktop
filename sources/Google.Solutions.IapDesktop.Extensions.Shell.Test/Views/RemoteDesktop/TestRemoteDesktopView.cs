@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
             var transport = await Transport
-                .CreateDirectTransport(
+                .CreateTestTransport(
                     SampleLocator,
                     new IPEndPoint(IPAddress.Loopback, 1))
                 .ConfigureAwait(true);
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             // That one will be listening, but it is RPC, not RDP.
             var transport = await Transport
-                .CreateDirectTransport(
+                .CreateTestTransport(
                     SampleLocator,
                     new IPEndPoint(IPAddress.Loopback, 135))
                 .ConfigureAwait(true);

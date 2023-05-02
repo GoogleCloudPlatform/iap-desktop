@@ -69,10 +69,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(instance.InternalAddress());
+            Assert.IsNotNull(instance.PrimaryInternalAddress());
             CollectionAssert.Contains(
                 new byte[] { 172, 192, 10 },
-                instance.InternalAddress().GetAddressBytes()[0],
+                instance.PrimaryInternalAddress().GetAddressBytes()[0],
                 "Is RFC1918 address");
         }
 

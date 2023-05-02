@@ -38,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         {
             var parameters = new RdpSessionParameters();
 
+            Assert.AreEqual(Transport.TransportType._Default, parameters.TransportType);
             Assert.AreEqual(RdpSessionParameters.DefaultPort, parameters.Port);
             Assert.AreEqual(RdpSessionParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
             Assert.AreEqual(RdpConnectionBarState._Default, parameters.ConnectionBar);

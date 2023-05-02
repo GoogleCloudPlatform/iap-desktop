@@ -19,7 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap.Protocol;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -29,6 +32,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
@@ -37,6 +41,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
     {
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+        //---------------------------------------------------------------------
+        // AuthorizeCredential.
+        //---------------------------------------------------------------------
 
         [Test]
         public void AuthorizeCredentialReturnsCredential()
@@ -62,6 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var context = new SshSessionContext(
                 new Mock<ITunnelBrokerService>().Object,
                 keyAuthService.Object,
+                new Mock<IComputeEngineAdapter>().Object,
                 SampleInstance,
                 key);
 
@@ -70,6 +79,76 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 context.AuthorizeCredentialAsync(CancellationToken.None)
                     .Result
                     .Key);
+        }
+
+        //---------------------------------------------------------------------
+        // ConnectTransport.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenTransportTypeIsIap_ThenConnectTransportCreatesIapTunnel()
+        {
+            var tunnel = new Mock<ITunnel>();
+            tunnel.SetupGet(t => t.LocalPort).Returns(123);
+
+            var tunnelBroker = new Mock<ITunnelBrokerService>();
+            tunnelBroker
+                .Setup(b => b.ConnectAsync(
+                    It.IsAny<TunnelDestination>(),
+                    It.IsAny<ISshRelayPolicy>(),
+                    It.IsAny<TimeSpan>()))
+                .ReturnsAsync(tunnel.Object);
+
+            var context = new SshSessionContext(
+                tunnelBroker.Object,
+                new Mock<IKeyAuthorizationService>().Object,
+                new Mock<IComputeEngineAdapter>().Object,
+                SampleInstance,
+                new Mock<ISshKeyPair>().Object);
+            context.Parameters.TransportType = Transport.TransportType.IapTunnel;
+
+            var transport = await context
+                .ConnectTransportAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Transport.TransportType.IapTunnel, transport.Type);
+            Assert.AreEqual(123, transport.Endpoint.Port);
+        }
+
+        [Test]
+        public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesVpcInternalTunnel()
+        {
+            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            computeEngineAdapter
+                .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Instance()
+                {
+                        NetworkInterfaces = new[]
+                    {
+                        new NetworkInterface()
+                        {
+                            Name = "nic0",
+                            StackType = "IPV4_ONLY",
+                            NetworkIP = "20.21.22.23"
+                        }
+                    }
+                });
+
+            var context = new SshSessionContext(
+                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IKeyAuthorizationService>().Object,
+                computeEngineAdapter.Object,
+                SampleInstance,
+                new Mock<ISshKeyPair>().Object);
+            context.Parameters.TransportType = Transport.TransportType.Vpc;
+
+            var transport = await context
+                .ConnectTransportAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
+            Assert.AreEqual(context.Parameters.Port, transport.Endpoint.Port);
+            Assert.AreEqual("20.21.22.23", transport.Endpoint.Address.ToString());
         }
     }
 }

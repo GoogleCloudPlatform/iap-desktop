@@ -21,45 +21,47 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    
-    internal sealed class RdpSessionContext : ISessionContext<RdpCredential, RdpSessionParameters>
-    {
-        private readonly ITunnelBrokerService tunnelBroker;
 
+    /// <summary>
+    /// Encapsulates settings and logic to create an RDP session.
+    /// </summary>
+    internal sealed class RdpSessionContext 
+        : SessionContextBase<RdpCredential, RdpSessionParameters>
+    {
         internal RdpSessionContext(
             ITunnelBrokerService tunnelBroker,
+            IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator instance,
             RdpCredential credential,
             RdpSessionParameters.ParameterSources sources)
+            : base(
+                  tunnelBroker,
+                  computeEngineAdapter,
+                  instance,
+                  new RdpSessionParameters()
+                  {
+                      Sources = sources
+                  })
         {
-            this.tunnelBroker = tunnelBroker.ExpectNotNull(nameof(tunnelBroker));
-            this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Credential = credential.ExpectNotNull(nameof(credential));
-            this.Parameters = new RdpSessionParameters()
-            {
-                Sources = sources
-            };
         }
 
         public RdpCredential Credential { get; }
 
         //---------------------------------------------------------------------
-        // ISessionContext.
+        // Overrides.
         //---------------------------------------------------------------------
 
-        public InstanceLocator Instance { get; }
-
-        public RdpSessionParameters Parameters { get; }
-
-        public Task<RdpCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken)
+        public override Task<RdpCredential> AuthorizeCredentialAsync(
+            CancellationToken cancellationToken)
         {
             //
             // RDP credentials are ready to go.
@@ -67,20 +69,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return Task.FromResult(this.Credential);
         }
 
-        public async Task<ITransport> ConnectTransportAsync(
+        public override Task<ITransport> ConnectTransportAsync(
             CancellationToken cancellationToken)
         {
-            return await Transport
-                .CreateIapTransportAsync(
-                    this.tunnelBroker,
-                    this.Instance,
-                    this.Parameters.Port,
-                    this.Parameters.ConnectionTimeout)
-                .ConfigureAwait(false);
-        }
-
-        public void Dispose()
-        {
+            return ConnectTransportAsync(
+                this.Parameters.TransportType,
+                this.Parameters.Port,
+                this.Parameters.ConnectionTimeout,
+                cancellationToken);
         }
     }
 }

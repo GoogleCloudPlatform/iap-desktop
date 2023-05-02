@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 Location = Point.Empty,
                 Font = new Font(FontFamily.GenericSansSerif, 7f),
                 AutoSize = false,
-                Size = new Size(210, 270)
+                Size = new Size(210, 300)
             };
             this.Controls.Add(statusLabel);
             statusLabel.BindReadonlyObservableProperty(

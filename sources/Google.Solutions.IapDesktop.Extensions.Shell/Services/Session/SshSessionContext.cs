@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Ssh.Auth;
@@ -32,35 +33,36 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal sealed class SshSessionContext : ISessionContext<SshCredential, SshSessionParameters>
+    /// <summary>
+    /// Encapsulates settings and logic to create an SSH session.
+    /// </summary>
+    internal sealed class SshSessionContext 
+        : SessionContextBase<SshCredential, SshSessionParameters>
     {
-        private readonly ITunnelBrokerService tunnelBroker;
         private readonly IKeyAuthorizationService keyAuthorizationService;
         private readonly ISshKeyPair localKeyPair;
 
         internal SshSessionContext(
             ITunnelBrokerService tunnelBroker,
             IKeyAuthorizationService keyAuthService,
+            IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator instance,
             ISshKeyPair localKeyPair)
+            : base(
+                  tunnelBroker,
+                  computeEngineAdapter,
+                  instance,
+                  new SshSessionParameters())
         {
-            this.tunnelBroker = tunnelBroker.ExpectNotNull(nameof(tunnelBroker));
             this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
-
-            this.Instance = instance;
             this.localKeyPair = localKeyPair.ExpectNotNull(nameof(localKeyPair));
-            this.Parameters = new SshSessionParameters();
         }
 
         //---------------------------------------------------------------------
-        // ISessionContext.
+        // Overrides.
         //---------------------------------------------------------------------
 
-        public InstanceLocator Instance { get; }
-
-        public SshSessionParameters Parameters { get; }
-
-        public async Task<SshCredential> AuthorizeCredentialAsync(
+        public override async Task<SshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
             //
@@ -79,19 +81,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return new SshCredential(authorizedKey);
         }
 
-        public async Task<ITransport> ConnectTransportAsync(
+        public override Task<ITransport> ConnectTransportAsync(
             CancellationToken cancellationToken)
         {
-            return await Transport
-                .CreateIapTransportAsync(
-                    this.tunnelBroker,
-                    this.Instance,
-                    this.Parameters.Port,
-                    this.Parameters.ConnectionTimeout)
-                .ConfigureAwait(false);
+            return ConnectTransportAsync(
+                this.Parameters.TransportType,
+                this.Parameters.Port,
+                this.Parameters.ConnectionTimeout,
+                cancellationToken);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             this.localKeyPair.Dispose();
             GC.SuppressFinalize(this);

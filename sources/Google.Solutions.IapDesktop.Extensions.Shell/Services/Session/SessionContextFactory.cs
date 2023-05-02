@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -88,6 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly IConnectionSettingsService settingsService;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly ITunnelBrokerService tunnelBrokerService;
+        private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly ISelectCredentialsDialog credentialDialog;
         private readonly IRdpCredentialCallbackService rdpCredentialCallbackService;
 
@@ -99,6 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             IKeyAuthorizationService keyAuthService,
             IConnectionSettingsService settingsService,
             ITunnelBrokerService tunnelBrokerService,
+            IComputeEngineAdapter computeEngineAdapter,
             ISelectCredentialsDialog credentialDialog,
             IRdpCredentialCallbackService credentialCallbackService,
             SshSettingsRepository sshSettingsRepository)
@@ -110,6 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.tunnelBrokerService = tunnelBrokerService.ExpectNotNull(nameof(tunnelBrokerService));
+            this.computeEngineAdapter = computeEngineAdapter;
             this.credentialDialog = credentialDialog;
             this.rdpCredentialCallbackService = credentialCallbackService.ExpectNotNull(nameof(credentialCallbackService));
             this.sshSettingsRepository = sshSettingsRepository.ExpectNotNull(nameof(sshSettingsRepository));
@@ -136,13 +140,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         {
             var context = new RdpSessionContext(
                 this.tunnelBrokerService,
+                this.computeEngineAdapter,
                 instance,
                 credential,
                 sources);
 
             context.Parameters.Port = (ushort)settings.RdpPort.IntValue;
+            context.Parameters.TransportType = settings.RdpTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
-            
             context.Parameters.ConnectionBar = settings.RdpConnectionBar.EnumValue;
             context.Parameters.DesktopSize = settings.RdpDesktopSize.EnumValue;
             context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue;
@@ -150,9 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             context.Parameters.AudioMode = settings.RdpAudioMode.EnumValue;
             context.Parameters.BitmapPersistence = settings.RdpBitmapPersistence.EnumValue;
             context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue;
-            
             context.Parameters.UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue;
-            
             context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.EnumValue;
             context.Parameters.RedirectPrinter = settings.RdpRedirectPrinter.EnumValue;
             context.Parameters.RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue;
@@ -323,11 +326,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             var context = new SshSessionContext(
                 this.tunnelBrokerService,
                 this.keyAuthorizationService,
+                this.computeEngineAdapter,
                 node.Instance,
                 localKeyPair);
 
-            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
+            context.Parameters.TransportType = settings.SshTransport.EnumValue;
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
             context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
             context.Parameters.PublicKeyValidity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
             context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.BoolValue

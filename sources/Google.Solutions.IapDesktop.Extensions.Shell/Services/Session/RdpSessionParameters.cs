@@ -47,6 +47,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
 
+        public Transport.TransportType TransportType { get; set; } = Transport.TransportType._Default;
+
+        /// <summary>
+        /// Sources where these parameters were obtained from.
+        /// </summary>
         public ParameterSources Sources { get; set; } = ParameterSources.Inventory;
 
         //---------------------------------------------------------------------
@@ -73,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
     // Enums.
     //
     // NB. The values do not map to RDP interface values. But the numeric values
-    // must be kept unchanged as they are persisted in the registry.
+    // must be kept unchanged as they are persisted as settings.
     //
     //-------------------------------------------------------------------------
 

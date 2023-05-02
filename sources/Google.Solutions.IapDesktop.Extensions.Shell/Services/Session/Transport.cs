@@ -19,15 +19,18 @@
 // under the License.
 //
 
-
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
+using System.ComponentModel;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
@@ -69,8 +72,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public enum TransportType
         {
-            IapTunnel,
-            Direct
+            //
+            // NB. Numeric values must be kept unchanged as they are
+            // persisted as settings.
+            //
+
+            [Description("IAP tunnel")]
+            IapTunnel = 0,
+
+            [Description("VPN/Interconnect")]
+            Vpc = 1,
+
+            [Browsable(false)]
+            Test = 2,
+
+            [Browsable(false)]
+            _Default = IapTunnel
         }
 
         //---------------------------------------------------------------------
@@ -133,14 +150,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
         }
 
-        internal static Task<Transport> CreateDirectTransport(
+        internal static async Task<Transport> CreateVpcTransportAsync(
+            IComputeEngineAdapter computeEngineAdapter,
+            InstanceLocator targetInstance,
+            ushort targetPort,
+            CancellationToken cancellationToken)
+        {
+            computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            targetInstance.ExpectNotNull(nameof(targetInstance));
+
+            try
+            {
+                var instance = await computeEngineAdapter
+                    .GetInstanceAsync(targetInstance, cancellationToken)
+                    .ConfigureAwait(false);
+
+                var internalAddress = instance.PrimaryInternalAddress();
+                if (internalAddress == null)
+                {
+                    throw new TransportFailedException(
+                        "The VM instance doesn't have a suitable internal IPv4 address",
+                        HelpTopics.LocateInstanceIpAddress);
+                }
+
+                return new Transport(
+                    TransportType.Vpc,
+                    targetInstance,
+                    new IPEndPoint(internalAddress, targetPort));
+            }
+            catch (AdapterException e)
+            {
+                throw new TransportFailedException(
+                    "Looking up the internal IPv4 address failed because the " +
+                    "instance doesn't exist or is inaccessible",
+                    (e as IExceptionWithHelpTopic)?.Help ?? HelpTopics.LocateInstanceIpAddress);
+            }
+        }
+
+        internal static Task<Transport> CreateTestTransport(
             InstanceLocator targetInstance,
             IPEndPoint endpoint)
         {
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
             return Task.FromResult(new Transport(
-                TransportType.Direct, 
+                TransportType.Test, 
                 targetInstance,
                 endpoint));
         }
