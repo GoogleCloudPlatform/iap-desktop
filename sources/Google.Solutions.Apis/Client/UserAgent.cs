@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
 
@@ -60,16 +61,19 @@ namespace Google.Solutions.Apis.Client
 
         /// <summary>
         /// Create a value that can be used as "application name" for 
-        /// Google API requests.
+        /// Google API requests. Application names can't contain parantheses
+        /// and other special characters, so we can't use the normal header.
         /// </summary>
         public string ToApplicationName()
-            => $"{this.Product}/{this.Version}";
+        {
+            return $"{this.Product}/{this.Version}";
+        }
 
         /// <summary>
         /// Create header value that complies with Browser conventions, see
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
         /// </summary>
-        public string ToHeaderValue()
+        public override string ToString()
         {
             var platform = this.OsVersion;
 
@@ -79,9 +83,7 @@ namespace Google.Solutions.Apis.Client
                 platform += "; " + this.Extensions;
             }
 
-            return $"{this.Product}/{this.Version} ({platform})";
+            return $"{ToApplicationName()} ({platform}) CLR/{ClrVersion.Version}";
         }
-
-        public override string ToString() => ToHeaderValue();
     }
 }

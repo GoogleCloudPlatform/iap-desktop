@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Client
             {
                 if (this.UserAgent != null)
                 {
-                    request.Headers.UserAgent.ParseAdd(this.UserAgent.ToHeaderValue());
+                    request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
                 }
 
                 if (credential != null)
