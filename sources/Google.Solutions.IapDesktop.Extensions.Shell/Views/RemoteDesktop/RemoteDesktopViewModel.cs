@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
@@ -43,12 +42,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         public RemoteDesktopViewModel()
         {
             this.State = ObservableProperty.Build(ConnectionState.Uninitialized);
-
-#if DEBUG
-            this.DiagnosticsStatusText = ObservableProperty.Build(
-                this.State,
-                s => s.ToString() + "\n\n" + this.Parameters.DumpProperties());
-#endif
         }
 
         //---------------------------------------------------------------------
@@ -74,9 +67,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         //---------------------------------------------------------------------
 
         public ObservableProperty<ConnectionState> State { get; }
-
-#if DEBUG
-        public ObservableFunc<string> DiagnosticsStatusText { get; }
-#endif
     }
 }

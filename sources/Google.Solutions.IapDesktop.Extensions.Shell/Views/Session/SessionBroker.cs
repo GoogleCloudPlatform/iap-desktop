@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             if (transportType == Transport.TransportType.IapTunnel)
             {
                 toolTip.AppendLine();
-                toolTip.AppendLine("Connected through Identity-Aware Proxy");
+                toolTip.AppendLine("Connected through Identity-Aware Proxy.");
             }
 
 #if DEBUG
