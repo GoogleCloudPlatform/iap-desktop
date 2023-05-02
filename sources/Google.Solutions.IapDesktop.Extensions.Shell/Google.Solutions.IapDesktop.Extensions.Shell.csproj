@@ -144,7 +144,7 @@
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Services\Session\TransportFailedException.cs" />
-    <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
+    <Compile Include="Data\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Services\Settings\SshSettings.cs" />
     <Compile Include="Services\Settings\TerminalSettings.cs" />
     <Compile Include="Services\Ssh\AuthorizedKeyPair.cs" />
@@ -152,9 +152,9 @@
     <Compile Include="Services\Ssh\IKeyAuthorizationService.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\OsLoginService.cs" />
-    <Compile Include="Services\ConnectionSettings\ConnectionSettingsService.cs" />
-    <Compile Include="Services\ConnectionSettings\ConnectionSettings.cs" />
-    <Compile Include="Services\ConnectionSettings\ConnectionSettingsRepository.cs" />
+    <Compile Include="Services\Settings\ConnectionSettingsService.cs" />
+    <Compile Include="Services\Settings\ConnectionSettings.cs" />
+    <Compile Include="Services\Settings\ConnectionSettingsRepository.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />

@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 {
     internal static class ProjectExplorerNodeExtensions
     {
