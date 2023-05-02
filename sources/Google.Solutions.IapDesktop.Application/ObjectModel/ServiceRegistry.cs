@@ -370,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public IEnumerable<TCategory> GetServicesByCategory<TCategory>()
         {
-            return GetServicesByCategory(typeof(TCategory)).OfType<TCategory>();
+            return GetServicesByCategory(typeof(TCategory)).Cast<TCategory>();
         }
 
         //---------------------------------------------------------------------
