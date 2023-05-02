@@ -165,6 +165,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
 
             var session = window.Bind();
+
+            //
+            // Apply accent color if the session deviates from the norm.
+            //
+            if (parameters.TransportType == Transport.TransportType.Vpc)
+            {
+                session.DockHandler.TabAccentColor = AccentColorForNonIapSessions;
+            }
+
             window.Show();
 
             await session.ConnectAsync()
