@@ -709,6 +709,11 @@ namespace Google.Solutions.IapDesktop.Windows
             this.WindowState = FormWindowState.Minimized;
         }
 
+        public bool IsWindowThread()
+        {
+            return !this.InvokeRequired;
+        }
+
         //---------------------------------------------------------------------
         // Main menu events.
         //---------------------------------------------------------------------

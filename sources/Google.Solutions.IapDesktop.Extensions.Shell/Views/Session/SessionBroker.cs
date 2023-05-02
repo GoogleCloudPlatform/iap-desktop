@@ -31,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -114,6 +115,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             RdpSessionParameters parameters,
             RdpCredential credential)
         {
+            Debug.Assert(this.mainForm.IsWindowThread());
+
             var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
 
             window.ViewModel.Instance = transport.Instance;
@@ -151,6 +154,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             SshSessionParameters parameters,
             SshCredential credential)
         {
+            Debug.Assert(this.mainForm.IsWindowThread());
+
             var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
 
             window.ViewModel.Instance = transport.Instance;

@@ -53,5 +53,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
             int? index,
             Func<TContext> queryCurrentContextFunc)
             where TContext : class;
+
+        /// <summary>
+        /// Check if the current thread is the GUI thread for this window.
+        /// </summary>
+        /// <returns></returns>
+        bool IsWindowThread();
     }
 }

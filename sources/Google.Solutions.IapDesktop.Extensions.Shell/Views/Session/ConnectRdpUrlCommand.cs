@@ -77,12 +77,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 var context = await this.sessionContextFactory
                     .GetInstance()
                     .CreateRdpSessionContextAsync(url, CancellationToken.None)
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(true);
 
                 var session = await this.sessionBroker
                     .GetInstance()
                     .CreateSessionAsync(context)
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(true);
 
                 Debug.Assert(session != null);
             }

@@ -59,6 +59,11 @@ namespace Google.Solutions.Testing.Application.Views
                 new Mock<IBindingContext>().Object);
         }
 
+        public bool IsWindowThread()
+        {
+            return !this.InvokeRequired;
+        }
+
         public void Minimize()
         {
         }
