@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
@@ -132,6 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
                 new Mock<ITunnelBrokerService>().Object,
+                new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 CreateSshSettingsRepository());
@@ -174,6 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
                 new Mock<ITunnelBrokerService>().Object,
+                new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 CreateSshSettingsRepository());
@@ -217,6 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
                 new Mock<ITunnelBrokerService>().Object,
+                new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 sshSettingsRepository);

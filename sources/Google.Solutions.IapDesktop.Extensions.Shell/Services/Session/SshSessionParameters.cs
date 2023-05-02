@@ -39,7 +39,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// </summary>
         public CultureInfo Language { get; set; } = null;
 
-
         /// <summary>
         /// Timeout to use for SSH connections.
         /// </summary>
@@ -60,5 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// Validity to apply when authorizing the public key.
         /// </summary>
         public TimeSpan PublicKeyValidity { get; set; } = DefaultPublicKeyValidity;
+
+        public Transport.TransportType TransportType { get; set; } = Transport.TransportType._Default;
     }
 }

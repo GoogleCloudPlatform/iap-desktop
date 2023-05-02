@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
@@ -29,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
+using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,9 +72,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public enum TransportType
         {
-            IapTunnel,
-            VpcInternal,
-            Test
+            //
+            // NB. Numeric values must be kept unchanged as they are
+            // persisted as settings.
+            //
+
+            [Description("IAP tunnel")]
+            IapTunnel = 0,
+
+            [Description("VPN/Interconnect")]
+            VpcInternal = 1,
+
+            [Browsable(false)]
+            Test = 2,
+
+            [Browsable(false)]
+            _Default = IapTunnel
         }
 
         //---------------------------------------------------------------------
