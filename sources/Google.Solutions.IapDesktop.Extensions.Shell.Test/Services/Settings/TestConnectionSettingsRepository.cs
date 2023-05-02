@@ -86,6 +86,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
+            Assert.IsTrue(settings.RdpPort.IsDefault);
+            Assert.IsTrue(settings.RdpTransport.IsDefault);
         }
 
         [Test]
@@ -170,6 +172,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
+            Assert.IsTrue(settings.RdpPort.IsDefault);
+            Assert.IsTrue(settings.RdpTransport.IsDefault);
         }
 
         [Test]
@@ -238,6 +242,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.IsTrue(settings.RdpRedirectPort.IsDefault);
             Assert.IsTrue(settings.RdpRedirectDrive.IsDefault);
             Assert.IsTrue(settings.RdpRedirectDevice.IsDefault);
+            Assert.IsTrue(settings.RdpPort.IsDefault);
+            Assert.IsTrue(settings.RdpTransport.IsDefault);
         }
 
         [Test]
@@ -257,6 +263,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             originalSettings.RdpRedirectPort.Value = RdpRedirectPort.Enabled;
             originalSettings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
             originalSettings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
+            originalSettings.RdpPort.Value = 13389;
+            originalSettings.RdpTransport.Value = Transport.TransportType.Vpc;
 
             this.repository.SetVmInstanceSettings(originalSettings);
 
@@ -275,6 +283,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.AreEqual(RdpRedirectPort.Enabled, settings.RdpRedirectPort.Value);
             Assert.AreEqual(RdpRedirectDrive.Enabled, settings.RdpRedirectDrive.Value);
             Assert.AreEqual(RdpRedirectDevice.Enabled, settings.RdpRedirectDevice.Value);
+            Assert.AreEqual(13389, settings.RdpPort.IntValue);
+            Assert.AreEqual(Transport.TransportType.Vpc, settings.RdpTransport.EnumValue);
         }
 
         [Test]

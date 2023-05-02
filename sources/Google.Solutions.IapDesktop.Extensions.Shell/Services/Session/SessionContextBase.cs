@@ -53,9 +53,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                             connectionTimeout)
                         .ConfigureAwait(false);
 
-                case Transport.TransportType.VpcInternal:
+                case Transport.TransportType.Vpc:
                     return await Transport
-                        .CreateVpcInternalTransportAsync(
+                        .CreateVpcTransportAsync(
                             this.computeEngineAdapter,
                             this.Instance,
                             port,

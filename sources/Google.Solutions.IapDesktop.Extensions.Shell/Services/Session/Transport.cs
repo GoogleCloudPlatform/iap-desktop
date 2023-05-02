@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             IapTunnel = 0,
 
             [Description("VPN/Interconnect")]
-            VpcInternal = 1,
+            Vpc = 1,
 
             [Browsable(false)]
             Test = 2,
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
         }
 
-        internal static async Task<Transport> CreateVpcInternalTransportAsync(
+        internal static async Task<Transport> CreateVpcTransportAsync(
             IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator targetInstance,
             ushort targetPort,
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 }
 
                 return new Transport(
-                    TransportType.VpcInternal,
+                    TransportType.Vpc,
                     targetInstance,
                     new IPEndPoint(internalAddress, targetPort));
             }

@@ -145,8 +145,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 credential,
                 sources);
 
-            //TODO: Set transport
             context.Parameters.Port = (ushort)settings.RdpPort.IntValue;
+            context.Parameters.TransportType = settings.RdpTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
             context.Parameters.ConnectionBar = settings.RdpConnectionBar.EnumValue;
             context.Parameters.DesktopSize = settings.RdpDesktopSize.EnumValue;
@@ -330,8 +330,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 node.Instance,
                 localKeyPair);
 
-            //TODO: Set transport
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
+            context.Parameters.TransportType = settings.SshTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
             context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
             context.Parameters.PublicKeyValidity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);

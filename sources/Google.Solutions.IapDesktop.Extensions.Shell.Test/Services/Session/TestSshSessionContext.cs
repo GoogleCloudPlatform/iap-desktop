@@ -140,13 +140,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 computeEngineAdapter.Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);
-            context.Parameters.TransportType = Transport.TransportType.VpcInternal;
+            context.Parameters.TransportType = Transport.TransportType.Vpc;
 
             var transport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Transport.TransportType.VpcInternal, transport.Type);
+            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
             Assert.AreEqual(context.Parameters.Port, transport.Endpoint.Port);
             Assert.AreEqual("20.21.22.23", transport.Endpoint.Address.ToString());
         }

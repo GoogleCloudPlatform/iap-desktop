@@ -136,11 +136,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         }
 
         //---------------------------------------------------------------------
-        // CreateVpcInternalTransportAsync.
+        // CreateVpcTransportAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceLookupFails_ThenCreateVpcInternalTransportThrowsException()
+        public void WhenInstanceLookupFails_ThenCreateVpcTransportThrowsException()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             computeEngineAdapter
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ThrowsAsync(new ResourceAccessDeniedException("mock", null));
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
-                () => Transport.CreateVpcInternalTransportAsync(
+                () => Transport.CreateVpcTransportAsync(
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         }
 
         [Test]
-        public void WhenInstanceLacksInternalIp_ThenCreateVpcInternalTransportThrowsException()
+        public void WhenInstanceLacksInternalIp_ThenCreateVpcTransportThrowsException()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             computeEngineAdapter
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ReturnsAsync(new Instance());
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
-                () => Transport.CreateVpcInternalTransportAsync(
+                () => Transport.CreateVpcTransportAsync(
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         }
 
         [Test]
-        public async Task WhenInstanceHasMultipleNics_ThenCreateVpcInternalTransportReturnsEndpointForNic0()
+        public async Task WhenInstanceHasMultipleNics_ThenCreateVpcTransportReturnsEndpointForNic0()
         {
             var instance = new Instance()
             {
@@ -199,21 +199,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ReturnsAsync(instance);
 
             var transport = await Transport
-                .CreateVpcInternalTransportAsync(
+                .CreateVpcTransportAsync(
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
                     CancellationToken.None)
                 .ConfigureAwait(false);
             
-            Assert.AreEqual(Transport.TransportType.VpcInternal, transport.Type);
+            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
             Assert.AreEqual(SampleInstance, transport.Instance);
             Assert.AreEqual(22, transport.Endpoint.Port);
             Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());
         }
 
         [Test]
-        public async Task WhenInstanceHasDualStackNic_ThenCreateVpcInternalTransportReturnsEndpointForNic0()
+        public async Task WhenInstanceHasDualStackNic_ThenCreateVpcTransportReturnsEndpointForNic0()
         {
             var instance = new Instance()
             {
@@ -245,14 +245,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .ReturnsAsync(instance);
 
             var transport = await Transport
-                .CreateVpcInternalTransportAsync(
+                .CreateVpcTransportAsync(
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Transport.TransportType.VpcInternal, transport.Type);
+            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
             Assert.AreEqual(SampleInstance, transport.Instance);
             Assert.AreEqual(22, transport.Endpoint.Port);
             Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());

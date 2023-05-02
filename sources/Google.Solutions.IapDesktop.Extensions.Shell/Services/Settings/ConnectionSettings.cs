@@ -58,6 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public RegistryEnumSetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
         public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
         public RegistryDwordSetting RdpPort { get; private set; }
+        public RegistryEnumSetting<Transport.TransportType> RdpTransport { get; private set; }
         public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
         public RegistryEnumSetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
         public RegistryEnumSetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
@@ -81,6 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             this.RdpNetworkLevelAuthentication,
             this.RdpConnectionTimeout,
             this.RdpPort,
+            this.RdpTransport,
             this.RdpRedirectClipboard,
             this.RdpRedirectPrinter,
             this.RdpRedirectSmartCard,
@@ -97,12 +99,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         //---------------------------------------------------------------------
 
         public RegistryDwordSetting SshPort { get; private set; }
+        public RegistryEnumSetting<Transport.TransportType> SshTransport { get; private set; }
         public RegistryStringSetting SshUsername { get; private set; }
         public RegistryDwordSetting SshConnectionTimeout { get; private set; }
 
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
             this.SshPort,
+            this.SshTransport,
             this.SshUsername,
             this.SshConnectionTimeout
         };
@@ -231,6 +235,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 key,
                 1,
                 ushort.MaxValue);
+            this.RdpTransport = RegistryEnumSetting<Transport.TransportType>.FromKey(
+                "TransportType",
+                "Connect via",
+                $"Type of transport. Use {Transport.TransportType.IapTunnel} unless " +
+                    "you need to connect to a VM's internal IP address via " +
+                    "Cloud VPN or Interconnect",
+                Categories.RdpConnection,
+                Transport.TransportType._Default,
+                key);
             this.RdpRedirectClipboard = RegistryEnumSetting<RdpRedirectClipboard>.FromKey(
                 "RedirectClipboard",
                 "Redirect clipboard",
@@ -293,6 +306,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 key,
                 1,
                 ushort.MaxValue);
+            this.SshTransport = RegistryEnumSetting<Transport.TransportType>.FromKey(
+                "TransportType",
+                "Connect via",
+                $"Type of transport. Use {Transport.TransportType.IapTunnel} unless " +
+                    "you need to connect to a VM's internal IP address via " +
+                    "Cloud VPN or Interconnect",
+                Categories.SshConnection,
+                Transport.TransportType._Default,
+                key);
             this.SshUsername = RegistryStringSetting.FromKey(
                 "SshUsername",
                 "Username",
@@ -346,6 +368,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 baseSettings.RdpConnectionTimeout.OverlayBy(overlaySettings.RdpConnectionTimeout);
             prototype.RdpPort = (RegistryDwordSetting)
                 baseSettings.RdpPort.OverlayBy(overlaySettings.RdpPort);
+            prototype.RdpTransport = (RegistryEnumSetting<Transport.TransportType>)
+                baseSettings.RdpTransport.OverlayBy(overlaySettings.RdpTransport);
             prototype.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
                 baseSettings.RdpRedirectClipboard.OverlayBy(overlaySettings.RdpRedirectClipboard);
             prototype.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
@@ -363,8 +387,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 
             prototype.SshPort = (RegistryDwordSetting)
                 baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);
+            prototype.SshTransport = (RegistryEnumSetting<Transport.TransportType>)
+                baseSettings.SshTransport.OverlayBy(overlaySettings.SshTransport);
             prototype.SshUsername = (RegistryStringSetting)
                 baseSettings.SshUsername.OverlayBy(overlaySettings.SshUsername);
+            prototype.SshConnectionTimeout = (RegistryDwordSetting)
+                baseSettings.SshConnectionTimeout.OverlayBy(overlaySettings.SshConnectionTimeout);
 
             Debug.Assert(prototype.Settings.All(s => s != null));
             Debug.Assert(baseSettings.Settings.All(s => s != null));
