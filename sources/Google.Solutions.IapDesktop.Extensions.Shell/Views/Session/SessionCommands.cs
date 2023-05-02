@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         // Generic session commands.
         //---------------------------------------------------------------------
 
-        private abstract class SessionCommandBase : MenuCommand<ISession>
+        private abstract class SessionCommandBase : MenuCommandBase<ISession>
         {
             protected SessionCommandBase(string text) : base(text)
             {

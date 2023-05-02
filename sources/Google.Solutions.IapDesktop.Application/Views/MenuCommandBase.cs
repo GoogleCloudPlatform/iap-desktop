@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// <summary>
     /// Base class for menu commands.
     /// </summary>
-    public abstract class MenuCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand
+    public abstract class MenuCommandBase<TContext> : CommandBase, IContextCommand<TContext>
     {
         /// <summary>
         /// Type of command. When set to ToolbarCommand, the command is
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// <param name="context"></param>
         protected abstract bool IsEnabled(TContext context);
 
-        public MenuCommand(string text)
+        public MenuCommandBase(string text)
         {
             Debug.Assert(text.Contains("&"), "Command text should have a mnemonic");
             this.Text = text;
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
     }
 
-    public class OpenToolWindowCommand<TContext, TView, TViewModel> : MenuCommand<TContext>
+    public class OpenToolWindowCommand<TContext, TView, TViewModel> : MenuCommandBase<TContext>
         where TView : ToolWindowViewBase, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
