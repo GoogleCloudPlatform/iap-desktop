@@ -21,12 +21,16 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
+using Google.Apis.Compute.v1.Data;
+using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,6 +53,76 @@ namespace Google.Solutions.Apis.Test.Client
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => computeService.Instances.Get("invalid", "invalid", "invalid")
                     .ExecuteAsStreamOrThrowAsync(CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenOperationFailsWithoutErrorDetails_ThenExecuteAndAwaitOperationThrowsException()
+        {
+            var request = new Mock<IClientServiceRequest<Operation>>();
+            request
+                .Setup(r => r.ExecuteAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Operation()
+                {
+                    Status = "DONE",
+                    HttpErrorStatusCode = 412,
+                    HttpErrorMessage = "MockError",
+                });
+
+            try
+            {
+                await request.Object
+                    .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.Fail("Expected exception");
+            }
+            catch (GoogleApiException e)
+            {
+                Assert.AreEqual("MockError", e.Message);
+                Assert.AreEqual("MockError", e.Error.Message);
+                CollectionAssert.IsEmpty(e.Error.Errors);
+            }
+        }
+
+        [Test]
+        public async Task WhenOperationFailsWithErrorDetails_ThenExecuteAndAwaitOperationThrowsExceptionWithReason()
+        {
+            var request = new Mock<IClientServiceRequest<Operation>>();
+            request
+                .Setup(r => r.ExecuteAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Operation()
+                {
+                    Status = "DONE",
+                    HttpErrorStatusCode = 412,
+                    HttpErrorMessage = "MockError",
+                    Error = new Operation.ErrorData()
+                    {
+                        Errors = new[]
+                        {
+                            new Operation.ErrorData.ErrorsData()
+                            {
+                               Code = "CONDITION_NOT_MET",
+                               Message = "message"
+                            }
+                        }
+                    }
+                });
+
+            try
+            {
+                await request.Object
+                    .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.Fail("Expected exception");
+            }
+            catch (GoogleApiException e)
+            {
+                Assert.AreEqual("MockError", e.Message);
+                Assert.AreEqual("MockError", e.Error.Message);
+                Assert.AreEqual(412, (int)e.Error.Code);
+                Assert.AreEqual("message", e.Error.Errors.First().Reason);
+            }
         }
     }
 }

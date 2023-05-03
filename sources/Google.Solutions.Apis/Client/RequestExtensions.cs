@@ -146,7 +146,16 @@ namespace Google.Solutions.Apis.Client
                             ? operation.Error.Errors
                                 .Select(e => new SingleError()
                                 {
-                                    Message = e.Message,
+                                    //
+                                    // e.Message typically contains a readable error message
+                                    // that should be displayed to the user.
+                                    //
+                                    // This is different from non-Operation API calls where
+                                    // Message typically contains a concatenated mess.
+                                    //
+                                    // To avoid losing the message here, map it to Reason.
+                                    //
+                                    Reason = e.Message,
                                     Location = e.Location
                                 })
                                 .ToList()
