@@ -143,6 +143,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 WriteCombobox<RdpColorDepth>("ColorDepth");
                 WriteCombobox<RdpAudioMode>("AudioMode");
                 WriteCombobox<RdpRedirectClipboard>("RedirectClipboard");
+                WriteCombobox<RdpRedirectPrinter>("RdpRedirectPrinter");
+                WriteCombobox<RdpRedirectSmartCard>("RdpRedirectSmartCard");
+                WriteCombobox<RdpRedirectPort>("RdpRedirectPort");
+                WriteCombobox<RdpRedirectDrive>("RdpRedirectDrive");
+                WriteCombobox<RdpRedirectDevice>("RdpRedirectDevice");
+                WriteCombobox<RdpHookWindowsKeys>("RdpHookWindowsKeys");
+                WriteCombobox<Transport.TransportType>("TransportType");
                 WriteCombobox<RdpCredentialGenerationBehavior>("CredentialGenerationBehavior");
 
                 var zones = await this.projectModelService

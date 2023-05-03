@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 "Connect via",
                 $"Type of transport. Use {Transport.TransportType.IapTunnel} unless " +
                     "you need to connect to a VM's internal IP address via " +
-                    "Cloud VPN or Interconnect",
+                    "Cloud VPN or Interconnect.",
                 Categories.RdpConnection,
                 Transport.TransportType._Default,
                 key);
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 "Connect via",
                 $"Type of transport. Use {Transport.TransportType.IapTunnel} unless " +
                     "you need to connect to a VM's internal IP address via " +
-                    "Cloud VPN or Interconnect",
+                    "Cloud VPN or Interconnect.",
                 Categories.SshConnection,
                 Transport.TransportType._Default,
                 key);
