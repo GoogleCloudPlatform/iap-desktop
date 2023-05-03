@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public void ConfigureIapAccess(string projectId)
         {
             Browser.Default.Navigate(
-                $"https://console.cloud.google.com/security/iap?project={projectId}");
+                $"https://console.cloud.google.com/security/iap?tab=ssh-tcp-resources&project={projectId}");
         }
 
         public void OpenMyAccount()
