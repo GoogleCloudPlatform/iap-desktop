@@ -26,7 +26,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.Commands
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ErrorHandling
 {
     public abstract class ThrowExceptionCommandBase 
         : MenuCommandBase<DebugMenu.Context>, IMenuCommand<DebugMenu>

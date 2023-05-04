@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.Commands
+namespace Google.Solutions.IapDesktop.Extensions.Debug
 {
     /// <summary>
     /// Debug menu in main menu. The menu is registered when

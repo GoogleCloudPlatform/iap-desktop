@@ -107,9 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ThrowExceptionCommands.cs" />
-    <Compile Include="Commands\DebugMenu.cs" />
-    <Compile Include="Commands\ToolWindowCommands.cs" />
+    <Compile Include="ErrorHandling\ThrowExceptionCommands.cs" />
+    <Compile Include="DebugMenu.cs" />
+    <Compile Include="ToolWindows\ToolWindowCommands.cs" />
     <Compile Include="ToolWindows\DebugCommonControlsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,13 +138,13 @@
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\DebugJobServiceViewModel.cs" />
-    <Compile Include="ToolWindows\DebugOptionsSheet.cs">
+    <Compile Include="Options\DebugOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\DebugOptionsSheet.Designer.cs">
+    <Compile Include="Options\DebugOptionsSheet.Designer.cs">
       <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\DebugOptionsSheetViewModel.cs" />
+    <Compile Include="Options\DebugOptionsSheetViewModel.cs" />
     <Compile Include="ToolWindows\DebugProjectExplorerTrackingView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -195,7 +195,7 @@
     <EmbeddedResource Include="ToolWindows\DebugJobServiceView.resx">
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugOptionsSheet.resx">
+    <EmbeddedResource Include="Options\DebugOptionsSheet.resx">
       <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\DebugProjectExplorerTrackingView.resx">

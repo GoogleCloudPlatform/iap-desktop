@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Debug.Options
 {
     [Service]
     public class DebugOptionsSheetViewModel : PropertiesSheetViewModelBase

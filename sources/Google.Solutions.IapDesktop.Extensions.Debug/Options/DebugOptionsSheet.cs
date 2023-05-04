@@ -25,7 +25,7 @@ using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Debug.Options
 {
     [Service]
     [ServiceCategory(typeof(IPropertiesSheetView))]
