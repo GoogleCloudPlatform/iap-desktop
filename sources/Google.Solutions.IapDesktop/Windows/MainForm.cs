@@ -424,49 +424,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => toolWindowHost
                     .GetToolWindow<DebugCommonControlsView, DebugCommonControlsViewModel>()
                     .Show()));
-
-            var crashCommand = debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Exceptions",
-                _ => CommandState.Enabled,
-                _ => { }));
-            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Command: Throw ExceptionWithHelp (sync)",
-                _ => CommandState.Enabled,
-                _ => throw new ResourceAccessDeniedException(
-                        "DEBUG",
-                        HelpTopics.General,
-                        new ApplicationException("DEBUG"))));
-            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Command: Throw ApplicationException (sync)",
-                _ => CommandState.Enabled,
-                _ => throw new ApplicationException("DEBUG")));
-            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Command: Throw ApplicationException (async)",
-                _ => CommandState.Enabled,
-                async _ =>
-                {
-                    await Task.Yield();
-                    throw new ApplicationException("DEBUG");
-                }));
-            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Command: Throw TaskCanceledException (sync)",
-                _ => CommandState.Enabled,
-                _ => throw new TaskCanceledException("DEBUG")));
-            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Command: Throw TaskCanceledException (async)",
-                _ => CommandState.Enabled,
-                async _ =>
-                {
-                    await Task.Yield();
-                    throw new TaskCanceledException("DEBUG");
-                }));
-            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Window: Throw ApplicationException",
-                _ => CommandState.Enabled,
-                _ =>
-                {
-                    this.BeginInvoke((Action)(() => throw new ApplicationException("DEBUG")));
-                }));
 #endif
 
             ResumeLayout();

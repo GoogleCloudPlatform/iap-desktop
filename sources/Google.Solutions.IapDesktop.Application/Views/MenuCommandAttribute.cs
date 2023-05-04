@@ -21,10 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Mvvm.Binding.Commands;
 using System;
-using System.Linq;
-using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
@@ -52,6 +49,17 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// Whenever two consecutive ranks differ in more than the
         /// least-significant byte, a separator is injected between
         /// them.
+        ///
+        /// For ex:
+        /// - 0x100
+        /// - 0x110
+        /// - 0x140
+        ///     <- separator
+        /// - 0x400
+        /// - 0x410
+        ///     <- separator
+        /// - 0x510
+        ///
         /// </summary>
         public ushort Rank { get; set; } = 0xFF00;
 

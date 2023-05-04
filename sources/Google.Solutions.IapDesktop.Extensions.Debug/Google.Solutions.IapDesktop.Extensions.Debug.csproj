@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ThrowExceptionCommands.cs" />
     <Compile Include="DebugMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestCommand.cs" />
