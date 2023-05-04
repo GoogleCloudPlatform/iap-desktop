@@ -29,7 +29,6 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("For debug purposes only")]
     [Service]
     public partial class DebugFullScreenView : DocumentWindow, IView<DebugFullScreenViewModel>
     {

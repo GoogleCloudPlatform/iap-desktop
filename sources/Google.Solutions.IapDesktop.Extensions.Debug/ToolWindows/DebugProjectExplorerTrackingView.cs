@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("For debug purposes only")]
     [Service(ServiceLifetime.Singleton)]
     public partial class DebugProjectExplorerTrackingView
         : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>,

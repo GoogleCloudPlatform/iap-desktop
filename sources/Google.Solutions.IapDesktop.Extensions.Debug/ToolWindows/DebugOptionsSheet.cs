@@ -27,7 +27,6 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("UI")]
     [Service]
     [ServiceCategory(typeof(IPropertiesSheetView))]
     public partial class DebugOptionsSheet : UserControl, IPropertiesSheetView

@@ -35,7 +35,6 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("For development purposes only")]
     [Service]
     public partial class DebugThemeView : ToolWindowViewBase, IView<DebugThemeViewModel>
     {

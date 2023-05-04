@@ -28,7 +28,6 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("For development purposes only")]
     [Service]
     public partial class DebugCommonControlsView : ToolWindowViewBase, IView<DebugCommonControlsViewModel>
     {
