@@ -25,6 +25,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Linq;
 using System.Reflection;
+
 namespace Google.Solutions.IapDesktop.Application.Views
 {
 
