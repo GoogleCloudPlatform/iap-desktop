@@ -24,6 +24,10 @@ using Google.Solutions.IapDesktop.Application.Views;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug
 {
+    /// <summary>
+    /// Debug menu in main menu. The menu is registered when
+    /// the class is loaded (as service) during startup.
+    /// </summary>
     [Service(ServiceLifetime.Singleton, DelayCreation = false)]
     public class DebugMenu : Menu<DebugMenu.Context>
     {
@@ -34,14 +38,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug
             public static Context None = new Context();
         }
 
-        public DebugMenu(IMainWindow mainWindow)
+        public DebugMenu(IServiceCategoryProvider serviceProvider)
             : base(
                   MenuCommandType.MenuCommand,
-                  mainWindow.AddMenu<Context>(
-                      "Debug",
-                      3,
-                      () => Context.None))
+                  serviceProvider
+                      .GetService<IMainWindow>()
+                      .AddMenu<Context>(
+                          "Debug",
+                          3,
+                          () => Context.None))
         {
+            DiscoverCommands(serviceProvider);
         }
     }
 }

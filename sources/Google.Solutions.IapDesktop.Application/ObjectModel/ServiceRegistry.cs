@@ -407,14 +407,17 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             //     might depend on another and we don't know what the right order
             //     would have to be.
             //
+            var singletonsToInstantiate = new LinkedList<SingletonStub>();
             foreach (var type in assembly.GetTypes())
             {
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Singleton)
                 {
-                    var stub = attribute.DelayCreation
-                        ? new SingletonStub(() => CreateInstance(type))
-                        : new SingletonStub(CreateInstance(type));
+                    var stub = new SingletonStub(() => CreateInstance(type));
+                    if (!attribute.DelayCreation)
+                    {
+                        singletonsToInstantiate.AddLast(stub);
+                    }
 
                     AddSingleton(
                         attribute.ServiceInterface ?? type,
@@ -434,6 +437,17 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         categoryAttribute.Category,
                         attribute.ServiceInterface ?? type);
                 }
+            }
+
+            //
+            // (4) Instantiate singletons that require eager creation.
+            //
+            // At this point, we've registered all services and categories,
+            // so it's ok if one singleton depends on another singleton.
+            //
+            foreach (var singleton in singletonsToInstantiate)
+            {
+                var _ = singleton.Object;
             }
         }
 
