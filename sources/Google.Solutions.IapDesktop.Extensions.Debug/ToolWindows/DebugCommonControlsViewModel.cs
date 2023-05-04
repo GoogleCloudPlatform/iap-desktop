@@ -19,31 +19,21 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
-using System;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    public partial class DebugServiceRegistryView : DocumentWindow, IView<DebugServiceRegistryViewModel>
+    [Service]
+    public class DebugCommonControlsViewModel : ViewModelBase
     {
-        public DebugServiceRegistryView(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public DebugCommonControlsViewModel()
         {
-            InitializeComponent();
+            this.ControlEnabled = ObservableProperty.Build(true);
+            this.ControlReadonly = ObservableProperty.Build(false);
         }
 
-        public void Bind(
-            DebugServiceRegistryViewModel viewModel,
-            IBindingContext bindingContext)
-        {
-            this.list.BindColumn(0, t => t.ServiceType.Assembly.GetName().Name);
-            this.list.BindColumn(1, t => t.ServiceType.FullName);
-            this.list.BindColumn(2, t => t.Lifetime.ToString());
-            this.list.BindCollection(viewModel.RegisteredServices);
-        }
+        public ObservableProperty<bool> ControlEnabled { get; }
+        public ObservableProperty<bool> ControlReadonly { get; }
     }
-
-    public class ServicesListView : BindableListView<DebugServiceRegistryViewModel.Service>
-    { }
 }

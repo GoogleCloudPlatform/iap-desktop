@@ -70,8 +70,28 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.Apis, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.57.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.57.0\lib\net461\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.57.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.57.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.57.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -79,14 +99,80 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.3.0.6.5\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.3.0.6.5\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ThrowExceptionCommands.cs" />
-    <Compile Include="DebugMenu.cs" />
+    <Compile Include="Commands\DebugMenu.cs" />
+    <Compile Include="Commands\ToolWindowCommands.cs" />
+    <Compile Include="ToolWindows\DebugCommonControlsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugCommonControlsView.Designer.cs">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugCommonControlsViewModel.cs" />
+    <Compile Include="ToolWindows\DebugDockingView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugDockingView.Designer.cs">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugDockingViewModel.cs" />
+    <Compile Include="ToolWindows\DebugFullScreenView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugFullScreenView.Designer.cs">
+      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugFullScreenViewModel.cs" />
+    <Compile Include="ToolWindows\DebugJobServiceView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugJobServiceView.Designer.cs">
+      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugJobServiceViewModel.cs" />
+    <Compile Include="ToolWindows\DebugOptionsSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugOptionsSheet.Designer.cs">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugOptionsSheetViewModel.cs" />
+    <Compile Include="ToolWindows\DebugProjectExplorerTrackingView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugProjectExplorerTrackingView.Designer.cs">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugProjectExplorerTrackingViewModel.cs" />
+    <Compile Include="ToolWindows\DebugServiceRegistryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugServiceRegistryView.Designer.cs">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugServiceRegistryViewModel.cs" />
+    <Compile Include="ToolWindows\DebugThemeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\DebugThemeView.Designer.cs">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DebugThemeViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestCommand.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
@@ -95,6 +181,35 @@
       <Project>{83571a48-14e9-4cb2-8d7e-c12deeb967b7}</Project>
       <Name>Google.Solutions.Mvvm</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ToolWindows\DebugCommonControlsView.resx">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugDockingView.resx">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugFullScreenView.resx">
+      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugJobServiceView.resx">
+      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugOptionsSheet.resx">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugProjectExplorerTrackingView.resx">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugServiceRegistryView.resx">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\DebugThemeView.resx">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

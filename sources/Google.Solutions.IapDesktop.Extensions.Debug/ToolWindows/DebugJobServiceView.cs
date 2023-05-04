@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Runtime.InteropServices;
@@ -27,10 +29,10 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
+    [Service]
     public partial class DebugJobServiceView : ToolWindowViewBase, IView<DebugJobServiceViewModel>
     {
         public DebugJobServiceView(IServiceProvider serviceProvider)

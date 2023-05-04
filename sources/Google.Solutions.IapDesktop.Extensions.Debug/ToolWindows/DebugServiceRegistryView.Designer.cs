@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
     partial class DebugServiceRegistryView
     {
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         /// </summary>
         private void InitializeComponent()
         {
-            this.list = new Google.Solutions.IapDesktop.Application.Views.Diagnostics.ServicesListView();
+            this.list = new ServicesListView();
             this.assemblyHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.typeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lifetimeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

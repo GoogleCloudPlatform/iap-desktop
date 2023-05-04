@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
     partial class DebugOptionsSheet
     {

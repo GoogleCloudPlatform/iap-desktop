@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System.Linq;
@@ -76,10 +75,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 {
                     dialog.ViewModel.AddSheet(sheet.View, sheet.ViewModel);
                 }
-
-#if DEBUG
-                dialog.ViewModel.AddSheet(new DebugOptionsSheet(), new DebugOptionsSheetViewModel());
-#endif
 
                 dialog.ViewModel.WindowTitle.Value = "Options";
                 return dialog.ShowDialog(parent);

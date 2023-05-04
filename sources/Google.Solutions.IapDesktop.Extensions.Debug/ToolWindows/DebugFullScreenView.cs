@@ -20,16 +20,17 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
+    [Service]
     public partial class DebugFullScreenView : DocumentWindow, IView<DebugFullScreenViewModel>
     {
         public DebugFullScreenView(IServiceProvider serviceProvider)

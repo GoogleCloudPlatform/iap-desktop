@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.Commands
     }
 
     //---------------------------------------------------------------------
-    // Window exceptions.
+    // Unhandled exceptions.
     //---------------------------------------------------------------------
 
     [MenuCommand(typeof(DebugMenu), Rank = 0x320)]
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.Commands
         private readonly IMainWindow mainWindow;
 
         public ThrowWindowExceptionCommand(IMainWindow mainWindow)
-            : base("&Throw ApplicationException from main window")
+            : base("&Throw unhandled exception")
         {
             this.mainWindow = mainWindow;
         }

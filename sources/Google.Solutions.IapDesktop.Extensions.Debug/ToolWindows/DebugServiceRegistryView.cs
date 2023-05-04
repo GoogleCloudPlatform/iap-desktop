@@ -19,37 +19,34 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
-using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("UI")]
-    internal partial class DebugOptionsSheet : UserControl, IPropertiesSheetView
+    [Service]
+    public partial class DebugServiceRegistryView : DocumentWindow, IView<DebugServiceRegistryViewModel>
     {
-        public DebugOptionsSheet()
+        public DebugServiceRegistryView(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
             InitializeComponent();
         }
 
-        public Type ViewModel => typeof(DebugOptionsSheetViewModel);
-
-        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext context)
+        public void Bind(
+            DebugServiceRegistryViewModel viewModel,
+            IBindingContext bindingContext)
         {
-            var viewModel = (DebugOptionsSheetViewModel)viewModelBase;
-
-            this.dirtyCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsDirty,
-                context);
-            this.failToApplyChangesCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.FailToApplyChanges,
-                context);
+            this.list.BindColumn(0, t => t.ServiceType.Assembly.GetName().Name);
+            this.list.BindColumn(1, t => t.ServiceType.FullName);
+            this.list.BindColumn(2, t => t.Lifetime.ToString());
+            this.list.BindCollection(viewModel.RegisteredServices);
         }
     }
+
+    public class ServicesListView : BindableListView<DebugServiceRegistryViewModel.Service>
+    { }
 }

@@ -19,13 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
+    [Service]
     public class DebugFullScreenViewModel : ViewModelBase
     {
         public DebugFullScreenViewModel()

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,9 +19,9 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    partial class DebugThemeView
+    partial class DebugProjectExplorerTrackingView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,31 +49,46 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         /// </summary>
         private void InitializeComponent()
         {
-            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.instanceNameLabel = new System.Windows.Forms.Label();
+            this.currentInstanceLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // propertyGrid
+            // instanceNameLabel
             // 
-            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(800, 450);
-            this.propertyGrid.TabIndex = 0;
+            this.instanceNameLabel.AutoSize = true;
+            this.instanceNameLabel.Location = new System.Drawing.Point(108, 24);
+            this.instanceNameLabel.Name = "instanceNameLabel";
+            this.instanceNameLabel.Size = new System.Drawing.Size(13, 13);
+            this.instanceNameLabel.TabIndex = 0;
+            this.instanceNameLabel.Text = "..";
             // 
-            // ThemeWindow
+            // currentInstanceLabel
+            // 
+            this.currentInstanceLabel.AutoSize = true;
+            this.currentInstanceLabel.Location = new System.Drawing.Point(13, 24);
+            this.currentInstanceLabel.Name = "currentInstanceLabel";
+            this.currentInstanceLabel.Size = new System.Drawing.Size(87, 13);
+            this.currentInstanceLabel.TabIndex = 1;
+            this.currentInstanceLabel.Text = "Current instance:";
+            // 
+            // DebugProjectExplorerTrackingWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.propertyGrid);
-            this.Name = "ThemeWindow";
-            this.Text = "Theme";
+            this.Controls.Add(this.currentInstanceLabel);
+            this.Controls.Add(this.instanceNameLabel);
+            this.Name = "DebugProjectExplorerTrackingWindow";
+            this.ShowIcon = false;
+            this.Text = "Debug tracking";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.PropertyGrid propertyGrid;
+        private System.Windows.Forms.Label instanceNameLabel;
+        private System.Windows.Forms.Label currentInstanceLabel;
     }
 }

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,41 +19,29 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    internal class DebugOptionsSheetViewModel : PropertiesSheetViewModelBase
+    [Service]
+    public class DebugProjectExplorerTrackingViewModel : ViewModelBase
     {
-        public DebugOptionsSheetViewModel() : base("Debug")
+        public DebugProjectExplorerTrackingViewModel()
         {
-            this.IsDirty = ObservableProperty.Build(false);
-            this.FailToApplyChanges = ObservableProperty.Build(false);
+            this.Node = ObservableProperty.Build<IProjectModelInstanceNode>(null);
+            this.InstanceName = ObservableProperty.Build(
+                this.Node,
+                n => n?.DisplayName);
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public override ObservableProperty<bool> IsDirty { get; }
-        public ObservableProperty<bool> FailToApplyChanges { get; }
+        public ObservableProperty<IProjectModelInstanceNode> Node { get; }
 
-
-        //---------------------------------------------------------------------
-        // Apply changes.
-        //---------------------------------------------------------------------
-
-        protected override void ApplyChanges()
-        {
-            if (this.FailToApplyChanges.Value)
-            {
-                throw new InvalidOperationException("Applying changes failed");
-            }
-            else
-            {
-                this.IsDirty.Value = false;
-            }
-        }
+        public ObservableFunc<string> InstanceName { get; }
     }
 }

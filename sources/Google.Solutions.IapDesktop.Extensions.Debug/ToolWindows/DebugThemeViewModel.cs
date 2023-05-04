@@ -19,19 +19,14 @@
 // under the License.
 //
 
+
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    public class DebugCommonControlsViewModel : ViewModelBase
+    [Service]
+    public class DebugThemeViewModel : ViewModelBase
     {
-        public DebugCommonControlsViewModel()
-        {
-            this.ControlEnabled = ObservableProperty.Build(true);
-            this.ControlReadonly = ObservableProperty.Build(false);
-        }
-
-        public ObservableProperty<bool> ControlEnabled { get; }
-        public ObservableProperty<bool> ControlReadonly { get; }
     }
 }

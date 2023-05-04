@@ -25,8 +25,9 @@ using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
+    [Service]
     public class DebugServiceRegistryViewModel : ViewModelBase
     {
         public DebugServiceRegistryViewModel(IServiceProvider serviceProvider)

@@ -34,7 +34,6 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
-using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -374,57 +373,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.Home
                 });
-
-#if DEBUG
-            var toolWindowHost = serviceProvider.GetService<IToolWindowHost>();
-            var debugCommand = this.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "Debug",
-                    _ => CommandState.Enabled,
-                    context => { }));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Job Service",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugJobServiceView, DebugJobServiceViewModel>()
-                    .Show()));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Docking ",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugDockingView, DebugDockingViewModel>()
-                    .Show()));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Project Explorer Tracking",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>()
-                    .Show()));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Full screen pane",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugFullScreenView, DebugFullScreenViewModel>()
-                    .Show()));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Theme",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugThemeView, DebugThemeViewModel>()
-                    .Show()));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Registered services",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>()
-                    .Show()));
-            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
-                "Common controls",
-                _ => CommandState.Enabled,
-                _ => toolWindowHost
-                    .GetToolWindow<DebugCommonControlsView, DebugCommonControlsViewModel>()
-                    .Show()));
-#endif
 
             ResumeLayout();
         }
