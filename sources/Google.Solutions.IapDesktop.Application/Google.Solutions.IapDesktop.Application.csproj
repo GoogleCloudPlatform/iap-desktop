@@ -176,6 +176,7 @@
       <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
+    <Compile Include="Views\Menu.cs" />
     <Compile Include="Views\MenuCommandBase.cs" />
     <Compile Include="Views\MenuCommandAttribute.cs" />
     <Compile Include="Views\ToolWindowHost.cs" />
