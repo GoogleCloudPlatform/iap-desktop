@@ -20,14 +20,16 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.Options
 {
-    [SkipCodeCoverage("UI")]
-    internal partial class DebugOptionsSheet : UserControl, IPropertiesSheetView
+    [Service]
+    [ServiceCategory(typeof(IPropertiesSheetView))]
+    public partial class DebugOptionsSheet : UserControl, IPropertiesSheetView
     {
         public DebugOptionsSheet()
         {

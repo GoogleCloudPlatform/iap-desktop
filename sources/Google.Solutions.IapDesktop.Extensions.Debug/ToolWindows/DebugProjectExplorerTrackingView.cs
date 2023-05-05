@@ -20,17 +20,16 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [ComVisible(false)]
-    [SkipCodeCoverage("For debug purposes only")]
+    [Service(ServiceLifetime.Singleton)]
     public partial class DebugProjectExplorerTrackingView
         : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>,
           IView<DebugProjectExplorerTrackingViewModel>

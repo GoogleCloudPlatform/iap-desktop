@@ -20,13 +20,15 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
-    [SkipCodeCoverage("For development purposes only")]
+    [Service]
     public partial class DebugCommonControlsView : ToolWindowViewBase, IView<DebugCommonControlsViewModel>
     {
         public DebugCommonControlsView(IServiceProvider serviceProvider)

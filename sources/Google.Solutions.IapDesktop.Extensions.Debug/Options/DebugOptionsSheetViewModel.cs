@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,27 +19,43 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
+using System;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.Options
 {
-    public class DebugProjectExplorerTrackingViewModel : ViewModelBase
+    [Service]
+    public class DebugOptionsSheetViewModel : PropertiesSheetViewModelBase
     {
-        public DebugProjectExplorerTrackingViewModel()
+        public DebugOptionsSheetViewModel() : base("Debug")
         {
-            this.Node = ObservableProperty.Build<IProjectModelInstanceNode>(null);
-            this.InstanceName = ObservableProperty.Build(
-                this.Node,
-                n => n?.DisplayName);
+            this.IsDirty = ObservableProperty.Build(false);
+            this.FailToApplyChanges = ObservableProperty.Build(false);
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public ObservableProperty<IProjectModelInstanceNode> Node { get; }
+        public override ObservableProperty<bool> IsDirty { get; }
+        public ObservableProperty<bool> FailToApplyChanges { get; }
 
-        public ObservableFunc<string> InstanceName { get; }
+
+        //---------------------------------------------------------------------
+        // Apply changes.
+        //---------------------------------------------------------------------
+
+        protected override void ApplyChanges()
+        {
+            if (this.FailToApplyChanges.Value)
+            {
+                throw new InvalidOperationException("Applying changes failed");
+            }
+            else
+            {
+                this.IsDirty.Value = false;
+            }
+        }
     }
 }

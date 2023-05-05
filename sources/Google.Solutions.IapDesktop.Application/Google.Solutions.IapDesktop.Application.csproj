@@ -169,62 +169,13 @@
     </Compile>
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugOptionsSheet.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugOptionsSheet.Designer.cs">
-      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
+    <Compile Include="Views\Menu.cs" />
     <Compile Include="Views\MenuCommandBase.cs" />
     <Compile Include="Views\MenuCommandAttribute.cs" />
     <Compile Include="Views\ToolWindowHost.cs" />
     <Compile Include="Views\UrlCommands.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
-    <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugCommonControlsView.Designer.cs">
-      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugCommonControlsViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugDockingViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugFullScreenView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugFullScreenView.Designer.cs">
-      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugFullScreenViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugJobServiceViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugServiceRegistryView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugServiceRegistryView.Designer.cs">
-      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugServiceRegistryViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugThemeView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugThemeView.Designer.cs">
-      <DependentUpon>DebugThemeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugThemeViewModel.cs" />
     <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
-    <Compile Include="Views\Diagnostics\DebugDockingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugDockingView.Designer.cs">
-      <DependentUpon>DebugDockingView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.Designer.cs">
-      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Dialog\CredentialDialog.cs" />
     <Compile Include="Views\Dialog\OperationProgressDialog.cs" />
     <Compile Include="Views\Dialog\UnsafeNativeMethods.cs" />
@@ -302,12 +253,6 @@
     </Compile>
     <Compile Include="Views\About\AboutView.Designer.cs">
       <DependentUpon>AboutView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugJobServiceView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugJobServiceView.Designer.cs">
-      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainWindow.cs" />
@@ -388,30 +333,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
       <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugCommonControlsView.resx">
-      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugDockingView.resx">
-      <DependentUpon>DebugDockingView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenView.resx">
-      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugOptionsSheet.resx">
-      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingView.resx">
-      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceView.resx">
-      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugServiceRegistryView.resx">
-      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugThemeView.resx">
-      <DependentUpon>DebugThemeView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>

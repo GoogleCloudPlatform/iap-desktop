@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,16 +19,16 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.Options
 {
-    partial class DebugProjectExplorerTrackingView
+    partial class DebugOptionsSheet
     {
-        /// <summary>
+        /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
+        /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -41,46 +41,46 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            this.instanceNameLabel = new System.Windows.Forms.Label();
-            this.currentInstanceLabel = new System.Windows.Forms.Label();
+            this.failToApplyChangesCheckBox = new System.Windows.Forms.CheckBox();
+            this.dirtyCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
-            // instanceNameLabel
+            // failToApplyChangesCheckBox
             // 
-            this.instanceNameLabel.AutoSize = true;
-            this.instanceNameLabel.Location = new System.Drawing.Point(108, 24);
-            this.instanceNameLabel.Name = "instanceNameLabel";
-            this.instanceNameLabel.Size = new System.Drawing.Size(13, 13);
-            this.instanceNameLabel.TabIndex = 0;
-            this.instanceNameLabel.Text = "..";
+            this.failToApplyChangesCheckBox.AutoSize = true;
+            this.failToApplyChangesCheckBox.Location = new System.Drawing.Point(19, 47);
+            this.failToApplyChangesCheckBox.Name = "failToApplyChangesCheckBox";
+            this.failToApplyChangesCheckBox.Size = new System.Drawing.Size(126, 17);
+            this.failToApplyChangesCheckBox.TabIndex = 0;
+            this.failToApplyChangesCheckBox.Text = "Fail to apply changes";
+            this.failToApplyChangesCheckBox.UseVisualStyleBackColor = true;
             // 
-            // currentInstanceLabel
+            // dirtyCheckBox
             // 
-            this.currentInstanceLabel.AutoSize = true;
-            this.currentInstanceLabel.Location = new System.Drawing.Point(13, 24);
-            this.currentInstanceLabel.Name = "currentInstanceLabel";
-            this.currentInstanceLabel.Size = new System.Drawing.Size(87, 13);
-            this.currentInstanceLabel.TabIndex = 1;
-            this.currentInstanceLabel.Text = "Current instance:";
+            this.dirtyCheckBox.AutoSize = true;
+            this.dirtyCheckBox.Location = new System.Drawing.Point(19, 24);
+            this.dirtyCheckBox.Name = "dirtyCheckBox";
+            this.dirtyCheckBox.Size = new System.Drawing.Size(47, 17);
+            this.dirtyCheckBox.TabIndex = 1;
+            this.dirtyCheckBox.Text = "Dirty";
+            this.dirtyCheckBox.UseVisualStyleBackColor = true;
             // 
-            // DebugProjectExplorerTrackingWindow
+            // DebugOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.currentInstanceLabel);
-            this.Controls.Add(this.instanceNameLabel);
-            this.Name = "DebugProjectExplorerTrackingWindow";
-            this.ShowIcon = false;
-            this.Text = "Debug tracking";
+            this.Controls.Add(this.dirtyCheckBox);
+            this.Controls.Add(this.failToApplyChangesCheckBox);
+            this.Name = "DebugOptionsSheet";
+            this.Size = new System.Drawing.Size(269, 167);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         #endregion
 
-        private System.Windows.Forms.Label instanceNameLabel;
-        private System.Windows.Forms.Label currentInstanceLabel;
+        private System.Windows.Forms.CheckBox failToApplyChangesCheckBox;
+        private System.Windows.Forms.CheckBox dirtyCheckBox;
     }
 }

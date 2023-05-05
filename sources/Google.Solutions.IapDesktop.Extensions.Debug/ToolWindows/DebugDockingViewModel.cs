@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
+    [Service]
     public class DebugDockingViewModel : ViewModelBase
     {
         public DebugDockingViewModel()
@@ -50,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         public void WriteOutput(string text)
         {
-            Debug.Write(text);
+            System.Diagnostics.Debug.Write(text);
             this.LogOutput.Value += text;
         }
 

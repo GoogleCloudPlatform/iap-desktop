@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -27,8 +28,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
 {
+    [Service]
     public class DebugJobServiceViewModel : ViewModelBase
     {
         private readonly IJobService jobService;
@@ -55,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 async e =>
                 {
                     await Task.Delay(10).ConfigureAwait(true);
-                    Debug.WriteLine("Delayed in event handler");
+                    System.Diagnostics.Debug.WriteLine("Delayed in event handler");
                 });
         }
 
@@ -91,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                         CreateJobDescription("This takes a while, but can be cancelled..."),
                         async token =>
                         {
-                            Debug.WriteLine("Starting delay...");
+                            System.Diagnostics.Debug.WriteLine("Starting delay...");
                             await this.eventService
                                 .FireAsync(new StatusUpdatedEvent("Starting delay..."))
                                 .ConfigureAwait(true);
@@ -100,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                             .Delay(5000, token)
                                 .ConfigureAwait(true);
 
-                            Debug.WriteLine("Delay over");
+                            System.Diagnostics.Debug.WriteLine("Delay over");
 
                             await this.eventService
                                 .FireAsync(new StatusUpdatedEvent("Done"))
@@ -112,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             }
             catch (TaskCanceledException)
             {
-                Debug.WriteLine("Task cancelled");
+                System.Diagnostics.Debug.WriteLine("Task cancelled");
             }
             catch (Exception ex)
             {
@@ -133,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         async token =>
                         {
-                            Debug.WriteLine("Starting delay...");
+                            System.Diagnostics.Debug.WriteLine("Starting delay...");
                             await this.eventService
                                 .FireAsync(new StatusUpdatedEvent("Starting delay..."))
                                 .ConfigureAwait(true);
@@ -142,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                                 .Delay(5000)
                                 .ConfigureAwait(true);
 
-                            Debug.WriteLine("Delay over");
+                            System.Diagnostics.Debug.WriteLine("Delay over");
 
                             await this.eventService
                                 .FireAsync(new StatusUpdatedEvent("Done"))
@@ -154,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             }
             catch (TaskCanceledException)
             {
-                Debug.WriteLine("Task cancelled");
+                System.Diagnostics.Debug.WriteLine("Task cancelled");
             }
             catch (Exception ex)
             {
@@ -181,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             }
             catch (TaskCanceledException)
             {
-                Debug.WriteLine("Task cancelled");
+                System.Diagnostics.Debug.WriteLine("Task cancelled");
             }
             catch (Exception ex)
             {
@@ -211,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             }
             catch (TaskCanceledException)
             {
-                Debug.WriteLine("Task cancelled");
+                System.Diagnostics.Debug.WriteLine("Task cancelled");
             }
             catch (Exception ex)
             {

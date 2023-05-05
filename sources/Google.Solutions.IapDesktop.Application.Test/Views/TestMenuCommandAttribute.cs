@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
             var menu = new SampleMenu(MenuCommandType.MenuCommand, commandContainer.Object);
-            menu.AddCommands(serviceRegistry);
+            menu.DiscoverCommands(serviceRegistry);
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Never);
         }
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
             var menu = new SampleMenu(MenuCommandType.ToolbarCommand, commandContainer.Object);
-            menu.AddCommands(serviceRegistry);
+            menu.DiscoverCommands(serviceRegistry);
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Never);
         }
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
             var menu = new SampleMenu(MenuCommandType.MenuCommand, commandContainer.Object);
-            menu.AddCommands(serviceRegistry);
+            menu.DiscoverCommands(serviceRegistry);
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Never);
         }
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
             var menu = new SampleMenu(MenuCommandType.ToolbarCommand, commandContainer.Object);
-            menu.AddCommands(serviceRegistry);
+            menu.DiscoverCommands(serviceRegistry);
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Once);
         }
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
             var menu = new SampleMenu(MenuCommandType.MenuCommand, commandContainer.Object);
-            menu.AddCommands(serviceRegistry);
+            menu.DiscoverCommands(serviceRegistry);
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Exactly(3));
             commandContainer.Verify(c => c.AddSeparator(It.IsAny<int?>()), Times.Once);
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 .Returns(nestedCommandContainer.Object);
 
             var menu = new SampleMenu(MenuCommandType.MenuCommand, commandContainer.Object);
-            menu.AddCommands(serviceRegistry);
+            menu.DiscoverCommands(serviceRegistry);
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Once);
             nestedCommandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Once);
