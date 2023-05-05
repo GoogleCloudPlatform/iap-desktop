@@ -37,6 +37,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
 {
     public abstract class SingletonApplicationBase
     {
+        private const int E_PIPE_BUSY = unchecked((int)0x800700e7);
+
         internal uint SessionId { get; }
         public string Name { get; }
 
@@ -239,6 +241,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
             {
                 try
                 {
+                    //
+                    // Sequentially dispatch client connections. 
+                    //
                     using (var pipe = new NamedPipeServerStream(
                         this.PipeName,
                         PipeDirection.InOut,
@@ -262,9 +267,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         // OUT: process ID
                         //
 
-                        using (var reader = new BinaryReader(pipe))
-                        using (var writer = new BinaryWriter(pipe))
+                        try
                         {
+                            var reader = new BinaryReader(pipe);
+                            var writer = new BinaryWriter(pipe);
+
                             int argsCount = reader.ReadInt32();
                             var args = new string[argsCount];
                             for (int i = 0; i < argsCount; i++)
@@ -276,19 +283,54 @@ namespace Google.Solutions.IapDesktop.Application.Host
                             {
                                 int result = HandleSubsequentInvocation(args);
                                 writer.Write(result);
-                                writer.Write(Process.GetCurrentProcess().Id);
                             }
                             catch (Exception e)
                             {
                                 HandleSubsequentInvocationException(e);
                                 writer.Write(-1);
                             }
+
+                            writer.Write(Process.GetCurrentProcess().Id);
+                        }
+                        catch (IOException)
+                        {
+                            //
+                            // The client closed the pipe early, ignore.
+                            //
+                        }
+                        finally
+                        {
+                            try
+                            {
+                                pipe.WaitForPipeDrain();
+                            }
+                            catch (IOException)
+                            {
+                                //
+                                // The client closed the pipe early, ignore.
+                                //
+                            }
+
+                            pipe.Disconnect();
                         }
                     }
                 }
                 catch (TaskCanceledException)
                 {
                     return;
+                }
+                catch (IOException e) when (e.HResult == E_PIPE_BUSY)
+                {
+                    //
+                    // Because we always disconnect the pipe, this shoudn't
+                    // normally happen.
+                    //
+                    // Back off and retry.
+                    //
+                    ApplicationTraceSources.Default.TraceWarning(
+                        "Pipe {0} is busy, retrying", this.PipeName);
+
+                    await Task.Delay(500);
                 }
                 catch (IOException e)
                 {
