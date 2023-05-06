@@ -35,10 +35,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             InitializeComponent();
 
             this.document.Fonts.Text = new FontFamily("Segoe UI");
-            this.sidebar.Fonts.Text = new FontFamily("Segoe UI");
             //this.document.Fonts.FontSize = 11;
 
-            this.SizeChanged += (_, __) => this.document.Width = Math.Min(500, this.Width - 150);
+           //this.SizeChanged += (_, __) => this.document.Width = Math.Min(500, this.Width - 150);
 
             // TODO: icon
             // TODO: colors in dark mode (-> set in theme)
@@ -55,7 +54,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
 
             // TODO: Use command
             this.document.LinkClicked += (_, args) =>Browser.Default.Navigate(args.LinkText);
-            this.sidebar.LinkClicked += (_, args) => Browser.Default.Navigate(args.LinkText);
 
             viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)

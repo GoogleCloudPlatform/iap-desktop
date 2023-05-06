@@ -29,10 +29,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReleaseNotesView));
             this.document = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.sidebar = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // document
@@ -42,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.document.Location = new System.Drawing.Point(150, 68);
             this.document.Markdown = "";
             this.document.Name = "document";
-            this.document.Size = new System.Drawing.Size(500, 370);
+            this.document.Size = new System.Drawing.Size(470, 332);
             this.document.TabIndex = 0;
             this.document.TabStop = false;
             this.document.TextPadding = ((uint)(10u));
@@ -61,32 +63,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             // 
             this.label1.Location = new System.Drawing.Point(13, 68);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 47);
+            this.label1.Size = new System.Drawing.Size(131, 47);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Changes since you last upgraded";
+            this.label1.Text = "Here\'s what\'s new since you last upgraded:";
             // 
-            // sidebar
+            // pictureBox1
             // 
-            this.sidebar.Location = new System.Drawing.Point(668, 68);
-            this.sidebar.Markdown = "If you like IAP Desktop, [give it a star on GitHub](https://github.com/GoogleClou" +
-    "dPlatform/iap-desktop)!";
-            this.sidebar.Name = "sidebar";
-            this.sidebar.Size = new System.Drawing.Size(177, 186);
-            this.sidebar.TabIndex = 3;
-            this.sidebar.TabStop = false;
-            this.sidebar.TextPadding = ((uint)(10u));
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureBox1.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.LogoWatermark_180;
+            this.pictureBox1.Location = new System.Drawing.Point(-13, 318);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(200, 145);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
             // 
             // ReleaseNotesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(917, 450);
-            this.Controls.Add(this.sidebar);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.document);
+            this.Controls.Add(this.pictureBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ReleaseNotesView";
             this.Text = "What\'s new?";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -97,6 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
         private Mvvm.Controls.MarkdownViewer document;
         private Mvvm.Controls.HeaderLabel headerLabel;
         private System.Windows.Forms.Label label1;
-        private Mvvm.Controls.MarkdownViewer sidebar;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

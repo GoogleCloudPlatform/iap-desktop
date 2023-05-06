@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
 
                 foreach (var release in releases
                     .EnsureNotNull()
-                    .Where(r => this.install.CurrentVersion.Major == 1 ||
+                    .Where(r => this.install.CurrentVersion.Major == 1 || // Dev builds
                                 r.TagVersion <= this.install.CurrentVersion)
                     .Where(r => this.ShowAllReleases || 
                                 this.install.PreviousVersion == null || 
