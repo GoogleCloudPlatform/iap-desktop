@@ -172,7 +172,13 @@
     <Compile Include="Views\Menu.cs" />
     <Compile Include="Views\MenuCommandBase.cs" />
     <Compile Include="Views\MenuCommandAttribute.cs" />
-    <Compile Include="Views\ReleaseNotes\ReleaseNotesViewModel.cs" />
+    <Compile Include="Views\Help\ReleaseNotesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Help\ReleaseNotesView.Designer.cs">
+      <DependentUpon>ReleaseNotesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Help\ReleaseNotesViewModel.cs" />
     <Compile Include="Views\ToolWindowHost.cs" />
     <Compile Include="Views\UrlCommands.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
@@ -358,6 +364,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerView.resx">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Help\ReleaseNotesView.resx">
+      <DependentUpon>ReleaseNotesView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ToolWindowViewBase.resx">
       <DependentUpon>ToolWindowViewBase.cs</DependentUpon>

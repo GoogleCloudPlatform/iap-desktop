@@ -137,6 +137,7 @@
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\TestNewProfileViewModel.cs" />
     <Compile Include="Views\Dialog\TestCredentialDialog.cs" />
+    <Compile Include="Views\Help\TestReleaseNotesViewModel.cs" />
     <Compile Include="Views\Options\TestAppearanceOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestOptionsViewModelBase.cs" />
     <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />

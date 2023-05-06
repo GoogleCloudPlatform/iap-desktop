@@ -25,6 +25,7 @@ using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +71,45 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             Assert.IsNull(await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
+                .ConfigureAwait(false));
+        }
+
+        //---------------------------------------------------------------------
+        // ListReleases.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenServerReturnsError_ListReleasesThrowsException()
+        {
+            var restAdapter = new Mock<IExternalRestAdapter>();
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubAdapter.Release>>(
+                    It.IsNotNull<Uri>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new HttpRequestException("mock"));
+
+            var adapter = new GithubAdapter(restAdapter.Object);
+
+            ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
+                () => adapter
+                    .ListReleases(1, CancellationToken.None)
+                    .Wait());
+        }
+
+        [Test]
+        public async Task WhenServerReturnsEmptyResult_ListReleasesReturnsEmptyList()
+        {
+            var restAdapter = new Mock<IExternalRestAdapter>();
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubAdapter.Release>>(
+                    It.IsNotNull<Uri>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((List<GithubAdapter.Release>)null);
+
+            var adapter = new GithubAdapter(restAdapter.Object);
+
+            CollectionAssert.IsEmpty(await adapter
+                .ListReleases(1, CancellationToken.None)
                 .ConfigureAwait(false));
         }
 

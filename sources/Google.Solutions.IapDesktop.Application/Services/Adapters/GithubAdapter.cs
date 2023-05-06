@@ -32,7 +32,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IGithubAdapter
     {
-        Task<IGitHubRelease> FindLatestReleaseAsync(CancellationToken cancellationToken);
+        /// <summary>
+        /// Look up the most recent release.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IGitHubRelease> FindLatestReleaseAsync(
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// List latest releases.
+        /// </summary>
+        Task<IEnumerable<IGitHubRelease>> ListReleases(
+            ushort maxCount,
+            CancellationToken cancellationToken);
     }
 
     public interface IGitHubRelease
@@ -67,6 +80,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public GithubAdapter(IExternalRestAdapter restAdapter)
         {
             this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
+        }
+
+        public async Task<IEnumerable<IGitHubRelease>> ListReleases(
+            ushort maxCount,
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                var releases = await this.restAdapter
+                    .GetAsync<List<Release>>(
+                        new Uri($"https://api.github.com/repos/{RepositoryName}/releases?per_page={maxCount}"),
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                return releases.EnsureNotNull();
+            }
         }
 
         public async Task<IGitHubRelease> FindLatestReleaseAsync(
