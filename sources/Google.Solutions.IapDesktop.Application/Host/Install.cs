@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         }
 
         /// <summary>
-        /// Version that was installed initially. This may be differnt from the
+        /// First version that was ever installed. This might be the same as the
         /// current version.
         /// </summary>
         public Version InitialVersion
@@ -131,11 +131,36 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     using (var key = hkcu.CreateSubKey(this.BaseKeyPath))
                     {
                         var history = ((string[])key.GetValue(VersionHistoryValueName))
-                            .EnsureNotNull();
+                            .EnsureNotNull()
+                            .Select(v => new Version(v));
 
                         return history.Any()
-                            ? history.Select(v => new Version(v)).Min()
+                            ? history.Min()
                             : this.CurrentVersion;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Version that was installed previously. Null if the user never upgraded.
+        /// </summary>
+        public Version PreviousVersion
+        {
+            get
+            {
+                using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+                {
+                    using (var key = hkcu.CreateSubKey(this.BaseKeyPath))
+                    {
+                        var history = ((string[])key.GetValue(VersionHistoryValueName))
+                            .EnsureNotNull()
+                            .Select(v => new Version(v))
+                            .Where(v => v != this.CurrentVersion);
+
+                        return history.Any()
+                            ? history.Max()
+                            : null;
                     }
                 }
             }
