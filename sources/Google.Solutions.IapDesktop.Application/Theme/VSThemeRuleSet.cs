@@ -209,9 +209,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 // RichTextBoxes don't support FixedSingle. Fixed3D looks
                 // okay in light mode, but awful in Dark mode.
                 //
-                rtfBox.BorderStyle = this.theme.IsDark
-                    ? BorderStyle.None
-                    : BorderStyle.Fixed3D;
+                rtfBox.BorderStyle = BorderStyle.None;
             }
             else
             {

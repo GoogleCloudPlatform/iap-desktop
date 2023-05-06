@@ -35,11 +35,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             InitializeComponent();
 
             this.document.Fonts.Text = new FontFamily("Segoe UI");
-            this.document.Fonts.FontSize = 11;
+            //this.document.Fonts.FontSize = 11;
 
+            this.SizeChanged += (_, __) => this.document.Width = Math.Min(500, this.Width - 150);
+
+            // TODO: icon
             // TODO: Headline color
             // TODO: Padding left
             // TODO: Limit column width
+            // TODO: Set padding in Help box
         }
 
         public void Bind(ReleaseNotesViewModel viewModel, IBindingContext context)

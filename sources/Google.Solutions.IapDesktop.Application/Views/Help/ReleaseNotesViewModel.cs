@@ -42,8 +42,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             // Create a summary of all releases.
             //
             var summary = new StringBuilder();
-            summary.AppendLine("# What's new");
-            summary.AppendLine();
 
             try
             {
