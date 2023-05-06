@@ -49,13 +49,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             try
             {
                 var releases = await githubAdapter
-                    .ListReleases(MaxReleases, CancellationToken.None) // TODO: Filter out newer > current
+                    .ListReleases(MaxReleases, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 foreach (var release in releases
                     .EnsureNotNull()
-                    .Where(r => r.TagVersion <= this.install.CurrentVersion)
-                    .Where(r => this.PreviousVersion == null || this.PreviousVersion < r.TagVersion)
+                    .Where(r => this.install.CurrentVersion.Major == 1 ||
+                                r.TagVersion <= this.install.CurrentVersion)
+                    .Where(r => this.ShowAllReleases || 
+                                this.install.PreviousVersion == null || 
+                                this.install.PreviousVersion < r.TagVersion)
                     .OrderByDescending(r => r.TagVersion))
                 {
                     summary.AppendLine();
@@ -95,10 +98,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Last version known/installed. Only newer versions that this
-        /// will be shown.
+        /// When set to false, only releases newer than the previously installed
+        /// versions are shown.
         /// </summary>
-        public Version PreviousVersion { get; set; }
+        public bool ShowAllReleases { get; set; } = true;
 
         //---------------------------------------------------------------------
         // "Output" properties.

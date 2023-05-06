@@ -109,17 +109,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
         }
 
         //---------------------------------------------------------------------
-        // PreviousVersion.
+        // ShowAllReleases.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPreviousVersionSet_ThenSummaryExcludesOlderReleases()
+        public async Task WhenShowAllReleasesisFalse_ThenSummaryExcludesOlderReleases()
         {
             var currentVersion = new Version(2, 1, 0, 0);
             var previousVersion = new Version(2, 0, 0, 0);
 
             var install = new Mock<IInstall>();
             install.SetupGet(i => i.CurrentVersion).Returns(currentVersion);
+            install.SetupGet(i => i.PreviousVersion).Returns(previousVersion);
 
             var currentRelease = CreateRelease(currentVersion, "current release");
             var skippedRelease = CreateRelease(new Version(2, 0, 1, 0), "skipped release");
@@ -130,17 +131,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
             adapter
                 .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { 
-                    oldRelease.Object,
-                    currentRelease.Object,
-                    previousRelease.Object,
-                    skippedRelease.Object,
+                     oldRelease.Object,
+                     currentRelease.Object,
+                     previousRelease.Object,
+                     skippedRelease.Object,
                 });
 
             var viewModel = new ReleaseNotesViewModel(
                 install.Object,
                 adapter.Object)
             {
-                PreviousVersion = previousVersion
+                ShowAllReleases = false
             };
 
             await viewModel.RefreshCommand

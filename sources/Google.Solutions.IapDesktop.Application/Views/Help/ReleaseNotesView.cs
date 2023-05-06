@@ -43,8 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             // TODO: icon
             // TODO: colors in dark mode (-> set in theme)
             // TODO: Set padding in Help box
-            // TODO: Checkbox "Only show what's new since I last updated"
-            
         }
 
         public void Bind(ReleaseNotesViewModel viewModel, IBindingContext context)
