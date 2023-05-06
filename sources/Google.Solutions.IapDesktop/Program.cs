@@ -43,6 +43,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
@@ -480,6 +481,8 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
                 mainLayer.AddSingleton<ProjectExplorerView>();
                 mainLayer.AddTransient<ProjectExplorerViewModel>();
+                mainLayer.AddSingleton<ReleaseNotesView>();
+                mainLayer.AddTransient<ReleaseNotesViewModel>();
                 mainLayer.AddSingleton<UrlCommands>();
 
                 //

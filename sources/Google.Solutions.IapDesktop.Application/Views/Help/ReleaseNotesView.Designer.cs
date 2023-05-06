@@ -34,7 +34,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             // 
             // document
             // 
-            this.document.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.document.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.document.Location = new System.Drawing.Point(0, 0);
             this.document.Markdown = "";
             this.document.Name = "document";
@@ -48,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.document);
             this.Name = "ReleaseNotesView";
-            this.Text = "ReleaseNotesView";
+            this.Text = "What\'s new?";
             this.ResumeLayout(false);
 
         }

@@ -53,10 +53,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
 
                 foreach (var release in releases
                     .EnsureNotNull()
-                    .Where(r => this.LastKnownVersion == null || this.LastKnownVersion < r.TagVersion)
-                    .OrderBy(r => r.TagVersion))
+                    .Where(r => this.PreviousVersion == null || this.PreviousVersion < r.TagVersion)
+                    .OrderByDescending(r => r.TagVersion))
                 {
-                    summary.AppendFormat("# Release {0}", release.TagVersion);
+                    summary.AppendLine();
+                    summary.AppendFormat("## Release {0}", release.TagVersion);
                     summary.AppendLine();
                     summary.Append(release.Description);
                     summary.AppendLine();
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
         /// Last version known/installed. Only newer versions that this
         /// will be shown.
         /// </summary>
-        public Version LastKnownVersion { get; set; }
+        public Version PreviousVersion { get; set; }
 
         //---------------------------------------------------------------------
         // "Output" properties.

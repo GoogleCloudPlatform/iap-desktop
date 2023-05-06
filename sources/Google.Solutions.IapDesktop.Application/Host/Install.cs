@@ -44,10 +44,15 @@ namespace Google.Solutions.IapDesktop.Application.Host
         Version CurrentVersion { get; }
 
         /// <summary>
-        /// Version that was installed initially. This may be different from the
+        /// First version that was ever installed. This might be the same as the
         /// current version.
         /// </summary>
         Version InitialVersion { get; }
+
+        /// <summary>
+        /// Version that was installed previously. Null if the user never upgraded.
+        /// </summary>
+        Version PreviousVersion { get; }
 
         /// <summary>
         /// Base registry key for profiles, etc.
@@ -118,10 +123,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        /// <summary>
-        /// First version that was ever installed. This might be the same as the
-        /// current version.
-        /// </summary>
         public Version InitialVersion
         {
             get
@@ -142,9 +143,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        /// <summary>
-        /// Version that was installed previously. Null if the user never upgraded.
-        /// </summary>
         public Version PreviousVersion
         {
             get

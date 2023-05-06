@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
@@ -736,9 +737,13 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.Shortcuts);
         }
+
         private void releaseNotesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.ReleaseNotes);
+            var window = this.serviceProvider
+                .GetService<IToolWindowHost>()
+                .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>();
+            window.Show();
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)

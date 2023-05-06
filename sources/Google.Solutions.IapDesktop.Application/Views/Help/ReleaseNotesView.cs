@@ -20,15 +20,21 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Platform.Net;
+using System;
+using System.Drawing;
 using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Help
 {
     public partial class ReleaseNotesView : DocumentWindow, IView<ReleaseNotesViewModel>
     {
-        public ReleaseNotesView()
+        public ReleaseNotesView(IServiceProvider serviceProvider) 
+            : base(serviceProvider)
         {
             InitializeComponent();
+
+            this.document.Fonts.Text = new FontFamily("Segoe UI");
         }
 
         public void Bind(ReleaseNotesViewModel viewModel, IBindingContext context)
@@ -38,6 +44,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                 viewModel,
                 m => m.Summary,
                 context);
+            this.document.LinkClicked += (_, args) =>
+            {
+                Browser.Default.Navigate(args.LinkText);
+            };
 
             viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)

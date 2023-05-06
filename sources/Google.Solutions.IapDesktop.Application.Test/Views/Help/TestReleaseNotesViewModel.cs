@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
         }
 
         //---------------------------------------------------------------------
-        // LastKnownVersion.
+        // PreviousVersion.
         //---------------------------------------------------------------------
 
         [Test]
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
 
             var viewModel = new ReleaseNotesViewModel(adapter.Object)
             {
-                LastKnownVersion = new Version(2, 0, 0, 0)
+                PreviousVersion = new Version(2, 0, 0, 0)
             };
 
             await viewModel.RefreshCommand
