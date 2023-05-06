@@ -35,15 +35,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             InitializeComponent();
 
             this.document.Fonts.Text = new FontFamily("Segoe UI");
+            this.sidebar.Fonts.Text = new FontFamily("Segoe UI");
             //this.document.Fonts.FontSize = 11;
 
             this.SizeChanged += (_, __) => this.document.Width = Math.Min(500, this.Width - 150);
 
             // TODO: icon
-            // TODO: Headline color
-            // TODO: Padding left
-            // TODO: Limit column width
+            // TODO: colors in dark mode (-> set in theme)
             // TODO: Set padding in Help box
+            // TODO: Checkbox "Only show what's new since I last updated"
+            
         }
 
         public void Bind(ReleaseNotesViewModel viewModel, IBindingContext context)
@@ -53,10 +54,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                 viewModel,
                 m => m.Summary,
                 context);
-            this.document.LinkClicked += (_, args) =>
-            {
-                Browser.Default.Navigate(args.LinkText);
-            };
+
+            // TODO: Use command
+            this.document.LinkClicked += (_, args) =>Browser.Default.Navigate(args.LinkText);
+            this.sidebar.LinkClicked += (_, args) => Browser.Default.Navigate(args.LinkText);
 
             viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)

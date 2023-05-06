@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -34,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
     public class ReleaseNotesViewModel : ViewModelBase
     {
         private const ushort MaxReleases = 10;
+
+        private readonly IInstall install;
         private readonly IGithubAdapter githubAdapter;
 
         private async Task LoadAsync()
@@ -46,11 +49,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             try
             {
                 var releases = await githubAdapter
-                    .ListReleases(MaxReleases, CancellationToken.None)
+                    .ListReleases(MaxReleases, CancellationToken.None) // TODO: Filter out newer > current
                     .ConfigureAwait(true);
 
                 foreach (var release in releases
                     .EnsureNotNull()
+                    .Where(r => r.TagVersion <= this.install.CurrentVersion)
                     .Where(r => this.PreviousVersion == null || this.PreviousVersion < r.TagVersion)
                     .OrderByDescending(r => r.TagVersion))
                 {
@@ -73,8 +77,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.Summary.Value = summary.ToString();
         }
 
-        public ReleaseNotesViewModel(IGithubAdapter githubAdapter)
+        public ReleaseNotesViewModel(
+            IInstall install,
+            IGithubAdapter githubAdapter)
         {
+            this.install = install.ExpectNotNull(nameof(install));
             this.githubAdapter = githubAdapter.ExpectNotNull(nameof(githubAdapter));
 
             this.Summary = ObservableProperty.Build("Loading...");

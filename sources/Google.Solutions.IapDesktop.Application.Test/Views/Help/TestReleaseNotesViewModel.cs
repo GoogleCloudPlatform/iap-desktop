@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Help;
 using Moq;
@@ -32,6 +33,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
     [TestFixture]
     public class TestReleaseNotesViewModel
     {
+        private static Mock<IGitHubRelease> CreateRelease(Version version, string descripion)
+        {
+            var release = new Mock<IGitHubRelease>();
+            release.SetupGet(r => r.TagVersion).Returns(version);
+            release.SetupGet(r => r.Description).Returns(descripion);
+            return release;
+        }
+
         //---------------------------------------------------------------------
         // Summary.
         //---------------------------------------------------------------------
@@ -40,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
         public void WhenNotLoadedYet_ThenSummaryContainsDefaultText()
         {
             var viewModel = new ReleaseNotesViewModel(
+                new Mock<IInstall>().Object,
                 new Mock<IGithubAdapter>().Object);
 
             Assert.AreEqual("Loading...", viewModel.Summary.Value);
@@ -53,7 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
                 .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("mock"));
 
-            var viewModel = new ReleaseNotesViewModel(adapter.Object);
+            var viewModel = new ReleaseNotesViewModel(
+                new Mock<IInstall>().Object, 
+                adapter.Object);
 
             await viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)
@@ -63,24 +75,37 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
         }
 
         [Test]
-        public async Task WhenLoaded_ThenSummaryContainsReleaseDetails()
+        public async Task WhenLatestVersionIsNewerThanCurrentVersion_ThenSummaryIgnoresLatestVersion()
         {
-            var release = new Mock<IGitHubRelease>();
-            release.SetupGet(r => r.TagVersion).Returns(new Version(2, 0, 0, 0));
-            release.SetupGet(r => r.Description).Returns("description");
+            var currentVersion = new Version(2, 1, 0, 0);
+
+            var install = new Mock<IInstall>();
+            install.SetupGet(i => i.CurrentVersion).Returns(currentVersion);
+
+            var latestRelease = CreateRelease(new Version(2, 2, 0, 0), "latest release");
+            var currentRelease = CreateRelease(currentVersion, "current release");
+            var oldRelease = CreateRelease(new Version(2, 0, 0, 0), "old release");
 
             var adapter = new Mock<IGithubAdapter>();
             adapter
                 .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] { release.Object });
+                .ReturnsAsync(new[] { 
+                    oldRelease.Object,
+                    currentRelease.Object,
+                    latestRelease.Object 
+                });
 
-            var viewModel = new ReleaseNotesViewModel(adapter.Object);
+            var viewModel = new ReleaseNotesViewModel(
+                install.Object,
+                adapter.Object);
 
             await viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.Contains("description", viewModel.Summary.Value);
+            StringAssert.DoesNotContain("latest release", viewModel.Summary.Value);
+            StringAssert.Contains("current release", viewModel.Summary.Value);
+            StringAssert.Contains("old release", viewModel.Summary.Value);
         }
 
         //---------------------------------------------------------------------
@@ -88,27 +113,44 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenLastestReleaseIsLastKnown_ThenSummaryIsEmpty()
+        public async Task WhenPreviousVersionSet_ThenSummaryExcludesOlderReleases()
         {
-            var release = new Mock<IGitHubRelease>();
-            release.SetupGet(r => r.TagVersion).Returns(new Version(2, 0, 0, 0));
-            release.SetupGet(r => r.Description).Returns("description");
+            var currentVersion = new Version(2, 1, 0, 0);
+            var previousVersion = new Version(2, 0, 0, 0);
+
+            var install = new Mock<IInstall>();
+            install.SetupGet(i => i.CurrentVersion).Returns(currentVersion);
+
+            var currentRelease = CreateRelease(currentVersion, "current release");
+            var skippedRelease = CreateRelease(new Version(2, 0, 1, 0), "skipped release");
+            var previousRelease = CreateRelease(previousVersion,  "previous release");
+            var oldRelease = CreateRelease(new Version(1, 0, 0, 0), "old release");
 
             var adapter = new Mock<IGithubAdapter>();
             adapter
                 .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] { release.Object });
+                .ReturnsAsync(new[] { 
+                    oldRelease.Object,
+                    currentRelease.Object,
+                    previousRelease.Object,
+                    skippedRelease.Object,
+                });
 
-            var viewModel = new ReleaseNotesViewModel(adapter.Object)
+            var viewModel = new ReleaseNotesViewModel(
+                install.Object,
+                adapter.Object)
             {
-                PreviousVersion = new Version(2, 0, 0, 0)
+                PreviousVersion = previousVersion
             };
 
             await viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.DoesNotContain("description", viewModel.Summary.Value);
+            StringAssert.Contains("current release", viewModel.Summary.Value);
+            StringAssert.Contains("skipped release", viewModel.Summary.Value);
+            StringAssert.DoesNotContain("previous release", viewModel.Summary.Value);
+            StringAssert.DoesNotContain("old release", viewModel.Summary.Value);
         }
     }
 }

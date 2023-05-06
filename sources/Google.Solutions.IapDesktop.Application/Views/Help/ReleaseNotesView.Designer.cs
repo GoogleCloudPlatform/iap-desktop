@@ -32,8 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.document = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.sidebar = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
             this.SuspendLayout();
             // 
             // document
@@ -45,7 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.document.Name = "document";
             this.document.Size = new System.Drawing.Size(500, 370);
             this.document.TabIndex = 0;
-            this.document.TextPadding = ((uint)(20u));
+            this.document.TabStop = false;
+            this.document.TextPadding = ((uint)(10u));
             // 
             // headerLabel
             // 
@@ -65,33 +65,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.label1.TabIndex = 2;
             this.label1.Text = "Changes since you last upgraded";
             // 
-            // linkLabel1
+            // sidebar
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(667, 68);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(57, 13);
-            this.linkLabel1.TabIndex = 3;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Something";
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(667, 90);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(57, 13);
-            this.linkLabel2.TabIndex = 4;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Something";
+            this.sidebar.Location = new System.Drawing.Point(668, 68);
+            this.sidebar.Markdown = "If you like IAP Desktop, [give it a star on GitHub](https://github.com/GoogleClou" +
+    "dPlatform/iap-desktop)!";
+            this.sidebar.Name = "sidebar";
+            this.sidebar.Size = new System.Drawing.Size(177, 186);
+            this.sidebar.TabIndex = 3;
+            this.sidebar.TabStop = false;
+            this.sidebar.TextPadding = ((uint)(10u));
             // 
             // ReleaseNotesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.linkLabel2);
-            this.Controls.Add(this.linkLabel1);
+            this.ClientSize = new System.Drawing.Size(917, 450);
+            this.Controls.Add(this.sidebar);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.document);
@@ -107,7 +97,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
         private Mvvm.Controls.MarkdownViewer document;
         private Mvvm.Controls.HeaderLabel headerLabel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
+        private Mvvm.Controls.MarkdownViewer sidebar;
     }
 }

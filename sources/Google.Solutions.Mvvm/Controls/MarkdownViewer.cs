@@ -43,6 +43,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             InitializeComponent();
 
+            this.richTextBox.HideCaret();
             this.richTextBox.LinkClicked += (_, args) => OnLinkClicked(args);
             this.richTextBox.GotFocus += (_, __) => this.richTextBox.HideCaret();
             this.richTextBox.Enter += (_, __) => this.richTextBox.HideCaret();
