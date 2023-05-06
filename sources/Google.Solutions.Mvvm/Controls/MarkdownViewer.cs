@@ -43,11 +43,20 @@ namespace Google.Solutions.Mvvm.Controls
         {
             InitializeComponent();
 
+            //
+            // The RTF box always tries to show a caret. Try to suppress
+            // this by catching focus events and explicitly hiding the caret.
+            //
             this.richTextBox.HideCaret();
             this.richTextBox.LinkClicked += (_, args) => OnLinkClicked(args);
             this.richTextBox.GotFocus += (_, __) => this.richTextBox.HideCaret();
             this.richTextBox.Enter += (_, __) => this.richTextBox.HideCaret();
             this.richTextBox.MouseDown += (_, __) => this.richTextBox.HideCaret();
+
+            //
+            // When the RTF box is resized or moved, it tends to loose its padding.
+            //
+            this.richTextBox.Layout += (_, __) => this.richTextBox.SetPadding((int)this.textPadding);
         }
 
         //---------------------------------------------------------------------

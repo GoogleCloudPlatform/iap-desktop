@@ -35,8 +35,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             InitializeComponent();
 
             this.document.Fonts.Text = new FontFamily("Segoe UI");
-
-            // TODO: Set padding in Help box
         }
 
         public void Bind(ReleaseNotesViewModel viewModel, IBindingContext context)
@@ -47,8 +45,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                 m => m.Summary,
                 context);
 
-            // TODO: Use command
-            this.document.LinkClicked += (_, args) =>Browser.Default.Navigate(args.LinkText);
+            this.document.LinkClicked += (_, args) 
+                => Browser.Default.Navigate(args.LinkText);
 
             viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)

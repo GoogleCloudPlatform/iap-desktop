@@ -38,6 +38,14 @@ namespace Google.Solutions.Mvvm.Controls
                 0,
                 ref rect);
 
+            if (rect.Left == padding)
+            {
+                //
+                // Padding set already.
+                //
+                return;
+            }
+
             var newRect = new UnsafeNativeMethods.RECT(
                 padding,
                 padding,

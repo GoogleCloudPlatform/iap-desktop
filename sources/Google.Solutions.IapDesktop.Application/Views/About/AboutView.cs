@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -38,6 +39,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
         public AboutView()
         {
             InitializeComponent();
+
+            //
+            // NB. When the RTF box is resized or moved, it tends to loose its padding.
+            //
+            this.licenseText.Layout += (_, __) => this.licenseText.SetPadding(5);
+            this.licenseText.SetPadding(5);
         }
 
         public void Bind(AboutViewModel viewModel, IBindingContext bindingContext)
