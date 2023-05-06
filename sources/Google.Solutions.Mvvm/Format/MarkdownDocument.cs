@@ -497,7 +497,7 @@ namespace Google.Solutions.Mvvm.Format
                         case '(':
                         case ')':
                             //
-                            // Delimeter.
+                            // Delimiter.
                             //
                             if (textStart >= 0 && i - textStart > 0)
                             {

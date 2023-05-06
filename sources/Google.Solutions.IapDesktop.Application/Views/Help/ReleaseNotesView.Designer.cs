@@ -30,40 +30,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReleaseNotesView));
-            this.document = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
-            this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
+            this.document = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // document
-            // 
-            this.document.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.document.Location = new System.Drawing.Point(150, 68);
-            this.document.Markdown = "";
-            this.document.Name = "document";
-            this.document.Size = new System.Drawing.Size(470, 332);
-            this.document.TabIndex = 0;
-            this.document.TabStop = false;
-            this.document.TextPadding = ((uint)(10u));
-            // 
-            // headerLabel
-            // 
-            this.headerLabel.AutoSize = true;
-            this.headerLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headerLabel.Location = new System.Drawing.Point(11, 15);
-            this.headerLabel.Name = "headerLabel";
-            this.headerLabel.Size = new System.Drawing.Size(134, 30);
-            this.headerLabel.TabIndex = 1;
-            this.headerLabel.Text = "What\'s new?";
-            // 
             // label1
             // 
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(13, 68);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 47);
+            this.label1.Size = new System.Drawing.Size(132, 66);
             this.label1.TabIndex = 2;
             this.label1.Text = "Here\'s what\'s new since you last upgraded:";
             // 
@@ -76,6 +55,28 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.pictureBox1.Size = new System.Drawing.Size(200, 145);
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
+            // 
+            // headerLabel
+            // 
+            this.headerLabel.AutoSize = true;
+            this.headerLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headerLabel.Location = new System.Drawing.Point(11, 15);
+            this.headerLabel.Name = "headerLabel";
+            this.headerLabel.Size = new System.Drawing.Size(134, 30);
+            this.headerLabel.TabIndex = 1;
+            this.headerLabel.Text = "What\'s new?";
+            // 
+            // document
+            // 
+            this.document.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.document.Location = new System.Drawing.Point(150, 68);
+            this.document.Markdown = "";
+            this.document.Name = "document";
+            this.document.Size = new System.Drawing.Size(470, 332);
+            this.document.TabIndex = 0;
+            this.document.TabStop = false;
+            this.document.TextPadding = ((uint)(10u));
             // 
             // ReleaseNotesView
             // 

@@ -122,10 +122,10 @@ namespace Google.Solutions.Mvvm.Controls
 
         public class ColorStyles
         {
-            public Color Background { get; set; } = Color.White;
-            public Color Text { get; set; } = Color.DarkSlateGray;
-            public Color Link { get; set; } = Color.DarkBlue;
-            public Color Code { get; set; } = Color.LightGray;
+            public Color BackColor { get; set; } = Color.White;
+            public Color TextForeColor { get; set; } = Color.DarkSlateGray;
+            public Color LinkForeColor { get; set; } = Color.DarkBlue;
+            public Color CodeBackColor { get; set; } = Color.LightGray;
 
             internal uint BackgroundIndex = 0;
             internal uint TextIndex = 1;
@@ -136,10 +136,10 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 return new[]
                 {
-                    this.Background,
-                    this.Text,
-                    this.Link,
-                    this.Code
+                    this.BackColor,
+                    this.TextForeColor,
+                    this.LinkForeColor,
+                    this.CodeBackColor
                 };
             }
         }

@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                     .EnsureNotNull()
                     .Where(r => this.install.CurrentVersion.Major == 1 || // Dev builds
                                 r.TagVersion <= this.install.CurrentVersion)
-                    .Where(r => this.ShowAllReleases || 
-                                this.install.PreviousVersion == null || 
+                    .Where(r => this.ShowAllReleases ||
+                                this.install.PreviousVersion == null ||
                                 this.install.PreviousVersion < r.TagVersion)
                     .OrderByDescending(r => r.TagVersion))
                 {
@@ -69,8 +69,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                     summary.AppendLine();
                     summary.AppendFormat("[Details]({0})", release.DetailsUrl);
                     summary.AppendLine();
+                    summary.AppendLine();
                 }
 
+                summary.AppendLine(new string('_', 80));
+                summary.AppendLine();
+                summary.AppendLine();
+                summary.AppendLine("If you're missing a feature, [let us know](https://github.com/GoogleCloudPlatform/iap-desktop/issues/new). ");
+                summary.AppendLine("And if you like IAP Desktop, consider [giving it a star on GitHub](https://github.com/GoogleCloudPlatform/iap-desktop)!");
             }
             catch (Exception e)
             {
