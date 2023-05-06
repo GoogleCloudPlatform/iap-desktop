@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Format;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -35,12 +37,16 @@ namespace Google.Solutions.Mvvm.Controls
     public partial class MarkdownViewer : UserControl
     {
         private string markdown = string.Empty;
+        private uint textPadding = 0;
 
         public MarkdownViewer()
         {
             InitializeComponent();
 
             this.richTextBox.LinkClicked += (_, args) => OnLinkClicked(args);
+            this.richTextBox.GotFocus += (_, __) => this.richTextBox.HideCaret();
+            this.richTextBox.Enter += (_, __) => this.richTextBox.HideCaret();
+            this.richTextBox.MouseDown += (_, __) => this.richTextBox.HideCaret();
         }
 
         //---------------------------------------------------------------------
@@ -95,6 +101,17 @@ namespace Google.Solutions.Mvvm.Controls
                     this.richTextBox.Rtf = this.Rtf;
                     this.markdown = value;
                 }
+            }
+        }
+
+        [Category("Appearance")]
+        public uint TextPadding
+        {
+            get => this.textPadding;
+            set
+            {
+                this.richTextBox.SetPadding((int)value);
+                this.textPadding = value;
             }
         }
 

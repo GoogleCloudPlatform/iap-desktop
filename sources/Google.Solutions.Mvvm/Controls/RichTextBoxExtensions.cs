@@ -51,6 +51,11 @@ namespace Google.Solutions.Mvvm.Controls
                 ref newRect);
         }
 
+        public static void HideCaret(this RichTextBox textBox)
+        {
+            UnsafeNativeMethods.HideCaret(textBox.Handle);
+        }
+
         //---------------------------------------------------------------------
         // P/Invoke definitions.
         //---------------------------------------------------------------------
@@ -79,6 +84,9 @@ namespace Google.Solutions.Mvvm.Controls
 
             [DllImport("user32.dll", EntryPoint = @"SendMessage", CharSet = CharSet.Auto)]
             internal static extern int SendMessageRect(IntPtr hWnd, uint msg, int wParam, ref RECT rect);
+            
+            [DllImport("user32.dll")]
+            internal static extern bool HideCaret(IntPtr hWnd);
         }
     }
 }
