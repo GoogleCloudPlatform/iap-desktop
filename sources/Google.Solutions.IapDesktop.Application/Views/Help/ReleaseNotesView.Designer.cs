@@ -42,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             this.document.Name = "document";
             this.document.Size = new System.Drawing.Size(800, 450);
             this.document.TabIndex = 0;
+            this.document.TextPadding = ((uint)(10u));
             // 
             // ReleaseNotesView
             // 

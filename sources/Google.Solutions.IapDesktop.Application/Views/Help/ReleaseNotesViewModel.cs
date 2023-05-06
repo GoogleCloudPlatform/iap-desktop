@@ -59,6 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                     summary.AppendLine();
                     summary.AppendFormat("## Release {0}", release.TagVersion);
                     summary.AppendLine();
+                    summary.AppendLine();
                     summary.Append(release.Description);
                     summary.AppendLine();
                     summary.AppendFormat("[Details]({0})", release.DetailsUrl);

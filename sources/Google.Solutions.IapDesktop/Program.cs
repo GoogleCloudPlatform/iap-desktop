@@ -481,7 +481,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
                 mainLayer.AddSingleton<ProjectExplorerView>();
                 mainLayer.AddTransient<ProjectExplorerViewModel>();
-                mainLayer.AddSingleton<ReleaseNotesView>();
+                mainLayer.AddTransient<ReleaseNotesView>();
                 mainLayer.AddTransient<ReleaseNotesViewModel>();
                 mainLayer.AddSingleton<UrlCommands>();
 

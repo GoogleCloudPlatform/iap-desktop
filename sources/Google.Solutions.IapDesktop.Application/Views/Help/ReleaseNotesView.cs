@@ -35,6 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
             InitializeComponent();
 
             this.document.Fonts.Text = new FontFamily("Segoe UI");
+            this.document.Fonts.FontSize = 11;
+
+            // TODO: Headline color
+            // TODO: Padding left
+            // TODO: Limit column width
         }
 
         public void Bind(ReleaseNotesViewModel viewModel, IBindingContext context)
