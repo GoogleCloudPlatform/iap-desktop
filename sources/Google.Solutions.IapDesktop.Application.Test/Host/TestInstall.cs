@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenUpgraded_ThenInitialVersionIsCurrentVersion()
+        public void WhenUpgraded_ThenInitialVersionOldestVersionEverInstalled()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -106,6 +106,41 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             Assert.AreNotEqual(install.CurrentVersion, install.InitialVersion);
             Assert.AreEqual(new Version(0, 0, 1, 0), install.InitialVersion);
+        }
+
+        //---------------------------------------------------------------------
+        // PreviousVersion.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFreshlyInstalled_ThenPreviousVersionIsNull()
+        {
+            var install = new Install(TestBaseKeyPath);
+            Assert.IsNull(install.PreviousVersion);
+        }
+
+        [Test]
+        public void WhenKeyMissing_ThenPreviousVersionIsNull()
+        {
+            var install = new Install(TestBaseKeyPath);
+            this.hkcu.DeleteSubKeyTree(TestBaseKeyPath, false);
+            Assert.IsNull(install.PreviousVersion);
+        }
+
+        [Test]
+        public void WhenUpgraded_ThenPreviousVersionIsSet()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            using (var key = this.hkcu.CreateSubKey(TestBaseKeyPath))
+            {
+                key.SetValue(
+                    "InstalledVersionHistory",
+                    new string[] { install.CurrentVersion.ToString(), "0.0.3.0", "0.0.1.0", "0.0.2.0" },
+                    RegistryValueKind.MultiString);
+            }
+
+            Assert.AreEqual(new Version(0, 0, 3, 0), install.PreviousVersion);
         }
     }
 }

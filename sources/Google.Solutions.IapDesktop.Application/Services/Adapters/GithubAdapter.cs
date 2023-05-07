@@ -32,16 +32,43 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IGithubAdapter
     {
-        Task<IGitHubRelease> FindLatestReleaseAsync(CancellationToken cancellationToken);
+        /// <summary>
+        /// Look up the most recent release.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IGitHubRelease> FindLatestReleaseAsync(
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// List latest releases.
+        /// </summary>
+        Task<IEnumerable<IGitHubRelease>> ListReleases(
+            ushort maxCount,
+            CancellationToken cancellationToken);
     }
 
     public interface IGitHubRelease
     {
+        /// <summary>
+        /// Version number, if available.
+        /// </summary>
         Version TagVersion { get; }
 
+        /// <summary>
+        /// URL to installer package.
+        /// </summary>
         string DownloadUrl { get; }
 
+        /// <summary>
+        /// Url to website for this release.
+        /// </summary>
         string DetailsUrl { get; }
+
+        /// <summary>
+        /// Markdown-formatted description.
+        /// </summary>
+        string Description { get; }
     }
 
     public class GithubAdapter : IGithubAdapter
@@ -53,6 +80,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public GithubAdapter(IExternalRestAdapter restAdapter)
         {
             this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
+        }
+
+        public async Task<IEnumerable<IGitHubRelease>> ListReleases(
+            ushort maxCount,
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                var releases = await this.restAdapter
+                    .GetAsync<List<Release>>(
+                        new Uri($"https://api.github.com/repos/{RepositoryName}/releases?per_page={maxCount}"),
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                return releases.EnsureNotNull();
+            }
         }
 
         public async Task<IGitHubRelease> FindLatestReleaseAsync(
@@ -95,6 +138,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             [JsonProperty("html_url")]
             public string HtmlUrl { get; }
 
+            [JsonProperty("body")]
+            public string Body { get; }
+
             [JsonProperty("assets")]
             public List<ReleaseAsset> Assets { get; }
 
@@ -102,10 +148,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             public Release(
                 [JsonProperty("tag_name")] string tagName,
                 [JsonProperty("html_url")] string htmlUrl,
+                [JsonProperty("body")] string body,
                 [JsonProperty("assets")] List<ReleaseAsset> assets)
             {
                 this.TagName = tagName;
                 this.HtmlUrl = htmlUrl;
+                this.Body = body;
                 this.Assets = assets;
             }
 
@@ -131,6 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 .DownloadUrl;
 
             public string DetailsUrl => this.HtmlUrl;
+            public string Description => this.Body;
         }
 
         public class ReleaseAsset

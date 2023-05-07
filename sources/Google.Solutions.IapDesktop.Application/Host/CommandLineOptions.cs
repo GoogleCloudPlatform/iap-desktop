@@ -44,6 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// </summary>
         public string Profile { get; set; } = null;
 
+        /// <summary>
+        /// Launched after completion of an installation/upgrade.
+        /// </summary>
+        public bool IsPostInstall { get; set; } = false;
+
         public CommandLineOptions()
         {
         }
@@ -57,6 +62,10 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 if (args[i] == "/debug")
                 {
                     options.IsLoggingEnabled = true;
+                }
+                else if (args[i] == "/postinstall")
+                {
+                    options.IsPostInstall = true;
                 }
                 else if (args[i] == "/url" && i + 1 < args.Length)
                 {

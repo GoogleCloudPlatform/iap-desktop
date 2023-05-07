@@ -126,11 +126,11 @@
 
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch IAP Desktop" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
-    <Property Id="WixShellExecTarget" Value="[#FileIapDesktopExe]" />
     <CustomAction Id="LaunchApplication"
-        BinaryKey="WixCA"
-        DllEntry="WixShellExec"
-        Impersonate="yes" />
+        FileKey="FileIapDesktopExe"
+        ExeCommand="/postinstall"
+        Impersonate="yes"
+        Return="asyncNoWait"/>
 	</Product>
 
 	<Fragment>

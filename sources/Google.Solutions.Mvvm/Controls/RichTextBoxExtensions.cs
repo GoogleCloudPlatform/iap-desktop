@@ -38,6 +38,14 @@ namespace Google.Solutions.Mvvm.Controls
                 0,
                 ref rect);
 
+            if (rect.Left == padding)
+            {
+                //
+                // Padding set already.
+                //
+                return;
+            }
+
             var newRect = new UnsafeNativeMethods.RECT(
                 padding,
                 padding,
@@ -49,6 +57,11 @@ namespace Google.Solutions.Mvvm.Controls
                 UnsafeNativeMethods.EM_SETRECT,
                 0,
                 ref newRect);
+        }
+
+        public static void HideCaret(this RichTextBox textBox)
+        {
+            UnsafeNativeMethods.HideCaret(textBox.Handle);
         }
 
         //---------------------------------------------------------------------
@@ -79,6 +92,9 @@ namespace Google.Solutions.Mvvm.Controls
 
             [DllImport("user32.dll", EntryPoint = @"SendMessage", CharSet = CharSet.Auto)]
             internal static extern int SendMessageRect(IntPtr hWnd, uint msg, int wParam, ref RECT rect);
+            
+            [DllImport("user32.dll")]
+            internal static extern bool HideCaret(IntPtr hWnd);
         }
     }
 }

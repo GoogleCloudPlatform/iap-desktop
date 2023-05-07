@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
@@ -79,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly CommandContainer<IMainWindow> viewMenuCommands;
         private readonly CommandContainer<ToolWindowViewBase> windowMenuCommands;
 
+        public bool ShowWhatsNew { get; set; } = false;
         public IapRdpUrl StartupUrl { get; set; }
         public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
         public ICommandContainer<ToolWindowViewBase> WindowMenu => this.windowMenuCommands;
@@ -442,15 +444,30 @@ namespace Google.Solutions.IapDesktop.Windows
 
             if (this.StartupUrl != null)
             {
+                //
                 // Dispatch URL.
+                //
                 ConnectToUrl(this.StartupUrl);
             }
             else
             {
-                // No startup URL provided, just show project explorer then.
+                //
+                // No URL provided, just show project explorer then.
+                //
                 this.serviceProvider
                     .GetService<IToolWindowHost>()
                     .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
+                    .Show();
+            }
+
+            if (this.ShowWhatsNew)
+            {
+                //
+                // Show the "What's new" window (in addition to the project explorer).
+                //
+                this.serviceProvider
+                    .GetService<IToolWindowHost>()
+                    .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>()
                     .Show();
             }
         }
@@ -736,9 +753,13 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.Shortcuts);
         }
+
         private void releaseNotesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.ReleaseNotes);
+            var window = this.serviceProvider
+                .GetService<IToolWindowHost>()
+                .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>();
+            window.Show();
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)

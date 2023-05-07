@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Format;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -35,12 +37,26 @@ namespace Google.Solutions.Mvvm.Controls
     public partial class MarkdownViewer : UserControl
     {
         private string markdown = string.Empty;
+        private uint textPadding = 0;
 
         public MarkdownViewer()
         {
             InitializeComponent();
 
+            //
+            // The RTF box always tries to show a caret. Try to suppress
+            // this by catching focus events and explicitly hiding the caret.
+            //
+            this.richTextBox.HideCaret();
             this.richTextBox.LinkClicked += (_, args) => OnLinkClicked(args);
+            this.richTextBox.GotFocus += (_, __) => this.richTextBox.HideCaret();
+            this.richTextBox.Enter += (_, __) => this.richTextBox.HideCaret();
+            this.richTextBox.MouseDown += (_, __) => this.richTextBox.HideCaret();
+
+            //
+            // When the RTF box is resized or moved, it tends to loose its padding.
+            //
+            this.richTextBox.Layout += (_, __) => this.richTextBox.SetPadding((int)this.textPadding);
         }
 
         //---------------------------------------------------------------------
@@ -98,16 +114,27 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
+        [Category("Appearance")]
+        public uint TextPadding
+        {
+            get => this.textPadding;
+            set
+            {
+                this.richTextBox.SetPadding((int)value);
+                this.textPadding = value;
+            }
+        }
+
         //---------------------------------------------------------------------
         // Markdown to RTF conversion.
         //---------------------------------------------------------------------
 
         public class ColorStyles
         {
-            public Color Background { get; set; } = Color.White;
-            public Color Text { get; set; } = Color.DarkSlateGray;
-            public Color Link { get; set; } = Color.DarkBlue;
-            public Color Code { get; set; } = Color.LightGray;
+            public Color BackColor { get; set; } = Color.White;
+            public Color TextForeColor { get; set; } = Color.DarkSlateGray;
+            public Color LinkForeColor { get; set; } = Color.DarkBlue;
+            public Color CodeBackColor { get; set; } = Color.LightGray;
 
             internal uint BackgroundIndex = 0;
             internal uint TextIndex = 1;
@@ -118,10 +145,10 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 return new[]
                 {
-                    this.Background,
-                    this.Text,
-                    this.Link,
-                    this.Code
+                    this.BackColor,
+                    this.TextForeColor,
+                    this.LinkForeColor,
+                    this.CodeBackColor
                 };
             }
         }

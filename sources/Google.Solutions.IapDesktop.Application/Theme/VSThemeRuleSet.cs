@@ -209,9 +209,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 // RichTextBoxes don't support FixedSingle. Fixed3D looks
                 // okay in light mode, but awful in Dark mode.
                 //
-                rtfBox.BorderStyle = this.theme.IsDark
-                    ? BorderStyle.None
-                    : BorderStyle.Fixed3D;
+                rtfBox.BorderStyle = BorderStyle.None;
             }
             else
             {
@@ -231,25 +229,33 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Update colors when enabled/readonly status changes.
             //
-            text.ReadOnlyChanged += OnEnabledOrReadonyChanged;
-            text.EnabledChanged += OnEnabledOrReadonyChanged;
+            text.ReadOnlyChanged += OnEnabledOrReadonlyChanged;
+            text.EnabledChanged += OnEnabledOrReadonlyChanged;
             text.Disposed += (_, __) =>
             {
-                text.ReadOnlyChanged -= OnEnabledOrReadonyChanged;
-                text.EnabledChanged -= OnEnabledOrReadonyChanged;
+                text.ReadOnlyChanged -= OnEnabledOrReadonlyChanged;
+                text.EnabledChanged -= OnEnabledOrReadonlyChanged;
             };
 
-            void OnEnabledOrReadonyChanged(object _, EventArgs __)
+            void OnEnabledOrReadonlyChanged(object _, EventArgs __)
             {
                 SetBackColor();
             }
 
             void SetBackColor()
             {
-                text.BackColor = text.ReadOnly || text.ReadOnly
+                text.BackColor = text.ReadOnly 
                     ? this.theme.Palette.TextBox.BackgroundDisabled
                     : this.theme.Palette.TextBox.Background;
             }
+        }
+
+        private void StyleMarkdownViewer(MarkdownViewer md)
+        {
+            md.Colors.BackColor = this.theme.Palette.TextBox.BackgroundDisabled;
+            md.Colors.CodeBackColor = this.theme.Palette.TextBox.BackgroundDisabled;
+            md.Colors.TextForeColor = this.theme.Palette.TextBox.Text;
+            md.Colors.LinkForeColor = this.theme.Palette.LinkLabel.Text;
         }
 
         private void StyleComboBox(ComboBox combo)
@@ -353,6 +359,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<GroupBox>(c => StyleGroupBox(c));
             controlTheme.AddRule<VerticalTabControl>(c => StyleTabControl(c));
             controlTheme.AddRule<ProgressBarBase>(c => StyleProgressBar(c));
+            controlTheme.AddRule<MarkdownViewer>(c => StyleMarkdownViewer(c));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i));

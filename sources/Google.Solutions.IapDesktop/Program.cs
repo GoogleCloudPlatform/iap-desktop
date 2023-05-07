@@ -43,6 +43,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
@@ -436,7 +437,8 @@ namespace Google.Solutions.IapDesktop
 
                 var mainForm = new MainForm(mainLayer)
                 {
-                    StartupUrl = this.commandLineOptions.StartupUrl
+                    StartupUrl = this.commandLineOptions.StartupUrl,
+                    ShowWhatsNew = this.commandLineOptions.IsPostInstall && install.PreviousVersion != null
                 };
 
                 mainLayer.AddSingleton<IJobHost>(mainForm);
@@ -480,6 +482,8 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
                 mainLayer.AddSingleton<ProjectExplorerView>();
                 mainLayer.AddTransient<ProjectExplorerViewModel>();
+                mainLayer.AddTransient<ReleaseNotesView>();
+                mainLayer.AddTransient<ReleaseNotesViewModel>();
                 mainLayer.AddSingleton<UrlCommands>();
 
                 //

@@ -117,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/profile", "profile-1" });
 
             Assert.AreEqual("profile-1", options.Profile);
+            Assert.IsFalse(options.IsPostInstall);
         }
 
         [Test]
@@ -148,6 +149,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/profile", " " });
             Assert.IsNull(options.Profile);
 
+        }
+
+        //---------------------------------------------------------------------
+        // /postinstall.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPostInstallSpecified_ThenParseReturnsValidOptions()
+        {
+            var options = CommandLineOptions.Parse(
+                new[] { "/profile", "profile-1", "/postinstall", "/debug" });
+
+            Assert.IsTrue(options.IsPostInstall);
         }
 
         //---------------------------------------------------------------------
