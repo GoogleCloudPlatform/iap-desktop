@@ -80,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly CommandContainer<IMainWindow> viewMenuCommands;
         private readonly CommandContainer<ToolWindowViewBase> windowMenuCommands;
 
+        public bool ShowWhatsNew { get; set; } = false;
         public IapRdpUrl StartupUrl { get; set; }
         public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
         public ICommandContainer<ToolWindowViewBase> WindowMenu => this.windowMenuCommands;
@@ -443,15 +444,30 @@ namespace Google.Solutions.IapDesktop.Windows
 
             if (this.StartupUrl != null)
             {
+                //
                 // Dispatch URL.
+                //
                 ConnectToUrl(this.StartupUrl);
             }
             else
             {
-                // No startup URL provided, just show project explorer then.
+                //
+                // No URL provided, just show project explorer then.
+                //
                 this.serviceProvider
                     .GetService<IToolWindowHost>()
                     .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
+                    .Show();
+            }
+
+            if (this.ShowWhatsNew)
+            {
+                //
+                // Show the "What's new" window (in addition to the project explorer).
+                //
+                this.serviceProvider
+                    .GetService<IToolWindowHost>()
+                    .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>()
                     .Show();
             }
         }

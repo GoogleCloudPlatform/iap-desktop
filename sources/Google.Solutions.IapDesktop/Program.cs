@@ -437,7 +437,8 @@ namespace Google.Solutions.IapDesktop
 
                 var mainForm = new MainForm(mainLayer)
                 {
-                    StartupUrl = this.commandLineOptions.StartupUrl
+                    StartupUrl = this.commandLineOptions.StartupUrl,
+                    ShowWhatsNew = this.commandLineOptions.IsPostInstall && install.PreviousVersion != null
                 };
 
                 mainLayer.AddSingleton<IJobHost>(mainForm);
