@@ -465,10 +465,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 //
                 // Show the "What's new" window (in addition to the project explorer).
                 //
-                this.serviceProvider
+                var window = this.serviceProvider
                     .GetService<IToolWindowHost>()
-                    .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>()
-                    .Show();
+                    .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>();
+                window.ViewModel.ShowAllReleases = false;
+                window.Show();
             }
         }
 
