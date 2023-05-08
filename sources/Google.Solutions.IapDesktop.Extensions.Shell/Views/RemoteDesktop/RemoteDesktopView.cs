@@ -561,13 +561,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         // Window events.
         //---------------------------------------------------------------------
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-
-            UpdateLayout(this.Mode);
-        }
-
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
@@ -592,11 +585,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                     return;
                 }
 
+                //
+                // Rearrange controls based on new size.
+                //
+                // NB. If any of the above conditions applied, we must skip
+                // this step since the size data might be inaccurate.
+                //
+                UpdateLayout(this.Mode);
+
                 if (this.autoResize)
                 {
-                    // Do not resize immediately since there might be another resitze
+                    //
+                    // Do not resize immediately since there might be another resize
                     // event coming in a few miliseconds. Instead, delay the operation
                     // by deferring it to a timer.
+                    //
                     this.reconnectToResizeTimer.Start();
                 }
             }
