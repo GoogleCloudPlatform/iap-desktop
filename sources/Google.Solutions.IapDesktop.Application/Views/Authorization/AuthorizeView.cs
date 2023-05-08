@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
@@ -36,8 +37,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         {
             InitializeComponent();
 
+            //
             // Don't maximize when double-clicking title bar.
+            //
             this.MaximumSize = this.Size;
+
+            //
+            // Show the right icon in Alt+Tab.
+            //
+            this.Icon = Resources.logo;
         }
 
         public void Bind(AuthorizeViewModel viewModel, IBindingContext bindingContext)
