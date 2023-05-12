@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Runtime;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test.Util
+namespace Google.Solutions.Common.Test.Runtime
 {
     [TestFixture]
     public class TestReferenceCountedDisposableBase

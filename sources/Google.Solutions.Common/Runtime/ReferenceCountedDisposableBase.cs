@@ -21,16 +21,25 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Common.Runtime
 {
-    public abstract class DisposableBase : IDisposable
+    public abstract class ReferenceCountedDisposableBase : IDisposable
     {
-        public bool IsDisposed { get; private set; }
+        private int referenceCount = 1;
+
+        public bool IsDisposed => this.referenceCount == 0;
 
         protected virtual void Dispose(bool disposing)
         {
-            this.IsDisposed = true;
+        }
+
+        public uint AddReference()
+        {
+            var newRefCount = Interlocked.Increment(ref this.referenceCount);
+            Debug.Assert(newRefCount > 1);
+            return (uint)newRefCount;
         }
 
         //---------------------------------------------------------------------
@@ -39,12 +48,20 @@ namespace Google.Solutions.Common.Util
 
         public void Dispose()
         {
-            Dispose(true);
-            Debug.Assert(this.IsDisposed, "base.Dispose was not called");
-            GC.SuppressFinalize(this);
+            var newRefCount = Interlocked.Decrement(ref this.referenceCount);
+            if (newRefCount == 0)
+            {
+                Dispose(true);
+                Debug.Assert(this.IsDisposed, "base.Dispose was not called");
+                GC.SuppressFinalize(this);
+            }
+            else if (newRefCount < 0)
+            {
+                throw new ObjectDisposedException("Object was disposed");
+            }
         }
 
-        ~DisposableBase()
+        ~ReferenceCountedDisposableBase()
         {
             Debug.Assert(
                 this.IsDisposed,

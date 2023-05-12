@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.Common.Runtime
 {
     public sealed class Disposable : IDisposable
     {

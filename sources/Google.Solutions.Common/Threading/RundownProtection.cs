@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

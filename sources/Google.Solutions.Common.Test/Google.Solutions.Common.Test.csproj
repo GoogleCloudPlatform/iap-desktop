@@ -76,14 +76,14 @@
     <Compile Include="Threading\TestSingleThreadSynchronizationContext.cs" />
     <Compile Include="Threading\TestCancellationTokenExtensions.cs" />
     <Compile Include="Util\TestDateTimeOffsetExtensions.cs" />
-    <Compile Include="Util\TestDisposable.cs" />
-    <Compile Include="Util\TestDisposableBase.cs" />
-    <Compile Include="Util\TestDisposableContainer.cs" />
+    <Compile Include="Runtime\TestDisposable.cs" />
+    <Compile Include="Runtime\TestDisposableBase.cs" />
+    <Compile Include="Runtime\TestDisposableContainer.cs" />
     <Compile Include="Util\TestEnumExtensions.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />
     <Compile Include="Util\TestPrecondition.cs" />
-    <Compile Include="Util\TestReferenceCountedDisposableBase.cs" />
+    <Compile Include="Runtime\TestReferenceCountedDisposableBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,35 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using NUnit.Framework;
 
-namespace Google.Solutions.Common.Test.Util
+namespace Google.Solutions.Common.Test.Runtime
 {
     [TestFixture]
-    public class TestDisposable
+    public class TestDisposableBase
     {
-        [Test]
-        public void WhenWrappedAsComponent_ThenDisposingComponentInvokesAction()
+        private class SampleDisposable : DisposableBase
         {
-            bool called = false;
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+            }
+        }
 
-            var component = Disposable
-                .For(() => called = true)
-                .AsComponent();
+        [Test]
+        public void WhenNotDisposed_ThenIsDisposedIsFalse()
+        {
+            Assert.IsFalse(new SampleDisposable().IsDisposed);
+        }
 
-            component.Dispose();
-
-            Assert.IsTrue(called);
+        [Test]
+        public void WhenDisposedMoreThanOnce_ThenIsDisposedIsTrue()
+        {
+            var d = new SampleDisposable();
+            d.Dispose();
+            d.Dispose(); // Again.
+            Assert.IsTrue(d.IsDisposed);
         }
     }
 }

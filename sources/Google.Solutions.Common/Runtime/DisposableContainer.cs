@@ -19,11 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Common.Runtime
 {
     /// <summary>
     /// Container for IDisposable objects that can be disposed

@@ -19,35 +19,37 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using NUnit.Framework;
+using System;
+using System.Diagnostics;
 
-namespace Google.Solutions.Common.Test.Util
+namespace Google.Solutions.Common.Runtime
 {
-    [TestFixture]
-    public class TestDisposableBase
+    public abstract class DisposableBase : IDisposable
     {
-        private class SampleDisposable : DisposableBase
+        public bool IsDisposed { get; private set; }
+
+        protected virtual void Dispose(bool disposing)
         {
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-            }
+            this.IsDisposed = true;
         }
 
-        [Test]
-        public void WhenNotDisposed_ThenIsDisposedIsFalse()
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
         {
-            Assert.IsFalse(new SampleDisposable().IsDisposed);
+            Dispose(true);
+            Debug.Assert(this.IsDisposed, "base.Dispose was not called");
+            GC.SuppressFinalize(this);
         }
 
-        [Test]
-        public void WhenDisposedMoreThanOnce_ThenIsDisposedIsTrue()
+        ~DisposableBase()
         {
-            var d = new SampleDisposable();
-            d.Dispose();
-            d.Dispose(); // Again.
-            Assert.IsTrue(d.IsDisposed);
+            Debug.Assert(
+                this.IsDisposed,
+                "Object was not disposed or base.Dispose was not called");
+            Dispose(disposing: false);
         }
     }
 }
