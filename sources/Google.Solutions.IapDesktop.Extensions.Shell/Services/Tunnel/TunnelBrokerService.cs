@@ -25,6 +25,7 @@ using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;

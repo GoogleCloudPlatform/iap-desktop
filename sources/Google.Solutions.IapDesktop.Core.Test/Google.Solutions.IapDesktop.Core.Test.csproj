@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectModel\TestEventService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transport\Protocols\TestProtocolRegistry.cs" />
   </ItemGroup>
