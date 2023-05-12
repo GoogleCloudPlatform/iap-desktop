@@ -20,56 +20,18 @@ namespace Google.Solutions.IapDesktop.Core.Transport
 
 
 
-    public class TransportProfiles
-    {
-        public IProtocol GetAvailableProfiles(ITransportTarget target)
-        {
-            throw new NotImplementedException();
-        }
-
-    }
-
-    public interface ITransportBroker
+    public interface ITransportBroker : IDisposable
     {
         IEnumerable<ITransport> Active { get; }
+
+        // create IapTransport, VpcTransport, IapOnPremTransport
+
         Task<ITransport> CreateIapTransportAsync(/*...*/);
         Task<ITransport> CreateVpcTransportAsync(/*...*/);
-    }
-
-    public interface ITransport : IDisposable // IapTransport, VpcTransport, IapOnPremTransport
-    {
-        ISshRelayPolicy Policy { get; }
-
-
-        TransportFlags Flags { get; }
-
-        TransportStatistics Statistics { get; }
-
-     
-        Task Probe(TimeSpan timeout);
-
-        /// <summary>
-        /// Endpoint to connect to. This might be a localhost endpoint.
-        /// </summary>
-        IPEndPoint LocalEndpoint { get; }
-
     }
 
     public interface ITransport<TTarget> : ITransport where TTarget : ITransportTarget
     {
         TTarget Target { get; }
-    }
-
-    [Flags]
-    public enum TransportFlags
-    {
-        None,
-        Mtls
-    }
-
-    public struct TransportStatistics
-    {
-        public ulong BytesReceived;
-        public ulong BytesTransmitted;
     }
 }

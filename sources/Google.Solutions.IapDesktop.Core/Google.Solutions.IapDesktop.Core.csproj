@@ -34,6 +34,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,15 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Transport\Protocols\AppProtocol.cs" />
-    <Compile Include="Transport\Protocols\AppProtocolRegistry.cs" />
-    <Compile Include="Transport\Protocols\ISelector.cs" />
+    <Compile Include="Transport\ITransport.cs" />
+    <Compile Include="Transport\Protocols\ClientProtocol.cs" />
+    <Compile Include="Transport\Protocols\ProtocolRegistry.cs" />
     <Compile Include="Transport\_Scratch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transport\IProtocol.cs" />
     <Compile Include="Transport\ITransportTarget.cs" />
+    <Compile Include="Transport\Traits\InstanceTrait.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">
       <Project>{790f1966-eb34-4cf2-8ed3-3e6c96cba397}</Project>

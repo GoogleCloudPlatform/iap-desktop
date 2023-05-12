@@ -19,35 +19,51 @@
 // under the License.
 //
 
-using System.Collections.Generic;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Transport
 {
-    /// <summary>
-    /// A target that you can connect a transport to.
-    /// </summary>
-    public interface ITransportTarget
+    public interface ITransport : IDisposable 
     {
         /// <summary>
-        /// Name of the target, suitable for displaying.
+        /// Flags, informative.
         /// </summary>
-        string ToString();
+        TransportFlags Flags { get; }
 
         /// <summary>
-        /// Traits of this target that can be used to determine
-        /// applicable protocols.
+        /// Traffic statistics.
         /// </summary>
-        IEnumerable<ITransportTargetTrait> Traits { get; }
+        TransportStatistics Statistics { get; }
+
+        /// <summary>
+        /// Probe if this transport works. Throws an exception
+        /// in case of a negative probe.
+        /// </summary>
+        Task Probe(TimeSpan timeout);
+
+        /// <summary>
+        /// Endpoint that clients can connect to. This might 
+        /// be a localhost endpoint.
+        /// </summary>
+        IPEndPoint LocalEndpoint { get; }
     }
 
-    /// <summary>
-    /// Represents some trait of the target.
-    /// </summary>
-    public interface ITransportTargetTrait
+    [Flags]
+    public enum TransportFlags
     {
+        None,
+
         /// <summary>
-        /// Description, suitable for displaying.
+        /// Transport is using mTLS.
         /// </summary>
-        string ToString();
+        Mtls
+    }
+
+    public struct TransportStatistics
+    {
+        public ulong BytesReceived;
+        public ulong BytesTransmitted;
     }
 }
