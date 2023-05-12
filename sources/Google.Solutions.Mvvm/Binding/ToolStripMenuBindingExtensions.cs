@@ -94,7 +94,7 @@ namespace Google.Solutions.Mvvm.Binding
             bindingContext.OnBindingCreated(
                 item,
                 Disposable.For(() => item.Click -= OnClick));
-
+                    
             var subCommands = getChildren(model);
             if (subCommands != null)
             {

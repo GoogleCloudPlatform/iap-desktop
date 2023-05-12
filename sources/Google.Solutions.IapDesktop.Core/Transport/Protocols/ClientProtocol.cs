@@ -120,7 +120,8 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         // IProtocolContext.
         //---------------------------------------------------------------------
 
-        public Task<ITransport> ConnectTransportAsync(CancellationToken cancellationToken)
+        public Task<ITransport> ConnectTransportAsync(
+            CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
@@ -132,7 +133,8 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         // Publics.
         //---------------------------------------------------------------------
 
-        public Task LaunchAppAsync(CancellationToken cancellationToken)
+        public Task LaunchAppAsync(
+            CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

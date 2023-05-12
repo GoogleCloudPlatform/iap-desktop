@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,9 +52,10 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// </summary>
         Task<ITransport> CreateIapTransportAsync(
             IProtocol protocol,
+            ISshRelayPolicy policy,
             InstanceLocator instance,
             ushort remotePort,
-            // TODO: local address/port, policy
+            IPAddress localAddress,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -60,6 +63,17 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// 
         /// IAP transports are never shared.
         /// </summary>
-        Task<ITransport> CreateVpcTransportAsync(/*...*/);
+        Task<ITransport> CreateIpTransportAsync(
+            IProtocol protocol,
+            ISshRelayPolicy policy,
+            IPAddress remoteAddress,
+            IPAddress localAddress,
+            CancellationToken cancellationToken);
+
+        //Task<ITransport> CreateIapSocksTransportAsync(
+        //    IProtocol protocol,
+        //    ISshRelayPolicy policy,
+        //    DestinationGroupLocator destinationGroup,
+        //    CancellationToken cancellationToken);
     }
 }
