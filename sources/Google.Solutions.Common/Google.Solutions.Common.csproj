@@ -74,6 +74,8 @@
     <Compile Include="Util\LinqExtensions.cs" />
     <Compile Include="Util\Parallel.cs" />
     <Compile Include="Util\Precondition.cs" />
+    <Compile Include="Util\DisposableBase.cs" />
+    <Compile Include="Util\ReferenceCountedDisposableBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             IProtocol protocol,
             InstanceLocator instance,
             ushort remotePort,
+            // TODO: local address/port, policy
             CancellationToken cancellationToken);
 
         /// <summary>
