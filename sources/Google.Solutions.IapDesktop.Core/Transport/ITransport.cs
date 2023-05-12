@@ -25,8 +25,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Transport
 {
-    public interface ITransport : IDisposable 
+    public interface ITransport : IDisposable
     {
+        /// <summary>
+        /// Protocol this transport has been created for.
+        /// </summary>
+        IProtocol Protocol { get; }
+
         /// <summary>
         /// Flags, informative.
         /// </summary>

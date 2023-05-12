@@ -97,11 +97,11 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         {
             if (!string.IsNullOrEmpty(this.LaunchCommand))
             {
-                // TODO
+                // TODO: implement
             }
             else
             {
-                // TODO
+                // TODO: implement
             }
 
             throw new NotImplementedException();
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         // Parsing.
         //---------------------------------------------------------------------
 
-        // TODO: To/from JSON
+        // TODO: implement 
     }
 
     public class ClientProtocolContext : IProtocolContext
