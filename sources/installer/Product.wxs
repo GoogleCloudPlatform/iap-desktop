@@ -199,6 +199,12 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
           Vital="yes"/>
         <File
+          Id="FileGoogleSolutionsIapDesktopCoreDll"
+          Name="Google.Solutions.IapDesktop.Core.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Core.dll"
+          Vital="yes"/>
+        <File
           Id="FileGoogleSolutionsIapDll"
           Name="Google.Solutions.Iap.dll"
           DiskId="1"
