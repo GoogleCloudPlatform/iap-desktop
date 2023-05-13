@@ -27,6 +27,7 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Core.Auth;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -53,21 +54,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<UserInfo> QueryUserInfoAsync(
             ICredential credential,
             CancellationToken token);
-    }
-
-    public class UserInfo
-    {
-        [JsonProperty("email")]
-        public string Email { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("hd")]
-        public string HostedDomain { get; set; }
-
-        [JsonProperty("sub")]
-        public string Subject { get; set; }
     }
 
     public class SignInAdapter : ISignInAdapter

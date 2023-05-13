@@ -22,46 +22,13 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.Auth;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Auth
 {
-    /// <summary>
-    /// OAuth authorization for this app.
-    /// </summary>
-    public interface IAuthorization
-    {
-        /// <summary>
-        /// Event triggered after a successful reauthorization. Might be
-        /// triggere on any thread.
-        /// </summary>
-        event EventHandler Reauthorized;
-
-        /// <summary>
-        /// Credential to use for Google API requests.
-        /// </summary>
-        ICredential Credential { get; }
-
-        Task RevokeAsync();
-
-        Task ReauthorizeAsync(CancellationToken token);
-
-        string Email { get; }
-
-        /// <summary>
-        /// OIDC user info.
-        /// </summary>
-        UserInfo UserInfo { get; }
-
-        /// <summary>
-        /// Device. This is non-null, but the enrollment might be
-        /// in state "Disabled".
-        /// </summary>
-        IDeviceEnrollment DeviceEnrollment { get; }
-    }
-
     public class Authorization : IAuthorization
     {
         private readonly ISignInAdapter adapter;
