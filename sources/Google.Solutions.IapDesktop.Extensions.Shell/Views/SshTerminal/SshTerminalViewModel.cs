@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         //---------------------------------------------------------------------
 
         public SshTerminalViewModel(
-            IEventService eventService,
+            IEventQueue eventService,
             IJobService jobService,
             IConfirmationDialog confirmationDialog,
             IOperationProgressDialog operationProgressDialog,

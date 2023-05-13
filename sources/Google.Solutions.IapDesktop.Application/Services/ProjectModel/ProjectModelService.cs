@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
         private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
         private readonly IProjectRepository projectRepository;
-        private readonly IEventService eventService;
+        private readonly IEventQueue eventService;
 
         private ResourceLocator activeNode;
 
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             Service<IComputeEngineAdapter> computeEngineAdapter,
             Service<IResourceManagerAdapter> resourceManagerAdapter,
             IProjectRepository projectRepository,
-            IEventService eventService)
+            IEventQueue eventService)
         {
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
             this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 this.projectRepository.AddProject(project);
 
                 await this.eventService
-                    .FireAsync(new ProjectAddedEvent(project.ProjectId))
+                    .Publish(new ProjectAddedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
         }
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 }
 
                 await this.eventService
-                    .FireAsync(new ProjectDeletedEvent(project.ProjectId))
+                    .Publish(new ProjectDeletedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
         }
@@ -502,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                         this.activeNode = locator;
 
                         await this.eventService
-                            .FireAsync(new ActiveProjectChangedEvent(node))
+                            .Publish(new ActiveProjectChangedEvent(node))
                             .ConfigureAwait(true);
 
                         return;
@@ -517,7 +517,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 if (this.cachedRoot != null)
                 {
                     await this.eventService
-                        .FireAsync(new ActiveProjectChangedEvent(this.cachedRoot))
+                        .Publish(new ActiveProjectChangedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
                 }
             }

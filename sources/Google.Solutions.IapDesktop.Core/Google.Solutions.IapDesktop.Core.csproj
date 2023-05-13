@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObjectModel\EventService.cs" />
+    <Compile Include="ObjectModel\EventQueue.cs" />
     <Compile Include="Transport\ITransport.cs" />
     <Compile Include="Transport\ITransportBroker.cs" />
     <Compile Include="Transport\Protocols\ClientProtocol.cs" />

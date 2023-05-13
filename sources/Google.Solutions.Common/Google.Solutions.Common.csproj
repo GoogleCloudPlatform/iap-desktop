@@ -64,6 +64,7 @@
     <Compile Include="Threading\SingleThreadSynchronizationContext.cs" />
     <Compile Include="Threading\StaTask.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
+    <Compile Include="Threading\SynchronousInvokeExtensions.cs" />
     <Compile Include="Threading\WaitHandleExtensions.cs" />
     <Compile Include="Threading\CancellationTokenExtensions.cs" />
     <Compile Include="Util\DateTimeOffsetExtensions.cs" />

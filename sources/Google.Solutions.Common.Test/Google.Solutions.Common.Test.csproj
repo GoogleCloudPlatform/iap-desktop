@@ -75,6 +75,7 @@
     <Compile Include="Threading\TestRundownProtection.cs" />
     <Compile Include="Threading\TestSingleThreadSynchronizationContext.cs" />
     <Compile Include="Threading\TestCancellationTokenExtensions.cs" />
+    <Compile Include="Threading\TestSynchronousInvokeExtensions.cs" />
     <Compile Include="Util\TestDateTimeOffsetExtensions.cs" />
     <Compile Include="Runtime\TestDisposable.cs" />
     <Compile Include="Runtime\TestDisposableBase.cs" />

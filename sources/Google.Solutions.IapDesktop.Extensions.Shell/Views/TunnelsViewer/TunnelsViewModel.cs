@@ -69,21 +69,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         public TunnelsViewModel(
             ITunnelBrokerService tunnelBrokerService,
             IConfirmationDialog confirmationDialog,
-            IEventService eventService)
+            IEventQueue eventService)
         {
             this.tunnelBrokerService = tunnelBrokerService.ExpectNotNull(nameof(tunnelBrokerService));
             this.confirmationDialog = confirmationDialog.ExpectNotNull(nameof(confirmationDialog));
 
             // Keep the model up to date.
-            eventService.BindHandler<TunnelOpenedEvent>(_ => RefreshTunnels());
-            eventService.BindHandler<TunnelClosedEvent>(_ => RefreshTunnels());
+            eventService.Subscribe<TunnelOpenedEvent>(_ => RefreshTunnels());
+            eventService.Subscribe<TunnelClosedEvent>(_ => RefreshTunnels());
         }
 
         public TunnelsViewModel(IServiceProvider serviceProvider)
             : this(
                 serviceProvider.GetService<ITunnelBrokerService>(),
                 serviceProvider.GetService<IConfirmationDialog>(),
-                serviceProvider.GetService<IEventService>())
+                serviceProvider.GetService<IEventQueue>())
         {
         }
 

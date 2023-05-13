@@ -447,7 +447,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Load main services.
                 //
-                var eventService = new EventService(mainForm);
+                var eventService = new EventQueue(mainForm);
 
                 //
                 // Register adapters as singletons to ensure connection resuse.
@@ -457,7 +457,7 @@ namespace Google.Solutions.IapDesktop
 
                 mainLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
                 mainLayer.AddSingleton<IJobService, JobService>();
-                mainLayer.AddSingleton<IEventService>(eventService);
+                mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
                 mainLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
                     profile.SettingsKey.CreateSubKey("Inventory")));

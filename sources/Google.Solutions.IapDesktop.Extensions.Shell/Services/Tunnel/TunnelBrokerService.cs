@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
     public class TunnelBrokerService : ITunnelBrokerService
     {
         private readonly ITunnelService tunnelService;
-        private readonly IEventService eventService;
+        private readonly IEventQueue eventService;
 
         private readonly object tunnelsLock = new object();
         private readonly IDictionary<TunnelDestination, Task<ITunnel>> tunnels =
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 
         public TunnelBrokerService(
             ITunnelService tunnelService,
-            IEventService eventService)
+            IEventQueue eventService)
         {
             this.tunnelService = tunnelService.ExpectNotNull(nameof(tunnelService));
             this.eventService = eventService.ExpectNotNull(nameof(eventService));
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 }
 
                 await this.eventService
-                    .FireAsync(new TunnelOpenedEvent(endpoint))
+                    .Publish(new TunnelOpenedEvent(endpoint))
                     .ConfigureAwait(false);
 
                 return tunnel;
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 }
 
                 await this.eventService
-                    .FireAsync(new TunnelClosedEvent(endpoint))
+                    .Publish(new TunnelClosedEvent(endpoint))
                     .ConfigureAwait(false);
             }
         }

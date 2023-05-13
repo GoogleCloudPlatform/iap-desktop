@@ -72,17 +72,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
             return broker;
         }
 
-        private class MockEventService : IEventService
+        private class MockEventService : IEventQueue
         {
-            public virtual void BindHandler<TEvent>(Action<TEvent> handler)
+            public virtual ISubscription Subscribe<TEvent>(Action<TEvent> handler)
             {
+                return new Mock<ISubscription>().Object;
             }
 
-            public virtual void BindAsyncHandler<TEvent>(Func<TEvent, Task> handler)
+            public virtual ISubscription Subscribe<TEvent>(Func<TEvent, Task> handler)
             {
+                return new Mock<ISubscription>().Object;
             }
 
-            public Task FireAsync<TEvent>(TEvent eventObject)
+            public Task Publish<TEvent>(TEvent eventObject)
             {
                 return Task.FromResult(0);
             }
