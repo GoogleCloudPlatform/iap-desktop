@@ -177,6 +177,10 @@
       <Project>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj">
+      <Project>{FF0BB781-E398-4E13-8182-83450082A818}</Project>
+      <Name>Google.Solutions.IapDesktop.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Management\Google.Solutions.IapDesktop.Extensions.Management.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Management</Name>
