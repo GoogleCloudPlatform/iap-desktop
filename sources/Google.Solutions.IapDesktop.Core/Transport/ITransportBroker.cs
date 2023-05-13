@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,61 +19,28 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
-using Google.Solutions.Iap.Protocol;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Transport
 {
     /// <summary>
-    /// Creates and brokers transport objects, intended to be
-    /// used as singleton.
+    /// Brokers transport objects, creating them as necessary,
+    /// and sharing existing transports when possible.
+    /// 
+    /// * IAP transports are always shared.
+    /// * VPC transports are never shared.
     /// 
     /// Callers must dispose transports when they're done. Once a
     /// transport's reference count drops to zero, it's closed.
     /// 
-    /// Disposing force-closes all transports.
+    /// Disposing the broker force-closes all transports.
     /// </summary>
-    public interface ITransportBroker : IDisposable
+    public interface ITransportBroker : ITransportFactory, IDisposable
     {
         /// <summary>
         /// Return a list of all currently active transports.
         /// </summary>
         IEnumerable<ITransport> Active { get; }
-
-        /// <summary>
-        /// Create or get a transport to a VM instance/port.
-        /// 
-        /// IAP transports are always shared.
-        /// </summary>
-        Task<ITransport> CreateIapTransportAsync(
-            IProtocol protocol,
-            ISshRelayPolicy policy,
-            InstanceLocator instance,
-            ushort remotePort,
-            IPAddress localAddress,
-            CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Create or get a VPC transport to a VM instance/port.
-        /// 
-        /// IAP transports are never shared.
-        /// </summary>
-        Task<ITransport> CreateIpTransportAsync(
-            IProtocol protocol,
-            ISshRelayPolicy policy,
-            IPAddress remoteAddress,
-            IPAddress localAddress,
-            CancellationToken cancellationToken);
-
-        //Task<ITransport> CreateIapSocksTransportAsync(
-        //    IProtocol protocol,
-        //    ISshRelayPolicy policy,
-        //    DestinationGroupLocator destinationGroup,
-        //    CancellationToken cancellationToken);
     }
 }

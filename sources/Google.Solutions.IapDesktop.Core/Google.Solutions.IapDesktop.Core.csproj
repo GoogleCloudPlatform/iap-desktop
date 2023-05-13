@@ -50,6 +50,7 @@
     <Compile Include="ObjectModel\EventQueue.cs" />
     <Compile Include="Transport\ITransport.cs" />
     <Compile Include="Transport\ITransportBroker.cs" />
+    <Compile Include="Transport\ITransportFactory.cs" />
     <Compile Include="Transport\Protocols\ClientProtocol.cs" />
     <Compile Include="Transport\Protocols\ProtocolRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
