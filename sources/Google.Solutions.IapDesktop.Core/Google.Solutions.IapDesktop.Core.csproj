@@ -57,6 +57,7 @@
     <Compile Include="Transport\IProtocol.cs" />
     <Compile Include="Transport\IProtocolTarget.cs" />
     <Compile Include="Transport\Traits\InstanceTrait.cs" />
+    <Compile Include="Transport\IapTransportPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

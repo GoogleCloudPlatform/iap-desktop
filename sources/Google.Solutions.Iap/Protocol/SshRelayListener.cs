@@ -34,7 +34,23 @@ namespace Google.Solutions.Iap.Protocol
     /// SSH Relay tunnel (and vice versa). The local socket effectively
     /// serves as a "proxy" for the target port of the SSH Relay tunnel.
     /// </summary>
-    public class SshRelayListener
+    public interface ISshRelayListener
+    {
+        int LocalPort { get; }
+
+        /// <summary>
+        /// Statistics for all connections made using
+        /// this listener.
+        /// </summary>
+        ConnectionStatistics Statistics { get; }
+
+        /// <summary>
+        /// Perpetually listen and relay traffic until cancelled.
+        /// </summary>
+        Task ListenAsync(CancellationToken token);
+    }
+
+    public class SshRelayListener : ISshRelayListener
     {
         private const int BacklogLength = 32;
 
@@ -139,9 +155,6 @@ namespace Google.Solutions.Iap.Protocol
             return new SshRelayListener(server, policy, port);
         }
 
-        /// <summary>
-        /// Perpetually listen and relay traffic until cancelled.
-        /// </summary>
         public Task ListenAsync(CancellationToken token)
         {
             //
