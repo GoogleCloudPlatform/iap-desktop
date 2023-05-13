@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
     {
         public ClientProtocol(
             string name,
-            IEnumerable<ITransportTargetTrait> requiredTraits,
+            IEnumerable<IProtocolTargetTrait> requiredTraits,
             ISshRelayPolicy relayPolicy,
             ushort remotePort,
             IPAddress localPort,
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         /// <summary>
         /// Traits that a target has to have to use this protocol.
         /// </summary>
-        public IEnumerable<ITransportTargetTrait> RequiredTraits { get; }
+        public IEnumerable<IProtocolTargetTrait> RequiredTraits { get; }
 
         /// <summary>
         /// Relay policy that defines who can connect to the local port.
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
 
         public string Name { get; }
 
-        public bool IsAvailable(ITransportTarget target)
+        public bool IsAvailable(IProtocolTarget target)
         {
             return this.RequiredTraits
                 .EnsureNotNull()
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         }
 
         public Task<IProtocolContext> CreateContextAsync(
-            ITransportTarget target,
+            IProtocolTarget target,
             CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(this.LaunchCommand))

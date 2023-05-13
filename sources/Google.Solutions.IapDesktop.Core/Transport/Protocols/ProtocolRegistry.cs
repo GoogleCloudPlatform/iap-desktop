@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         public IEnumerable<IProtocol> Protocols => this.protocols;
 
         public IEnumerable<IProtocol> GetAvailableProtocols(
-            ITransportTarget target)
+            IProtocolTarget target)
         {
             return this.protocols
                 .EnsureNotNull()

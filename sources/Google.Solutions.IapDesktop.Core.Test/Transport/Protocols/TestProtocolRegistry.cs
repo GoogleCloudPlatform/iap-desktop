@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport.Protocols
         public void WhenNoProtocolsRegistered_ThenGetAvailableProtocolsReturnsEmpty()
         {
             var registry = new ProtocolRegistry();
-            var protocols = registry.GetAvailableProtocols(new Mock<ITransportTarget>().Object);
+            var protocols = registry.GetAvailableProtocols(new Mock<IProtocolTarget>().Object);
 
             Assert.IsNotNull(protocols);
             CollectionAssert.IsEmpty(protocols);
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport.Protocols
         [Test]
         public void WhenNoProtocolsAvailable_ThenGetAvailableProtocolsReturnsEmpty()
         {
-            var target = new Mock<ITransportTarget>().Object;
+            var target = new Mock<IProtocolTarget>().Object;
             var unavailableProtocol = new Mock<IProtocol>();
             unavailableProtocol.Setup(p => p.IsAvailable(target)).Returns(false);
 

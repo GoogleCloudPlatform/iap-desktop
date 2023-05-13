@@ -26,7 +26,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
     /// <summary>
     /// A target that you can connect a transport to.
     /// </summary>
-    public interface ITransportTarget
+    public interface IProtocolTarget
     {
         /// <summary>
         /// Name of the target, suitable for displaying.
@@ -37,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// Traits of this target that can be used to determine
         /// applicable protocols.
         /// </summary>
-        IEnumerable<ITransportTargetTrait> Traits { get; }
+        IEnumerable<IProtocolTargetTrait> Traits { get; }
     }
 
     /// <summary>
     /// Represents some trait of the target.
     /// </summary>
-    public interface ITransportTargetTrait
+    public interface IProtocolTargetTrait
     {
         /// <summary>
         /// Description, suitable for displaying.

@@ -37,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// <summary>
         /// Check if this profile is applicable for the given target.
         /// </summary>
-        bool IsAvailable(ITransportTarget target);
+        bool IsAvailable(IProtocolTarget target);
 
         /// <summary>
         /// Create a context for the given target.
         /// </summary>
         Task<IProtocolContext> CreateContextAsync(
-            ITransportTarget target,
+            IProtocolTarget target,
             CancellationToken cancellationToken);
     }
 

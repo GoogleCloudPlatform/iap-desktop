@@ -55,7 +55,7 @@
     <Compile Include="Transport\Protocols\ProtocolRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transport\IProtocol.cs" />
-    <Compile Include="Transport\ITransportTarget.cs" />
+    <Compile Include="Transport\IProtocolTarget.cs" />
     <Compile Include="Transport\Traits\InstanceTrait.cs" />
   </ItemGroup>
   <ItemGroup>
