@@ -19,10 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.Net.Transport;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.Transport
+namespace Google.Solutions.IapDesktop.Core.Net.Protocol
 {
     /// <summary>
     /// A protocol that can be used atop a transport for certain targets.

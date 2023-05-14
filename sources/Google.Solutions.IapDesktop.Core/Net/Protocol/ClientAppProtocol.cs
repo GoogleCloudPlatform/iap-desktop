@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Protocol;
+using Google.Solutions.IapDesktop.Core.Net.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
+namespace Google.Solutions.IapDesktop.Core.Net.Protocol
 {
     public class ClientProtocol : IProtocol
     {

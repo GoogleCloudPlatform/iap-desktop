@@ -63,9 +63,9 @@
   <ItemGroup>
     <Compile Include="ObjectModel\TestEventQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transport\Protocols\TestProtocolRegistry.cs" />
-    <Compile Include="Transport\TestIapTransportFactory.cs" />
-    <Compile Include="Transport\TestIapTransportFactory.TunnelSpecification.cs" />
+    <Compile Include="Net\Protocol\TestProtocolRegistry.cs" />
+    <Compile Include="Net\Transport\TestIapTransportFactory.cs" />
+    <Compile Include="Net\Transport\TestIapTransportFactory.TunnelSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">
@@ -92,7 +92,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <Compile Include="Transport\TestIapTransportFactory.Tunnel.cs" />
+    <Compile Include="Net\Transport\TestIapTransportFactory.Tunnel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

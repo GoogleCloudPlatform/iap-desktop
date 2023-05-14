@@ -67,15 +67,15 @@
     <Compile Include="Auth\IDeviceEnrollment.cs" />
     <Compile Include="Auth\UserInfo.cs" />
     <Compile Include="ObjectModel\EventQueue.cs" />
-    <Compile Include="Transport\IapTransportFactory.cs" />
-    <Compile Include="Transport\ITransport.cs" />
-    <Compile Include="Transport\IIapTransportFactory.cs" />
-    <Compile Include="Transport\Protocols\ClientProtocol.cs" />
-    <Compile Include="Transport\Protocols\ProtocolRegistry.cs" />
+    <Compile Include="Net\Transport\IapTransportFactory.cs" />
+    <Compile Include="Net\Transport\ITransport.cs" />
+    <Compile Include="Net\Transport\IIapTransportFactory.cs" />
+    <Compile Include="Net\Protocol\ClientAppProtocol.cs" />
+    <Compile Include="Net\Protocol\ProtocolRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transport\IProtocol.cs" />
-    <Compile Include="Transport\IProtocolTarget.cs" />
-    <Compile Include="Transport\Traits\InstanceTrait.cs" />
+    <Compile Include="Net\Protocol\IProtocol.cs" />
+    <Compile Include="Net\Protocol\IProtocolTarget.cs" />
+    <Compile Include="Net\Traits\InstanceTrait.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

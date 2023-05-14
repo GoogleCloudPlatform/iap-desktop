@@ -27,6 +27,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.Net.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +36,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.Transport
+namespace Google.Solutions.IapDesktop.Core.Net.Transport
 {
     /// <summary>
     /// Factory for IAP transports.

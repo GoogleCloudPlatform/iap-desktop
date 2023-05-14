@@ -19,34 +19,19 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
+namespace Google.Solutions.IapDesktop.Core.Net.Traits
 {
-    /// <summary>
-    /// Registry for protocols, intended to be used as a singleton.
-    /// </summary>
-    public class ProtocolRegistry
+    public class InstanceTrait
     {
-        private readonly ConcurrentBag<IProtocol> protocols
-            = new ConcurrentBag<IProtocol>();
-
-        public IEnumerable<IProtocol> Protocols => this.protocols;
-
-        public IEnumerable<IProtocol> GetAvailableProtocols(
-            IProtocolTarget target)
+        private InstanceTrait()
         {
-            return this.protocols
-                .EnsureNotNull()
-                .Where(p => p.IsAvailable(target));
         }
 
-        public void RegisterProtocol(IProtocol protocol)
+        public static InstanceTrait Instance { get; } = new InstanceTrait();
+
+        public override string ToString()
         {
-            this.protocols.Add(protocol);
+            return "is-instance";
         }
     }
 }

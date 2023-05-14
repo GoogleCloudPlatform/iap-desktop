@@ -19,23 +19,35 @@
 // under the License.
 //
 
-using System;
-using System.Net;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Core.Transport
+namespace Google.Solutions.IapDesktop.Core.Net.Protocol
 {
-    public interface ITransport : IDisposable
+    /// <summary>
+    /// A target that you can connect a transport to.
+    /// </summary>
+    public interface IProtocolTarget
     {
         /// <summary>
-        /// Protocol this transport has been created for.
+        /// Name of the target, suitable for displaying.
         /// </summary>
-        IProtocol Protocol { get; }
+        string ToString();
 
         /// <summary>
-        /// Endpoint that clients can connect to. This might 
-        /// be a localhost endpoint.
+        /// Traits of this target that can be used to determine
+        /// applicable protocols.
         /// </summary>
-        IPEndPoint LocalEndpoint { get; }
+        IEnumerable<IProtocolTargetTrait> Traits { get; }
+    }
+
+    /// <summary>
+    /// Represents some trait of the target.
+    /// </summary>
+    public interface IProtocolTargetTrait
+    {
+        /// <summary>
+        /// Description, suitable for displaying.
+        /// </summary>
+        string ToString();
     }
 }

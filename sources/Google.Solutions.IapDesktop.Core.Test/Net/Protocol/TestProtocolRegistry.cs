@@ -19,13 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.Transport;
-using Google.Solutions.IapDesktop.Core.Transport.Protocols;
+using Google.Solutions.IapDesktop.Core.Net.Protocol;
 using Moq;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Core.Test.Transport.Protocols
+namespace Google.Solutions.IapDesktop.Core.Test.Net.Protocol
 {
     [TestFixture]
     public class TestProtocolRegistry

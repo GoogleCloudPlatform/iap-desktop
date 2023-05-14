@@ -21,12 +21,13 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
-using Google.Solutions.IapDesktop.Core.Transport;
+using Google.Solutions.IapDesktop.Core.Net.Protocol;
+using Google.Solutions.IapDesktop.Core.Net.Transport;
 using Moq;
 using NUnit.Framework;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Core.Test.Transport
+namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 {
     [TestFixture]
     public class TestIapTransportFactoryTunnelSpecification
