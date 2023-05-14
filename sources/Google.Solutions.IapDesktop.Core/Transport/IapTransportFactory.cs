@@ -107,6 +107,24 @@ namespace Google.Solutions.IapDesktop.Core.Transport
                         specification,
                         probeTimeout,
                         cancellationToken);
+
+                    //
+                    // Track lifecycle.
+                    //
+                    tunnelTask = tunnelTask.ContinueWith(t =>
+                    { 
+                        OnTunnelCreated(t.Result);
+                        t.Result.Closed += OnClosed;
+                        return t.Result;
+                    });
+
+                    void OnClosed(object sender, EventArgs __)
+                    {
+                        var tunnel = (Tunnel)sender;
+                        OnTunnelClosed(tunnel);
+                        tunnel.Closed -= OnClosed;
+                    }
+
                     this.tunnelPool[specification] = tunnelTask;
                 }
 
@@ -131,6 +149,12 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             this.tunnelPoolLock = new object();
             this.tunnelPool = new Dictionary<TunnelSpecification, Task<Tunnel>>();
         }
+
+        protected virtual void OnTunnelCreated(Tunnel tunnel)
+        { }
+
+        protected virtual void OnTunnelClosed(Tunnel tunnel)
+        { }
 
         //---------------------------------------------------------------------
         // IIapTransportFactory.
@@ -275,6 +299,8 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             private readonly ISshRelayListener listener;
             private readonly Task listenTask;
 
+            internal event EventHandler Closed;
+
             //TODO: Expose target instance, port
 
             internal Tunnel(
@@ -294,6 +320,9 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             internal Task CloseAsync()
             {
                 this.stopListenerSource.Cancel();
+
+                this.Closed?.Invoke(this, EventArgs.Empty);
+
                 return this.listenTask;
             }
 
@@ -304,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
                     //
                     // Last reference is gone, stop the listener.
                     //
-                    this.stopListenerSource.Cancel();
+                    _ = CloseAsync();
                 }
 
                 base.Dispose(disposing);
@@ -336,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// </summary>
         public class TunnelFactory
         {
-            public async virtual Task<Tunnel> CreateTunnelAsync( // TODO: Add Integration test
+            public async virtual Task<Tunnel> CreateTunnelAsync( // TODO: Add Integration test, double-check/compare logic
                 IAuthorization authorization,
                 UserAgent userAgent,
                 TunnelSpecification specification,
@@ -387,10 +416,12 @@ namespace Google.Solutions.IapDesktop.Core.Transport
                         specification.Policy,
                         specification.LocalEndpoint.Port);
 
-                    return new Tunnel(
+                    var tunnel = new Tunnel(
                         listener, 
                         specification.LocalEndpoint,
                         clientCertificate != null ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
+
+                    return tunnel;
                 }
             }
         }

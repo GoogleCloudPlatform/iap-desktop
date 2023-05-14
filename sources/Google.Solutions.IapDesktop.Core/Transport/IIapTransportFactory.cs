@@ -53,6 +53,9 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             CancellationToken cancellationToken);
     }
 
+    /// <summary>
+    /// Tunnel used to provide a transport.
+    /// </summary>
     public interface IIapTunnel
     {
         IapTunnelStatistics Statistics { get; }

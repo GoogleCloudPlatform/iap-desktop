@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.Transport;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -218,6 +219,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport
                  faultingSpec.LocalEndpoint,
                  SampleTimeout,
                  CancellationToken.None);
+
+            //
+            // Await task to make sure it's really faulted before we make
+            // the next request.
+            //
+            ExceptionAssert.ThrowsAggregateException<ApplicationException>(
+                () => faultingTransport1.Wait());
+
             var faultingTransport2 = factory.CreateIapTransportAsync(
                  faultingSpec.Protocol,
                  faultingSpec.Policy,
