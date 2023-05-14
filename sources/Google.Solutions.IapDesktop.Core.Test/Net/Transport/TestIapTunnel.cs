@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 {
     [TestFixture]
-    public class TestIapTransportFactoryTunnel
+    public class TestIapTunnel
     {
         private static readonly IPEndPoint LoopbackEndpoint
             = new IPEndPoint(IPAddress.Loopback, 8000);
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
             listener.SetupGet(l => l.LocalPort).Returns(LoopbackEndpoint.Port);
             listener.SetupGet(l => l.Statistics).Returns(new Iap.Net.ConnectionStatistics());
 
-            using (var tunnel = new IapTransportFactory.Tunnel(
+            using (var tunnel = new IapTunnel(
                 listener.Object,
                 LoopbackEndpoint,
                 IapTunnelFlags.None))
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
             var listener = new Mock<ISshRelayListener>();
             listener.SetupGet(l => l.LocalPort).Returns(LoopbackEndpoint.Port);
 
-            using (var tunnel = new IapTransportFactory.Tunnel(
+            using (var tunnel = new IapTunnel(
                 listener.Object,
                 LoopbackEndpoint,
                 IapTunnelFlags.None))
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 .Callback((CancellationToken t) => token = t)
                 .Returns(Task.CompletedTask);
 
-            using (new IapTransportFactory.Tunnel(
+            using (new IapTunnel(
                 listener.Object,
                 LoopbackEndpoint,
                 IapTunnelFlags.None))
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 .Callback((CancellationToken t) => token = t)
                 .Returns(listenTask);
 
-            using (var tunnel = new IapTransportFactory.Tunnel(
+            using (var tunnel = new IapTunnel(
                 listener.Object,
                 LoopbackEndpoint,
                 IapTunnelFlags.None))

@@ -30,7 +30,7 @@ using System.Net;
 namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 {
     [TestFixture]
-    public class TestIapTransportFactoryTunnelSpecification
+    public class TestIapTunnelProfile
     {
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -55,14 +55,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
-            var ref2 = new IapTransportFactory.TunnelSpecification(
+            var ref2 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
@@ -97,14 +97,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenPoliciesDiffer_ThenEqualsReturnsFalse()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
-            var ref2 = new IapTransportFactory.TunnelSpecification(
+            var ref2 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-2"),
                 SampleInstance,
@@ -121,14 +121,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenProtocolsDiffer_ThenEqualsReturnsFalse()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
-            var ref2 = new IapTransportFactory.TunnelSpecification(
+            var ref2 = new IapTunnel.Profile(
                 CreateProtocol("protocol-2"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
@@ -145,14 +145,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenInstancesDiffer_ThenEqualsReturnsFalse()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
-            var ref2 = new IapTransportFactory.TunnelSpecification(
+            var ref2 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 new InstanceLocator("project-1", "zone-1", "instance-2"),
@@ -169,14 +169,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenPortsDiffer_ThenEqualsReturnsFalse()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
-            var ref2 = new IapTransportFactory.TunnelSpecification(
+            var ref2 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
@@ -193,14 +193,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void WhenLocalEndpointsDiffer_ThenEqualsReturnsFalse()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
-            var ref2 = new IapTransportFactory.TunnelSpecification(
+            var ref2 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new IapTransportFactory.TunnelSpecification(
+            var ref1 = new IapTunnel.Profile(
                 CreateProtocol("protocol-1"),
                 CreatePolicy("policy-1"),
                 SampleInstance,
