@@ -1,4 +1,25 @@
-﻿using Google.Solutions.Apis.Client;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
@@ -9,6 +30,7 @@ using Google.Solutions.IapDesktop.Core.Auth;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,13 +48,12 @@ namespace Google.Solutions.IapDesktop.Core.Transport
     /// is no more transport that references a specific tunnel, the
     /// tunnel is closed too.
     /// 
-    /// 
-    /// Transport (used by a single client)
-    ///   n |
-    ///     |    1
-    ///     +-----> Tunnel (shared)
-    ///                |     1
-    ///                +------> SshRelay
+    ///     Transport (used by a single client)
+    ///       n |
+    ///         |    1
+    ///         +-----> Tunnel (shared, reference-counted)
+    ///                    |     1
+    ///                    +------> SshRelay
     ///                
     /// </summary>
     public class IapTransportFactory : IIapTransportFactory
@@ -63,6 +84,12 @@ namespace Google.Solutions.IapDesktop.Core.Transport
                     //
                     CoreTraceSources.Default.TraceInformation(
                         "Using pooled tunnel for {0}", specification);
+
+                    tunnelTask = tunnelTask.ContinueWith(t =>
+                    {
+                        t.Result.AddReference();
+                        return t.Result;
+                    });
                 }
                 else
                 {
@@ -109,7 +136,24 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         // IIapTransportFactory.
         //---------------------------------------------------------------------
 
-        //TODO: Expose active tunnels
+        public IEnumerable<IIapTunnel> Pool
+        {
+            get
+            {
+                lock (this.tunnelPoolLock)
+                {
+                    var tunnels = this.tunnelPool
+                        .Values
+                        .Where(t => t.IsCompleted && !t.IsFaulted)
+                        .Select(t => t.Result);
+
+                    //
+                    // Return a snapshot (so that we can leave the lock).
+                    //
+                    return new List<IIapTunnel>(tunnels);
+                }
+            }
+        }
 
         public async Task<ITransport> CreateIapTransportAsync(
             IProtocol protocol,
@@ -142,8 +186,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
 
             return new Transport(
                 tunnel,
-                protocol,
-                tunnel.IsMtlsEnabled ? TransportFlags.Mtls : TransportFlags.None);
+                protocol);
         }
 
         //---------------------------------------------------------------------
@@ -154,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// Defines all the parameters that define a tunnel. If the specification
         /// is the same, a tunnel can be shared.
         /// </summary>
-        internal class TunnelSpecification : IEquatable<TunnelSpecification> 
+        public class TunnelSpecification : IEquatable<TunnelSpecification> 
         {
             public IProtocol Protocol { get; }
             public ISshRelayPolicy Policy { get; }
@@ -162,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             public ushort TargetPort { get; }
             public IPEndPoint LocalEndpoint { get; }
 
-            public TunnelSpecification(
+            internal TunnelSpecification(
                 IProtocol protocol,
                 ISshRelayPolicy policy,
                 InstanceLocator targetInstance,
@@ -226,42 +269,27 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// <summary>
         /// A sharable tunnel that uses an IAP relay listener.
         /// </summary>
-        internal class Tunnel : ReferenceCountedDisposableBase
+        public class Tunnel : ReferenceCountedDisposableBase, IIapTunnel
         {
             private readonly CancellationTokenSource stopListenerSource;
             private readonly ISshRelayListener listener;
             private readonly Task listenTask;
 
+            //TODO: Expose target instance, port
+
             internal Tunnel(
                 ISshRelayListener listener, 
                 IPEndPoint localEndpoint,
-                bool mtlsEnabled)
+                IapTunnelFlags flags)
             {
                 this.listener = listener.ExpectNotNull(nameof(listener));
                 this.stopListenerSource = new CancellationTokenSource();
                 this.listenTask = this.listener.ListenAsync(this.stopListenerSource.Token);
                 this.LocalEndpoint = localEndpoint;
-                this.IsMtlsEnabled = mtlsEnabled;
+                this.Flags = flags;
 
                 Debug.Assert(localEndpoint.Port == listener.LocalPort);
             }
-
-            internal bool IsMtlsEnabled { get; }
-
-            internal TransportStatistics Statistics
-            {
-                get
-                {
-                    var stats = this.listener.Statistics;
-                    return new TransportStatistics()
-                    {
-                        BytesReceived = stats.BytesReceived,
-                        BytesTransmitted = stats.BytesTransmitted
-                    };
-                }
-            }
-
-            internal IPEndPoint LocalEndpoint { get; }
 
             internal Task CloseAsync()
             {
@@ -281,12 +309,32 @@ namespace Google.Solutions.IapDesktop.Core.Transport
 
                 base.Dispose(disposing);
             }
+
+            //-----------------------------------------------------------------
+            // IIapTunnel.
+            //-----------------------------------------------------------------
+
+            public IPEndPoint LocalEndpoint { get; }
+            public IapTunnelFlags Flags { get; }
+
+            public IapTunnelStatistics Statistics
+            {
+                get
+                {
+                    var stats = this.listener.Statistics;
+                    return new IapTunnelStatistics()
+                    {
+                        BytesReceived = stats.BytesReceived,
+                        BytesTransmitted = stats.BytesTransmitted
+                    };
+                }
+            }
         }
 
         /// <summary>
-        /// Factory for tunnels (required for testability).
+        /// Factory for tunnels. Can be derived/overridden in unit tests.
         /// </summary>
-        internal class TunnelFactory
+        public class TunnelFactory
         {
             public async virtual Task<Tunnel> CreateTunnelAsync( // TODO: Add Integration test
                 IAuthorization authorization,
@@ -342,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
                     return new Tunnel(
                         listener, 
                         specification.LocalEndpoint,
-                        clientCertificate != null);
+                        clientCertificate != null ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
                 }
             }
         }
@@ -351,18 +399,16 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         /// Transports are single-use, but multiple Transports might
         /// use a shared Tunnel.
         /// </summary>
-        private class Transport : DisposableBase, ITransport
+        internal class Transport : DisposableBase, ITransport
         {
-            private readonly Tunnel tunnel;
+            internal Tunnel Tunnel { get; }
 
             internal Transport(
                 Tunnel relay,
-                IProtocol protocol,
-                TransportFlags flags)
+                IProtocol protocol)
             {
-                this.tunnel = relay.ExpectNotNull(nameof(relay));
+                this.Tunnel = relay.ExpectNotNull(nameof(relay));
                 this.Protocol = protocol.ExpectNotNull(nameof(protocol));
-                this.Flags = flags;
             }
 
             //-----------------------------------------------------------------
@@ -371,11 +417,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
 
             public IProtocol Protocol { get; }
 
-            public TransportFlags Flags { get; }
-
-            public TransportStatistics Statistics => this.tunnel.Statistics;
-
-            public IPEndPoint LocalEndpoint => this.tunnel.LocalEndpoint;
+            public IPEndPoint LocalEndpoint => this.Tunnel.LocalEndpoint;
 
             //-----------------------------------------------------------------
             // DisposableBase.
@@ -385,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             {
                 if (disposing)
                 {
-                    this.tunnel.Dispose();
+                    this.Tunnel.Dispose();
                 }
 
                 base.Dispose(disposing);

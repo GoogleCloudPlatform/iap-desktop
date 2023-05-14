@@ -33,36 +33,9 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         IProtocol Protocol { get; }
 
         /// <summary>
-        /// Flags, informative.
-        /// </summary>
-        TransportFlags Flags { get; }
-
-        /// <summary>
-        /// Traffic statistics.
-        /// </summary>
-        TransportStatistics Statistics { get; }
-
-        /// <summary>
         /// Endpoint that clients can connect to. This might 
         /// be a localhost endpoint.
         /// </summary>
         IPEndPoint LocalEndpoint { get; }
-    }
-
-    [Flags]
-    public enum TransportFlags
-    {
-        None,
-
-        /// <summary>
-        /// Transport is using mTLS.
-        /// </summary>
-        Mtls
-    }
-
-    public struct TransportStatistics
-    {
-        public ulong BytesReceived;
-        public ulong BytesTransmitted;
     }
 }

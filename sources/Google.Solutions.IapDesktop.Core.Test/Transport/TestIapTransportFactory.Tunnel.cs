@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Transport;
 using Moq;
@@ -50,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport
             using (var tunnel = new IapTransportFactory.Tunnel(
                 listener.Object,
                 LoopbackEndpoint,
-                false))
+                IapTunnelFlags.None))
             {
                 Assert.AreEqual(0, tunnel.Statistics.BytesReceived);
                 Assert.AreEqual(0, tunnel.Statistics.BytesTransmitted);
@@ -66,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport
             using (var tunnel = new IapTransportFactory.Tunnel(
                 listener.Object,
                 LoopbackEndpoint,
-                false))
+                IapTunnelFlags.None))
             {
                 Assert.AreEqual(LoopbackEndpoint, tunnel.LocalEndpoint);
             }
@@ -90,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport
             using (new IapTransportFactory.Tunnel(
                 listener.Object,
                 LoopbackEndpoint,
-                false))
+                IapTunnelFlags.None))
             {
                 Assert.IsFalse(token.IsCancellationRequested);
             }
@@ -118,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Transport
             using (var tunnel = new IapTransportFactory.Tunnel(
                 listener.Object,
                 LoopbackEndpoint,
-                false))
+                IapTunnelFlags.None))
             {
                 Assert.IsFalse(token.IsCancellationRequested);
                 Assert.AreSame(listenTask, tunnel.CloseAsync());
