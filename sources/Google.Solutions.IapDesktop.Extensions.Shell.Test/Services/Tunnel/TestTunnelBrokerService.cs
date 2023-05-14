@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     TimeSpan.FromMinutes(1))
                 .ConfigureAwait(false);
 
-            mockEventService.Verify(s => s.Publish(It.IsAny<TunnelOpenedEvent>()), Times.Once);
+            mockEventService.Verify(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()), Times.Once);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -285,9 +285,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelClosedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelClosedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 .DisconnectAsync(destination)
                 .ConfigureAwait(false);
 
-            mockEventService.Verify(s => s.Publish(It.IsAny<TunnelClosedEvent>()), Times.Once);
+            mockEventService.Verify(s => s.PublishAsync(It.IsAny<TunnelClosedEvent>()), Times.Once);
         }
 
         [Test]
@@ -322,9 +322,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             var mockTunnelService = new Mock<ITunnelService>();
 
             var mockEventService = new Mock<IEventQueue>();
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelOpenedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
-            mockEventService.Setup(s => s.Publish(It.IsAny<TunnelClosedEvent>()))
+            mockEventService.Setup(s => s.PublishAsync(It.IsAny<TunnelClosedEvent>()))
                 .Returns(Task.FromResult(true));
 
             var mockTunnel = new Mock<ITunnel>();
@@ -350,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 .DisconnectAllAsync()
                 .ConfigureAwait(false);
 
-            mockEventService.Verify(s => s.Publish(It.IsAny<TunnelClosedEvent>()), Times.Once);
+            mockEventService.Verify(s => s.PublishAsync(It.IsAny<TunnelClosedEvent>()), Times.Once);
         }
     }
 }

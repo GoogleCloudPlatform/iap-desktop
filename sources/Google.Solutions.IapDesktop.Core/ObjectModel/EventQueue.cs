@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using System;
@@ -57,9 +58,14 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         ISubscription Subscribe<TEvent>(Action<TEvent> handler);
 
         /// <summary>
-        /// Publish an event to subscribers.
+        /// Publish an event and wait for all subscribers to handle the event.
         /// </summary>
-        Task Publish<TEvent>(TEvent eventObject);
+        Task PublishAsync<TEvent>(TEvent eventObject);
+
+        /// <summary>
+        /// Publish an event without awaiting subcribers.
+        /// </summary>
+        void Publish<TEvent>(TEvent eventObject);
     }
 
     public interface ISubscription : IDisposable
@@ -142,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
             });
         }
 
-        public Task Publish<TEvent>(TEvent eventObject)
+        public Task PublishAsync<TEvent>(TEvent eventObject)
         {
             return this.invoker.InvokeAsync(async () =>
                 {
@@ -162,6 +168,21 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                             .ConfigureAwait(true); // Stay on thread!
                     }
                 });
+        }
+
+        /// <summary>
+        /// Publish an event without awaiting subcribers.
+        /// </summary>
+        public void Publish<TEvent>(TEvent eventObject)
+        {
+            _ = PublishAsync(eventObject)
+                .ContinueWith(
+                    t =>
+                    {
+                        Debug.Assert(false, "One or more subscribers failed to handle an event");
+                        CoreTraceSources.Default.TraceError(t.Exception);
+                    },
+                    TaskContinuationOptions.OnlyOnFaulted);
         }
 
         //---------------------------------------------------------------------

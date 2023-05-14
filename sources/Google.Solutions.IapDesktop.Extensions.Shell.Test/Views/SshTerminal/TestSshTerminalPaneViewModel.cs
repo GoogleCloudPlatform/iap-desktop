@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
-                eventService.Verify(s => s.Publish(
+                eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
 
@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
-                eventService.Verify(s => s.Publish(
+                eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
         }
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConnectAsync(new TerminalSize(80, 24))
                     .ConfigureAwait(false);
 
-                this.eventService.Verify(s => s.Publish(
+                this.eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionStartedEvent>()), Times.Once());
 
                 Assert.AreEqual(
@@ -358,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConfigureAwait(true);
 
                 Assert.IsInstanceOf<MetadataKeyAuthenticationFailedException>(argsReceived.Error);
-                eventService.Verify(s => s.Publish(
+                eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
 
                 Assert.AreEqual(

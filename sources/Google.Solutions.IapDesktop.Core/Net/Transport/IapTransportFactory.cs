@@ -202,11 +202,14 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         { }
 
         protected virtual void OnTunnelCreated(IapTunnel tunnel)
-        { 
+        {
+            this.eventQueue.Publish(new TunnelEvents.TunnelCreated());
         }
 
         protected virtual void OnTunnelClosed(IapTunnel tunnel)
-        { }
+        {
+            this.eventQueue.Publish(new TunnelEvents.TunnelClosed());
+        }
 
         //---------------------------------------------------------------------
         // IIapTransportFactory.

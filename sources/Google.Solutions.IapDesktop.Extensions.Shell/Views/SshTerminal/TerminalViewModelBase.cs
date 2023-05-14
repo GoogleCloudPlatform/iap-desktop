@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionLost?.Invoke(this, args);
 
             await this.eventService
-                .Publish(new SessionAbortedEvent(this.Instance, args.Error))
+                .PublishAsync(new SessionAbortedEvent(this.Instance, args.Error))
                 .ConfigureAwait(true);
         }
 
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionFailed?.Invoke(this, args);
 
             await this.eventService
-                .Publish(new SessionAbortedEvent(this.Instance, args.Error))
+                .PublishAsync(new SessionAbortedEvent(this.Instance, args.Error))
                 .ConfigureAwait(true);
         }
 
@@ -180,14 +180,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             // Notify listeners.
             await this.eventService
-                .Publish(new SessionStartedEvent(this.Instance))
+                .PublishAsync(new SessionStartedEvent(this.Instance))
                 .ConfigureAwait(true);
         }
 
         protected async Task OnDisconnected()
         {
             await this.eventService
-                .Publish(new SessionEndedEvent(this.Instance))
+                .PublishAsync(new SessionEndedEvent(this.Instance))
                 .ConfigureAwait(true);
         }
 

@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
                 return new Mock<ISubscription>().Object;
             }
 
-            public Task Publish<TEvent>(TEvent eventObject)
+            public Task PublishAsync<TEvent>(TEvent eventObject)
             {
                 return Task.FromResult(0);
             }

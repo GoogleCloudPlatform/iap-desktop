@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
                     cancellationToken)
                 .ConfigureAwait(false);
 
-                await this.eventService.Publish(
+                await this.eventService.PublishAsync(
                     new InstanceStateChangedEvent(
                         instance,
                         command == InstanceControlCommand.Start ||

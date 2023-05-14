@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 }
 
                 await this.eventService
-                    .Publish(new TunnelOpenedEvent(endpoint))
+                    .PublishAsync(new TunnelOpenedEvent(endpoint))
                     .ConfigureAwait(false);
 
                 return tunnel;
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 }
 
                 await this.eventService
-                    .Publish(new TunnelClosedEvent(endpoint))
+                    .PublishAsync(new TunnelClosedEvent(endpoint))
                     .ConfigureAwait(false);
             }
         }

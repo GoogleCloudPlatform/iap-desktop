@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            eventService.Verify(s => s.Publish<InstanceStateChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
                 It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && e.IsRunning)),
                 Times.Once);
         }
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            eventService.Verify(s => s.Publish<InstanceStateChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
                 It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && !e.IsRunning)),
                 Times.Once);
         }

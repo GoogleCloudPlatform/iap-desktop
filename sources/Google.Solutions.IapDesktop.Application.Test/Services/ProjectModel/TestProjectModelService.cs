@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             projectRepository.Verify(p => p.AddProject(
                     It.Is<ProjectLocator>(id => id.Name == SampleProjectId)),
                 Times.Once);
-            eventService.Verify(s => s.Publish<ProjectAddedEvent>(
+            eventService.Verify(s => s.PublishAsync<ProjectAddedEvent>(
                     It.Is<ProjectAddedEvent>(e => e.ProjectId == SampleProjectId)),
                 Times.Once);
         }
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             projectRepository.Verify(p => p.RemoveProject(
                     It.Is<ProjectLocator>(id => id.Name == SampleProjectId)),
                 Times.Once);
-            eventService.Verify(s => s.Publish<ProjectDeletedEvent>(
+            eventService.Verify(s => s.PublishAsync<ProjectDeletedEvent>(
                     It.Is<ProjectDeletedEvent>(e => e.ProjectId == SampleProjectId)),
                 Times.Once);
         }
@@ -794,7 +794,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            eventService.Verify(s => s.Publish<ActiveProjectChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
                     It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode == root.Projects.First())),
                 Times.Once);
         }
@@ -824,7 +824,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            eventService.Verify(s => s.Publish<ActiveProjectChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
                     It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode is IProjectModelCloudNode)),
                 Times.Once);
         }
@@ -856,7 +856,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            eventService.Verify(s => s.Publish<ActiveProjectChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
                     It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode is IProjectModelCloudNode)),
                 Times.Once);
         }
@@ -875,7 +875,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            eventService.Verify(s => s.Publish<ActiveProjectChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
                     It.IsAny<ActiveProjectChangedEvent>()),
                 Times.Never);
         }

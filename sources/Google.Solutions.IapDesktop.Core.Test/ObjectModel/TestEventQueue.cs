@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.ComponentModel;
 using System.Linq;
 
@@ -80,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         //---------------------------------------------------------------------
-        // Publish.
+        // PublishAsync.
         //---------------------------------------------------------------------
 
         [Test]
@@ -94,8 +96,39 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             bool invoked = false;
             using (queue.Subscribe<EventOne>(e => { invoked = true; }))
             {
-                var t = queue.Publish(new EventOne());
+                var t = queue.PublishAsync(new EventOne());
                 Assert.IsTrue(invoked);
+            }
+        }
+
+        [Test]
+        public void WhenSubscriberThrowsException_ThenPublishAsyncThrowsException()
+        {
+            var invoker = new Mock<ISynchronizeInvoke>();
+            invoker.SetupGet(i => i.InvokeRequired).Returns(false);
+
+            var queue = new EventQueue(invoker.Object);
+            using (queue.Subscribe<EventOne>(_ => throw new ApplicationException("mock")))
+            {
+                ExceptionAssert.ThrowsAggregateException<ApplicationException>(
+                    () => queue.PublishAsync(new EventOne()).Wait());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Publish.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSubscriberThrowsException_ThenPublishSwallowsException()
+        {
+            var invoker = new Mock<ISynchronizeInvoke>();
+            invoker.SetupGet(i => i.InvokeRequired).Returns(false);
+
+            var queue = new EventQueue(invoker.Object);
+            using (queue.Subscribe<EventOne>(_ => throw new ApplicationException("mock")))
+            {
+                queue.Publish(new EventOne());
             }
         }
     }

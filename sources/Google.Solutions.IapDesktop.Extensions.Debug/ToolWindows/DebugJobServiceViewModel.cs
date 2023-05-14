@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                         {
                             System.Diagnostics.Debug.WriteLine("Starting delay...");
                             await this.eventService
-                                .Publish(new StatusUpdatedEvent("Starting delay..."))
+                                .PublishAsync(new StatusUpdatedEvent("Starting delay..."))
                                 .ConfigureAwait(true);
 
                             await Task
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                             System.Diagnostics.Debug.WriteLine("Delay over");
 
                             await this.eventService
-                                .Publish(new StatusUpdatedEvent("Done"))
+                                .PublishAsync(new StatusUpdatedEvent("Done"))
                                 .ConfigureAwait(true);
 
                             return null;
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                         {
                             System.Diagnostics.Debug.WriteLine("Starting delay...");
                             await this.eventService
-                                .Publish(new StatusUpdatedEvent("Starting delay..."))
+                                .PublishAsync(new StatusUpdatedEvent("Starting delay..."))
                                 .ConfigureAwait(true);
 
                             await Task
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                             System.Diagnostics.Debug.WriteLine("Delay over");
 
                             await this.eventService
-                                .Publish(new StatusUpdatedEvent("Done"))
+                                .PublishAsync(new StatusUpdatedEvent("Done"))
                                 .ConfigureAwait(true);
 
                             return null;

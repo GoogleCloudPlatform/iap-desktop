@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 this.projectRepository.AddProject(project);
 
                 await this.eventService
-                    .Publish(new ProjectAddedEvent(project.ProjectId))
+                    .PublishAsync(new ProjectAddedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
         }
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 }
 
                 await this.eventService
-                    .Publish(new ProjectDeletedEvent(project.ProjectId))
+                    .PublishAsync(new ProjectDeletedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
         }
@@ -502,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                         this.activeNode = locator;
 
                         await this.eventService
-                            .Publish(new ActiveProjectChangedEvent(node))
+                            .PublishAsync(new ActiveProjectChangedEvent(node))
                             .ConfigureAwait(true);
 
                         return;
@@ -517,7 +517,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 if (this.cachedRoot != null)
                 {
                     await this.eventService
-                        .Publish(new ActiveProjectChangedEvent(this.cachedRoot))
+                        .PublishAsync(new ActiveProjectChangedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
                 }
             }
