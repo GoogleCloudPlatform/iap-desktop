@@ -47,6 +47,7 @@ using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
+using Google.Solutions.IapDesktop.Core;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Windows;
@@ -83,7 +84,8 @@ namespace Google.Solutions.IapDesktop
             CommonTraceSources.Default,
             IapTraceSources.Default,
             SshTraceSources.Default,
-            ApplicationTraceSources.Default
+            ApplicationTraceSources.Default,
+            CoreTraceSources.Default,
         };
 
         public static string LogFile =>

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,9 +29,9 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.Transport
 {
     /// <summary>
-    /// Factory for transport objects
+    /// Factory for IAP transports.
     /// </summary>
-    public interface ITransportFactory
+    public interface IIapTransportFactory
     {
         /// <summary>
         /// Create a transport to a VM instance/port.
@@ -38,11 +39,18 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         Task<ITransport> CreateIapTransportAsync(
             IProtocol protocol,
             ISshRelayPolicy policy,
-            InstanceLocator instance,
-            ushort remotePort,
-            IPAddress localAddress,
+            InstanceLocator targetInstance,
+            ushort targetPort,
+            IPEndPoint localEndpoint,
+            TimeSpan probeTimeout,
             CancellationToken cancellationToken);
+    }
 
+    /// <summary>
+    /// Factory for VPC transports.
+    /// </summary>
+    public interface IVpcTransportFactory
+    { 
         /// <summary>
         /// Create a VPC transport to a VM instance/port.
         /// </summary>
@@ -50,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport
             IProtocol protocol,
             ISshRelayPolicy policy,
             IPAddress remoteAddress,
-            IPAddress localAddress,
+            IPAddress targetPort,
             CancellationToken cancellationToken);
 
         //Task<ITransport> CreateIapSocksTransportAsync(

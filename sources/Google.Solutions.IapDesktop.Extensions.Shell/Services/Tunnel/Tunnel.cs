@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
         void Close();
     }
 
-    public class Tunnel : ITunnel
+    public class Tunnel : ITunnel// TODO: delete Tunnel
     {
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly SshRelayListener listener;

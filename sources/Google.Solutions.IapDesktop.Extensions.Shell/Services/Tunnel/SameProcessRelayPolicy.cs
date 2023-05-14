@@ -26,8 +26,10 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 {
-    internal class SameProcessRelayPolicy : ISshRelayPolicy
+    internal class SameProcessRelayPolicy : ISshRelayPolicy //TODO: move to Core
     {
+        public string Id => "same-process";
+
         public bool IsClientAllowed(IPEndPoint remote)
         {
             //

@@ -19,28 +19,12 @@
 // under the License.
 //
 
-using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Core.Transport
+namespace Google.Solutions.IapDesktop.Core
 {
-    /// <summary>
-    /// Brokers transport objects, creating them as necessary,
-    /// and sharing existing transports when possible.
-    /// 
-    /// * IAP transports are always shared.
-    /// * VPC transports are never shared.
-    /// 
-    /// Callers must dispose transports when they're done. Once a
-    /// transport's reference count drops to zero, it's closed.
-    /// 
-    /// Disposing the broker force-closes all transports.
-    /// </summary>
-    public interface ITransportBroker : ITransportFactory, IDisposable
+    public static class CoreTraceSources
     {
-        /// <summary>
-        /// Return a list of all currently active transports.
-        /// </summary>
-        IEnumerable<ITransport> Active { get; }
+        public static readonly TraceSource Default = new TraceSource(typeof(CoreTraceSources).Namespace);
     }
 }

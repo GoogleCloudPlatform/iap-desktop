@@ -164,6 +164,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 
         private class DenyAllPolicy : ISshRelayPolicy
         {
+            public string Id => "deny-all";
+
             public bool IsClientAllowed(IPEndPoint remote) => false;
         }
     }

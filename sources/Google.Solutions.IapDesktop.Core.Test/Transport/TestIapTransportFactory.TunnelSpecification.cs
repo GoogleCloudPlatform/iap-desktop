@@ -1,0 +1,234 @@
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap.Protocol;
+using Google.Solutions.IapDesktop.Core.Transport;
+using Moq;
+using NUnit.Framework;
+using System.Net;
+
+namespace Google.Solutions.IapDesktop.Core.Test.Transport
+{
+    [TestFixture]
+    public class TestIapTransportFactoryTunnelSpecification
+    {
+        private static readonly InstanceLocator SampleInstance
+            = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+        private static readonly IPEndPoint LoopbackEndpoint
+            = new IPEndPoint(IPAddress.Loopback, 8000);
+
+        private static ISshRelayPolicy CreatePolicy(string id)
+        {
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.SetupGet(p => p.Id).Returns(id);
+            return policy.Object;
+        }
+
+        private static IProtocol CreateProtocol(string id)
+        {
+            var protocol = new Mock<IProtocol>();
+            protocol.SetupGet(p => p.Id).Returns(id);
+            return protocol.Object;
+        }
+
+        [Test]
+        public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            var ref2 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            Assert.IsTrue(ref1.Equals(ref2));
+            Assert.IsTrue(ref1.Equals((object)ref2));
+            Assert.IsTrue(ref1 == ref2);
+            Assert.IsFalse(ref1 != ref2);
+            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+            var ref2 = ref1;
+
+            Assert.IsTrue(ref1.Equals(ref2));
+            Assert.IsTrue(ref1.Equals((object)ref2));
+            Assert.IsTrue(ref1 == ref2);
+            Assert.IsFalse(ref1 != ref2);
+            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenPoliciesDiffer_ThenEqualsReturnsFalse()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            var ref2 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-2"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            Assert.IsFalse(ref1.Equals(ref2));
+            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1 == ref2);
+            Assert.IsTrue(ref1 != ref2);
+            Assert.AreNotEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenProtocolsDiffer_ThenEqualsReturnsFalse()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            var ref2 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-2"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            Assert.IsFalse(ref1.Equals(ref2));
+            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1 == ref2);
+            Assert.IsTrue(ref1 != ref2);
+            Assert.AreNotEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenInstancesDiffer_ThenEqualsReturnsFalse()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            var ref2 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                new InstanceLocator("project-1", "zone-1", "instance-2"),
+                22,
+                LoopbackEndpoint);
+
+            Assert.IsFalse(ref1.Equals(ref2));
+            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1 == ref2);
+            Assert.IsTrue(ref1 != ref2);
+            Assert.AreNotEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenPortsDiffer_ThenEqualsReturnsFalse()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            var ref2 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                80,
+                LoopbackEndpoint);
+
+            Assert.IsFalse(ref1.Equals(ref2));
+            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1 == ref2);
+            Assert.IsTrue(ref1 != ref2);
+            Assert.AreNotEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenLocalEndpointsDiffer_ThenEqualsReturnsFalse()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            var ref2 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                new IPEndPoint(IPAddress.Parse("127.0.0.2"), LoopbackEndpoint.Port));
+
+            Assert.IsFalse(ref1.Equals(ref2));
+            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1 == ref2);
+            Assert.IsTrue(ref1 != ref2);
+            Assert.AreNotEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
+        public void TestEqualsNull()
+        {
+            var ref1 = new IapTransportFactory.TunnelSpecification(
+                CreateProtocol("protocol-1"),
+                CreatePolicy("policy-1"),
+                SampleInstance,
+                22,
+                LoopbackEndpoint);
+
+            Assert.IsFalse(ref1.Equals(null));
+            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1 == null);
+            Assert.IsFalse(null == ref1);
+            Assert.IsTrue(ref1 != null);
+            Assert.IsTrue(null != ref1);
+        }
+    }
+}

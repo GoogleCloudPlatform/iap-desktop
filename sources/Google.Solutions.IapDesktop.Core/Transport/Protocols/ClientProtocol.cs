@@ -33,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
     public class ClientProtocol : IProtocol
     {
         public ClientProtocol(
+            string id,
             string name,
             IEnumerable<IProtocolTargetTrait> requiredTraits,
             ISshRelayPolicy relayPolicy,
@@ -40,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
             IPAddress localPort,
             string launchCommand)
         {
+            this.Id = id.ExpectNotEmpty(nameof(id));
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
             this.RelayPolicy = relayPolicy.ExpectNotNull(nameof(relayPolicy));
@@ -83,6 +85,8 @@ namespace Google.Solutions.IapDesktop.Core.Transport.Protocols
         //---------------------------------------------------------------------
 
         public string Name { get; }
+
+        public string Id { get; }
 
         public bool IsAvailable(IProtocolTarget target)
         {

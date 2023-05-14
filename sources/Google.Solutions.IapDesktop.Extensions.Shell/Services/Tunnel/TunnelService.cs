@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
     }
 
     [Service(typeof(ITunnelService))]
-    public class TunnelService : ITunnelService
+    public class TunnelService : ITunnelService // TODO: delete TunnelService
     {
         private readonly IAuthorization authorization;
 

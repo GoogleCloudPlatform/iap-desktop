@@ -43,12 +43,6 @@ namespace Google.Solutions.IapDesktop.Core.Transport
         TransportStatistics Statistics { get; }
 
         /// <summary>
-        /// Probe if this transport works. Throws an exception
-        /// in case of a negative probe.
-        /// </summary>
-        Task Probe(TimeSpan timeout);
-
-        /// <summary>
         /// Endpoint that clients can connect to. This might 
         /// be a localhost endpoint.
         /// </summary>

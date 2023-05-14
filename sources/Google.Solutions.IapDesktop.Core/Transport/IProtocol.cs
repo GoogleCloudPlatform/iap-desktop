@@ -30,6 +30,11 @@ namespace Google.Solutions.IapDesktop.Core.Transport
     public interface IProtocol // RdpProfile, SshProfile, AppProfile
     {
         /// <summary>
+        /// Unique and stable ID for the protocol, such as "ssh".
+        /// </summary>
+        string Id { get; }
+
+        /// <summary>
         /// Name of the profile, suitable for displaying.
         /// </summary>
         string Name { get; }

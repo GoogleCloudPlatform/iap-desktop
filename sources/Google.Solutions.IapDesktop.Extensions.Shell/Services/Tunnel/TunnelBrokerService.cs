@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 {
-    public interface ITunnelBrokerService
+    public interface ITunnelBrokerService // TODO: delete ITunnelBrokerService
     {
         IEnumerable<ITunnel> OpenTunnels { get; }
 
