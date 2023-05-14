@@ -32,10 +32,51 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.IapDesktop.Core.Net.Transport.IapTransportFactory;
 
 namespace Google.Solutions.IapDesktop.Core.Net.Transport
 {
+    /// <summary>
+    /// An IAP-based tunnel that can be used to implement transports.
+    /// </summary>
+    public interface IIapTunnel
+    {
+        /// <summary>
+        /// Traffic statistics.
+        /// </summary>
+        IapTunnelStatistics Statistics { get; }
+
+        /// <summary>
+        /// Local endpoints for sessions/clients to connect to.
+        /// </summary>
+        IPEndPoint LocalEndpoint { get; }
+
+        /// <summary>
+        /// Flags characterizing this tunnel.
+        /// </summary>
+        IapTunnelFlags Flags { get; }
+    }
+
+    [Flags]
+    public enum IapTunnelFlags
+    {
+        None,
+
+        /// <summary>
+        /// Transport is using mTLS.
+        /// </summary>
+        Mtls
+    }
+
+    public struct IapTunnelStatistics
+    {
+        public ulong BytesReceived;
+        public ulong BytesTransmitted;
+    }
+
+    //-------------------------------------------------------------------------
+    // Implementation.
+    //-------------------------------------------------------------------------
+
     /// <summary>
     /// A sharable tunnel that uses an IAP relay listener.
     /// </summary>
@@ -247,6 +288,5 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
                 }
             }
         }
-
     }
 }

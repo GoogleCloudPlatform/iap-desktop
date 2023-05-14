@@ -19,68 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Net.Protocol;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Net.Transport
 {
-    /// <summary>
-    /// Factory for IAP transports.
-    /// </summary>
-    public interface IIapTransportFactory
-    {
-        /// <summary>
-        /// Returns the pool of tunnels that the factory
-        /// uses to satisfy requests.
-        /// </summary>
-        IEnumerable<IIapTunnel> Pool { get; }
-
-        /// <summary>
-        /// Create a transport to a VM instance/port.
-        /// </summary>
-        Task<ITransport> CreateIapTransportAsync(
-            IProtocol protocol,
-            ISshRelayPolicy policy,
-            InstanceLocator targetInstance,
-            ushort targetPort,
-            IPEndPoint localEndpoint,
-            TimeSpan probeTimeout,
-            CancellationToken cancellationToken);
-    }
-
-    /// <summary>
-    /// Tunnel used to provide a transport.
-    /// </summary>
-    public interface IIapTunnel
-    {
-        IapTunnelStatistics Statistics { get; }
-        IPEndPoint LocalEndpoint { get; }
-
-        IapTunnelFlags Flags { get; }
-    }
-
-    public struct IapTunnelStatistics
-    {
-        public ulong BytesReceived;
-        public ulong BytesTransmitted;
-    }
-
-    [Flags]
-    public enum IapTunnelFlags
-    {
-        None,
-
-        /// <summary>
-        /// Transport is using mTLS.
-        /// </summary>
-        Mtls
-    }
 
     /// <summary>
     /// Factory for VPC transports.

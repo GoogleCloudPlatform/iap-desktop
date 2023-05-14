@@ -28,6 +28,7 @@ using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.Net.Protocol;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,7 +41,42 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
 {
     /// <summary>
     /// Factory for IAP transports.
-    /// 
+    /// </summary>
+    public interface IIapTransportFactory
+    {
+        /// <summary>
+        /// Returns the pool of tunnels that the factory
+        /// uses to satisfy requests.
+        /// </summary>
+        IEnumerable<IIapTunnel> Pool { get; }
+
+        /// <summary>
+        /// Create a transport to a VM instance/port.
+        /// </summary>
+        Task<ITransport> CreateIapTransportAsync(
+            IProtocol protocol,
+            ISshRelayPolicy policy,
+            InstanceLocator targetInstance,
+            ushort targetPort,
+            IPEndPoint localEndpoint,
+            TimeSpan probeTimeout,
+            CancellationToken cancellationToken);
+    }
+
+    /// <summary>
+    /// Tunnel events published to event queue.
+    /// </summary>
+    public static class TunnelEvents
+    {
+        public sealed class TunnelCreated { }
+        public sealed class TunnelClosed { }
+    }
+
+    //-------------------------------------------------------------------------
+    // Implementation.
+    //-------------------------------------------------------------------------
+
+    /// <summary>
     /// The factory maintains a pool of tunnels (implemented using
     /// SSH relay listeners). Whenever possible, the factory tries
     /// to reuse pooled tunnels.
@@ -63,6 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         private readonly IDictionary<IapTunnel.Profile, Task<IapTunnel>> tunnelPool;
 
         private readonly IAuthorization authorization;
+        private readonly IEventQueue eventQueue;
         private readonly UserAgent userAgent;
         private readonly IapTunnel.Factory tunnelFactory;
 
@@ -140,10 +177,12 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
 
         internal IapTransportFactory(
             IAuthorization authorization,
+            IEventQueue eventQueue,
             UserAgent userAgent,
             IapTunnel.Factory tunnelFactory)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.eventQueue = eventQueue.ExpectNotNull(nameof(eventQueue));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
             this.tunnelFactory = tunnelFactory.ExpectNotNull(nameof(tunnelFactory));
 
@@ -151,8 +190,20 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
             this.tunnelPool = new Dictionary<IapTunnel.Profile, Task<IapTunnel>>();
         }
 
-        protected virtual void OnTunnelCreated(IapTunnel tunnel)
+        public IapTransportFactory(
+            IAuthorization authorization,
+            IEventQueue eventQueue,
+            UserAgent userAgent)
+            : this(
+                  authorization,
+                  eventQueue,
+                  userAgent,
+                  new IapTunnel.Factory())
         { }
+
+        protected virtual void OnTunnelCreated(IapTunnel tunnel)
+        { 
+        }
 
         protected virtual void OnTunnelClosed(IapTunnel tunnel)
         { }
