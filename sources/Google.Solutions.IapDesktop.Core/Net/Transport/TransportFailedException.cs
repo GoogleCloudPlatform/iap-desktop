@@ -19,14 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.Diagnostics;
 using System;
 
-#pragma warning disable CA1058 // Types should not extend certain base types
-#pragma warning disable CA2237 // Mark ISerializable types with serializable
-
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Core.Net.Transport
 {
     public class TransportFailedException : ApplicationException, IExceptionWithHelpTopic
     {

@@ -22,7 +22,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Application.Data
+namespace Google.Solutions.IapDesktop.Core.Diagnostics
 {
     public interface IHelpTopic
     {

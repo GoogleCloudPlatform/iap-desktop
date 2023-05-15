@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Core.Diagnostics;
 using System;
 using System.Runtime.Serialization;
 

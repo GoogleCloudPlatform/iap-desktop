@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Core.Diagnostics;
 using Google.Solutions.Platform.Net;
 using System;
 

@@ -31,9 +31,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Net.Protocol
 {
-    public class ClientProtocol : IProtocol
+    public class ClientAppProtocol : IProtocol
     {
-        public ClientProtocol(
+        public ClientAppProtocol(
             string id,
             string name,
             IEnumerable<IProtocolTargetTrait> requiredTraits,

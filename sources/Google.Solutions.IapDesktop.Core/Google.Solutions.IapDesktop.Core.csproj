@@ -66,7 +66,9 @@
     <Compile Include="Auth\IAuthorization.cs" />
     <Compile Include="Auth\IDeviceEnrollment.cs" />
     <Compile Include="Auth\UserInfo.cs" />
+    <Compile Include="Diagnostics\IHelpTopic.cs" />
     <Compile Include="Net\Transport\IapTunnel.cs" />
+    <Compile Include="Net\Transport\TransportFailedException.cs" />
     <Compile Include="ObjectModel\EventQueue.cs" />
     <Compile Include="Net\Transport\IapTransportFactory.cs" />
     <Compile Include="Net\Transport\ITransport.cs" />
