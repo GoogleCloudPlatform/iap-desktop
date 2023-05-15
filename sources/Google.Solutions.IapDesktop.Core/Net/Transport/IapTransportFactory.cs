@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
@@ -202,11 +203,17 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
 
         protected virtual void OnTunnelCreated(IapTunnel tunnel)
         {
+            CoreTraceSources.Default.TraceVerbose(
+                "Created tunnel for {0}", tunnel.Details);
+
             this.eventQueue.Publish(new TunnelEvents.TunnelCreated());
         }
 
         protected virtual void OnTunnelClosed(IapTunnel tunnel)
         {
+            CoreTraceSources.Default.TraceVerbose(
+                "Closed tunnel for {0}", tunnel.Details);
+
             this.eventQueue.Publish(new TunnelEvents.TunnelClosed());
         }
 

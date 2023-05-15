@@ -157,8 +157,9 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         /// </summary>
         public class Profile : IEquatable<Profile>
         {
-            public IProtocol Protocol { get; }
-            public ISshRelayPolicy Policy { get; }
+            internal IProtocol Protocol { get; }
+            internal ISshRelayPolicy Policy { get; }
+
             public InstanceLocator TargetInstance { get; }
             public ushort TargetPort { get; }
             public IPEndPoint LocalEndpoint { get; }
@@ -229,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         /// </summary>
         public class Factory
         {
-            public async virtual Task<IapTunnel> CreateTunnelAsync( // TODO: Add Integration test, double-check/compare logic
+            public async virtual Task<IapTunnel> CreateTunnelAsync(
                 IAuthorization authorization,
                 UserAgent userAgent,
                 Profile profile,
@@ -240,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
                 {
                     if (profile.LocalEndpoint.Address != IPAddress.Loopback)
                     {
-                        throw new NotImplementedException(
+                        throw new ArgumentException(
                             "This implementation only supports loopback tunnels");
                     }
 
@@ -271,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
                     using (var stream = new SshRelayStream(client))
                     {
                         await stream
-                            .ProbeConnectionAsync(probeTimeout) // TODO: Add Integration test -> don't pool if probe fails
+                            .ProbeConnectionAsync(probeTimeout)
                             .ConfigureAwait(false);
                     }
 

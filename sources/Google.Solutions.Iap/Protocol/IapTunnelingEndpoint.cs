@@ -111,9 +111,9 @@ namespace Google.Solutions.Iap.Protocol
             //
             // Configure web socket.
             //
-            var accessToken = await this.credential.GetAccessTokenForRequestAsync(
-                null,
-                token).ConfigureAwait(false);
+            var accessToken = await this.credential
+                .GetAccessTokenForRequestAsync(null, token)
+                .ConfigureAwait(false);
 
             var websocket = new ClientWebSocket();
             websocket.Options.AddSubProtocol(SubprotocolName);

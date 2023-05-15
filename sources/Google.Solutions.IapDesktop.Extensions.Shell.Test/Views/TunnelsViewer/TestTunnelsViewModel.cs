@@ -88,6 +88,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
             {
                 return Task.FromResult(0);
             }
+
+            public void Publish<TEvent>(TEvent eventObject)
+            {
+            }
         }
 
         //---------------------------------------------------------------------
