@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Core.Net.Transport;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Protocol
     /// <summary>
     /// A protocol that can be used atop a transport for certain targets.
     /// </summary>
-    public interface IProtocol // RdpProfile, SshProfile, AppProfile
+    public interface IProtocol
     {
         /// <summary>
         /// Unique and stable ID for the protocol, such as "ssh".
@@ -45,19 +46,20 @@ namespace Google.Solutions.IapDesktop.Core.Net.Protocol
         /// </summary>
         bool IsAvailable(IProtocolTarget target);
 
-        /// <summary>
-        /// Create a context for the given target.
-        /// </summary>
-        Task<IProtocolContext> CreateContextAsync(
-            IProtocolTarget target,
-            CancellationToken cancellationToken);
+        //TODO: Extract to IProtocolSessionContextFactory?!
+        ///// <summary>
+        ///// Create a context for the given target.
+        ///// </summary>
+        //Task<IProtocolSessionContext> CreateSessionContextAsync(
+        //    IProtocolTarget target,
+        //    CancellationToken cancellationToken);
     }
 
     /// <summary>
-    /// Context for parameterizing a protocol before creating a suitable transport.
-    /// Base interface.
+    /// Context for parameterizing a protocol before creating a 
+    /// transport and session.
     /// </summary>
-    public interface IProtocolContext
+    public interface IProtocolSessionContext : IDisposable
     {
         /// <summary>
         /// Create a transport, which might involve creating a tunnel.

@@ -1,0 +1,68 @@
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Core.Net.Protocol;
+using System.Linq;
+
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+{
+    internal class SshProtocol : IProtocol
+    {
+        public static SshProtocol Protocol { get; } = new SshProtocol();
+        public static SupportedTrait Supported { get; } = new SupportedTrait();
+
+        private SshProtocol()
+        {
+        }
+
+        //---------------------------------------------------------------------
+        // IProtocol.
+        //---------------------------------------------------------------------
+
+        public string Id => "SSH";
+
+        public string Name => "SSH";
+
+        public bool IsAvailable(IProtocolTarget target)
+        {
+            return target.Traits
+                .EnsureNotNull()
+                .Contains(Supported);
+        }
+
+        //---------------------------------------------------------------------
+        // Trait.
+        //---------------------------------------------------------------------
+
+        public class SupportedTrait : IProtocolTargetTrait
+        {
+            internal SupportedTrait()
+            {
+            }
+
+            public override string ToString()
+            {
+                return "Target supports SSH";
+            }
+        }
+    }
+}

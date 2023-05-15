@@ -129,8 +129,10 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
+    <Compile Include="Services\Session\SshProtocol.cs" />
     <Compile Include="Services\Session\RdpCredentialCallbackService.cs" />
     <Compile Include="Services\Session\ISessionContext.cs" />
+    <Compile Include="Services\Session\RdpProtocol.cs" />
     <Compile Include="Services\Session\RdpSessionParameters.cs" />
     <Compile Include="Services\Session\SessionContextBase.cs" />
     <Compile Include="Services\Session\SessionContextFactory.cs" />

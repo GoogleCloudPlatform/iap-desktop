@@ -19,46 +19,51 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.Net.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Moq;
 using NUnit.Framework;
-using System.Security;
+using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
     [TestFixture]
-    public class TestRdpCredential : ShellFixtureBase
+    public class TestSshProtocol
     {
         //---------------------------------------------------------------------
-        // ToString.
+        // IsAvailable.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDomainSet_ThenToStringReturnsBackslashNotation()
+        public void WhenTargetHasNoTraits_ThenIsAvailableReturnsFalse()
         {
-            var credential = new RdpCredential("user", "domain", new SecureString());
-            Assert.AreEqual("domain\\user", credential.ToString());
+            var target = new Mock<IProtocolTarget>();
+            target
+                .Setup(t => t.Traits)
+                .Returns((IEnumerable<IProtocolTargetTrait>)null);
+
+            Assert.IsFalse(SshProtocol.Protocol.IsAvailable(target.Object));
         }
 
         [Test]
-        public void WhenUserNullOrEmpty_ThenToStringReturnsEmpty()
+        public void WhenTargetHasTrait_ThenIsAvailableReturnsTrue()
         {
-            Assert.AreEqual(
-                "(empty)",
-                new RdpCredential("", null, new SecureString()).ToString());
-            Assert.AreEqual(
-                "(empty)",
-                new RdpCredential("", "", new SecureString()).ToString());
+            var target = new Mock<IProtocolTarget>();
+            target
+                .Setup(t => t.Traits)
+                .Returns(new[] { SshProtocol.Supported });
+
+            Assert.IsTrue(SshProtocol.Protocol.IsAvailable(target.Object));
         }
 
+        //---------------------------------------------------------------------
+        // Trait.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenDomainNullOrEmpty_ThenToStringReturnsUser()
+        public void TraitToString()
         {
-            Assert.AreEqual(
-                "user",
-                new RdpCredential("user", null, new SecureString()).ToString());
-            Assert.AreEqual(
-                "user",
-                new RdpCredential("user", "", new SecureString()).ToString());
+            StringAssert.Contains("Ssh", SshProtocol.Supported.ToString());
         }
     }
 }

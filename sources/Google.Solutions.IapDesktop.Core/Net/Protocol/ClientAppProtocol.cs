@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Protocol
                 .All(target.Traits.Contains);
         }
 
-        public Task<IProtocolContext> CreateContextAsync(
+        public Task<IProtocolSessionContext> CreateSessionContextAsync(
             IProtocolTarget target,
             CancellationToken cancellationToken)
         {
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Protocol
         // TODO: implement 
     }
 
-    public class ClientProtocolContext : IProtocolContext
+    public class ClientProtocolContext : IProtocolSessionContext
     {
         //---------------------------------------------------------------------
         // IProtocolContext.
@@ -127,6 +127,11 @@ namespace Google.Solutions.IapDesktop.Core.Net.Protocol
 
         public Task<ITransport> ConnectTransportAsync(
             CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
         {
             throw new NotImplementedException();
         }
