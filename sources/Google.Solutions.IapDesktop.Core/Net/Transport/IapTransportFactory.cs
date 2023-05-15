@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;

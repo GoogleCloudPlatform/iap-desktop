@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 
             return new IapTunnel(
                 listener.Object,
-                LoopbackEndpoint,
+                profile,
                 IapTunnelFlags.None);
         }
 

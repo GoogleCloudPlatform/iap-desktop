@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
+using Google.Solutions.IapDesktop.Core.Net.Protocol;
 using Google.Solutions.IapDesktop.Core.Net.Transport;
 using Moq;
 using NUnit.Framework;
@@ -35,6 +37,22 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         private static readonly IPEndPoint LoopbackEndpoint
             = new IPEndPoint(IPAddress.Loopback, 8000);
 
+        private static IapTunnel.Profile CreateTunnelProfile()
+        {
+            var protocol = new Mock<IProtocol>();
+            protocol.SetupGet(p => p.Id).Returns("mock");
+
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.SetupGet(p => p.Id).Returns("mock");
+
+            return new IapTunnel.Profile(
+                protocol.Object,
+                policy.Object,
+                new InstanceLocator("project-1", "zone-1", "instance-1"),
+                22,
+                LoopbackEndpoint);
+        }
+
         //---------------------------------------------------------------------
         // Properties.
         //---------------------------------------------------------------------
@@ -48,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 
             using (var tunnel = new IapTunnel(
                 listener.Object,
-                LoopbackEndpoint,
+                CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
                 Assert.AreEqual(0, tunnel.Statistics.BytesReceived);
@@ -64,10 +82,27 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 
             using (var tunnel = new IapTunnel(
                 listener.Object,
-                LoopbackEndpoint,
+                CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
                 Assert.AreEqual(LoopbackEndpoint, tunnel.LocalEndpoint);
+            }
+        }
+
+        [Test]
+        public void Details()
+        {
+            var listener = new Mock<ISshRelayListener>();
+            listener.SetupGet(l => l.LocalPort).Returns(LoopbackEndpoint.Port);
+
+            var profile = CreateTunnelProfile();
+
+            using (var tunnel = new IapTunnel(
+                listener.Object,
+                profile,
+                IapTunnelFlags.None))
+            {
+                Assert.AreSame(profile, tunnel.Details);
             }
         }
 
@@ -88,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 
             using (new IapTunnel(
                 listener.Object,
-                LoopbackEndpoint,
+                CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
                 Assert.IsFalse(token.IsCancellationRequested);
@@ -116,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
 
             using (var tunnel = new IapTunnel(
                 listener.Object,
-                LoopbackEndpoint,
+                CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
                 Assert.IsFalse(token.IsCancellationRequested);

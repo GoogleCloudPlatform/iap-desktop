@@ -88,20 +88,20 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
 
         internal event EventHandler Closed;
 
-        //TODO: Expose target instance, port
+        public Profile Details { get; }
 
         internal IapTunnel(
             ISshRelayListener listener,
-            IPEndPoint localEndpoint,
+            Profile profile,
             IapTunnelFlags flags)
         {
             this.listener = listener.ExpectNotNull(nameof(listener));
             this.stopListenerSource = new CancellationTokenSource();
             this.listenTask = this.listener.ListenAsync(this.stopListenerSource.Token);
-            this.LocalEndpoint = localEndpoint;
+            this.Details = profile;
             this.Flags = flags;
 
-            Debug.Assert(localEndpoint.Port == listener.LocalPort);
+            Debug.Assert(profile.LocalEndpoint.Port == listener.LocalPort);
         }
 
         internal Task CloseAsync()
@@ -130,7 +130,8 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         // IIapTunnel.
         //-----------------------------------------------------------------
 
-        public IPEndPoint LocalEndpoint { get; }
+        public IPEndPoint LocalEndpoint => this.Details.LocalEndpoint;
+
         public IapTunnelFlags Flags { get; }
 
         public IapTunnelStatistics Statistics
@@ -281,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
 
                     var tunnel = new IapTunnel(
                         listener,
-                        profile.LocalEndpoint,
+                        profile,
                         clientCertificate != null ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
 
                     return tunnel;
