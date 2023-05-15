@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.Net.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session

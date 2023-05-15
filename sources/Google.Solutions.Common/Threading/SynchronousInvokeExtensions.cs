@@ -63,8 +63,6 @@ namespace Google.Solutions.Common.Threading
                 }),
                 null);
 
-                invoker.EndInvoke(ar);
-
                 return completionSource.Task;
             }
         }

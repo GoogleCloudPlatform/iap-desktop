@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
@@ -68,6 +69,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             return registry;
         }
 
+        private static async Task<ITransport> CreateDirectRdpTransportAsync(IPEndPoint endpoint)
+        {
+            return await new DirectTransportFactory()
+                .CreateTransportAsync(
+                    RdpProtocol.Protocol,
+                    endpoint,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+        }
+
         //---------------------------------------------------------------------
         // Invalid server
         //---------------------------------------------------------------------
@@ -75,16 +86,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         [Test]
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
-            var transport = await Transport
-                .CreateTestTransport(
-                    SampleLocator,
-                    new IPEndPoint(IPAddress.Loopback, 1))
+            var unboundEndpoint = new IPEndPoint(IPAddress.Loopback, 1);
+            var transport = await CreateDirectRdpTransportAsync(unboundEndpoint)
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectRdpSession(
+                    SampleLocator,
                     transport,
                     new RdpSessionParameters()
                     {
@@ -102,10 +112,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
             // That one will be listening, but it is RPC, not RDP.
-            var transport = await Transport
-                .CreateTestTransport(
-                    SampleLocator,
-                    new IPEndPoint(IPAddress.Loopback, 135))
+            var wrongEndpoint = new IPEndPoint(IPAddress.Loopback, 135);
+            var transport = await CreateDirectRdpTransportAsync(wrongEndpoint)
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
@@ -113,6 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectRdpSession(
+                    SampleLocator,
                     transport,
                     new RdpSessionParameters(),
                     RdpCredential.Empty))
@@ -132,10 +141,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
+            var instance = await testInstance;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
                 var rdpCredential = new RdpCredential(
@@ -153,6 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(
                     () => broker.ConnectRdpSession(
+                        instance,
                         tunnel,
                         rdpParameters,
                         rdpCredential))
@@ -182,8 +192,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
+            var instance = await testInstance;
+            var windowsCredentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
 
             // To avoid excessive combinations, combine some settings.
             var redirectPrinter = (RdpRedirectPrinter)(int)redirectClipboard;
@@ -192,8 +202,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var redirectDrive = (RdpRedirectDrive)(int)redirectClipboard;
             var redirectDevice = (RdpRedirectDevice)(int)redirectClipboard;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
                 var rdpCredential = new RdpCredential(
@@ -220,6 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                     () => session = broker.ConnectRdpSession(
+                        instance,
                         tunnel,
                         rdpParameters,
                         rdpCredential))
@@ -239,11 +250,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
+            var instance = await testInstance;
+            var windowsCredentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
                 var rdpCredential = new RdpCredential(
@@ -257,6 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                     () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                        instance,
                         tunnel,
                         rdpPparameters,
                         rdpCredential))
@@ -286,11 +298,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
+            var instance = await testInstance;
+            var windowsCredentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
                 var rdpCredential = new RdpCredential(
@@ -309,6 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                     () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                        instance,
                         tunnel,
                         rdpParameters,
                         rdpCredential))

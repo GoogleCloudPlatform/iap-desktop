@@ -27,7 +27,8 @@ using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.Diagnostics;
-using Google.Solutions.IapDesktop.Core.Net.Transport;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.ComponentModel;
@@ -37,71 +38,35 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public interface ITransport
+    internal static class Transport //TODO: Move to COre
     {
-        /// <summary>
-        /// Type of transport.
-        /// </summary>
-        SessionTransportType Type { get; }
-
-        /// <summary>
-        /// Endpoint to connect to. This might be a localhost endpoint.
-        /// </summary>
-        IPEndPoint Endpoint { get; }
-
-        /// <summary>
-        /// Connection target.
-        /// </summary>
-        InstanceLocator Instance { get; }
-    }
-
-    public class Transport : ITransport
-    {
-        public InstanceLocator Instance { get; }
-        public SessionTransportType Type { get; }
-
-        public IPEndPoint Endpoint { get; }
-
-        private Transport(
-            SessionTransportType type,
-            InstanceLocator instance,
-            IPEndPoint endpoint)
-        {
-            this.Type = type;
-            this.Instance = instance.ExpectNotNull(nameof(instance));
-            this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-        }
-
         //---------------------------------------------------------------------
         // Factory methods.
         //---------------------------------------------------------------------
 
-        internal async static Task<Transport> CreateIapTransportAsync(
-            ITunnelBrokerService tunnelBroker,
+        internal async static Task<ITransport> CreateIapTransportAsync(
+            IIapTransportFactory transportFactory,
+            IProtocol protocol,
             InstanceLocator targetInstance,
             ushort targetPort,
             TimeSpan timeout)
         {
-            tunnelBroker.ExpectNotNull(nameof(tunnelBroker));
+            transportFactory.ExpectNotNull(nameof(transportFactory));
+            protocol.ExpectNotNull(nameof(protocol));
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
             try
             {
-                var destination = new TunnelDestination(
-                    targetInstance,
-                    targetPort);
-
-                var tunnel = await tunnelBroker
-                    .ConnectAsync(
-                        destination,
+                return await transportFactory
+                    .CreateTransportAsync(
+                        protocol,
                         new SameProcessRelayPolicy(),
-                        timeout)
+                        targetInstance,
+                        targetPort,
+                        null, // Auto-assign port
+                        timeout,
+                        CancellationToken.None)
                     .ConfigureAwait(false);
-
-                return new Transport(
-                    SessionTransportType.IapTunnel,
-                    targetInstance,
-                    new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort));
             }
             catch (SshRelayDeniedException e)
             {
@@ -132,13 +97,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
         }
 
-        internal static async Task<Transport> CreateVpcTransportAsync(
+        internal static async Task<ITransport> CreateVpcTransportAsync(
+            IDirectTransportFactory transportFactory,
+            IProtocol protocol,
             IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator targetInstance,
             ushort targetPort,
             CancellationToken cancellationToken)
         {
             computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            transportFactory.ExpectNotNull(nameof(transportFactory));
+            protocol.ExpectNotNull(nameof(protocol));
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
             try
@@ -155,10 +124,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                         HelpTopics.LocateInstanceIpAddress);
                 }
 
-                return new Transport(
-                    SessionTransportType.Vpc,
-                    targetInstance,
-                    new IPEndPoint(internalAddress, targetPort));
+                return await transportFactory
+                    .CreateTransportAsync(
+                        protocol,
+                        new IPEndPoint(internalAddress, targetPort),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
             }
             catch (AdapterException e)
             {
@@ -169,16 +140,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             }
         }
 
-        internal static Task<Transport> CreateTestTransport(
+        internal static async Task<ITransport> CreatePublicTransportForTestingOnly(
+            IDirectTransportFactory transportFactory,
+            IProtocol protocol,
+            IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator targetInstance,
-            IPEndPoint endpoint)
+            ushort targetPort,
+            CancellationToken cancellationToken)
         {
+            computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            transportFactory.ExpectNotNull(nameof(transportFactory));
+            protocol.ExpectNotNull(nameof(protocol));
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
-            return Task.FromResult(new Transport(
-                SessionTransportType.Test,
-                targetInstance,
-                endpoint));
+            try
+            {
+                var instance = await computeEngineAdapter
+                    .GetInstanceAsync(targetInstance, cancellationToken)
+                    .ConfigureAwait(false);
+
+                var publicAddress = instance.PublicAddress();
+                if (publicAddress == null)
+                {
+                    throw new TransportFailedException(
+                        "The VM instance doesn't have a suitable public IPv4 address",
+                        HelpTopics.LocateInstanceIpAddress);
+                }
+
+                return await transportFactory
+                    .CreateTransportAsync(
+                        protocol,
+                        new IPEndPoint(publicAddress, targetPort),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+            }
+            catch (AdapterException e)
+            {
+                throw new TransportFailedException(
+                    "Looking up the public IPv4 address failed because the " +
+                    "instance doesn't exist or is inaccessible",
+                    (e as IExceptionWithHelpTopic)?.Help ?? HelpTopics.LocateInstanceIpAddress);
+            }
         }
     }
 }

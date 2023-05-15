@@ -67,18 +67,18 @@
     <Compile Include="Auth\IDeviceEnrollment.cs" />
     <Compile Include="Auth\UserInfo.cs" />
     <Compile Include="Diagnostics\IHelpTopic.cs" />
-    <Compile Include="Net\Transport\IapTunnel.cs" />
-    <Compile Include="Net\Transport\TransportFailedException.cs" />
+    <Compile Include="ClientModel\Transport\IapTunnel.cs" />
+    <Compile Include="ClientModel\Transport\TransportFailedException.cs" />
     <Compile Include="ObjectModel\EventQueue.cs" />
-    <Compile Include="Net\Transport\IapTransportFactory.cs" />
-    <Compile Include="Net\Transport\ITransport.cs" />
-    <Compile Include="Net\Transport\DirectTransportFactory.cs" />
-    <Compile Include="Net\Protocol\ClientAppProtocol.cs" />
-    <Compile Include="Net\Protocol\ProtocolRegistry.cs" />
+    <Compile Include="ClientModel\Transport\IapTransportFactory.cs" />
+    <Compile Include="ClientModel\Transport\ITransport.cs" />
+    <Compile Include="ClientModel\Transport\DirectTransportFactory.cs" />
+    <Compile Include="ClientModel\Protocol\ClientAppProtocol.cs" />
+    <Compile Include="ClientModel\Protocol\ProtocolRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Net\Protocol\IProtocol.cs" />
-    <Compile Include="Net\Protocol\IProtocolTarget.cs" />
-    <Compile Include="Net\Traits\InstanceTrait.cs" />
+    <Compile Include="ClientModel\Protocol\IProtocol.cs" />
+    <Compile Include="ClientModel\Protocol\IProtocolTarget.cs" />
+    <Compile Include="ClientModel\Traits\InstanceTrait.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

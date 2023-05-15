@@ -29,16 +29,26 @@ namespace Google.Solutions.Common.Test.Runtime
     {
         private class SampleDisposable : DisposableBase
         {
+            public int DisposeCalls = 0;
+
             protected override void Dispose(bool disposing)
             {
+                this.DisposeCalls++;
                 base.Dispose(disposing);
             }
         }
 
+        //---------------------------------------------------------------------
+        // IsDisposed.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenNotDisposed_ThenIsDisposedIsFalse()
         {
-            Assert.IsFalse(new SampleDisposable().IsDisposed);
+            using (var d = new SampleDisposable())
+            {
+                Assert.IsFalse(d.IsDisposed);
+            }
         }
 
         [Test]
@@ -48,6 +58,19 @@ namespace Google.Solutions.Common.Test.Runtime
             d.Dispose();
             d.Dispose(); // Again.
             Assert.IsTrue(d.IsDisposed);
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenDisposedTwice_ThenDisposeIsOnlyCalledOnce()
+        {
+            var d = new SampleDisposable();
+            d.Dispose();
+            d.Dispose(); // Again.
+            Assert.AreEqual(1, d.DisposeCalls);
         }
     }
 }

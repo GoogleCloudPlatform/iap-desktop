@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                             : SshKeyType.Rsa3072,
                         settingsKey)
                     .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
+                    .ApplyPolicy(machinePolicyKey),
                 PublicKeyValidity = RegistryDwordSetting.FromKey(
                         "PublicKeyValidity",
                         "PublicKeyValidity",
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                         (int)TimeSpan.FromMinutes(1).TotalSeconds,
                         int.MaxValue)
                     .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
+                    .ApplyPolicy(machinePolicyKey),
 
                 //
                 // User preferences. These cannot be overriden by policy.

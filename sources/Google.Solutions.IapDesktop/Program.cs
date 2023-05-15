@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -49,6 +50,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Core;
 using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
@@ -350,6 +352,7 @@ namespace Google.Solutions.IapDesktop
                 // any Google APIs.
                 //
                 preAuthLayer.AddSingleton<IInstall>(install);
+                preAuthLayer.AddSingleton<UserAgent>(Install.UserAgent);
                 preAuthLayer.AddSingleton(profile);
 
                 preAuthLayer.AddSingleton<IClock>(SystemClock.Default);
@@ -467,6 +470,8 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectModelService, ProjectModelService>();
                 mainLayer.AddTransient<IInstanceControlService, InstanceControlService>();
                 mainLayer.AddTransient<IUpdateService, UpdateService>();
+                mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
+                mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 
                 //
                 // Load windows.

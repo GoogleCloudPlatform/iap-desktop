@@ -26,6 +26,9 @@ namespace Google.Solutions.Common.Runtime
 {
     public abstract class DisposableBase : IDisposable
     {
+#if DEBUG
+        private readonly string stackTrace = Environment.StackTrace;
+#endif
         public bool IsDisposed { get; private set; }
 
         protected virtual void Dispose(bool disposing)
@@ -39,16 +42,28 @@ namespace Google.Solutions.Common.Runtime
 
         public void Dispose()
         {
-            Dispose(true);
-            Debug.Assert(this.IsDisposed, "base.Dispose was not called");
+            if (!this.IsDisposed)
+            {
+                Dispose(true);
+
+                //
+                // The override is supposed to call base.Dispose.
+                //
+                Debug.Assert(this.IsDisposed, "base.Dispose was not called");
+            }
+
             GC.SuppressFinalize(this);
         }
 
         ~DisposableBase()
         {
+#if DEBUG
             Debug.Assert(
                 this.IsDisposed,
-                "Object was not disposed or base.Dispose was not called");
+                "Object was not disposed or base.Dispose was not called\n\n" +
+                "Constructor was called at:\n\n" +
+                this.stackTrace);
+#endif
             Dispose(disposing: false);
         }
     }

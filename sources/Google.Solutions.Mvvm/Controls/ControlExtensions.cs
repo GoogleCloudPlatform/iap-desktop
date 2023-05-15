@@ -64,6 +64,9 @@ namespace Google.Solutions.Mvvm.Controls
                 $"{control} has duplicate tab indexes: {string.Join(", ", duplicateTabIndexes)}");
         }
 
+        /// <summary>
+        /// Attach the lifetime of a disposable object to that of a control.
+        /// </summary>
         public static void AttachDisposable(
             this IComponent component,
             IDisposable disposable)

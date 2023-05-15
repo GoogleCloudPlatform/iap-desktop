@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -89,7 +90,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly IKeyAuthorizationService keyAuthorizationService;
         private readonly IConnectionSettingsService settingsService;
         private readonly SshSettingsRepository sshSettingsRepository;
-        private readonly ITunnelBrokerService tunnelBrokerService;
+        private readonly IIapTransportFactory iapTransportFactory;
+        private readonly IDirectTransportFactory directTransportFactory;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly ISelectCredentialsDialog credentialDialog;
         private readonly IRdpCredentialCallbackService rdpCredentialCallbackService;
@@ -101,7 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             IKeyStoreAdapter keyStoreAdapter,
             IKeyAuthorizationService keyAuthService,
             IConnectionSettingsService settingsService,
-            ITunnelBrokerService tunnelBrokerService,
+            IIapTransportFactory iapTransportFactory,
+            IDirectTransportFactory directTransportFactory,
             IComputeEngineAdapter computeEngineAdapter,
             ISelectCredentialsDialog credentialDialog,
             IRdpCredentialCallbackService credentialCallbackService,
@@ -113,7 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             this.keyStoreAdapter = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
             this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
-            this.tunnelBrokerService = tunnelBrokerService.ExpectNotNull(nameof(tunnelBrokerService));
+            this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
+            this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
             this.computeEngineAdapter = computeEngineAdapter;
             this.credentialDialog = credentialDialog;
             this.rdpCredentialCallbackService = credentialCallbackService.ExpectNotNull(nameof(credentialCallbackService));
@@ -140,7 +144,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             RdpSessionParameters.ParameterSources sources)
         {
             var context = new RdpSessionContext(
-                this.tunnelBrokerService,
+                this.iapTransportFactory,
+                this.directTransportFactory,
                 this.computeEngineAdapter,
                 instance,
                 credential,
@@ -325,7 +330,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             // Initialize a context and pass ownership of the key to it.
             //
             var context = new SshSessionContext(
-                this.tunnelBrokerService,
+                this.iapTransportFactory,
+                this.directTransportFactory,
                 this.keyAuthorizationService,
                 this.computeEngineAdapter,
                 node.Instance,

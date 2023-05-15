@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using System;
-using System.ComponentModel;
 
 namespace Google.Solutions.Common.Runtime
 {
@@ -42,39 +40,6 @@ namespace Google.Solutions.Common.Runtime
         public void Dispose()
         {
             this.dispose();
-        }
-    }
-
-    public static class DisposableExtensions
-    {
-        public static IComponent AsComponent(this IDisposable disposable)
-        {
-            return new DisposableComponent(disposable);
-        }
-
-        public static void Add(this IContainer container, IDisposable disposable)
-        {
-            container.Add(disposable.AsComponent());
-        }
-
-        private sealed class DisposableComponent : Component
-        {
-            private readonly IDisposable disposable;
-
-            public DisposableComponent(IDisposable disposable)
-            {
-                this.disposable = disposable.ExpectNotNull(nameof(disposable));
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    this.disposable.Dispose();
-                }
-
-                base.Dispose(disposing);
-            }
         }
     }
 }

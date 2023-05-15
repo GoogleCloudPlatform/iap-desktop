@@ -34,7 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Collections.Specialized;

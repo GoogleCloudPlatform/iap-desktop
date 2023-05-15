@@ -24,11 +24,13 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         {
             var credential = new RdpCredential("user", null, null);
             var context = new RdpSessionContext(
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 SampleInstance,
                 credential,
@@ -65,37 +68,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenTransportTypeIsIap_ThenConnectTransportCreatesIapTunnel()
+        public async Task WhenTransportTypeIsIap_ThenConnectTransportCreatesIapTransport()
         {
-            var tunnel = new Mock<ITunnel>();
-            tunnel.SetupGet(t => t.LocalPort).Returns(123);
+            var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Endpoint).Returns(new IPEndPoint(IPAddress.Loopback, 123));
 
-            var tunnelBroker = new Mock<ITunnelBrokerService>();
-            tunnelBroker
-                .Setup(b => b.ConnectAsync(
-                    It.IsAny<TunnelDestination>(),
+            var factory = new Mock<IIapTransportFactory>();
+            factory
+                .Setup(b => b.CreateTransportAsync(
+                    RdpProtocol.Protocol,
                     It.IsAny<ISshRelayPolicy>(),
-                    It.IsAny<TimeSpan>()))
-                .ReturnsAsync(tunnel.Object);
+                    SampleInstance,
+                    3389,
+                    It.IsAny<IPEndPoint>(),
+                    It.IsAny<TimeSpan>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(transport.Object);
 
             var context = new RdpSessionContext(
-                tunnelBroker.Object,
+                factory.Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpSessionParameters.ParameterSources.Inventory);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
 
-            var transport = await context
+            var rdpTransport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(SessionTransportType.IapTunnel, transport.Type);
-            Assert.AreEqual(123, transport.Endpoint.Port);
+            Assert.AreSame(transport.Object, rdpTransport);
         }
 
         [Test]
-        public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesVpcInternalTunnel()
+        public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             computeEngineAdapter
@@ -113,21 +120,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     }
                 });
 
+            var transport = new Mock<ITransport>();
+            var factory = new Mock<IDirectTransportFactory>();
+            factory
+                .Setup(b => b.CreateTransportAsync(
+                    RdpProtocol.Protocol,
+                    new IPEndPoint(IPAddress.Parse("20.21.22.23"), 3389),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(transport.Object);
+
             var context = new RdpSessionContext(
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                factory.Object,
                 computeEngineAdapter.Object,
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpSessionParameters.ParameterSources.Inventory);
             context.Parameters.TransportType = SessionTransportType.Vpc;
 
-            var transport = await context
+            var rdpTransport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(SessionTransportType.Vpc, transport.Type);
-            Assert.AreEqual(context.Parameters.Port, transport.Endpoint.Port);
-            Assert.AreEqual("20.21.22.23", transport.Endpoint.Address.ToString());
+            Assert.AreSame(transport.Object, rdpTransport);
         }
     }
 }

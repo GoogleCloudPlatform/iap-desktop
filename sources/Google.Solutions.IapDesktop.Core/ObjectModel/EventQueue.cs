@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ObjectModel
@@ -179,7 +180,9 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                 .ContinueWith(
                     t =>
                     {
-                        Debug.Assert(false, "One or more subscribers failed to handle an event");
+                        Debug.Assert(
+                            Assembly.GetEntryAssembly() == null, // Don't assert in unit tests
+                            "One or more subscribers failed to handle an event: " + t.Exception);
                         CoreTraceSources.Default.TraceError(t.Exception);
                     },
                     TaskContinuationOptions.OnlyOnFaulted);

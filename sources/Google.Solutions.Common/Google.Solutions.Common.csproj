@@ -53,6 +53,7 @@
     <Compile Include="Interop\HRESULT.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
     <Compile Include="Interop\WindowsFilename.cs" />
+    <Compile Include="Runtime\DisposableExtensions.cs" />
     <Compile Include="Text\IAsyncReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonTraceSources.cs" />

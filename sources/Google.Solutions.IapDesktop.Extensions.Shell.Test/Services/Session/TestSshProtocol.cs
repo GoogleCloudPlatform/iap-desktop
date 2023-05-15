@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.Net.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Moq;
 using NUnit.Framework;
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         [Test]
         public void TraitToString()
         {
-            StringAssert.Contains("Ssh", SshProtocol.Supported.ToString());
+            StringAssert.Contains("SSH", SshProtocol.Supported.ToString());
         }
     }
 }
