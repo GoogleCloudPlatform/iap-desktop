@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test
 
         public int LocalPort => listener.LocalPort;
 
-        public Transport.TransportType Type => Transport.TransportType.IapTunnel;
+        public SessionTransportType Type => SessionTransportType.IapTunnel;
 
         public IPEndPoint Endpoint => new IPEndPoint(IPAddress.Loopback, listener.LocalPort);
 

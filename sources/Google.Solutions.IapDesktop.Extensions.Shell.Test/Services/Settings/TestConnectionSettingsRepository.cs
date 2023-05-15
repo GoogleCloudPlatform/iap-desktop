@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             originalSettings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
             originalSettings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
             originalSettings.RdpPort.Value = 13389;
-            originalSettings.RdpTransport.Value = Transport.TransportType.Vpc;
+            originalSettings.RdpTransport.Value = SessionTransportType.Vpc;
 
             this.repository.SetVmInstanceSettings(originalSettings);
 
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.AreEqual(RdpRedirectDrive.Enabled, settings.RdpRedirectDrive.Value);
             Assert.AreEqual(RdpRedirectDevice.Enabled, settings.RdpRedirectDevice.Value);
             Assert.AreEqual(13389, settings.RdpPort.IntValue);
-            Assert.AreEqual(Transport.TransportType.Vpc, settings.RdpTransport.EnumValue);
+            Assert.AreEqual(SessionTransportType.Vpc, settings.RdpTransport.EnumValue);
         }
 
         [Test]

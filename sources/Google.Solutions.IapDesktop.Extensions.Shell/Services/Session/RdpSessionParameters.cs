@@ -24,7 +24,7 @@ using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public class RdpSessionParameters
+    public class RdpSessionParameters : SessionParametersBase
     {
         internal const ushort DefaultPort = 3389;
         internal static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(30);
@@ -46,8 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         public RdpRedirectDrive RedirectDrive { get; set; } = RdpRedirectDrive._Default;
         public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
-
-        public Transport.TransportType TransportType { get; set; } = Transport.TransportType._Default;
 
         /// <summary>
         /// Sources where these parameters were obtained from.
@@ -72,7 +70,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             Inventory = 2
         }
     }
-
 
     //-------------------------------------------------------------------------
     // Enums.

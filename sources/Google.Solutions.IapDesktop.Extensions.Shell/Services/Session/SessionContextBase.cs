@@ -37,14 +37,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         protected async Task<ITransport> ConnectTransportAsync(
-            Transport.TransportType transportType,
+            SessionTransportType transportType,
             ushort port,
             TimeSpan connectionTimeout,
             CancellationToken cancellationToken)
         {
             switch (transportType)
             {
-                case Transport.TransportType.IapTunnel:
+                case SessionTransportType.IapTunnel:
                     return await Transport
                         .CreateIapTransportAsync(
                             this.tunnelBroker,
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                             connectionTimeout)
                         .ConfigureAwait(false);
 
-                case Transport.TransportType.Vpc:
+                case SessionTransportType.Vpc:
                     return await Transport
                         .CreateVpcTransportAsync(
                             this.computeEngineAdapter,

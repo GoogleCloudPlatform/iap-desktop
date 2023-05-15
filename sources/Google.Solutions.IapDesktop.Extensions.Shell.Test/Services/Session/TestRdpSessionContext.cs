@@ -84,13 +84,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpSessionParameters.ParameterSources.Inventory);
-            context.Parameters.TransportType = Transport.TransportType.IapTunnel;
+            context.Parameters.TransportType = SessionTransportType.IapTunnel;
 
             var transport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Transport.TransportType.IapTunnel, transport.Type);
+            Assert.AreEqual(SessionTransportType.IapTunnel, transport.Type);
             Assert.AreEqual(123, transport.Endpoint.Port);
         }
 
@@ -119,13 +119,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpSessionParameters.ParameterSources.Inventory);
-            context.Parameters.TransportType = Transport.TransportType.Vpc;
+            context.Parameters.TransportType = SessionTransportType.Vpc;
 
             var transport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
+            Assert.AreEqual(SessionTransportType.Vpc, transport.Type);
             Assert.AreEqual(context.Parameters.Port, transport.Endpoint.Port);
             Assert.AreEqual("20.21.22.23", transport.Endpoint.Address.ToString());
         }

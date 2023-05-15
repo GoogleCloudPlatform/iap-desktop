@@ -123,8 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         }
 
         private void ApplyTabStyle<TParameters>(
-            DockContentHandler dockHandler, 
-            Transport.TransportType transportType,
+            DockContentHandler dockHandler,
+            SessionTransportType transportType,
             bool isCreatedFromUrl,
             InstanceLocator instance,
             ISessionCredential credential,
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 dockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
             }
-            else if (transportType == Transport.TransportType.Vpc)
+            else if (transportType == SessionTransportType.Vpc)
             {
                 dockHandler.TabAccentColor = AccentColorForNonIapSessions;
             }
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             toolTip.AppendLine($"Instance: {instance.Name}");
             toolTip.AppendLine($"Project: {instance.ProjectId}");
             
-            if (transportType == Transport.TransportType.IapTunnel)
+            if (transportType == SessionTransportType.IapTunnel)
             {
                 toolTip.AppendLine();
                 toolTip.AppendLine("Connected through Identity-Aware Proxy.");

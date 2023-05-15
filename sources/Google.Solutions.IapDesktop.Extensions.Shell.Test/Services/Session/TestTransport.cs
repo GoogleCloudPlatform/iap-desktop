@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.Net.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Testing.Common;
@@ -205,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
+            Assert.AreEqual(SessionTransportType.Vpc, transport.Type);
             Assert.AreEqual(SampleInstance, transport.Instance);
             Assert.AreEqual(22, transport.Endpoint.Port);
             Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());
@@ -251,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
+            Assert.AreEqual(SessionTransportType.Vpc, transport.Type);
             Assert.AreEqual(SampleInstance, transport.Instance);
             Assert.AreEqual(22, transport.Endpoint.Port);
             Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());

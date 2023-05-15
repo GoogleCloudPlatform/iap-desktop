@@ -27,6 +27,7 @@ using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.Diagnostics;
+using Google.Solutions.IapDesktop.Core.Net.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.ComponentModel;
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// <summary>
         /// Type of transport.
         /// </summary>
-        Transport.TransportType Type { get; }
+        SessionTransportType Type { get; }
 
         /// <summary>
         /// Endpoint to connect to. This might be a localhost endpoint.
@@ -57,38 +58,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
     public class Transport : ITransport
     {
         public InstanceLocator Instance { get; }
-        public TransportType Type { get; }
+        public SessionTransportType Type { get; }
 
         public IPEndPoint Endpoint { get; }
 
         private Transport(
-            TransportType type,
+            SessionTransportType type,
             InstanceLocator instance,
             IPEndPoint endpoint)
         {
             this.Type = type;
             this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-        }
-
-        public enum TransportType
-        {
-            //
-            // NB. Numeric values must be kept unchanged as they are
-            // persisted as settings.
-            //
-
-            [Description("IAP tunnel")]
-            IapTunnel = 0,
-
-            [Description("VPN/Interconnect")]
-            Vpc = 1,
-
-            [Browsable(false)]
-            Test = 2,
-
-            [Browsable(false)]
-            _Default = IapTunnel
         }
 
         //---------------------------------------------------------------------
@@ -118,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                     .ConfigureAwait(false);
 
                 return new Transport(
-                    TransportType.IapTunnel,
+                    SessionTransportType.IapTunnel,
                     targetInstance,
                     new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort));
             }
@@ -175,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 }
 
                 return new Transport(
-                    TransportType.Vpc,
+                    SessionTransportType.Vpc,
                     targetInstance,
                     new IPEndPoint(internalAddress, targetPort));
             }
@@ -195,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
             return Task.FromResult(new Transport(
-                TransportType.Test,
+                SessionTransportType.Test,
                 targetInstance,
                 endpoint));
         }
