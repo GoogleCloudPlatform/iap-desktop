@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         /// <summary>
         /// Create a transport to a VM instance/port.
         /// </summary>
-        Task<ITransport> CreateIapTransportAsync(
+        Task<ITransport> CreateTransportAsync(
             IProtocol protocol,
             ISshRelayPolicy policy,
             InstanceLocator targetInstance,
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
             }
         }
 
-        public async Task<ITransport> CreateIapTransportAsync(
+        public async Task<ITransport> CreateTransportAsync(
             IProtocol protocol,
             ISshRelayPolicy policy,
             InstanceLocator targetInstance,
@@ -249,29 +249,32 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
             TimeSpan probeTimeout,
             CancellationToken cancellationToken)
         {
-            if (localEndpoint == null)
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(targetInstance, protocol))
             {
-                localEndpoint = new IPEndPoint(
-                    IPAddress.Loopback,
-                    PortFinder.FindFreeLocalPort());
+                if (localEndpoint == null)
+                {
+                    localEndpoint = new IPEndPoint(
+                        IPAddress.Loopback,
+                        PortFinder.FindFreeLocalPort());
+                }
+
+                var profile = new IapTunnel.Profile(
+                    protocol,
+                    policy,
+                    targetInstance,
+                    targetPort,
+                    localEndpoint);
+
+                var tunnel = await GetPooledTunnelAsync(
+                        profile,
+                        probeTimeout,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                return new Transport(
+                    tunnel,
+                    protocol);
             }
-
-            var profile = new IapTunnel.Profile(
-                protocol,
-                policy,
-                targetInstance,
-                targetPort,
-                localEndpoint);
-
-            var tunnel = await GetPooledTunnelAsync(
-                    profile,
-                    probeTimeout,
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            return new Transport(
-                tunnel,
-                protocol);
         }
 
         //---------------------------------------------------------------------
@@ -300,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
 
             public IProtocol Protocol { get; }
 
-            public IPEndPoint LocalEndpoint => this.Tunnel.LocalEndpoint;
+            public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
 
             //-----------------------------------------------------------------
             // DisposableBase.

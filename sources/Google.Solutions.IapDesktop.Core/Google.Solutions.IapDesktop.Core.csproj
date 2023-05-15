@@ -72,7 +72,7 @@
     <Compile Include="ObjectModel\EventQueue.cs" />
     <Compile Include="Net\Transport\IapTransportFactory.cs" />
     <Compile Include="Net\Transport\ITransport.cs" />
-    <Compile Include="Net\Transport\VpcTransportFactory.cs" />
+    <Compile Include="Net\Transport\DirectTransportFactory.cs" />
     <Compile Include="Net\Protocol\ClientAppProtocol.cs" />
     <Compile Include="Net\Protocol\ProtocolRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

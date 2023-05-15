@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Net\Transport\TestDirectTransportFactory.cs" />
     <Compile Include="Net\Transport\TestIapTunnelFactory.cs" />
     <Compile Include="ObjectModel\TestEventQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
             //
             // Create two tunnels, one of them faulting.
             //
-            var validTransport = factory.CreateIapTransportAsync(
+            var validTransport = factory.CreateTransportAsync(
                 validProfile.Protocol,
                 validProfile.Policy,
                 validProfile.TargetInstance,
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 validProfile.LocalEndpoint,
                 SampleTimeout,
                 CancellationToken.None);
-            var faultingTransport = factory.CreateIapTransportAsync(
+            var faultingTransport = factory.CreateTransportAsync(
                  faultingProfile.Protocol,
                  faultingProfile.Policy,
                  faultingProfile.TargetInstance,
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 SampleUserAgent,
                 tunnelFactory.Object);
 
-            var validButIncompleteTransport = factory.CreateIapTransportAsync(
+            var validButIncompleteTransport = factory.CreateTransportAsync(
                 validProfile.Protocol,
                 validProfile.Policy,
                 validProfile.TargetInstance,
@@ -193,11 +193,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         }
 
         //---------------------------------------------------------------------
-        // CreateIapTransport - pooling.
+        // CreateTransport - pooling.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMatchFoundInPoolButTunnelFaulted_ThenCreateIapTransportCreatesNewTunnel()
+        public void WhenMatchFoundInPoolButTunnelFaulted_ThenCreateTransportCreatesNewTunnel()
         {
             var faultingProfile = CreateTunnelProfile(SampleInstance, 23);
             var tunnelFactory = new Mock<IapTunnel.Factory>();
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 SampleUserAgent,
                 tunnelFactory.Object);
 
-            var faultingTransport1 = factory.CreateIapTransportAsync(
+            var faultingTransport1 = factory.CreateTransportAsync(
                  faultingProfile.Protocol,
                  faultingProfile.Policy,
                  faultingProfile.TargetInstance,
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
             ExceptionAssert.ThrowsAggregateException<ApplicationException>(
                 () => faultingTransport1.Wait());
 
-            var faultingTransport2 = factory.CreateIapTransportAsync(
+            var faultingTransport2 = factory.CreateTransportAsync(
                  faultingProfile.Protocol,
                  faultingProfile.Policy,
                  faultingProfile.TargetInstance,
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         }
 
         [Test]
-        public void WhenMatchFoundInPoolButTunnelNotCompletedYet_ThenCreateIapTransportReturnsPooledTunnel()
+        public void WhenMatchFoundInPoolButTunnelNotCompletedYet_ThenCreateTransportReturnsPooledTunnel()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 SampleUserAgent,
                 tunnelFactory.Object);
 
-            var validButIncompleteTransport1 = factory.CreateIapTransportAsync(
+            var validButIncompleteTransport1 = factory.CreateTransportAsync(
                 validProfile.Protocol,
                 validProfile.Policy,
                 validProfile.TargetInstance,
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 validProfile.LocalEndpoint,
                 SampleTimeout,
                 CancellationToken.None);
-            var validButIncompleteTransport2 = factory.CreateIapTransportAsync(
+            var validButIncompleteTransport2 = factory.CreateTransportAsync(
                 validProfile.Protocol,
                 validProfile.Policy,
                 validProfile.TargetInstance,
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         }
 
         [Test]
-        public async Task WhenMatchFoundInPool_ThenCreateIapTransportReturnsPooledTunnel()
+        public async Task WhenMatchFoundInPool_ThenCreateTransportReturnsPooledTunnel()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 tunnelFactory.Object);
 
             var transport1 = await factory
-                .CreateIapTransportAsync(
+                .CreateTransportAsync(
                     validProfile.Protocol,
                     validProfile.Policy,
                     validProfile.TargetInstance,
@@ -333,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                     CancellationToken.None)
                 .ConfigureAwait(false);
             var transport2 = await factory
-                .CreateIapTransportAsync(
+                .CreateTransportAsync(
                     validProfile.Protocol,
                     validProfile.Policy,
                     validProfile.TargetInstance,
@@ -356,11 +356,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
         }
 
         //---------------------------------------------------------------------
-        // CreateIapTransport - events.
+        // CreateTransport - events.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenTunnelCreatedOrClosed_ThenCreateIapTransportPublishesEvent()
+        public async Task WhenTunnelCreatedOrClosed_ThenCreateTransportPublishesEvent()
         {
             var eventQueue = new Mock<IEventQueue>();
 
@@ -382,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.Net.Transport
                 tunnelFactory.Object);
 
             using (var transport = await factory
-                .CreateIapTransportAsync(
+                .CreateTransportAsync(
                     validProfile.Protocol,
                     validProfile.Policy,
                     validProfile.TargetInstance,

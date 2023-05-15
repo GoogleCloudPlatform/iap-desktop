@@ -36,6 +36,6 @@ namespace Google.Solutions.IapDesktop.Core.Net.Transport
         /// Endpoint that clients can connect to. This might 
         /// be a localhost endpoint.
         /// </summary>
-        IPEndPoint LocalEndpoint { get; }
+        IPEndPoint Endpoint { get; }
     }
 }
