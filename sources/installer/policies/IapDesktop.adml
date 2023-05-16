@@ -32,7 +32,7 @@
       <string id="IsUpdateCheckEnabled_Description">Periodically check for updates on exit</string>
 
       <string id="IsDeviceCertificateAuthenticationEnabled">Enable endpoint verification</string>
-      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using device certificate authentication if possible. Device Certificate authentication requires the computer to be enrolled and the Endpoint Verfification native helper to be installed.
+      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using device certificate authentication if possible. Device Certificate authentication requires the computer to be enrolled and the Endpoint Verification native helper to be installed.
       </string>
 
       <string id="ProxyUrl">Enable HTTPS proxy</string>

@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Auth
     public enum SshKeyType : int
     {
         //
-        // NB. These values are used for persistance and
+        // NB. These values are used for persistence and
         // must be kept constant.
         //
 

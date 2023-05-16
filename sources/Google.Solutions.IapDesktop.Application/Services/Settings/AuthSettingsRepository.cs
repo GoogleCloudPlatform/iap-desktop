@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         // IDataStore.
         //
         // Rather than supporting all possible keys, this implementation only 
-        // supports a single known key and maps that to a prooperty.
+        // supports a single known key and maps that to a property.
         //---------------------------------------------------------------------
 
         public Task ClearAsync()

@@ -34,7 +34,7 @@ namespace Google.Solutions.Iap.Net
         private readonly SemaphoreSlim writerSemaphore = new SemaphoreSlim(1);
 
         //---------------------------------------------------------------------
-        // Methods to be overriden
+        // Methods to be overridden
         //---------------------------------------------------------------------
 
         protected abstract Task<int> ProtectedReadAsync(

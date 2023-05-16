@@ -76,7 +76,7 @@ namespace Google.Solutions.Mvvm.Controls
                     return Enumerable.Empty<ScreenIcon>();
                 }
 
-                // Calulate a bounding box around all screens.
+                // Calculate a bounding box around all screens.
                 var unionOfAllScreens = new Rectangle();
                 foreach (var item in this.model)
                 {

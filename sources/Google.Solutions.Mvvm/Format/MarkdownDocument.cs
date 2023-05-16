@@ -442,7 +442,7 @@ namespace Google.Solutions.Mvvm.Format
         }
 
         /// <summary>
-        /// A token withing a text span. Tokens are separated by delimiters.
+        /// A token within a text span. Tokens are separated by delimiters.
         /// Delimiters may indicate a new kind of span, but sometimes they
         /// can just be text (for ex, a * in the middle of a sentence doesn't
         /// begin an emphasis).

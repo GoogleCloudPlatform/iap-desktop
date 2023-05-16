@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 catch (IOException e) when (e.HResult == E_PIPE_BUSY)
                 {
                     //
-                    // Because we always disconnect the pipe, this shoudn't
+                    // Because we always disconnect the pipe, this shouldn't
                     // normally happen.
                     //
                     // Back off and retry.

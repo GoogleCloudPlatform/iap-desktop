@@ -157,7 +157,7 @@ namespace Google.Solutions.Iap.Protocol
                         stream =>
                         {
                             //
-                            // If we get here, then we've successfuly established
+                            // If we get here, then we've successfully established
                             // a connection.
                             //
                             return Task.FromResult(0u);
@@ -173,7 +173,7 @@ namespace Google.Solutions.Iap.Protocol
             catch (OperationCanceledException)
             {
                 throw new NetworkStreamClosedException(
-                    "The server did not respond within the alotted time");
+                    "The server did not respond within the allotted time");
             }
         }
 

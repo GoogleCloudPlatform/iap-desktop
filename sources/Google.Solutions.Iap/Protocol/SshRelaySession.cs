@@ -257,7 +257,7 @@ namespace Google.Solutions.Iap.Protocol
                                     //
                                     throw new SshRelayProtocolViolationException(
                                         "The server sent an unexpected CONNECT_SUCCESS_SID " +
-                                        "message in response to a reconect");
+                                        "message in response to a reconnect");
                                 }
 
                             case SshRelayMessageTag.LONG_CLOSE:
@@ -317,7 +317,7 @@ namespace Google.Solutions.Iap.Protocol
                     this.connection = null;
                 }
 
-                TraceVerbose("Disonnected");
+                TraceVerbose("Disconnected");
             }
         }
 

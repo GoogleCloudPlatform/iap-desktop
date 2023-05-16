@@ -25,7 +25,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System
 {
     public class GenericSystemEvent : SystemEventBase
     {
-        public override string Message => $"System event {this.LogRecord.ProtoPayload.MethodName} occured";
+        public override string Message => $"System event {this.LogRecord.ProtoPayload.MethodName} occurred";
 
         internal GenericSystemEvent(LogRecord logRecord) : base(logRecord)
         {

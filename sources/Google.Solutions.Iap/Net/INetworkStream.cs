@@ -60,7 +60,7 @@ namespace Google.Solutions.Iap.Net
 
     /// <summary>
     /// Base exception for scenarios where a client tries to use a stream
-    /// that has alrady been closed, either by the client itself or by
+    /// that has already been closed, either by the client itself or by
     /// the server.
     /// </summary>
     public class NetworkStreamClosedException : Exception

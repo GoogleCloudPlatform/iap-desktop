@@ -597,7 +597,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 {
                     //
                     // Do not resize immediately since there might be another resize
-                    // event coming in a few miliseconds. Instead, delay the operation
+                    // event coming in a few milliseconds. Instead, delay the operation
                     // by deferring it to a timer.
                     //
                     this.reconnectToResizeTimer.Start();

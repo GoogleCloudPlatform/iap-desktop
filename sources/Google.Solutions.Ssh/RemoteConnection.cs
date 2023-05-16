@@ -89,7 +89,7 @@ namespace Google.Solutions.Ssh
 
                 //
                 // NB. The operation can throw an exception. It is
-                // imporant that we let this exception escape because
+                // important that we let this exception escape because
                 // it might be simply an EAGAIN situation. If the
                 // exception is bad, we'll receive an OnSendError 
                 // callback later.

@@ -771,7 +771,7 @@ namespace Google.Solutions.Ssh.Native
             // but trying to free a sub-resource *after* freeing a session will
             // cause an access violation.
             //
-            // When calling dispose, it's therefore imporant to dispose
+            // When calling dispose, it's therefore important to dispose
             // sub-resource before disposing their parent session - that's
             // what the following assertion is for.
             //

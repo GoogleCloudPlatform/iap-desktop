@@ -42,7 +42,7 @@ namespace Google.Solutions.Iap.Net
         }
 
         //---------------------------------------------------------------------
-        // Methods to be overriden
+        // Methods to be overridden
         //---------------------------------------------------------------------
 
         protected abstract Task CloseAsyncWithCloseProtection(CancellationToken cancellationToken);

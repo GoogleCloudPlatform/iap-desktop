@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop
                 var eventService = new EventService(mainForm);
 
                 //
-                // Register adapters as singletons to ensure connection resuse.
+                // Register adapters as singletons to ensure connection reuse.
                 //
                 mainLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();

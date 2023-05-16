@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Shell
 {
     /// <summary>
     /// Helper class for scanning, quarantining, and marking downloaded 
-    /// files wih a MOTW (mark of the web).
+    /// files with a MOTW (mark of the web).
     /// 
     /// For details, see Chromium source: /content/browser/download/quarantine_win.cc
     /// </summary>
@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Shell
                 {
                     //
                     // Set a client GUID that identifies the current application. Might
-                    // be used to persistently suppress promots.
+                    // be used to persistently suppress promotes.
                     //
                     attachment.SetClientGuid(clientGuid);
                     attachment.SetLocalPath(filePath.FullName);

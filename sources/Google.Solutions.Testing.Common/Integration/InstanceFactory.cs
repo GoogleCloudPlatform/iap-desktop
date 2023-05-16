@@ -124,7 +124,7 @@ namespace Google.Solutions.Testing.Common.Integration
                 Items = new List<Metadata.ItemsData>(metadataItems.ToList())
             };
 
-            // Add metdata that marks this instance as temporary.
+            // Add metadata that marks this instance as temporary.
             metadata.Add("type", "auto-cleanup");
             metadata.Add("ttl", "120"); // minutes
 

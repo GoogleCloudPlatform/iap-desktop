@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Compute
 
         /// <summary>
         /// Generic helper method that works for both instance and
-        /// project metdata
+        /// project metadata
         /// </summary>
         private static async Task UpdateMetadataAsync(
             Func<Task<Metadata>> readMetadata,
@@ -97,7 +97,7 @@ namespace Google.Solutions.Apis.Compute
                     else
                     {
                         CommonTraceSources.Default.TraceWarning(
-                            "Setting metdata failed {0} (code error {1})", e.Message,
+                            "Setting metadata failed {0} (code error {1})", e.Message,
                             e.Error?.Code);
 
                         throw;

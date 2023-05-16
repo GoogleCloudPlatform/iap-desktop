@@ -397,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         protected virtual void OnUserVisibilityChanged(bool visible)
         {
-            // Can be overriden in derived class.
+            // Can be overridden in derived class.
         }
 
         //---------------------------------------------------------------------

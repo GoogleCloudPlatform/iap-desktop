@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         public AuthorizeViewModel(IInstall install)
         {
             //
-            // NB. Properties are access from a non-GUI thrad, so
+            // NB. Properties are access from a non-GUI thread, so
             // they must be thread-safe.
             //
             this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         public EventHandler<RecoverableExceptionEventArgs> OAuthScopeNotGranted;
 
         /// <summary>
-        /// An error occured that might be due to network misconfiguration.
+        /// An error occurred that might be due to network misconfiguration.
         /// </summary>
         public EventHandler<RecoverableExceptionEventArgs> NetworkError;
 

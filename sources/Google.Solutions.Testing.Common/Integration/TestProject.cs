@@ -80,7 +80,7 @@ namespace Google.Solutions.Testing.Common.Integration
         {
             // This account must have:
             // - Cloud Identity Premium
-            // - an associated device certiticate on the local machine
+            // - an associated device certificate on the local machine
 
             var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
             if (string.IsNullOrEmpty(credentialsPath))

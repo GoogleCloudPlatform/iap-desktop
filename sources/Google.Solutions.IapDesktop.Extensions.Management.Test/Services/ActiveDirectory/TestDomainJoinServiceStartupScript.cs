@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                         MessageType = DomainJoinService.JoinRequest.MessageTypeString,
                         DomainName = "example.com",
                         Username = "admin",
-                        EncryptedPassword = "" // Invalid cyphertext
+                        EncryptedPassword = "" // Invalid ciphertext
                     })
                 });
 
