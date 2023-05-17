@@ -63,7 +63,7 @@ namespace Google.Solutions.Iap.Net
         {
             // ClientWebSocket throws almost arbitrary nestings of 
             // SocketExceptions, IOExceptions, WebSocketExceptions, all
-            // wrapped in AggregrateExceptions.
+            // wrapped in AggregateExceptions.
 
             for (var ex = caughtEx; ex != null; ex = ex.InnerException)
             {
@@ -83,7 +83,7 @@ namespace Google.Solutions.Iap.Net
         {
             // ClientWebSocket throws almost arbitrary nestings of 
             // WebSocketException, IOExceptions, SocketExceptions, all
-            // wrapped in AggregrateExceptions.
+            // wrapped in AggregateExceptions.
 
             for (var ex = caughtEx; ex != null; ex = ex.InnerException)
             {

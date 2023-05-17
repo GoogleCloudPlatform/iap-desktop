@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Cache
             {
                 if (this.tokenSourceForCurrentTask != null)
                 {
-                    // Another asynchnous load/bind operation is ongoing.
+                    // Another asynchronous load/bind operation is ongoing.
                     // Cancel that one because we won't need its result.
 
                     CommonTraceSources.Default.TraceVerbose("Cancelling previous model load task");

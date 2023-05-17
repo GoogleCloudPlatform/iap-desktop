@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             // instead of the hack above, first check that the number of characters is positive 
             // and then use the result of sending EM_GETTEXTRANGE to handle the 
-            // possibilty of Text.Length < c.cpMax
+            // possibility of Text.Length < c.cpMax
             // 
 
             int numCharacters = c.cpMax - c.cpMin + 1; // +1 for null termination

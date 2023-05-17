@@ -158,7 +158,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             if (!(this.ContextSource is INotifyPropertyChanged))
             {
                 //
-                // The source isn't observable. Peform an explicit
+                // The source isn't observable. Perform an explicit
                 // refresh every time the menu is opened.
                 //
                 menu.Opening += (sender, args) => ForceRefresh();
@@ -174,7 +174,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             if (!(this.ContextSource is INotifyPropertyChanged))
             {
                 //
-                // The source isn't observable. Peform an explicit
+                // The source isn't observable. Perform an explicit
                 // refresh every time the menu is opened.
                 //
                 menu.DropDownOpening += (sender, args) => ForceRefresh();

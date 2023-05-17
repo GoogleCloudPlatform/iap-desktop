@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
 
         public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
-            "Device certiticate authentication",
+            "Device certificate authentication",
             "https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access");
 
         public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(

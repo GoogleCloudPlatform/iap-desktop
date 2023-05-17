@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 if (name == null)
                 {
                     //
-                    // Open or create default profile. For backwards compatbility
+                    // Open or create default profile. For backwards compatibility
                     // reasons, the default profile uses the key "1.0".
                     //
                     var profileKeyPath = $@"{install.BaseKeyPath}\{DefaultProfileKey}";

@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     hwndParent = parent?.Handle ?? IntPtr.Zero,
                     dwFlags = 0,
                     dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON,
-                    pszWindowTitle = "An error occured",
+                    pszWindowTitle = "An error occurred",
                     MainIcon = TaskDialogIcons.TD_ERROR_ICON,
                     pszMainInstruction = caption,
                     pszContent = message,

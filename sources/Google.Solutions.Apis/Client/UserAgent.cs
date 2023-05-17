@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Client
 
         /// <summary>
         /// Create a value that can be used as "application name" for 
-        /// Google API requests. Application names can't contain parantheses
+        /// Google API requests. Application names can't contain parentheses
         /// and other special characters, so we can't use the normal header.
         /// </summary>
         public string ToApplicationName()

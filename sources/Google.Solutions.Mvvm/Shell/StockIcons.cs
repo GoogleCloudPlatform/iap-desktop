@@ -158,7 +158,7 @@ namespace Google.Solutions.Mvvm.Shell
         }
 
         //---------------------------------------------------------------------
-        // P/Invoke declations.
+        // P/Invoke declarations.
         //---------------------------------------------------------------------
 
         private static class NativeMethods

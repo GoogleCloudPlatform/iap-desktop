@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Data
     /// Rules:
     /// * The host part is empty, so a URL has to start with iap-rdp:/ or iap-rdp:///
     /// * The query string may contains settings, but not all settings are supported
-    ///   (either for security reasons or beause they are just not very relevant).
+    ///   (either for security reasons or because they are just not very relevant).
     /// </summary>
     public class IapRdpUrl
     {
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Data
         public InstanceLocator Instance { get; }
 
         /// <summary>
-        /// Query string paramaters that might contain connection settings.
+        /// Query string parameters that might contain connection settings.
         /// 
         /// NB. The NameValueCollection is case-insensitive.
         /// </summary>

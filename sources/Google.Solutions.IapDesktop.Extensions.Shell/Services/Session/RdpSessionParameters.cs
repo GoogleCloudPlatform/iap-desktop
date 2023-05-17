@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         // for "localhost".
         AttemptServerAuthentication = 0,
 
-        // Almsot guaranteed to fail, so do not even display it.
+        // Almost guaranteed to fail, so do not even display it.
         [Browsable(false)]
         RequireServerAuthentication = 1,
 

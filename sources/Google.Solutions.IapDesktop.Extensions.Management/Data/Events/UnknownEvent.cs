@@ -28,8 +28,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events
         public override EventCategory Category => EventCategory.Unknown;
 
         public override string Message => this.LogRecord.ProtoPayload != null
-            ? $"Event {this.LogRecord.ProtoPayload.MethodName} occured"
-            : $"Unknown event occured";
+            ? $"Event {this.LogRecord.ProtoPayload.MethodName} occurred"
+            : $"Unknown event occurred";
 
         public UnknownEvent(LogRecord logRecord) : base(logRecord)
         {

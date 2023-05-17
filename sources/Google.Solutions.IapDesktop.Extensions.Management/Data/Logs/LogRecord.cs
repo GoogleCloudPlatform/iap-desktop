@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Logs
             if (parts.Length != 4)
             {
                 throw new ArgumentException(
-                    "Enountered unexpected LogName format: " + this.LogName);
+                    "Encountered unexpected LogName format: " + this.LogName);
             }
 
             return parts;

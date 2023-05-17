@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Binding
     {
         /// <summary>
         /// View that the view model has been bound to. Null if
-        /// binding has not occured yet.
+        /// binding has not occurred yet.
         /// </summary>
         public IWin32Window View { get; set; } // TODO: make private set
 

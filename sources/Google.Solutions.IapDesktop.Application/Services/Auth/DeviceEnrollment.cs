@@ -123,11 +123,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Auth
             // Find the right client certificate for mTLS.
             //
             // Candidates are (in order or priority):
-            //  1. Custom certiticate (from settings)
-            //  2. EV default certiticate
+            //  1. Custom certificate (from settings)
+            //  2. EV default certificate
             //  3. Enterprise certificate (from group policy)
             //
-            // NB. Even if we find a certificiate, it might not be
+            // NB. Even if we find a certificate, it might not be
             // associated with the signed-on user. But finding out
             // would require interacting with the undocumented APIs
             // of the native helper. False positives are harmless,
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Auth
             // 
             // A client certificate that only exists in the machine
             // certificate store won't be picked up by Chrome and the
-            // EV extension, and thus won'e be usuable for mTLS.
+            // EV extension, and thus won'e be usable for mTLS.
             //
             // EV-provisioned certificates are also placed in the user's
             // certificate store. 

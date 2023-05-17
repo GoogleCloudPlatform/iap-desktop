@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             return new SshSettings()
             {
                 //
-                // Settings that can be overriden by policy.
+                // Settings that can be overridden by policy.
                 //
                 // NB. Default values must be kept consistent with the
                 //     ADMX policy templates!
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                     .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
 
                 //
-                // User preferences. These cannot be overriden by policy.
+                // User preferences. These cannot be overridden by policy.
                 //
                 IsPropagateLocaleEnabled = RegistryBoolSetting.FromKey(
                     "IsPropagateLocaleEnabled",

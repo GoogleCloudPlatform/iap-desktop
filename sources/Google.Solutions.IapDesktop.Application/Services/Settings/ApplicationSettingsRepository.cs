@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             return new ApplicationSettings()
             {
                 //
-                // Settings that can be overriden by policy.
+                // Settings that can be overridden by policy.
                 //
                 // NB. Default values must be kept consistent with the
                 //     ADMX policy templates!
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     .ApplyPolicy(machinePolicyKey),
 
                 //
-                // User preferences. These cannot be overriden by policy.
+                // User preferences. These cannot be overridden by policy.
                 //
                 IsMainWindowMaximized = RegistryBoolSetting.FromKey(
                     "IsMainWindowMaximized",

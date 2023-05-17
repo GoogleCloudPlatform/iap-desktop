@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events
                 if (parts.Length != 2)
                 {
                     throw new ArgumentException(
-                        "Enountered unexpected resource name format: " +
+                        "Encountered unexpected resource name format: " +
                         base.LogRecord.ProtoPayload.ResourceName);
                 }
 
