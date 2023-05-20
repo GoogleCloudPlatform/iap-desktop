@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         [Test]
         public void ToStringReturnsName()
         {
-            Assert.AreEqual("Remote Desktop Protocol", RdpProtocol.Protocol.ToString());
+            Assert.AreEqual("RDP", RdpProtocol.Protocol.ToString());
         }
 
         //---------------------------------------------------------------------
