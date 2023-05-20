@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal class RdpProtocol : IProtocol
+    public class RdpProtocol : IProtocol
     {
         public static RdpProtocol Protocol { get; } = new RdpProtocol();
 

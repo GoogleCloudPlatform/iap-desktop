@@ -20,19 +20,23 @@
 //
 
 
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
-using Moq;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
-using System;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
 {
     [TestFixture]
-    public class TestCurrentProcessPolicy
+    public class TestCurrentProcessPolicy 
+        : EquatableFixtureBase<CurrentProcessPolicy, ITransportPolicy>
     {
+        protected override CurrentProcessPolicy CreateInstance()
+        {
+            return new CurrentProcessPolicy();
+        }
+
         //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
@@ -63,48 +67,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var policy = new CurrentProcessPolicy();
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
-        }
-
-        //---------------------------------------------------------------------
-        // Equals.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
-        {
-            var policy = new CurrentProcessPolicy();
-            Assert.IsFalse(policy.Equals((object)null));
-            Assert.IsFalse(((IEquatable<ITransportPolicy>)policy).Equals((ITransportPolicy)null));
-            Assert.IsFalse(policy == (ITransportPolicy)null);
-            Assert.IsTrue(policy != (ITransportPolicy)null);
-        }
-
-        [Test]
-        public void WhenOtherIsOfDifferentType_ThenEqualsReturnsFalse()
-        {
-            var policy1 = new CurrentProcessPolicy();
-            var policy2 = new Mock<ITransportPolicy>().Object;
-
-            Assert.IsFalse(policy1.Equals(policy2));
-            Assert.IsTrue((ITransportPolicy)policy1 != (ITransportPolicy)policy2);
-        }
-
-        [Test]
-        public void WhenObjectsAreEquivalent_ThenEqualsReturnsTrue()
-        {
-            var policy1 = new CurrentProcessPolicy();
-            var policy2 = new CurrentProcessPolicy();
-            Assert.IsTrue(policy1.Equals(policy2));
-            Assert.IsTrue(policy1 == policy2);
-        }
-
-        [Test]
-        public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
-        {
-            var policy1 = new CurrentProcessPolicy();
-            var policy2 = policy1;
-            Assert.IsTrue(policy1.Equals(policy2));
-            Assert.IsTrue(policy1 == policy2);
         }
     }
 }

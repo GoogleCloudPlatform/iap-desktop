@@ -23,16 +23,21 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class TestAppProtocol
+    public class TestAppProtocol : EquatableFixtureBase<AppProtocol, IProtocol>
     {
+        protected override AppProtocol CreateInstance()
+        {
+            return CreateProtocol("app-1");
+        }
+
         private static AppProtocol CreateProtocol(string name)
         {
             return new AppProtocol(
@@ -61,49 +66,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         // Equals.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
-        {
-            var protocol = CreateProtocol("app-1");
-
-            Assert.IsFalse(protocol.Equals((object)null));
-            Assert.IsFalse(((IEquatable<IProtocol>)protocol).Equals((IProtocol)null));
-            Assert.IsFalse(protocol == (IProtocol)null);
-            Assert.IsTrue(protocol != (IProtocol)null);
-        }
-
-        [Test]
-        public void WhenOtherIsEquivalent_ThenEqualsReturnsTrue()
-        {
-            var protocol1 = new AppProtocol(
-                "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
-                new AllowAllPolicy(),
-                8080,
-                null,
-                null);
-            var protocol2 = new AppProtocol(
-                "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
-                new AllowAllPolicy(),
-                8080,
-                null,
-                null);
-
-            Assert.IsTrue(protocol1.Equals(protocol2));
-            Assert.IsTrue(protocol1 == protocol2);
-            Assert.IsFalse(protocol1 != protocol2);
-            Assert.AreEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
-        }
-
-        [Test]
-        public void WhenOtherIsOfDifferentType_ThenEqualsReturnsFalse()
-        {
-            var protocol1 = CreateProtocol("app-1");
-            var protocol2 = new Mock<IProtocol>().Object;
-
-            Assert.IsFalse(protocol1.Equals(protocol2));
-        }
 
         [Test]
         public void WhenOtherHasDifferentName_ThenEqualsReturnsFalse()
@@ -217,15 +179,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             Assert.IsFalse(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 != protocol2);
             Assert.AreNotEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
-        }
-
-        [Test]
-        public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
-        {
-            var protocol1 = CreateProtocol("app-1");
-            var protocol2 = protocol1;
-            Assert.IsTrue(protocol1.Equals(protocol2));
-            Assert.IsTrue(protocol1 == protocol2);
         }
     }
 }

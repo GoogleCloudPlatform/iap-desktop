@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Json;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
