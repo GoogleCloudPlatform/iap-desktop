@@ -19,32 +19,25 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using System.Linq;
+using Google.Solutions.Iap.Protocol;
+using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 {
-    internal class RdpProtocol : IProtocol
+    /// <summary>
+    /// Policy that allows access from any peer.
+    /// </summary>
+    public class AllowAllPolicy : ITransportPolicy
     {
-        public static RdpProtocol Protocol { get; } = new RdpProtocol();
-        public static SupportedTrait Supported { get; } = new SupportedTrait();
-
-        private RdpProtocol()
-        {
-        }
-
         //---------------------------------------------------------------------
-        // IProtocol.
+        // ITransportPolicy.
         //---------------------------------------------------------------------
 
-        public string Name => "RDP";
+        public string Name => "Allow all";
 
-        public bool IsAvailable(IProtocolTarget target)
+        public bool IsClientAllowed(IPEndPoint remote)
         {
-            return target.Traits
-                .EnsureNotNull()
-                .Contains(Supported);
+            return true;
         }
 
         //---------------------------------------------------------------------
@@ -58,15 +51,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as RdpProtocol);
+            return Equals(obj as AllowAllPolicy);
         }
 
-        public bool Equals(IProtocol other)
+        public bool Equals(ITransportPolicy other)
         {
-            return other is RdpProtocol && other != null;
+            return other is AllowAllPolicy && other != null;
         }
 
-        public static bool operator ==(RdpProtocol obj1, RdpProtocol obj2)
+        public static bool operator ==(AllowAllPolicy obj1, AllowAllPolicy obj2)
         {
             if (obj1 is null)
             {
@@ -76,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(RdpProtocol obj1, RdpProtocol obj2)
+        public static bool operator !=(AllowAllPolicy obj1, AllowAllPolicy obj2)
         {
             return !(obj1 == obj2);
         }
@@ -88,22 +81,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         public override string ToString()
         {
             return this.Name;
-        }
-
-        //---------------------------------------------------------------------
-        // Trait.
-        //---------------------------------------------------------------------
-
-        public class SupportedTrait : IProtocolTargetTrait
-        {
-            internal SupportedTrait()
-            {
-            }
-
-            public override string ToString()
-            {
-                return "Target supports RDP";
-            }
         }
     }
 }

@@ -38,8 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         // IProtocol.
         //---------------------------------------------------------------------
 
-        public string Id => "SSH";
-
         public string Name => "SSH";
 
         public bool IsAvailable(IProtocolTarget target)
@@ -47,6 +45,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return target.Traits
                 .EnsureNotNull()
                 .Contains(Supported);
+        }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as SshProtocol); 
+        }
+
+        public bool Equals(IProtocol other)
+        {
+            return other is SshProtocol && other != null;
+        }
+
+        public static bool operator ==(SshProtocol obj1, SshProtocol obj2)
+        {
+            if (obj1 is null)
+            {
+                return obj2 is null;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(SshProtocol obj1, SshProtocol obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        public override string ToString()
+        {
+            return this.Name;
         }
 
         //---------------------------------------------------------------------

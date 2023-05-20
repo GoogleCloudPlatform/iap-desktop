@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
@@ -99,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(b => b.CreateTransportAsync(
                     SshProtocol.Protocol,
-                    It.IsAny<ISshRelayPolicy>(),
+                    It.IsAny<ITransportPolicy>(),
                     SampleInstance,
                     22,
                     It.IsAny<IPEndPoint>(),

@@ -61,10 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             ushort port)
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns("mock");
-
-            var policy = new Mock<ISshRelayPolicy>();
-            policy.SetupGet(p => p.Id).Returns("mock");
+            var policy = new Mock<ITransportPolicy>();
 
             return new IapTunnel.Profile(
                 protocol.Object,
@@ -467,8 +464,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenDisposedTwice_ThenTunnelIsOnlyDisposedOnce()
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns("mock");
-
             var tunnel = new IapTunnel(
                 new Mock<ISshRelayListener>().Object,
                 CreateTunnelProfile(SampleInstance, 22),

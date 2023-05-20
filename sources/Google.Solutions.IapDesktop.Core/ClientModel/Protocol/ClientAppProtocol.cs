@@ -34,7 +34,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     public class ClientAppProtocol : IProtocol
     {
         public ClientAppProtocol(
-            string id,
             string name,
             IEnumerable<IProtocolTargetTrait> requiredTraits,
             ISshRelayPolicy relayPolicy,
@@ -42,7 +41,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             IPAddress localPort,
             string launchCommand)
         {
-            this.Id = id.ExpectNotEmpty(nameof(id));
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
             this.RelayPolicy = relayPolicy.ExpectNotNull(nameof(relayPolicy));
@@ -87,8 +85,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public string Name { get; }
 
-        public string Id { get; }
-
         public bool IsAvailable(IProtocolTarget target)
         {
             return this.RequiredTraits
@@ -110,6 +106,50 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             }
 
             throw new NotImplementedException();
+        }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ClientAppProtocol protocol &&
+                protocol.Name == this.Name;
+        }
+
+        public bool Equals(IProtocol other)
+        {
+            return Equals(other as ClientAppProtocol);
+        }
+
+        public static bool operator ==(ClientAppProtocol obj1, ClientAppProtocol obj2)
+        {
+            if (obj1 is null)
+            {
+                return obj2 is null;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(ClientAppProtocol obj1, ClientAppProtocol obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        public override string ToString()
+        {
+            return this.Name;
         }
 
         //---------------------------------------------------------------------

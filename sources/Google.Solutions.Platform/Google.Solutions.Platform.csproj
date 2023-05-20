@@ -49,6 +49,7 @@
     <Compile Include="Net\ChromeCertificateSelector.cs" />
     <Compile Include="Net\ChromePolicyUrlPattern.cs" />
     <Compile Include="Net\IChromeAutoSelectCertificateForUrlsPolicy.cs" />
+    <Compile Include="Net\TcpTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

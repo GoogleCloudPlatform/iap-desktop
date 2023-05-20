@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,15 +19,22 @@
 // under the License.
 //
 
-using System.Net;
+using Google.Solutions.Platform.Net;
+using NUnit.Framework;
+using System.Linq;
 
-namespace Google.Solutions.Iap.Protocol
+namespace Google.Solutions.Platform.Test.Net
 {
-    public interface ISshRelayPolicy
+    [TestFixture]
+    public class TestTcpTable
     {
-        /// <summary>
-        /// Decide whether a remote client should be allowed access.
-        /// </summary>
-        bool IsClientAllowed(IPEndPoint remote);
+        [Test]
+        public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForNetlogon()
+        {
+            var netlogonListeningPorts = TcpTable.GetTcpTable2()
+                .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)
+                .Where(r => r.LocalEndpoint.Port == 445);
+            Assert.AreEqual(1, netlogonListeningPorts.Count());
+        }
     }
 }

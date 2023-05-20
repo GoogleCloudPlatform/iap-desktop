@@ -27,11 +27,11 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
+namespace Google.Solutions.Platform.Net
 {
-    internal static class TcpTable
+    public static class TcpTable
     {
-        internal struct Entry
+        public struct Entry
         {
             public MibTcpState State;
             public IPEndPoint LocalEndpoint;
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
         // P/Invoke definitions.
         //---------------------------------------------------------------------
 
-        internal enum MibTcpState : uint
+        public enum MibTcpState : uint
         {
             MIB_TCP_STATE_CLOSED = 1,
             MIB_TCP_STATE_LISTEN = 2,

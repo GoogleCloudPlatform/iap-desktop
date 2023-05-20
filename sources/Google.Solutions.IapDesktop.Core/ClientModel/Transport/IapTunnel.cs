@@ -24,7 +24,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -56,9 +55,26 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// </summary>
         IapTunnelFlags Flags { get; }
 
-
+        /// <summary>
+        /// Target instance.
+        /// </summary>
         InstanceLocator TargetInstance { get; }
+
+        /// <summary>
+        /// Target port.
+        /// </summary>
         ushort TargetPort { get; }
+
+        /// <summary>
+        /// Policy that controls which remote peers are allowed to 
+        /// connect to the listener.
+        /// </summary>
+        ITransportPolicy Policy { get; }
+
+        /// <summary>
+        /// Protocol that this transport is used for.
+        /// </summary>
+        IProtocol Protocol { get; }
     }
 
     [Flags]
@@ -93,10 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
         internal event EventHandler Closed;
 
-        public Profile Details { get; }
-
-        public InstanceLocator TargetInstance => this.Details.TargetInstance;
-        public ushort TargetPort => this.Details.TargetPort;
+        internal Profile Details { get; }
 
         internal IapTunnel(
             ISshRelayListener listener,
@@ -161,11 +174,22 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 var stats = this.listener.Statistics;
                 return new IapTunnelStatistics()
                 {
-                    BytesReceived = stats.BytesReceived,
-                    BytesTransmitted = stats.BytesTransmitted
+                    //
+                    // NB. If we send something, the listener receives it,
+                    // so the listener's statistics are reversed.
+                    //
+                    BytesReceived = stats.BytesTransmitted,
+                    BytesTransmitted = stats.BytesReceived
                 };
             }
         }
+
+        public InstanceLocator TargetInstance => this.Details.TargetInstance;
+        public ushort TargetPort => this.Details.TargetPort;
+
+        public ITransportPolicy Policy => this.Details.Policy;
+
+        public IProtocol Protocol => this.Details.Protocol;
 
         //-----------------------------------------------------------------
         // Inner classes.
@@ -178,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         public class Profile : IEquatable<Profile>
         {
             internal IProtocol Protocol { get; }
-            internal ISshRelayPolicy Policy { get; }
+            internal ITransportPolicy Policy { get; }
 
             /// <summary>
             /// Instance to connect to.
@@ -198,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             internal Profile(
                 IProtocol protocol,
-                ISshRelayPolicy policy,
+                ITransportPolicy policy,
                 InstanceLocator targetInstance,
                 ushort targetPort,
                 IPEndPoint localEndpoint = null)
@@ -213,8 +237,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public override int GetHashCode()
             {
                 return
-                    this.Policy.Id.GetHashCode() ^
-                    this.Protocol.Id.GetHashCode() ^
+                    this.Policy.GetHashCode() ^
+                    this.Protocol.GetHashCode() ^
                     this.TargetInstance.GetHashCode() ^
                     this.TargetPort ^
                     (this.LocalEndpoint?.GetHashCode() ?? 0);
@@ -223,8 +247,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public bool Equals(Profile other)
             {
                 return other != null &&
-                    Equals(this.Policy.Id, other.Policy.Id) &&
-                    Equals(this.Protocol.Id, other.Protocol.Id) &&
+                    Equals(this.Policy, other.Policy) &&
+                    Equals(this.Protocol, other.Protocol) &&
                     Equals(this.TargetInstance, other.TargetInstance) &&
                     this.TargetPort == other.TargetPort &&
                     Equals(this.LocalEndpoint, other.LocalEndpoint);
@@ -253,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public override string ToString()
             {
                 return $"{this.TargetInstance}, port: {this.TargetPort}, " +
-                       $"protocol: {this.Protocol.Id}, policy: {this.Policy.Id}";
+                       $"protocol: {this.Protocol.Name}, policy: {this.Policy.Name}";
             }
         }
 

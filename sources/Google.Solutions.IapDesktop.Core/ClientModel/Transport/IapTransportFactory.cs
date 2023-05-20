@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// </summary>
         Task<ITransport> CreateTransportAsync(
             IProtocol protocol,
-            ISshRelayPolicy policy,
+            ITransportPolicy policy,
             InstanceLocator targetInstance,
             ushort targetPort,
             IPEndPoint localEndpoint,
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
         public async Task<ITransport> CreateTransportAsync(
             IProtocol protocol,
-            ISshRelayPolicy policy,
+            ITransportPolicy policy,
             InstanceLocator targetInstance,
             ushort targetPort,
             IPEndPoint localEndpoint,

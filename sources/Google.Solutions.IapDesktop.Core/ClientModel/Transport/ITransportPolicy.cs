@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,22 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using NUnit.Framework;
-using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
+using Google.Solutions.Iap.Protocol;
+using System;
+
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 {
-    [TestFixture]
-    public class TestTcpTable
+    public interface ITransportPolicy : ISshRelayPolicy, IEquatable<ITransportPolicy>
     {
-        [Test]
-        public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForNetlogon()
-        {
-            var netlogonListeningPorts = TcpTable.GetTcpTable2()
-                .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)
-                .Where(r => r.LocalEndpoint.Port == 445);
-            Assert.AreEqual(1, netlogonListeningPorts.Count());
-        }
+        /// <summary>
+        /// Name of the policy, such as "allow-all".
+        /// </summary>
+        string Name { get; }
     }
 }

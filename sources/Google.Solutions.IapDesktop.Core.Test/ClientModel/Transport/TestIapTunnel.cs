@@ -40,10 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static IapTunnel.Profile CreateTunnelProfile()
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns("mock");
-
-            var policy = new Mock<ISshRelayPolicy>();
-            policy.SetupGet(p => p.Id).Returns("mock");
+            var policy = new Mock<ITransportPolicy>();
 
             return new IapTunnel.Profile(
                 protocol.Object,
@@ -59,17 +56,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void Statistics()
         {
+            var stats = new Iap.Net.ConnectionStatistics();
+            stats.OnReceiveCompleted(1);
+            stats.OnTransmitCompleted(3);
+
             var listener = new Mock<ISshRelayListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
-            listener.SetupGet(l => l.Statistics).Returns(new Iap.Net.ConnectionStatistics());
+            listener.SetupGet(l => l.Statistics).Returns(stats);
 
             using (var tunnel = new IapTunnel(
                 listener.Object,
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(0, tunnel.Statistics.BytesReceived);
-                Assert.AreEqual(0, tunnel.Statistics.BytesTransmitted);
+                Assert.AreEqual(3, tunnel.Statistics.BytesReceived);
+                Assert.AreEqual(1, tunnel.Statistics.BytesTransmitted);
             }
         }
 
@@ -138,6 +139,41 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 IapTunnelFlags.None))
             {
                 Assert.AreEqual(22, tunnel.TargetPort);
+            }
+        }
+
+        [Test]
+        public void Policy()
+        {
+            var listener = new Mock<ISshRelayListener>();
+            listener.SetupGet(l => l.LocalPort).Returns(123);
+
+            var profile = CreateTunnelProfile();
+
+            using (var tunnel = new IapTunnel(
+                listener.Object,
+                profile,
+                IapTunnelFlags.None))
+            {
+                Assert.AreEqual(profile.Policy, tunnel.Policy);
+            }
+        }
+
+        [Test]
+        public void Protocol()
+        {
+            var policy = new Mock<ITransportPolicy>().Object;
+            var listener = new Mock<ISshRelayListener>();
+            listener.SetupGet(l => l.LocalPort).Returns(123);
+
+            var profile = CreateTunnelProfile();
+
+            using (var tunnel = new IapTunnel(
+                listener.Object,
+                profile,
+                IapTunnelFlags.None))
+            {
+                Assert.AreEqual(profile.Protocol, tunnel.Protocol);
             }
         }
 

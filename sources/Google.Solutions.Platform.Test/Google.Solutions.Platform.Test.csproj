@@ -50,6 +50,7 @@
     <Compile Include="Net\TestChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Net\TestChromeCertificateSelector.cs" />
     <Compile Include="Net\TestChromePolicyUrlPattern.cs" />
+    <Compile Include="Net\TestTcpTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
