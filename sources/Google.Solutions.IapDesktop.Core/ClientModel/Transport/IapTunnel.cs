@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         public class Profile : IEquatable<Profile>
         {
             internal IProtocol Protocol { get; }
-            internal ISshRelayPolicy Policy { get; }
+            internal ITransportPolicy Policy { get; }
 
             /// <summary>
             /// Instance to connect to.
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             internal Profile(
                 IProtocol protocol,
-                ISshRelayPolicy policy,
+                ITransportPolicy policy,
                 InstanceLocator targetInstance,
                 ushort targetPort,
                 IPEndPoint localEndpoint = null)
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public override int GetHashCode()
             {
                 return
-                    this.Policy.Id.GetHashCode() ^
+                    this.Policy.GetHashCode() ^
                     this.Protocol.GetHashCode() ^
                     this.TargetInstance.GetHashCode() ^
                     this.TargetPort ^
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public bool Equals(Profile other)
             {
                 return other != null &&
-                    Equals(this.Policy.Id, other.Policy.Id) &&
+                    Equals(this.Policy, other.Policy) &&
                     Equals(this.Protocol, other.Protocol) &&
                     Equals(this.TargetInstance, other.TargetInstance) &&
                     this.TargetPort == other.TargetPort &&
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public override string ToString()
             {
                 return $"{this.TargetInstance}, port: {this.TargetPort}, " +
-                       $"protocol: {this.Protocol.Name}, policy: {this.Policy.Id}";
+                       $"protocol: {this.Protocol.Name}, policy: {this.Policy.Name}";
             }
         }
 

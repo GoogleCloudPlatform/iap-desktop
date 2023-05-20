@@ -26,6 +26,7 @@ using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.Testing.Common.Integration;
 using System.Net;
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             InstanceLocator instance, 
             ICredential credential)
         {
-            var policy = new AllowAllRelayPolicy();
+            var policy = new AllowAllPolicy();
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
                     credential,

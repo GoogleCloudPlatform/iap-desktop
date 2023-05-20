@@ -27,7 +27,6 @@ using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
@@ -56,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(t => t.CreateTransportAsync(
                     SshProtocol.Protocol,
-                    It.IsAny<ISshRelayPolicy>(),
+                    It.IsAny<ITransportPolicy>(),
                     SampleInstance,
                     22,
                     It.IsAny<IPEndPoint>(),
@@ -81,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(t => t.CreateTransportAsync(
                     SshProtocol.Protocol,
-                    It.IsAny<ISshRelayPolicy>(),
+                    It.IsAny<ITransportPolicy>(),
                     SampleInstance,
                     22,
                     It.IsAny<IPEndPoint>(),
@@ -106,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(t => t.CreateTransportAsync(
                     SshProtocol.Protocol,
-                    It.IsAny<ISshRelayPolicy>(),
+                    It.IsAny<ITransportPolicy>(),
                     SampleInstance,
                     22,
                     It.IsAny<IPEndPoint>(),
@@ -131,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(t => t.CreateTransportAsync(
                     SshProtocol.Protocol,
-                    It.IsAny<ISshRelayPolicy>(),
+                    It.IsAny<ITransportPolicy>(),
                     SampleInstance,
                     22,
                     It.IsAny<IPEndPoint>(),

@@ -24,21 +24,20 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.Diagnostics;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal static class Transport //TODO: Move to COre
+    internal static class Transport //TODO: Move to Core
     {
         //---------------------------------------------------------------------
         // Factory methods.
@@ -60,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 return await transportFactory
                     .CreateTransportAsync(
                         protocol,
-                        new SameProcessRelayPolicy(),
+                        new CurrentProcessPolicy(),
                         targetInstance,
                         targetPort,
                         null, // Auto-assign port

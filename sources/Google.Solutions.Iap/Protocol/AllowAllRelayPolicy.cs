@@ -23,10 +23,8 @@ using System.Net;
 
 namespace Google.Solutions.Iap.Protocol
 {
-    public class AllowAllRelayPolicy : ISshRelayPolicy
+    public class AllowAllRelayPolicy : ISshRelayPolicy // TODO: Remove class
     {
-        public string Id => "allow-all";
-
         public bool IsClientAllowed(IPEndPoint remote)
         {
             return true;

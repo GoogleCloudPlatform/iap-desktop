@@ -79,6 +79,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientModel\Transport\Policies\TestCurrentProcessPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\TestAllowAllPolicy.cs" />
     <Compile Include="ClientModel\Transport\TestDirectTransportFactory.cs" />
     <Compile Include="ClientModel\Transport\TestIapTunnelFactory.cs" />
     <Compile Include="ObjectModel\TestEventQueue.cs" />

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,16 +19,23 @@
 // under the License.
 //
 
-using Google.Solutions.Iap.Protocol;
+using Google.Solutions.Platform.Net;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 {
-    internal class SameProcessRelayPolicy : ISshRelayPolicy //TODO: move to Core
+    /// <summary>
+    /// Policy that only allows access from the current process.
+    /// </summary>
+    public class CurrentProcessPolicy : ITransportPolicy
     {
-        public string Id => "same-process";
+        //---------------------------------------------------------------------
+        // ITransportPolicy.
+        //---------------------------------------------------------------------
+
+        public string Name => "Current process";
 
         public bool IsClientAllowed(IPEndPoint remote)
         {
@@ -50,6 +57,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             return remote.Address.Equals(IPAddress.Loopback) &&
                 tcpTableEntry.Any() &&
                 tcpTableEntry.First().ProcessId == Process.GetCurrentProcess().Id;
+        }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CurrentProcessPolicy); 
+        }
+
+        public bool Equals(ITransportPolicy other)
+        {
+            return other is CurrentProcessPolicy && other != null;
+        }
+
+        public static bool operator ==(CurrentProcessPolicy obj1, CurrentProcessPolicy obj2)
+        {
+            if (obj1 is null)
+            {
+                return obj2 is null;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(CurrentProcessPolicy obj1, CurrentProcessPolicy obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        public override string ToString()
+        {
+            return this.Name;
         }
     }
 }

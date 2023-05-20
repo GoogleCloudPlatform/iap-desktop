@@ -58,12 +58,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public override bool Equals(object obj)
         {
-            return obj is SshProtocol;
+            return Equals(obj as SshProtocol); 
         }
 
         public bool Equals(IProtocol other)
         {
-            return Equals(other as SshProtocol);
+            return other is SshProtocol && other != null;
         }
 
         public static bool operator ==(SshProtocol obj1, SshProtocol obj2)

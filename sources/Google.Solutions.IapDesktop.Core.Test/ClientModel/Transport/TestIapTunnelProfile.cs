@@ -38,33 +38,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static readonly IPEndPoint LoopbackEndpoint
             = new IPEndPoint(IPAddress.Loopback, 8000);
 
-        private static ISshRelayPolicy CreatePolicy(string id)
-        {
-            var policy = new Mock<ISshRelayPolicy>();
-            policy.SetupGet(p => p.Id).Returns(id);
-            return policy.Object;
-        }
-
-        private static IProtocol CreateProtocol(string id)
-        {
-            var protocol = new Mock<IProtocol>();
-            return protocol.Object;
-        }
-
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var protocol = CreateProtocol("protocol-1");
+            var protocol = new Mock<IProtocol>().Object;
+            var policy = new Mock<ITransportPolicy>().Object;
             var ref1 = new IapTunnel.Profile(
                 protocol,
-                CreatePolicy("policy-1"),
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
                 protocol,
-                CreatePolicy("policy-1"),
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
@@ -80,8 +68,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                new Mock<IProtocol>().Object,
+                new Mock<ITransportPolicy>().Object,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
@@ -97,16 +85,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void WhenPoliciesDiffer_ThenEqualsReturnsFalse()
         {
+            var protocol = new Mock<IProtocol>().Object;
+
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                new Mock<ITransportPolicy>().Object,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-2"),
+                protocol,
+                new Mock<ITransportPolicy>().Object,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
@@ -121,16 +111,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void WhenProtocolsDiffer_ThenEqualsReturnsFalse()
         {
+            var policy = new Mock<ITransportPolicy>().Object;
+
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                new Mock<IProtocol>().Object,
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
-                CreateProtocol("protocol-2"),
-                CreatePolicy("policy-1"),
+                new Mock<IProtocol>().Object,
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
@@ -145,16 +137,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void WhenInstancesDiffer_ThenEqualsReturnsFalse()
         {
+            var protocol = new Mock<IProtocol>().Object;
+            var policy = new Mock<ITransportPolicy>().Object;
+
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                policy,
                 new InstanceLocator("project-1", "zone-1", "instance-2"),
                 22,
                 LoopbackEndpoint);
@@ -169,16 +164,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void WhenPortsDiffer_ThenEqualsReturnsFalse()
         {
+            var protocol = new Mock<IProtocol>().Object;
+            var policy = new Mock<ITransportPolicy>().Object;
+
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                policy,
                 SampleInstance,
                 80,
                 LoopbackEndpoint);
@@ -193,16 +191,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void WhenLocalEndpointsDiffer_ThenEqualsReturnsFalse()
         {
+            var protocol = new Mock<IProtocol>().Object;
+            var policy = new Mock<ITransportPolicy>().Object;
+
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                policy,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                protocol,
+                policy,
                 SampleInstance,
                 22,
                 null);
@@ -218,8 +219,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void TestEqualsNull()
         {
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
-                CreatePolicy("policy-1"),
+                new Mock<IProtocol>().Object,
+                new Mock<ITransportPolicy>().Object,
                 SampleInstance,
                 22,
                 LoopbackEndpoint);

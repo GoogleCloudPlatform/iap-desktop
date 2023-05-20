@@ -61,8 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             ushort port)
         {
             var protocol = new Mock<IProtocol>();
-            var policy = new Mock<ISshRelayPolicy>();
-            policy.SetupGet(p => p.Id).Returns("mock");
+            var policy = new Mock<ITransportPolicy>();
 
             return new IapTunnel.Profile(
                 protocol.Object,

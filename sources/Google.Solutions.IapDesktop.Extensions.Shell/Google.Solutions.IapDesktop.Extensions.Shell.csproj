@@ -158,8 +158,6 @@
     <Compile Include="Services\Settings\ConnectionSettingsService.cs" />
     <Compile Include="Services\Settings\ConnectionSettings.cs" />
     <Compile Include="Services\Settings\ConnectionSettingsRepository.cs" />
-    <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
-    <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommand.cs" />
     <Compile Include="Views\Session\ConnectCommands.cs" />

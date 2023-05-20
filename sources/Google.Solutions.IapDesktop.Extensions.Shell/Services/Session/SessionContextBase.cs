@@ -24,7 +24,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

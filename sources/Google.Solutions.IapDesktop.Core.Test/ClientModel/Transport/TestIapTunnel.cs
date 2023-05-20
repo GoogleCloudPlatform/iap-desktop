@@ -40,8 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static IapTunnel.Profile CreateTunnelProfile()
         {
             var protocol = new Mock<IProtocol>();
-            var policy = new Mock<ISshRelayPolicy>();
-            policy.SetupGet(p => p.Id).Returns("mock");
+            var policy = new Mock<ITransportPolicy>();
 
             return new IapTunnel.Profile(
                 protocol.Object,

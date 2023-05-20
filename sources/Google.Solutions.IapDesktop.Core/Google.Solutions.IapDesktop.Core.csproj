@@ -62,6 +62,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientModel\Transport\ITransportPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\AllowAllPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\CurrentProcessPolicy.cs" />
     <Compile Include="CoreTraceSources.cs" />
     <Compile Include="Auth\IAuthorization.cs" />
     <Compile Include="Auth\IDeviceEnrollment.cs" />
@@ -95,6 +98,10 @@
     <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Iap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj">
+      <Project>{A74D041E-639F-4C53-A0C4-F8F936A980C8}</Project>
+      <Name>Google.Solutions.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

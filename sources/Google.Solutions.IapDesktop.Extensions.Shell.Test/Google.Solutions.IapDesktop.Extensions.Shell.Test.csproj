@@ -155,7 +155,6 @@
     <Compile Include="Services\Settings\TestConnectionSettingsService.cs" />
     <Compile Include="Services\Settings\TestConnectionSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestIapRdpUrlConnectionSettings.cs" />
-    <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="ShellFixtureBase.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsCommands.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />

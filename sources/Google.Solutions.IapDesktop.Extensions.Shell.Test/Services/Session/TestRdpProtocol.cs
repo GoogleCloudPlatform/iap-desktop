@@ -82,6 +82,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         }
 
         [Test]
+        public void WhenOtherIsOfDifferentType_ThenEqualsReturnsFalse()
+        {
+            var protocol1 = RdpProtocol.Protocol;
+            var protocol2 = new Mock<IProtocol>().Object;
+
+            Assert.IsFalse(protocol1.Equals(protocol2));
+            Assert.IsTrue((IProtocol)protocol1 != (IProtocol)protocol2);
+        }
+
+        [Test]
         public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
         {
             var protocol1 = RdpProtocol.Protocol;
