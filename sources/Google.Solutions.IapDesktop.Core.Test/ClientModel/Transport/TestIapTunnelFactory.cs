@@ -70,8 +70,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenEndpointIsNotLoopback_ThenCreateTunnelThrowsException()
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns("mock");
-
             var policy = new Mock<ISshRelayPolicy>();
             policy.SetupGet(p => p.Id).Returns("mock");
 
@@ -95,8 +93,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenProbeDenied_CreateTunnelThrowsException()
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns("mock");
-
             var policy = new Mock<ISshRelayPolicy>();
             policy.SetupGet(p => p.Id).Returns("mock");
 

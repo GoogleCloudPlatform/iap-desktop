@@ -48,22 +48,22 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static IProtocol CreateProtocol(string id)
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns(id);
             return protocol.Object;
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
+            var protocol = CreateProtocol("protocol-1");
             var ref1 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
+                protocol,
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,
                 LoopbackEndpoint);
 
             var ref2 = new IapTunnel.Profile(
-                CreateProtocol("protocol-1"),
+                protocol,
                 CreatePolicy("policy-1"),
                 SampleInstance,
                 22,

@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
@@ -54,6 +55,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .Returns(new[] { SshProtocol.Supported });
 
             Assert.IsTrue(SshProtocol.Protocol.IsAvailable(target.Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ToStringReturnsName()
+        {
+            Assert.AreEqual("SSH", SshProtocol.Protocol.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Equals.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
+        {
+            var protocol = SshProtocol.Protocol;
+            Assert.IsFalse(protocol.Equals((object)null));
+            Assert.IsFalse(((IEquatable<IProtocol>)protocol).Equals((IProtocol)null));
+            Assert.IsFalse(protocol == (IProtocol)null);
+            Assert.IsTrue(protocol != (IProtocol)null);
+        }
+
+        [Test]
+        public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
+        {
+            var protocol1 = SshProtocol.Protocol;
+            var protocol2 = protocol1;
+            Assert.IsTrue(protocol1.Equals(protocol2));
+            Assert.IsTrue(protocol1 == protocol2);
         }
 
         //---------------------------------------------------------------------

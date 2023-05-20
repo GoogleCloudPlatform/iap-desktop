@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             {
                 return
                     this.Policy.Id.GetHashCode() ^
-                    this.Protocol.Id.GetHashCode() ^
+                    this.Protocol.GetHashCode() ^
                     this.TargetInstance.GetHashCode() ^
                     this.TargetPort ^
                     (this.LocalEndpoint?.GetHashCode() ?? 0);
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             {
                 return other != null &&
                     Equals(this.Policy.Id, other.Policy.Id) &&
-                    Equals(this.Protocol.Id, other.Protocol.Id) &&
+                    Equals(this.Protocol, other.Protocol) &&
                     Equals(this.TargetInstance, other.TargetInstance) &&
                     this.TargetPort == other.TargetPort &&
                     Equals(this.LocalEndpoint, other.LocalEndpoint);
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public override string ToString()
             {
                 return $"{this.TargetInstance}, port: {this.TargetPort}, " +
-                       $"protocol: {this.Protocol.Id}, policy: {this.Policy.Id}";
+                       $"protocol: {this.Protocol.Name}, policy: {this.Policy.Id}";
             }
         }
 

@@ -40,8 +40,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public async Task CreateTransport()
         {
             var protocol = new Mock<IProtocol>();
-            protocol.SetupGet(p => p.Id).Returns("mock");
-
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 22);
 
             var factory = new DirectTransportFactory();

@@ -29,13 +29,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     /// <summary>
     /// A protocol that can be used atop a transport for certain targets.
     /// </summary>
-    public interface IProtocol
+    public interface IProtocol : IEquatable<IProtocol>
     {
-        /// <summary>
-        /// Unique and stable ID for the protocol, such as "ssh".
-        /// </summary>
-        string Id { get; }
-
         /// <summary>
         /// Name of the profile, suitable for displaying.
         /// </summary>
