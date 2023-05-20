@@ -24,7 +24,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -56,9 +55,21 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// </summary>
         IapTunnelFlags Flags { get; }
 
-
+        /// <summary>
+        /// Target instance.
+        /// </summary>
         InstanceLocator TargetInstance { get; }
+
+        /// <summary>
+        /// Target port.
+        /// </summary>
         ushort TargetPort { get; }
+
+        /// <summary>
+        /// Policy that controls which remote peers are allowed to 
+        /// connect to the listener.
+        /// </summary>
+        ITransportPolicy Policy { get; }
     }
 
     [Flags]
@@ -166,6 +177,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 };
             }
         }
+
+        public ITransportPolicy Policy => (ITransportPolicy)this.listener.Policy;
 
         //-----------------------------------------------------------------
         // Inner classes.

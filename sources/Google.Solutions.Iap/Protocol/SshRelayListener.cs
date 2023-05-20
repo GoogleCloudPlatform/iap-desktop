@@ -48,6 +48,12 @@ namespace Google.Solutions.Iap.Protocol
         /// Perpetually listen and relay traffic until cancelled.
         /// </summary>
         Task ListenAsync(CancellationToken token);
+
+        /// <summary>
+        /// Policy that controls which remote peers are allowed to 
+        /// connect to the listener.
+        /// </summary>
+        ISshRelayPolicy Policy { get; }
     }
 
     public class SshRelayListener : ISshRelayListener
@@ -55,9 +61,9 @@ namespace Google.Solutions.Iap.Protocol
         private const int BacklogLength = 32;
 
         private readonly ISshRelayEndpoint server;
-        private readonly ISshRelayPolicy policy;
         private readonly TcpListener listener;
 
+        public ISshRelayPolicy Policy { get; }
         public int LocalPort { get; }
         public ConnectionStatistics Statistics { get; } = new ConnectionStatistics();
 
@@ -100,7 +106,7 @@ namespace Google.Solutions.Iap.Protocol
             int localPort)
         {
             this.server = server;
-            this.policy = policy;
+            this.Policy = policy;
             this.LocalPort = localPort;
 
             this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, localPort));
@@ -174,7 +180,7 @@ namespace Google.Solutions.Iap.Protocol
                         try
                         {
                             var socket = this.listener.AcceptSocket();
-                            if (this.policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
+                            if (this.Policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
                             {
                                 IapTraceSources.Default.TraceInformation(
                                     "Connection from {0} allowed by policy", socket.RemoteEndPoint);

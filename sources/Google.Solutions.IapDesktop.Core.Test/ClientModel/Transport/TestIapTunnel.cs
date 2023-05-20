@@ -138,6 +138,25 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             }
         }
 
+        [Test]
+        public void Policy()
+        {
+            var policy = new Mock<ITransportPolicy>().Object;
+            var listener = new Mock<ISshRelayListener>();
+            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.Policy).Returns(policy);
+
+            var profile = CreateTunnelProfile();
+
+            using (var tunnel = new IapTunnel(
+                listener.Object,
+                profile,
+                IapTunnelFlags.None))
+            {
+                Assert.AreEqual(policy, tunnel.Policy);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------
