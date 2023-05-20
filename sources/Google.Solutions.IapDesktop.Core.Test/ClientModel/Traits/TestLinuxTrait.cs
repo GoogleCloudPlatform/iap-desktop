@@ -27,11 +27,11 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, IProtocolTargetTrait>
+    public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, IProtocolTargetTrait>
     {
-        protected override InstanceTrait CreateInstance()
+        protected override LinuxTrait CreateInstance()
         {
-            return new InstanceTrait();
+            return new LinuxTrait();
         }
 
         //---------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("isInstance()", new InstanceTrait().ToString());
+            Assert.AreEqual("isLinux()", new LinuxTrait().ToString());
         }
 
         //---------------------------------------------------------------------
@@ -52,14 +52,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         public void WhenExpressionIsNullOrEmpty_ThenTryParseReturnsFalse(
             [Values(" \t", "", null)] string expression)
         {
-            Assert.IsFalse(InstanceTrait.TryParse(expression, out var _));
+            Assert.IsFalse(LinuxTrait.TryParse(expression, out var _));
         }
 
         [Test]
         public void WhenExpressionIsValid_ThenTryParseReturnsTrue(
-            [Values("isInstance()", " isInstance(  \n) \n\r\t ")] string expression)
+            [Values("isLinux()", " isLinux(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(InstanceTrait.TryParse(expression, out var trait));
+            Assert.IsTrue(LinuxTrait.TryParse(expression, out var trait));
             Assert.IsNotNull(trait);
         }
 
