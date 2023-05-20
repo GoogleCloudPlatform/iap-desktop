@@ -57,9 +57,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.transmittedHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.receivedHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.localPortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.localEndpointHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.remotePortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.protocolHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.policyHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.securityHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,9 +93,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             this.zoneHeader,
             this.transmittedHeader,
             this.receivedHeader,
-            this.localPortHeader,
+            this.localEndpointHeader,
             this.remotePortHeader,
-            this.protocolHeader});
+            this.protocolHeader,
+            this.securityHeader,
+            this.policyHeader});
             this.tunnelsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tunnelsList.FullRowSelect = true;
             this.tunnelsList.GridLines = true;
@@ -133,10 +137,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             this.receivedHeader.Text = "Received";
             this.receivedHeader.Width = 80;
             // 
-            // localPortHeader
+            // localEndpointHeader
             // 
-            this.localPortHeader.Text = "Local port";
-            this.localPortHeader.Width = 80;
+            this.localEndpointHeader.Text = "Local port";
+            this.localEndpointHeader.Width = 110;
             // 
             // remotePortHeader
             // 
@@ -146,7 +150,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             // protocolHeader
             // 
             this.protocolHeader.Text = "Protocol";
-            this.protocolHeader.Width = 146;
+            // 
+            // policyHeader
+            // 
+            this.policyHeader.Text = "Policy";
+            // 
+            // securityHeader
+            // 
+            this.securityHeader.Text = "Security";
             // 
             // TunnelsView
             // 
@@ -172,11 +183,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.ColumnHeader projectIdHeader;
         private System.Windows.Forms.ColumnHeader zoneHeader;
-        private System.Windows.Forms.ColumnHeader localPortHeader;
+        private System.Windows.Forms.ColumnHeader localEndpointHeader;
         private System.Windows.Forms.ColumnHeader transmittedHeader;
         private System.Windows.Forms.ColumnHeader receivedHeader;
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;
         private System.Windows.Forms.ColumnHeader remotePortHeader;
         private System.Windows.Forms.ColumnHeader protocolHeader;
+        private System.Windows.Forms.ColumnHeader securityHeader;
+        private System.Windows.Forms.ColumnHeader policyHeader;
     }
 }
