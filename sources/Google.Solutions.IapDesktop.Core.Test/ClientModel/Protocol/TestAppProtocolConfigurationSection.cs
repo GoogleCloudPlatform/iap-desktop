@@ -23,13 +23,13 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using NUnit.Framework;
 using System.Linq;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
     public class TestAppProtocolConfigurationSection
     {
-
         //---------------------------------------------------------------------
         // ParseCondition.
         //---------------------------------------------------------------------
@@ -69,6 +69,40 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             Assert.Throws<InvalidAppProtocolException>(
                 () => AppProtocol.ConfigurationSection.ParseCondition(condition).ToList());
+        }
+
+        //---------------------------------------------------------------------
+        // ParseLocalPort.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueIsNullOrEmpty_ThenParseLocalPortThrowsException(
+            [Values(null, "", " \n")] string value)
+        {
+            Assert.Throws<InvalidAppProtocolException>(
+                () => AppProtocol.ConfigurationSection.ParseLocalPort(value));
+        }
+
+        [Test]
+        public void WhenValueIsMalformed_ThenParseLocalPortThrowsException(
+            [Values("::", "test:0", "127.0.0.1:test", ":")] string value)
+        {
+            Assert.Throws<InvalidAppProtocolException>(
+                () => AppProtocol.ConfigurationSection.ParseLocalPort(value));
+        }
+
+        [Test]
+        public void WhenValueIsValid_ThenParseLocalPortReturnsEndpoint()
+        {
+            Assert.AreEqual(
+                new IPEndPoint(IPAddress.Loopback, 80),
+                AppProtocol.ConfigurationSection.ParseLocalPort("80"));
+            Assert.AreEqual(
+                new IPEndPoint(IPAddress.Loopback, 80),
+                AppProtocol.ConfigurationSection.ParseLocalPort("127.0.0.1:80"));
+            Assert.AreEqual(
+                new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80),
+                AppProtocol.ConfigurationSection.ParseLocalPort("127.0.0.2:80"));
         }
     }
 }

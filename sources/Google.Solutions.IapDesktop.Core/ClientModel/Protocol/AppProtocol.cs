@@ -97,15 +97,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             IProtocolTarget target,
             CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrEmpty(this.LaunchCommand))
-            {
-                // TODO: implement
-            }
-            else
-            {
-                // TODO: implement
-            }
-
             throw new NotImplementedException();
         }
 
@@ -167,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // Deserialization.
         //---------------------------------------------------------------------
 
-        //public static AppProtocol Deserialize(string json)
+        //public static AppProtocol FromJson(string json)
         //{
         //    var definition = NewtonsoftJsonSerializer
         //        .Instance
@@ -179,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // De/Serialization classes.
         //---------------------------------------------------------------------
 
-        public class ConfigurationSection
+        internal class ConfigurationSection
         {
             /// <summary>
             /// Name of the protocol. The name isn't guaranteed to be unique.
@@ -244,9 +235,45 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     }
                 }
             }
+
+            internal static IPEndPoint ParseLocalPort(string localPort)
+            {
+                localPort = localPort?.Trim();
+                if (string.IsNullOrEmpty(localPort))
+                {
+                    throw new InvalidAppProtocolException("A local port is required");
+                }
+
+                var parts = localPort.Split(':');
+                if (parts.Length == 1)
+                {
+                    //
+                    // Port only.
+                    //
+                    if (ushort.TryParse(parts[0], out var port))
+                    {
+                        return new IPEndPoint(IPAddress.Loopback, port);
+                    }
+                }
+                else if (parts.Length == 2)
+                {
+                    //
+                    // IP:port.
+                    //
+                    if (IPAddress.TryParse(parts[0], out var ip) &&
+                        ushort.TryParse(parts[1], out var port))
+                    {
+                        return new IPEndPoint(ip, port);
+                    }
+                }
+
+                throw new InvalidAppProtocolException(
+                    "The local port must be a number or a IPv4/port tuple in the " +
+                    "format <ip>:<port>.");
+            }
         }
 
-        public class CommandSection
+        internal class CommandSection
         {
             /// <summary>
             /// Path to executable to launch. The path can contain
@@ -280,37 +307,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     {
         public InvalidAppProtocolException(string message) : base(message)
         {
-        }
-    }
-
-    public class ClientProtocolContext : IProtocolSessionContext
-    {
-        //---------------------------------------------------------------------
-        // IProtocolContext.
-        //---------------------------------------------------------------------
-
-        public Task<ITransport> ConnectTransportAsync(
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class LaunchableClientProtocolContext : ClientProtocolContext
-    {
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public Task LaunchAppAsync(
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }
