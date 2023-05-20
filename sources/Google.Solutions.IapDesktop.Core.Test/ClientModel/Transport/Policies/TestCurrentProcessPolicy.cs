@@ -75,8 +75,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var policy = new CurrentProcessPolicy();
             Assert.IsFalse(policy.Equals((object)null));
             Assert.IsFalse(((IEquatable<ITransportPolicy>)policy).Equals((ITransportPolicy)null));
-            Assert.IsFalse(policy == (ISshRelayPolicy)null);
-            Assert.IsTrue(policy != (ISshRelayPolicy)null);
+            Assert.IsFalse(policy == (ITransportPolicy)null);
+            Assert.IsTrue(policy != (ITransportPolicy)null);
         }
 
         [Test]

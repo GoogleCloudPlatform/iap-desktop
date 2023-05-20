@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
@@ -43,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     /// <summary>
     /// Represents some trait of the target.
     /// </summary>
-    public interface IProtocolTargetTrait
+    public interface IProtocolTargetTrait : IEquatable<IProtocolTargetTrait>
     {
         /// <summary>
         /// Description, suitable for displaying.

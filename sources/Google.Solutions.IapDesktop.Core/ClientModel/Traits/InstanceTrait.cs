@@ -19,19 +19,83 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using System;
+using System.Linq;
+
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
-    public class InstanceTrait
+    public class InstanceTrait : IProtocolTargetTrait
     {
-        private InstanceTrait()
+        private const string Expression = "isInstance()";
+
+        public InstanceTrait()
         {
         }
 
-        public static InstanceTrait Instance { get; } = new InstanceTrait();
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as InstanceTrait);
+        }
+
+        public bool Equals(IProtocolTargetTrait other)
+        {
+            return other is InstanceTrait && other != null;
+        }
+
+        public static bool operator ==(InstanceTrait obj1, InstanceTrait obj2)
+        {
+            if (obj1 is null)
+            {
+                return obj2 is null;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(InstanceTrait obj1, InstanceTrait obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
         public override string ToString()
         {
-            return "is-instance";
+            return Expression;
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        public static bool TryParse(string expression, out InstanceTrait trait)
+        {
+            if (expression != null &&
+                Expression == new string(expression
+                    .ToCharArray()
+                    .Where(c => !char.IsWhiteSpace(c))
+                    .ToArray()))
+            {
+                trait = new InstanceTrait();
+                return true;
+            }
+            else
+            {
+                trait = null;
+                return false;
+            }
         }
     }
 }

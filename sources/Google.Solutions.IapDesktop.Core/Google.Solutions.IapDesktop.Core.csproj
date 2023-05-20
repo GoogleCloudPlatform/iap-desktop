@@ -76,7 +76,7 @@
     <Compile Include="ClientModel\Transport\IapTransportFactory.cs" />
     <Compile Include="ClientModel\Transport\ITransport.cs" />
     <Compile Include="ClientModel\Transport\DirectTransportFactory.cs" />
-    <Compile Include="ClientModel\Protocol\ClientAppProtocol.cs" />
+    <Compile Include="ClientModel\Protocol\AppProtocol.cs" />
     <Compile Include="ClientModel\Protocol\ProtocolRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\IProtocol.cs" />
