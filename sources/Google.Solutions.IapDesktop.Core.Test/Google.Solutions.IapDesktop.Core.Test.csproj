@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientModel\Protocol\TestAppProtocol.cs" />
-    <Compile Include="ClientModel\Protocol\TestAppProtocolConfiguration.cs" />
+    <Compile Include="ClientModel\Protocol\TestAppProtocolConfigurationSection.cs" />
     <Compile Include="ClientModel\Traits\TestLinuxTrait.cs" />
     <Compile Include="ClientModel\Traits\TestWindowsTrait.cs" />
     <Compile Include="ClientModel\Traits\TestInstanceTrait.cs" />

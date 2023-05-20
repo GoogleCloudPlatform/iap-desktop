@@ -27,7 +27,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class TestAppProtocolConfiguration
+    public class TestAppProtocolConfigurationSection
     {
 
         //---------------------------------------------------------------------
@@ -39,14 +39,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             [Values(" ", "", null)] string condition)
         {
             CollectionAssert.IsEmpty(
-                AppProtocol.Configuration.ParseCondition(condition));
+                AppProtocol.ConfigurationSection.ParseCondition(condition));
         }
 
         [Test]
         public void WhenConditionContainsSingleClause_ThenParseConditionReturnsTraits(
             [Values("isInstance()", " \nisInstance( )\r\n")] string condition)
         {
-            var traits = AppProtocol.Configuration.ParseCondition(condition);
+            var traits = AppProtocol.ConfigurationSection.ParseCondition(condition);
             CollectionAssert.IsNotEmpty(traits);
 
             Assert.IsTrue(traits.All(t => t is InstanceTrait));
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenConditionContainsTwoClauses_ThenParseConditionReturnsTraits()
         {
-            var traits = AppProtocol.Configuration.ParseCondition(
+            var traits = AppProtocol.ConfigurationSection.ParseCondition(
                 "isInstance() && isInstance() ");
             CollectionAssert.IsNotEmpty(traits);
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             [Values("isFoo()", " \nisInstance( ) && isBar\r\n")] string condition)
         {
             Assert.Throws<InvalidAppProtocolException>(
-                () => AppProtocol.Configuration.ParseCondition(condition).ToList());
+                () => AppProtocol.ConfigurationSection.ParseCondition(condition).ToList());
         }
     }
 }

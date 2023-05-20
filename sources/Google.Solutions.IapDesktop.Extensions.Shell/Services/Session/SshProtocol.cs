@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal class SshProtocol : IProtocol
+    public class SshProtocol : IProtocol
     {
         public static SshProtocol Protocol { get; } = new SshProtocol();
 

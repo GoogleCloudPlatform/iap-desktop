@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // De/Serialization classes.
         //---------------------------------------------------------------------
 
-        public class Configuration
+        public class ConfigurationSection
         {
             /// <summary>
             /// Name of the protocol. The name isn't guaranteed to be unique.
@@ -211,20 +211,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             public string LocalPort { get; }
 
             /// <summary>
-            /// Optional: Command to launch. The command can contain
-            /// environment variables, for example:
-            /// 
-            ///   %ProgramFiles(x86)%\program.exe
-            /// 
-            /// Additionally, the command con contain the following
-            /// placeholders:
-            /// 
-            ///   %port% - contains the local port to connect to
-            ///   %host% - contain the locat IP address to connect to
-            ///   
+            /// Optional: Command to launch. 
             /// </summary>
             [JsonProperty("command")]
-            public string Command { get; }
+            public CommandSection Command { get; }
+            
 
             internal static IEnumerable<IProtocolTargetTrait> ParseCondition(string condition)
             {
@@ -253,6 +244,35 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     }
                 }
             }
+        }
+
+        public class CommandSection
+        {
+            /// <summary>
+            /// Path to executable to launch. The path can contain
+            /// environment variables, for example:
+            /// 
+            ///   %ProgramFiles(x86)%\program.exe
+            ///   
+            /// </summary>
+            [JsonProperty("executable")]
+            public string Executable { get; }
+
+            /// <summary>
+            /// Optional: Arguments to pass to executable. They can contain
+            /// environment variables, for example:
+            /// 
+            ///   %AppData%\.myprofile
+            /// 
+            /// Additionally, the command con contain the following
+            /// placeholders:
+            /// 
+            ///   %port% - contains the local port to connect to
+            ///   %host% - contain the locat IP address to connect to
+            ///   
+            /// </summary>
+            [JsonProperty("arguments")]
+            public string Arguments { get; }
         }
     }
 
