@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 WriteCombobox<RdpRedirectDrive>("RdpRedirectDrive");
                 WriteCombobox<RdpRedirectDevice>("RdpRedirectDevice");
                 WriteCombobox<RdpHookWindowsKeys>("RdpHookWindowsKeys");
-                WriteCombobox<Transport.TransportType>("TransportType");
+                WriteCombobox<SessionTransportType>("TransportType");
                 WriteCombobox<RdpCredentialGenerationBehavior>("CredentialGenerationBehavior");
 
                 var zones = await this.projectModelService

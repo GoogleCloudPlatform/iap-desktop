@@ -28,6 +28,8 @@ using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -102,7 +104,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
@@ -152,7 +155,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
@@ -207,7 +211,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 credentialDialog.Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
@@ -260,7 +265,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 credentialDialog.Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
@@ -324,7 +330,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 credentialDialog.Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
@@ -370,7 +377,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IConnectionSettingsService>().Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 callbackService.Object,
@@ -407,7 +415,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IConnectionSettingsService>().Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 callbackService.Object,

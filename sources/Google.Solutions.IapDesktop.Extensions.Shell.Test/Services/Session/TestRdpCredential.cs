@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using NUnit.Framework;
 using System.Security;

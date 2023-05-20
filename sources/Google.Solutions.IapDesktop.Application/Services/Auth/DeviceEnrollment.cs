@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Net;
 using System;
@@ -30,23 +31,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Auth
 {
-    /// <summary>
-    /// Enrollment information for the current device. Device enrollment
-    /// is optional and only used in the context of BeyondCorp.
-    /// </summary>
-    public interface IDeviceEnrollment
-    {
-        DeviceEnrollmentState State { get; }
-        X509Certificate2 Certificate { get; }
-    }
-
-    public enum DeviceEnrollmentState
-    {
-        Disabled,
-        NotEnrolled,
-        Enrolled
-    }
-
     /// <summary>
     /// SecureConnect-based device enrollment.
     /// </summary>

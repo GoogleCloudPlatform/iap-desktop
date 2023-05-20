@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -72,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
 
             // Track current selection in project explorer.
-            var eventService = serviceProvider.GetService<IEventService>();
-            eventService.BindHandler<ActiveProjectChangedEvent>(
+            var eventService = serviceProvider.GetService<IEventQueue>();
+            eventService.Subscribe<ActiveProjectChangedEvent>(
                 e => OnProjectExplorerNodeSelected(e.ActiveNode));
         }
 

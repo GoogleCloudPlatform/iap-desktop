@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 
             Assert.IsNull(parameters.Language);
 
-            Assert.AreEqual(Transport.TransportType._Default, parameters.TransportType);
+            Assert.AreEqual(SessionTransportType._Default, parameters.TransportType);
             Assert.AreEqual(SshSessionParameters.DefaultPort, parameters.Port);
             Assert.AreEqual(SshSessionParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
             Assert.IsNull(parameters.PreferredUsername);

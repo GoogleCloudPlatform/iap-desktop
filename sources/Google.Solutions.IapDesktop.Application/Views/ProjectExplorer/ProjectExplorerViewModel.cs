@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -28,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -83,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         internal ProjectExplorerViewModel(
             IProjectExplorerSettings settings,
             IJobService jobService,
-            IEventService eventService,
+            IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectModelService projectModelService,
             ICloudConsoleAdapter cloudConsoleService)
@@ -96,11 +98,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.RootNode = new CloudViewModelNode(this);
 
-            eventService.BindAsyncHandler<SessionStartedEvent>(
+            eventService.Subscribe<SessionStartedEvent>(
                 e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = true));
-            eventService.BindAsyncHandler<SessionEndedEvent>(
+            eventService.Subscribe<SessionEndedEvent>(
                 e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = false));
-            eventService.BindAsyncHandler<InstanceStateChangedEvent>(
+            eventService.Subscribe<InstanceStateChangedEvent>(
                 async e =>
                 {
                     //
@@ -120,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public ProjectExplorerViewModel(
             ApplicationSettingsRepository settingsRepository,
             IJobService jobService,
-            IEventService eventService,
+            IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectModelService projectModelService,
             ICloudConsoleAdapter cloudConsoleService)

@@ -29,6 +29,8 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common.Integration;
 using Microsoft.Win32;
@@ -54,7 +56,7 @@ namespace Google.Solutions.Testing.Application.Views
         protected ServiceRegistry ServiceRegistry { get; private set; }
         protected IServiceProvider ServiceProvider { get; private set; }
         protected IMainWindow MainWindow { get; private set; }
-        protected IEventService EventService { get; private set; }
+        protected IEventQueue EventService { get; private set; }
 
         protected Exception ExceptionShown => this.exceptionDialog.ExceptionShown;
 
@@ -75,7 +77,7 @@ namespace Google.Solutions.Testing.Application.Views
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var mainForm = new TestMainForm();
-            this.EventService = new EventService(mainForm);
+            this.EventService = new EventQueue(mainForm);
 
             var registry = new ServiceRegistry();
             registry.AddSingleton<IProjectRepository>(new ProjectRepository(
@@ -90,7 +92,7 @@ namespace Google.Solutions.Testing.Application.Views
             registry.AddSingleton<IMainWindow>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
-            registry.AddSingleton<IEventService>(this.EventService);
+            registry.AddSingleton<IEventQueue>(this.EventService);
 
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);
@@ -124,7 +126,7 @@ namespace Google.Solutions.Testing.Application.Views
             // Set up event handler.
             //
             TEvent deliveredEvent = null;
-            this.EventService.BindHandler<TEvent>(e =>
+            this.EventService.Subscribe<TEvent>(e =>
             {
                 deliveredEvent = e;
             });

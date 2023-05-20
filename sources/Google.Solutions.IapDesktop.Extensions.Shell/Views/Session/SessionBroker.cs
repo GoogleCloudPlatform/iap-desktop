@@ -24,10 +24,12 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -123,8 +125,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         }
 
         private void ApplyTabStyle<TParameters>(
-            DockContentHandler dockHandler, 
-            Transport.TransportType transportType,
+            DockContentHandler dockHandler,
+            SessionTransportType transportType,
             bool isCreatedFromUrl,
             InstanceLocator instance,
             ISessionCredential credential,
@@ -137,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 dockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
             }
-            else if (transportType == Transport.TransportType.Vpc)
+            else if (transportType == SessionTransportType.Vpc)
             {
                 dockHandler.TabAccentColor = AccentColorForNonIapSessions;
             }
@@ -147,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             toolTip.AppendLine($"Instance: {instance.Name}");
             toolTip.AppendLine($"Project: {instance.ProjectId}");
             
-            if (transportType == Transport.TransportType.IapTunnel)
+            if (transportType == SessionTransportType.IapTunnel)
             {
                 toolTip.AppendLine();
                 toolTip.AppendLine("Connected through Identity-Aware Proxy.");
@@ -175,18 +177,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                     var credentialTask = context.AuthorizeCredentialAsync(cancellationToken);
                     var transportTask = context.ConnectTransportAsync(cancellationToken);
 
-                    await Task.WhenAll(credentialTask, transportTask)
-                        .ConfigureAwait(true);
-
-                    return new AuthorizationResult<TCredential>
+                    try
                     {
-                        Credential = credentialTask.Result,
-                        Transport = transportTask.Result
-                    };
+                        await Task.WhenAll(credentialTask, transportTask)
+                            .ConfigureAwait(true);
+
+                        return new AuthorizationResult<TCredential>
+                        {
+                            Credential = credentialTask.Result,
+                            Transport = transportTask.Result
+                        };
+                    }
+                    catch
+                    {
+                        if (!transportTask.IsFaulted)
+                        {
+                            transportTask.Result?.Dispose();
+                        }
+
+                        throw;
+                    }
                 });
         }
 
         internal IRemoteDesktopSession ConnectRdpSession(
+            InstanceLocator instance,
             ITransport transport,
             RdpSessionParameters parameters,
             RdpCredential credential)
@@ -195,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
 
-            window.ViewModel.Instance = transport.Instance;
+            window.ViewModel.Instance = instance;
             window.ViewModel.Server = IPAddress.IsLoopback(transport.Endpoint.Address)
                 ? "localhost"
                 : transport.Endpoint.Address.ToString();
@@ -204,6 +219,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             window.ViewModel.Credential = credential;
 
             var session = window.Bind();
+
+            //
+            // Dispose transport when session is closed, or if connecting fails.
+            //
+            session.AttachDisposable(transport);
 
             ApplyTabStyle(
                 session.DockHandler,
@@ -222,6 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         }
 
         internal async Task<ISshTerminalSession> ConnectSshSessionAsync(
+            InstanceLocator instance,
             ITransport transport,
             SshSessionParameters parameters,
             SshCredential credential)
@@ -230,13 +251,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
 
-            window.ViewModel.Instance = transport.Instance;
+            window.ViewModel.Instance = instance;
             window.ViewModel.Endpoint = transport.Endpoint;
             window.ViewModel.AuthorizedKey = credential.Key;
             window.ViewModel.Language = parameters.Language;
             window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
 
             var session = window.Bind();
+
+            //
+            // Dispose transport when session is closed, or if connecting fails.
+            //
+            session.AttachDisposable(transport);
 
             ApplyTabStyle(
                 session.DockHandler,
@@ -249,7 +275,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             window.Show();
 
             await session.ConnectAsync()
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             OnSessionConnected(session);
 
@@ -310,42 +336,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public async Task<ISession> CreateSessionAsync(
             ISessionContext<SshCredential, SshSessionParameters> context)
         {
-            var result = await CreateTransportAndAuthorizeAsync(context)
-                .ConfigureAwait(true);
+            try
+            {
+                var result = await CreateTransportAndAuthorizeAsync(context)
+                    .ConfigureAwait(true);
 
-            //
-            // Back on the UI thread, create the corresponding view.
-            //
+                //
+                // Back on the UI thread, create the corresponding view.
+                //
 
-            var session = await ConnectSshSessionAsync(
-                    result.Transport,
-                    context.Parameters,
-                    result.Credential)
-                .ConfigureAwait(true);
+                var session = await ConnectSshSessionAsync(
+                        context.Instance,
+                        result.Transport,
+                        context.Parameters,
+                        result.Credential)
+                    .ConfigureAwait(true);
 
-            ((SessionViewBase)session).Disposed += (_, __) => context.Dispose();
+                //
+                // Attach lifetime of context that of the session.
+                //
+                ((SessionViewBase)session).AttachDisposable(context);
 
-            return (ISession)session;
+                return session;
+            }
+            catch
+            {
+                context.Dispose();
+                throw;
+            }
         }
 
         public async Task<ISession> CreateSessionAsync(
             ISessionContext<RdpCredential, RdpSessionParameters> context)
         {
-            var result = await CreateTransportAndAuthorizeAsync(context)
-                .ConfigureAwait(true);
+            try
+            {
+                var result = await CreateTransportAndAuthorizeAsync(context)
+                    .ConfigureAwait(true);
 
-            //
-            // Back on the UI thread, create the corresponding view.
-            //
+                //
+                // Back on the UI thread, create the corresponding view.
+                //
 
-            var session = ConnectRdpSession(
-                result.Transport,
-                context.Parameters,
-                result.Credential);
+                var session = ConnectRdpSession(
+                    context.Instance,
+                    result.Transport,
+                    context.Parameters,
+                    result.Credential);
 
-            ((SessionViewBase)session).Disposed += (_, __) => context.Dispose();
+                //
+                // Attach lifetime of context that of the session.
+                //
+                ((SessionViewBase)session).AttachDisposable(context);
 
-            return (ISession)session;
+                return session;
+            }
+            catch
+            {
+                context.Dispose();
+                throw;
+            }
         }
     }
 }

@@ -49,6 +49,7 @@ NUNIT_ASSEMBLIES = \
 	Google.Solutions.Iap.Test\bin\$(CONFIGURATION)\Google.Solutions.Iap.Test.dll \
 	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Ssh.Test.dll \
 	Google.Solutions.Mvvm.Test\bin\$(CONFIGURATION)\Google.Solutions.Mvvm.Test.dll \
+	Google.Solutions.IapDesktop.Core.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Core.Test.dll \
 	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Application.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Management.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Management.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Shell.Test.dll
@@ -60,6 +61,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Iap]* \
 	+[Google.Solutions.Ssh]* \
 	+[Google.Solutions.Mvvm]* \
+	+[Google.Solutions.IapDesktop.Core]* \
 	+[Google.Solutions.IapDesktop.Application]* \
 	+[Google.Solutions.IapDesktop.Extensions.Management]* \
 	+[Google.Solutions.IapDesktop.Extensions.Shell]*

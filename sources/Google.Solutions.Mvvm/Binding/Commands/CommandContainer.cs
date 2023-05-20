@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     {
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
-        private readonly CommandContainer<TContext> parent;
+        private readonly CommandContainer<TContext> parent; // TODO: Remove unused field
         private readonly IBindingContext bindingContext;
 
         internal IContextSource<TContext> ContextSource { get; }

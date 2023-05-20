@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -519,7 +520,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Utility methods.
         //---------------------------------------------------------------------
 
-        protected void InvokeAction( // TODO: Replace by command
+        protected void InvokeAction(
             Action action,
             string actionName)
         {
@@ -542,7 +543,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        protected async Task InvokeActionAsync(// TODO: Replace by command
+        protected async Task InvokeActionAsync(
             Func<Task> action,
             string actionName)
         {

@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
+using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Threading;
@@ -36,7 +37,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     [Service(typeof(IKeyAuthorizationService))]
     public class KeyAuthorizationService : IKeyAuthorizationService
     {
-
         private readonly IAuthorization authorization;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;

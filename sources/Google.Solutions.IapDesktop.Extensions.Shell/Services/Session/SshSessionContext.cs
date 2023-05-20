@@ -23,8 +23,8 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Threading;
@@ -42,13 +42,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly ISshKeyPair localKeyPair;
 
         internal SshSessionContext(
-            ITunnelBrokerService tunnelBroker,
+            IIapTransportFactory iapTransportFactory,
+            IDirectTransportFactory directTransportFactory,
             IKeyAuthorizationService keyAuthService,
             IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator instance,
             ISshKeyPair localKeyPair)
             : base(
-                  tunnelBroker,
+                  iapTransportFactory,
+                  directTransportFactory,
                   computeEngineAdapter,
                   instance,
                   new SshSessionParameters())
@@ -84,6 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             CancellationToken cancellationToken)
         {
             return ConnectTransportAsync(
+                SshProtocol.Protocol,
                 this.Parameters.TransportType,
                 this.Parameters.Port,
                 this.Parameters.ConnectionTimeout,

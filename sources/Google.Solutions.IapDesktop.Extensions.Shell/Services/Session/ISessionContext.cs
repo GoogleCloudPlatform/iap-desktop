@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

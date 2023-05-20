@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
 using System;
@@ -28,12 +29,8 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Auth
 {
-    public sealed class ECDsaSshKeyPair : ISshKeyPair
+    public sealed class ECDsaSshKeyPair : DisposableBase, ISshKeyPair
     {
-#if DEBUG
-        private bool disposed = false;
-#endif
-
         private readonly ECDsaCng key;
 
         private ECDsaSshKeyPair(ECDsaCng key)
@@ -131,17 +128,17 @@ namespace Google.Solutions.Ssh.Auth
         }
 
         //---------------------------------------------------------------------
-        // IDisposable.
+        // Disposable.
         //---------------------------------------------------------------------
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-#if DEBUG
-            Debug.Assert(!this.disposed);
-            this.disposed = true;
-#endif
+            if (disposing)
+            {
+                this.key.Dispose();
+            }
 
-            this.key.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

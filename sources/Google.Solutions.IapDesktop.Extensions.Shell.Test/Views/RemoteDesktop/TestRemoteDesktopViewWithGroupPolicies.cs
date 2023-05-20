@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
@@ -83,16 +84,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         }
 
         private async Task<IRemoteDesktopSession> ConnectAsync(
-            IapTunnel tunnel,
-            InstanceLocator instanceLocator,
+            IapTransport tunnel,
+            InstanceLocator instance,
             ICredential credential)
         {
             var serviceProvider = CreateServiceProvider(credential);
             var broker = new InstanceSessionBroker(serviceProvider);
-            var rdpCredential = await GenerateRdpCredentialAsync(instanceLocator)
+            var rdpCredential = await GenerateRdpCredentialAsync(instance)
                 .ConfigureAwait(true);
 
             return broker.ConnectRdpSession(
+                instance,
                 tunnel,
                 CreateSessionParameters(),
                 rdpCredential);
@@ -109,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(locator, credential))
+            using (var tunnel = IapTransport.ForRdp(locator, credential))
             {
                 await AssertRaisesEventAsync<SessionAbortedEvent>(
                     () => ConnectAsync(tunnel, locator, credential))
@@ -127,13 +129,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
+            var instance = await testInstance;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
-                var rdpCredential = await GenerateRdpCredentialAsync(locator).ConfigureAwait(true);
+                var rdpCredential = await GenerateRdpCredentialAsync(instance).ConfigureAwait(true);
                 var rdpParameters = CreateSessionParameters();
                 rdpParameters.NetworkLevelAuthentication = RdpNetworkLevelAuthentication.Disabled;
 
@@ -141,6 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(
                     () => broker.ConnectRdpSession(
+                        instance,
                         tunnel,
                         rdpParameters,
                         rdpCredential))
@@ -160,18 +163,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
+            var instance = await testInstance;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
-                var rdpCredential = await GenerateRdpCredentialAsync(locator).ConfigureAwait(true);
+                var rdpCredential = await GenerateRdpCredentialAsync(instance).ConfigureAwait(true);
                 var rdpParameters = CreateSessionParameters();
                 rdpParameters.NetworkLevelAuthentication = RdpNetworkLevelAuthentication.Disabled;
 
                 var broker = new InstanceSessionBroker(serviceProvider);
                 var session = broker.ConnectRdpSession(
+                    instance,
                     tunnel,
                     rdpParameters,
                     rdpCredential);
@@ -204,17 +208,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ")] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
-            var locator = await testInstance;
+            var instance = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, instance, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -238,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {
@@ -269,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {
@@ -300,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {
@@ -331,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {
@@ -362,7 +366,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {
@@ -393,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {
@@ -430,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var locator = await testInstance;
             var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
+            using (var tunnel = IapTransport.ForRdp(
                 locator,
                 credential))
             {

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Auth;
+using Google.Solutions.IapDesktop.Core.Auth;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Data

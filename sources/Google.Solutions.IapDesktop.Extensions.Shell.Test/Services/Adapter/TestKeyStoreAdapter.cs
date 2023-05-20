@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Auth;
+using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Moq;
@@ -179,14 +180,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             var adapter = new KeyStoreAdapter();
             adapter.DeleteSshKeyPair(SshKeyType.Rsa3072, authorization.Object);
 
-            var key = adapter.OpenSshKeyPair(
+            using (var key = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
-                null);
-
-            Assert.IsNotNull(key);
-            Assert.IsInstanceOf<RsaSshKeyPair>(key);
+                null))
+            {
+                Assert.IsNotNull(key);
+                Assert.IsInstanceOf<RsaSshKeyPair>(key);
+            }
         }
 
         [Test]
@@ -199,20 +201,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            var key1 = adapter.OpenSshKeyPair(
+            using (var key1 = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
-                null);
-
-            var key2 = adapter.OpenSshKeyPair(
+                null))
+            using (var key2 = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 false,
-                null);
-
-            Assert.IsNotNull(key2);
-            Assert.AreEqual(key1.PublicKeyString, key2.PublicKeyString);
+                null))
+            {
+                Assert.IsNotNull(key2);
+                Assert.AreEqual(key1.PublicKeyString, key2.PublicKeyString);
+            }
         }
 
         [Test]
@@ -225,21 +227,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            var rsaKey = adapter.OpenSshKeyPair(
+            using (var rsaKey = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
-                null);
-            Assert.IsNotNull(rsaKey);
-
-            var ecdsaKey = adapter.OpenSshKeyPair(
+                null))
+            using (var ecdsaKey = adapter.OpenSshKeyPair(
                 SshKeyType.EcdsaNistp256,
                 authorization.Object,
                 true,
-                null);
-            Assert.IsNotNull(ecdsaKey);
+                null))
+            {
+                Assert.IsNotNull(rsaKey);
+                Assert.IsNotNull(ecdsaKey);
 
-            Assert.AreNotEqual(rsaKey.PublicKeyString, ecdsaKey.PublicKeyString);
+                Assert.AreNotEqual(rsaKey.PublicKeyString, ecdsaKey.PublicKeyString);
+            }
         }
 
         [Test]
@@ -255,11 +258,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            adapter.OpenSshKeyPair(
+            using (adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
-                window.Object);
+                window.Object))
+            { }
 
             window.Verify(w => w.Handle, Times.Once());
         }

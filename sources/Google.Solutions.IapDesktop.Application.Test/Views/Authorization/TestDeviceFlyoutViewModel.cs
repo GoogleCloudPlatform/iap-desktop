@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
+using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;

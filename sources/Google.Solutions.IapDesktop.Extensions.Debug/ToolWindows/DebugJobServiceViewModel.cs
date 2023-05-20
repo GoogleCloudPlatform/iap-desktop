@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
@@ -34,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
     public class DebugJobServiceViewModel : ViewModelBase
     {
         private readonly IJobService jobService;
-        private readonly IEventService eventService;
+        private readonly IEventQueue eventService;
 
         public DebugJobServiceViewModel(
             IJobService jobService,
-            IEventService eventService)
+            IEventQueue eventService)
         {
             this.jobService = jobService;
             this.eventService = eventService;
@@ -48,12 +49,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
             this.IsBackgroundJob = ObservableProperty.Build(false);
 
 
-            this.eventService.BindHandler<StatusUpdatedEvent>(
+            this.eventService.Subscribe<StatusUpdatedEvent>(
                 e =>
                 {
                     this.StatusText.Value = e.Status;
                 });
-            this.eventService.BindAsyncHandler<StatusUpdatedEvent>(
+            this.eventService.Subscribe<StatusUpdatedEvent>(
                 async e =>
                 {
                     await Task.Delay(10).ConfigureAwait(true);
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                         {
                             System.Diagnostics.Debug.WriteLine("Starting delay...");
                             await this.eventService
-                                .FireAsync(new StatusUpdatedEvent("Starting delay..."))
+                                .PublishAsync(new StatusUpdatedEvent("Starting delay..."))
                                 .ConfigureAwait(true);
 
                             await Task
@@ -105,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                             System.Diagnostics.Debug.WriteLine("Delay over");
 
                             await this.eventService
-                                .FireAsync(new StatusUpdatedEvent("Done"))
+                                .PublishAsync(new StatusUpdatedEvent("Done"))
                                 .ConfigureAwait(true);
 
                             return null;
@@ -137,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                         {
                             System.Diagnostics.Debug.WriteLine("Starting delay...");
                             await this.eventService
-                                .FireAsync(new StatusUpdatedEvent("Starting delay..."))
+                                .PublishAsync(new StatusUpdatedEvent("Starting delay..."))
                                 .ConfigureAwait(true);
 
                             await Task
@@ -147,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
                             System.Diagnostics.Debug.WriteLine("Delay over");
 
                             await this.eventService
-                                .FireAsync(new StatusUpdatedEvent("Done"))
+                                .PublishAsync(new StatusUpdatedEvent("Done"))
                                 .ConfigureAwait(true);
 
                             return null;

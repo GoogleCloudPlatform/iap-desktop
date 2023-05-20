@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public class SshSessionParameters
+    public class SshSessionParameters : SessionParametersBase
     {
         internal const ushort DefaultPort = 22;
         internal static readonly TimeSpan DefaultPublicKeyValidity = TimeSpan.FromDays(30);
@@ -55,7 +55,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// Validity to apply when authorizing the public key.
         /// </summary>
         public TimeSpan PublicKeyValidity { get; set; } = DefaultPublicKeyValidity;
-
-        public Transport.TransportType TransportType { get; set; } = Transport.TransportType._Default;
     }
 }

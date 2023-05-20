@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
     public abstract class TerminalViewModelBase : ViewModelBase, IDisposable
     {
-        private readonly IEventService eventService;
+        private readonly IEventQueue eventService;
 
         private Status connectionStatus = Status.ConnectionFailed;
 
@@ -53,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         protected ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
 
-        protected TerminalViewModelBase(IEventService eventService)
+        protected TerminalViewModelBase(IEventQueue eventService)
         {
             this.eventService = eventService.ExpectNotNull(nameof(eventService));
         }
@@ -153,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionLost?.Invoke(this, args);
 
             await this.eventService
-                .FireAsync(new SessionAbortedEvent(this.Instance, args.Error))
+                .PublishAsync(new SessionAbortedEvent(this.Instance, args.Error))
                 .ConfigureAwait(true);
         }
 
@@ -163,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionFailed?.Invoke(this, args);
 
             await this.eventService
-                .FireAsync(new SessionAbortedEvent(this.Instance, args.Error))
+                .PublishAsync(new SessionAbortedEvent(this.Instance, args.Error))
                 .ConfigureAwait(true);
         }
 
@@ -179,14 +180,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             // Notify listeners.
             await this.eventService
-                .FireAsync(new SessionStartedEvent(this.Instance))
+                .PublishAsync(new SessionStartedEvent(this.Instance))
                 .ConfigureAwait(true);
         }
 
         protected async Task OnDisconnected()
         {
             await this.eventService
-                .FireAsync(new SessionEndedEvent(this.Instance))
+                .PublishAsync(new SessionEndedEvent(this.Instance))
                 .ConfigureAwait(true);
         }
 

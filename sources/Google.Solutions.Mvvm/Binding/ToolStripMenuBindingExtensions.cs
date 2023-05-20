@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Runtime;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -93,7 +94,7 @@ namespace Google.Solutions.Mvvm.Binding
             bindingContext.OnBindingCreated(
                 item,
                 Disposable.For(() => item.Click -= OnClick));
-
+                    
             var subCommands = getChildren(model);
             if (subCommands != null)
             {

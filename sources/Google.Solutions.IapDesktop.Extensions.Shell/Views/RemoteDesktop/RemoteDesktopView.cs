@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
@@ -55,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         : SessionViewBase, IRemoteDesktopSession, IView<RemoteDesktopViewModel>
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IEventService eventService;
+        private readonly IEventQueue eventService;
         private readonly IControlTheme theme;
 
         private RemoteDesktopViewModel viewModel;
@@ -127,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // Make sure we're not fullscreen anymore.
                 LeaveFullScreen();
 
-                await this.eventService.FireAsync(
+                await this.eventService.PublishAsync(
                     new SessionAbortedEvent(this.Instance, e))
                     .ConfigureAwait(true);
                 this.exceptionDialog.Show(this, caption, e);
@@ -168,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             : base(serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.eventService = serviceProvider.GetService<IEventService>();
+            this.eventService = serviceProvider.GetService<IEventQueue>();
             this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
         }
 
@@ -645,7 +646,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // not considered by TryGetExistingPane anymore.
                 this.IsFormClosing = true;
 
-                await this.eventService.FireAsync(new SessionEndedEvent(this.Instance))
+                await this.eventService.PublishAsync(new SessionEndedEvent(this.Instance))
                     .ConfigureAwait(true);
             }
         }
@@ -762,7 +763,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 UpdateLayout(LayoutMode.Normal);
 
                 // Notify our listeners.
-                await this.eventService.FireAsync(new SessionStartedEvent(this.Instance))
+                await this.eventService.PublishAsync(new SessionStartedEvent(this.Instance))
                     .ConfigureAwait(true);
 
                 // Wait a bit before clearing the connecting flag. The control can

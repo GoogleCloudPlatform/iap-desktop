@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
@@ -93,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
         private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
         private Mock<ICloudConsoleAdapter> cloudConsoleServiceMock;
-        private Mock<IEventService> eventServiceMock;
+        private Mock<IEventQueue> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
         private IProjectExplorerSettings projectExplorerSettings;
 
@@ -131,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 });
 
             this.cloudConsoleServiceMock = new Mock<ICloudConsoleAdapter>();
-            this.eventServiceMock = new Mock<IEventService>();
+            this.eventServiceMock = new Mock<IEventQueue>();
             this.sessionBrokerMock = new Mock<IGlobalSessionBroker>();
         }
 
@@ -141,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 this.computeEngineAdapterMock.AsService(),
                 this.resourceManagerAdapterMock.AsService(),
                 this.projectRepository,
-                new Mock<IEventService>().Object);
+                new Mock<IEventQueue>().Object);
 
             return new ProjectExplorerViewModel(
                 this.projectExplorerSettings,
@@ -720,12 +721,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             // Capture event handlers that the view model will register.
             Func<SessionStartedEvent, Task> sessionStartedEventHandler = null;
-            this.eventServiceMock.Setup(e => e.BindAsyncHandler(
+            this.eventServiceMock.Setup(e => e.Subscribe(
                     It.IsAny<Func<SessionStartedEvent, Task>>()))
                 .Callback<Func<SessionStartedEvent, Task>>(e => sessionStartedEventHandler = e);
 
             Func<SessionEndedEvent, Task> sessionEndedEventHandler = null;
-            this.eventServiceMock.Setup(e => e.BindAsyncHandler(
+            this.eventServiceMock.Setup(e => e.Subscribe(
                     It.IsAny<Func<SessionEndedEvent, Task>>()))
                 .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);
 
@@ -823,7 +824,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenInstanceStateChanges_ThenProjectIsReloaded()
         {
             Func<InstanceStateChangedEvent, Task> eventHandler = null;
-            this.eventServiceMock.Setup(e => e.BindAsyncHandler(
+            this.eventServiceMock.Setup(e => e.Subscribe(
                     It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
                 .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
 

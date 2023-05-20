@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
@@ -105,13 +106,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
+            var instance = await testInstance;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
+            using (var tunnel = IapTransport.ForRdp(
+                instance,
                 await credential))
             {
-                var credentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
+                var credentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
                 var rdpCredential = new RdpCredential(
                     credentials.UserName,
                     credentials.Domain,
@@ -124,6 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                         () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                            instance,
                             tunnel,
                             rdpParameters,
                             rdpCredential))
@@ -132,9 +134,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 Assert.IsNull(this.ExceptionShown);
 
                 Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainWindow));
-                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainWindow, locator));
-                Assert.IsTrue(broker.IsConnected(locator));
-                Assert.IsTrue(broker.TryActivate(locator, out var _));
+                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainWindow, instance));
+                Assert.IsTrue(broker.IsConnected(instance));
+                Assert.IsTrue(broker.TryActivate(instance, out var _));
 
                 await AssertRaisesEventAsync<SessionEndedEvent>(
                         () => session.Close())

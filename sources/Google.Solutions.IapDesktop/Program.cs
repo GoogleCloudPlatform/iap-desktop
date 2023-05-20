@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -47,6 +48,10 @@ using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
+using Google.Solutions.IapDesktop.Core;
+using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
@@ -81,7 +86,8 @@ namespace Google.Solutions.IapDesktop
             CommonTraceSources.Default,
             IapTraceSources.Default,
             SshTraceSources.Default,
-            ApplicationTraceSources.Default
+            ApplicationTraceSources.Default,
+            CoreTraceSources.Default,
         };
 
         public static string LogFile =>
@@ -346,6 +352,7 @@ namespace Google.Solutions.IapDesktop
                 // any Google APIs.
                 //
                 preAuthLayer.AddSingleton<IInstall>(install);
+                preAuthLayer.AddSingleton<UserAgent>(Install.UserAgent);
                 preAuthLayer.AddSingleton(profile);
 
                 preAuthLayer.AddSingleton<IClock>(SystemClock.Default);
@@ -446,7 +453,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Load main services.
                 //
-                var eventService = new EventService(mainForm);
+                var eventService = new EventQueue(mainForm);
 
                 //
                 // Register adapters as singletons to ensure connection reuse.
@@ -456,13 +463,15 @@ namespace Google.Solutions.IapDesktop
 
                 mainLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
                 mainLayer.AddSingleton<IJobService, JobService>();
-                mainLayer.AddSingleton<IEventService>(eventService);
+                mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
                 mainLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
                     profile.SettingsKey.CreateSubKey("Inventory")));
                 mainLayer.AddSingleton<IProjectModelService, ProjectModelService>();
                 mainLayer.AddTransient<IInstanceControlService, InstanceControlService>();
                 mainLayer.AddTransient<IUpdateService, UpdateService>();
+                mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
+                mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 
                 //
                 // Load windows.

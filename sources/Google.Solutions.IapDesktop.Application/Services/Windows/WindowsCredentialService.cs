@@ -27,6 +27,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.Diagnostics;
 using Newtonsoft.Json;
 using System;
 using System.Linq;

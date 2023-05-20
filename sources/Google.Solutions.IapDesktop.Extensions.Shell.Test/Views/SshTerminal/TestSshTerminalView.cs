@@ -30,6 +30,8 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -67,25 +69,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         private readonly IPEndPoint UnboundEndpoint =
             new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23);
 
-        private static async Task<Transport> CreateTransportForPublicAddress(
+        private static async Task<ITransport> CreateTransportForPublicAddress(
             InstanceLocator instanceLocator,
             ushort port)
         {
-            using (var service = TestProject.CreateComputeService())
-            {
-                var instance = await service
-                    .Instances.Get(
-                            instanceLocator.ProjectId,
-                            instanceLocator.Zone,
-                            instanceLocator.Name)
-                    .ExecuteAsync()
-                    .ConfigureAwait(true);
-                return await Transport
-                    .CreateTestTransport(
-                        instanceLocator,
-                        new IPEndPoint(instance.PublicAddress(), port))
-                    .ConfigureAwait(true);
-            }
+            var authorization = TestProject.GetAdminCredential().ToAuthorization();
+            return await Transport
+                .CreatePublicTransportForTestingOnly(
+                    new DirectTransportFactory(),
+                    SshProtocol.Protocol,
+                    new ComputeEngineAdapter(authorization),
+                    instanceLocator,
+                    port,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
         }
 
         private IServiceProvider CreateServiceProvider()
@@ -105,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         private async Task<SshTerminalView> ConnectSshTerminalPane(
-            InstanceLocator instanceLocator,
+            InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
             CultureInfo language = null)
@@ -124,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var authorizedKey = await keyAdapter
                 .AuthorizeKeyAsync(
-                    instanceLocator,
+                    instance,
                     SshKeyPair.NewEphemeralKeyPair(keyType),
                     TimeSpan.FromMinutes(10),
                     null,
@@ -141,19 +138,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 Language = language
             };
 
-            var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
+            var transport = await CreateTransportForPublicAddress(instance, 22)
                 .ConfigureAwait(true);
 
             SshTerminalView pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
                 async () => pane = (SshTerminalView)await broker
-                    .ConnectSshSessionAsync(transport, sshParameters, sshCredential)
+                    .ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential)
                     .ConfigureAwait(true))
                 .ConfigureAwait(true);
 
             PumpWindowMessages();
 
-            return (SshTerminalView)pane;
+            pane.Disposed += (_, __) => transport.Dispose();
+            return pane;
         }
 
         [SetUp]
@@ -194,6 +192,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
         }
 
+        private static async Task<ITransport> CreateDirectSshTransportAsync(IPEndPoint endpoint)
+        {
+            return await new DirectTransportFactory()
+                .CreateTransportAsync(
+                    SshProtocol.Protocol,
+                    endpoint,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+        }
+
         //---------------------------------------------------------------------
         // Connect
         //---------------------------------------------------------------------
@@ -213,17 +221,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
 
-            var transport = await Transport
-                .CreateTestTransport(
-                    new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    this.UnboundEndpoint)
+            var transport = await CreateDirectSshTransportAsync(this.UnboundEndpoint)
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
 
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectSshSessionAsync(transport, sshParameters, sshCredential))
+                () => broker.ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -249,17 +255,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
 
-            var transport = await Transport
-                .CreateTestTransport(
-                    new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    this.NonSshEndpoint)
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+            var transport = await CreateDirectSshTransportAsync(this.NonSshEndpoint)
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectSshSessionAsync(transport, sshParameters, sshCredential))
+                () => broker.ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -286,15 +290,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
 
-            var instanceLocator = await instanceLocatorTask;
-            var transport = await CreateTransportForPublicAddress(instanceLocator, 22)
+            var instance = await instanceLocatorTask;
+            var transport = await CreateTransportForPublicAddress(instance, 22)
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectSshSessionAsync(transport, sshParameters, sshCredential))
+                () => broker.ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(MetadataKeyAuthenticationFailedException), this.ExceptionShown);

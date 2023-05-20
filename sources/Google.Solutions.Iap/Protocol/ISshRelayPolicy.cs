@@ -25,6 +25,14 @@ namespace Google.Solutions.Iap.Protocol
 {
     public interface ISshRelayPolicy
     {
+        /// <summary>
+        /// Unique and stable ID for the policy, such as "allow-all".
+        /// </summary>
+        string Id { get; }
+
+        /// <summary>
+        /// Decide whether a remote client should be allowed access.
+        /// </summary>
         bool IsClientAllowed(IPEndPoint remote);
     }
 }

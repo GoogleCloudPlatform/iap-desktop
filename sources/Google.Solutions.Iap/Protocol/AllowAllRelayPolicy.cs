@@ -25,6 +25,8 @@ namespace Google.Solutions.Iap.Protocol
 {
     public class AllowAllRelayPolicy : ISshRelayPolicy
     {
+        public string Id => "allow-all";
+
         public bool IsClientAllowed(IPEndPoint remote)
         {
             return true;

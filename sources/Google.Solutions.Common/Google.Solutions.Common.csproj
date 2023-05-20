@@ -53,6 +53,7 @@
     <Compile Include="Interop\HRESULT.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
     <Compile Include="Interop\WindowsFilename.cs" />
+    <Compile Include="Runtime\DisposableExtensions.cs" />
     <Compile Include="Text\IAsyncReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonTraceSources.cs" />
@@ -64,16 +65,19 @@
     <Compile Include="Threading\SingleThreadSynchronizationContext.cs" />
     <Compile Include="Threading\StaTask.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
+    <Compile Include="Threading\SynchronousInvokeExtensions.cs" />
     <Compile Include="Threading\WaitHandleExtensions.cs" />
     <Compile Include="Threading\CancellationTokenExtensions.cs" />
     <Compile Include="Util\DateTimeOffsetExtensions.cs" />
-    <Compile Include="Util\Disposable.cs" />
-    <Compile Include="Util\DisposableContainer.cs" />
+    <Compile Include="Runtime\Disposable.cs" />
+    <Compile Include="Runtime\DisposableContainer.cs" />
     <Compile Include="Util\EnumExtensions.cs" />
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
     <Compile Include="Util\Parallel.cs" />
     <Compile Include="Util\Precondition.cs" />
+    <Compile Include="Runtime\DisposableBase.cs" />
+    <Compile Include="Runtime\ReferenceCountedDisposableBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

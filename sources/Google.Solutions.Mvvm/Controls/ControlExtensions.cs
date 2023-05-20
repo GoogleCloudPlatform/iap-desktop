@@ -25,49 +25,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
 {
     public static class ControlExtensions
     {
-        public static Task InvokeAsync(
-            this Control control,
-            Action action)
-        {
-            if (control.InvokeRequired)
-            {
-                var completionSource = new TaskCompletionSource<object>();
-                control.BeginInvoke((Action)(() =>
-                {
-                    try
-                    {
-                        action();
-                        completionSource.SetResult(null);
-                    }
-                    catch (Exception e)
-                    {
-                        completionSource.SetException(e);
-                    }
-                }));
-
-                return completionSource.Task;
-            }
-            else
-            {
-                action();
-                return Task.CompletedTask;
-            }
-        }
-
-        public static void InvokeAndForget(
-            this ISynchronizeInvoke control,
-            Action action)
-        {
-            control.BeginInvoke(action, null);
-        }
-
         /// <summary>
         /// List all controls, including any nested controls.
         /// </summary>
@@ -101,6 +64,9 @@ namespace Google.Solutions.Mvvm.Controls
                 $"{control} has duplicate tab indexes: {string.Join(", ", duplicateTabIndexes)}");
         }
 
+        /// <summary>
+        /// Attach the lifetime of a disposable object to that of a control.
+        /// </summary>
         public static void AttachDisposable(
             this IComponent component,
             IDisposable disposable)

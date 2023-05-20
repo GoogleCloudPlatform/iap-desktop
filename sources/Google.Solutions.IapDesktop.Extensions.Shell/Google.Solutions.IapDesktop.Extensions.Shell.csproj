@@ -129,12 +129,15 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
+    <Compile Include="Services\Session\SshProtocol.cs" />
     <Compile Include="Services\Session\RdpCredentialCallbackService.cs" />
     <Compile Include="Services\Session\ISessionContext.cs" />
+    <Compile Include="Services\Session\RdpProtocol.cs" />
     <Compile Include="Services\Session\RdpSessionParameters.cs" />
     <Compile Include="Services\Session\SessionContextBase.cs" />
     <Compile Include="Services\Session\SessionContextFactory.cs" />
     <Compile Include="Services\Session\RdpCredential.cs" />
+    <Compile Include="Services\Session\SessionParametersBase.cs" />
     <Compile Include="Services\Session\SshCredential.cs" />
     <Compile Include="Services\Session\RdpSessionContext.cs" />
     <Compile Include="Services\Session\SshSessionContext.cs" />
@@ -144,7 +147,6 @@
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
-    <Compile Include="Services\Session\TransportFailedException.cs" />
     <Compile Include="Data\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Services\Settings\SshSettings.cs" />
     <Compile Include="Services\Settings\TerminalSettings.cs" />
@@ -258,17 +260,14 @@
     <Compile Include="Views\SshTerminal\SshTerminalViewModel.cs" />
     <Compile Include="Views\SshTerminal\ISshTerminalSession.cs" />
     <Compile Include="Views\SshTerminal\TerminalViewModelBase.cs" />
-    <Compile Include="Views\TunnelsViewer\TunnelsViewCommands.cs" />
-    <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
-    <Compile Include="Views\TunnelsViewer\TunnelsView.cs">
+    <Compile Include="Views\Tunnels\TunnelsViewCommands.cs" />
+    <Compile Include="Views\Tunnels\TunnelsViewModel.cs" />
+    <Compile Include="Views\Tunnels\TunnelsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\TunnelsViewer\TunnelsView.designer.cs">
+    <Compile Include="Views\Tunnels\TunnelsView.designer.cs">
       <DependentUpon>TunnelsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Tunnel\Tunnel.cs" />
-    <Compile Include="Services\Tunnel\TunnelBrokerService.cs" />
-    <Compile Include="Services\Tunnel\TunnelService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -286,6 +285,10 @@
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj">
+      <Project>{FF0BB781-E398-4E13-8182-83450082A818}</Project>
+      <Name>Google.Solutions.IapDesktop.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
@@ -357,7 +360,7 @@
     <EmbeddedResource Include="Views\SshTerminal\TerminalPaneBase.resx">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\TunnelsViewer\TunnelsView.resx">
+    <EmbeddedResource Include="Views\Tunnels\TunnelsView.resx">
       <DependentUpon>TunnelsView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

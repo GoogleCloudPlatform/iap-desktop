@@ -26,6 +26,8 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
@@ -57,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
     [Apartment(ApartmentState.STA)]
     public class TestSshTerminalPaneViewModel : ShellFixtureBase
     {
-        private Mock<IEventService> eventService;
+        private Mock<IEventQueue> eventService;
         private Mock<IConfirmationDialog> confirmationDialog;
         private Mock<IExceptionDialog> exceptionDialog;
         private Mock<IDownloadFileDialog> downloadFileDialog;
@@ -66,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [SetUp]
         public void SetUp()
         {
-            this.eventService = new Mock<IEventService>();
+            this.eventService = new Mock<IEventQueue>();
             this.confirmationDialog = new Mock<IConfirmationDialog>();
             this.exceptionDialog = new Mock<IExceptionDialog>();
             this.downloadFileDialog = new Mock<IDownloadFileDialog>();
@@ -230,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
-                eventService.Verify(s => s.FireAsync(
+                eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
 
@@ -267,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
-                eventService.Verify(s => s.FireAsync(
+                eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
         }
@@ -296,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConnectAsync(new TerminalSize(80, 24))
                     .ConfigureAwait(false);
 
-                this.eventService.Verify(s => s.FireAsync(
+                this.eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionStartedEvent>()), Times.Once());
 
                 Assert.AreEqual(
@@ -314,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var authorizationSource = CreateAuthorizationMock();
-            var eventService = new Mock<IEventService>();
+            var eventService = new Mock<IEventQueue>();
 
             var nonAuthorizedKey = AuthorizedKeyPair.ForMetadata(
                 SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072),
@@ -356,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConfigureAwait(true);
 
                 Assert.IsInstanceOf<MetadataKeyAuthenticationFailedException>(argsReceived.Error);
-                eventService.Verify(s => s.FireAsync(
+                eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
 
                 Assert.AreEqual(

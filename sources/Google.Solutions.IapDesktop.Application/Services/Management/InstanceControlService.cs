@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
     public sealed class InstanceControlService : IInstanceControlService
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IEventService eventService;
+        private readonly IEventQueue eventService;
 
         public InstanceControlService(
             IComputeEngineAdapter computeEngineAdapter,
-            IEventService eventService)
+            IEventQueue eventService)
         {
             this.computeEngineAdapter = computeEngineAdapter;
             this.eventService = eventService;
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
                     cancellationToken)
                 .ConfigureAwait(false);
 
-                await this.eventService.FireAsync(
+                await this.eventService.PublishAsync(
                     new InstanceStateChangedEvent(
                         instance,
                         command == InstanceControlCommand.Start ||

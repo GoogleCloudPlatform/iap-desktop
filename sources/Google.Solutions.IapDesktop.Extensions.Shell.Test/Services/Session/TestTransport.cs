@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Testing.Common;
@@ -51,17 +52,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         public void WhenSshRelayDenied_ThenCreateIapTransportThrowsException()
         {
             var timeout = TimeSpan.FromMinutes(1);
-            var tunnelBroker = new Mock<ITunnelBrokerService>();
-            tunnelBroker
-                .Setup(t => t.ConnectAsync(
-                    It.IsAny<TunnelDestination>(),
+            var factory = new Mock<IIapTransportFactory>();
+            factory
+                .Setup(t => t.CreateTransportAsync(
+                    SshProtocol.Protocol,
                     It.IsAny<ISshRelayPolicy>(),
-                    timeout))
+                    SampleInstance,
+                    22,
+                    It.IsAny<IPEndPoint>(),
+                    timeout,
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new SshRelayDeniedException("mock"));
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateIapTransportAsync(
-                    tunnelBroker.Object,
+                    factory.Object,
+                    SshProtocol.Protocol,
                     SampleInstance,
                     22,
                     timeout).Wait());
@@ -71,17 +77,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         public void WhenNetworkStreamClosedException_ThenCreateIapTransportThrowsException()
         {
             var timeout = TimeSpan.FromMinutes(1);
-            var tunnelBroker = new Mock<ITunnelBrokerService>();
-            tunnelBroker
-                .Setup(t => t.ConnectAsync(
-                    It.IsAny<TunnelDestination>(),
+            var factory = new Mock<IIapTransportFactory>();
+            factory
+                .Setup(t => t.CreateTransportAsync(
+                    SshProtocol.Protocol,
                     It.IsAny<ISshRelayPolicy>(),
-                    timeout))
+                    SampleInstance,
+                    22,
+                    It.IsAny<IPEndPoint>(),
+                    timeout,
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new NetworkStreamClosedException("mock"));
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateIapTransportAsync(
-                    tunnelBroker.Object,
+                    factory.Object,
+                    SshProtocol.Protocol,
                     SampleInstance,
                     22,
                     timeout).Wait());
@@ -91,47 +102,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         public void WhenWebSocketConnectionDeniedException_ThenCreateIapTransportThrowsException()
         {
             var timeout = TimeSpan.FromMinutes(1);
-            var tunnelBroker = new Mock<ITunnelBrokerService>();
-            tunnelBroker
-                .Setup(t => t.ConnectAsync(
-                    It.IsAny<TunnelDestination>(),
+            var factory = new Mock<IIapTransportFactory>();
+            factory
+                .Setup(t => t.CreateTransportAsync(
+                    SshProtocol.Protocol,
                     It.IsAny<ISshRelayPolicy>(),
-                    timeout))
+                    SampleInstance,
+                    22,
+                    It.IsAny<IPEndPoint>(),
+                    timeout,
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new WebSocketConnectionDeniedException());
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateIapTransportAsync(
-                    tunnelBroker.Object,
+                    factory.Object,
+                    SshProtocol.Protocol,
                     SampleInstance,
                     22,
                     timeout).Wait());
         }
 
         [Test]
-        public async Task WhenTunnelCreated_ThenCreateIapTransportReturnLoopbackEndpoint()
+        public async Task WhenTunnelCreated_ThenCreateIapTransportReturnsTransport()
         {
             var timeout = TimeSpan.FromMinutes(1);
-            var tunnel = new Mock<ITunnel>();
-            tunnel.SetupGet(t => t.LocalPort).Returns(123);
-
-            var tunnelBroker = new Mock<ITunnelBrokerService>();
-            tunnelBroker
-                .Setup(t => t.ConnectAsync(
-                    It.IsAny<TunnelDestination>(),
+            var factory = new Mock<IIapTransportFactory>();
+            factory
+                .Setup(t => t.CreateTransportAsync(
+                    SshProtocol.Protocol,
                     It.IsAny<ISshRelayPolicy>(),
-                    timeout))
-                .ReturnsAsync(tunnel.Object);
+                    SampleInstance,
+                    22,
+                    It.IsAny<IPEndPoint>(),
+                    timeout,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ITransport>().Object);
 
             var transport = await Transport
                 .CreateIapTransportAsync(
-                    tunnelBroker.Object,
+                    factory.Object,
+                    SshProtocol.Protocol,
                     SampleInstance,
                     22,
                     timeout)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(IPAddress.Loopback, transport.Endpoint.Address);
-            Assert.AreEqual(123, transport.Endpoint.Port);
+            Assert.IsNotNull(transport);
         }
 
         //---------------------------------------------------------------------
@@ -148,6 +165,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateVpcTransportAsync(
+                    new DirectTransportFactory(),
+                    SshProtocol.Protocol,
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
@@ -164,6 +183,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 
             ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
                 () => Transport.CreateVpcTransportAsync(
+                    new DirectTransportFactory(),
+                    SshProtocol.Protocol,
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
@@ -197,18 +218,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
 
-            var transport = await Transport
+            using (var transport = await Transport
                 .CreateVpcTransportAsync(
+                    new DirectTransportFactory(),
+                    SshProtocol.Protocol,
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
                     CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
-            Assert.AreEqual(SampleInstance, transport.Instance);
-            Assert.AreEqual(22, transport.Endpoint.Port);
-            Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual(22, transport.Endpoint.Port);
+                Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());
+            }
         }
 
         [Test]
@@ -243,18 +265,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
 
-            var transport = await Transport
+            using (var transport = await Transport
                 .CreateVpcTransportAsync(
+                    new DirectTransportFactory(),
+                    SshProtocol.Protocol,
                     computeEngineAdapter.Object,
                     SampleInstance,
                     22,
                     CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(Transport.TransportType.Vpc, transport.Type);
-            Assert.AreEqual(SampleInstance, transport.Instance);
-            Assert.AreEqual(22, transport.Endpoint.Port);
-            Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual(22, transport.Endpoint.Port);
+                Assert.AreEqual("10.11.12.13", transport.Endpoint.Address.ToString());
+            }
         }
     }
 }

@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,13 +37,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         : SessionContextBase<RdpCredential, RdpSessionParameters>
     {
         internal RdpSessionContext(
-            ITunnelBrokerService tunnelBroker,
+            IIapTransportFactory iapTransportFactory,
+            IDirectTransportFactory directTransportFactory,
             IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator instance,
             RdpCredential credential,
             RdpSessionParameters.ParameterSources sources)
             : base(
-                  tunnelBroker,
+                  iapTransportFactory,
+                  directTransportFactory,
                   computeEngineAdapter,
                   instance,
                   new RdpSessionParameters()
@@ -72,6 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             CancellationToken cancellationToken)
         {
             return ConnectTransportAsync(
+                RdpProtocol.Protocol,
                 this.Parameters.TransportType,
                 this.Parameters.Port,
                 this.Parameters.ConnectionTimeout,

@@ -22,6 +22,8 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.Threading;
@@ -33,29 +35,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         : ISessionContext<TCredential, TParameters>
         where TCredential : ISessionCredential
     {
-        private readonly ITunnelBrokerService tunnelBroker;
+        private readonly IIapTransportFactory iapTransportFactory;
+        private readonly IDirectTransportFactory directTransportFactory;
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         protected async Task<ITransport> ConnectTransportAsync(
-            Transport.TransportType transportType,
+            IProtocol protocol,
+            SessionTransportType transportType,
             ushort port,
             TimeSpan connectionTimeout,
             CancellationToken cancellationToken)
         {
             switch (transportType)
             {
-                case Transport.TransportType.IapTunnel:
+                case SessionTransportType.IapTunnel:
                     return await Transport
                         .CreateIapTransportAsync(
-                            this.tunnelBroker,
+                            this.iapTransportFactory,
+                            protocol,
                             this.Instance,
                             port,
                             connectionTimeout)
                         .ConfigureAwait(false);
 
-                case Transport.TransportType.Vpc:
+                case SessionTransportType.Vpc:
                     return await Transport
                         .CreateVpcTransportAsync(
+                            this.directTransportFactory,
+                            protocol,
                             this.computeEngineAdapter,
                             this.Instance,
                             port,
@@ -68,12 +75,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         }
 
         protected SessionContextBase(
-            ITunnelBrokerService tunnelBroker,
+            IIapTransportFactory iapTransportFactory,
+            IDirectTransportFactory directTransportFactory,
             IComputeEngineAdapter computeEngineAdapter,
             InstanceLocator instance,
             TParameters parameters)
         {
-            this.tunnelBroker = tunnelBroker.ExpectNotNull(nameof(tunnelBroker));
+            this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(SessionContextBase<TCredential, TParameters>.iapTransportFactory));
+            this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
             this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Parameters = parameters.ExpectNotNull(nameof(parameters));

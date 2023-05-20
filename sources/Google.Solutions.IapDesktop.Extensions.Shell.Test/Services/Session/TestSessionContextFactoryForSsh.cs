@@ -27,6 +27,8 @@ using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -130,15 +132,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 keyStore.Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 CreateSshSettingsRepository());
 
-            await factory
+            using (await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
-                .ConfigureAwait(false);
+                .ConfigureAwait(false))
+            { }
 
             keyStore.Verify(k => k.OpenSshKeyPair(
                 It.Is<SshKeyType>(t => t == SshKeyType.EcdsaNistp384),
@@ -173,19 +177,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 CreateKeyStoreAdapterMock().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 CreateSshSettingsRepository());
 
-            var context = (SshSessionContext)await factory
+            using (var context = (SshSessionContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(2222, context.Parameters.Port);
-            Assert.AreEqual("user", context.Parameters.PreferredUsername);
-            Assert.AreEqual(TimeSpan.FromSeconds(123), context.Parameters.ConnectionTimeout);
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual(2222, context.Parameters.Port);
+                Assert.AreEqual("user", context.Parameters.PreferredUsername);
+                Assert.AreEqual(TimeSpan.FromSeconds(123), context.Parameters.ConnectionTimeout);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -217,17 +223,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 CreateKeyStoreAdapterMock().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
-                new Mock<ITunnelBrokerService>().Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallbackService>().Object,
                 sshSettingsRepository);
 
-            var context = (SshSessionContext)await factory
+            using (var context = (SshSessionContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(TimeSpan.FromDays(4), context.Parameters.PublicKeyValidity);
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual(TimeSpan.FromDays(4), context.Parameters.PublicKeyValidity);
+            }
         }
     }
 }

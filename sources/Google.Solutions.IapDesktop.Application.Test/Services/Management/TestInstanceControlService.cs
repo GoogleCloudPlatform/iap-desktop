@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -45,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
         public async Task WhenCausingVmStart_ThenControlInstanceFiresEvent()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            var eventService = new Mock<IEventService>();
+            var eventService = new Mock<IEventQueue>();
 
             var service = new InstanceControlService(
                 computeEngineAdapter.Object,
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            eventService.Verify(s => s.FireAsync<InstanceStateChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
                 It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && e.IsRunning)),
                 Times.Once);
         }
@@ -66,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
         public async Task WhenCausingVmStop_ThenControlInstanceFiresEvent()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            var eventService = new Mock<IEventService>();
+            var eventService = new Mock<IEventQueue>();
 
             var service = new InstanceControlService(
                 computeEngineAdapter.Object,
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            eventService.Verify(s => s.FireAsync<InstanceStateChangedEvent>(
+            eventService.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
                 It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && !e.IsRunning)),
                 Times.Once);
         }
