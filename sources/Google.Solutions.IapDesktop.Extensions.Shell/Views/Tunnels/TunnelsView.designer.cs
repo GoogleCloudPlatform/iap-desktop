@@ -60,8 +60,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             this.localEndpointHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.remotePortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.protocolHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.policyHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.securityHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.policyHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -151,13 +151,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             // 
             this.protocolHeader.Text = "Protocol";
             // 
-            // policyHeader
-            // 
-            this.policyHeader.Text = "Policy";
-            // 
             // securityHeader
             // 
             this.securityHeader.Text = "Security";
+            // 
+            // policyHeader
+            // 
+            this.policyHeader.Text = "Access policy";
             // 
             // TunnelsView
             // 

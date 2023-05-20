@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         // IProtocol.
         //---------------------------------------------------------------------
 
-        public string Name => "Remote Desktop Protocol";
+        public string Name => "RDP";
 
         public bool IsAvailable(IProtocolTarget target)
         {

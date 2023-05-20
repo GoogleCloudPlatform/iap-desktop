@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             this.tunnelsList.BindColumn(4, t => ByteSizeFormatter.Format(t.Statistics.BytesReceived));
             this.tunnelsList.BindColumn(5, t => t.LocalEndpoint.ToString());
             this.tunnelsList.BindColumn(6, t => t.TargetPort.ToString());
-            this.tunnelsList.BindColumn(7, t => "??pro");
+            this.tunnelsList.BindColumn(7, t => t.Protocol.Name);
             this.tunnelsList.BindColumn(8, t => t.Flags.HasFlag(IapTunnelFlags.Mtls) ? "mTLS" : "TLS");
             this.tunnelsList.BindColumn(9, t => t.Policy.Name);
 

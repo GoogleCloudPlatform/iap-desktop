@@ -70,6 +70,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// connect to the listener.
         /// </summary>
         ITransportPolicy Policy { get; }
+
+        /// <summary>
+        /// Protocol that this transport is used for.
+        /// </summary>
+        IProtocol Protocol { get; }
     }
 
     [Flags]
@@ -178,7 +183,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             }
         }
 
-        public ITransportPolicy Policy => (ITransportPolicy)this.listener.Policy;
+        public ITransportPolicy Policy => this.Details.Policy;
+
+        public IProtocol Protocol => this.Details.Protocol;
 
         //-----------------------------------------------------------------
         // Inner classes.
