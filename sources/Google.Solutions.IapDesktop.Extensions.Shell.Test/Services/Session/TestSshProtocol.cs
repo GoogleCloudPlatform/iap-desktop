@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Moq;
 using NUnit.Framework;
@@ -52,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var target = new Mock<IProtocolTarget>();
             target
                 .Setup(t => t.Traits)
-                .Returns(new[] { SshProtocol.Supported });
+                .Returns(new[] { new LinuxTrait() });
 
             Assert.IsTrue(SshProtocol.Protocol.IsAvailable(target.Object));
         }
@@ -98,16 +99,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var protocol2 = protocol1;
             Assert.IsTrue(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 == protocol2);
-        }
-
-        //---------------------------------------------------------------------
-        // Trait.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void TraitToString()
-        {
-            StringAssert.Contains("SSH", SshProtocol.Supported.ToString());
         }
     }
 }

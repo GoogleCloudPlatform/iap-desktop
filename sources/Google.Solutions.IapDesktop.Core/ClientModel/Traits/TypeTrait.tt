@@ -1,4 +1,9 @@
-﻿//
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System" #>
+<#@ output extension=".cs" #>
+
+//
 // Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -20,16 +25,21 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using System;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
-    public class InstanceTrait : IProtocolTargetTrait
-    {
-        private const string Expression = "isInstance()";
+	<#
+	var traitNames = new [] {"Instance", "Windows", "Linux"};
+    foreach (var traitName in traitNames)
+	{ 
+        #>
 
-        public InstanceTrait()
+    public class <#= traitName #>Trait : IProtocolTargetTrait
+    {
+        private const string Expression = "is<#= traitName #>()";
+
+        public <#= traitName #>Trait()
         {
         }
 
@@ -44,15 +54,15 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as InstanceTrait);
+            return Equals(obj as <#= traitName #>Trait);
         }
 
         public bool Equals(IProtocolTargetTrait other)
         {
-            return other is InstanceTrait && other != null;
+            return other is <#= traitName #>Trait && other != null;
         }
 
-        public static bool operator ==(InstanceTrait obj1, InstanceTrait obj2)
+        public static bool operator ==(<#= traitName #>Trait obj1, <#= traitName #>Trait obj2)
         {
             if (obj1 is null)
             {
@@ -62,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(InstanceTrait obj1, InstanceTrait obj2)
+        public static bool operator !=(<#= traitName #>Trait obj1, <#= traitName #>Trait obj2)
         {
             return !(obj1 == obj2);
         }
@@ -80,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out InstanceTrait trait)
+        public static bool TryParse(string expression, out <#= traitName #>Trait trait)
         {
             if (expression != null &&
                 Expression == new string(expression
@@ -88,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
                     .Where(c => !char.IsWhiteSpace(c))
                     .ToArray()))
             {
-                trait = new InstanceTrait();
+                trait = new <#= traitName #>Trait();
                 return true;
             }
             else
@@ -98,4 +108,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             }
         }
     }
+
+	<# } #>
 }

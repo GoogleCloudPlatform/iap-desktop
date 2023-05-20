@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
@@ -28,7 +29,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
     internal class RdpProtocol : IProtocol
     {
         public static RdpProtocol Protocol { get; } = new RdpProtocol();
-        public static SupportedTrait Supported { get; } = new SupportedTrait();
 
         private RdpProtocol()
         {
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         {
             return target.Traits
                 .EnsureNotNull()
-                .Contains(Supported);
+                .Any(t => t is WindowsTrait);
         }
 
         //---------------------------------------------------------------------
@@ -88,22 +88,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         public override string ToString()
         {
             return this.Name;
-        }
-
-        //---------------------------------------------------------------------
-        // Trait.
-        //---------------------------------------------------------------------
-
-        public class SupportedTrait : IProtocolTargetTrait
-        {
-            internal SupportedTrait()
-            {
-            }
-
-            public override string ToString()
-            {
-                return "Target supports RDP";
-            }
         }
     }
 }

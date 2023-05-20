@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
             internal static IEnumerable<IProtocolTargetTrait> ParseCondition(string condition)
             {
-                if (condition != null)
+                if (condition == null)
                 {
                     yield break;
                 }
@@ -238,11 +238,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     .Replace("&&", "\0")
                     .Split('\0')
                     .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrEmpty(s))
                     .ToList();
 
                 foreach (var clause in clauses)
                 {
-                    if (!InstanceTrait.TryParse(clause, out var trait))
+                    if (InstanceTrait.TryParse(clause, out var trait))
                     {
                         yield return trait;
                     }

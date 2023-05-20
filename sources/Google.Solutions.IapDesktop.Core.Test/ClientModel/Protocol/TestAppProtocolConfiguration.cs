@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             [Values("isFoo()", " \nisInstance( ) && isBar\r\n")] string condition)
         {
             Assert.Throws<InvalidAppProtocolException>(
-                () => AppProtocol.Configuration.ParseCondition(condition));
+                () => AppProtocol.Configuration.ParseCondition(condition).ToList());
         }
     }
 }
