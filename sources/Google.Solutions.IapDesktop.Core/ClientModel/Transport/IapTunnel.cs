@@ -109,10 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
         internal event EventHandler Closed;
 
-        public Profile Details { get; }
-
-        public InstanceLocator TargetInstance => this.Details.TargetInstance;
-        public ushort TargetPort => this.Details.TargetPort;
+        internal Profile Details { get; }
 
         internal IapTunnel(
             ISshRelayListener listener,
@@ -177,11 +174,18 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 var stats = this.listener.Statistics;
                 return new IapTunnelStatistics()
                 {
-                    BytesReceived = stats.BytesReceived,
-                    BytesTransmitted = stats.BytesTransmitted
+                    //
+                    // NB. If we send something, the listener receives it,
+                    // so the listener's statistics are reversed.
+                    //
+                    BytesReceived = stats.BytesTransmitted,
+                    BytesTransmitted = stats.BytesReceived
                 };
             }
         }
+
+        public InstanceLocator TargetInstance => this.Details.TargetInstance;
+        public ushort TargetPort => this.Details.TargetPort;
 
         public ITransportPolicy Policy => this.Details.Policy;
 

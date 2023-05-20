@@ -56,17 +56,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void Statistics()
         {
+            var stats = new Iap.Net.ConnectionStatistics();
+            stats.OnReceiveCompleted(1);
+            stats.OnTransmitCompleted(3);
+
             var listener = new Mock<ISshRelayListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
-            listener.SetupGet(l => l.Statistics).Returns(new Iap.Net.ConnectionStatistics());
+            listener.SetupGet(l => l.Statistics).Returns(stats);
 
             using (var tunnel = new IapTunnel(
                 listener.Object,
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(0, tunnel.Statistics.BytesReceived);
-                Assert.AreEqual(0, tunnel.Statistics.BytesTransmitted);
+                Assert.AreEqual(3, tunnel.Statistics.BytesReceived);
+                Assert.AreEqual(1, tunnel.Statistics.BytesTransmitted);
             }
         }
 
