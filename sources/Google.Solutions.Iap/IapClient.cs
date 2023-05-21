@@ -188,6 +188,20 @@ namespace Google.Solutions.Iap
             : this(credential, vmInstance, port, nic, userAgent, null)
         { }
 
+        /// <summary>
+        /// Perform a probe to check whether the instance can be reached,
+        /// and whether access is permitted.
+        /// </summary>
+        public async Task ProbeAsync(TimeSpan timeout)
+        {
+            using (var stream = new SshRelayStream(this))
+            {
+                await stream
+                    .ProbeConnectionAsync(timeout)
+                    .ConfigureAwait(false);
+            }
+        }
+
         //---------------------------------------------------------------------
         // ISshRelayEndpoint.
         //---------------------------------------------------------------------

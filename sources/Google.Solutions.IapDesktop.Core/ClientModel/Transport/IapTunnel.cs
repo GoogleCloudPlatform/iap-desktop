@@ -327,12 +327,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     // Check if we can actually connect to this instance before we
                     // start a local listener.
                     //
-                    using (var stream = new SshRelayStream(client)) // TODO: Make SshRelayStream internal
-                    {
-                        await stream
-                            .ProbeConnectionAsync(probeTimeout)
-                            .ConfigureAwait(false);
-                    }
+                    await client
+                        .ProbeAsync(probeTimeout)
+                        .ConfigureAwait(false);
 
                     var listener = profile.LocalEndpoint != null
                         ? IapListener.CreateLocalListener(
