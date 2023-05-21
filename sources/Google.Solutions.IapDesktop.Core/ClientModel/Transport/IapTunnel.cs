@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -104,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
     public class IapTunnel : ReferenceCountedDisposableBase, IIapTunnel
     {
         private readonly CancellationTokenSource stopListenerSource;
-        private readonly ISshRelayListener listener;
+        private readonly IIapListener listener;
         private readonly Task listenTask;
 
         internal event EventHandler Closed;
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         internal Profile Details { get; }
 
         internal IapTunnel(
-            ISshRelayListener listener,
+            IIapListener listener,
             Profile profile,
             IapTunnelFlags flags)
         {
@@ -314,11 +315,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                             "Using client certificate (valid till {0})", clientCertificate.NotAfter);
                     }
 
-                    var client = new IapTunnelingEndpoint(
+                    var client = new IapClient(
                         authorization.Credential,
                         profile.TargetInstance,
                         profile.TargetPort,
-                        IapTunnelingEndpoint.DefaultNetworkInterface,
+                        IapClient.DefaultNetworkInterface,
                         userAgent,
                         clientCertificate);
 
@@ -326,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     // Check if we can actually connect to this instance before we
                     // start a local listener.
                     //
-                    using (var stream = new SshRelayStream(client))
+                    using (var stream = new SshRelayStream(client)) // TODO: Make SshRelayStream internal
                     {
                         await stream
                             .ProbeConnectionAsync(probeTimeout)
@@ -334,11 +335,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     }
 
                     var listener = profile.LocalEndpoint != null
-                        ? SshRelayListener.CreateLocalListener(
+                        ? IapListener.CreateLocalListener(
                             client,
                             profile.Policy,
                             profile.LocalEndpoint.Port)
-                        : SshRelayListener.CreateLocalListener(
+                        : IapListener.CreateLocalListener(
                             client,
                             profile.Policy);
 

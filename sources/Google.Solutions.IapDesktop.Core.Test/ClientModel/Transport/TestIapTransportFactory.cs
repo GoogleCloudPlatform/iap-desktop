@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -72,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
         private static IapTunnel CreateTunnel(IapTunnel.Profile profile)
         {
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
             listener.SetupGet(l => l.Statistics).Returns(new Iap.Net.ConnectionStatistics());
 
@@ -465,7 +466,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             var protocol = new Mock<IProtocol>();
             var tunnel = new IapTunnel(
-                new Mock<ISshRelayListener>().Object,
+                new Mock<IIapListener>().Object,
                 CreateTunnelProfile(SampleInstance, 22),
                 IapTunnelFlags.None);
 

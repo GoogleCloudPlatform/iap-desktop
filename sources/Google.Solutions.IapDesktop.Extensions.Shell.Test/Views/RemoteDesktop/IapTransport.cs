@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -52,12 +53,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ICredential credential)
         {
             var policy = new AllowAllPolicy();
-            var listener = SshRelayListener.CreateLocalListener(
-                new IapTunnelingEndpoint(
+            var listener = IapListener.CreateLocalListener(
+                new IapClient(
                     credential,
                     instance,
                     3389,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
                 policy);
 

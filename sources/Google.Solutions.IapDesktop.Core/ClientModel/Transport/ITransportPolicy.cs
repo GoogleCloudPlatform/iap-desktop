@@ -20,12 +20,13 @@
 //
 
 
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Protocol;
 using System;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 {
-    public interface ITransportPolicy : ISshRelayPolicy, IEquatable<ITransportPolicy>
+    public interface ITransportPolicy : IapListenerPolicy, IEquatable<ITransportPolicy>
     {
         /// <summary>
         /// Name of the policy, such as "allow-all".

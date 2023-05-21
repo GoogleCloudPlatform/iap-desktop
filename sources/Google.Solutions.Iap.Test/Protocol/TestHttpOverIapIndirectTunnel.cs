@@ -42,15 +42,15 @@ namespace Google.Solutions.Iap.Test.Protocol
             InstanceLocator vmRef,
             ICredential credential)
         {
-            var policy = new Mock<ISshRelayPolicy>();
+            var policy = new Mock<IapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
-            var listener = SshRelayListener.CreateLocalListener(
-                new IapTunnelingEndpoint(
+            var listener = IapListener.CreateLocalListener(
+                new IapClient(
                     credential,
                     vmRef,
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
                 policy.Object);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.

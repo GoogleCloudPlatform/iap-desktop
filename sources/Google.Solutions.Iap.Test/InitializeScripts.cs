@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Iap.Test.Protocol
+namespace Google.Solutions.Iap.Test
 {
     internal static class InitializeScripts
     {

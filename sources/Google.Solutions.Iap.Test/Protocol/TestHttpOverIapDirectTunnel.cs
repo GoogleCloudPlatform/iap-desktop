@@ -42,11 +42,11 @@ namespace Google.Solutions.Iap.Test.Protocol
             ICredential credential)
         {
             return new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     credential,
                     vmRef,
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent));
         }
 
@@ -82,11 +82,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                 "GET / HTTP/1.0\r\n\r\n");
 
             var stream = new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     GoogleCredential.FromAccessToken("invalid"),
                     await vm,
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent));
 
             ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>

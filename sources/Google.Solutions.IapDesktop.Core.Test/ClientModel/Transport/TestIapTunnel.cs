@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -60,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             stats.OnReceiveCompleted(1);
             stats.OnTransmitCompleted(3);
 
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
             listener.SetupGet(l => l.Statistics).Returns(stats);
 
@@ -77,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void LocalEndpoint()
         {
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
 
             using (var tunnel = new IapTunnel(
@@ -94,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void Details()
         {
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
 
             var profile = CreateTunnelProfile();
@@ -111,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void TargetInstance()
         {
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
 
             var profile = CreateTunnelProfile();
@@ -128,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void TargetPort()
         {
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
 
             var profile = CreateTunnelProfile();
@@ -145,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void Policy()
         {
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
 
             var profile = CreateTunnelProfile();
@@ -163,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void Protocol()
         {
             var policy = new Mock<ITransportPolicy>().Object;
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
 
             var profile = CreateTunnelProfile();
@@ -185,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void DisposeStopsRelay()
         {
             CancellationToken token;
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
             listener
                 .Setup(l => l.ListenAsync(It.IsAny<CancellationToken>()))
@@ -213,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Task listenTask = new TaskCompletionSource<object>().Task;
             CancellationToken token;
 
-            var listener = new Mock<ISshRelayListener>();
+            var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalPort).Returns(123);
             listener
                 .Setup(l => l.ListenAsync(It.IsAny<CancellationToken>()))
