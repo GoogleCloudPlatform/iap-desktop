@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -29,8 +31,13 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
     [TestFixture]
-    public class TestRdpProtocol
+    public class TestRdpProtocol : EquatableFixtureBase<RdpProtocol, IProtocol>
     {
+        protected override RdpProtocol CreateInstance()
+        {
+            return RdpProtocol.Protocol;
+        }
+
         //---------------------------------------------------------------------
         // IsAvailable.
         //---------------------------------------------------------------------
@@ -52,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var target = new Mock<IProtocolTarget>();
             target
                 .Setup(t => t.Traits)
-                .Returns(new[] { RdpProtocol.Supported });
+                .Returns(new[] { new WindowsTrait() });
 
             Assert.IsTrue(RdpProtocol.Protocol.IsAvailable(target.Object));
         }
@@ -65,49 +72,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         public void ToStringReturnsName()
         {
             Assert.AreEqual("RDP", RdpProtocol.Protocol.ToString());
-        }
-
-        //---------------------------------------------------------------------
-        // Equals.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
-        {
-            var protocol = RdpProtocol.Protocol;
-            Assert.IsFalse(protocol.Equals((object)null));
-            Assert.IsFalse(((IEquatable<IProtocol>)protocol).Equals((IProtocol)null));
-            Assert.IsFalse(protocol == (IProtocol)null);
-            Assert.IsTrue(protocol != (IProtocol)null);
-        }
-
-        [Test]
-        public void WhenOtherIsOfDifferentType_ThenEqualsReturnsFalse()
-        {
-            var protocol1 = RdpProtocol.Protocol;
-            var protocol2 = new Mock<IProtocol>().Object;
-
-            Assert.IsFalse(protocol1.Equals(protocol2));
-            Assert.IsTrue((IProtocol)protocol1 != (IProtocol)protocol2);
-        }
-
-        [Test]
-        public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
-        {
-            var protocol1 = RdpProtocol.Protocol;
-            var protocol2 = protocol1;
-            Assert.IsTrue(protocol1.Equals(protocol2));
-            Assert.IsTrue(protocol1 == protocol2);
-        }
-
-        //---------------------------------------------------------------------
-        // Trait.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void TraitToString()
-        {
-            StringAssert.Contains("RDP", RdpProtocol.Supported.ToString());
         }
     }
 }

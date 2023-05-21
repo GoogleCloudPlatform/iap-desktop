@@ -19,19 +19,22 @@
 // under the License.
 //
 
-
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
-using Moq;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
 {
     [TestFixture]
-    public class TestAllowAllPolicy
+    public class TestAllowAllPolicy 
+        : EquatableFixtureBase<AllowAllPolicy, ITransportPolicy>
     {
+        protected override AllowAllPolicy CreateInstance()
+        {
+            return new AllowAllPolicy();
+        }
+
         //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
@@ -40,48 +43,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void ToStringReturnsName()
         {
             Assert.AreEqual("Allow all", new AllowAllPolicy().ToString());
-        }
-
-        //---------------------------------------------------------------------
-        // Equals.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
-        {
-            var policy = new AllowAllPolicy();
-            Assert.IsFalse(policy.Equals((object)null));
-            Assert.IsFalse(((IEquatable<ITransportPolicy>)policy).Equals((ITransportPolicy)null));
-            Assert.IsFalse(policy == (ISshRelayPolicy)null);
-            Assert.IsTrue(policy != (ISshRelayPolicy)null);
-        }
-
-        [Test]
-        public void WhenOtherIsOfDifferentType_ThenEqualsReturnsFalse()
-        {
-            var policy1 = new AllowAllPolicy();
-            var policy2 = new Mock<ITransportPolicy>().Object;
-
-            Assert.IsFalse(policy1.Equals(policy2));
-            Assert.IsTrue((ITransportPolicy)policy1 != (ITransportPolicy)policy2);
-        }
-
-        [Test]
-        public void WhenObjectsAreEquivalent_ThenEqualsReturnsTrue()
-        {
-            var policy1 = new AllowAllPolicy();
-            var policy2 = new AllowAllPolicy();
-            Assert.IsTrue(policy1.Equals(policy2));
-            Assert.IsTrue(policy1 == policy2);
-        }
-
-        [Test]
-        public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
-        {
-            var policy1 = new AllowAllPolicy();
-            var policy2 = policy1;
-            Assert.IsTrue(policy1.Equals(policy2));
-            Assert.IsTrue(policy1 == policy2);
         }
     }
 }

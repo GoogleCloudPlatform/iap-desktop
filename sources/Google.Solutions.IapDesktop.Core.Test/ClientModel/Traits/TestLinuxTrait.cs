@@ -21,47 +21,17 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.Testing.Common;
-using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
+namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestSshProtocol : EquatableFixtureBase<SshProtocol, IProtocol>
+    public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, IProtocolTargetTrait>
     {
-        protected override SshProtocol CreateInstance()
+        protected override LinuxTrait CreateInstance()
         {
-            return SshProtocol.Protocol;
-        }
-
-        //---------------------------------------------------------------------
-        // IsAvailable.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenTargetHasNoTraits_ThenIsAvailableReturnsFalse()
-        {
-            var target = new Mock<IProtocolTarget>();
-            target
-                .Setup(t => t.Traits)
-                .Returns((IEnumerable<IProtocolTargetTrait>)null);
-
-            Assert.IsFalse(SshProtocol.Protocol.IsAvailable(target.Object));
-        }
-
-        [Test]
-        public void WhenTargetHasTrait_ThenIsAvailableReturnsTrue()
-        {
-            var target = new Mock<IProtocolTarget>();
-            target
-                .Setup(t => t.Traits)
-                .Returns(new[] { new LinuxTrait() });
-
-            Assert.IsTrue(SshProtocol.Protocol.IsAvailable(target.Object));
+            return new LinuxTrait();
         }
 
         //---------------------------------------------------------------------
@@ -69,9 +39,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsName()
+        public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("SSH", SshProtocol.Protocol.ToString());
+            Assert.AreEqual("isLinux()", new LinuxTrait().ToString());
         }
+
+        //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenExpressionIsNullOrEmpty_ThenTryParseReturnsFalse(
+            [Values(" \t", "", null)] string expression)
+        {
+            Assert.IsFalse(LinuxTrait.TryParse(expression, out var _));
+        }
+
+        [Test]
+        public void WhenExpressionIsValid_ThenTryParseReturnsTrue(
+            [Values("isLinux()", " isLinux(  \n) \n\r\t ")] string expression)
+        {
+            Assert.IsTrue(LinuxTrait.TryParse(expression, out var trait));
+            Assert.IsNotNull(trait);
+        }
+
     }
 }

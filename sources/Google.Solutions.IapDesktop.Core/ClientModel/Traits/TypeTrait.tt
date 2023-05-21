@@ -1,4 +1,9 @@
-﻿//
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System" #>
+<#@ output extension=".cs" #>
+
+//
 // Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,32 +24,23 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
-    public class RdpProtocol : IProtocol
+	<#
+	var traitNames = new [] {"Instance", "Windows", "Linux"};
+    foreach (var traitName in traitNames)
+	{ 
+        #>
+
+    public class <#= traitName #>Trait : IProtocolTargetTrait
     {
-        public static RdpProtocol Protocol { get; } = new RdpProtocol();
+        private const string Expression = "is<#= traitName #>()";
 
-        private RdpProtocol()
+        public <#= traitName #>Trait()
         {
-        }
-
-        //---------------------------------------------------------------------
-        // IProtocol.
-        //---------------------------------------------------------------------
-
-        public string Name => "RDP";
-
-        public bool IsAvailable(IProtocolTarget target)
-        {
-            return target.Traits
-                .EnsureNotNull()
-                .Any(t => t is WindowsTrait);
         }
 
         //---------------------------------------------------------------------
@@ -53,20 +49,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode();
+            return 0;
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as RdpProtocol);
+            return Equals(obj as <#= traitName #>Trait);
         }
 
-        public bool Equals(IProtocol other)
+        public bool Equals(IProtocolTargetTrait other)
         {
-            return other is RdpProtocol && other != null;
+            return other is <#= traitName #>Trait && other != null;
         }
 
-        public static bool operator ==(RdpProtocol obj1, RdpProtocol obj2)
+        public static bool operator ==(<#= traitName #>Trait obj1, <#= traitName #>Trait obj2)
         {
             if (obj1 is null)
             {
@@ -76,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(RdpProtocol obj1, RdpProtocol obj2)
+        public static bool operator !=(<#= traitName #>Trait obj1, <#= traitName #>Trait obj2)
         {
             return !(obj1 == obj2);
         }
@@ -87,7 +83,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public override string ToString()
         {
-            return this.Name;
+            return Expression;
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        public static bool TryParse(string expression, out <#= traitName #>Trait trait)
+        {
+            if (expression != null &&
+                Expression == new string(expression
+                    .ToCharArray()
+                    .Where(c => !char.IsWhiteSpace(c))
+                    .ToArray()))
+            {
+                trait = new <#= traitName #>Trait();
+                return true;
+            }
+            else
+            {
+                trait = null;
+                return false;
+            }
         }
     }
+
+	<# } #>
 }
