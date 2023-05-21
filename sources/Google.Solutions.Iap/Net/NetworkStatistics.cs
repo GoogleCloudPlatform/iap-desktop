@@ -23,7 +23,7 @@ using System.Threading;
 
 namespace Google.Solutions.Iap.Net
 {
-    public class ConnectionStatistics
+    public class NetworkStatistics
     {
         private long bytesReceived = 0;
         private long bytesTransmitted = 0;

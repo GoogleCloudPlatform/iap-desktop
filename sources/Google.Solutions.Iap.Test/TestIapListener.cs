@@ -78,7 +78,7 @@ namespace Google.Solutions.Iap.Test
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
-            var clientStreamStats = new ConnectionStatistics();
+            var clientStreamStats = new NetworkStatistics();
             var clientStream = new SocketStream(socket, clientStreamStats);
 
             using (var tokenSource = new CancellationTokenSource())

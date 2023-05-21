@@ -65,7 +65,7 @@
     <Compile Include="Protocol\SshRelayFormat.cs" />
     <Compile Include="Protocol\SshRelayStream.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
-    <Compile Include="Net\ConnectionStatistics.cs" />
+    <Compile Include="Net\NetworkStatistics.cs" />
     <Compile Include="IapTraceSources.cs" />
     <Compile Include="IapClient.cs" />
     <Compile Include="Net\INetworkStream.cs" />

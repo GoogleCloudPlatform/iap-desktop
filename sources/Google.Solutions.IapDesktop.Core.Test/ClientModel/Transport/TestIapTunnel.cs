@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void Statistics()
         {
-            var stats = new Iap.Net.ConnectionStatistics();
+            var stats = new Iap.Net.NetworkStatistics();
             stats.OnReceiveCompleted(1);
             stats.OnTransmitCompleted(3);
 

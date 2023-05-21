@@ -35,9 +35,9 @@ namespace Google.Solutions.Iap.Net
     {
         private readonly Socket socket;
         private readonly string remoteEndpoint;
-        private readonly ConnectionStatistics statistics;
+        private readonly NetworkStatistics statistics;
 
-        public SocketStream(Socket socket, ConnectionStatistics statistics)
+        public SocketStream(Socket socket, NetworkStatistics statistics)
         {
             this.socket = socket;
             this.statistics = statistics;

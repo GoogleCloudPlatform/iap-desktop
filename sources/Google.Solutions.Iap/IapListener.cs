@@ -45,7 +45,7 @@ namespace Google.Solutions.Iap
         /// Statistics for all connections made using
         /// this listener.
         /// </summary>
-        ConnectionStatistics Statistics { get; }
+        NetworkStatistics Statistics { get; }
 
         /// <summary>
         /// Perpetually listen and relay traffic until cancelled.
@@ -74,7 +74,7 @@ namespace Google.Solutions.Iap
         private readonly TcpListener listener;
 
         public int LocalPort { get; }
-        public ConnectionStatistics Statistics { get; } = new ConnectionStatistics();
+        public NetworkStatistics Statistics { get; } = new NetworkStatistics();
 
         public event EventHandler<ClientEventArgs> ClientConnected;
         public event EventHandler<ClientEventArgs> ClientDisconnected;

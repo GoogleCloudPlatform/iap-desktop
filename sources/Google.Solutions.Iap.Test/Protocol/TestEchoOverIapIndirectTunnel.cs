@@ -58,7 +58,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
-            return new SocketStream(socket, new ConnectionStatistics());
+            return new SocketStream(socket, new NetworkStatistics());
         }
 
         [Test]
