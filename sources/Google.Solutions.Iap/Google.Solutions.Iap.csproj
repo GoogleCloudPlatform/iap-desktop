@@ -62,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Protocol\ISshRelayPolicy.cs" />
-    <Compile Include="Protocol\AllowAllRelayPolicy.cs" />
     <Compile Include="Protocol\SshRelaySession.cs" />
     <Compile Include="Protocol\SshRelayFormat.cs" />
     <Compile Include="Protocol\SshRelayStream.cs" />

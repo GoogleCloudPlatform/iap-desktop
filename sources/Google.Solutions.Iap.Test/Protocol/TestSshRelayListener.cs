@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Sockets;
@@ -55,6 +56,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 (int)SshRelayFormat.Data.MaxPayloadLength,
                 (int)SshRelayFormat.Data.MaxPayloadLength * 2)] int length)
         {
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
             var message = new byte[length];
             FillArray(message);
@@ -68,7 +71,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     7,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent),
-                new AllowAllRelayPolicy());
+                policy.Object);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None).ContinueWith(_ => { });
 
