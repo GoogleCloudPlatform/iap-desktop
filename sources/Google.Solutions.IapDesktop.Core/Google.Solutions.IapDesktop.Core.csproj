@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientModel\Protocol\AppProtocolFactory.cs" />
     <Compile Include="ClientModel\Traits\TypeTrait.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

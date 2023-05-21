@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// </summary>
         bool IsAvailable(IProtocolTarget target);
 
-        //TODO: Extract to IProtocolSessionContextFactory?!
+        //TODO: Extract to IProtocolSessionContextFactory?
         ///// <summary>
         ///// Create a context for the given target.
         ///// </summary>

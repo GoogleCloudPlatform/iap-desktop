@@ -66,7 +66,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         // Equals.
         //---------------------------------------------------------------------
 
-
         [Test]
         public void WhenOtherHasDifferentName_ThenEqualsReturnsFalse()
         {
@@ -174,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new AllowAllPolicy(),
                 8080,
                 null,
-                "cmd.exe");
+                new AppProtocol.Command("cmd.exe", null));
 
             Assert.IsFalse(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 != protocol2);

@@ -20,9 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             ITransportPolicy policy,
             ushort remotePort,
             IPEndPoint localEndpoint,
-            string launchCommand)
+            Command launchCommand)
         {
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
@@ -78,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Optional: Command to launch after connecting transport.
         /// </summary>
-        public string LaunchCommand { get; }
+        public Command LaunchCommand { get; }
 
         //---------------------------------------------------------------------
         // IProtocol.
@@ -155,158 +153,75 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
-        // Deserialization.
+        // Inner classes.
         //---------------------------------------------------------------------
 
-        //public static AppProtocol FromJson(string json)
-        //{
-        //    var definition = NewtonsoftJsonSerializer
-        //        .Instance
-        //        .Deserialize<Definition>(json);
-
-        //}
-
-        //---------------------------------------------------------------------
-        // De/Serialization classes.
-        //---------------------------------------------------------------------
-
-        internal class ConfigurationSection
+        public class Command : IEquatable<Command>
         {
             /// <summary>
-            /// Name of the protocol. The name isn't guaranteed to be unique.
+            /// Path to the executable to be launched. 
             /// </summary>
-            [JsonProperty("name")]
-            public string Name { get; }
-
-            /// <summary>
-            /// Conditions for this protocol to be available. Can be
-            /// an expression of one or more required traits.
-            /// 
-            ///   trait1() && trait2() && trait3()
-            ///   
-            /// Currently, only the && operator is available.
-            /// </summary>
-            [JsonProperty("condition")]
-            public string Condition { get; }
-
-            /// <summary>
-            /// Remote port to connect to.
-            /// </summary>
-            [JsonProperty("remotePort")]
-            public string RemotePort { get; }
-
-            /// <summary>
-            /// Optional: Local port.
-            /// </summary>
-            [JsonProperty("localPort")]
-            public string LocalPort { get; }
-
-            /// <summary>
-            /// Optional: Command to launch. 
-            /// </summary>
-            [JsonProperty("command")]
-            public CommandSection Command { get; }
-            
-
-            internal static IEnumerable<IProtocolTargetTrait> ParseCondition(string condition)
-            {
-                if (condition == null)
-                {
-                    yield break;
-                }
-
-                var clauses = condition
-                    .Replace("&&", "\0")
-                    .Split('\0')
-                    .Select(s => s.Trim())
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .ToList();
-
-                foreach (var clause in clauses)
-                {
-                    if (InstanceTrait.TryParse(clause, out var trait))
-                    {
-                        yield return trait;
-                    }
-                    else
-                    {
-                        throw new InvalidAppProtocolException(
-                            "The condition contains an unrecognized clause: " + clause);
-                    }
-                }
-            }
-
-            internal static IPEndPoint ParseLocalPort(string localPort)
-            {
-                localPort = localPort?.Trim();
-                if (string.IsNullOrEmpty(localPort))
-                {
-                    throw new InvalidAppProtocolException("A local port is required");
-                }
-
-                var parts = localPort.Split(':');
-                if (parts.Length == 1)
-                {
-                    //
-                    // Port only.
-                    //
-                    if (ushort.TryParse(parts[0], out var port))
-                    {
-                        return new IPEndPoint(IPAddress.Loopback, port);
-                    }
-                }
-                else if (parts.Length == 2)
-                {
-                    //
-                    // IP:port.
-                    //
-                    if (IPAddress.TryParse(parts[0], out var ip) &&
-                        ushort.TryParse(parts[1], out var port))
-                    {
-                        return new IPEndPoint(ip, port);
-                    }
-                }
-
-                throw new InvalidAppProtocolException(
-                    "The local port must be a number or a IPv4/port tuple in the " +
-                    "format <ip>:<port>.");
-            }
-        }
-
-        internal class CommandSection
-        {
-            /// <summary>
-            /// Path to executable to launch. The path can contain
-            /// environment variables, for example:
-            /// 
-            ///   %ProgramFiles(x86)%\program.exe
-            ///   
-            /// </summary>
-            [JsonProperty("executable")]
             public string Executable { get; }
 
             /// <summary>
-            /// Optional: Arguments to pass to executable. They can contain
-            /// environment variables, for example:
-            /// 
-            ///   %AppData%\.myprofile
-            /// 
-            /// Additionally, the command con contain the following
-            /// placeholders:
+            /// Optional: Arguments to be passed. Arguments can contain the
+            /// following placeholders:
             /// 
             ///   %port% - contains the local port to connect to
             ///   %host% - contain the locat IP address to connect to
             ///   
             /// </summary>
-            [JsonProperty("arguments")]
             public string Arguments { get; }
-        }
-    }
 
-    public class InvalidAppProtocolException : FormatException
-    {
-        public InvalidAppProtocolException(string message) : base(message)
-        {
+            internal Command(string executable, string arguments)
+            {
+                this.Executable = executable.ExpectNotEmpty(nameof(executable));
+                this.Arguments = arguments;
+            }
+
+            public override string ToString()
+            {
+                return this.Executable +
+                    (this.Arguments == null ? string.Empty : " " + this.Arguments);
+            }
+
+            //-----------------------------------------------------------------
+            // Equality.
+            //-----------------------------------------------------------------
+
+            public bool Equals(Command other)
+            {
+                return other is Command cmd &&
+                    Equals(cmd.Executable, this.Executable) &&
+                    Equals(cmd.Arguments, this.Arguments);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as Command);
+            }
+
+            public override int GetHashCode()
+            {
+                return
+                    this.Executable.GetHashCode() ^
+                    (this.Arguments?.GetHashCode() ?? 0);
+            }
+
+            public static bool operator ==(Command obj1, Command obj2)
+            {
+                if (obj1 is null)
+                {
+                    return obj2 is null;
+                }
+
+                return obj1.Equals(obj2);
+            }
+
+            public static bool operator !=(Command obj1, Command obj2)
+            {
+                return !(obj1 == obj2);
+            }
         }
     }
 }
