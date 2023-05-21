@@ -44,7 +44,7 @@
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Cryptography\CertificateStore.cs" />
     <Compile Include="UserEnvironment.cs" />
-    <Compile Include="Net\AppProtocolRegistry.cs" />
+    <Compile Include="Net\BrowserProtocolRegistry.cs" />
     <Compile Include="Net\Browser.cs" />
     <Compile Include="Net\ChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Net\ChromeCertificateSelector.cs" />
