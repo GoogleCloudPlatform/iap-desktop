@@ -30,6 +30,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
+    /// <summary>
+    /// Custom protocol, to be used with a locally installed app.
+    /// </summary>
     public class AppProtocol : IProtocol
     {
         public AppProtocol(

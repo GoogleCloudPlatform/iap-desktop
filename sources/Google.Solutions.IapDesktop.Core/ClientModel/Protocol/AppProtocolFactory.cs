@@ -38,6 +38,21 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // Deserialization.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Read a protocol configuration from JSON.
+        /// 
+        /// Example:
+        /// 
+        /// {
+        ///     'name': 'telnet',
+        ///     'condition': 'isLinux()',
+        ///     'accessPolicy': 'AllowAll',
+        ///     'remotePort': 23,
+        ///     'command': {
+        ///         'executable': '%SystemRoot%\system32\telnet.exe'
+        ///     }
+        /// }
+        /// </summary>
         public virtual AppProtocol FromJson(string json)
         {
             try
