@@ -24,9 +24,9 @@ using Microsoft.Win32;
 namespace Google.Solutions.Platform.Net
 {
     /// <summary>
-    /// Registry for application protocols.
+    /// Registry for custom browser protocols.
     /// </summary>
-    public interface IAppProtocolRegistry
+    public interface IBrowserProtocolRegistry
     {
         /// <summary>
         /// Check if a protocol scheme has been registered.
@@ -48,7 +48,7 @@ namespace Google.Solutions.Platform.Net
         void Unregister(string scheme);
     }
 
-    public class AppProtocolRegistry : IAppProtocolRegistry
+    public class BrowserProtocolRegistry : IBrowserProtocolRegistry
     {
         private static string KeyPathFromScheme(string scheme)
             => $@"SOFTWARE\Classes\{scheme}";

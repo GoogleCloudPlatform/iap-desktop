@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("Theme")));
                 preAuthLayer.AddSingleton<IThemeService, ThemeService>();
 
-                preAuthLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
+                preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
                 preAuthLayer.AddSingleton(appSettingsRepository);
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));

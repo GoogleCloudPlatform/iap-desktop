@@ -33,11 +33,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     internal class GeneralOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
     {
-        private readonly IAppProtocolRegistry protocolRegistry;
+        private readonly IBrowserProtocolRegistry protocolRegistry;
 
         public GeneralOptionsViewModel(
             ApplicationSettingsRepository settingsRepository,
-            IAppProtocolRegistry protocolRegistry,
+            IBrowserProtocolRegistry protocolRegistry,
             HelpAdapter helpService)
             : base("General", settingsRepository)
         {

@@ -42,12 +42,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private Mock<IAppProtocolRegistry> protocolRegistryMock;
+        private Mock<IBrowserProtocolRegistry> protocolRegistryMock;
 
         [SetUp]
         public void SetUp()
         {
-            this.protocolRegistryMock = new Mock<IAppProtocolRegistry>();
+            this.protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
         }
 
         private ApplicationSettingsRepository CreateSettingsRepository(

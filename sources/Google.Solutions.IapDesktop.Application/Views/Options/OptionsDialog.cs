@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                     new GeneralOptionsSheet(),
                     new GeneralOptionsViewModel(
                         appSettingsRepository,
-                        serviceProvider.GetService<IAppProtocolRegistry>(),
+                        serviceProvider.GetService<IBrowserProtocolRegistry>(),
                         serviceProvider.GetService<HelpAdapter>()));
                 dialog.ViewModel.AddSheet(
                     new AppearanceOptionsSheet(),
