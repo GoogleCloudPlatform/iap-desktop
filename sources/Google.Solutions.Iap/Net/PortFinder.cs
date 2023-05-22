@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 
@@ -30,7 +31,7 @@ namespace Google.Solutions.Iap.Net
     /// <summary>
     /// Helper class to find unsed local TCP ports.
     /// </summary>
-    public static class PortFinder
+    internal static class PortFinder
     {
         private const int MaxAttempts = 1000;
         private const int PortRangeStart = 10000;
@@ -40,11 +41,13 @@ namespace Google.Solutions.Iap.Net
         {
             var occupiedServerPorts = IPGlobalProperties.GetIPGlobalProperties()
                 .GetActiveTcpListeners()
-                .Select(l => l.Port).ToHashSet();
+                .Select(l => l.Port)
+                .ToHashSet();
 
             var occupiedClientPorts = IPGlobalProperties.GetIPGlobalProperties()
                 .GetActiveTcpConnections()
-                .Select(c => c.LocalEndPoint.Port).ToHashSet();
+                .Select(c => c.LocalEndPoint.Port)
+                .ToHashSet();
 
             var allOccupiedPorts = new HashSet<int>(occupiedClientPorts);
             allOccupiedPorts.UnionWith(occupiedServerPorts);
@@ -79,7 +82,8 @@ namespace Google.Solutions.Iap.Net
                 }
             }
 
-            throw new SystemException("Failed to find available TCP port");
+            throw new IOException(
+                "Attempting to dynamically allocating a TCP port failed");
         }
     }
 }

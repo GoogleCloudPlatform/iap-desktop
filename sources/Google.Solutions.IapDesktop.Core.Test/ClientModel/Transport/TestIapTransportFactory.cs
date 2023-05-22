@@ -51,6 +51,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
         private static readonly TimeSpan SampleTimeout = TimeSpan.FromSeconds(10);
 
+        private static readonly IPEndPoint SampleLoopbackEndpoint
+            = new IPEndPoint(IPAddress.Loopback, 123);
+
         private static Mock<IAuthorization> CreateAuthorization()
         {
             var authz = new Mock<IAuthorization>();
@@ -74,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static IapTunnel CreateTunnel(IapTunnel.Profile profile)
         {
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
             listener.SetupGet(l => l.Statistics).Returns(new Iap.Net.NetworkStatistics());
 
             return new IapTunnel(

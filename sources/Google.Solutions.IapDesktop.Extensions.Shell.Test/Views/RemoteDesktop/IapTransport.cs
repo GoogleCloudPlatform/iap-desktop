@@ -24,7 +24,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
@@ -53,21 +52,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ICredential credential)
         {
             var policy = new AllowAllPolicy();
-            var listener = IapListener.CreateLocalListener(
+            var listener = new IapListener(
                 new IapClient(
                     credential,
                     instance,
                     3389,
                     IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
-                policy);
+                policy,
+                null);
 
             var profile = new IapTunnel.Profile(
                 RdpProtocol.Protocol,
                 policy,
                 instance,
                 3389,
-                new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
+                listener.LocalEndpoint);
 
             return new IapTransport(
                 new IapTunnel(

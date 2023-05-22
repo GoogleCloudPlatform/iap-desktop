@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using System;
@@ -37,9 +38,9 @@ namespace Google.Solutions.Iap
     public interface IIapListener
     {
         /// <summary>
-        /// Local port that the listener is bound to.
+        /// Local endpoint that the listener is bound to.
         /// </summary>
-        int LocalPort { get; }
+        IPEndPoint LocalEndpoint { get; }
 
         /// <summary>
         /// Statistics for all connections made using
@@ -72,9 +73,6 @@ namespace Google.Solutions.Iap
         private readonly ISshRelayEndpoint server;
         private readonly IapListenerPolicy policy;
         private readonly TcpListener listener;
-
-        public int LocalPort { get; }
-        public NetworkStatistics Statistics { get; } = new NetworkStatistics();
 
         public event EventHandler<ClientEventArgs> ClientConnected;
         public event EventHandler<ClientEventArgs> ClientDisconnected;
@@ -109,16 +107,29 @@ namespace Google.Solutions.Iap
         // Ctor
         //---------------------------------------------------------------------
 
-        private IapListener(
+        /// <summary>
+        /// Create a listener.
+        /// </summary>
+        public IapListener(
             ISshRelayEndpoint server,
             IapListenerPolicy policy,
-            int localPort)
+            IPEndPoint localEndpoint)
         {
-            this.server = server;
-            this.policy = policy;
-            this.LocalPort = localPort;
+            this.server = server.ExpectNotNull(nameof(server));
+            this.policy = policy.ExpectNotNull(nameof(policy));
 
-            this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, localPort));
+            if (localEndpoint == null)
+            {
+                //
+                // The caller doesn't care which endpoint is used,
+                // so allocate one dynamically.
+                //
+                localEndpoint = new IPEndPoint(
+                    IPAddress.Loopback,
+                    PortFinder.FindFreeLocalPort());
+            }
+
+            this.listener = new TcpListener(localEndpoint);
         }
 
         //---------------------------------------------------------------------
@@ -141,34 +152,12 @@ namespace Google.Solutions.Iap
         }
 
         //---------------------------------------------------------------------
-        // Publics
+        // IIapListener
         //---------------------------------------------------------------------
 
-        /// <summary>
-        ///  Create a listener using a dynamically selected, unused local port.
-        /// </summary>
-        public static IapListener CreateLocalListener(
-            ISshRelayEndpoint server,
-            IapListenerPolicy policy)
-        {
-            return CreateLocalListener(server, policy, PortFinder.FindFreeLocalPort());
-        }
+        public NetworkStatistics Statistics { get; } = new NetworkStatistics();
 
-        /// <summary>
-        ///  Create a listener using a defined local port.
-        /// </summary>
-        public static IapListener CreateLocalListener(
-            ISshRelayEndpoint server,
-            IapListenerPolicy policy,
-            int port)
-        {
-            if (port < 0 || port > ushort.MaxValue)
-            {
-                throw new ArgumentException("port");
-            }
-
-            return new IapListener(server, policy, port);
-        }
+        public IPEndPoint LocalEndpoint => (IPEndPoint)this.listener.LocalEndpoint;
 
         public Task ListenAsync(CancellationToken token)
         {

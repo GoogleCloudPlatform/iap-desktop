@@ -45,23 +45,23 @@ namespace Google.Solutions.Iap.Test.Protocol
             var policy = new Mock<IapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
-            var listener = IapListener.CreateLocalListener(
+            var listener = new IapListener(
                 new IapClient(
                     credential,
                     vmRef,
                     80,
                     IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
-                policy.Object);
+                policy.Object,
+                null);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None);
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
+            socket.Connect(listener.LocalEndpoint);
 
             return new SocketStream(socket, new NetworkStatistics());
         }
-
 
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
