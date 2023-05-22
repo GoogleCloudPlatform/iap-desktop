@@ -100,87 +100,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         internal static async Task<ITransport> CreateVpcTransportAsync(
             IDirectTransportFactory transportFactory,
             IProtocol protocol,
-            IComputeEngineAdapter computeEngineAdapter,
+            IAddressResolver addressResolver,
             InstanceLocator targetInstance,
             ushort targetPort,
             CancellationToken cancellationToken)
         {
-            computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            addressResolver.ExpectNotNull(nameof(addressResolver));
             transportFactory.ExpectNotNull(nameof(transportFactory));
             protocol.ExpectNotNull(nameof(protocol));
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
-            try
-            {
-                var instance = await computeEngineAdapter
-                    .GetInstanceAsync(targetInstance, cancellationToken)
-                    .ConfigureAwait(false);
+            var internalAddress = await addressResolver
+                .GetAddressAsync(
+                    targetInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    cancellationToken)
+                .ConfigureAwait(false);
 
-                var internalAddress = instance.PrimaryInternalAddress();
-                if (internalAddress == null)
-                {
-                    throw new TransportFailedException(
-                        "The VM instance doesn't have a suitable internal IPv4 address",
-                        HelpTopics.LocateInstanceIpAddress);
-                }
-
-                return await transportFactory
-                    .CreateTransportAsync(
-                        protocol,
-                        new IPEndPoint(internalAddress, targetPort),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-            }
-            catch (AdapterException e)
-            {
-                throw new TransportFailedException(
-                    "Looking up the internal IPv4 address failed because the " +
-                    "instance doesn't exist or is inaccessible",
-                    (e as IExceptionWithHelpTopic)?.Help ?? HelpTopics.LocateInstanceIpAddress);
-            }
+            return await transportFactory
+                .CreateTransportAsync(
+                    protocol,
+                    new IPEndPoint(internalAddress, targetPort),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
         internal static async Task<ITransport> CreatePublicTransportForTestingOnly(
             IDirectTransportFactory transportFactory,
             IProtocol protocol,
-            IComputeEngineAdapter computeEngineAdapter,
+            IAddressResolver addressResolver,
             InstanceLocator targetInstance,
             ushort targetPort,
             CancellationToken cancellationToken)
         {
-            computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            addressResolver.ExpectNotNull(nameof(addressResolver));
             transportFactory.ExpectNotNull(nameof(transportFactory));
             protocol.ExpectNotNull(nameof(protocol));
             targetInstance.ExpectNotNull(nameof(targetInstance));
 
-            try
-            {
-                var instance = await computeEngineAdapter
-                    .GetInstanceAsync(targetInstance, cancellationToken)
-                    .ConfigureAwait(false);
+            var publicAddress = await addressResolver
+                .GetAddressAsync(
+                    targetInstance,
+                    NetworkInterfaceType.External,
+                    cancellationToken)
+                .ConfigureAwait(false);
 
-                var publicAddress = instance.PublicAddress();
-                if (publicAddress == null)
-                {
-                    throw new TransportFailedException(
-                        "The VM instance doesn't have a suitable public IPv4 address",
-                        HelpTopics.LocateInstanceIpAddress);
-                }
-
-                return await transportFactory
-                    .CreateTransportAsync(
-                        protocol,
-                        new IPEndPoint(publicAddress, targetPort),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-            }
-            catch (AdapterException e)
-            {
-                throw new TransportFailedException(
-                    "Looking up the public IPv4 address failed because the " +
-                    "instance doesn't exist or is inaccessible",
-                    (e as IExceptionWithHelpTopic)?.Help ?? HelpTopics.LocateInstanceIpAddress);
-            }
+            return await transportFactory
+                .CreateTransportAsync(
+                    protocol,
+                    new IPEndPoint(publicAddress, targetPort),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
         }
     }
 }

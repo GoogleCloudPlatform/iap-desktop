@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
                 keyAuthService.Object,
-                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 key);
 
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
-                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
@@ -126,21 +126,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         [Test]
         public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
         {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            computeEngineAdapter
-                .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Instance()
-                {
-                    NetworkInterfaces = new[]
-                    {
-                        new NetworkInterface()
-                        {
-                            Name = "nic0",
-                            StackType = "IPV4_ONLY",
-                            NetworkIP = "20.21.22.23"
-                        }
-                    }
-                });
+            var addressResolver = new Mock<IAddressResolver>();
+            addressResolver.Setup(
+                r => r.GetAddressAsync(
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(IPAddress.Parse("20.21.22.23"));
 
             var transport = new Mock<ITransport>();
             var factory = new Mock<IDirectTransportFactory>();
@@ -155,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
                 new Mock<IKeyAuthorizationService>().Object,
-                computeEngineAdapter.Object,
+                addressResolver.Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);
             context.Parameters.TransportType = SessionTransportType.Vpc;

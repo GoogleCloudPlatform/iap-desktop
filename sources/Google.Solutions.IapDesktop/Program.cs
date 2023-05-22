@@ -464,6 +464,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 mainLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
+                mainLayer.AddTransient<IAddressResolver, AddressResolver>();
 
                 mainLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
                 mainLayer.AddSingleton<IJobService, JobService>();

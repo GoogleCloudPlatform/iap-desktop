@@ -80,7 +80,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .CreatePublicTransportForTestingOnly(
                     new DirectTransportFactory(),
                     SshProtocol.Protocol,
-                    new ComputeEngineAdapter(authorization, TestProject.UserAgent),
+                    new AddressResolver(new ComputeEngineAdapter(
+                        authorization, 
+                        TestProject.UserAgent)),
                     instanceLocator,
                     port,
                     CancellationToken.None)
