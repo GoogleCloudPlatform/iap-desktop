@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Data
+namespace Google.Solutions.Apis.Compute
 {
     public static class Permissions
     {

@@ -23,8 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
@@ -35,7 +33,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]

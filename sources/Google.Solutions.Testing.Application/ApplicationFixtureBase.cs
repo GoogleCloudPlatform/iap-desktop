@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis;
 using Google.Solutions.Common;
 using Google.Solutions.Iap;
 using Google.Solutions.IapDesktop.Application;
@@ -36,7 +37,7 @@ namespace Google.Solutions.Testing.Application.Test
             {
                 CommonTraceSources.Default,
                 IapTraceSources.Default,
-                ApplicationTraceSources.Default
+                ApiTraceSources.Default
             });
     }
 }
