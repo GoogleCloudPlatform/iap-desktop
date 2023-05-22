@@ -34,7 +34,7 @@ namespace Google.Solutions.Iap.Protocol
     /// <summary>
     /// NetworkStream for reading/writing from a SshRelaySession.
     /// </summary>
-    public class SshRelayStream : SingleReaderSingleWriterStream
+    internal class SshRelayStream : SingleReaderSingleWriterStream
     {
         private readonly SshRelaySession session;
 

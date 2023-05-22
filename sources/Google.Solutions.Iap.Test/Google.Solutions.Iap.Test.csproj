@@ -79,7 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IapFixtureBase.cs" />
-    <Compile Include="Protocol\InitializeScripts.cs" />
+    <Compile Include="InitializeScripts.cs" />
     <Compile Include="Protocol\Mocks.cs" />
     <Compile Include="Util\WebSocketServerExtensions.cs" />
     <Compile Include="Protocol\TestEchoOverIapBase.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="Protocol\TestHttpOverIapTunnelBase.cs" />
     <Compile Include="Protocol\TestHttpOverIapIndirectTunnel.cs" />
     <Compile Include="Protocol\TestSshRelayFormat.cs" />
-    <Compile Include="Protocol\TestSshRelayListener.cs" />
+    <Compile Include="TestIapListener.cs" />
     <Compile Include="Protocol\TestSshRelayStream.Probing.cs" />
     <Compile Include="Protocol\TestSshRelayStream.Reading.cs" />
     <Compile Include="Protocol\TestHttpOverIapDirectTunnel.cs" />

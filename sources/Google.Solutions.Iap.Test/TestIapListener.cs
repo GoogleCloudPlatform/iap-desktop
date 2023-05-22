@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Sockets;
@@ -32,11 +33,11 @@ using System.Threading.Tasks;
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-namespace Google.Solutions.Iap.Test.Protocol
+namespace Google.Solutions.Iap.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshRelayListener : IapFixtureBase
+    public class TestIapListener : IapFixtureBase
     {
         private static void FillArray(byte[] array)
         {
@@ -55,27 +56,29 @@ namespace Google.Solutions.Iap.Test.Protocol
                 (int)SshRelayFormat.Data.MaxPayloadLength,
                 (int)SshRelayFormat.Data.MaxPayloadLength * 2)] int length)
         {
+            var policy = new Mock<IapListenerPolicy>();
+            policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
             var message = new byte[length];
             FillArray(message);
 
             var locator = await vm;
 
-            var listener = SshRelayListener.CreateLocalListener(
-                new IapTunnelingEndpoint(
+            var listener = IapListener.CreateLocalListener(
+                new IapClient(
                     await credential,
                     await vm,
                     7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
-                new AllowAllRelayPolicy());
+                policy.Object);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None).ContinueWith(_ => { });
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
-            var clientStreamStats = new ConnectionStatistics();
+            var clientStreamStats = new NetworkStatistics();
             var clientStream = new SocketStream(socket, clientStreamStats);
 
             using (var tokenSource = new CancellationTokenSource())

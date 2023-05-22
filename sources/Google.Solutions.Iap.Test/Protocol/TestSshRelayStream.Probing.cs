@@ -40,14 +40,14 @@ namespace Google.Solutions.Iap.Test.Protocol
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     await credential,
                     new InstanceLocator(
                         "invalid",
                         TestProject.Zone,
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
@@ -60,14 +60,14 @@ namespace Google.Solutions.Iap.Test.Protocol
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
-               new IapTunnelingEndpoint(
+               new IapClient(
                     await credential,
                     new InstanceLocator(
                         TestProject.ProjectId,
                         "invalid",
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
@@ -80,14 +80,14 @@ namespace Google.Solutions.Iap.Test.Protocol
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     await credential,
                     new InstanceLocator(
                         TestProject.ProjectId,
                         TestProject.Zone,
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
@@ -101,11 +101,11 @@ namespace Google.Solutions.Iap.Test.Protocol
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     await credential,
                     await testInstance,
                     3389,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
                 await stream
@@ -120,11 +120,11 @@ namespace Google.Solutions.Iap.Test.Protocol
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     await credential,
                     await testInstance,
                     22,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
                 ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>

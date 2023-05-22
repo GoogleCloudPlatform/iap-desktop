@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Sockets;
@@ -41,21 +42,24 @@ namespace Google.Solutions.Iap.Test.Protocol
             InstanceLocator vmRef,
             ICredential credential)
         {
-            var listener = SshRelayListener.CreateLocalListener(
-                new IapTunnelingEndpoint(
+            var policy = new Mock<IapListenerPolicy>();
+            policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
+
+            var listener = IapListener.CreateLocalListener(
+                new IapClient(
                     credential,
                     vmRef,
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
-                new AllowAllRelayPolicy());
+                policy.Object);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None);
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
-            return new SocketStream(socket, new ConnectionStatistics());
+            return new SocketStream(socket, new NetworkStatistics());
         }
 
 

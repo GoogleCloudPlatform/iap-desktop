@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Iap.Protocol
+namespace Google.Solutions.Iap
 {
     /// <summary>
-    /// Cloud IAP endpoint for establishing SSH Relay tunnels.
+    /// IAP client for connecting to instances.
     /// </summary>
-    public class IapTunnelingEndpoint : ISshRelayEndpoint
+    public class IapClient : ISshRelayEndpoint
     {
         private const string TlsBaseUri = "wss://tunnel.cloudproxy.app/v4/";
         private const string MtlsBaseUri = "wss://mtls.tunnel.cloudproxy.app/v4/";
@@ -162,7 +163,7 @@ namespace Google.Solutions.Iap.Protocol
         // Publics.
         //---------------------------------------------------------------------
 
-        public IapTunnelingEndpoint(
+        public IapClient(
             ICredential credential,
             InstanceLocator vmInstance,
             ushort port,
@@ -178,7 +179,7 @@ namespace Google.Solutions.Iap.Protocol
             this.clientCertificate = clientCertificate;
         }
 
-        public IapTunnelingEndpoint(
+        public IapClient(
             ICredential credential,
             InstanceLocator vmInstance,
             ushort port,
@@ -186,6 +187,24 @@ namespace Google.Solutions.Iap.Protocol
             UserAgent userAgent)
             : this(credential, vmInstance, port, nic, userAgent, null)
         { }
+
+        /// <summary>
+        /// Perform a probe to check whether the instance can be reached,
+        /// and whether access is permitted.
+        /// </summary>
+        public async Task ProbeAsync(TimeSpan timeout)
+        {
+            using (var stream = new SshRelayStream(this))
+            {
+                await stream
+                    .ProbeConnectionAsync(timeout)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ISshRelayEndpoint.
+        //---------------------------------------------------------------------
 
         public Task<INetworkStream> ConnectAsync(CancellationToken token)
         {

@@ -38,11 +38,11 @@ namespace Google.Solutions.Iap.Test.Protocol
             ICredential credential)
         {
             return new SshRelayStream(
-                new IapTunnelingEndpoint(
+                new IapClient(
                     credential,
                     vmRef,
                     7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent));
         }
 

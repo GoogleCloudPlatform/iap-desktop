@@ -21,28 +21,31 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Protocol;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Iap.Protocol
+namespace Google.Solutions.Iap
 {
     /// <summary>
-    /// Opens a TCP local socket and relays all sent data to an
-    /// SSH Relay tunnel (and vice versa). The local socket effectively
-    /// serves as a "proxy" for the target port of the SSH Relay tunnel.
+    /// Opens a local TCP socket and forwards connection to an IAP client,
+    /// effectively acting as a port forwarder.
     /// </summary>
-    public interface ISshRelayListener
+    public interface IIapListener
     {
+        /// <summary>
+        /// Local port that the listener is bound to.
+        /// </summary>
         int LocalPort { get; }
 
         /// <summary>
         /// Statistics for all connections made using
         /// this listener.
         /// </summary>
-        ConnectionStatistics Statistics { get; }
+        NetworkStatistics Statistics { get; }
 
         /// <summary>
         /// Perpetually listen and relay traffic until cancelled.
@@ -50,16 +53,28 @@ namespace Google.Solutions.Iap.Protocol
         Task ListenAsync(CancellationToken token);
     }
 
-    public class SshRelayListener : ISshRelayListener
+    /// <summary>
+    /// Policy that determines which clients can connect to
+    /// a listener.
+    /// </summary>
+    public interface IapListenerPolicy
+    {
+        /// <summary>
+        /// Decide whether a remote client should be allowed access.
+        /// </summary>
+        bool IsClientAllowed(IPEndPoint remote);
+    }
+
+    public class IapListener : IIapListener
     {
         private const int BacklogLength = 32;
 
         private readonly ISshRelayEndpoint server;
-        private readonly ISshRelayPolicy policy;
+        private readonly IapListenerPolicy policy;
         private readonly TcpListener listener;
 
         public int LocalPort { get; }
-        public ConnectionStatistics Statistics { get; } = new ConnectionStatistics();
+        public NetworkStatistics Statistics { get; } = new NetworkStatistics();
 
         public event EventHandler<ClientEventArgs> ClientConnected;
         public event EventHandler<ClientEventArgs> ClientDisconnected;
@@ -94,9 +109,9 @@ namespace Google.Solutions.Iap.Protocol
         // Ctor
         //---------------------------------------------------------------------
 
-        private SshRelayListener(
+        private IapListener(
             ISshRelayEndpoint server,
-            ISshRelayPolicy policy,
+            IapListenerPolicy policy,
             int localPort)
         {
             this.server = server;
@@ -132,9 +147,9 @@ namespace Google.Solutions.Iap.Protocol
         /// <summary>
         ///  Create a listener using a dynamically selected, unused local port.
         /// </summary>
-        public static SshRelayListener CreateLocalListener(
+        public static IapListener CreateLocalListener(
             ISshRelayEndpoint server,
-            ISshRelayPolicy policy)
+            IapListenerPolicy policy)
         {
             return CreateLocalListener(server, policy, PortFinder.FindFreeLocalPort());
         }
@@ -142,9 +157,9 @@ namespace Google.Solutions.Iap.Protocol
         /// <summary>
         ///  Create a listener using a defined local port.
         /// </summary>
-        public static SshRelayListener CreateLocalListener(
+        public static IapListener CreateLocalListener(
             ISshRelayEndpoint server,
-            ISshRelayPolicy policy,
+            IapListenerPolicy policy,
             int port)
         {
             if (port < 0 || port > ushort.MaxValue)
@@ -152,7 +167,7 @@ namespace Google.Solutions.Iap.Protocol
                 throw new ArgumentException("port");
             }
 
-            return new SshRelayListener(server, policy, port);
+            return new IapListener(server, policy, port);
         }
 
         public Task ListenAsync(CancellationToken token)

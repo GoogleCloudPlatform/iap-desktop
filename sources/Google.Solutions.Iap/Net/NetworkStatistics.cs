@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,15 +19,26 @@
 // under the License.
 //
 
-using System.Net;
+using System.Threading;
 
-namespace Google.Solutions.Iap.Protocol
+namespace Google.Solutions.Iap.Net
 {
-    public interface ISshRelayPolicy
+    public class NetworkStatistics
     {
-        /// <summary>
-        /// Decide whether a remote client should be allowed access.
-        /// </summary>
-        bool IsClientAllowed(IPEndPoint remote);
+        private long bytesReceived = 0;
+        private long bytesTransmitted = 0;
+
+        public ulong BytesReceived => (ulong)Interlocked.Read(ref this.bytesReceived);
+        public ulong BytesTransmitted => (ulong)Interlocked.Read(ref this.bytesTransmitted);
+
+        public void OnReceiveCompleted(int bytesReceived)
+        {
+            Interlocked.Add(ref this.bytesReceived, bytesReceived);
+        }
+
+        public void OnTransmitCompleted(int bytesTransmitted)
+        {
+            Interlocked.Add(ref this.bytesTransmitted, bytesTransmitted);
+        }
     }
 }

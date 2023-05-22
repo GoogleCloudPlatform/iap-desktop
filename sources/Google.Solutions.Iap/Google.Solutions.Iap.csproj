@@ -61,22 +61,20 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Protocol\ISshRelayPolicy.cs" />
-    <Compile Include="Protocol\AllowAllRelayPolicy.cs" />
     <Compile Include="Protocol\SshRelaySession.cs" />
     <Compile Include="Protocol\SshRelayFormat.cs" />
     <Compile Include="Protocol\SshRelayStream.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
-    <Compile Include="Net\ConnectionStatistics.cs" />
+    <Compile Include="Net\NetworkStatistics.cs" />
     <Compile Include="IapTraceSources.cs" />
-    <Compile Include="Protocol\IapTunnelingEndpoint.cs" />
+    <Compile Include="IapClient.cs" />
     <Compile Include="Net\INetworkStream.cs" />
     <Compile Include="Protocol\SshRelayConstants.cs" />
     <Compile Include="Net\NetworkStream.cs" />
     <Compile Include="Net\OneTimeUseStream.cs" />
     <Compile Include="Net\SingleReaderSingleWriterStream.cs" />
     <Compile Include="Net\SocketStream.cs" />
-    <Compile Include="Protocol\SshRelayListener.cs" />
+    <Compile Include="IapListener.cs" />
     <Compile Include="Net\WebSocketStream.cs" />
     <Compile Include="Net\PortFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
