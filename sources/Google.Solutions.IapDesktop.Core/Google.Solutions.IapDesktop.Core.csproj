@@ -72,9 +72,6 @@
     <Compile Include="ClientModel\Transport\Policies\AllowAllPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\CurrentProcessPolicy.cs" />
     <Compile Include="CoreTraceSources.cs" />
-    <Compile Include="Auth\IAuthorization.cs" />
-    <Compile Include="Auth\IDeviceEnrollment.cs" />
-    <Compile Include="Auth\UserInfo.cs" />
     <Compile Include="Diagnostics\IHelpTopic.cs" />
     <Compile Include="ClientModel\Transport\IapTunnel.cs" />
     <Compile Include="ClientModel\Transport\TransportFailedException.cs" />

@@ -21,7 +21,7 @@
 
 using Newtonsoft.Json;
 
-namespace Google.Solutions.IapDesktop.Core.Auth
+namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
     /// OIDC user info.

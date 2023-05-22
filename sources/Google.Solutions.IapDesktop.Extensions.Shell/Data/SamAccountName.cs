@@ -19,8 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Auth;
-using Google.Solutions.IapDesktop.Core.Auth;
+using Google.Solutions.Apis.Auth;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Data

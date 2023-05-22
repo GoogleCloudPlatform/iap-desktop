@@ -20,9 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Testing.Common.Integration;
 using System;
 using System.Security.Cryptography.X509Certificates;

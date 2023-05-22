@@ -21,11 +21,11 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
-using Google.Solutions.IapDesktop.Core.Auth;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {

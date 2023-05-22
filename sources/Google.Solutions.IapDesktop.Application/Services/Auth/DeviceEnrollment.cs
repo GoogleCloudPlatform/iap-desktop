@@ -19,9 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Net;
 using System;

@@ -20,9 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Moq;

@@ -21,7 +21,7 @@
 
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Core.Auth
+namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
     /// Enrollment information for the current device. Device enrollment
