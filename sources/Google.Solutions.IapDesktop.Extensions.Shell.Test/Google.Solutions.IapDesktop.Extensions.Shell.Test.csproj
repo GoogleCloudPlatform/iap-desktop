@@ -220,6 +220,10 @@
       <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>
       <Name>Google.Solutions.Mvvm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj">
+      <Project>{a74d041e-639f-4c53-a0c4-f8f936a980c8}</Project>
+      <Name>Google.Solutions.Platform</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj">
       <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
       <Name>Google.Solutions.Ssh</Name>

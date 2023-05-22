@@ -58,6 +58,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Platform.Security;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             registry.AddMock<IConfirmationDialog>();
             registry.AddMock<IOperationProgressDialog>();
             registry.AddMock<IDownloadFileDialog>();
-            registry.AddMock<IQuarantineAdapter>();
+            registry.AddMock<IQuarantine>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();

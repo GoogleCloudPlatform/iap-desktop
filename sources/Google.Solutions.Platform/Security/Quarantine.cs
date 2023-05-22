@@ -27,34 +27,62 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Mvvm.Shell
+namespace Google.Solutions.Platform.Security
 {
     /// <summary>
-    /// Helper class for scanning, quarantining, and marking downloaded 
-    /// files with a MOTW (mark of the web).
+    /// Windows Defender wrapper for scanning, quarantining, 
+    /// and marking downloaded files with a MOTW (mark of the web).
     /// 
     /// For details, see Chromium source: /content/browser/download/quarantine_win.cc
     /// </summary>
-    public static class Quarantine
+    public interface IQuarantine
     {
-        private const uint E_FAILED = unchecked(0x80004005);
-        private const uint INET_E_SECURITY_PROBLEM = unchecked(0x800c000e);
-
-        public static readonly Uri DefaultSource = new Uri("about:internet");
+        /// <summary>
+        /// Scan a file and apply a mark-of-the-web that indicates which zone
+        /// (for ex, internet) the file originated from.
+        /// </summary>
+        Task ScanAsync(
+            IntPtr owner,
+            FileInfo filePath);
 
         /// <summary>
         /// Scan a file and apply a mark-of-the-web that indicates which zone
         /// (for ex, internet) the file originated from.
         /// </summary>
-        /// <returns></returns>
-        public static Task ScanAsync(
+        Task ScanAsync(
+            IntPtr owner,
+            FileInfo filePath,
+            Uri source,
+            Guid clientGuid);
+    }
+
+    public class Quarantine : IQuarantine
+    {
+        private const uint E_FAILED = unchecked(0x80004005);
+        private const uint INET_E_SECURITY_PROBLEM = unchecked(0x800c000e);
+
+        public static readonly Guid DefaultClientGuid =
+            new Guid("79ab36ca-bdae-4c10-86ac-a0025a9c0a2d");
+        public static readonly Uri DefaultSource = new Uri("about:internet");
+
+        public Task ScanAsync(
+            IntPtr owner,
+            FileInfo filePath)
+        {
+            return ScanAsync(
+                owner,
+                filePath,
+                DefaultSource,
+                DefaultClientGuid);
+        }
+
+        public Task ScanAsync(
             IntPtr owner,
             FileInfo filePath,
             Uri source,
             Guid clientGuid)
         {
             filePath.ExpectNotNull(nameof(filePath));
-            source.ExpectNotNull(nameof(source));
 
             Debug.Assert(source == null ||
                 source == DefaultSource ||

@@ -19,14 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Mvvm.Test.Shell
+namespace Google.Solutions.Platform.Security
 {
     [TestFixture]
     public class TestQuarantine
@@ -47,11 +46,31 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
 
-            await Quarantine.ScanAsync(
+            await new Quarantine()
+                .ScanAsync(
                     IntPtr.Zero,
                     new FileInfo(filePath),
                     new Uri("https://example.com/"),
-                    Guid.Empty)
+                    Quarantine.DefaultClientGuid)
+                .ConfigureAwait(true);
+
+            var zone = await Quarantine
+                .GetZoneAsync(filePath)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(Quarantine.Zone.Internet, zone);
+        }
+
+        [Test]
+        public async Task WhenFileOriginatesFromUnknownSource_ThenScanAppliesMotw()
+        {
+            var filePath = Path.GetTempFileName();
+            File.WriteAllText(filePath, "test");
+
+            await new Quarantine()
+                .ScanAsync(
+                    IntPtr.Zero,
+                    new FileInfo(filePath))
                 .ConfigureAwait(true);
 
             var zone = await Quarantine
@@ -67,11 +86,12 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
 
-            await Quarantine.ScanAsync(
+            await new Quarantine()
+                .ScanAsync(
                     IntPtr.Zero,
                     new FileInfo(filePath),
                     new Uri(@"c:\some\local\file\path.txt"),
-                    Guid.Empty)
+                    Quarantine.DefaultClientGuid)
                 .ConfigureAwait(true);
 
             var zone = await Quarantine
@@ -88,7 +108,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             File.WriteAllText(filePath, Eicar);
 
             ExceptionAssert.ThrowsAggregateException<QuarantineException>(
-                () => Quarantine.ScanAsync(
+                () => new Quarantine().ScanAsync(
                     IntPtr.Zero,
                     new FileInfo(filePath),
                     new Uri(@"c:\some\local\file\path.txt"),

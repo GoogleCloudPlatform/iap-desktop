@@ -26,7 +26,7 @@ using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.Apis.Client
 {
-    public class AuthorizedClientInitializer : BaseClientService.Initializer //TODO: make internals (other classes in namespace too)
+    public class AuthorizedClientInitializer : BaseClientService.Initializer
     {
         private ICredential object1;
         private IDeviceEnrollment object2;

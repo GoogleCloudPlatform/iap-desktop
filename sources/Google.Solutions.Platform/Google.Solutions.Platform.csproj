@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Cryptography\CertificateStore.cs" />
+    <Compile Include="Security\Quarantine.cs" />
     <Compile Include="UserEnvironment.cs" />
     <Compile Include="Net\BrowserProtocolRegistry.cs" />
     <Compile Include="Net\Browser.cs" />

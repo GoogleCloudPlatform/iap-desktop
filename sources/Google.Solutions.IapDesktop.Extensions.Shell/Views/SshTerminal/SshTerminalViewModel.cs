@@ -36,6 +36,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
@@ -63,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IOperationProgressDialog operationProgressDialog;
         private readonly IDownloadFileDialog downloadFileDialog;
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IQuarantineAdapter quarantineAdapter;
+        private readonly IQuarantine  quarantine;
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
@@ -79,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IOperationProgressDialog operationProgressDialog,
             IDownloadFileDialog downloadFileDialog,
             IExceptionDialog exceptionDialog,
-            IQuarantineAdapter quarantineAdapter)
+            IQuarantine quarantineAdapter)
             : base(eventService)
         {
             this.jobService = jobService;
@@ -88,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.operationProgressDialog = operationProgressDialog;
             this.downloadFileDialog = downloadFileDialog;
             this.exceptionDialog = exceptionDialog;
-            this.quarantineAdapter = quarantineAdapter;
+            this.quarantine = quarantineAdapter;
         }
 
         //---------------------------------------------------------------------
@@ -458,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                                     // Don't block downloads while scanning take place, and don't
                                     // abort pending downloads when scanning fails.
                                     //
-                                    quarantineTasks.Add(this.quarantineAdapter.ScanAsync(
+                                    quarantineTasks.Add(this.quarantine.ScanAsync(
                                         IntPtr.Zero, // Can't use window handle on this thread.
                                         targetFile));
 
