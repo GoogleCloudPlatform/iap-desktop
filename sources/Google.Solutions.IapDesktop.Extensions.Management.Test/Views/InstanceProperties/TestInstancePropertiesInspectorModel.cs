@@ -46,7 +46,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var gceAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var model = await InstancePropertiesInspectorModel
                 .LoadAsync(
                     await testInstance,
@@ -77,7 +80,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var gceAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var inventoryService = new Mock<IInventoryService>();
             inventoryService.Setup(s => s.GetInstanceInventoryAsync(
                     It.IsAny<InstanceLocator>(),

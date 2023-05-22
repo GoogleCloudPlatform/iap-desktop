@@ -23,6 +23,7 @@ using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -77,11 +78,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginAdapter(IAuthorization authorization)
+        public OsLoginAdapter(
+            IAuthorization authorization,
+            UserAgent userAgent)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            userAgent.ExpectNotNull(nameof(userAgent));
+
             this.service = new CloudOSLoginService(
-                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
+                new AuthorizedClientInitializer(
+                    authorization,
+                    userAgent,
+                    MtlsBaseUri));
         }
 
         //---------------------------------------------------------------------

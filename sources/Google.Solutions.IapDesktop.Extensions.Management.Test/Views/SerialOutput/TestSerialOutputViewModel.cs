@@ -77,7 +77,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
             var serviceProvider = new ServiceRegistry();
             serviceProvider.AddSingleton<IJobService, MockJobService>();
             serviceProvider.AddSingleton<IComputeEngineAdapter>(
-                new ComputeEngineAdapter(credential.ToAuthorization()));
+                new ComputeEngineAdapter(
+                    credential.ToAuthorization(),
+                    TestProject.UserAgent));
 
             return new SerialOutputViewModel(serviceProvider)
             {

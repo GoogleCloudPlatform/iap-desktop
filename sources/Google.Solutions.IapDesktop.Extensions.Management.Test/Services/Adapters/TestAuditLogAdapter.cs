@@ -62,7 +62,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
-            var adapter = new AuditLogAdapter(await credential.ToAuthorization());
+            var adapter = new AuditLogAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -111,7 +114,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
             await testInstance;
             var instanceRef = await testInstance;
 
-            var adapter = new AuditLogAdapter(await credential.ToAuthorization());
+            var adapter = new AuditLogAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ProcessInstanceEventsAsync(
@@ -145,7 +150,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
                 OrderBy = "timestamp desc"
             };
 
-            var adapter = new AuditLogAdapter(await credential.ToAuthorization());
+            var adapter = new AuditLogAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.ListEventsAsync(
                     request,

@@ -22,24 +22,37 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Apis.Client
 {
-    public class AuthorizedClientInitializer : BaseClientService.Initializer
+    public class AuthorizedClientInitializer : BaseClientService.Initializer //TODO: make internals (other classes in namespace too)
     {
+        private ICredential object1;
+        private IDeviceEnrollment object2;
+        private object mtlsBaseUri;
+
         public AuthorizedClientInitializer(
             IAuthorization authorization,
+            UserAgent userAgent,
             string mtlsBaseUrl)
-            : this(authorization.Credential, authorization.DeviceEnrollment, mtlsBaseUrl)
+            : this(authorization.Credential, 
+                  authorization.DeviceEnrollment,
+                  userAgent,
+                  mtlsBaseUrl)
         { }
+
+        public AuthorizedClientInitializer(ICredential object1, IDeviceEnrollment object2, object mtlsBaseUri)
+        {
+            this.object1 = object1;
+            this.object2 = object2;
+            this.mtlsBaseUri = mtlsBaseUri;
+        }
 
         public AuthorizedClientInitializer(
             ICredential credential,
             IDeviceEnrollment deviceEnrollment,
+            UserAgent userAgent,
             string mtlsBaseUrl)
         {
             Precondition.ExpectNotNull(credential, nameof(credential));
@@ -47,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Precondition.ExpectNotNull(mtlsBaseUrl, nameof(mtlsBaseUrl));
 
             this.HttpClientInitializer = credential;
-            this.ApplicationName = Install.UserAgent.ToApplicationName();
+            this.ApplicationName = userAgent.ToApplicationName();
 
             if (deviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
                 deviceEnrollment.Certificate != null)

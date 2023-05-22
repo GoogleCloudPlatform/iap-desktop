@@ -64,6 +64,7 @@
     <Compile Include="Auth\IAuthorization.cs" />
     <Compile Include="Auth\IDeviceEnrollment.cs" />
     <Compile Include="Auth\UserInfo.cs" />
+    <Compile Include="Client\AuthorizedClientInitializer.cs" />
     <Compile Include="Client\ClientServiceMtlsExtensions.cs" />
     <Compile Include="Client\HttpClientHandlerExtensions.cs" />
     <Compile Include="Client\RestClient.cs" />

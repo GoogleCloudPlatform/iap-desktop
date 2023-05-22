@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             authz.SetupGet(a => a.Email).Returns(email);
             authz.SetupGet(a => a.Credential).Returns(TestProject.GetAdminCredential());
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
-            return new OsLoginAdapter(authz.Object);
+            return new OsLoginAdapter(authz.Object, TestProject.UserAgent);
         }
 
         private OsLoginAdapter CreateAdapter(TemporaryServiceCredential credential)
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             authz.SetupGet(a => a.Credential).Returns(credential);
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
 
-            return new OsLoginAdapter(authz.Object);
+            return new OsLoginAdapter(authz.Object, TestProject.UserAgent);
         }
 
         //---------------------------------------------------------------------

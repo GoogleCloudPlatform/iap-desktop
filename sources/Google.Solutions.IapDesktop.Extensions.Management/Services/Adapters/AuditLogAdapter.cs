@@ -67,12 +67,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 
         private readonly LoggingService service;
 
-        public AuditLogAdapter(IAuthorization authorization)
+        public AuditLogAdapter(
+            IAuthorization authorization,
+            UserAgent userAgent)
         {
             authorization.ExpectNotNull(nameof(authorization));
+            userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new LoggingService(
-                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
+                new AuthorizedClientInitializer(
+                    authorization,
+                    userAgent, 
+                    MtlsBaseUri));
         }
 
         internal async Task ListEventsAsync(

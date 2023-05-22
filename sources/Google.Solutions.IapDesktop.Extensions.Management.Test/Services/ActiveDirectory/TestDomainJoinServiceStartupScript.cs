@@ -58,7 +58,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask.ToAuthorization());
+                var computeEngineAdapter = new ComputeEngineAdapter(
+                    await credentialTask.ToAuthorization(),
+                    TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
@@ -96,7 +98,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask.ToAuthorization());
+                var computeEngineAdapter = new ComputeEngineAdapter(
+                    await credentialTask.ToAuthorization(),
+                    TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,

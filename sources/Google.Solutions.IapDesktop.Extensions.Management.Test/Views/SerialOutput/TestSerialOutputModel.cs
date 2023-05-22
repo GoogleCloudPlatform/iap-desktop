@@ -49,10 +49,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         {
             await testInstance;
 
+            var adapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var model = await SerialOutputModel
                 .LoadAsync(
                     "display-name",
-                    new ComputeEngineAdapter(await credential.ToAuthorization()),
+                    adapter,
                     await testInstance,
                     ConsolePort,
                     CancellationToken.None)

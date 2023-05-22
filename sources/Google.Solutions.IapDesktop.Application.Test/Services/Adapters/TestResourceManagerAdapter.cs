@@ -42,7 +42,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var result = await adapter.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
                     Permissions.ComputeInstancesGet,
@@ -60,7 +62,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var result = await adapter.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
                     "compute.disks.create",
@@ -78,7 +82,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var project = await adapter.GetProjectAsync(
                     TestProject.ProjectId,
                     CancellationToken.None)
@@ -92,7 +98,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetProjectAsync(
                     TestProject.ProjectId,
@@ -103,7 +111,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenProjectIdInvalid_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetProjectAsync(
                     "invalid",
@@ -118,7 +128,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenProjectIdExists_ThenQueryProjectsByIdReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var result = await adapter.ListProjectsAsync(
                     ProjectFilter.ByProjectId(TestProject.ProjectId),
                     null,
@@ -135,7 +147,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenProjectIdExists_ThenQueryProjectsByPrefixReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.ToAuthorization());
+            var adapter = new ResourceManagerAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             // Remove last character from project ID.
             var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 

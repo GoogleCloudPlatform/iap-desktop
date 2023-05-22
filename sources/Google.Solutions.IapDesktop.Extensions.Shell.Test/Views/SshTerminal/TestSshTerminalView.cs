@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .CreatePublicTransportForTestingOnly(
                     new DirectTransportFactory(),
                     SshProtocol.Protocol,
-                    new ComputeEngineAdapter(authorization),
+                    new ComputeEngineAdapter(authorization, TestProject.UserAgent),
                     instanceLocator,
                     port,
                     CancellationToken.None)
@@ -115,8 +115,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var keyAdapter = new KeyAuthorizationService(
                 authorization.Object,
-                new ComputeEngineAdapter(credential.ToAuthorization()),
-                new ResourceManagerAdapter(credential.ToAuthorization()),
+                new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
+                new ResourceManagerAdapter(credential.ToAuthorization(), TestProject.UserAgent),
                 new Mock<IOsLoginService>().Object);
 
             var authorizedKey = await keyAdapter

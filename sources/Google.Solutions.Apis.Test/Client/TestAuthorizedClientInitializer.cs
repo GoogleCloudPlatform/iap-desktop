@@ -23,18 +23,18 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
-    public class TestAuthorizedClientInitializer : ApplicationFixtureBase
+    public class TestAuthorizedClientInitializer
     {
+        private const string SampleMtlsUri = "https://cloudresourcemanager.mtls.googleapis.com/";
+
         [Test]
         public void WhenNotEnrolled_ThenDeviceCertificateAuthenticationIsDisabled(
             [Values(
@@ -47,7 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var initializer = new AuthorizedClientInitializer(
                 new Mock<ICredential>().Object,
                 enrollment.Object,
-                ComputeEngineAdapter.MtlsBaseUri);
+                TestProject.UserAgent,
+                SampleMtlsUri);
 
             var client = new ComputeService(initializer);
             Assert.IsFalse(client.IsDeviceCertificateAuthenticationEnabled());
@@ -58,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var initializer = new AuthorizedClientInitializer(
                 AuthorizationMocks.ForSecureConnectUser(),
-                ComputeEngineAdapter.MtlsBaseUri);
+                TestProject.UserAgent,
+                SampleMtlsUri);
 
             var client = new ComputeService(initializer);
             Assert.IsTrue(client.IsDeviceCertificateAuthenticationEnabled());

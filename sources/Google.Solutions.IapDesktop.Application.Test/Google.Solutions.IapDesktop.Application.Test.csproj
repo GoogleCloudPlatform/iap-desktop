@@ -99,7 +99,6 @@
     <Compile Include="Host\TestInstall.cs" />
     <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
-    <Compile Include="Services\Adapters\TestAuthorizedClientInitializer.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -24,6 +24,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
@@ -57,12 +58,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly CloudResourceManagerService service;
 
-        public ResourceManagerAdapter(IAuthorization authorization)
+        public ResourceManagerAdapter(
+            IAuthorization authorization,
+            UserAgent userAgent)
         {
             authorization.ExpectNotNull(nameof(authorization));
+            userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new CloudResourceManagerService(
-                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
+                new AuthorizedClientInitializer(
+                    authorization,
+                    userAgent,
+                    MtlsBaseUri));
         }
 
         public async Task<Project> GetProjectAsync(

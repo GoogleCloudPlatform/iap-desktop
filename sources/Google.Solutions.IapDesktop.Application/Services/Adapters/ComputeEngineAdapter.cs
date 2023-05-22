@@ -52,12 +52,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ComputeEngineAdapter(IAuthorization authorization)
+        public ComputeEngineAdapter(
+            IAuthorization authorization,
+            UserAgent userAgent)
         {
             authorization.ExpectNotNull(nameof(authorization));
+            userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new ComputeService(
-                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
+                new AuthorizedClientInitializer(
+                    authorization, 
+                    userAgent,
+                    MtlsBaseUri));
         }
 
         //---------------------------------------------------------------------

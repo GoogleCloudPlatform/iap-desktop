@@ -57,8 +57,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         public async Task WhenInstanceDoesNotExist_ThenGetInstanceInventoryAsyncReturnsNull(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             var result = await service
                 .GetInstanceInventoryAsync(
@@ -76,8 +79,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             var info = await service
                 .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
@@ -95,8 +101,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.GetInstanceInventoryAsync(
@@ -116,8 +125,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -137,8 +149,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -157,8 +172,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
@@ -179,8 +197,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -200,8 +221,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -220,8 +244,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var service = new InventoryService(
-                new ComputeEngineAdapter(await credential.ToAuthorization()));
+            var computeAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var service = new InventoryService(computeAdapter);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(

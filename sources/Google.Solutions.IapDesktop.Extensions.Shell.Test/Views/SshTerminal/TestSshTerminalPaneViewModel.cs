@@ -110,8 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var keyAdapter = new KeyAuthorizationService(
                 authorizationSource.Object,
-                new ComputeEngineAdapter(credential.ToAuthorization()),
-                new ResourceManagerAdapter(credential.ToAuthorization()),
+                new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
+                new ResourceManagerAdapter(credential.ToAuthorization(), TestProject.UserAgent),
                 new Mock<IOsLoginService>().Object);
 
             return await keyAdapter.AuthorizeKeyAsync(
