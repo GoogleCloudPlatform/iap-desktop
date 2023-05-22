@@ -117,7 +117,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(b => b.CreateTransportAsync(
                     RdpProtocol.Protocol,
-                    new IPEndPoint(IPAddress.Parse("20.21.22.23"), 3389),
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    3389,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(transport.Object);
 

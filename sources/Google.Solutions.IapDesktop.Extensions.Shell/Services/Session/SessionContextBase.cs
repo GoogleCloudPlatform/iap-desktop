@@ -62,12 +62,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                         .ConfigureAwait(false);
 
                 case SessionTransportType.Vpc:
-                    return await Transport
-                        .CreateVpcTransportAsync(
-                            this.directTransportFactory,
+                    return await this.directTransportFactory
+                        .CreateTransportAsync(
                             protocol,
-                            this.addressResolver,
                             this.Instance,
+                            NetworkInterfaceType.PrimaryInternal,
                             port,
                             cancellationToken)
                         .ConfigureAwait(false);

@@ -41,6 +41,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Moq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 {
@@ -54,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         //
         private const string MachineTypeForRdp = "n1-highmem-2";
 
-        private readonly InstanceLocator SampleLocator =
+        private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project", "zone", "instance");
 
         private IServiceProvider CreateServiceProvider(ICredential credential = null)
@@ -69,14 +70,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             return registry;
         }
 
-        private static async Task<ITransport> CreateDirectRdpTransportAsync(IPEndPoint endpoint)
+        private static ITransport CreateTransportForEndpoint(IPEndPoint endpoint)
         {
-            return await new DirectTransportFactory()
-                .CreateTransportAsync(
-                    RdpProtocol.Protocol,
-                    endpoint,
-                    CancellationToken.None)
-                .ConfigureAwait(true);
+            var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Protocol).Returns(RdpProtocol.Protocol);
+            transport.SetupGet(t => t.Endpoint).Returns(endpoint);
+            return transport.Object;
         }
 
         //---------------------------------------------------------------------
@@ -87,8 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
             var unboundEndpoint = new IPEndPoint(IPAddress.Loopback, 1);
-            var transport = await CreateDirectRdpTransportAsync(unboundEndpoint)
-                .ConfigureAwait(true);
+            var transport = CreateTransportForEndpoint(unboundEndpoint);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
@@ -113,8 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             // That one will be listening, but it is RPC, not RDP.
             var wrongEndpoint = new IPEndPoint(IPAddress.Loopback, 135);
-            var transport = await CreateDirectRdpTransportAsync(wrongEndpoint)
-                .ConfigureAwait(true);
+            var transport = CreateTransportForEndpoint(wrongEndpoint);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);

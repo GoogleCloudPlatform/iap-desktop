@@ -71,19 +71,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         private readonly IPEndPoint UnboundEndpoint =
             new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23);
 
+
+        private static ITransport CreateTransportForEndpoint(IPEndPoint endpoint)
+        {
+            var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Protocol).Returns(SshProtocol.Protocol);
+            transport.SetupGet(t => t.Endpoint).Returns(endpoint);
+            return transport.Object;
+        }
+
         private static async Task<ITransport> CreateTransportForPublicAddress(
             InstanceLocator instanceLocator,
             ushort port)
         {
             var authorization = TestProject.GetAdminCredential().ToAuthorization();
-            return await Transport
-                .CreatePublicTransportForTestingOnly(
-                    new DirectTransportFactory(),
+            var addressResolver = new AddressResolver(new ComputeEngineAdapter(
+                authorization,
+                TestProject.UserAgent));
+
+            return await new DirectTransportFactory(addressResolver)
+                .CreateTransportAsync(
                     SshProtocol.Protocol,
-                    new AddressResolver(new ComputeEngineAdapter(
-                        authorization, 
-                        TestProject.UserAgent)),
                     instanceLocator,
+                    NetworkInterfaceType.External,
                     port,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -196,16 +206,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
         }
 
-        private static async Task<ITransport> CreateDirectSshTransportAsync(IPEndPoint endpoint)
-        {
-            return await new DirectTransportFactory()
-                .CreateTransportAsync(
-                    SshProtocol.Protocol,
-                    endpoint,
-                    CancellationToken.None)
-                .ConfigureAwait(true);
-        }
-
         //---------------------------------------------------------------------
         // Connect
         //---------------------------------------------------------------------
@@ -225,8 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
 
-            var transport = await CreateDirectSshTransportAsync(this.UnboundEndpoint)
-                .ConfigureAwait(true);
+            var transport = CreateTransportForEndpoint(this.UnboundEndpoint);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);
@@ -260,8 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             };
 
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            var transport = await CreateDirectSshTransportAsync(this.NonSshEndpoint)
-                .ConfigureAwait(true);
+            var transport = CreateTransportForEndpoint(this.NonSshEndpoint);
 
             var serviceProvider = CreateServiceProvider();
             var broker = new InstanceSessionBroker(serviceProvider);

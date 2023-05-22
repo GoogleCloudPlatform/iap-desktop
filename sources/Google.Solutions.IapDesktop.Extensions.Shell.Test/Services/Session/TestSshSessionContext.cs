@@ -139,7 +139,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             factory
                 .Setup(b => b.CreateTransportAsync(
                     SshProtocol.Protocol,
-                    new IPEndPoint(IPAddress.Parse("20.21.22.23"), 22),
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    22,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(transport.Object);
 

@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
@@ -40,21 +42,46 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// </summary>
         Task<ITransport> CreateTransportAsync(
             IProtocol protocol,
-            IPEndPoint remoteEndpoint,
+            InstanceLocator instance,
+            NetworkInterfaceType type,
+            ushort port,
             CancellationToken cancellationToken);
     }
 
     public class DirectTransportFactory : IDirectTransportFactory
     {
-        public Task<ITransport> CreateTransportAsync(
+        private readonly IAddressResolver addressResolver;
+
+        public DirectTransportFactory(IAddressResolver addressResolver)
+        {
+            this.addressResolver = addressResolver.ExpectNotNull(nameof(addressResolver));
+        }
+
+        //---------------------------------------------------------------------
+        // IDirectTransportFactory.
+        //---------------------------------------------------------------------
+
+        public async Task<ITransport> CreateTransportAsync(
             IProtocol protocol,
-            IPEndPoint remoteEndpoint,
+            InstanceLocator instance,
+            NetworkInterfaceType type,
+            ushort port,
             CancellationToken cancellationToken)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(remoteEndpoint))
+            instance.ExpectNotNull(nameof(instance));
+
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(instance, type))
             {
-                var transport = new Transport(protocol, remoteEndpoint);
-                return Task.FromResult((ITransport)transport);
+                var address = await this.addressResolver
+                    .GetAddressAsync(
+                        instance,
+                        type,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                return new Transport(
+                    protocol, 
+                    new IPEndPoint(address, port));
             }
         }
 
