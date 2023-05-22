@@ -57,7 +57,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Ssh.Test",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support", "Support", "{988570F5-42B1-4F90-99F8-C9B34E8F3158}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Testing.Apis", "Google.Solutions.Testing.Common\Google.Solutions.Testing.Apis.csproj", "{E72548F1-13AF-4888-8A5E-3D58B1B456AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Testing.Apis", "Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj", "{E72548F1-13AF-4888-8A5E-3D58B1B456AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Testing.Application", "Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj", "{7BDC9ED7-1830-47D9-AF55-AB50C584E526}"
 EndProject
