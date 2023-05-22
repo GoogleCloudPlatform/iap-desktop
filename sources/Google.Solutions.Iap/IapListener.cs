@@ -107,14 +107,27 @@ namespace Google.Solutions.Iap
         // Ctor
         //---------------------------------------------------------------------
 
-        private IapListener(
+        /// <summary>
+        /// Create a listener.
+        /// </summary>
+        public IapListener(
             ISshRelayEndpoint server,
             IapListenerPolicy policy,
             IPEndPoint localEndpoint)
         {
             this.server = server.ExpectNotNull(nameof(server));
             this.policy = policy.ExpectNotNull(nameof(policy));
-            localEndpoint.ExpectNotNull(nameof(localEndpoint));
+
+            if (localEndpoint == null)
+            {
+                //
+                // The caller doesn't care which endpoint is used,
+                // so allocate one dynamically.
+                //
+                localEndpoint = new IPEndPoint(
+                    IPAddress.Loopback,
+                    PortFinder.FindFreeLocalPort());
+            }
 
             this.listener = new TcpListener(localEndpoint);
         }
@@ -136,39 +149,6 @@ namespace Google.Solutions.Iap
         private void OnConnectionFailed(Exception e)
         {
             this.ConnectionFailed?.Invoke(this, new ConnectionFailedEventArgs(e));
-        }
-
-        //---------------------------------------------------------------------
-        // Publics
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        ///  Create a listener using a dynamically selected, unused local port.
-        /// </summary>
-        public static IapListener CreateLocalListener(
-            ISshRelayEndpoint server,
-            IapListenerPolicy policy)
-        {
-            return CreateLocalListener(server, policy, PortFinder.FindFreeLocalPort());
-        }
-
-        /// <summary>
-        ///  Create a listener using a defined local port.
-        /// </summary>
-        public static IapListener CreateLocalListener(
-            ISshRelayEndpoint server,
-            IapListenerPolicy policy,
-            int port)
-        {
-            if (port < 0 || port > ushort.MaxValue)
-            {
-                throw new ArgumentException("port");
-            }
-
-            return new IapListener(
-                server, 
-                policy, 
-                new IPEndPoint(IPAddress.Loopback, port));
         }
 
         //---------------------------------------------------------------------

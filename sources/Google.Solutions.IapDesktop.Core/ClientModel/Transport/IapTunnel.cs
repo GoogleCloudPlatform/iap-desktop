@@ -321,14 +321,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         .ProbeAsync(probeTimeout)
                         .ConfigureAwait(false);
 
-                    var listener = profile.LocalEndpoint != null
-                        ? IapListener.CreateLocalListener(
-                            client,
-                            profile.Policy,
-                            profile.LocalEndpoint.Port)
-                        : IapListener.CreateLocalListener(
-                            client,
-                            profile.Policy);
+                    var listener = new IapListener(
+                        client,
+                        profile.Policy,
+                        profile.LocalEndpoint);
 
                     var tunnel = new IapTunnel(
                         listener,

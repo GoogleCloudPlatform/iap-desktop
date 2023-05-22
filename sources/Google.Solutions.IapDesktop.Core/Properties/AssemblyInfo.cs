@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one

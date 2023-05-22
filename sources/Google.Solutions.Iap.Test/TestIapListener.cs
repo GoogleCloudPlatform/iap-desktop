@@ -64,14 +64,15 @@ namespace Google.Solutions.Iap.Test
 
             var locator = await vm;
 
-            var listener = IapListener.CreateLocalListener(
+            var listener = new IapListener(
                 new IapClient(
                     await credential,
                     await vm,
                     7,
                     IapClient.DefaultNetworkInterface,
                     TestProject.UserAgent),
-                policy.Object);
+                policy.Object,
+                null);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None).ContinueWith(_ => { });
 
