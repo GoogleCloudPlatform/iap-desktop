@@ -25,7 +25,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Testing.Common.Threading
+namespace Google.Solutions.Testing.Apis.Threading
 {
     /// <summary>
     /// An ISynchronizeInvoke implementation that performs invocation

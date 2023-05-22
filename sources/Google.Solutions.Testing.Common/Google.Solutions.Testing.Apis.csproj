@@ -9,8 +9,8 @@
     <ProjectGuid>{E72548F1-13AF-4888-8A5E-3D58B1B456AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.Testing.Common</RootNamespace>
-    <AssemblyName>Google.Solutions.Testing.Common</AssemblyName>
+    <RootNamespace>Google.Solutions.Testing.Apis</RootNamespace>
+    <AssemblyName>Google.Solutions.Testing.Apis</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

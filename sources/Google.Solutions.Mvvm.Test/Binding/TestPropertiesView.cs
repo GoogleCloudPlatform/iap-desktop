@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Common.Integration;
-using Google.Solutions.Testing.Common.Mocks;
+using Google.Solutions.Testing.Apis.Integration;
+using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;

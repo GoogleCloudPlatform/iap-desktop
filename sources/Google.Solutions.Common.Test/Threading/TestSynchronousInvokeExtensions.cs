@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Threading;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

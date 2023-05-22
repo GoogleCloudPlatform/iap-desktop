@@ -28,7 +28,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;

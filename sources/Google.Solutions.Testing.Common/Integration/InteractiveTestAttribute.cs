@@ -21,7 +21,7 @@
 
 using NUnit.Framework;
 
-namespace Google.Solutions.Testing.Common.Integration
+namespace Google.Solutions.Testing.Apis.Integration
 {
     /// <summary>
     /// Annotation for test fixtures that use cloud resources

@@ -22,7 +22,7 @@
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.Testing.Common.Cryptography
+namespace Google.Solutions.Testing.Apis.Cryptography
 {
     public static class CertificateUtil
     {

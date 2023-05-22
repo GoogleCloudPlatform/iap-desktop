@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Shell;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 using System.IO;

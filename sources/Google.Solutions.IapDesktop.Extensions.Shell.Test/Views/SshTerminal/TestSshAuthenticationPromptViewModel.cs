@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal

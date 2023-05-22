@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies

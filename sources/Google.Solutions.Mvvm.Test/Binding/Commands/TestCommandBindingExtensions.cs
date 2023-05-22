@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;

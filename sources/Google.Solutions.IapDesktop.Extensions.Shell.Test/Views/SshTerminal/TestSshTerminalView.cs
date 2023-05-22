@@ -47,7 +47,7 @@ using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

@@ -23,7 +23,7 @@ using NUnit.Framework;
 using System;
 using System.Reflection;
 
-namespace Google.Solutions.Testing.Common
+namespace Google.Solutions.Testing.Apis
 {
     public abstract class EquatableFixtureBase<T, TEquatable>
         where T : class, IEquatable<TEquatable>

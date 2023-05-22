@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;

@@ -21,13 +21,13 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Testing.Common.Integration
+namespace Google.Solutions.Testing.Apis.Integration
 {
     public static class ResourceTaskExtensions
     {

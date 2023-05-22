@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.Testing.Common
+namespace Google.Solutions.Testing.Apis
 {
     public abstract class FixtureBase
     {

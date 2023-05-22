@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 
 
-namespace Google.Solutions.Testing.Common.Mocks
+namespace Google.Solutions.Testing.Apis.Mocks
 {
     public static class AuthorizationMocks
     {

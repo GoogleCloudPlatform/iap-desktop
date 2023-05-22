@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;

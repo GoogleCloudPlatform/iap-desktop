@@ -189,9 +189,9 @@
       <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>
       <Name>Google.Solutions.Mvvm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
+    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
-      <Name>Google.Solutions.Testing.Common</Name>
+      <Name>Google.Solutions.Testing.Apis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
       <Project>{7BDC9ED7-1830-47D9-AF55-AB50C584E526}</Project>

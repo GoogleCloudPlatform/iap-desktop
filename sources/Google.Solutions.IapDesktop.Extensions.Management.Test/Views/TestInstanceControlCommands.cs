@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Management.Views;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Common.Mocks;
+using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;

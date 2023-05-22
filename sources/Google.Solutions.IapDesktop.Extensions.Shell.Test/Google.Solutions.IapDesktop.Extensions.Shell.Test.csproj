@@ -224,9 +224,9 @@
       <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
       <Name>Google.Solutions.Ssh</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
+    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
-      <Name>Google.Solutions.Testing.Common</Name>
+      <Name>Google.Solutions.Testing.Apis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
       <Project>{7bdc9ed7-1830-47d9-af55-ab50c584e526}</Project>

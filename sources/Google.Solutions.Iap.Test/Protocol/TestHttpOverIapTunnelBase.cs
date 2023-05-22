@@ -24,7 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Text;
 using System.Text.RegularExpressions;

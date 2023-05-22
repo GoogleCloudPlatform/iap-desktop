@@ -39,7 +39,7 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;

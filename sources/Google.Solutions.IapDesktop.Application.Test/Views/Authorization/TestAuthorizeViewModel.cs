@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

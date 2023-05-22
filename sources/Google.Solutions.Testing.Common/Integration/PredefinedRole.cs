@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Testing.Common.Integration
+namespace Google.Solutions.Testing.Apis.Integration
 {
     public static class PredefinedRole
     {
