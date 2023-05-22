@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public static class InstanceResourceExtensions
+    internal static class InstanceResourceExtensions
     {
         public static IAsyncReader<string> OpenSerialPort(
             this InstancesResource instancesResource,
