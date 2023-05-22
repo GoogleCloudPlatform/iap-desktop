@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             Debug.Assert(
                 profile.LocalEndpoint == null || // Auto-assigned
-                profile.LocalEndpoint.Port == listener.LocalPort);
+                Equals(profile.LocalEndpoint, listener.LocalEndpoint));
         }
 
         internal Task CloseAsync()
@@ -154,17 +154,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         // IIapTunnel.
         //-----------------------------------------------------------------
 
-        public IPEndPoint LocalEndpoint
-        {
-            get
-            {
-                var endpoint = new IPEndPoint(IPAddress.Loopback, this.listener.LocalPort);
-                Debug.Assert(
-                    this.Details.LocalEndpoint == null || 
-                    Equals(endpoint, this.Details.LocalEndpoint));
-                return endpoint;
-            }
-        }
+        public IPEndPoint LocalEndpoint => this.listener.LocalEndpoint;
 
         public IapTunnelFlags Flags { get; }
 

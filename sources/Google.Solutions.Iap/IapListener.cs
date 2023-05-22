@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using System;
@@ -37,9 +38,9 @@ namespace Google.Solutions.Iap
     public interface IIapListener
     {
         /// <summary>
-        /// Local port that the listener is bound to.
+        /// Local endpoint that the listener is bound to.
         /// </summary>
-        int LocalPort { get; }
+        IPEndPoint LocalEndpoint { get; }
 
         /// <summary>
         /// Statistics for all connections made using
@@ -72,9 +73,6 @@ namespace Google.Solutions.Iap
         private readonly ISshRelayEndpoint server;
         private readonly IapListenerPolicy policy;
         private readonly TcpListener listener;
-
-        public int LocalPort { get; }
-        public NetworkStatistics Statistics { get; } = new NetworkStatistics();
 
         public event EventHandler<ClientEventArgs> ClientConnected;
         public event EventHandler<ClientEventArgs> ClientDisconnected;
@@ -112,13 +110,13 @@ namespace Google.Solutions.Iap
         private IapListener(
             ISshRelayEndpoint server,
             IapListenerPolicy policy,
-            int localPort)
+            IPEndPoint localEndpoint)
         {
-            this.server = server;
-            this.policy = policy;
-            this.LocalPort = localPort;
+            this.server = server.ExpectNotNull(nameof(server));
+            this.policy = policy.ExpectNotNull(nameof(policy));
+            localEndpoint.ExpectNotNull(nameof(localEndpoint));
 
-            this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, localPort));
+            this.listener = new TcpListener(localEndpoint);
         }
 
         //---------------------------------------------------------------------
@@ -167,8 +165,19 @@ namespace Google.Solutions.Iap
                 throw new ArgumentException("port");
             }
 
-            return new IapListener(server, policy, port);
+            return new IapListener(
+                server, 
+                policy, 
+                new IPEndPoint(IPAddress.Loopback, port));
         }
+
+        //---------------------------------------------------------------------
+        // IIapListener
+        //---------------------------------------------------------------------
+
+        public NetworkStatistics Statistics { get; } = new NetworkStatistics();
+
+        public IPEndPoint LocalEndpoint => (IPEndPoint)this.listener.LocalEndpoint;
 
         public Task ListenAsync(CancellationToken token)
         {

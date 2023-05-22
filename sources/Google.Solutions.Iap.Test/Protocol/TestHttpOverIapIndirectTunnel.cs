@@ -57,11 +57,10 @@ namespace Google.Solutions.Iap.Test.Protocol
             listener.ListenAsync(CancellationToken.None);
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
+            socket.Connect(listener.LocalEndpoint);
 
             return new SocketStream(socket, new NetworkStatistics());
         }
-
 
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(

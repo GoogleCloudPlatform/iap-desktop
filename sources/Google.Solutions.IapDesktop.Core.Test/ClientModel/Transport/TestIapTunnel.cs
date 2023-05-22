@@ -38,6 +38,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private static readonly IPEndPoint SampleLoopbackEndpoint
+            = new IPEndPoint(IPAddress.Loopback, 123);
+
         private static IapTunnel.Profile CreateTunnelProfile()
         {
             var protocol = new Mock<IProtocol>();
@@ -62,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             stats.OnTransmitCompleted(3);
 
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
             listener.SetupGet(l => l.Statistics).Returns(stats);
 
             using (var tunnel = new IapTunnel(
@@ -79,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void LocalEndpoint()
         {
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
 
             using (var tunnel = new IapTunnel(
                 listener.Object,
@@ -87,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 IapTunnelFlags.None))
             {
                 Assert.AreEqual(
-                    new IPEndPoint(IPAddress.Loopback, 123), 
+                    SampleLoopbackEndpoint, 
                     tunnel.LocalEndpoint);
             }
         }
@@ -96,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void Details()
         {
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
 
             var profile = CreateTunnelProfile();
 
@@ -113,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void TargetInstance()
         {
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
 
             var profile = CreateTunnelProfile();
 
@@ -130,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void TargetPort()
         {
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
 
             var profile = CreateTunnelProfile();
 
@@ -147,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void Policy()
         {
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
 
             var profile = CreateTunnelProfile();
 
@@ -165,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             var policy = new Mock<ITransportPolicy>().Object;
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
 
             var profile = CreateTunnelProfile();
 
@@ -187,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             CancellationToken token;
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
             listener
                 .Setup(l => l.ListenAsync(It.IsAny<CancellationToken>()))
                 .Callback((CancellationToken t) => token = t)
@@ -215,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             CancellationToken token;
 
             var listener = new Mock<IIapListener>();
-            listener.SetupGet(l => l.LocalPort).Returns(123);
+            listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
             listener
                 .Setup(l => l.ListenAsync(It.IsAny<CancellationToken>()))
                 .Callback((CancellationToken t) => token = t)

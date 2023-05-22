@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 policy,
                 instance,
                 3389,
-                new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
+                listener.LocalEndpoint);
 
             return new IapTransport(
                 new IapTunnel(
