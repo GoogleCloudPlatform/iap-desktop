@@ -25,7 +25,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Core.Diagnostics;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System;
@@ -34,6 +33,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {

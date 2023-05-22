@@ -19,51 +19,30 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Core.Diagnostics;
+using Google.Solutions.Apis.Diagnostics;
 using System;
-using System.Runtime.Serialization;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Apis
 {
-
-    [Serializable]
-    public class AdapterException : Exception
+    public abstract class AdapterException : Exception
     {
-        protected AdapterException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public AdapterException(string message, Exception inner)
+        protected AdapterException(string message, Exception inner)
             : base(message, inner)
         {
         }
     }
 
-    [Serializable]
     public class ResourceNotFoundException : AdapterException
     {
-        protected ResourceNotFoundException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
         public ResourceNotFoundException(string message, Exception inner)
             : base(message, inner)
         {
         }
     }
 
-    [Serializable]
     public class ResourceAccessDeniedException : AdapterException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
-
-        protected ResourceAccessDeniedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
 
         public ResourceAccessDeniedException(
             string message,

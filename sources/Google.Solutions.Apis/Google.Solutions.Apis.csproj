@@ -59,6 +59,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterException.cs" />
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Auth\IAuthorization.cs" />
     <Compile Include="Auth\IDeviceEnrollment.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Client\UserAgent.cs" />
     <Compile Include="Compute\InstanceExtensions.cs" />
     <Compile Include="Compute\InstanceResourceExtensions.cs" />
+    <Compile Include="Diagnostics\IHelpTopic.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />
     <Compile Include="GoogleApiExceptionExtensions.cs" />
     <Compile Include="Compute\MetadataExtensions.cs" />
