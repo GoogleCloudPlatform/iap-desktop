@@ -44,59 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         // Factory methods.
         //---------------------------------------------------------------------
 
-        internal async static Task<ITransport> CreateIapTransportAsync(
-            IIapTransportFactory transportFactory,
-            IProtocol protocol,
-            InstanceLocator targetInstance,
-            ushort targetPort,
-            TimeSpan timeout)
-        {
-            transportFactory.ExpectNotNull(nameof(transportFactory));
-            protocol.ExpectNotNull(nameof(protocol));
-            targetInstance.ExpectNotNull(nameof(targetInstance));
-
-            try
-            {
-                return await transportFactory
-                    .CreateTransportAsync(
-                        protocol,
-                        new CurrentProcessPolicy(),
-                        targetInstance,
-                        targetPort,
-                        null, // Auto-assign port
-                        timeout,
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-            }
-            catch (SshRelayDeniedException e)
-            {
-                throw new TransportFailedException(
-                    "You are not authorized to connect to this VM instance.\n\n" +
-                    $"Verify that the Cloud IAP API is enabled in the project {targetInstance.ProjectId} " +
-                    "and that your user has the 'IAP-secured Tunnel User' role.",
-                    HelpTopics.IapAccess,
-                    e);
-            }
-            catch (NetworkStreamClosedException e)
-            {
-                throw new TransportFailedException(
-                    "Connecting to the instance failed. Make sure that you have " +
-                    "configured your firewall rules to permit IAP-TCP access " +
-                    $"to {targetInstance.Name}",
-                    HelpTopics.CreateIapFirewallRule,
-                    e);
-            }
-            catch (WebSocketConnectionDeniedException)
-            {
-                throw new TransportFailedException(
-                    "Establishing an IAP-TCP tunnel failed because the server " +
-                    "denied access.\n\n" +
-                    "If you are using a proxy server, make sure that the proxy " +
-                    "server allows WebSocket connections.",
-                    HelpTopics.ProxyConfiguration);
-            }
-        }
-
         internal static async Task<ITransport> CreateVpcTransportAsync(
             IDirectTransportFactory transportFactory,
             IProtocol protocol,

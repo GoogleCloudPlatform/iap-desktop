@@ -25,6 +25,8 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
@@ -275,15 +277,45 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     targetPort,
                     localEndpoint);
 
-                var tunnel = await GetPooledTunnelAsync(
-                        profile,
-                        probeTimeout,
-                        cancellationToken)
-                    .ConfigureAwait(false);
+                try
+                {
+                    var tunnel = await GetPooledTunnelAsync(
+                            profile,
+                            probeTimeout,
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
-                return new Transport(
-                    tunnel,
-                    protocol);
+                    return new Transport(
+                        tunnel,
+                        protocol);
+                }
+                catch (SshRelayDeniedException e) 
+                {
+                    throw new TransportFailedException(
+                        "You are not authorized to connect to this VM instance.\n\n" +
+                        $"Verify that the Cloud IAP API is enabled in the project {targetInstance.ProjectId} " +
+                        "and that your user has the 'IAP-secured Tunnel User' role.",
+                        HelpTopics.IapAccess,
+                        e);
+                }
+                catch (NetworkStreamClosedException e)
+                {
+                    throw new TransportFailedException(
+                        "Connecting to the instance failed. Make sure that you have " +
+                        "configured your firewall rules to permit IAP-TCP access " +
+                        $"to {targetInstance.Name}",
+                        HelpTopics.CreateIapFirewallRule,
+                        e);
+                }
+                catch (WebSocketConnectionDeniedException)
+                {
+                    throw new TransportFailedException(
+                        "Establishing an IAP-TCP tunnel failed because the server " +
+                        "denied access.\n\n" +
+                        "If you are using a proxy server, make sure that the proxy " +
+                        "server allows WebSocket connections.",
+                        HelpTopics.ProxyConfiguration);
+                }
             }
         }
 

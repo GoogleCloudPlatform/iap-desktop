@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.Apis.Compute
 {
-    internal static class ComputeHelpTopics
+    internal static class ComputeHelpTopics //TODO: Move to root, rename to HelpTopics
     {
         public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
             "Project access control",
@@ -33,17 +33,5 @@ namespace Google.Solutions.Apis.Compute
         public static readonly IHelpTopic LocateInstanceIpAddress = new HelpTopic(
             "Locating IP addresses for an instance",
             "https://cloud.google.com/compute/docs/instances/view-ip-address#console");
-
-        private class HelpTopic : IHelpTopic
-        {
-            public string Title { get; }
-            public Uri Address { get; }
-
-            public HelpTopic(string title, string address)
-            {
-                this.Title = title;
-                this.Address = new Uri(address);
-            }
-        }
     }
 }

@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,13 +50,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             switch (transportType)
             {
                 case SessionTransportType.IapTunnel:
-                    return await Transport
-                        .CreateIapTransportAsync(
-                            this.iapTransportFactory,
+                    return await this.iapTransportFactory
+                        .CreateTransportAsync(
                             protocol,
+                            new CurrentProcessPolicy(),
                             this.Instance,
                             port,
-                            connectionTimeout)
+                            null, // Auto-assign
+                            connectionTimeout,
+                            cancellationToken)
                         .ConfigureAwait(false);
 
                 case SessionTransportType.Vpc:
