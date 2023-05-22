@@ -30,6 +30,9 @@ namespace Google.Solutions.Apis.Compute
             "Project access control",
             "https://cloud.google.com/compute/docs/access");
 
+        public static readonly IHelpTopic LocateInstanceIpAddress = new HelpTopic(
+            "Locating IP addresses for an instance",
+            "https://cloud.google.com/compute/docs/instances/view-ip-address#console");
 
         private class HelpTopic : IHelpTopic
         {

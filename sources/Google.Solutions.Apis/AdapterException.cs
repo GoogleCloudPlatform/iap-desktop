@@ -26,6 +26,10 @@ namespace Google.Solutions.Apis
 {
     public abstract class AdapterException : Exception
     {
+        protected AdapterException(string message) : base(message)
+        {
+        }
+
         protected AdapterException(string message, Exception inner)
             : base(message, inner)
         {
