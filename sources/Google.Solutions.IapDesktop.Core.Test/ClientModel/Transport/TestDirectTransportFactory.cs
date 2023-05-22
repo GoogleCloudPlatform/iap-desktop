@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
@@ -32,6 +34,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
     [TestFixture]
     public class TestDirectTransportFactory
     {
+        private static readonly InstanceLocator SampleInstance
+            = new InstanceLocator("project-1", "zone-1", "instance-1");
+
         //---------------------------------------------------------------------
         // CreateTransport.
         //---------------------------------------------------------------------
@@ -39,16 +44,32 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public async Task CreateTransport()
         {
-            var protocol = new Mock<IProtocol>();
-            var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 22);
+            var address = IPAddress.Parse("10.0.0.1");
 
-            var factory = new DirectTransportFactory();
+            var resolver = new Mock<IAddressResolver>();
+            resolver.Setup(
+                r => r.GetAddressAsync(
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(address);
+
+            var factory = new DirectTransportFactory(resolver.Object);
+
+            var protocol = new Mock<IProtocol>();
+
             using (var transport = await factory
-                .CreateTransportAsync(protocol.Object, endpoint, CancellationToken.None)
+                .CreateTransportAsync(
+                    protocol.Object, 
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    22,
+                    CancellationToken.None)
                 .ConfigureAwait(false))
             {
                 Assert.AreSame(protocol.Object, transport.Protocol);
-                Assert.AreSame(endpoint, transport.Endpoint);
+                Assert.AreSame(address, transport.Endpoint.Address);
+                Assert.AreEqual(22, transport.Endpoint.Port);
             }
         }
     }

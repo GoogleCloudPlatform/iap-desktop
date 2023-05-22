@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IAddressResolver addressResolver;
         private readonly ISelectCredentialsDialog credentialDialog;
         private readonly IRdpCredentialCallbackService rdpCredentialCallbackService;
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             IConnectionSettingsService settingsService,
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IComputeEngineAdapter computeEngineAdapter,
+            IAddressResolver addressResolver,
             ISelectCredentialsDialog credentialDialog,
             IRdpCredentialCallbackService credentialCallbackService,
             SshSettingsRepository sshSettingsRepository)
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
-            this.computeEngineAdapter = computeEngineAdapter;
+            this.addressResolver = addressResolver;
             this.credentialDialog = credentialDialog;
             this.rdpCredentialCallbackService = credentialCallbackService.ExpectNotNull(nameof(credentialCallbackService));
             this.sshSettingsRepository = sshSettingsRepository.ExpectNotNull(nameof(sshSettingsRepository));
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             var context = new RdpSessionContext(
                 this.iapTransportFactory,
                 this.directTransportFactory,
-                this.computeEngineAdapter,
+                this.addressResolver,
                 instance,
                 credential,
                 sources);
@@ -332,7 +332,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                 this.iapTransportFactory,
                 this.directTransportFactory,
                 this.keyAuthorizationService,
-                this.computeEngineAdapter,
+                this.addressResolver,
                 node.Instance,
                 localKeyPair);
 

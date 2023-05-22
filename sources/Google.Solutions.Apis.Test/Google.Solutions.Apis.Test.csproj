@@ -85,6 +85,7 @@
     <Compile Include="Client\TestClientServiceMtlsExtensions.cs" />
     <Compile Include="Client\TestRestClient.cs" />
     <Compile Include="Client\TestUserAgent.cs" />
+    <Compile Include="Compute\TestAddressResolver.cs" />
     <Compile Include="Compute\TestComputeEngineAdapter.cs" />
     <Compile Include="Compute\TestMetadataExtensions.cs" />
     <Compile Include="Crm\TestResourceManagerAdapter.cs" />

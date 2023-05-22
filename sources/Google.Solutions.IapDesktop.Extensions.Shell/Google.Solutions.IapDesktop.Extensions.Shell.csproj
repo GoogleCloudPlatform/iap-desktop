@@ -141,7 +141,6 @@
     <Compile Include="Services\Session\RdpSessionContext.cs" />
     <Compile Include="Services\Session\SshSessionContext.cs" />
     <Compile Include="Services\Session\SshSessionParameters.cs" />
-    <Compile Include="Services\Session\Transport.cs" />
     <Compile Include="Services\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />

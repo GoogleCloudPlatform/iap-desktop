@@ -46,13 +46,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IKeyAuthorizationService keyAuthService,
-            IComputeEngineAdapter computeEngineAdapter,
+            IAddressResolver addressResolver,
             InstanceLocator instance,
             ISshKeyPair localKeyPair)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
-                  computeEngineAdapter,
+                  addressResolver,
                   instance,
                   new SshSessionParameters())
         {

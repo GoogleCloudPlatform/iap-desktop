@@ -74,6 +74,7 @@
     <Compile Include="CoreTraceSources.cs" />
     <Compile Include="ClientModel\Transport\IapTunnel.cs" />
     <Compile Include="ClientModel\Transport\TransportFailedException.cs" />
+    <Compile Include="HelpTopics.cs" />
     <Compile Include="ObjectModel\EventQueue.cs" />
     <Compile Include="ClientModel\Transport\IapTransportFactory.cs" />
     <Compile Include="ClientModel\Transport\ITransport.cs" />

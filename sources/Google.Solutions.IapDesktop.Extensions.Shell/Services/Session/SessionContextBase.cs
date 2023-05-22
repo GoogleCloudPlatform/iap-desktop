@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
     {
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IAddressResolver addressResolver;
 
         protected async Task<ITransport> ConnectTransportAsync(
             IProtocol protocol,
@@ -49,22 +50,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             switch (transportType)
             {
                 case SessionTransportType.IapTunnel:
-                    return await Transport
-                        .CreateIapTransportAsync(
-                            this.iapTransportFactory,
+                    return await this.iapTransportFactory
+                        .CreateTransportAsync(
                             protocol,
+                            new CurrentProcessPolicy(),
                             this.Instance,
                             port,
-                            connectionTimeout)
+                            null, // Auto-assign
+                            connectionTimeout,
+                            cancellationToken)
                         .ConfigureAwait(false);
 
                 case SessionTransportType.Vpc:
-                    return await Transport
-                        .CreateVpcTransportAsync(
-                            this.directTransportFactory,
+                    return await this.directTransportFactory
+                        .CreateTransportAsync(
                             protocol,
-                            this.computeEngineAdapter,
                             this.Instance,
+                            NetworkInterfaceType.PrimaryInternal,
                             port,
                             cancellationToken)
                         .ConfigureAwait(false);
@@ -77,13 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         protected SessionContextBase(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IComputeEngineAdapter computeEngineAdapter,
+            IAddressResolver addressResolver,
             InstanceLocator instance,
             TParameters parameters)
         {
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(SessionContextBase<TCredential, TParameters>.iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
-            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            this.addressResolver = addressResolver.ExpectNotNull(nameof(addressResolver));
             this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Parameters = parameters.ExpectNotNull(nameof(parameters));
         }

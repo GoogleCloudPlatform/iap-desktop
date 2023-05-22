@@ -77,10 +77,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             "Granting OS Login IAM roles",
             "https://cloud.google.com/compute/docs/instances/managing-instance-access#grant-iam-roles");
 
-        public static readonly IHelpTopic ProxyConfiguration = new HelpTopic(
-            "Proxy Configuration",
-            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Proxy-Configuration");
-
         public static readonly IHelpTopic ReleaseNotes = new HelpTopic(
            "Release notes",
            "https://github.com/GoogleCloudPlatform/iap-desktop/releases");
@@ -88,22 +84,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public static readonly IHelpTopic NodeUsageReporting = new HelpTopic(
            "Track VM and sole-tenant node usage for license reporting",
            "https://cloud.google.com/compute/docs/nodes/determining-server-usage");
-
-        public static readonly IHelpTopic LocateInstanceIpAddress = new HelpTopic(
-            "Locating IP addresses for an instance",
-            "https://cloud.google.com/compute/docs/instances/view-ip-address#console");
-
-        private class HelpTopic : IHelpTopic
-        {
-            public string Title { get; }
-            public Uri Address { get; }
-
-            public HelpTopic(string title, string address)
-            {
-                this.Title = title;
-                this.Address = new Uri(address);
-            }
-        }
     }
 
     public class HelpAdapter

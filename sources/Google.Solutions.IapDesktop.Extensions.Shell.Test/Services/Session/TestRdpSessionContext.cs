@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var context = new RdpSessionContext(
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 credential,
                 RdpSessionParameters.ParameterSources.Inventory);
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var context = new RdpSessionContext(
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpSessionParameters.ParameterSources.Inventory);
@@ -104,35 +104,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
         [Test]
         public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
         {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            computeEngineAdapter
-                .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Instance()
-                {
-                    NetworkInterfaces = new[]
-                    {
-                        new NetworkInterface()
-                        {
-                            Name = "nic0",
-                            StackType = "IPV4_ONLY",
-                            NetworkIP = "20.21.22.23"
-                        }
-                    }
-                });
+            var addressResolver = new Mock<IAddressResolver>();
+            addressResolver.Setup(
+                r => r.GetAddressAsync(
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(IPAddress.Parse("20.21.22.23"));
 
             var transport = new Mock<ITransport>();
             var factory = new Mock<IDirectTransportFactory>();
             factory
                 .Setup(b => b.CreateTransportAsync(
                     RdpProtocol.Protocol,
-                    new IPEndPoint(IPAddress.Parse("20.21.22.23"), 3389),
+                    SampleInstance,
+                    NetworkInterfaceType.PrimaryInternal,
+                    3389,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(transport.Object);
 
             var context = new RdpSessionContext(
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
-                computeEngineAdapter.Object,
+                addressResolver.Object,
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpSessionParameters.ParameterSources.Inventory);

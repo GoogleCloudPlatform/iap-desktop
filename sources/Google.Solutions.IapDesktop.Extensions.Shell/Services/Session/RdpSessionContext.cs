@@ -39,14 +39,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         internal RdpSessionContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IComputeEngineAdapter computeEngineAdapter,
+            IAddressResolver addressResolver,
             InstanceLocator instance,
             RdpCredential credential,
             RdpSessionParameters.ParameterSources sources)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
-                  computeEngineAdapter,
+                  addressResolver,
                   instance,
                   new RdpSessionParameters()
                   {

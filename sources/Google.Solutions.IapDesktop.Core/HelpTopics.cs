@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,31 +19,22 @@
 // under the License.
 //
 
-using System;
-using System.Runtime.InteropServices;
+using Google.Solutions.Apis.Diagnostics;
 
-namespace Google.Solutions.Apis.Diagnostics
+namespace Google.Solutions.IapDesktop.Core
 {
-    public interface IHelpTopic
+    internal static class HelpTopics
     {
-        string Title { get; }
-        Uri Address { get; }
-    }
+        public static readonly IHelpTopic IapAccess = new HelpTopic(
+            "Configuring access to Cloud IAP",
+            "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
 
-    public interface IExceptionWithHelpTopic : _Exception
-    {
-        IHelpTopic Help { get; }
-    }
+        public static readonly IHelpTopic CreateIapFirewallRule = new HelpTopic(
+            "Creating a firewall rule for Cloud IAP",
+            "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
 
-    public class HelpTopic : IHelpTopic
-    {
-        public string Title { get; }
-        public Uri Address { get; }
-
-        public HelpTopic(string title, string address)
-        {
-            this.Title = title;
-            this.Address = new Uri(address);
-        }
+        public static readonly IHelpTopic ProxyConfiguration = new HelpTopic(
+            "Proxy Configuration",
+            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Proxy-Configuration");
     }
 }

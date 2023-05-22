@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
@@ -32,7 +33,8 @@ namespace Google.Solutions.Testing.Apis
 {
     public static class ExceptionAssert
     {
-        public static TActual ThrowsAggregateException<TActual>(TestDelegate code) where TActual : Exception
+        public static TActual ThrowsAggregateException<TActual>(TestDelegate code) 
+            where TActual : Exception
         {
             return Assert.Throws<TActual>(() =>
             {
@@ -42,6 +44,29 @@ namespace Google.Solutions.Testing.Apis
                 }
                 catch (AggregateException e)
                 {
+                    throw e.Unwrap();
+                }
+            });
+        }
+
+        public static TActual ThrowsAggregateException<TActual>(
+                IHelpTopic expectedHelpTopic,
+                TestDelegate code) 
+            where TActual : Exception
+        {
+            return Assert.Throws<TActual>(() =>
+            {
+                try
+                {
+                    code();
+                }
+                catch (AggregateException e)
+                {
+                    Assert.AreEqual(
+                        expectedHelpTopic.Address,
+                        (e.Unwrap() as IExceptionWithHelpTopic).Help?.Address,
+                        "Expected different help topic");
+
                     throw e.Unwrap();
                 }
             });

@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap;
+using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -427,7 +428,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 eventQueue,
                 SampleUserAgent,
                 tunnelFactory.Object);
-
             
             int poolSizeWhenCreated = 0;
             int poolSizeWhenClosed = 0;
@@ -458,6 +458,106 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             Assert.AreEqual(1, poolSizeWhenCreated);
             Assert.AreEqual(0, poolSizeWhenClosed);
+        }
+
+        //---------------------------------------------------------------------
+        // CreateTransport - exceptions.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSshRelayDenied_ThenCreateTransportThrowsException()
+        {
+            var validProfile = CreateTunnelProfile(SampleInstance, 22);
+            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            tunnelFactory
+                .Setup(f => f.CreateTunnelAsync(
+                    It.IsAny<IAuthorization>(),
+                    SampleUserAgent,
+                    validProfile,
+                    It.IsAny<TimeSpan>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new SshRelayDeniedException("mock"));
+
+            var factory = new IapTransportFactory(
+                CreateAuthorization().Object,
+                new Mock<IEventQueue>().Object,
+                SampleUserAgent,
+                tunnelFactory.Object);
+
+            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
+                HelpTopics.IapAccess,
+                () => factory.CreateTransportAsync(
+                    validProfile.Protocol,
+                    validProfile.Policy,
+                    validProfile.TargetInstance,
+                    validProfile.TargetPort,
+                    validProfile.LocalEndpoint,
+                    SampleTimeout,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenNetworkStreamClosed_ThenCreateTransportThrowsException()
+        {
+            var validProfile = CreateTunnelProfile(SampleInstance, 22);
+            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            tunnelFactory
+                .Setup(f => f.CreateTunnelAsync(
+                    It.IsAny<IAuthorization>(),
+                    SampleUserAgent,
+                    validProfile,
+                    It.IsAny<TimeSpan>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new NetworkStreamClosedException("mock"));
+
+            var factory = new IapTransportFactory(
+                CreateAuthorization().Object,
+                new Mock<IEventQueue>().Object,
+                SampleUserAgent,
+                tunnelFactory.Object);
+
+            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
+                HelpTopics.CreateIapFirewallRule,
+                () => factory.CreateTransportAsync(
+                    validProfile.Protocol,
+                    validProfile.Policy,
+                    validProfile.TargetInstance,
+                    validProfile.TargetPort,
+                    validProfile.LocalEndpoint,
+                    SampleTimeout,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenWebSocketConnectionDenied_ThenCreateTransportThrowsException()
+        {
+            var validProfile = CreateTunnelProfile(SampleInstance, 22);
+            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            tunnelFactory
+                .Setup(f => f.CreateTunnelAsync(
+                    It.IsAny<IAuthorization>(),
+                    SampleUserAgent,
+                    validProfile,
+                    It.IsAny<TimeSpan>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new WebSocketConnectionDeniedException());
+
+            var factory = new IapTransportFactory(
+                CreateAuthorization().Object,
+                new Mock<IEventQueue>().Object,
+                SampleUserAgent,
+                tunnelFactory.Object);
+
+            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
+                HelpTopics.ProxyConfiguration,
+                () => factory.CreateTransportAsync(
+                    validProfile.Protocol,
+                    validProfile.Policy,
+                    validProfile.TargetInstance,
+                    validProfile.TargetPort,
+                    validProfile.LocalEndpoint,
+                    SampleTimeout,
+                    CancellationToken.None).Wait());
         }
 
         //---------------------------------------------------------------------

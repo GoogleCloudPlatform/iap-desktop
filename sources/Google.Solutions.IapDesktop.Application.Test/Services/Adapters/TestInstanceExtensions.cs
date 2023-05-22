@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestInstanceExtensions : ApplicationFixtureBase
+    public class TestInstanceExtensions : ApplicationFixtureBase //TODO: Move to Apis DLL
     {
         [Test]
         public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(
