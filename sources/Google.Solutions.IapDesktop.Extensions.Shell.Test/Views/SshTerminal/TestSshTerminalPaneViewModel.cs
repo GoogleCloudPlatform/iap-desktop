@@ -52,6 +52,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Platform.Security;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         private Mock<IConfirmationDialog> confirmationDialog;
         private Mock<IExceptionDialog> exceptionDialog;
         private Mock<IDownloadFileDialog> downloadFileDialog;
-        private Mock<IQuarantineAdapter> quarantineAdapter;
+        private Mock<IQuarantine> quarantine;
 
         [SetUp]
         public void SetUp()
@@ -73,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             this.confirmationDialog = new Mock<IConfirmationDialog>();
             this.exceptionDialog = new Mock<IExceptionDialog>();
             this.downloadFileDialog = new Mock<IDownloadFileDialog>();
-            this.quarantineAdapter = new Mock<IQuarantineAdapter>();
+            this.quarantine = new Mock<IQuarantine>();
         }
 
         private static async Task<IPAddress> PublicAddressFromLocator(
@@ -159,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 progressDialog.Object,
                 this.downloadFileDialog.Object,
                 this.exceptionDialog.Object,
-                this.quarantineAdapter.Object)
+                this.quarantine.Object)
             {
                 Instance = instance,
                 Endpoint = new IPEndPoint(address, 22),
@@ -338,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new Mock<IOperationProgressDialog>().Object,
                     new Mock<IDownloadFileDialog>().Object,
                     new Mock<IExceptionDialog>().Object,
-                    new Mock<IQuarantineAdapter>().Object)
+                    new Mock<IQuarantine>().Object)
                 {
                     View = window,
                     Instance = instance,
@@ -538,7 +539,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         out targetDirectory))
                     .Returns(DialogResult.OK);
 
-                this.quarantineAdapter
+                this.quarantine
                     .Setup(a => a.ScanAsync(
                         It.IsAny<IntPtr>(),
                         It.IsAny<FileInfo>()))
@@ -546,7 +547,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 Assert.IsFalse(await viewModel.DownloadFilesAsync());
 
-                this.quarantineAdapter.Verify(a => a.ScanAsync(
+                this.quarantine.Verify(a => a.ScanAsync(
                         It.IsAny<IntPtr>(),
                         It.IsAny<FileInfo>()), Times.Once);
                 this.exceptionDialog.Verify(d => d.Show(

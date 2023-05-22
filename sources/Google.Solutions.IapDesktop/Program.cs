@@ -59,6 +59,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Net;
+using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;
@@ -389,6 +390,7 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("Theme")));
                 preAuthLayer.AddSingleton<IThemeService, ThemeService>();
 
+                preAuthLayer.AddTransient<IQuarantine, Quarantine>();
                 preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
                 preAuthLayer.AddSingleton(appSettingsRepository);
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(

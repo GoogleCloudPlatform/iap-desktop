@@ -156,7 +156,6 @@
     </Compile>
     <Compile Include="Shell\FileType.cs" />
     <Compile Include="Shell\KnownFolders.cs" />
-    <Compile Include="Shell\Quarantine.cs" />
     <Compile Include="Shell\StockIcons.cs" />
     <Compile Include="Shell\TaskBarList.cs" />
     <Compile Include="Theme\CommonControlRuleSet.cs" />
