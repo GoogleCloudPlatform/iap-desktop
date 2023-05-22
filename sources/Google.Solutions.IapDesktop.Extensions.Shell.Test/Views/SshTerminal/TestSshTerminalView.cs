@@ -20,7 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -30,7 +32,6 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
@@ -46,7 +47,7 @@ using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .CreatePublicTransportForTestingOnly(
                     new DirectTransportFactory(),
                     SshProtocol.Protocol,
-                    new ComputeEngineAdapter(authorization),
+                    new ComputeEngineAdapter(authorization, TestProject.UserAgent),
                     instanceLocator,
                     port,
                     CancellationToken.None)
@@ -115,8 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var keyAdapter = new KeyAuthorizationService(
                 authorization.Object,
-                new ComputeEngineAdapter(credential.ToAuthorization()),
-                new ResourceManagerAdapter(credential.ToAuthorization()),
+                new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
+                new ResourceManagerAdapter(credential.ToAuthorization(), TestProject.UserAgent),
                 new Mock<IOsLoginService>().Object);
 
             var authorizedKey = await keyAdapter

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Windows.Forms;

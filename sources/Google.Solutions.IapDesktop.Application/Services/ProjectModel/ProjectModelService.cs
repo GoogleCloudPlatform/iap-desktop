@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;

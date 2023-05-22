@@ -29,7 +29,7 @@ namespace Google.Solutions.Apis.Diagnostics
     /// <summary>
     /// Adapter class to allow Google API libraries to log to a TraceSource.
     /// </summary>
-    public class TraceSourceLogger : ILogger
+    internal class TraceSourceLogger : ILogger
     {
         private readonly TraceSource traceSource;
 

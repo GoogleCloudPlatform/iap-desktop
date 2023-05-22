@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

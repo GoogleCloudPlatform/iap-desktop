@@ -19,13 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;

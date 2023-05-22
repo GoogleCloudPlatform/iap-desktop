@@ -22,12 +22,12 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Core.Diagnostics;
 using Newtonsoft.Json;
 using System;
 using System.Linq;

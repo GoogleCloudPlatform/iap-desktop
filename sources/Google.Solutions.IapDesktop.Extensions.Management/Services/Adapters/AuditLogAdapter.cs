@@ -22,6 +22,8 @@
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -29,7 +31,6 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
@@ -66,12 +67,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 
         private readonly LoggingService service;
 
-        public AuditLogAdapter(IAuthorization authorization)
+        public AuditLogAdapter(
+            IAuthorization authorization,
+            UserAgent userAgent)
         {
             authorization.ExpectNotNull(nameof(authorization));
+            userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new LoggingService(
-                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
+                new AuthorizedClientInitializer(
+                    authorization,
+                    userAgent, 
+                    MtlsBaseUri));
         }
 
         internal async Task ListEventsAsync(

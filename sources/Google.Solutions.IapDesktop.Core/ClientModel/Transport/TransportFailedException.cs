@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.Diagnostics;
+using Google.Solutions.Apis.Diagnostics;
 using System;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport

@@ -21,13 +21,14 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
@@ -46,7 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var gceAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var model = await InstancePropertiesInspectorModel
                 .LoadAsync(
                     await testInstance,
@@ -77,7 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var gceAdapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var inventoryService = new Mock<IInventoryService>();
             inventoryService.Setup(s => s.GetInstanceInventoryAsync(
                     It.IsAny<InstanceLocator>(),

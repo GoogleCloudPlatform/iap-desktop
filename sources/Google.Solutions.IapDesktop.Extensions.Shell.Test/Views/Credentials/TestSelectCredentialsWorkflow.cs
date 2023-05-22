@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.Testing.Application.ObjectModel;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

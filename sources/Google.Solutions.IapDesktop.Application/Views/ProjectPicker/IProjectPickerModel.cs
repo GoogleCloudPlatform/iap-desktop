@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Threading;
 using System.Threading.Tasks;

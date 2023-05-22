@@ -21,13 +21,14 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System.Text;
@@ -49,10 +50,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         {
             await testInstance;
 
+            var adapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var model = await SerialOutputModel
                 .LoadAsync(
                     "display-name",
-                    new ComputeEngineAdapter(await credential.ToAuthorization()),
+                    adapter,
                     await testInstance,
                     ConsolePort,
                     CancellationToken.None)

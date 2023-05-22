@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;

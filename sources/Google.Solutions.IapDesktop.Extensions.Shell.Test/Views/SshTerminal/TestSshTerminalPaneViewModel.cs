@@ -20,13 +20,14 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -38,7 +39,7 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -110,8 +111,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var keyAdapter = new KeyAuthorizationService(
                 authorizationSource.Object,
-                new ComputeEngineAdapter(credential.ToAuthorization()),
-                new ResourceManagerAdapter(credential.ToAuthorization()),
+                new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
+                new ResourceManagerAdapter(credential.ToAuthorization(), TestProject.UserAgent),
                 new Mock<IOsLoginService>().Object);
 
             return await keyAdapter.AuthorizeKeyAsync(

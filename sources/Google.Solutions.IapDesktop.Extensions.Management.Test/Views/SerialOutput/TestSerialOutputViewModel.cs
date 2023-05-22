@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -28,7 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -77,7 +78,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
             var serviceProvider = new ServiceRegistry();
             serviceProvider.AddSingleton<IJobService, MockJobService>();
             serviceProvider.AddSingleton<IComputeEngineAdapter>(
-                new ComputeEngineAdapter(credential.ToAuthorization()));
+                new ComputeEngineAdapter(
+                    credential.ToAuthorization(),
+                    TestProject.UserAgent));
 
             return new SerialOutputViewModel(serviceProvider)
             {

@@ -25,7 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +41,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var adapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var instance = await adapter
                 .GetInstanceAsync(
                     await testInstance,
@@ -62,7 +64,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var adapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var instance = await adapter.GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)
@@ -80,7 +84,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [LinuxInstance(PublicIp = false)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var adapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var instance = await adapter.GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)
@@ -94,7 +100,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(await credential.ToAuthorization());
+            var adapter = new ComputeEngineAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
             var instance = await adapter.GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)

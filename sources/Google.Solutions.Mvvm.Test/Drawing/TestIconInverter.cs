@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Properties;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Drawing;
 using System.Threading;

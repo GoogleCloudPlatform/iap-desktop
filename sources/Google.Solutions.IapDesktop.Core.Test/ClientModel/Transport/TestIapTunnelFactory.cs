@@ -20,15 +20,15 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;

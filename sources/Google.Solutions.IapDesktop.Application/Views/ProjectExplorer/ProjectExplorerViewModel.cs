@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Runtime;

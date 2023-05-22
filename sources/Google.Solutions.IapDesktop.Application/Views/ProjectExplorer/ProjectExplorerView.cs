@@ -19,17 +19,17 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;

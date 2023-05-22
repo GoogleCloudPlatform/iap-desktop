@@ -117,9 +117,9 @@
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Iap</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
+    <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
-      <Name>Google.Solutions.Testing.Common</Name>
+      <Name>Google.Solutions.Testing.Apis</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -25,7 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

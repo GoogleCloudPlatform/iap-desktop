@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Common.Mocks;
+using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;

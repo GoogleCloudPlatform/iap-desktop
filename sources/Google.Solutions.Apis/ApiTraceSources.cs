@@ -27,11 +27,11 @@ namespace Google.Solutions.Apis
 {
     public static class ApiTraceSources
     {
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        public static readonly TraceSource Default = new TraceSource(typeof(ApplicationContext).Namespace);
 
         static ApiTraceSources()
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            ApplicationContext.RegisterLogger(new TraceSourceLogger(Default));
         }
     }
 }

@@ -87,11 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationFixtureBase.cs" />
-    <Compile Include="Mocks\AuthorizationMocks.cs" />
     <Compile Include="Mocks\SynchronousJobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceTaskExtensions.cs" />
     <Compile Include="Views\ControlExtensions.cs" />
     <Compile Include="Views\TestMainForm.cs">
       <SubType>Form</SubType>
@@ -126,9 +124,9 @@
       <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>
       <Name>Google.Solutions.Mvvm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
+    <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
-      <Name>Google.Solutions.Testing.Common</Name>
+      <Name>Google.Solutions.Testing.Apis</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

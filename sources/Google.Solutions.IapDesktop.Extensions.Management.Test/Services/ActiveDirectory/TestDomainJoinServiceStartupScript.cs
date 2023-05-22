@@ -21,13 +21,14 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -58,7 +59,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask.ToAuthorization());
+                var computeEngineAdapter = new ComputeEngineAdapter(
+                    await credentialTask.ToAuthorization(),
+                    TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
@@ -96,7 +99,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask.ToAuthorization());
+                var computeEngineAdapter = new ComputeEngineAdapter(
+                    await credentialTask.ToAuthorization(),
+                    TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,

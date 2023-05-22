@@ -32,7 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;

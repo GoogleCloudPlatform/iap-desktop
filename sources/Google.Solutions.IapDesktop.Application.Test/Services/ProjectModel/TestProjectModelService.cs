@@ -21,6 +21,9 @@
 
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -29,7 +32,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

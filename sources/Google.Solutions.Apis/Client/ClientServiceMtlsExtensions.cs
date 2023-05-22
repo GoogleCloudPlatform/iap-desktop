@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Client
 
             if (HttpClientHandlerExtensions.CanUseClientCertificates)
             {
-                ApiTraceSources.Google.TraceInformation(
+                ApiTraceSources.Default.TraceInformation(
                     "Enabling MTLS for {0}",
                     mtlsBaseUrl);
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.Apis.Client
 
             if (HttpClientHandlerExtensions.CanUseClientCertificates)
             {
-                ApiTraceSources.Google.TraceInformation("Enabling MTLS for OAuth");
+                ApiTraceSources.Default.TraceInformation("Enabling MTLS for OAuth");
 
                 //
                 // Add client certificate.

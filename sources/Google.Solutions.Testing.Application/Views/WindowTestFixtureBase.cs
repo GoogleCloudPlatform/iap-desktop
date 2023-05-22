@@ -20,6 +20,8 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -29,10 +31,9 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Core.Auth;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -220,7 +221,8 @@ namespace Google.Solutions.Testing.Application.Views
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
             var credentialAdapter = new WindowsCredentialService(
                 new ComputeEngineAdapter(
-                    TestProject.GetAdminCredential().ToAuthorization()));
+                    TestProject.GetAdminCredential().ToAuthorization(),
+                    TestProject.UserAgent));
 
             return await credentialAdapter
                 .CreateWindowsCredentialsAsync(

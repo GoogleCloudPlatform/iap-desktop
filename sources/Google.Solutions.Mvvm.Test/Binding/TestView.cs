@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
-using Google.Solutions.Testing.Common.Mocks;
+using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;

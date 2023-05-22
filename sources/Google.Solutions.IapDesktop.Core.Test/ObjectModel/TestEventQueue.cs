@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;

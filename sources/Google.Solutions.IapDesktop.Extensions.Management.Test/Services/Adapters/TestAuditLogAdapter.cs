@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
@@ -30,8 +31,8 @@ using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
 using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -61,7 +62,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
-            var adapter = new AuditLogAdapter(await credential.ToAuthorization());
+            var adapter = new AuditLogAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -110,7 +114,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
             await testInstance;
             var instanceRef = await testInstance;
 
-            var adapter = new AuditLogAdapter(await credential.ToAuthorization());
+            var adapter = new AuditLogAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ProcessInstanceEventsAsync(
@@ -144,7 +150,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
                 OrderBy = "timestamp desc"
             };
 
-            var adapter = new AuditLogAdapter(await credential.ToAuthorization());
+            var adapter = new AuditLogAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.ListEventsAsync(
                     request,

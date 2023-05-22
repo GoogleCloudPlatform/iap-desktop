@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Apis.Integration;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop

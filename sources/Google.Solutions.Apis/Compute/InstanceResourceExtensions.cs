@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public static class InstanceResourceExtensions
+    internal static class InstanceResourceExtensions
     {
         public static IAsyncReader<string> OpenSerialPort(
             this InstancesResource instancesResource,
@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Compute
 
             public async Task<string> ReadAsync(CancellationToken token)
             {
-                using (ApiTraceSources.Google.TraceMethod().WithParameters(this.nextOffset))
+                using (ApiTraceSources.Default.TraceMethod().WithParameters(this.nextOffset))
                 {
                     var request = this.instancesResource.GetSerialPortOutput(
                         this.instance.ProjectId,
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Compute
                     request.Start = this.nextOffset;
                     var output = await request.ExecuteAsync(token).ConfigureAwait(false);
 
-                    ApiTraceSources.Google.TraceVerbose(
+                    ApiTraceSources.Default.TraceVerbose(
                         "Read {0} chars from serial port [start={1}, next={2}]",
                         output.Contents == null ? 0 : output.Contents.Length,
                         output.Start.Value,

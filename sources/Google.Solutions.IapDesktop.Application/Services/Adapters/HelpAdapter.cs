@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.Diagnostics;
+using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Platform.Net;
 using System;
 
@@ -56,10 +56,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
             "Device certificate authentication",
             "https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access");
-
-        public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
-            "Project access control",
-            "https://cloud.google.com/compute/docs/access");
 
         public static readonly IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
             "Generating Windows passwords",
