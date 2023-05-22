@@ -19,19 +19,28 @@
 // under the License.
 //
 
-
 using Google.Solutions.Apis.Diagnostics;
-using System.Diagnostics;
+using System;
 
-namespace Google.Solutions.Apis
+namespace Google.Solutions.Apis.Compute
 {
-    public static class ApiTraceSources
+    internal static class ComputeHelpTopics
     {
-        public static readonly TraceSource Default = new TraceSource(typeof(ApplicationContext).Namespace);
+        public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
+            "Project access control",
+            "https://cloud.google.com/compute/docs/access");
 
-        static ApiTraceSources()
+
+        private class HelpTopic : IHelpTopic
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Default));
+            public string Title { get; }
+            public Uri Address { get; }
+
+            public HelpTopic(string title, string address)
+            {
+                this.Title = title;
+                this.Address = new Uri(address);
+            }
         }
     }
 }

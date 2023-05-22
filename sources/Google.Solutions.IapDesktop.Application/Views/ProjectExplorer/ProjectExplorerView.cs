@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;

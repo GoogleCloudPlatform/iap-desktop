@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;

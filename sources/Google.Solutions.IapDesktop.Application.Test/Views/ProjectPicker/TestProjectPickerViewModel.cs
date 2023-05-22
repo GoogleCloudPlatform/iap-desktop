@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Testing.Application.Test;

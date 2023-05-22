@@ -25,6 +25,7 @@ using Google.Apis.Requests;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
@@ -33,7 +34,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Apis.Crm
 {
     public interface IResourceManagerAdapter
     {
@@ -76,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -90,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         $"You do not have sufficient permissions to access project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -101,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             int? maxResults,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(filter))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(filter))
             {
                 var request = new ProjectsResource.ListRequest(this.service)
                 {
@@ -142,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     .EnsureNotNull()
                     .Where(p => p.LifecycleState == "ACTIVE");
 
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApiTraceSources.Default.TraceVerbose(
                     "Found {0} projects", activeProjects.Count());
 
                 return new FilteredProjectList(activeProjects, truncated);
@@ -154,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string permission,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(permission))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(permission))
             {
                 var response = await this.service.Projects.TestIamPermissions(
                         new TestIamPermissionsRequest()

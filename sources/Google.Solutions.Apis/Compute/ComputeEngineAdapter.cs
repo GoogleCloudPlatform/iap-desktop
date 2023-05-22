@@ -36,7 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Apis.Compute
 {
 
     /// <summary>
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         $"You do not have sufficient permissions to access project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Instances);
 
-                    ApplicationTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
+                    ApiTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
                 }
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         $"project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ZoneLocator zoneLocator,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(zoneLocator))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(zoneLocator))
             {
                 try
                 {
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             cancellationToken)
                         .ConfigureAwait(false);
 
-                    ApplicationTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
+                    ApiTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
                 }
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         $"project {zoneLocator.ProjectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instance,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 try
                 {
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to access " +
                             $"VM instance {instance.Name} in project {instance.ProjectId}",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string queryPath,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 try
                 {
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to access the guest attributes " +
                             $"of VM instance {instance.Name} in project {instance.ProjectId}",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instanceRef,
             ushort portNumber)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
                 return this.service.Instances.OpenSerialPort(
                     instanceRef,
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 try
                 {
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         $"You don't have sufficient permissions to modify " +
                             $"the metadata of VM instance {instance.Name} in project " +
                             $"{instance.ProjectId}",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     throw new ResourceAccessDeniedException(
                         "You don't have sufficient permissions to modify " +
                             $"the metadata of project {projectId}",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instanceLocator,
             string permission)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(permission))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(permission))
             {
                 try
                 {
@@ -390,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     // permission. Fail open if the caller does not have that
                     // permission.
                     //
-                    ApplicationTraceSources.Default.TraceWarning(
+                    ApiTraceSources.Default.TraceWarning(
                         "Permission check failed because caller does not have " +
                         "the permission to test permissions");
                     return true;
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
            InstanceControlCommand command,
            CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod()
+            using (ApiTraceSources.Default.TraceMethod()
                 .WithParameters(instance, command))
             {
                 try
@@ -473,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to control the " +
                             $"VM instance {instance.Name} in project {instance.ProjectId}",
-                        HelpTopics.ProjectAccessControl,
+                        ComputeHelpTopics.ProjectAccessControl,
                         e);
                 }
             }

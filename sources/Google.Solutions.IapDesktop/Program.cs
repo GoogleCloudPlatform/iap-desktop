@@ -23,6 +23,8 @@ using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -81,7 +83,7 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
-            ApiTraceSources.Google,
+            ApiTraceSources.Default,
             PlatformTraceSources.Default,
             CommonTraceSources.Default,
             IapTraceSources.Default,

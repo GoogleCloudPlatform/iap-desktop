@@ -92,17 +92,14 @@
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\Service.cs" />
-    <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\BuganizerAdapter.cs" />
     <Compile Include="Services\Adapters\ExternalRestAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\SignInAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
-    <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Data\OperatingSystems.cs" />
     <Compile Include="Data\Permissions.cs" />
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
-    <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Services\Auth\Authorization.cs" />
     <Compile Include="Services\Auth\DeviceEnrollment.cs" />
     <Compile Include="Services\Management\InstanceControlService.cs" />

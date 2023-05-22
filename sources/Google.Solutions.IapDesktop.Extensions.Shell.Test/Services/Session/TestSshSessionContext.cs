@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;

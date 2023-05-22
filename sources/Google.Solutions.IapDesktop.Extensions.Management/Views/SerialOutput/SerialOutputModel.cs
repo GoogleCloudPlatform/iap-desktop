@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Text;

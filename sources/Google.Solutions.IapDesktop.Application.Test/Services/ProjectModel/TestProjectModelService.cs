@@ -22,6 +22,8 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.IapDesktop.Application;

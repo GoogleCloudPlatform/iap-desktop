@@ -22,6 +22,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
