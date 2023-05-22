@@ -23,8 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
-using Google.Solutions.Testing.Application;
-using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
@@ -36,7 +34,7 @@ namespace Google.Solutions.Apis.Test.Crm
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestResourceManagerAdapter : ApplicationFixtureBase
+    public class TestResourceManagerAdapter
     {
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(

@@ -87,11 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationFixtureBase.cs" />
-    <Compile Include="Mocks\AuthorizationMocks.cs" />
     <Compile Include="Mocks\SynchronousJobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceTaskExtensions.cs" />
     <Compile Include="Views\ControlExtensions.cs" />
     <Compile Include="Views\TestMainForm.cs">
       <SubType>Form</SubType>

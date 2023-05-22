@@ -21,15 +21,13 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.Testing.Common.Integration;
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Testing.Application
+namespace Google.Solutions.Testing.Common.Integration
 {
     public static class ResourceTaskExtensions
     {

@@ -104,7 +104,9 @@
     <Compile Include="Integration\InstanceFactory.cs" />
     <Compile Include="Integration\PredefinedRole.cs" />
     <Compile Include="Integration\ResourceTask.cs" />
+    <Compile Include="Integration\ResourceTaskExtensions.cs" />
     <Compile Include="Integration\TestProject.cs" />
+    <Compile Include="Mock\AuthorizationMocks.cs" />
     <Compile Include="Mock\ServiceProviderMocks.cs" />
     <Compile Include="Net\InprocHttpProxy.cs" />
     <Compile Include="Net\NetTracing.cs" />

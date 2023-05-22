@@ -23,8 +23,8 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
-using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Common.Mocks;
 using Moq;
 using NUnit.Framework;
 

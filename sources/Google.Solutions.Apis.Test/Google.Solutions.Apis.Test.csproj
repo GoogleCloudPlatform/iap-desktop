@@ -118,10 +118,6 @@
       <Project>{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
-      <Project>{7BDC9ED7-1830-47D9-AF55-AB50C584E526}</Project>
-      <Name>Google.Solutions.Testing.Application</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
       <Name>Google.Solutions.Testing.Common</Name>

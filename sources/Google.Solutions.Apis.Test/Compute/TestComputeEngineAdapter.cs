@@ -23,8 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Application;
-using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
@@ -37,7 +35,7 @@ namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestComputeEngineAdapter : ApplicationFixtureBase
+    public class TestComputeEngineAdapter
     {
         //---------------------------------------------------------------------
         // Projects.
