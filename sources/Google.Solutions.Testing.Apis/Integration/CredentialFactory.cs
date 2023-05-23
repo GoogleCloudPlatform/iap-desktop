@@ -74,7 +74,7 @@ namespace Google.Solutions.Testing.Apis.Integration
             {
                 var policy = await service.Projects
                     .GetIamPolicy(
-                        new GetIamPolicyRequest(),
+                        new Google.Apis.CloudResourceManager.v1.Data.GetIamPolicyRequest(),
                         TestProject.ProjectId)
                     .ExecuteAsync()
                     .ConfigureAwait(false);
