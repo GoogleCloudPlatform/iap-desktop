@@ -21,7 +21,7 @@
 
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Diagnostics;
 

@@ -98,7 +98,6 @@
     <Compile Include="Diagnostics\TestBugReport.cs" />
     <Compile Include="Host\TestInstall.cs" />
     <Compile Include="Host\TestProfile.cs" />
-    <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
@@ -125,7 +124,6 @@
     <Compile Include="Host\TestCommandLineOptions.cs" />
     <Compile Include="Services\Auth\TestDeviceEnrollment.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
-    <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Theme\TestThemeSettingsRepository.cs" />
     <Compile Include="Theme\TestVSTheme.cs" />
     <Compile Include="Data\TestIapRdpUrl.cs" />

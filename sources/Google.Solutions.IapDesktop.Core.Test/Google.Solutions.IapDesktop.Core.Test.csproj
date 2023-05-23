@@ -91,6 +91,8 @@
     <Compile Include="ClientModel\Transport\TestDirectTransportFactory.cs" />
     <Compile Include="ClientModel\Transport\TestIapTunnelFactory.cs" />
     <Compile Include="ObjectModel\TestEventQueue.cs" />
+    <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\TestProtocolRegistry.cs" />
     <Compile Include="ClientModel\Transport\TestIapTransportFactory.cs" />

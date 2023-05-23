@@ -27,9 +27,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 
-#pragma warning disable CA1032 // Implement standard exception constructors
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Core.ObjectModel
 {
     /// <summary>
     /// Registry that allows lookup and creation of object by type, similar to a 
