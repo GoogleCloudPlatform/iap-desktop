@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
 {
     public partial class ReleaseNotesView : DocumentWindow, IView<ReleaseNotesViewModel>
     {
-        public ReleaseNotesView(IServiceProvider serviceProvider) 
+        public ReleaseNotesView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             InitializeComponent();
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
                 m => m.Summary,
                 context);
 
-            this.document.LinkClicked += (_, args) 
+            this.document.LinkClicked += (_, args)
                 => Browser.Default.Navigate(args.LinkText);
 
             viewModel.RefreshCommand

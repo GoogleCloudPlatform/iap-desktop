@@ -21,7 +21,6 @@
 
 
 using Google.Solutions.Iap;
-using Google.Solutions.Iap.Protocol;
 using System;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport

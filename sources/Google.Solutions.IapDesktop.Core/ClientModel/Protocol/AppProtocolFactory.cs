@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
             internal AppProtocol.Command ParseCommand()
             {
-                if (this.Command == null || 
+                if (this.Command == null ||
                     string.IsNullOrWhiteSpace(this.Command.Executable))
                 {
                     return null;
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
         }
 
-        public InvalidAppProtocolException(string message, Exception innerException) 
+        public InvalidAppProtocolException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

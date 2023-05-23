@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ErrorHandling
 {
-    public abstract class ThrowExceptionCommandBase 
+    public abstract class ThrowExceptionCommandBase
         : MenuCommandBase<DebugMenu.Context>, IMenuCommand<DebugMenu>
     {
         protected ThrowExceptionCommandBase(string text) : base(text)
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ErrorHandling
     [Service]
     public class ThrowSyncExceptionWithHelpCommand : ThrowExceptionCommandBase
     {
-        public ThrowSyncExceptionWithHelpCommand() 
+        public ThrowSyncExceptionWithHelpCommand()
             : base("&Throw ExceptionWithHelp (sync)")
         {
         }

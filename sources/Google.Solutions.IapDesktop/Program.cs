@@ -30,7 +30,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;

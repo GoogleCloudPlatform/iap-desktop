@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release(
                     "1.2.3.4",
-                    null, 
+                    null,
                     null,
                     new System.Collections.Generic.List<GithubAdapter.ReleaseAsset>()
                     {

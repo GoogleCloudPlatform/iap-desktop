@@ -29,7 +29,7 @@ using System.Net;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
 {
     [TestFixture]
-    public class TestCurrentProcessPolicy 
+    public class TestCurrentProcessPolicy
         : EquatableFixtureBase<CurrentProcessPolicy, ITransportPolicy>
     {
         protected override CurrentProcessPolicy CreateInstance()

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Iap.Protocol;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies

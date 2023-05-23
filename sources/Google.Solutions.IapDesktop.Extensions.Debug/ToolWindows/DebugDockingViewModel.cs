@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System.Diagnostics;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows

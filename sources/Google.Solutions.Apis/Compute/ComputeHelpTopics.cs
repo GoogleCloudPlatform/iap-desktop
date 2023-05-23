@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Diagnostics;
-using System;
 
 namespace Google.Solutions.Apis.Compute
 {

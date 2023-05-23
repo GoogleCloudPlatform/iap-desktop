@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;

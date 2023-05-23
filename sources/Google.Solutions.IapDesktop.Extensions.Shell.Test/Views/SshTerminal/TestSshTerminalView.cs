@@ -26,14 +26,11 @@ using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -42,12 +39,12 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Testing.Application;
+using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
-using Google.Solutions.Testing.Apis.Integration;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -58,7 +55,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Platform.Security;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {

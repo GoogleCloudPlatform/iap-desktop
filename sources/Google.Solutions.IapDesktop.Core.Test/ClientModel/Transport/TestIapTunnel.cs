@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap;
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
@@ -90,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 IapTunnelFlags.None))
             {
                 Assert.AreEqual(
-                    SampleLoopbackEndpoint, 
+                    SampleLoopbackEndpoint,
                     tunnel.LocalEndpoint);
             }
         }

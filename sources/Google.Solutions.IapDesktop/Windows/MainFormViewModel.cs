@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;

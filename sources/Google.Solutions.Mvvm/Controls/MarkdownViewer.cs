@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Format;
 using System;
 using System.Collections.Generic;

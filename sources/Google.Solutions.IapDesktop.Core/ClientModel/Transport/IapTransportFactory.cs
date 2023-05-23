@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     void OnClosed(object sender, EventArgs __)
                     {
                         var tunnel = (IapTunnel)sender;
-                        
+
                         //
                         // Remove from pool.
                         //
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         tunnel,
                         protocol);
                 }
-                catch (SshRelayDeniedException e) 
+                catch (SshRelayDeniedException e)
                 {
                     throw new TransportFailedException(
                         "You are not authorized to connect to this VM instance.\n\n" +

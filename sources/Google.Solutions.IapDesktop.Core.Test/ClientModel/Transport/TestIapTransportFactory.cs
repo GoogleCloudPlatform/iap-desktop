@@ -33,7 +33,6 @@ using Google.Solutions.Testing.Apis.Threading;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -428,16 +427,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 eventQueue,
                 SampleUserAgent,
                 tunnelFactory.Object);
-            
+
             int poolSizeWhenCreated = 0;
             int poolSizeWhenClosed = 0;
             eventQueue.Subscribe<TunnelEvents.TunnelCreated>(
-                _ => {
+                _ =>
+                {
                     poolSizeWhenCreated = factory.Pool.Count();
                     return Task.CompletedTask;
                 });
             eventQueue.Subscribe<TunnelEvents.TunnelClosed>(
-                _ => {
+                _ =>
+                {
                     poolSizeWhenClosed = factory.Pool.Count();
                     return Task.CompletedTask;
                 });

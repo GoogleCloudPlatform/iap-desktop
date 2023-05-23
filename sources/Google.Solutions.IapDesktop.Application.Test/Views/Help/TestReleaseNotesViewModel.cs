@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
                 .ThrowsAsync(new Exception("mock"));
 
             var viewModel = new ReleaseNotesViewModel(
-                new Mock<IInstall>().Object, 
+                new Mock<IInstall>().Object,
                 adapter.Object);
 
             await viewModel.RefreshCommand
@@ -89,10 +89,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
             var adapter = new Mock<IGithubAdapter>();
             adapter
                 .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] { 
+                .ReturnsAsync(new[] {
                     oldRelease.Object,
                     currentRelease.Object,
-                    latestRelease.Object 
+                    latestRelease.Object
                 });
 
             var viewModel = new ReleaseNotesViewModel(
@@ -124,13 +124,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Help
 
             var currentRelease = CreateRelease(currentVersion, "current release");
             var skippedRelease = CreateRelease(new Version(2, 0, 1, 0), "skipped release");
-            var previousRelease = CreateRelease(previousVersion,  "previous release");
+            var previousRelease = CreateRelease(previousVersion, "previous release");
             var oldRelease = CreateRelease(new Version(1, 0, 0, 0), "old release");
 
             var adapter = new Mock<IGithubAdapter>();
             adapter
                 .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] { 
+                .ReturnsAsync(new[] {
                      oldRelease.Object,
                      currentRelease.Object,
                      previousRelease.Object,

@@ -29,8 +29,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
@@ -77,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             this.service = new LoggingService(
                 new AuthorizedClientInitializer(
                     authorization,
-                    userAgent, 
+                    userAgent,
                     MtlsBaseUri));
         }
 

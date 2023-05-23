@@ -111,13 +111,13 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 this.Name.GetHashCode() ^
                 this.RemotePort ^
                 this.Policy.GetHashCode() ^
-                (this.LocalEndpoint?.GetHashCode() ?? 0)^
+                (this.LocalEndpoint?.GetHashCode() ?? 0) ^
                 (this.LaunchCommand?.GetHashCode() ?? 0);
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as AppProtocol); 
+            return Equals(obj as AppProtocol);
         }
 
         public bool Equals(IProtocol other)

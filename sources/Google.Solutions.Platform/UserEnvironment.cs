@@ -56,8 +56,8 @@ namespace Google.Solutions.Platform
         {
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
             public static extern int ExpandEnvironmentStrings(
-                [MarshalAs(UnmanagedType.LPTStr)] string source, 
-                [Out] StringBuilder destination, 
+                [MarshalAs(UnmanagedType.LPTStr)] string source,
+                [Out] StringBuilder destination,
                 int size);
         }
     }

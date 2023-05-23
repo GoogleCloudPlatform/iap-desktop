@@ -25,17 +25,14 @@ using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
-using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -64,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IOperationProgressDialog operationProgressDialog;
         private readonly IDownloadFileDialog downloadFileDialog;
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IQuarantine  quarantine;
+        private readonly IQuarantine quarantine;
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;

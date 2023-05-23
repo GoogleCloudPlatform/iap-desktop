@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 "cmd.exe",
                 new AppProtocol.Command("cmd.exe", null).ToString());
             Assert.AreEqual(
-                "cmd.exe args", 
+                "cmd.exe args",
                 new AppProtocol.Command("cmd.exe", "args").ToString());
         }
 

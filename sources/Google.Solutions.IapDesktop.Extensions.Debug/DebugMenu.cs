@@ -34,7 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug
         /// <summary>
         /// Pseudo-context.
         /// </summary>
-        public sealed class Context {
+        public sealed class Context
+        {
             public static Context None = new Context();
         }
 

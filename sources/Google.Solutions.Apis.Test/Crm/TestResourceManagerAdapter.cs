@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Testing.Apis;
