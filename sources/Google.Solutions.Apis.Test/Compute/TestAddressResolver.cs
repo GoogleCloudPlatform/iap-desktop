@@ -22,12 +22,9 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

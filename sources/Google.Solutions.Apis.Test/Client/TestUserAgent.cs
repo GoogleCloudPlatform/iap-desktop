@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Test.Client
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
 
             Assert.AreEqual(
-                $"WidgetTool/1.0 (Windows 95) CLR/{ClrVersion.Version}", 
+                $"WidgetTool/1.0 (Windows 95) CLR/{ClrVersion.Version}",
                 ua.ToString());
             Assert.AreEqual(ua.ToString(), ua.ToString());
         }

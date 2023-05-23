@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             using (var transport = await factory
                 .CreateTransportAsync(
-                    protocol.Object, 
+                    protocol.Object,
                     SampleInstance,
                     NetworkInterfaceType.PrimaryInternal,
                     22,

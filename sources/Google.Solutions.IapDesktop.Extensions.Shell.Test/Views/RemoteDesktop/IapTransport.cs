@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Iap;
-using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
@@ -48,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         }
 
         public static IapTransport ForRdp(
-            InstanceLocator instance, 
+            InstanceLocator instance,
             ICredential credential)
         {
             var policy = new AllowAllPolicy();

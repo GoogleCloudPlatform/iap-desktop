@@ -24,7 +24,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Net;
 using System.Threading;
@@ -36,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
     /// Factory for direct (i.e., non-IAP based) transports.
     /// </summary>
     public interface IDirectTransportFactory
-    { 
+    {
         /// <summary>
         /// Create a VPC transport to a VM instance/port.
         /// </summary>
@@ -80,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     .ConfigureAwait(false);
 
                 return new Transport(
-                    protocol, 
+                    protocol,
                     new IPEndPoint(address, port));
             }
         }

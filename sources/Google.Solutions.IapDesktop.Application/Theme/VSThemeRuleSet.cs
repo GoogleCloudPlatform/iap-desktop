@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             void SetBackColor()
             {
-                text.BackColor = text.ReadOnly 
+                text.BackColor = text.ReadOnly
                     ? this.theme.Palette.TextBox.BackgroundDisabled
                     : this.theme.Palette.TextBox.Background;
             }

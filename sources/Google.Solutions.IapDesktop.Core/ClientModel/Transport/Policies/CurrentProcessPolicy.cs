@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as CurrentProcessPolicy); 
+            return Equals(obj as CurrentProcessPolicy);
         }
 
         public bool Equals(ITransportPolicy other)

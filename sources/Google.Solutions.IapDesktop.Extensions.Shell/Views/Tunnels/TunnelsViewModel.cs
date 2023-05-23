@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -67,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             // Keep the model up to date.
             //
             eventService.Subscribe<TunnelEvents.TunnelCreated>(_ => RefreshTunnels());
-            eventService.Subscribe<TunnelEvents.TunnelClosed> (_ => RefreshTunnels());
+            eventService.Subscribe<TunnelEvents.TunnelClosed>(_ => RefreshTunnels());
         }
 
         //---------------------------------------------------------------------

@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System.Threading;
 using System.Threading.Tasks;

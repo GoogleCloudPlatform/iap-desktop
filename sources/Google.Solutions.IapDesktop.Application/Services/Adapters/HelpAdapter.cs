@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Platform.Net;
-using System;
 
 #pragma warning disable CA1822 // Mark members as static
 

@@ -33,7 +33,7 @@ namespace Google.Solutions.Testing.Apis
 {
     public static class ExceptionAssert
     {
-        public static TActual ThrowsAggregateException<TActual>(TestDelegate code) 
+        public static TActual ThrowsAggregateException<TActual>(TestDelegate code)
             where TActual : Exception
         {
             return Assert.Throws<TActual>(() =>
@@ -51,7 +51,7 @@ namespace Google.Solutions.Testing.Apis
 
         public static TActual ThrowsAggregateException<TActual>(
                 IHelpTopic expectedHelpTopic,
-                TestDelegate code) 
+                TestDelegate code)
             where TActual : Exception
         {
             return Assert.Throws<TActual>(() =>

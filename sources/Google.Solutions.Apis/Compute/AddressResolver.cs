@@ -67,8 +67,8 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
 
         public async Task<IPAddress> GetAddressAsync(
-            InstanceLocator instance, 
-            NetworkInterfaceType type, 
+            InstanceLocator instance,
+            NetworkInterfaceType type,
             CancellationToken cancellationToken)
         {
             var instanceData = await this.computeEngine
@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Compute
             {
                 case NetworkInterfaceType.PrimaryInternal:
                     {
-                        return instanceData.PrimaryInternalAddress() 
+                        return instanceData.PrimaryInternalAddress()
                             ?? throw new AddressNotFoundException(
                                 "The VM instance doesn't have a suitable internal IPv4 address",
                                 ComputeHelpTopics.LocateInstanceIpAddress);
@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Compute
     {
         public IHelpTopic Help { get; }
 
-        public AddressNotFoundException(string message, IHelpTopic help) 
+        public AddressNotFoundException(string message, IHelpTopic help)
             : base(message)
         {
             this.Help = help;

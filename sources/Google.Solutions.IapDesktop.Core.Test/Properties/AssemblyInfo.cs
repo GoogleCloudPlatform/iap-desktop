@@ -20,7 +20,6 @@
 //
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("Google.Solutions.IapDesktop.Core.Test")]
 [assembly: AssemblyDescription("Google.Solutions.IapDesktop.Core.Test")]

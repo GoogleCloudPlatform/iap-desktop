@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
 {
     [TestFixture]
-    public class TestAllowAllPolicy 
+    public class TestAllowAllPolicy
         : EquatableFixtureBase<AllowAllPolicy, ITransportPolicy>
     {
         protected override AllowAllPolicy CreateInstance()

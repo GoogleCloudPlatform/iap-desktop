@@ -35,7 +35,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -148,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             toolTip.AppendLine($"User: {credential}");
             toolTip.AppendLine($"Instance: {instance.Name}");
             toolTip.AppendLine($"Project: {instance.ProjectId}");
-            
+
             if (transportType == SessionTransportType.IapTunnel)
             {
                 toolTip.AppendLine();

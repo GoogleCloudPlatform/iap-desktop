@@ -22,10 +22,8 @@
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Text;
@@ -61,7 +59,7 @@ namespace Google.Solutions.Apis.Compute
 
             this.service = new ComputeService(
                 new AuthorizedClientInitializer(
-                    authorization, 
+                    authorization,
                     userAgent,
                     MtlsBaseUri));
         }

@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Ssh.Format;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 

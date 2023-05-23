@@ -21,10 +21,9 @@
 
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;

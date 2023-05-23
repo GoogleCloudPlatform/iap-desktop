@@ -22,12 +22,10 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.Testing.Application;
-using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Threading;

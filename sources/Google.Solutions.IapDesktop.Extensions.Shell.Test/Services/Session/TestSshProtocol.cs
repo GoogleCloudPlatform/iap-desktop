@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
