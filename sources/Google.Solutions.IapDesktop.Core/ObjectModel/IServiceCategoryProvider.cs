@@ -19,23 +19,24 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Core.ObjectModel
 {
-    public class Service<TService>
+    /// <summary>
+    /// Service provider for looking up services by category.
+    /// </summary>
+    public interface IServiceCategoryProvider : IServiceProvider
     {
-        private readonly IServiceProvider serviceProvider;
+        /// <summary>
+        /// Return all services that implement a certain category.
+        /// </summary>
+        IEnumerable<object> GetServicesByCategory(Type category);
 
-        public Service(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
-        }
-
-        public TService GetInstance()
-        {
-            return (TService)this.serviceProvider.GetService(typeof(TService));
-        }
+        /// <summary>
+        /// Return all services that implement a certain category.
+        /// </summary>
+        IEnumerable<TCategory> GetServicesByCategory<TCategory>();
     }
 }

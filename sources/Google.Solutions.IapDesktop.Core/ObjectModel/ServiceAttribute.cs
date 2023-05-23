@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Core.ObjectModel
 {
     /// <summary>
     /// Declare that a class should be registered as service.

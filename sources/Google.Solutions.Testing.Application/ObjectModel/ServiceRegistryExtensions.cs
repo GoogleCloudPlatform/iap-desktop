@@ -18,7 +18,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Moq;
 using System;
 

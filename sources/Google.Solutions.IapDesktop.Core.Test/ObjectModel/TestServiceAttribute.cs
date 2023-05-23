@@ -19,19 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using NUnit.Framework;
 using System.Linq;
 using System.Reflection;
 
-#pragma warning disable CA1034 // Nested types should not be visible
-#pragma warning disable CA1040 // Avoid empty interfaces
-
-namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
+namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 {
     [TestFixture]
-    public class TestServiceAttribute : ApplicationFixtureBase
+    public class TestServiceAttribute
     {
         //---------------------------------------------------------------------
         // Register singleton service.

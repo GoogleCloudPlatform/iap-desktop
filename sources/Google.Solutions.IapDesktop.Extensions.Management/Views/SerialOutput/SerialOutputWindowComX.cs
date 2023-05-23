@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput

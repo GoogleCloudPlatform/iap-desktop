@@ -81,6 +81,10 @@
     <Compile Include="ClientModel\Transport\DirectTransportFactory.cs" />
     <Compile Include="ClientModel\Protocol\AppProtocol.cs" />
     <Compile Include="ClientModel\Protocol\ProtocolRegistry.cs" />
+    <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
+    <Compile Include="ObjectModel\Service.cs" />
+    <Compile Include="ObjectModel\ServiceAttribute.cs" />
+    <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\IProtocol.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolTarget.cs" />
