@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             window.Show();
 
             await session.ConnectAsync()
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             OnSessionConnected(session);
 
