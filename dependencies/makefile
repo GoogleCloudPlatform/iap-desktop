@@ -25,12 +25,14 @@ PACKAGES_BUCKET = iapdesktop-kokoro-artifacts
 
 # Directories containing projects
 DIRS=\
+    $(MAKEDIR)\sources\tsc \
     $(MAKEDIR)\sources\vtnetcore \
     $(MAKEDIR)\sources\dockpanelsuite \
     $(MAKEDIR)\sources\libssh2
     
 # Nuget packages to build
 PACKAGES=\
+    $(MAKEDIR)\sources\tsc\obj\google.solutions.tsc.nupkg \
     $(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
     $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
     $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
