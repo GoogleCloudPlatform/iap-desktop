@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
-
     /// <summary>
     /// Context for parameterizing a protocol before creating a 
     /// transport and session.
@@ -40,4 +39,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         Task<ITransport> ConnectTransportAsync(CancellationToken cancellationToken);
     }
 
+    public interface IProtocolFactory
+    {
+        /// <summary>
+        /// Create a protocol context for the given target.
+        /// </summary>
+        Task<IProtocolContext> CreateContextAsync(
+            IProtocolTarget target,
+            uint flags,
+            CancellationToken cancellationToken);
+    }
 }

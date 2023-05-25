@@ -25,6 +25,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
     /// <summary>
     /// A protocol that can be used atop a transport for certain targets.
+    /// 
+    /// Protocol objects can be singletons and compare by value.
     /// </summary>
     public interface IProtocol : IEquatable<IProtocol>
     {
@@ -37,13 +39,5 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Check if this profile is applicable for the given target.
         /// </summary>
         bool IsAvailable(IProtocolTarget target);
-
-        //TODO: Extract to IProtocolSessionContextFactory?
-        ///// <summary>
-        ///// Create a context for the given target.
-        ///// </summary>
-        //Task<IProtocolSessionContext> CreateSessionContextAsync(
-        //    IProtocolTarget target,
-        //    CancellationToken cancellationToken);
     }
 }
