@@ -19,31 +19,25 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
+
     /// <summary>
-    /// A protocol that can be used atop a transport for certain targets.
+    /// Context for parameterizing a protocol before creating a 
+    /// transport and session.
     /// </summary>
-    public interface IProtocol : IEquatable<IProtocol>
+    public interface IProtocolContext : IDisposable
     {
         /// <summary>
-        /// Name of the profile, suitable for displaying.
+        /// Create a transport, which might involve creating a tunnel.
+        /// This might require remote calls.
         /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Check if this profile is applicable for the given target.
-        /// </summary>
-        bool IsAvailable(IProtocolTarget target);
-
-        //TODO: Extract to IProtocolSessionContextFactory?
-        ///// <summary>
-        ///// Create a context for the given target.
-        ///// </summary>
-        //Task<IProtocolSessionContext> CreateSessionContextAsync(
-        //    IProtocolTarget target,
-        //    CancellationToken cancellationToken);
+        Task<ITransport> ConnectTransportAsync(CancellationToken cancellationToken);
     }
+
 }
