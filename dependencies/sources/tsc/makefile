@@ -27,7 +27,7 @@ TSC_VERSION = 9.0.0.$(TAG)
 
 default: package
 
-$(MAKEDIR)\bin\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg:
+$(MAKEDIR)\obj\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg:
 	@echo "========================================================"
 	@echo "=== Building tsc                                     ==="
 	@echo "========================================================"
@@ -62,8 +62,8 @@ $(MAKEDIR)\bin\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg:
 # Main targets
 #------------------------------------------------------------------------------
 
-package: $(MAKEDIR)\bin\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg
-    copy /Y $(MAKEDIR)\obj\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg $(MAKEDIR)\Google.Solutions.Tsc.nupkg
+package: $(MAKEDIR)\obj\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg
+    copy /Y $(MAKEDIR)\obj\$(CONFIGURATION)\Google.Solutions.Tsc.$(TSC_VERSION).nupkg $(MAKEDIR)\obj\Google.Solutions.Tsc.nupkg
 
 clean:
     msbuild /t:Clean "$(MAKEDIR)\Google.Solutions.Tsc.csproj"

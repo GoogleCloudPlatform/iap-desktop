@@ -32,7 +32,7 @@ DIRS=\
     
 # Nuget packages to build
 PACKAGES=\
-    $(MAKEDIR)\sources\tsc\google.solutions.tsc.nupkg \
+    $(MAKEDIR)\sources\tsc\obj\google.solutions.tsc.nupkg \
     $(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
     $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
     $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
