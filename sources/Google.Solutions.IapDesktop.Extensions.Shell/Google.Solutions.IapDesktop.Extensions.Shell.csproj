@@ -57,6 +57,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AxInterop.MSTSCLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Solutions.Tsc.9.0.0.1\lib\net462\AxInterop.MSTSCLib.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.60.0\lib\net45\Google.Apis.dll</HintPath>
     </Reference>
@@ -77,6 +80,13 @@
     </Reference>
     <Reference Include="Google.Apis.PlatformServices, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.60.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Solutions.Tsc, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Solutions.Tsc.9.0.0.1\lib\net462\Google.Solutions.Tsc.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.MSTSCLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Solutions.Tsc.9.0.0.1\lib\net462\Interop.MSTSCLib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -200,9 +210,6 @@
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\TerminalOptionsViewModel.cs" />
-    <Compile Include="Views\RemoteDesktop\MsRdpClient.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Views\RemoteDesktop\IRemoteDesktopSession.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
@@ -289,23 +296,6 @@
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Iap</Name>
     </ProjectReference>
-    <COMReference Include="AxMSTSCLib">
-      <Guid>{8C11EFA1-92C3-11D1-BC1E-00C04FA31489}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>aximp</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
-    <COMReference Include="MSTSCLib">
-      <Guid>{8C11EFA1-92C3-11D1-BC1E-00C04FA31489}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
       <Project>{83571a48-14e9-4cb2-8d7e-c12deeb967b7}</Project>
       <Name>Google.Solutions.Mvvm</Name>
@@ -429,7 +419,9 @@
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
 copy /Y $(TargetDir)\*ssh* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
 copy /Y $(TargetDir)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
+copy /Y $(TargetDir)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
+copy /Y $(TargetDir)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
