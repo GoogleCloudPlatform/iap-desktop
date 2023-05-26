@@ -28,10 +28,6 @@ namespace Google.Solutions.Apis.Client
 {
     public class AuthorizedClientInitializer : BaseClientService.Initializer
     {
-        private readonly ICredential object1;
-        private readonly IDeviceEnrollment object2;
-        private readonly object mtlsBaseUri;
-
         public AuthorizedClientInitializer(
             IAuthorization authorization,
             UserAgent userAgent,
@@ -41,13 +37,6 @@ namespace Google.Solutions.Apis.Client
                   userAgent,
                   mtlsBaseUrl)
         { }
-
-        public AuthorizedClientInitializer(ICredential object1, IDeviceEnrollment object2, object mtlsBaseUri)
-        {
-            this.object1 = object1;
-            this.object2 = object2;
-            this.mtlsBaseUri = mtlsBaseUri;
-        }
 
         public AuthorizedClientInitializer(
             ICredential credential,

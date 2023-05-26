@@ -30,7 +30,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Client
 {
-    public static class ClientServiceMtlsExtensions
+    internal static class ClientServiceMtlsExtensions
     {
         /// <summary>
         /// Enable mTLS/device certificate authentication.
