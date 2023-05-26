@@ -24,19 +24,18 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Auth
+namespace Google.Solutions.Apis.Test.Auth
 {
     [TestFixture]
-    public class TestSignInAdapter : ApplicationFixtureBase
+    public class TestSignInAdapter
     {
         //---------------------------------------------------------------------
         // TrySignInWithRefreshTokenAsync.

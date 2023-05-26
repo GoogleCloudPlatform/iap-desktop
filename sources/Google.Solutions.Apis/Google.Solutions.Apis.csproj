@@ -66,6 +66,7 @@
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Auth\IAuthorization.cs" />
     <Compile Include="Auth\IDeviceEnrollment.cs" />
+    <Compile Include="Auth\SignInAdapter.cs" />
     <Compile Include="Auth\UserInfo.cs" />
     <Compile Include="Client\AuthorizedClientInitializer.cs" />
     <Compile Include="Client\ClientServiceMtlsExtensions.cs" />
