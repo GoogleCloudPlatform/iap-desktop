@@ -273,7 +273,7 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
-                return new SerialPortStream(
+                return new SerialPortReader(
                     this.service.Instances,
                     instanceRef,
                     portNumber);

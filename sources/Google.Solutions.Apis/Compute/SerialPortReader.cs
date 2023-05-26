@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    internal class SerialPortStream : IAsyncReader<string>
+    internal class SerialPortReader : IAsyncReader<string>
     {
         private readonly InstancesResource instancesResource;
         private readonly InstanceLocator instance;
@@ -39,7 +39,7 @@ namespace Google.Solutions.Apis.Compute
         //
         private long nextOffset = 0;
 
-        public SerialPortStream(
+        public SerialPortReader(
             InstancesResource instancesResource,
             InstanceLocator instanceRef,
             ushort port)
