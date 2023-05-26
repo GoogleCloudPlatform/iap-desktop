@@ -41,9 +41,6 @@ PACKAGES=$(PACKAGES) \
     $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
     $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
 
-temp:
-    echo $(PACKAGES)
-
 default: publish
 
 #------------------------------------------------------------------------------
