@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString();
 
             try
@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             // Use correct project, but wrong VM.
@@ -104,7 +104,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var credentials = await adapter.CreateWindowsCredentialsAsync(
@@ -128,7 +128,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "existinguser";
 
             await adapter.CreateWindowsCredentialsAsync(
@@ -158,7 +158,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "existinguser";
 
             await adapter.CreateWindowsCredentialsAsync(
@@ -188,7 +188,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
             {
@@ -213,7 +213,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
 
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
@@ -242,7 +242,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
 
             var result = await adapter
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(locator)
@@ -261,7 +261,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
 
             var result = await adapter
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(locator)
@@ -280,7 +280,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString();
 
             ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
@@ -300,7 +300,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var result = await adapter.CreateWindowsCredentialsAsync(
@@ -322,7 +322,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString();
 
             ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
@@ -345,7 +345,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var adapter = new WindowsCredentialService(computeAdapter);
+            var adapter = new WindowsCredentialGenerator(computeAdapter);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var result = await adapter.CreateWindowsCredentialsAsync(

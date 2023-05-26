@@ -79,7 +79,7 @@
     <Compile Include="Compute\InstanceExtensions.cs" />
     <Compile Include="Compute\InstanceResourceExtensions.cs" />
     <Compile Include="Compute\Permissions.cs" />
-    <Compile Include="Compute\WindowsCredentialService.cs" />
+    <Compile Include="Compute\WindowsCredentialGenerator.cs" />
     <Compile Include="Crm\ResourceManagerAdapter.cs" />
     <Compile Include="Diagnostics\IHelpTopic.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />

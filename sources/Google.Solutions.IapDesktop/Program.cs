@@ -463,7 +463,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
 
-                mainLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
+                mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();

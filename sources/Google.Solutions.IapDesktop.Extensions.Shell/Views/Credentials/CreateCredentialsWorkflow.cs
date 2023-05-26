@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
                 token => this.serviceProvider
-                    .GetService<IWindowsCredentialService>()
+                    .GetService<IWindowsCredentialGenerator>()
                     .CreateWindowsCredentialsAsync(
                         instanceLocator,
                         username,
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
         {
             return await this.serviceProvider
-                .GetService<IWindowsCredentialService>()
+                .GetService<IWindowsCredentialGenerator>()
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
                 .ConfigureAwait(false);
         }

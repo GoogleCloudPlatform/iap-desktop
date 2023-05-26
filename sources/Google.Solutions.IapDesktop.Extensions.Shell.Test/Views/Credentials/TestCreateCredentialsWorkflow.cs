@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialService>()
+            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "bob-admin"),
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialService>()
+            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "alice"),
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialService>()
+            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "bobsemail"),

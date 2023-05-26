@@ -35,7 +35,12 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public interface IWindowsCredentialService
+    /// <summary>
+    /// Uses the OS Agent's account manager to generate Windows
+    /// logon credentials.
+    /// </summary>
+    /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
+    public interface IWindowsCredentialGenerator
     {
         Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(
             InstanceLocator instanceRef);
@@ -44,7 +49,6 @@ namespace Google.Solutions.Apis.Compute
         /// Reset a SAM account password. If the SAM account does not exist,
         /// it is created and made a local Administrator.
         /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
@@ -55,7 +59,6 @@ namespace Google.Solutions.Apis.Compute
         /// Reset a SAM account password. If the SAM account does not exist,
         /// it is created and made a local Administrator.
         /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
@@ -80,7 +83,7 @@ namespace Google.Solutions.Apis.Compute
         None = 0
     }
 
-    public sealed class WindowsCredentialService : IWindowsCredentialService
+    public sealed class WindowsCredentialGenerator : IWindowsCredentialGenerator
     {
         private const int RsaKeySize = 2048;
         private const int SerialPort = 4;
@@ -92,7 +95,7 @@ namespace Google.Solutions.Apis.Compute
         // Ctor.
         //---------------------------------------------------------------------
 
-        public WindowsCredentialService(
+        public WindowsCredentialGenerator(
             IComputeEngineAdapter computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter;
@@ -235,7 +238,9 @@ namespace Google.Solutions.Apis.Compute
                             .FirstOrDefault();
                         if (response == null)
                         {
+                            //
                             // That was not the output we are looking for, keep reading.
+                            //
                             continue;
                         }
 
@@ -282,8 +287,11 @@ namespace Google.Solutions.Apis.Compute
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {
                         ApiTraceSources.Default.TraceError(e);
+
+                        //
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
+                        //
                         throw new WindowsCredentialCreationFailedException(
                             $"Timeout waiting for Compute Engine agent to reset password for user {username}. " +
                             "Verify that the agent is running and that the account manager feature is enabled.");
@@ -345,7 +353,6 @@ namespace Google.Solutions.Apis.Compute
         }
     }
 
-    [Serializable]
     public class WindowsCredentialCreationFailedException : Exception, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
