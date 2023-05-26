@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Tsc;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.reconnectLabel = new System.Windows.Forms.Label();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
-            this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop.MsRdpClient();
+            this.rdpClient = new MsRdpClient();
             this.overlayPanel.SuspendLayout();
             this.waitPanel.SuspendLayout();
             this.reconnectPanel.SuspendLayout();
