@@ -21,9 +21,9 @@
 
 using Google.Solutions.Apis.Diagnostics;
 
-namespace Google.Solutions.Apis.Compute
+namespace Google.Solutions.Apis
 {
-    internal static class ComputeHelpTopics //TODO: Move to root, rename to HelpTopics
+    internal static class HelpTopics
     {
         public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
             "Project access control",

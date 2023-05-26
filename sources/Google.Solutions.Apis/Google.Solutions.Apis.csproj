@@ -73,7 +73,7 @@
     <Compile Include="Client\RestClient.cs" />
     <Compile Include="Client\UserAgent.cs" />
     <Compile Include="Compute\ComputeEngineAdapter.cs" />
-    <Compile Include="Compute\ComputeHelpTopics.cs" />
+    <Compile Include="HelpTopics.cs" />
     <Compile Include="Compute\IComputeEngineAdapter.cs" />
     <Compile Include="Compute\AddressResolver.cs" />
     <Compile Include="Compute\InstanceExtensions.cs" />

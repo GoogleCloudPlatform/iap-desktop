@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Compute
                         $"You do not have sufficient permissions to access project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -137,7 +137,7 @@ namespace Google.Solutions.Apis.Compute
                         $"project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -181,7 +181,7 @@ namespace Google.Solutions.Apis.Compute
                         $"project {zoneLocator.ProjectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -212,7 +212,7 @@ namespace Google.Solutions.Apis.Compute
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to access " +
                             $"VM instance {instance.Name} in project {instance.ProjectId}",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -257,7 +257,7 @@ namespace Google.Solutions.Apis.Compute
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to access the guest attributes " +
                             $"of VM instance {instance.Name} in project {instance.ProjectId}",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -307,7 +307,7 @@ namespace Google.Solutions.Apis.Compute
                         $"You don't have sufficient permissions to modify " +
                             $"the metadata of VM instance {instance.Name} in project " +
                             $"{instance.ProjectId}",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -343,7 +343,7 @@ namespace Google.Solutions.Apis.Compute
                     throw new ResourceAccessDeniedException(
                         "You don't have sufficient permissions to modify " +
                             $"the metadata of project {projectId}",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
@@ -471,7 +471,7 @@ namespace Google.Solutions.Apis.Compute
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to control the " +
                             $"VM instance {instance.Name} in project {instance.ProjectId}",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }

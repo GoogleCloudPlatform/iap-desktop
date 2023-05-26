@@ -171,7 +171,7 @@ namespace Google.Solutions.Apis.Compute
                         "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
                         "to perform this action.",
-                        ComputeHelpTopics.PermissionsToResetWindowsUser);
+                        HelpTopics.PermissionsToResetWindowsUser);
                 }
                 catch (GoogleApiException e) when (e.IsBadRequest())
                 {
@@ -190,7 +190,7 @@ namespace Google.Solutions.Apis.Compute
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "Because this VM instance uses a service account, you also need the " +
                         "'Service Account User' role.",
-                        ComputeHelpTopics.PermissionsToResetWindowsUser);
+                        HelpTopics.PermissionsToResetWindowsUser);
                 }
 
                 //

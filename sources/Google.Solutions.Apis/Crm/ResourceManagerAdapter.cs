@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Crm
                         $"You do not have sufficient permissions to access project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        ComputeHelpTopics.ProjectAccessControl,
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
