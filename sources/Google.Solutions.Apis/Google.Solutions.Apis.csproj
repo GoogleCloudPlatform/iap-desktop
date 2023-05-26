@@ -78,7 +78,7 @@
     <Compile Include="Compute\IComputeEngineAdapter.cs" />
     <Compile Include="Compute\AddressResolver.cs" />
     <Compile Include="Compute\InstanceExtensions.cs" />
-    <Compile Include="Compute\InstanceResourceExtensions.cs" />
+    <Compile Include="Compute\SerialPortStream.cs" />
     <Compile Include="Compute\Permissions.cs" />
     <Compile Include="Compute\WindowsCredentialGenerator.cs" />
     <Compile Include="Crm\ResourceManagerAdapter.cs" />

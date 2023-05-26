@@ -273,7 +273,8 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
-                return this.service.Instances.OpenSerialPort(
+                return new SerialPortStream(
+                    this.service.Instances,
                     instanceRef,
                     portNumber);
             }
