@@ -23,12 +23,12 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Apis.Compute;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
                 token => this.serviceProvider
-                    .GetService<IWindowsCredentialService>()
+                    .GetService<IWindowsCredentialGenerator>()
                     .CreateWindowsCredentialsAsync(
                         instanceLocator,
                         username,
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
         {
             return await this.serviceProvider
-                .GetService<IWindowsCredentialService>()
+                .GetService<IWindowsCredentialGenerator>()
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
                 .ConfigureAwait(false);
         }

@@ -26,10 +26,8 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
@@ -217,7 +215,7 @@ namespace Google.Solutions.Testing.Application.Views
         protected async Task<NetworkCredential> GenerateWindowsCredentials(InstanceLocator locator)
         {
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
-            var credentialAdapter = new WindowsCredentialService(
+            var credentialAdapter = new WindowsCredentialGenerator(
                 new ComputeEngineAdapter(
                     TestProject.GetAdminCredential().ToAuthorization(),
                     TestProject.UserAgent));

@@ -20,13 +20,10 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Apis;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -36,9 +33,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows
+namespace Google.Solutions.Apis.Compute
 {
-    public interface IWindowsCredentialService
+    /// <summary>
+    /// Uses the OS Agent's account manager to generate Windows
+    /// logon credentials.
+    /// </summary>
+    /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
+    public interface IWindowsCredentialGenerator
     {
         Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(
             InstanceLocator instanceRef);
@@ -47,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         /// Reset a SAM account password. If the SAM account does not exist,
         /// it is created and made a local Administrator.
         /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
@@ -58,7 +59,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         /// Reset a SAM account password. If the SAM account does not exist,
         /// it is created and made a local Administrator.
         /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         None = 0
     }
 
-    public sealed class WindowsCredentialService : IWindowsCredentialService
+    public sealed class WindowsCredentialGenerator : IWindowsCredentialGenerator
     {
         private const int RsaKeySize = 2048;
         private const int SerialPort = 4;
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         // Ctor.
         //---------------------------------------------------------------------
 
-        public WindowsCredentialService(
+        public WindowsCredentialGenerator(
             IComputeEngineAdapter computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter;
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             UserFlags userType,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
@@ -153,14 +153,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                 }
                 catch (ResourceNotFoundException e)
                 {
-                    ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
+                    ApiTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new WindowsCredentialCreationFailedException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (ResourceAccessDeniedException e)
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApiTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 403: {0}",
                         e.FullMessage());
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                 }
                 catch (GoogleApiException e) when (e.IsBadRequest())
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApiTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 400: {0} ({1})",
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     var logBuffer = new StringBuilder(64 * 1024);
                     while (true)
                     {
-                        ApplicationTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
+                        ApiTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
 
                         token.ThrowIfCancellationRequested();
 
@@ -238,7 +238,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                             .FirstOrDefault();
                         if (response == null)
                         {
+                            //
                             // That was not the output we are looking for, keep reading.
+                            //
                             continue;
                         }
 
@@ -284,9 +286,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {
-                        ApplicationTraceSources.Default.TraceError(e);
+                        ApiTraceSources.Default.TraceError(e);
+
+                        //
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
+                        //
                         throw new WindowsCredentialCreationFailedException(
                             $"Timeout waiting for Compute Engine agent to reset password for user {username}. " +
                             "Verify that the agent is running and that the account manager feature is enabled.");
@@ -348,7 +353,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         }
     }
 
-    [Serializable]
     public class WindowsCredentialCreationFailedException : Exception, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }

@@ -82,7 +82,7 @@ namespace Google.Solutions.Apis.Compute
                         return instanceData.PrimaryInternalAddress()
                             ?? throw new AddressNotFoundException(
                                 "The VM instance doesn't have a suitable internal IPv4 address",
-                                ComputeHelpTopics.LocateInstanceIpAddress);
+                                HelpTopics.LocateInstanceIpAddress);
                     }
 
                 case NetworkInterfaceType.External:
@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Compute
                         return instanceData.PublicAddress()
                             ?? throw new AddressNotFoundException(
                                 "The VM instance doesn't have an external IPv4 address",
-                                ComputeHelpTopics.LocateInstanceIpAddress);
+                                HelpTopics.LocateInstanceIpAddress);
                     }
 
                 default:

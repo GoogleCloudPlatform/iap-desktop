@@ -94,13 +94,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 .All(target.Traits.Contains);
         }
 
-        public Task<IProtocolSessionContext> CreateSessionContextAsync(
-            IProtocolTarget target,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
         //---------------------------------------------------------------------
         // Equality.
         //---------------------------------------------------------------------

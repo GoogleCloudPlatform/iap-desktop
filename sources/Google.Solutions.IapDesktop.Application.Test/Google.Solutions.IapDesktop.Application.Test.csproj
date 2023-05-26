@@ -101,11 +101,8 @@
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
-    <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
     <Compile Include="Services\TestUpdateService.cs" />
-    <Compile Include="Services\Windows\TestWindowsCredentialService.cs" />
     <Compile Include="Services\Auth\TestAuthorization.cs" />
-    <Compile Include="Services\Auth\TestSignInAdapter.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
     <Compile Include="Services\Management\TestInstanceControlService.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />

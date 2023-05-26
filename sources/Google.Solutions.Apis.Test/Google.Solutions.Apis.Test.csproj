@@ -81,13 +81,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\TestSignInAdapter.cs" />
     <Compile Include="Client\TestAuthorizedClientInitializer.cs" />
     <Compile Include="Client\TestClientServiceMtlsExtensions.cs" />
     <Compile Include="Client\TestRestClient.cs" />
     <Compile Include="Client\TestUserAgent.cs" />
     <Compile Include="Compute\TestAddressResolver.cs" />
     <Compile Include="Compute\TestComputeEngineAdapter.cs" />
+    <Compile Include="Compute\TestInstanceExtensions.cs" />
     <Compile Include="Compute\TestMetadataExtensions.cs" />
+    <Compile Include="Compute\TestWindowsCredentialService.cs" />
     <Compile Include="Crm\TestResourceManagerAdapter.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
     <Compile Include="Locator\TestDiskTypeLocator.cs" />

@@ -23,11 +23,9 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -38,7 +36,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable CA1034 // Class nesting
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Apis.Auth
 {
     public interface ISignInAdapter
     {
@@ -66,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private readonly X509Certificate2 deviceCertificate;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
+        private readonly UserAgent userAgent;
         private readonly IEnumerable<string> scopes;
         private readonly IDataStore dataStore;
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
@@ -73,16 +72,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public SignInAdapter(
             X509Certificate2 deviceCertificate,
             ClientSecrets clientSecrets,
+            UserAgent userAgent,
             IEnumerable<string> scopes,
             IDataStore dataStore,
             ICodeReceiver codeReceiver,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
             this.deviceCertificate = deviceCertificate;
-            this.codeReceiver = codeReceiver;
-            this.clientSecrets = clientSecrets;
-            this.scopes = scopes;
-            this.dataStore = dataStore;
+            this.codeReceiver = codeReceiver.ExpectNotNull(nameof(codeReceiver));
+            this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
+            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
+            this.scopes = scopes.ExpectNotNull(nameof(scopes));
+            this.dataStore = dataStore.ExpectNotNull(nameof(dataStore));
             this.createCodeFlow = createCodeFlow;
         }
 
@@ -110,13 +111,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 var flow = new GoogleAuthorizationCodeFlow(initializer);
 
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApiTraceSources.Default.TraceVerbose(
                     "mTLS supported: {0}", ClientServiceMtlsExtensions.CanEnableDeviceCertificateAuthentication);
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApiTraceSources.Default.TraceVerbose(
                     "mTLS certificate: {0}", this.deviceCertificate?.Subject);
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApiTraceSources.Default.TraceVerbose(
                     "TokenServerUrl: {0}", flow.TokenServerUrl);
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApiTraceSources.Default.TraceVerbose(
                     "RevokeTokenUrl: {0}", flow.RevokeTokenUrl);
 
                 return flow;
@@ -150,12 +151,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
             if (!app.ShouldRequestAuthorizationCode(existingTokenResponse))
             {
-                ApplicationTraceSources.Default.TraceVerbose("Found existing credentials");
+                ApiTraceSources.Default.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
                 if (!scopesOfExistingTokenResponse.ContainsAll(this.scopes))
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApiTraceSources.Default.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
 
                     //
@@ -256,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient(Install.UserAgent, this.deviceCertificate);
+            var client = new RestClient(this.userAgent, this.deviceCertificate);
 
             return await client
                 .GetAsync<UserInfo>(
@@ -303,11 +304,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         this,
                         certificate);
 
-                    ApplicationTraceSources.Default.TraceVerbose("Using OAuth mTLS endpoints");
+                    ApiTraceSources.Default.TraceVerbose("Using OAuth mTLS endpoints");
                 }
                 else
                 {
-                    ApplicationTraceSources.Default.TraceVerbose("Using OAuth TLS endpoints");
+                    ApiTraceSources.Default.TraceVerbose("Using OAuth TLS endpoints");
                 }
             }
         }

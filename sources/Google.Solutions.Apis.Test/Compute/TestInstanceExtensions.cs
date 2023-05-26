@@ -23,16 +23,15 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestInstanceExtensions : ApplicationFixtureBase //TODO: Move to Apis DLL
+    public class TestInstanceExtensions
     {
         [Test]
         public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(

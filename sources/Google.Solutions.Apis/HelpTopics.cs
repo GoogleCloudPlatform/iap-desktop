@@ -21,9 +21,9 @@
 
 using Google.Solutions.Apis.Diagnostics;
 
-namespace Google.Solutions.Apis.Compute
+namespace Google.Solutions.Apis
 {
-    internal static class ComputeHelpTopics //TODO: Move to root, rename to HelpTopics
+    internal static class HelpTopics
     {
         public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
             "Project access control",
@@ -32,5 +32,9 @@ namespace Google.Solutions.Apis.Compute
         public static readonly IHelpTopic LocateInstanceIpAddress = new HelpTopic(
             "Locating IP addresses for an instance",
             "https://cloud.google.com/compute/docs/instances/view-ip-address#console");
+
+        public static readonly IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
+            "Generating Windows passwords",
+            "https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances#permissions-required-for-this-task");
     }
 }

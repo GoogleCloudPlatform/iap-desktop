@@ -92,10 +92,8 @@
     <Compile Include="Services\Adapters\BuganizerAdapter.cs" />
     <Compile Include="Services\Adapters\ExternalRestAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
-    <Compile Include="Services\Adapters\SignInAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Data\OperatingSystems.cs" />
-    <Compile Include="Services\Windows\WindowsCredentialService.cs" />
     <Compile Include="Services\Auth\Authorization.cs" />
     <Compile Include="Services\Auth\DeviceEnrollment.cs" />
     <Compile Include="Services\Management\InstanceControlService.cs" />

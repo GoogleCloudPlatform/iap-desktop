@@ -66,6 +66,7 @@
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Auth\IAuthorization.cs" />
     <Compile Include="Auth\IDeviceEnrollment.cs" />
+    <Compile Include="Auth\SignInAdapter.cs" />
     <Compile Include="Auth\UserInfo.cs" />
     <Compile Include="Client\AuthorizedClientInitializer.cs" />
     <Compile Include="Client\ClientServiceMtlsExtensions.cs" />
@@ -73,12 +74,13 @@
     <Compile Include="Client\RestClient.cs" />
     <Compile Include="Client\UserAgent.cs" />
     <Compile Include="Compute\ComputeEngineAdapter.cs" />
-    <Compile Include="Compute\ComputeHelpTopics.cs" />
+    <Compile Include="HelpTopics.cs" />
     <Compile Include="Compute\IComputeEngineAdapter.cs" />
     <Compile Include="Compute\AddressResolver.cs" />
     <Compile Include="Compute\InstanceExtensions.cs" />
-    <Compile Include="Compute\InstanceResourceExtensions.cs" />
+    <Compile Include="Compute\SerialPortReader.cs" />
     <Compile Include="Compute\Permissions.cs" />
+    <Compile Include="Compute\WindowsCredentialGenerator.cs" />
     <Compile Include="Crm\ResourceManagerAdapter.cs" />
     <Compile Include="Diagnostics\IHelpTopic.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />

@@ -40,7 +40,6 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
@@ -52,7 +51,6 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Core;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
@@ -465,7 +463,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
 
-                mainLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
+                mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
