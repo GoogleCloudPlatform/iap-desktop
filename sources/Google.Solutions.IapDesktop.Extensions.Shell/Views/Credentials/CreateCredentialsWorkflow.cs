@@ -23,12 +23,12 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Apis.Compute;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {

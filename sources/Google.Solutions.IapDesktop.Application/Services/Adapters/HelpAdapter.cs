@@ -56,10 +56,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             "Device certificate authentication",
             "https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access");
 
-        public static readonly IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
-            "Generating Windows passwords",
-            "https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances#permissions-required-for-this-task");
-
         public static readonly IHelpTopic ManagingMetadataAuthorizedKeys = new HelpTopic(
             "Managing SSH keys in metadata",
             "https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys");

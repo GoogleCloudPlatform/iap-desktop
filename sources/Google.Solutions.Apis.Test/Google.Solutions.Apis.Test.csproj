@@ -87,7 +87,9 @@
     <Compile Include="Client\TestUserAgent.cs" />
     <Compile Include="Compute\TestAddressResolver.cs" />
     <Compile Include="Compute\TestComputeEngineAdapter.cs" />
+    <Compile Include="Compute\TestInstanceExtensions.cs" />
     <Compile Include="Compute\TestMetadataExtensions.cs" />
+    <Compile Include="Compute\TestWindowsCredentialService.cs" />
     <Compile Include="Crm\TestResourceManagerAdapter.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
     <Compile Include="Locator\TestDiskTypeLocator.cs" />

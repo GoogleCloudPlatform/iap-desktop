@@ -20,13 +20,10 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Apis;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -36,7 +33,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows
+namespace Google.Solutions.Apis.Compute
 {
     public interface IWindowsCredentialService
     {
@@ -111,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             UserFlags userType,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
+            using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
@@ -153,14 +150,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                 }
                 catch (ResourceNotFoundException e)
                 {
-                    ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
+                    ApiTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new WindowsCredentialCreationFailedException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (ResourceAccessDeniedException e)
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApiTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 403: {0}",
                         e.FullMessage());
 
@@ -174,11 +171,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
                         "to perform this action.",
-                        HelpTopics.PermissionsToResetWindowsUser);
+                        ComputeHelpTopics.PermissionsToResetWindowsUser);
                 }
                 catch (GoogleApiException e) when (e.IsBadRequest())
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApiTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 400: {0} ({1})",
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -193,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "Because this VM instance uses a service account, you also need the " +
                         "'Service Account User' role.",
-                        HelpTopics.PermissionsToResetWindowsUser);
+                        ComputeHelpTopics.PermissionsToResetWindowsUser);
                 }
 
                 //
@@ -211,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     var logBuffer = new StringBuilder(64 * 1024);
                     while (true)
                     {
-                        ApplicationTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
+                        ApiTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
 
                         token.ThrowIfCancellationRequested();
 
@@ -284,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {
-                        ApplicationTraceSources.Default.TraceError(e);
+                        ApiTraceSources.Default.TraceError(e);
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
                         throw new WindowsCredentialCreationFailedException(
