@@ -85,6 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             return new SignInAdapter(
                 this.DeviceEnrollment.Certificate,
                 this.ClientSecrets,
+                Install.UserAgent,
                 this.Scopes,
                 this.TokenStore,
                 new BrowserCodeReceiver(preference));

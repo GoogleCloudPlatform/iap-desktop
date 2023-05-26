@@ -66,6 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private readonly X509Certificate2 deviceCertificate;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
+        private readonly UserAgent userAgent;
         private readonly IEnumerable<string> scopes;
         private readonly IDataStore dataStore;
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
@@ -73,16 +74,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public SignInAdapter(
             X509Certificate2 deviceCertificate,
             ClientSecrets clientSecrets,
+            UserAgent userAgent,
             IEnumerable<string> scopes,
             IDataStore dataStore,
             ICodeReceiver codeReceiver,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
             this.deviceCertificate = deviceCertificate;
-            this.codeReceiver = codeReceiver;
-            this.clientSecrets = clientSecrets;
-            this.scopes = scopes;
-            this.dataStore = dataStore;
+            this.codeReceiver = codeReceiver.ExpectNotNull(nameof(codeReceiver));
+            this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
+            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
+            this.scopes = scopes.ExpectNotNull(nameof(scopes));
+            this.dataStore = dataStore.ExpectNotNull(nameof(dataStore));
             this.createCodeFlow = createCodeFlow;
         }
 
@@ -256,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient(Install.UserAgent, this.deviceCertificate);
+            var client = new RestClient(this.userAgent, this.deviceCertificate);
 
             return await client
                 .GetAsync<UserInfo>(
