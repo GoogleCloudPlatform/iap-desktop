@@ -25,7 +25,7 @@ using System.Collections.Specialized;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
-    public abstract class ProtocolLocator : IEquatable<ProtocolLocator>
+    public abstract class ProtocolTargetLocator : IEquatable<ProtocolTargetLocator>
     {
         /// <summary>
         /// Protocol used by this locator.
@@ -53,10 +53,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // Equality.
         //---------------------------------------------------------------------
 
-        public virtual bool Equals(ProtocolLocator other)
+        public virtual bool Equals(ProtocolTargetLocator other)
         {
             return other != null &&
-                other is ProtocolLocator locator &&
+                other is ProtocolTargetLocator locator &&
                 Equals(locator.Scheme, this.Scheme) &&
                 Equals(locator.Resource, this.Resource) &&
                 Equals(locator.Parameters, this.Parameters);
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as ProtocolLocator);
+            return Equals(obj as ProtocolTargetLocator);
         }
 
         public override int GetHashCode()
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return this.Resource.GetHashCode() ^ this.Parameters.Count;
         }
 
-        public static bool operator ==(ProtocolLocator obj1, ProtocolLocator obj2)
+        public static bool operator ==(ProtocolTargetLocator obj1, ProtocolTargetLocator obj2)
         {
             if (obj1 is null)
             {
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(ProtocolLocator obj1, ProtocolLocator obj2)
+        public static bool operator !=(ProtocolTargetLocator obj1, ProtocolTargetLocator obj2)
         {
             return !(obj1 == obj2);
         }
