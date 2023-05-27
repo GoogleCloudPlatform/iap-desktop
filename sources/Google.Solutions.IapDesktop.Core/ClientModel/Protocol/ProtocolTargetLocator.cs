@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
@@ -30,12 +32,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Protocol used by this locator.
         /// </summary>
-        public IProtocol Protocol { get; }
+        public abstract IProtocol Protocol { get; }
 
         /// <summary>
         /// Protocol scheme used by this locator.
         /// </summary>
-        public string Scheme { get; }
+        public abstract string Scheme { get; }
 
         /// <summary>
         /// Base resource referenced by this locator.
@@ -50,16 +52,47 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         public NameValueCollection Parameters { get; }
 
         //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        protected ProtocolTargetLocator(
+            ResourceLocator resource,
+            NameValueCollection parameters)
+        {
+            this.Resource = resource.ExpectNotNull(nameof(resource));
+            this.Parameters = parameters.ExpectNotNull(nameof(parameters));
+        }
+
+        //---------------------------------------------------------------------
         // Equality.
         //---------------------------------------------------------------------
+
+        private static bool ParametersEqual(
+            NameValueCollection that,
+            NameValueCollection other)
+        {
+            if (that is null)
+            {
+                return other is null;
+            }
+
+            return other != null &&
+                that.AllKeys.Length == other.AllKeys.Length &&
+                that.AllKeys.All(k => that
+                    .GetValues(k)
+                    .EnsureNotNull()
+                    .SequenceEqual(
+                        other.GetValues(k).EnsureNotNull()));
+        }
 
         public virtual bool Equals(ProtocolTargetLocator other)
         {
             return other != null &&
                 other is ProtocolTargetLocator locator &&
                 Equals(locator.Scheme, this.Scheme) &&
+                Equals(locator.Protocol, this.Protocol) &&
                 Equals(locator.Resource, this.Resource) &&
-                Equals(locator.Parameters, this.Parameters);
+                ParametersEqual(locator.Parameters, this.Parameters);
         }
 
         public override bool Equals(object obj)
@@ -69,7 +102,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public override int GetHashCode()
         {
-            return this.Resource.GetHashCode() ^ this.Parameters.Count;
+            return 
+                this.Scheme.GetHashCode() ^ 
+                this.Resource.GetHashCode() ^
+                this.Parameters.Count;
         }
 
         public static bool operator ==(ProtocolTargetLocator obj1, ProtocolTargetLocator obj2)
@@ -86,5 +122,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             return !(obj1 == obj2);
         }
+
+        // TODO: Move TryGetParameter, etc
     }
 }
