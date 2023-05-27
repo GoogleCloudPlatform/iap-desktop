@@ -19,18 +19,31 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Microsoft.Win32;
+using Google.Solutions.Apis.Locator;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Settings
+namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
     /// <summary>
-    /// Registry-backed repository for Project-related settings.
+    /// Repository that underlies the project model and 
+    /// keeps track of a user's projects.
     /// </summary>
-    public interface IProjectSettingsRepository : IProjectRepository
-    { 
-        RegistryKey OpenRegistryKey(string projectId);
+    public interface IProjectRepository
+    {
+        /// <summary>
+        /// Add a project and save changes.
+        /// </summary>
+        void AddProject(ProjectLocator projectId);
 
-        RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);
+        /// <summary>
+        /// Remove a project and save changes.
+        /// </summary>
+        void RemoveProject(ProjectLocator projectId);
+
+        /// <summary>
+        /// List all projects.
+        /// </summary>
+        Task<IEnumerable<ProjectLocator>> ListProjectsAsync();
     }
 }
