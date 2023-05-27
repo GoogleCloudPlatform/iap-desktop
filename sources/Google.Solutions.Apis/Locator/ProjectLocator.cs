@@ -72,6 +72,11 @@ namespace Google.Solutions.Apis.Locator
                 this.ProjectId == other.ProjectId;
         }
 
+        public override bool Equals(ResourceLocator other)
+        {
+            return other is ProjectLocator locator && Equals(locator);
+        }
+
         public override bool Equals(object obj)
         {
             return obj is ProjectLocator locator && Equals(locator);

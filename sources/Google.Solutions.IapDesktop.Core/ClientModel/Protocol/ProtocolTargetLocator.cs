@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Base resource referenced by this locator.
         /// </summary>
-        public ResourceLocator Resource { get; } //TODO: Make equatable
+        public ResourceLocator Resource { get; }
 
         /// <summary>
         /// Query string parameters that might contain connection settings.
