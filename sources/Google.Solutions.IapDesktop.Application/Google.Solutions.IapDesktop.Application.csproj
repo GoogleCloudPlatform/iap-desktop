@@ -93,14 +93,9 @@
     <Compile Include="Services\Adapters\ExternalRestAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
-    <Compile Include="Data\OperatingSystems.cs" />
     <Compile Include="Services\Auth\Authorization.cs" />
     <Compile Include="Services\Auth\DeviceEnrollment.cs" />
     <Compile Include="Services\Management\InstanceControlService.cs" />
-    <Compile Include="Services\ProjectModel\IProjectRepository.cs" />
-    <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
-    <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
-    <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
     <Compile Include="Services\Integration\SessionBroker.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -251,7 +246,6 @@
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainWindow.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorer.cs" />
-    <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerView.cs">
       <SubType>Form</SubType>
     </Compile>

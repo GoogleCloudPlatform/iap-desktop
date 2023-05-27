@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Microsoft.Win32;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings

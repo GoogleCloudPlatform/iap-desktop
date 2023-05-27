@@ -20,10 +20,9 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     public interface IProjectModelNode
     {

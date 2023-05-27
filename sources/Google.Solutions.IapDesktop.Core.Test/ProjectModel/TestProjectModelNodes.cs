@@ -23,11 +23,11 @@
 //using Google.Apis.Compute.v1.Data;
 //using Google.Solutions.Apis.Locator;
 //using Google.Solutions.IapDesktop.Application.Services.Adapters;
-//using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+//using Google.Solutions.IapDesktop.Core.ProjectModel;
 //using NUnit.Framework;
 //using System.Linq;
 
-//namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
+//namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 //{
 //    [TestFixture]
 //    public class TestProjectModelNodes : ApplicationFixtureBase

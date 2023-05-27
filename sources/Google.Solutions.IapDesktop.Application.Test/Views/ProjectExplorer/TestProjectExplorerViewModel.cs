@@ -28,7 +28,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -142,8 +142,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         private ProjectExplorerViewModel CreateViewModel()
         {
             var modelService = new ProjectModelService(
-                this.computeEngineAdapterMock.AsService(),
-                this.resourceManagerAdapterMock.AsService(),
+                this.computeEngineAdapterMock.Object,
+                this.resourceManagerAdapterMock.Object,
                 this.projectRepository,
                 new Mock<IEventQueue>().Object);
 

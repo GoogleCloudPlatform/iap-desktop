@@ -25,12 +25,9 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Testing.Apis;
-using Google.Solutions.Testing.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -38,10 +35,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 {
     [TestFixture]
-    public class TestProjectModelService : ApplicationFixtureBase
+    public class TestProjectModelService
     {
         private static readonly Instance SampleWindowsInstanceInZone1 = new Instance()
         {
@@ -169,8 +166,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var eventService = new Mock<IEventQueue>();
 
             var modelService = new ProjectModelService(
-                new Mock<IComputeEngineAdapter>().AsService(),
-                new Mock<IResourceManagerAdapter>().AsService(),
+                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IResourceManagerAdapter>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
@@ -197,8 +194,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var eventService = new Mock<IEventQueue>();
 
             var modelService = new ProjectModelService(
-                new Mock<IComputeEngineAdapter>().AsService(),
-                new Mock<IResourceManagerAdapter>().AsService(),
+                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IResourceManagerAdapter>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
@@ -225,8 +222,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
 
             var modelService = new ProjectModelService(
-                computeEngineAdapter.AsService(),
-                resourceManagerAdapter.AsService(),
+                computeEngineAdapter.Object,
+                resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -280,8 +277,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 });
 
             var modelService = new ProjectModelService(
-                computeAdapter.AsService(),
-                resourceManagerAdapter.AsService(),
+                computeAdapter.Object,
+                resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(
                     "accessible-project",
                     "inaccessible-project").Object,
@@ -306,8 +303,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
 
             var modelService = new ProjectModelService(
-                computeEngineAdapter.AsService(),
-                resourceManagerAdapter.AsService(),
+                computeEngineAdapter.Object,
+                resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -337,8 +334,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
 
             var modelService = new ProjectModelService(
-                computeEngineAdapter.AsService(),
-                resourceManagerAdapter.AsService(),
+                computeEngineAdapter.Object,
+                resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -365,8 +362,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
         {
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(
                     SampleProjectId,
                     "nonexisting-1").Object,
@@ -397,8 +394,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 }));
 
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                resourceManagerAdapter.AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -419,8 +416,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 SampleLinuxInstanceInZone2);
 
             var modelService = new ProjectModelService(
-                computeAdapter.AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                computeAdapter.Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -455,8 +452,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 SampleLinuxInstanceInZone2);
 
             var modelService = new ProjectModelService(
-                computeAdapter.AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                computeAdapter.Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -490,8 +487,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 SampleLinuxInstanceInZone2);
 
             var modelService = new ProjectModelService(
-                computeAdapter.AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                computeAdapter.Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -523,8 +520,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 SampleLinuxInstanceWithoutDiskInZone1);
 
             var modelService = new ProjectModelService(
-                computeAdapter.AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                computeAdapter.Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -552,8 +549,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 SampleLinuxInstanceInZone1);
 
             var modelService = new ProjectModelService(
-                computeAdapter.AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                computeAdapter.Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -586,8 +583,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
         {
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -604,8 +601,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -632,8 +629,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
-                    SampleWindowsInstanceInZone1).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                    SampleWindowsInstanceInZone1).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -658,8 +655,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
-                    SampleWindowsInstanceInZone1).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                    SampleWindowsInstanceInZone1).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -684,8 +681,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
-                    SampleWindowsInstanceInZone1).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                    SampleWindowsInstanceInZone1).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
@@ -702,8 +699,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
-                    SampleWindowsInstanceInZone1).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                    SampleWindowsInstanceInZone1).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
@@ -722,8 +719,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
         {
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -745,8 +742,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
-                    SampleWindowsInstanceInZone1).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                    SampleWindowsInstanceInZone1).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -774,8 +771,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -805,8 +802,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -835,8 +832,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -867,8 +864,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -885,8 +882,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public void WhenLocatorIsInvalid_ThenSetActiveNodeAsyncRaisesArgumentException()
         {
             var modelService = new ProjectModelService(
-                CreateComputeEngineAdapterMock(SampleProjectId).AsService(),
-                CreateResourceManagerAdapterMock().AsService(),
+                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 

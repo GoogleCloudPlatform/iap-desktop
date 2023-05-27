@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,35 +19,15 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
+using System;
+
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
-    public class ProjectAddedEvent
+    [Flags]
+    public enum OperatingSystems
     {
-        public string ProjectId { get; }
-
-        public ProjectAddedEvent(string projectId)
-        {
-            this.ProjectId = projectId;
-        }
-    }
-
-    public class ProjectDeletedEvent
-    {
-        public string ProjectId { get; }
-
-        public ProjectDeletedEvent(string projectId)
-        {
-            this.ProjectId = projectId;
-        }
-    }
-
-    public class ActiveProjectChangedEvent
-    {
-        public IProjectModelNode ActiveNode { get; }
-
-        internal ActiveProjectChangedEvent(IProjectModelNode activeNode)
-        {
-            this.ActiveNode = activeNode;
-        }
+        Windows = 1,
+        Linux = 2,
+        All = Windows | Linux
     }
 }

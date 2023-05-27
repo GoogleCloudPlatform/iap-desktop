@@ -26,9 +26,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,7 +34,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     /// <summary>
     /// Represents the in-memory model (or workspace) of projects and
@@ -104,8 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
     public class ProjectModelService : IProjectModelService
     {
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
-        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
+        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IResourceManagerAdapter resourceManagerAdapter;
         private readonly IProjectRepository projectRepository;
         private readonly IEventQueue eventService;
 
@@ -126,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         private async Task<CloudNode> LoadProjectsAsync(
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (CoreTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var accessibleProjects = new List<ProjectNode>();
 
@@ -144,7 +142,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     tasks.Add(
                         new ProjectLocator(project.ProjectId),
                         this.resourceManagerAdapter
-                            .GetInstance()
                             .GetProjectAsync(project.ProjectId, token));
                 }
 
@@ -165,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                             true,
                             project.Name));
 
-                        ApplicationTraceSources.Default.TraceVerbose(
+                        CoreTraceSources.Default.TraceVerbose(
                             "Successfully loaded project {0}", task.Key);
                     }
                     catch (Exception e) when (e.IsReauthError())
@@ -183,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                             false,
                             null));
 
-                        ApplicationTraceSources.Default.TraceError(
+                        CoreTraceSources.Default.TraceError(
                             "Failed to load project {0}: {1}",
                             task.Key,
                             e);
@@ -198,10 +195,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             ProjectLocator project,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (CoreTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var instances = await this.computeEngineAdapter
-                    .GetInstance()
                     .ListInstancesAsync(project.ProjectId, token)
                     .ConfigureAwait(false);
 
@@ -243,8 +239,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         //---------------------------------------------------------------------
 
         public ProjectModelService(
-            Service<IComputeEngineAdapter> computeEngineAdapter,
-            Service<IResourceManagerAdapter> resourceManagerAdapter,
+            IComputeEngineAdapter computeEngineAdapter,
+            IResourceManagerAdapter resourceManagerAdapter,
             IProjectRepository projectRepository,
             IEventQueue eventService)
         {
@@ -260,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public async Task AddProjectAsync(ProjectLocator project)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 this.projectRepository.AddProject(project);
 
@@ -272,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public async Task RemoveProjectAsync(ProjectLocator project)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 this.projectRepository.RemoveProject(project);
 
@@ -354,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             bool forceReload,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project, forceReload))
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(project, forceReload))
             {
                 IReadOnlyCollection<IProjectModelZoneNode> zones = null;
                 using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
@@ -383,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(locator))
             {
                 if (locator is ProjectLocator projectLocator)
                 {
@@ -484,7 +480,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             ResourceLocator locator,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
+            using (CoreTraceSources.Default.TraceMethod().WithParameters(locator))
             {
                 IProjectModelNode node;
                 if (locator != null)

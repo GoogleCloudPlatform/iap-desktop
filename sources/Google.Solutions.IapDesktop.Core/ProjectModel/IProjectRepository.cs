@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Locator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     /// <summary>
     /// Repository that underlies the project model and 
