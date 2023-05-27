@@ -49,9 +49,6 @@
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.60.0.2950, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.60.0.2950\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.60.0.3050, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.60.0.3050\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Apis.Core, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.60.0\lib\net45\Google.Apis.Core.dll</HintPath>
     </Reference>
@@ -93,13 +90,9 @@
     <Compile Include="Services\Adapters\ExternalRestAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
-    <Compile Include="Data\OperatingSystems.cs" />
     <Compile Include="Services\Auth\Authorization.cs" />
     <Compile Include="Services\Auth\DeviceEnrollment.cs" />
     <Compile Include="Services\Management\InstanceControlService.cs" />
-    <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
-    <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
-    <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
     <Compile Include="Services\Integration\SessionBroker.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -250,7 +243,6 @@
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainWindow.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorer.cs" />
-    <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerView.cs">
       <SubType>Form</SubType>
     </Compile>

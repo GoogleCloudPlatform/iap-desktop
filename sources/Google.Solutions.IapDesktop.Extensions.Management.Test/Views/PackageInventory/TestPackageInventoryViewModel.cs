@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;

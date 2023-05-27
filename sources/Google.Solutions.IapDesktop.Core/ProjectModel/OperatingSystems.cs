@@ -19,19 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.Mvvm.Binding;
-using System.Threading.Tasks;
+using System;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
-    public interface IPropertiesInspectorViewModel
+    [Flags]
+    public enum OperatingSystems
     {
-        IObservableProperty<string> InformationText { get; }
-        IObservableProperty<object> InspectedObject { get; }
-        IObservableProperty<string> WindowTitle { get; }
-
-        Task SwitchToModelAsync(IProjectModelNode node);
-        void SaveChanges();
+        Windows = 1,
+        Linux = 2,
+        All = Windows | Linux
     }
 }

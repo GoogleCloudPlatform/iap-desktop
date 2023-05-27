@@ -38,7 +38,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -467,8 +467,10 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
-                mainLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                    profile.SettingsKey.CreateSubKey("Inventory")));
+
+                var projectRepository = new ProjectRepository(profile.SettingsKey.CreateSubKey("Inventory"));
+                mainLayer.AddSingleton<IProjectRepository>(projectRepository);
+                mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectModelService, ProjectModelService>();
                 mainLayer.AddTransient<IInstanceControlService, InstanceControlService>();
                 mainLayer.AddTransient<IUpdateService, UpdateService>();

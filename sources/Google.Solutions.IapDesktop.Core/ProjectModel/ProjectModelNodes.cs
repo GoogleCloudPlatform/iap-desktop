@@ -21,12 +21,11 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     internal class CloudNode : IProjectModelCloudNode
     {

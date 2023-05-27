@@ -19,15 +19,31 @@
 // under the License.
 //
 
-using System;
+using Google.Solutions.Apis.Locator;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Data
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
-    [Flags]
-    public enum OperatingSystems
+    /// <summary>
+    /// Repository that underlies the project model and 
+    /// keeps track of a user's projects.
+    /// </summary>
+    public interface IProjectRepository
     {
-        Windows = 1,
-        Linux = 2,
-        All = Windows | Linux
+        /// <summary>
+        /// Add a project and save changes.
+        /// </summary>
+        void AddProject(ProjectLocator projectId);
+
+        /// <summary>
+        /// Remove a project and save changes.
+        /// </summary>
+        void RemoveProject(ProjectLocator projectId);
+
+        /// <summary>
+        /// List all projects.
+        /// </summary>
+        Task<IEnumerable<ProjectLocator>> ListProjectsAsync();
     }
 }

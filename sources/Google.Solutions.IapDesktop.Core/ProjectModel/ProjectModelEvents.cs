@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     public class ProjectAddedEvent
     {
