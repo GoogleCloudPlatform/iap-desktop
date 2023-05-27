@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             0,
             0});
             this.connectionLimitUpDown.Minimum = new decimal(new int[] {
-            7,
+            1,
             0,
             0,
             0});
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.connectionLimitUpDown.Size = new System.Drawing.Size(75, 20);
             this.connectionLimitUpDown.TabIndex = 1;
             this.connectionLimitUpDown.Value = new decimal(new int[] {
-            7,
+            8,
             0,
             0,
             0});
