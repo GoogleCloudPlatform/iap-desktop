@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
-    public class ProjectRepository : IProjectRepository
+    public class ProjectRepository : IProjectSettingsRepository
     {
         protected RegistryKey BaseKey { get; }
 
@@ -36,6 +36,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         {
             this.BaseKey = baseKey;
         }
+
+        //---------------------------------------------------------------------
+        // IProjectRepository.
+        //---------------------------------------------------------------------
 
         public void AddProject(ProjectLocator project)
         {
@@ -54,6 +58,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                 .Select(projectId => new ProjectLocator(projectId));
             return Task.FromResult(projects);
         }
+
+        //---------------------------------------------------------------------
+        // IProjectSettingsRepository.
+        //---------------------------------------------------------------------
 
         public RegistryKey OpenRegistryKey(string projectId)
         {

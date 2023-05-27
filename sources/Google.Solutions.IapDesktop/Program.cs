@@ -467,8 +467,10 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
-                mainLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                    profile.SettingsKey.CreateSubKey("Inventory")));
+
+                var projectRepository = new ProjectRepository(profile.SettingsKey.CreateSubKey("Inventory"));
+                mainLayer.AddSingleton<IProjectRepository>(projectRepository);
+                mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectModelService, ProjectModelService>();
                 mainLayer.AddTransient<IInstanceControlService, InstanceControlService>();
                 mainLayer.AddTransient<IUpdateService, UpdateService>();

@@ -27,15 +27,31 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
     /// <summary>
-    /// Registry-backed repository for Project-related settings.
+    /// Repository that keeps track of a user's projects.
     /// </summary>
     public interface IProjectRepository
     {
+        /// <summary>
+        /// Add a project and save changes.
+        /// </summary>
         void AddProject(ProjectLocator projectId);
+
+        /// <summary>
+        /// Remove a project and save changes.
+        /// </summary>
         void RemoveProject(ProjectLocator projectId);
 
+        /// <summary>
+        /// List all projects.
+        /// </summary>
         Task<IEnumerable<ProjectLocator>> ListProjectsAsync();
+    }
 
+    /// <summary>
+    /// Registry-backed repository for Project-related settings.
+    /// </summary>
+    public interface IProjectSettingsRepository : IProjectRepository
+    { 
         RegistryKey OpenRegistryKey(string projectId);
 
         RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);

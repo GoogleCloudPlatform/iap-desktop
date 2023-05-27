@@ -45,9 +45,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         private const string ZonePrefix = "zone-";
         private const string VmPrefix = "vm-";
 
-        private readonly IProjectRepository projectRepository;
+        private readonly IProjectSettingsRepository projectRepository;
 
-        public ConnectionSettingsRepository(IProjectRepository projectRepository)
+        public ConnectionSettingsRepository(IProjectSettingsRepository projectRepository)
         {
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
         }
