@@ -40,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
             return !string.IsNullOrWhiteSpace(rawValue) &&
                 ushort.TryParse(rawValue, out value);
         }
+
         public static bool TryGetParameter(
             this IapRdpUrl url,
             string queryParameterName,
