@@ -27,6 +27,10 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
+    /// <summary>
+    /// A locator that idenfifies a target that can be used with
+    /// a certain protocol and parameters.
+    /// </summary>
     public abstract class ProtocolTargetLocator : IEquatable<ProtocolTargetLocator>
     {
         /// <summary>
