@@ -23,7 +23,7 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
+namespace Google.Solutions.IapDesktop.Core.ProjectModel.Traits
 {
 	
     public class InstanceTrait : IProtocolTargetTrait

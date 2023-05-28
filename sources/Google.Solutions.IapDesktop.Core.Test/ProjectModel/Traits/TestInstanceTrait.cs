@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Core.ProjectModel.Traits;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
+namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
 {
     [TestFixture]
     public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, IProtocolTargetTrait>
