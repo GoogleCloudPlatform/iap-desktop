@@ -20,18 +20,18 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ProjectModel.Traits;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
+namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, IProtocolTargetTrait>
+    public class TestWindowsTrait : EquatableFixtureBase<WindowsTrait, IProtocolTargetTrait>
     {
-        protected override InstanceTrait CreateInstance()
+        protected override WindowsTrait CreateInstance()
         {
-            return new InstanceTrait();
+            return WindowsTrait.Instance;
         }
 
         //---------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
         [Test]
         public void DisplayNameExpression()
         {
-            Assert.AreEqual("isInstance()", new InstanceTrait().DisplayName);
+            Assert.AreEqual("isWindows()", WindowsTrait.Instance.DisplayName);
         }
 
         //---------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
         [Test]
         public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("isInstance()", new InstanceTrait().ToString());
+            Assert.AreEqual("isWindows()", WindowsTrait.Instance.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -62,14 +62,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
         public void WhenExpressionIsNullOrEmpty_ThenTryParseReturnsFalse(
             [Values(" \t", "", null)] string expression)
         {
-            Assert.IsFalse(InstanceTrait.TryParse(expression, out var _));
+            Assert.IsFalse(WindowsTrait.TryParse(expression, out var _));
         }
 
         [Test]
         public void WhenExpressionIsValid_ThenTryParseReturnsTrue(
-            [Values("isInstance()", " isInstance(  \n) \n\r\t ")] string expression)
+            [Values("isWindows()", " isWindows(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(InstanceTrait.TryParse(expression, out var trait));
+            Assert.IsTrue(WindowsTrait.TryParse(expression, out var trait));
             Assert.IsNotNull(trait);
         }
 

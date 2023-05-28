@@ -39,6 +39,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {

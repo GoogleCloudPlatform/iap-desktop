@@ -27,7 +27,7 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Core.ProjectModel.Traits
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
 	<#
 	var traitNames = new [] {"Instance", "Windows", "Linux"};
@@ -39,9 +39,11 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Traits
     {
         private const string Expression = "is<#= traitName #>()";
 
-        public <#= traitName #>Trait()
+        private <#= traitName #>Trait()
         {
         }
+
+        public static <#= traitName #>Trait Instance { get; } = new <#= traitName #>Trait();
 
         public string DisplayName => Expression;
 

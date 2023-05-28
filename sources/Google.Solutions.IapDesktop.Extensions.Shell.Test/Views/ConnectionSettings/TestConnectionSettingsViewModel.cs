@@ -30,6 +30,7 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSettings
 {

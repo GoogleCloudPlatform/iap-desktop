@@ -35,9 +35,11 @@ namespace Google.Solutions.Apis.Compute
 
         private static bool IsWindowsInstanceByGuestOsFeature(Instance instance)
         {
+            //
             // For an instance to be a valid Windows instance, at least one of the disks
             // (the boot disk) has to be marked as "WINDOWS". 
             // Note that older disks might lack this feature.
+            //
             return instance.Disks
                 .EnsureNotNull()
                 .Where(d => d.GuestOsFeatures != null)
@@ -48,9 +50,11 @@ namespace Google.Solutions.Apis.Compute
 
         private static bool IsWindowsInstanceByLicense(Instance instance)
         {
+            //
             // For an instance to be a valid Windows instance, at least one of the disks
             // has to have an associated Windows license. This is also true for
             // BYOL'ed instances.
+            //
             return instance.Disks
                 .EnsureNotNull()
                 .Where(d => d.Licenses != null)

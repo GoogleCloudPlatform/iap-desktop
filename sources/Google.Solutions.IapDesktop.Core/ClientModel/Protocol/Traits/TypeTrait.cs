@@ -23,16 +23,18 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Core.ProjectModel.Traits
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
 	
     public class InstanceTrait : IProtocolTargetTrait
     {
         private const string Expression = "isInstance()";
 
-        public InstanceTrait()
+        private InstanceTrait()
         {
         }
+
+        public static InstanceTrait Instance { get; } = new InstanceTrait();
 
         public string DisplayName => Expression;
 
@@ -107,9 +109,11 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Traits
     {
         private const string Expression = "isWindows()";
 
-        public WindowsTrait()
+        private WindowsTrait()
         {
         }
+
+        public static WindowsTrait Instance { get; } = new WindowsTrait();
 
         public string DisplayName => Expression;
 
@@ -184,9 +188,11 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Traits
     {
         private const string Expression = "isLinux()";
 
-        public LinuxTrait()
+        private LinuxTrait()
         {
         }
+
+        public static LinuxTrait Instance { get; } = new LinuxTrait();
 
         public string DisplayName => Expression;
 

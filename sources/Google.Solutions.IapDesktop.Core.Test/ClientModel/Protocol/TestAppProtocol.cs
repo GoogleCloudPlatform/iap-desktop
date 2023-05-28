@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
-                new[] { new InstanceTrait() },
+                new[] { InstanceTrait.Instance },
                 new AllowAllPolicy(),
                 8080,
                 null,

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Diagnostics;
 using System.Linq;
 

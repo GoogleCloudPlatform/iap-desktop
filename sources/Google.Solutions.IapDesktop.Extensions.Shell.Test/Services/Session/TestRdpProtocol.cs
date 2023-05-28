@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var target = new Mock<IProtocolTarget>();
             target
                 .Setup(t => t.Traits)
-                .Returns(new[] { new WindowsTrait() });
+                .Returns(new[] { WindowsTrait.Instance });
 
             Assert.IsTrue(RdpProtocol.Protocol.IsAvailable(target.Object));
         }

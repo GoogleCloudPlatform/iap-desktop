@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel

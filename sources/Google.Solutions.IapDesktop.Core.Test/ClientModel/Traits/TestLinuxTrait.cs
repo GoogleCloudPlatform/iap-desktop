@@ -20,18 +20,18 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ProjectModel.Traits;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
+namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
     public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, IProtocolTargetTrait>
     {
         protected override LinuxTrait CreateInstance()
         {
-            return new LinuxTrait();
+            return LinuxTrait.Instance;
         }
 
         //---------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
         [Test]
         public void DisplayNameExpression()
         {
-            Assert.AreEqual("isLinux()", new InstanceTrait().DisplayName);
+            Assert.AreEqual("isLinux()", LinuxTrait.Instance.DisplayName);
         }
 
         //---------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Traits
         [Test]
         public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("isLinux()", new LinuxTrait().ToString());
+            Assert.AreEqual("isLinux()", LinuxTrait.Instance.ToString());
         }
 
         //---------------------------------------------------------------------
