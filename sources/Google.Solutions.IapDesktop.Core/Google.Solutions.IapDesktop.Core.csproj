@@ -95,9 +95,12 @@
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ProjectModel\IProjectModelNode.cs" />
     <Compile Include="ProjectModel\IProjectRepository.cs" />
+    <Compile Include="ProjectModel\Nodes\CloudNode.cs" />
+    <Compile Include="ProjectModel\Nodes\InstanceNode.cs" />
+    <Compile Include="ProjectModel\Nodes\ProjectNode.cs" />
+    <Compile Include="ProjectModel\Nodes\ZoneNode.cs" />
     <Compile Include="ProjectModel\OperatingSystems.cs" />
     <Compile Include="ProjectModel\ProjectModelEvents.cs" />
-    <Compile Include="ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="ProjectModel\ProjectModelService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\IProtocol.cs" />

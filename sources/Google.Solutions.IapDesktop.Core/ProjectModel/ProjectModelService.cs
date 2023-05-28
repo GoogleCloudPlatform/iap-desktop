@@ -27,6 +27,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

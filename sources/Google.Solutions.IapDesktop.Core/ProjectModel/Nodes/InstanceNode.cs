@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,86 +21,11 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Core.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    internal class CloudNode : IProjectModelCloudNode
-    {
-        //---------------------------------------------------------------------
-        // Readonly properties.
-        //---------------------------------------------------------------------
-
-        public string DisplayName => "Google Cloud";
-
-        public IEnumerable<IProjectModelProjectNode> Projects { get; }
-
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public CloudNode(
-            IEnumerable<IProjectModelProjectNode> projects)
-        {
-            this.Projects = projects;
-        }
-    }
-
-    internal class ProjectNode : IProjectModelProjectNode
-    {
-        //---------------------------------------------------------------------
-        // Readonly properties.
-        //---------------------------------------------------------------------
-
-        public ProjectLocator Project { get; }
-
-        public string DisplayName { get; }
-
-        public bool IsAccesible { get; }
-
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public ProjectNode(
-            ProjectLocator locator,
-            bool accessible,
-            string displayName)
-        {
-            this.Project = locator;
-            this.IsAccesible = accessible;
-            this.DisplayName = displayName;
-        }
-    }
-
-    internal class ZoneNode : IProjectModelZoneNode
-    {
-        //---------------------------------------------------------------------
-        // Readonly properties.
-        //---------------------------------------------------------------------
-
-        public ZoneLocator Zone { get; }
-
-        public string DisplayName
-            => this.Zone.Name;
-
-        public IEnumerable<IProjectModelInstanceNode> Instances { get; }
-
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public ZoneNode(
-            ZoneLocator locator,
-            IEnumerable<IProjectModelInstanceNode> instances)
-        {
-            this.Zone = locator;
-            this.Instances = instances;
-        }
-    }
-
     internal class InstanceNode : IProjectModelInstanceNode
     {
         //---------------------------------------------------------------------
