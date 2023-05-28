@@ -30,9 +30,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     public interface IProtocolTarget
     {
         /// <summary>
-        /// Name of the target, suitable for displaying.
+        /// Display name of the target.
         /// </summary>
-        string ToString();
+        string DisplayName { get; }
 
         /// <summary>
         /// Traits of this target that can be used to determine
@@ -49,6 +49,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Description, suitable for displaying.
         /// </summary>
-        string ToString();
+        string DisplayName { get; }
     }
 }

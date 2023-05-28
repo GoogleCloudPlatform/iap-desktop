@@ -43,6 +43,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         {
         }
 
+        public string DisplayName => Expression;
+
         //---------------------------------------------------------------------
         // Equality.
         //---------------------------------------------------------------------

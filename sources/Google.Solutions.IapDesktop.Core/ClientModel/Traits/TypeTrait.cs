@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
-
+	
     public class InstanceTrait : IProtocolTargetTrait
     {
         private const string Expression = "isInstance()";
@@ -33,6 +33,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         public InstanceTrait()
         {
         }
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.
@@ -100,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-
+	
     public class WindowsTrait : IProtocolTargetTrait
     {
         private const string Expression = "isWindows()";
@@ -108,6 +110,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         public WindowsTrait()
         {
         }
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.
@@ -175,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-
+	
     public class LinuxTrait : IProtocolTargetTrait
     {
         private const string Expression = "isLinux()";
@@ -183,6 +187,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         public LinuxTrait()
         {
         }
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.
@@ -250,4 +256,4 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-}
+	}

@@ -24,29 +24,62 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
+    /// <summary>
+    /// Base interfaces for nodes.
+    /// </summary>
     public interface IProjectModelNode
     {
         string DisplayName { get; }
     }
 
+    /// <summary>
+    /// Represents a virtual "root node" for the project inventory.
+    /// </summary>
     public interface IProjectModelCloudNode : IProjectModelNode
     {
+        /// <summary>
+        /// List of projects that are currently loaded. Some
+        /// projects might be inaccessible.
+        /// </summary>
         IEnumerable<IProjectModelProjectNode> Projects { get; }
     }
 
+    /// <summary>
+    /// Represents a project.
+    /// </summary>
     public interface IProjectModelProjectNode : IProjectModelNode
     {
+        /// <summary>
+        /// Indicates whether additional details about this
+        /// project are accessible.
+        /// </summary>
         bool IsAccesible { get; }
+        
+        /// <summary>
+        /// Project locator.
+        /// </summary>
         ProjectLocator Project { get; }
     }
 
+    /// <summary>
+    /// Represents a zone within a project.
+    /// </summary>
     public interface IProjectModelZoneNode : IProjectModelNode
     {
+        /// <summary>
+        /// Zone locator.
+        /// </summary>
         ZoneLocator Zone { get; }
 
+        /// <summary>
+        /// List of instances in this zone.
+        /// </summary>
         IEnumerable<IProjectModelInstanceNode> Instances { get; }
     }
 
+    /// <summary>
+    /// Represents an instance.
+    /// </summary>
     public interface IProjectModelInstanceNode : IProjectModelNode
     {
         /// <summary>

@@ -35,6 +35,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         }
 
         //---------------------------------------------------------------------
+        // DisplayName.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void DisplayNameExpression()
+        {
+            Assert.AreEqual("isInstance()", new InstanceTrait().DisplayName);
+        }
+
+        //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
 
