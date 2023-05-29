@@ -38,13 +38,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     internal sealed class SshContext
         : SessionContextBase<SshCredential, SshParameters>
     {
-        private readonly IKeyAuthorizationService keyAuthorizationService;
+        private readonly IKeyAuthorizer keyAuthorizer;
         private readonly ISshKeyPair localKeyPair;
 
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IKeyAuthorizationService keyAuthService,
+            IKeyAuthorizer keyAuthorizer,
             IAddressResolver addressResolver,
             InstanceLocator instance,
             ISshKeyPair localKeyPair)
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                   instance,
                   new SshParameters())
         {
-            this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
+            this.keyAuthorizer = keyAuthorizer.ExpectNotNull(nameof(keyAuthorizer));
             this.localKeyPair = localKeyPair.ExpectNotNull(nameof(localKeyPair));
         }
 
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             //
             // Authorize the key using OS Login or metadata-based keys.
             //
-            var authorizedKey = await this.keyAuthorizationService
+            var authorizedKey = await this.keyAuthorizer
                 .AuthorizeKeyAsync(
                     this.Instance,
                     this.localKeyPair,

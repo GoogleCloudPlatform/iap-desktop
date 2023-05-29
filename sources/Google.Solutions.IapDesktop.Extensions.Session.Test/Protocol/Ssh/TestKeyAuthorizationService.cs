@@ -108,9 +108,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return adapter;
         }
 
-        private static Mock<IOsLoginService> CreateOsLoginServiceMock()
+        private static Mock<IOsLoginProfile> CreateOsLoginServiceMock()
         {
-            var osLoginService = new Mock<IOsLoginService>();
+            var osLoginService = new Mock<IOsLoginProfile>();
             osLoginService
                 .Setup(s => s.AuthorizeKeyPairAsync(
                         It.IsAny<ProjectLocator>(),
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginEnabledForProject_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginDisabledForProjectButEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 osLoginEnabledForInstance: false,
                 osLogin2fa: false,
                 osLoginSk: false);
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 computeEngineAdapter.Object,
                 new Mock<IResourceManagerAdapter>().Object,
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenOsLoginEnabledForInstanceButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenOsLoginWithSecurityKeyEnabledForInstance_ThenAuthorizeKeyThrowsNotImplementedException()
         {
-            var service = new KeyAuthorizationService(
+            var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,

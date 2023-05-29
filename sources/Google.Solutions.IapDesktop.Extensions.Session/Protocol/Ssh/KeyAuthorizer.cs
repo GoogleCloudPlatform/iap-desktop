@@ -34,28 +34,52 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    [Service(typeof(IKeyAuthorizationService))]
-    public class KeyAuthorizationService : IKeyAuthorizationService
+    /// <summary>
+    /// Authorizes SSH keys using OS Login or metadata-based keys,
+    /// depending on the instance's configuration.
+    /// </summary>
+    public interface IKeyAuthorizer
+    {
+        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+            InstanceLocator instance,
+            ISshKeyPair key,
+            TimeSpan keyValidity,
+            string preferredPosixUsername,
+            KeyAuthorizationMethods methods,
+            CancellationToken token);
+    }
+
+    [Flags]
+    public enum KeyAuthorizationMethods
+    {
+        InstanceMetadata = 1,
+        ProjectMetadata = 2,
+        Oslogin = 4,
+        All = 7
+    }
+
+    [Service(typeof(IKeyAuthorizer))]
+    public class KeyAuthorizer : IKeyAuthorizer
     {
         private readonly IAuthorization authorization;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
-        private readonly IOsLoginService osLoginService;
+        private readonly IOsLoginProfile osLoginProfile;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public KeyAuthorizationService(
+        public KeyAuthorizer(
             IAuthorization authorization,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
-            IOsLoginService osLoginService)
+            IOsLoginProfile osLoginProfile)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
             this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
-            this.osLoginService = osLoginService.ExpectNotNull(nameof(osLoginService));
+            this.osLoginProfile = osLoginProfile.ExpectNotNull(nameof(osLoginProfile));
         }
 
         //---------------------------------------------------------------------
@@ -113,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // NB. It's cheaper to unconditionally push the key than
                     // to check for previous keys first.
                     // 
-                    return await this.osLoginService.AuthorizeKeyPairAsync(
+                    return await this.osLoginProfile.AuthorizeKeyPairAsync(
                             new ProjectLocator(instance.ProjectId),
                             OsLoginSystemType.Linux,
                             key,

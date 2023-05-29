@@ -154,15 +154,13 @@
     <Compile Include="Protocol\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeySet.cs" />
-    <Compile Include="Protocol\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Data\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Settings\SshSettings.cs" />
     <Compile Include="Settings\TerminalSettings.cs" />
     <Compile Include="Protocol\Ssh\AuthorizedKeyPair.cs" />
-    <Compile Include="Protocol\Ssh\KeyAuthorizationService.cs" />
-    <Compile Include="Protocol\Ssh\IKeyAuthorizationService.cs" />
+    <Compile Include="Protocol\Ssh\KeyAuthorizer.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
-    <Compile Include="Protocol\Ssh\OsLoginService.cs" />
+    <Compile Include="Protocol\Ssh\OsLoginProfile.cs" />
     <Compile Include="Settings\ConnectionSettingsService.cs" />
     <Compile Include="Settings\ConnectionSettings.cs" />
     <Compile Include="Settings\ConnectionSettingsRepository.cs" />

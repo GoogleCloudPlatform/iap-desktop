@@ -27,7 +27,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
@@ -35,10 +34,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Apis.Compute;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    public interface IOsLoginService
+    /// <summary>
+    /// A user's OS Login profile.
+    /// </summary>
+    public interface IOsLoginProfile
     {
         /// <summary>
         /// Upload an a public key to authorize it.
@@ -69,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         Linux
     }
 
-    [Service(typeof(IOsLoginService))]
-    public sealed class OsLoginService : IOsLoginService
+    [Service(typeof(IOsLoginProfile))]
+    public sealed class OsLoginProfile : IOsLoginProfile
     {
         private static readonly ProjectLocator WellKnownProject
             = new ProjectLocator("windows-cloud");
@@ -81,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginService(IOsLoginAdapter adapter)
+        public OsLoginProfile(IOsLoginAdapter adapter)
         {
             this.adapter = adapter.ExpectNotNull(nameof(adapter));
         }
@@ -131,7 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
                         project,
-                        key,
+                        key.Type,
+                        key.PublicKeyString,
                         validity,
                         token)
                     .ConfigureAwait(false);
@@ -142,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 var account = loginProfile.PosixAccounts
                     .EnsureNotNull()
                     .FirstOrDefault(a => a.Primary == true &&
-                                            a.OperatingSystemType == "LINUX");
+                                         a.OperatingSystemType == "LINUX");
 
                 if (account == null)
                 {

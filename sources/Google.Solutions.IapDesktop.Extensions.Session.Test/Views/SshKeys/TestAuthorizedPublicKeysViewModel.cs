@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
             bobsKey.SetupGet(k => k.Email).Returns("bob@gmail.com");
             bobsKey.SetupGet(k => k.KeyType).Returns("ssh-rsa");
 
-            var osLoginService = registry.AddMock<IOsLoginService>();
+            var osLoginService = registry.AddMock<IOsLoginProfile>();
             osLoginService
                 .Setup(s => s.ListAuthorizedKeysAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[]

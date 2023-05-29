@@ -20,12 +20,10 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
-using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;
@@ -35,11 +33,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
+namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestOsLoginAdapter : ShellFixtureBase
+    public class TestOsLoginAdapter
     {
         private OsLoginAdapter CreateAdapter(string email)
         {
@@ -69,13 +67,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         {
             var adapter = CreateAdapter("x@gmail.com");
 
-            var key = new Mock<ISshKeyPair>();
-            key.SetupGet(s => s.PublicKeyString).Returns("key");
-
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    key.Object,
+                    "ssh-rsa",
+                    "blob",
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());
         }
@@ -87,21 +83,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
             var credential = (TemporaryServiceCredential)(await credentialTask);
             var adapter = CreateAdapter(credential);
 
-            using (var keyPair = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                var profile = await adapter.ImportSshPublicKeyAsync(
-                    new ProjectLocator(TestProject.ProjectId),
-                    keyPair,
-                    TimeSpan.FromMinutes(5),
-                    CancellationToken.None)
-                .ConfigureAwait(false);
+            var keyType = "ssh-rsa";
+            var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
 
-                var key = profile.SshPublicKeys
-                    .Values
-                    .Where(k => k.Key.Contains(keyPair.PublicKeyString))
-                    .FirstOrDefault();
-                Assert.IsNotNull(key);
-            }
+            var profile = await adapter.ImportSshPublicKeyAsync(
+                new ProjectLocator(TestProject.ProjectId),
+                keyType,
+                keyBlob,
+                TimeSpan.FromMinutes(5),
+                CancellationToken.None)
+            .ConfigureAwait(false);
+
+            var key = profile.SshPublicKeys
+                .Values
+                .Where(k => k.Key.Contains(keyBlob))
+                .FirstOrDefault();
+            Assert.IsNotNull(key);
         }
 
         //---------------------------------------------------------------------
@@ -145,48 +142,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
             var credential = (TemporaryServiceCredential)(await credentialTask);
             var adapter = CreateAdapter(credential);
 
-            using (var keyPair = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                //
-                // Import a key.
-                //
-                var profile = await adapter.ImportSshPublicKeyAsync(
-                        new ProjectLocator(TestProject.ProjectId),
-                        keyPair,
-                        TimeSpan.FromMinutes(5),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+            var keyType = "ssh-rsa";
+            var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
 
-                var key = profile.SshPublicKeys
-                    .Values
-                    .Where(k => k.Key.Contains(keyPair.PublicKeyString))
-                    .FirstOrDefault();
-                Assert.IsNotNull(key);
+            //
+            // Import a key.
+            //
+            var profile = await adapter.ImportSshPublicKeyAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    keyType,
+                    keyBlob,
+                    TimeSpan.FromMinutes(5),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
-                //
-                // Delete key twice.
-                //
-                await adapter.DeleteSshPublicKey(
-                        key.Fingerprint,
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-                await adapter.DeleteSshPublicKey(
-                        key.Fingerprint,
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+            var key = profile.SshPublicKeys
+                .Values
+                .Where(k => k.Key.Contains(keyBlob))
+                .FirstOrDefault();
+            Assert.IsNotNull(key);
 
-                //
-                // Check that it's gone.
-                //
-                profile = await adapter.GetLoginProfileAsync(
-                        new ProjectLocator(TestProject.ProjectId),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+            //
+            // Delete key twice.
+            //
+            await adapter.DeleteSshPublicKey(
+                    key.Fingerprint,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+            await adapter.DeleteSshPublicKey(
+                    key.Fingerprint,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.IsFalse(profile.SshPublicKeys
-                    .EnsureNotNull()
-                    .Any(k => k.Key.Contains(keyPair.PublicKeyString)));
-            }
+            //
+            // Check that it's gone.
+            //
+            profile = await adapter.GetLoginProfileAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(profile.SshPublicKeys
+                .EnsureNotNull()
+                .Any(k => k.Key.Contains(keyBlob)));
         }
 
         [Test]

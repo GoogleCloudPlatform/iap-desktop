@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     new Mock<IComputeEngineAdapter>().Object,
                     new Mock<IResourceManagerAdapter>().Object,
-                    new Mock<IOsLoginService>().Object,
+                    new Mock<IOsLoginProfile>().Object,
                     new Mock<IProjectModelCloudNode>().Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenScopeIsProjectAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenScopeIsProjectAndOsLoginDisabled_ThenModelIncludesProjectKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenScopeIsProjectAndOsLoginDisabledAndProjectKeysBlocked_ThenModelIncludesNoKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     new Mock<IComputeEngineAdapter>().Object,
                     new Mock<IResourceManagerAdapter>().Object,
-                    new Mock<IOsLoginService>().Object,
+                    new Mock<IOsLoginProfile>().Object,
                     new Mock<IProjectModelZoneNode>().Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenScopeIsInstanceAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
@@ -326,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenScopeIsInstanceAndOsLoginDisabled_ThenModelIncludesProjectAndInstanceKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenScopeIsInstanceAndOsLoginDisabledAndProjectKeysBlocked_ThenModelIncludesInstanceKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
@@ -402,7 +402,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         [Test]
         public async Task WhenAuthorizationMethodIsInstanceMetadata_ThenDeleteFromOsLoginDoesNothing()
         {
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
 
             await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
                     osLoginServiceMock.Object,
@@ -421,7 +421,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
         public async Task WhenAuthorizationMethodIsOslogin_ThenDeleteFromOsLoginDeletesKey()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-            var osLoginServiceMock = new Mock<IOsLoginService>();
+            var osLoginServiceMock = new Mock<IOsLoginProfile>();
 
             await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
                     osLoginServiceMock.Object,

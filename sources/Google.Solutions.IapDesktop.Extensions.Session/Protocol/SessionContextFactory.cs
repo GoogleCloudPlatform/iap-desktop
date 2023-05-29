@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private readonly IAuthorization authorization;
         private readonly IProjectWorkspace workspace;
         private readonly IKeyStoreAdapter keyStoreAdapter;
-        private readonly IKeyAuthorizationService keyAuthorizationService;
+        private readonly IKeyAuthorizer keyAuthorizer;
         private readonly IConnectionSettingsService settingsService;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IIapTransportFactory iapTransportFactory;
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             IAuthorization authorization,
             IProjectWorkspace workspace,
             IKeyStoreAdapter keyStoreAdapter,
-            IKeyAuthorizationService keyAuthService,
+            IKeyAuthorizer keyAuthorizer,
             IConnectionSettingsService settingsService,
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.workspace = workspace.ExpectNotNull(nameof(workspace));
             this.keyStoreAdapter = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
-            this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
+            this.keyAuthorizer = keyAuthorizer.ExpectNotNull(nameof(keyAuthorizer));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             var context = new SshContext(
                 this.iapTransportFactory,
                 this.directTransportFactory,
-                this.keyAuthorizationService,
+                this.keyAuthorizer,
                 this.addressResolver,
                 node.Instance,
                 localKeyPair);

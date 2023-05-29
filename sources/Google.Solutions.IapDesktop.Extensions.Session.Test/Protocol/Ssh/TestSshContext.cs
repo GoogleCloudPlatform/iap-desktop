@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IAuthorization>().Object);
 
             var key = new Mock<ISshKeyPair>().Object;
-            var keyAuthService = new Mock<IKeyAuthorizationService>();
-            keyAuthService
+            var keyAuthorizer = new Mock<IKeyAuthorizer>();
+            keyAuthorizer
                 .Setup(s => s.AuthorizeKeyAsync(
                     SampleInstance,
                     key,
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                keyAuthService.Object,
+                keyAuthorizer.Object,
                 new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 key);
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var context = new SshContext(
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IKeyAuthorizationService>().Object,
+                new Mock<IKeyAuthorizer>().Object,
                 new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
-                new Mock<IKeyAuthorizationService>().Object,
+                new Mock<IKeyAuthorizer>().Object,
                 addressResolver.Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);

@@ -36,5 +36,9 @@ namespace Google.Solutions.Apis
         public static readonly IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
             "Generating Windows passwords",
             "https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances#permissions-required-for-this-task");
+
+        public static readonly IHelpTopic ManagingOsLogin = new HelpTopic(
+            "Managing OS Login",
+            "https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org");
     }
 }
