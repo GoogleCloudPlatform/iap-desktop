@@ -20,11 +20,10 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -35,11 +34,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
+namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestOsLoginAdapter : ShellFixtureBase
+    public class TestOsLoginAdapter
     {
         private OsLoginAdapter CreateAdapter(string email)
         {

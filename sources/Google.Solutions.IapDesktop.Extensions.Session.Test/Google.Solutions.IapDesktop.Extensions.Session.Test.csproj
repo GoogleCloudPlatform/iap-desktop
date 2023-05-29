@@ -145,7 +145,6 @@
     <Compile Include="Protocol\Ssh\TestMetadataAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\TestInstanceMetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Protocol\Ssh\TestMetadataAuthorizedPublicKeySet.cs" />
-    <Compile Include="Protocol\Adapter\TestOsLoginAdapter.cs" />
     <Compile Include="Settings\TestSshSettingsRepository.cs" />
     <Compile Include="Settings\TestTerminalSettingsRepository.cs" />
     <Compile Include="Protocol\Ssh\TestAuthorizedKey.cs" />

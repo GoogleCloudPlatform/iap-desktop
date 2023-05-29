@@ -154,7 +154,6 @@
     <Compile Include="Protocol\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeySet.cs" />
-    <Compile Include="Protocol\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Data\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Settings\SshSettings.cs" />
     <Compile Include="Settings\TerminalSettings.cs" />

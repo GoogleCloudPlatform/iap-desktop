@@ -27,7 +27,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
@@ -35,6 +34,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Apis.Compute;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {

@@ -47,6 +47,9 @@
     <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.60.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.CloudOSLogin.v1, Version=1.60.0.2634, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudOSLogin.v1.1.60.0.2634\lib\net45\Google.Apis.CloudOSLogin.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.60.0.2950, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.60.0.2950\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
     </Reference>
@@ -90,6 +93,7 @@
     <Compile Include="Compute\TestComputeEngineAdapter.cs" />
     <Compile Include="Compute\TestInstanceExtensions.cs" />
     <Compile Include="Compute\TestMetadataExtensions.cs" />
+    <Compile Include="Compute\TestOsLoginAdapter.cs" />
     <Compile Include="Compute\TestWindowsCredentialService.cs" />
     <Compile Include="Crm\TestResourceManagerAdapter.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
@@ -106,6 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +125,10 @@
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}</Project>
       <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj">
+      <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
+      <Name>Google.Solutions.Ssh</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
