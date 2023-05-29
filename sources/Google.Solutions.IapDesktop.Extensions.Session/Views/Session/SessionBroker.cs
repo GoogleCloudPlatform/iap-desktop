@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -36,6 +36,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {
