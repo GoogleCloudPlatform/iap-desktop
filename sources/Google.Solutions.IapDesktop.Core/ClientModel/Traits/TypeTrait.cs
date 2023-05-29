@@ -25,14 +25,18 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
-
-    public class InstanceTrait : IProtocolTargetTrait
+	
+    public class InstanceTrait : ITrait
     {
         private const string Expression = "isInstance()";
 
-        public InstanceTrait()
+        private InstanceTrait()
         {
         }
+
+        public static InstanceTrait Instance { get; } = new InstanceTrait();
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.
@@ -48,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return Equals(obj as InstanceTrait);
         }
 
-        public bool Equals(IProtocolTargetTrait other)
+        public bool Equals(ITrait other)
         {
             return other is InstanceTrait && other != null;
         }
@@ -100,14 +104,18 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-
-    public class WindowsTrait : IProtocolTargetTrait
+	
+    public class WindowsTrait : ITrait
     {
         private const string Expression = "isWindows()";
 
-        public WindowsTrait()
+        private WindowsTrait()
         {
         }
+
+        public static WindowsTrait Instance { get; } = new WindowsTrait();
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.
@@ -123,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return Equals(obj as WindowsTrait);
         }
 
-        public bool Equals(IProtocolTargetTrait other)
+        public bool Equals(ITrait other)
         {
             return other is WindowsTrait && other != null;
         }
@@ -175,14 +183,18 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-
-    public class LinuxTrait : IProtocolTargetTrait
+	
+    public class LinuxTrait : ITrait
     {
         private const string Expression = "isLinux()";
 
-        public LinuxTrait()
+        private LinuxTrait()
         {
         }
+
+        public static LinuxTrait Instance { get; } = new LinuxTrait();
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.
@@ -198,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return Equals(obj as LinuxTrait);
         }
 
-        public bool Equals(IProtocolTargetTrait other)
+        public bool Equals(ITrait other)
         {
             return other is LinuxTrait && other != null;
         }
@@ -250,4 +262,4 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-}
+	}

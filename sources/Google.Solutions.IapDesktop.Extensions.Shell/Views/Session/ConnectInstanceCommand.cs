@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     {
         private readonly Service<ISessionContextFactory> sessionContextFactory;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
-        private readonly Service<IProjectModelService> modelService;
+        private readonly Service<IProjectWorkspace> workspace;
 
         public bool AvailableForSsh { get; set; } = false;
         public bool AvailableForRdp { get; set; } = false;
@@ -51,12 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             string text,
             Service<ISessionContextFactory> sessionContextFactory,
             Service<IInstanceSessionBroker> sessionBroker,
-            Service<IProjectModelService> modelService)
+            Service<IProjectWorkspace> workspace)
             : base(text)
         {
             this.sessionContextFactory = sessionContextFactory;
             this.sessionBroker = sessionBroker;
-            this.modelService = modelService;
+            this.workspace = workspace;
         }
 
         protected override bool IsAvailable(IProjectModelNode node)
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             //
             // Select node so that tracking windows are updated.
             //
-            await this.modelService
+            await this.workspace
                 .GetInstance()
                 .SetActiveNodeAsync(
                     node,

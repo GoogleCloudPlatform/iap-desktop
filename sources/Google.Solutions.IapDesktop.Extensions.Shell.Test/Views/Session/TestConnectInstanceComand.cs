@@ -34,6 +34,7 @@ using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
@@ -46,18 +47,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         private static ConnectInstanceCommand CreateCommand(
             Mock<ISessionContextFactory> sessionContextFactory,
             Mock<IInstanceSessionBroker> sessionBroker,
-            Mock<IProjectModelService> modelService)
+            Mock<IProjectWorkspace> workspace)
         {
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Add(sessionContextFactory.Object);
             serviceProvider.Add(sessionBroker.Object);
-            serviceProvider.Add(modelService.Object);
+            serviceProvider.Add(workspace.Object);
 
             return new ConnectInstanceCommand(
                 "&test",
                 new Service<ISessionContextFactory>(serviceProvider.Object),
                 new Service<IInstanceSessionBroker>(serviceProvider.Object),
-                new Service<IProjectModelService>(serviceProvider.Object))
+                new Service<IProjectWorkspace>(serviceProvider.Object))
             {
                 AvailableForRdp = true,
                 AvailableForSsh = true
@@ -80,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task ExecuteSetsActiveNode()
         {
-            var modelService = new Mock<IProjectModelService>();
+            var workspace = new Mock<IProjectWorkspace>();
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             var session = (ISession)new Mock<IRemoteDesktopSession>().Object;
             sessionBroker
@@ -90,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var command = CreateCommand(
                 new Mock<ISessionContextFactory>(),
                 sessionBroker,
-                modelService);
+                workspace);
 
             var instance = CreateInstanceNode(OperatingSystems.Windows).Object;
 
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(instance)
                 .ConfigureAwait(false);
 
-            modelService.Verify(
+            workspace.Verify(
                 s => s.SetActiveNodeAsync(instance, CancellationToken.None),
                 Times.Once);
         }
@@ -120,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var command = CreateCommand(
                 contextFactory,
                 sessionBroker,
-                new Mock<IProjectModelService>());
+                new Mock<IProjectWorkspace>());
 
             var instance = CreateInstanceNode(OperatingSystems.Windows).Object;
 
@@ -162,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var command = CreateCommand(
                 contextFactory,
                 sessionBroker,
-                new Mock<IProjectModelService>());
+                new Mock<IProjectWorkspace>());
 
             await command
                 .ExecuteAsync(instance)
@@ -204,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var command = CreateCommand(
                 contextFactory,
                 sessionBroker,
-                new Mock<IProjectModelService>());
+                new Mock<IProjectWorkspace>());
             command.ForceNewConnection = false;
 
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
@@ -244,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var command = CreateCommand(
                 contextFactory,
                 sessionBroker,
-                new Mock<IProjectModelService>());
+                new Mock<IProjectWorkspace>());
             command.ForceNewConnection = true;
 
             await command
@@ -288,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var command = CreateCommand(
                 contextFactory,
                 sessionBroker,
-                new Mock<IProjectModelService>());
+                new Mock<IProjectWorkspace>());
 
             await command
                 .ExecuteAsync(instance)

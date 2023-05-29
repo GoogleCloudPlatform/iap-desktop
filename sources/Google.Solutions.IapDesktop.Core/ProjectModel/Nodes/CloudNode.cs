@@ -19,26 +19,28 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using System;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
+namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    /// <summary>
-    /// A target that you can connect a transport to.
-    /// </summary>
-    public interface IProtocolTarget
+    internal class CloudNode : IProjectModelCloudNode
     {
-        /// <summary>
-        /// Display name of the target.
-        /// </summary>
-        string TargetName { get; }
+        //---------------------------------------------------------------------
+        // Readonly properties.
+        //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Traits of this target that can be used to determine
-        /// applicable protocols.
-        /// </summary>
-        IEnumerable<ITrait> Traits { get; }
+        public string DisplayName => "Google Cloud";
+
+        public IEnumerable<IProjectModelProjectNode> Projects { get; }
+
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        public CloudNode(
+            IEnumerable<IProjectModelProjectNode> projects)
+        {
+            this.Projects = projects;
+        }
     }
 }

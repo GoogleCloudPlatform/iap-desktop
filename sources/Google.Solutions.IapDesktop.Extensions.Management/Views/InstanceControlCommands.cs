@@ -38,7 +38,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views
 {
     [Service]

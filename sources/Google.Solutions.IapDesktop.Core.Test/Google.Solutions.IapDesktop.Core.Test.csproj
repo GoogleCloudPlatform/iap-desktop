@@ -91,6 +91,7 @@
     <Compile Include="ClientModel\Protocol\TestAppProtocolFactory.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocolFactoryConfigurationSection.cs" />
     <Compile Include="ClientModel\Traits\TestLinuxTrait.cs" />
+    <Compile Include="ClientModel\Traits\TestTraitDetector.cs" />
     <Compile Include="ClientModel\Traits\TestWindowsTrait.cs" />
     <Compile Include="ClientModel\Traits\TestInstanceTrait.cs" />
     <Compile Include="ClientModel\Transport\Policies\TestCurrentProcessPolicy.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="ObjectModel\TestEventQueue.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
+    <Compile Include="ProjectModel\TestInstanceNode.cs" />
     <Compile Include="ProjectModel\TestProjectModelService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\TestProtocolRegistry.cs" />

@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 return this.Name;
             }
 
-            internal IEnumerable<IProtocolTargetTrait> ParseCondition()
+            internal IEnumerable<ITrait> ParseCondition()
             {
                 if (this.Condition == null)
                 {

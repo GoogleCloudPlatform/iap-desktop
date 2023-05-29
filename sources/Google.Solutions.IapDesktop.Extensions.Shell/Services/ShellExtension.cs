@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<Service<ISessionContextFactory>>(),
-                serviceProvider.GetService<Service<IProjectModelService>>(),
+                serviceProvider.GetService<Service<IProjectWorkspace>>(),
                 serviceProvider.GetService<Service<IInstanceSessionBroker>>());
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()

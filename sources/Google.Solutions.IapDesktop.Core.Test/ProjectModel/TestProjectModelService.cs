@@ -165,13 +165,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var projectRepository = new Mock<IProjectRepository>();
             var eventService = new Mock<IEventQueue>();
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
-            await modelService
+            await workspace
                 .AddProjectAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
@@ -193,13 +193,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var projectRepository = new Mock<IProjectRepository>();
             var eventService = new Mock<IEventQueue>();
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
-            await modelService
+            await workspace
                 .RemoveProjectAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
@@ -221,13 +221,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeEngineAdapter.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     Name = "inaccessible-project"
                 });
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(
@@ -284,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     "inaccessible-project").Object,
                 new Mock<IEventQueue>().Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 model.Projects.Select(p => p.Project.Name).ToList());
 
             // Only 1 or 2 projects should have been cached.
-            Assert.AreEqual(1, modelService.CachedProjectsCount);
+            Assert.AreEqual(1, workspace.CachedProjectsCount);
         }
 
         [Test]
@@ -302,16 +302,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeEngineAdapter.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
-            var modelSecondLoad = await modelService
+            var modelSecondLoad = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -333,16 +333,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeEngineAdapter.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
-            var modelSecondLoad = await modelService
+            var modelSecondLoad = await workspace
                 .GetRootNodeAsync(true, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -361,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     "nonexisting-1").Object,
                 new Mock<IEventQueue>().Object);
 
-            var projects = (await modelService
+            var projects = (await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true))
                     .Projects
@@ -393,14 +393,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     Error = "invalid_grant"
                 }));
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => modelService.GetRootNodeAsync(false, CancellationToken.None).Wait());
+                () => workspace.GetRootNodeAsync(false, CancellationToken.None).Wait());
         }
 
         //---------------------------------------------------------------------
@@ -415,13 +415,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var zones = await modelService
+            var zones = await workspace
                 .GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     false,
@@ -451,19 +451,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var zones = await modelService
+            var zones = await workspace
                 .GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
-            var zonesSecondLoad = await modelService
+            var zonesSecondLoad = await workspace
                 .GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     false,
@@ -486,18 +486,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var zones = await modelService.GetZoneNodesAsync(
+            var zones = await workspace.GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     true,
                     CancellationToken.None)
                 .ConfigureAwait(true);
-            var zonesSecondLoad = await modelService.GetZoneNodesAsync(
+            var zonesSecondLoad = await workspace.GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     true,
                     CancellationToken.None)
@@ -519,13 +519,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceWithoutDiskInZone1);
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var zones = await modelService.GetZoneNodesAsync(
+            var zones = await workspace.GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     false,
                     CancellationToken.None)
@@ -548,13 +548,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 SampleTerminatedLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone1);
 
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var zones = await modelService.GetZoneNodesAsync(
+            var zones = await workspace.GetZoneNodesAsync(
                     new ProjectLocator(SampleProjectId),
                     false,
                     CancellationToken.None)
@@ -582,17 +582,17 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            await modelService
+            await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => modelService.GetNodeAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => workspace.GetNodeAsync(
                 new DiskTypeLocator(SampleProjectId, "zone-1", "type-1"),
                 CancellationToken.None).Wait());
         }
@@ -600,22 +600,22 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            await modelService
+            await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(await modelService.GetNodeAsync(
+            Assert.IsNull(await workspace.GetNodeAsync(
                     new ProjectLocator("nonexisting-1"),
                     CancellationToken.None)
                 .ConfigureAwait(true));
 
-            var project = await modelService.GetNodeAsync(
+            var project = await workspace.GetNodeAsync(
                     new ProjectLocator(SampleProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -626,7 +626,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
@@ -634,13 +634,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await modelService
+            Assert.IsNull(await workspace
                 .GetNodeAsync(
                     new ZoneLocator("nonexisting-1", "zone-1"),
                     CancellationToken.None)
                 .ConfigureAwait(true));
 
-            var zone = await modelService
+            var zone = await workspace
                 .GetNodeAsync(
                     new ZoneLocator(SampleProjectId, "zone-1"),
                     CancellationToken.None)
@@ -652,7 +652,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
@@ -660,13 +660,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await modelService
+            Assert.IsNull(await workspace
                 .GetNodeAsync(
                     new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name),
                     CancellationToken.None)
                 .ConfigureAwait(true));
 
-            var instance = await modelService
+            var instance = await workspace
                 .GetNodeAsync(
                     new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
                     CancellationToken.None)
@@ -678,7 +678,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectNotAddedButZoneLocatorValid_ThenGetNodeAsyncReturnsNull()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
@@ -686,7 +686,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await modelService
+            Assert.IsNull(await workspace
                 .GetNodeAsync(
                     new ZoneLocator(SampleProjectId, "zone-1"),
                     CancellationToken.None)
@@ -696,7 +696,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectNotAddedButInstanceLocatorValid_ThenGetNodeAsyncReturnsNull()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
@@ -704,7 +704,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await modelService
+            Assert.IsNull(await workspace
                 .GetNodeAsync(
                     new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
                     CancellationToken.None)
@@ -718,19 +718,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var activeNode = await modelService
+            var activeNode = await workspace
                 .GetActiveNodeAsync(CancellationToken.None)
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(activeNode);
             Assert.AreSame(
-                await modelService
+                await workspace
                     .GetRootNodeAsync(false, CancellationToken.None)
                     .ConfigureAwait(true),
                 activeNode);
@@ -739,7 +739,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenActiveNodeSet_ThenGetActiveNodeAsyncReturnsNode()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
@@ -747,19 +747,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            await modelService
+            await workspace
                 .GetRootNodeAsync(
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            await modelService
+            await workspace
                 .SetActiveNodeAsync(
                     new ProjectLocator(SampleProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var activeNode = await modelService
+            var activeNode = await workspace
                 .GetActiveNodeAsync(CancellationToken.None)
                 .ConfigureAwait(true);
             Assert.IsNotNull(activeNode);
@@ -770,23 +770,23 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenActiveNodeSetToValidLocator_ThenEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var root = await modelService
+            var root = await workspace
                 .GetRootNodeAsync(
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            await modelService
+            await workspace
                 .SetActiveNodeAsync(
                     root.Projects.First(),
                     CancellationToken.None)
@@ -801,24 +801,24 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenActiveNodeSetToNull_ThenEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
             // Pre-warm cache.
-            await modelService
+            await workspace
                 .GetRootNodeAsync(
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            await modelService
+            await workspace
                 .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -831,24 +831,24 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenActiveNodeSetToNonexistingLocator_ThenEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
-            var model = await modelService
+            var model = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
             // Pre-warm cache.
-            await modelService
+            await workspace
                 .GetRootNodeAsync(
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            await modelService
+            await workspace
                 .SetActiveNodeAsync(
                     new ProjectLocator("nonexisting-1"),
                     CancellationToken.None)
@@ -863,13 +863,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenCacheEmptyAndActiveNodeSetToNull_ThenNoEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
-            await modelService
+            await workspace
                 .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -881,14 +881,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public void WhenLocatorIsInvalid_ThenSetActiveNodeAsyncRaisesArgumentException()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 CreateComputeEngineAdapterMock(SampleProjectId).Object,
                 CreateResourceManagerAdapterMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(
-                () => modelService.SetActiveNodeAsync(
+                () => workspace.SetActiveNodeAsync(
                     new DiskTypeLocator(SampleProjectId, "zone-1", "type-1"),
                     CancellationToken.None).Wait());
         }

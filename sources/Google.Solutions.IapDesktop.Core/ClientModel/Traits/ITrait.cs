@@ -19,26 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System;
-using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
     /// <summary>
-    /// A target that you can connect a transport to.
+    /// Represents some trait of a target.
     /// </summary>
-    public interface IProtocolTarget
+    public interface ITrait : IEquatable<ITrait>
     {
         /// <summary>
-        /// Display name of the target.
+        /// Description, suitable for displaying.
         /// </summary>
-        string TargetName { get; }
-
-        /// <summary>
-        /// Traits of this target that can be used to determine
-        /// applicable protocols.
-        /// </summary>
-        IEnumerable<ITrait> Traits { get; }
+        string DisplayName { get; }
     }
 }

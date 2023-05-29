@@ -42,6 +42,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
@@ -88,8 +89,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 
             var vmNode = CreateInstanceNodeMock();
 
-            var modelService = new Mock<IProjectModelService>();
-            modelService
+            var workspace = new Mock<IProjectWorkspace>();
+            workspace
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                modelService.Object,
+                workspace.Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -139,8 +140,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 
             var vmNode = CreateInstanceNodeMock();
 
-            var modelService = new Mock<IProjectModelService>();
-            modelService
+            var workspace = new Mock<IProjectWorkspace>();
+            workspace
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -149,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                modelService.Object,
+                workspace.Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -193,8 +194,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
 
-            var modelService = new Mock<IProjectModelService>();
-            modelService
+            var workspace = new Mock<IProjectWorkspace>();
+            workspace
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -205,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                modelService.Object,
+                workspace.Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -247,8 +248,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
 
-            var modelService = new Mock<IProjectModelService>();
-            modelService
+            var workspace = new Mock<IProjectWorkspace>();
+            workspace
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -259,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                modelService.Object,
+                workspace.Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -312,8 +313,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
                     RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>()));
 
-            var modelService = new Mock<IProjectModelService>();
-            modelService
+            var workspace = new Mock<IProjectWorkspace>();
+            workspace
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -324,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                modelService.Object,
+                workspace.Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 settingsService.Object,
@@ -371,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                new Mock<IProjectModelService>().Object,
+                new Mock<IProjectWorkspace>().Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IConnectionSettingsService>().Object,
@@ -409,7 +410,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
-                new Mock<IProjectModelService>().Object,
+                new Mock<IProjectWorkspace>().Object,
                 new Mock<IKeyStoreAdapter>().Object,
                 new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IConnectionSettingsService>().Object,

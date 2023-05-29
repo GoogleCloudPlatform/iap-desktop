@@ -39,9 +39,13 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
     {
         private const string Expression = "is<#= traitName #>()";
 
-        public <#= traitName #>Trait()
+        private <#= traitName #>Trait()
         {
         }
+
+        public static <#= traitName #>Trait Instance { get; } = new <#= traitName #>Trait();
+
+        public string DisplayName => Expression;
 
         //---------------------------------------------------------------------
         // Equality.

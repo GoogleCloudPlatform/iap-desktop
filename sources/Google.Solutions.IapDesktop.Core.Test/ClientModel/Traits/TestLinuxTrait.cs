@@ -27,11 +27,21 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, IProtocolTargetTrait>
+    public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, ITrait>
     {
         protected override LinuxTrait CreateInstance()
         {
-            return new LinuxTrait();
+            return LinuxTrait.Instance;
+        }
+
+        //---------------------------------------------------------------------
+        // DisplayName.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void DisplayNameExpression()
+        {
+            Assert.AreEqual("isLinux()", LinuxTrait.Instance.DisplayName);
         }
 
         //---------------------------------------------------------------------
@@ -41,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("isLinux()", new LinuxTrait().ToString());
+            Assert.AreEqual("isLinux()", LinuxTrait.Instance.ToString());
         }
 
         //---------------------------------------------------------------------

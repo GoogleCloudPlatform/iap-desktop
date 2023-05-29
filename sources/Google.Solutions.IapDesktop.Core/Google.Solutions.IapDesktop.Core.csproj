@@ -71,6 +71,8 @@
     <Compile Include="ClientModel\Protocol\AppProtocolFactory.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolContext.cs" />
     <Compile Include="ClientModel\Protocol\ProtocolTargetLocator.cs" />
+    <Compile Include="ClientModel\Traits\ITrait.cs" />
+    <Compile Include="ClientModel\Traits\TraitDetector.cs" />
     <Compile Include="ClientModel\Traits\TypeTrait.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,10 +97,13 @@
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ProjectModel\IProjectModelNode.cs" />
     <Compile Include="ProjectModel\IProjectRepository.cs" />
+    <Compile Include="ProjectModel\Nodes\CloudNode.cs" />
+    <Compile Include="ProjectModel\Nodes\InstanceNode.cs" />
+    <Compile Include="ProjectModel\Nodes\ProjectNode.cs" />
+    <Compile Include="ProjectModel\Nodes\ZoneNode.cs" />
     <Compile Include="ProjectModel\OperatingSystems.cs" />
-    <Compile Include="ProjectModel\ProjectModelEvents.cs" />
-    <Compile Include="ProjectModel\ProjectModelNodes.cs" />
-    <Compile Include="ProjectModel\ProjectModelService.cs" />
+    <Compile Include="ProjectModel\ProjectWorkspaceEvents.cs" />
+    <Compile Include="ProjectModel\ProjectWorkspace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\IProtocol.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolTarget.cs" />

@@ -27,11 +27,21 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestWindowsTrait : EquatableFixtureBase<WindowsTrait, IProtocolTargetTrait>
+    public class TestWindowsTrait : EquatableFixtureBase<WindowsTrait, ITrait>
     {
         protected override WindowsTrait CreateInstance()
         {
-            return new WindowsTrait();
+            return WindowsTrait.Instance;
+        }
+
+        //---------------------------------------------------------------------
+        // DisplayName.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void DisplayNameExpression()
+        {
+            Assert.AreEqual("isWindows()", WindowsTrait.Instance.DisplayName);
         }
 
         //---------------------------------------------------------------------
@@ -41,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("isWindows()", new WindowsTrait().ToString());
+            Assert.AreEqual("isWindows()", WindowsTrait.Instance.ToString());
         }
 
         //---------------------------------------------------------------------

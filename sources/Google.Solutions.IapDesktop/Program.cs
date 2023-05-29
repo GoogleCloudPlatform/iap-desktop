@@ -471,7 +471,7 @@ namespace Google.Solutions.IapDesktop
                 var projectRepository = new ProjectRepository(profile.SettingsKey.CreateSubKey("Inventory"));
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
-                mainLayer.AddSingleton<IProjectModelService, ProjectModelService>();
+                mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
                 mainLayer.AddTransient<IInstanceControlService, InstanceControlService>();
                 mainLayer.AddTransient<IUpdateService, UpdateService>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();

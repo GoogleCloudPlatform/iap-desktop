@@ -47,11 +47,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
     {
         public DiagnosticsCommands(
             IConnectionSettingsService settingsService,
-            IProjectModelService projectModelService)
+            IProjectWorkspace workspace)
         {
             this.GenerateHtmlPage = new GenerateHtmlPageCommand(
                 settingsService,
-                projectModelService);
+                workspace);
         }
 
         //---------------------------------------------------------------------
@@ -71,15 +71,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
         private class GenerateHtmlPageCommand : MenuCommandBase<IProjectModelNode>
         {
             private readonly IConnectionSettingsService settingsService;
-            private readonly IProjectModelService projectModelService;
+            private readonly IProjectWorkspace workspace;
 
             public GenerateHtmlPageCommand(
                 IConnectionSettingsService settingsService,
-                IProjectModelService projectModelService)
+                IProjectWorkspace workspace)
                 : base("Generate &HTML page")
             {
                 this.settingsService = settingsService;
-                this.projectModelService = projectModelService;
+                this.workspace = workspace;
             }
 
             //-----------------------------------------------------------------
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 WriteCombobox<SessionTransportType>("TransportType");
                 WriteCombobox<RdpCredentialGenerationBehavior>("CredentialGenerationBehavior");
 
-                var zones = await this.projectModelService
+                var zones = await this.workspace
                     .GetZoneNodesAsync(
                         projectNode.Project,
                         false,

@@ -28,6 +28,7 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
 {

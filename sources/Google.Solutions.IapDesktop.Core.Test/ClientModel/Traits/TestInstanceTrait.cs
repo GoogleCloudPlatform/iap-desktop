@@ -27,11 +27,21 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, IProtocolTargetTrait>
+    public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, ITrait>
     {
         protected override InstanceTrait CreateInstance()
         {
-            return new InstanceTrait();
+            return InstanceTrait.Instance;
+        }
+
+        //---------------------------------------------------------------------
+        // DisplayName.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void DisplayNameExpression()
+        {
+            Assert.AreEqual("isInstance()", InstanceTrait.Instance.DisplayName);
         }
 
         //---------------------------------------------------------------------
@@ -41,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToStringReturnsExpression()
         {
-            Assert.AreEqual("isInstance()", new InstanceTrait().ToString());
+            Assert.AreEqual("isInstance()", InstanceTrait.Instance.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -62,6 +72,5 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
             Assert.IsTrue(InstanceTrait.TryParse(expression, out var trait));
             Assert.IsNotNull(trait);
         }
-
     }
 }

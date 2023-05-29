@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             return new AppProtocol(
                 name,
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
@@ -71,14 +71,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var protocol1 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-2",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
@@ -94,14 +94,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var protocol1 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
-                new[] { new InstanceTrait() },
+                new[] { InstanceTrait.Instance },
                 new AllowAllPolicy(),
                 8080,
                 null,
@@ -116,14 +116,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var protocol1 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new Mock<ITransportPolicy>().Object,
                 8080,
                 null,
@@ -139,14 +139,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var protocol1 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 80,
                 null,
@@ -162,14 +162,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var protocol1 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
-                Enumerable.Empty<IProtocolTargetTrait>(),
+                Enumerable.Empty<ITrait>(),
                 new AllowAllPolicy(),
                 8080,
                 null,

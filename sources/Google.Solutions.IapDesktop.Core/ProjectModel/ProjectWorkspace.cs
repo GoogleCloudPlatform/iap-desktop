@@ -26,7 +26,9 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     /// Represents the in-memory model (or workspace) of projects and
     /// instances. Data is cached, but read-only.
     /// </summary>
-    public interface IProjectModelService : IDisposable
+    public interface IProjectWorkspace : IDisposable
     {
         /// <summary>
         /// Add a project so that it will be considered when
@@ -100,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             CancellationToken token);
     }
 
-    public class ProjectModelService : IProjectModelService
+    public class ProjectWorkspace : IProjectWorkspace
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
@@ -219,9 +221,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                                 zoneLocator.ProjectId,
                                 zoneLocator.Name,
                                 i.Name),
-                            i.IsWindowsInstance()
-                                ? OperatingSystems.Windows
-                                : OperatingSystems.Linux,
+                            TraitDetector.DetectTraits(i),
                             i.Status))
                         .ToList();
 
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ProjectModelService(
+        public ProjectWorkspace(
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
             IProjectRepository projectRepository,
