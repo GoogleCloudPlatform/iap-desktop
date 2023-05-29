@@ -260,9 +260,9 @@
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsRdpDll"
-          Name="Google.Solutions.IapDesktop.Extensions.Shell.dll"
+          Name="Google.Solutions.IapDesktop.Extensions.Session.dll"
           DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Shell.dll"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Session.dll"
           Vital="yes"/>
         
         <!-- SDK and dependencies -->
