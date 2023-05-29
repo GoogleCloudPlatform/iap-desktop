@@ -235,6 +235,30 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             }
         }
 
+        internal async Task ControlInstanceAsync(
+            InstanceLocator instance,
+            InstanceControlCommand command,
+            CancellationToken cancellationToken)
+        {
+            using (CoreTraceSources.Default.TraceMethod()
+                .WithParameters(instance, command))
+            {
+                await this.computeEngineAdapter.ControlInstanceAsync(
+                    instance,
+                    command,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+                await this.eventQueue.PublishAsync(
+                    new InstanceStateChangedEvent(
+                        instance,
+                        command == InstanceControlCommand.Start ||
+                            command == InstanceControlCommand.Resume ||
+                            command == InstanceControlCommand.Reset))
+                    .ConfigureAwait(false);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------

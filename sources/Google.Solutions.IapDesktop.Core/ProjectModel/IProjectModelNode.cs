@@ -19,10 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
@@ -133,5 +136,13 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// not perform any permission checks.
         /// </summary>
         bool CanReset { get; }
+
+        /// <summary>
+        /// Start, stop, or otherwise control the lifecycle of an instance
+        /// and notify other services.
+        /// </summary>
+        Task ControlInstanceAsync(
+            InstanceControlCommand command,
+            CancellationToken cancellationToken);
     }
 }

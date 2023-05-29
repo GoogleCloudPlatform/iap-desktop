@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Locator;
+
 namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     public class ProjectAddedEvent
@@ -48,6 +50,21 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         internal ActiveProjectChangedEvent(IProjectModelNode activeNode)
         {
             this.ActiveNode = activeNode;
+        }
+    }
+
+    public class InstanceStateChangedEvent
+    {
+        public InstanceLocator Instance { get; }
+
+        public bool IsRunning { get; }
+
+        public InstanceStateChangedEvent(
+            InstanceLocator instance,
+            bool isRunning)
+        {
+            this.Instance = instance;
+            this.IsRunning = isRunning;
         }
     }
 }
