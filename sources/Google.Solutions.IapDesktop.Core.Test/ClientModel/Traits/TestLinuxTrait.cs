@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, IProtocolTargetTrait>
+    public class TestLinuxTrait : EquatableFixtureBase<LinuxTrait, ITrait>
     {
         protected override LinuxTrait CreateInstance()
         {

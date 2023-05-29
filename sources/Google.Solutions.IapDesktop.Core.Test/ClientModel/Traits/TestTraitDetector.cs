@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void WhenCustomDetectorRegistered_ThenDetectTraitsReturnsCustomTraits()
         {
-            var customTrait = new Mock<IProtocolTargetTrait>();
+            var customTrait = new Mock<ITrait>();
             var detector = new Mock<ITraitDetector>();
             detector
                 .Setup(d => d.DetectTraits(It.IsAny<Instance>()))

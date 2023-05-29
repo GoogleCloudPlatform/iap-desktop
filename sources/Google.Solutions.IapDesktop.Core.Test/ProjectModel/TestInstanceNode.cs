@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var node = new InstanceNode(
                 1,
                 SampleLocator,
-                new IProtocolTargetTrait[] { InstanceTrait.Instance, WindowsTrait.Instance },
+                new ITrait[] { InstanceTrait.Instance, WindowsTrait.Instance },
                 "RUNNING");
 
             Assert.AreEqual(OperatingSystems.Windows, node.OperatingSystem);
