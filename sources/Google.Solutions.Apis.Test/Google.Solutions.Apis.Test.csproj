@@ -126,10 +126,6 @@
       <Project>{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj">
-      <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
-      <Name>Google.Solutions.Ssh</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
       <Name>Google.Solutions.Testing.Apis</Name>
