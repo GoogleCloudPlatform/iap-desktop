@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     /// Represents the in-memory model (or workspace) of projects and
     /// instances. Data is cached, but read-only.
     /// </summary>
-    public interface IProjectModelService : IDisposable
+    public interface IProjectWorkspace : IDisposable
     {
         /// <summary>
         /// Add a project so that it will be considered when
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             CancellationToken token);
     }
 
-    public class ProjectModelService : IProjectModelService
+    public class ProjectWorkspace : IProjectWorkspace
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ProjectModelService(
+        public ProjectWorkspace(
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
             IProjectRepository projectRepository,

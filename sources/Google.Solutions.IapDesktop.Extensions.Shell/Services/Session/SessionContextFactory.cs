@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
     {
         private readonly IWin32Window window;
         private readonly IAuthorization authorization;
-        private readonly IProjectModelService projectModelService;
+        private readonly IProjectWorkspace workspace;
         private readonly IKeyStoreAdapter keyStoreAdapter;
         private readonly IKeyAuthorizationService keyAuthorizationService;
         private readonly IConnectionSettingsService settingsService;
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         public SessionContextFactory(
             IMainWindow window,
             IAuthorization authorization,
-            IProjectModelService projectModelService,
+            IProjectWorkspace workspace,
             IKeyStoreAdapter keyStoreAdapter,
             IKeyAuthorizationService keyAuthService,
             IConnectionSettingsService settingsService,
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         {
             this.window = window.ExpectNotNull(nameof(window));
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
-            this.projectModelService = projectModelService.ExpectNotNull(nameof(projectModelService));
+            this.workspace = workspace.ExpectNotNull(nameof(workspace));
             this.keyStoreAdapter = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
             this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
             RdpSessionParameters.ParameterSources sources;
             InstanceConnectionSettings settings;
-            var existingNode = await this.projectModelService
+            var existingNode = await this.workspace
                 .GetNodeAsync(url.Instance, cancellationToken)
                 .ConfigureAwait(true);
             if (existingNode is IProjectModelInstanceNode vmNode)

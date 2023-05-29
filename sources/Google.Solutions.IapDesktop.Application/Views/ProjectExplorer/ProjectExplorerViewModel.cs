@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     public class ProjectExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly IJobService jobService;
-        private readonly IProjectModelService projectModelService;
+        private readonly IProjectWorkspace workspace;
         private readonly IGlobalSessionBroker sessionBroker;
         private readonly ICloudConsoleAdapter cloudConsoleService;
 
@@ -88,13 +88,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             IJobService jobService,
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
-            IProjectModelService projectModelService,
+            IProjectWorkspace workspace,
             ICloudConsoleAdapter cloudConsoleService)
         {
             this.settings = settings;
             this.jobService = jobService;
             this.sessionBroker = sessionBroker;
-            this.projectModelService = projectModelService;
+            this.workspace = workspace;
             this.cloudConsoleService = cloudConsoleService;
 
             this.RootNode = new CloudViewModelNode(this);
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             IJobService jobService,
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
-            IProjectModelService projectModelService,
+            IProjectWorkspace workspace,
             ICloudConsoleAdapter cloudConsoleService)
             : this(
                 new ProjectExplorerSettings(
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 jobService,
                 eventService,
                 sessionBroker,
-                projectModelService,
+                workspace,
                 cloudConsoleService)
         {
         }
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 // 
                 // Update active node in model.
                 //
-                this.projectModelService.SetActiveNodeAsync(
+                this.workspace.SetActiveNodeAsync(
                         value?.Locator,
                         CancellationToken.None)
                     .ContinueWith(_ => { });
@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             foreach (var project in projects)
             {
-                await this.projectModelService
+                await this.workspace
                     .AddProjectAsync(project)
                     .ConfigureAwait(true);
             }
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             foreach (var project in projects)
             {
-                await this.projectModelService
+                await this.workspace
                     .RemoveProjectAsync(project)
                     .ConfigureAwait(true);
 
@@ -505,7 +505,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             base.Dispose(disposing);
 
             this.settings.Dispose();
-            this.projectModelService.Dispose();
+            this.workspace.Dispose();
         }
 
         //---------------------------------------------------------------------
@@ -713,7 +713,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                this.cloudNode = await this.viewModel.projectModelService
+                this.cloudNode = await this.viewModel.workspace
                     .GetRootNodeAsync(forceReload, token)
                     .ConfigureAwait(true);
 
@@ -790,7 +790,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 try
                 {
-                    var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
+                    var zones = await this.viewModel.workspace.GetZoneNodesAsync(
                             this.ProjectNode.Project,
                             forceReload,
                             token)

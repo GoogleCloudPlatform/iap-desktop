@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         private static ConnectCommands CreateConnectCommands(
             UrlCommands urlCommands,
             Mock<ISessionContextFactory> contextFactory,
-            Mock<IProjectModelService> modelService,
+            Mock<IProjectWorkspace> modelService,
             Mock<IInstanceSessionBroker> sessionBroker)
         {
             var serviceProvider = new Mock<IServiceProvider>();
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             return new ConnectCommands(
                 urlCommands,
                 new Service<ISessionContextFactory>(serviceProvider.Object),
-                new Service<IProjectModelService>(serviceProvider.Object),
+                new Service<IProjectWorkspace>(serviceProvider.Object),
                 new Service<IInstanceSessionBroker>(serviceProvider.Object));
         }
 
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             CreateConnectCommands(
                 urlCommands,
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             Assert.AreEqual(
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             CreateConnectCommands(
                 urlCommands,
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             await urlCommands.LaunchRdpUrl
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             Assert.AreEqual(
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
@@ -311,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             Assert.AreEqual(
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -383,7 +383,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -429,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
@@ -447,7 +447,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var runningLinuxInstance = new Mock<IProjectModelInstanceNode>();
@@ -488,7 +488,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -523,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -541,7 +541,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
@@ -559,7 +559,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISessionContextFactory>(),
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 new Mock<IInstanceSessionBroker>());
 
             var runningWindowsInstance = new Mock<IProjectModelInstanceNode>();
@@ -599,7 +599,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 contextFactory,
-                new Mock<IProjectModelService>(),
+                new Mock<IProjectWorkspace>(),
                 sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
@@ -658,7 +658,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
 
-            var modelService = new Mock<IProjectModelService>();
+            var modelService = new Mock<IProjectWorkspace>();
             modelService
                 .Setup(s => s.GetNodeAsync(
                     locator,

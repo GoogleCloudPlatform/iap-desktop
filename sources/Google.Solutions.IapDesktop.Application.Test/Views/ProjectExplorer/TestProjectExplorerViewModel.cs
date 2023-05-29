@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
         private ProjectExplorerViewModel CreateViewModel()
         {
-            var modelService = new ProjectModelService(
+            var workspace = new ProjectWorkspace(
                 this.computeEngineAdapterMock.Object,
                 this.resourceManagerAdapterMock.Object,
                 this.projectRepository,
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 new SynchrounousJobService(),
                 this.eventServiceMock.Object,
                 this.sessionBrokerMock.Object,
-                modelService,
+                workspace,
                 this.cloudConsoleServiceMock.Object)
             {
                 View = new Control()

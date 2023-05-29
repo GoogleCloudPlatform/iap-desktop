@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public ConnectCommands(
             UrlCommands urlCommands,
             Service<ISessionContextFactory> sessionContextFactory,
-            Service<IProjectModelService> modelService,
+            Service<IProjectWorkspace> workspace,
             Service<IInstanceSessionBroker> sessionBroker)
         {
             //
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 "&Connect",
                 sessionContextFactory,
                 sessionBroker,
-                modelService)
+                workspace)
             {
                 CommandType = MenuCommandType.ToolbarCommand, // Never hide to avoid flicker.
                 AvailableForSsh = true,
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 "&Connect",
                 sessionContextFactory,
                 sessionBroker,
-                modelService)
+                workspace)
             {
                 AvailableForSsh = true,
                 AvailableForRdp = true,
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 "Connect &as user...",
                 sessionContextFactory,
                 sessionBroker,
-                modelService)
+                workspace)
             {
                 AvailableForSsh = false,
                 AvailableForRdp = true,                  // Windows/RDP only.
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 "Connect in &new terminal",
                 sessionContextFactory,
                 sessionBroker,
-                modelService)
+                workspace)
             {
                 AvailableForSsh = true,                  // Linux/SSH only.
                 AvailableForRdp = false,
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             //
             this.DuplicateSession = new DuplicateSessionCommand(
                 "D&uplicate",
-                modelService,
+                workspace,
                 this.ContextMenuConnectSshInNewTerminal) // Forward.
             {
                 Image = Resources.Duplicate,
@@ -124,16 +124,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         private class DuplicateSessionCommand : MenuCommandBase<ISession>
         {
-            private readonly Service<IProjectModelService> modelService;
+            private readonly Service<IProjectWorkspace> workspace;
             private readonly IContextCommand<IProjectModelNode> connectInNewTerminalCommand;
 
             public DuplicateSessionCommand(
                 string text,
-                Service<IProjectModelService> modelService,
+                Service<IProjectWorkspace> workspace,
                 IContextCommand<IProjectModelNode> connectInNewTerminalCommand)
                 : base(text)
             {
-                this.modelService = modelService;
+                this.workspace = workspace;
                 this.connectInNewTerminalCommand = connectInNewTerminalCommand;
             }
 
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 // we might not find it (for example, if the project has
                 // been unloaded in the meantime).
                 //
-                var node = await this.modelService
+                var node = await this.workspace
                     .GetInstance()
                     .GetNodeAsync(sshSession.Instance, CancellationToken.None)
                     .ConfigureAwait(true);

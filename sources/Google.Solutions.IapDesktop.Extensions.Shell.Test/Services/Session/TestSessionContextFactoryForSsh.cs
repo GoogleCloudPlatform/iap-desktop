@@ -94,9 +94,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             return authz;
         }
 
-        private Mock<IProjectModelService> CreateProjectModelServiceMock(OperatingSystems os)
+        private Mock<IProjectWorkspace> CreateProjectModelServiceMock(OperatingSystems os)
         {
-            var modelService = new Mock<IProjectModelService>();
+            var modelService = new Mock<IProjectWorkspace>();
             modelService
                 .Setup(p => p.GetNodeAsync(
                     It.Is<ResourceLocator>(l => l == (ResourceLocator)SampleLocator),
