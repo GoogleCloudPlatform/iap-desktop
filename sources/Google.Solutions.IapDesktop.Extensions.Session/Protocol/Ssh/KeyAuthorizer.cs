@@ -34,8 +34,32 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    [Service(typeof(IKeyAuthorizationService))]
-    public class KeyAuthorizationService : IKeyAuthorizationService
+    /// <summary>
+    /// Authorizes SSH keys using OS Login or metadata-based keys,
+    /// depending on the instance's configuration.
+    /// </summary>
+    public interface IKeyAuthorizer
+    {
+        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+            InstanceLocator instance,
+            ISshKeyPair key,
+            TimeSpan keyValidity,
+            string preferredPosixUsername,
+            KeyAuthorizationMethods methods,
+            CancellationToken token);
+    }
+
+    [Flags]
+    public enum KeyAuthorizationMethods
+    {
+        InstanceMetadata = 1,
+        ProjectMetadata = 2,
+        Oslogin = 4,
+        All = 7
+    }
+
+    [Service(typeof(IKeyAuthorizer))]
+    public class KeyAuthorizer : IKeyAuthorizer
     {
         private readonly IAuthorization authorization;
         private readonly IComputeEngineAdapter computeEngineAdapter;
@@ -46,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        public KeyAuthorizationService(
+        public KeyAuthorizer(
             IAuthorization authorization,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,

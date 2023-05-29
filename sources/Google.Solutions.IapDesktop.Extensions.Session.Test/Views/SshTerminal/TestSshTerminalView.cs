@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                 .SetupGet(a => a.Email)
                 .Returns("test@example.com");
 
-            var keyAdapter = new KeyAuthorizationService(
+            var keyAdapter = new KeyAuthorizer(
                 authorization.Object,
                 new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
                 new ResourceManagerAdapter(credential.ToAuthorization(), TestProject.UserAgent),
