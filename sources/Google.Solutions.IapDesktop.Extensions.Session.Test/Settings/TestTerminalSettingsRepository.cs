@@ -25,7 +25,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
 

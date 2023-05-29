@@ -22,8 +22,8 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

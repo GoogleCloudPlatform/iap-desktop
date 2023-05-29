@@ -128,29 +128,29 @@
     <Compile Include="Data\TestSamAccountName.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
-    <Compile Include="Services\Session\TestSshProtocol.cs" />
-    <Compile Include="Services\Session\TestRdpProtocol.cs" />
-    <Compile Include="Services\Session\TestRdpCredentialCallback.cs" />
-    <Compile Include="Services\Session\TestRdpCredential.cs" />
-    <Compile Include="Services\Session\TestRdpContext.cs" />
-    <Compile Include="Services\Session\TestRdpParameters.cs" />
-    <Compile Include="Services\Session\TestSessionContextFactoryForRdp.cs" />
-    <Compile Include="Services\Session\TestSessionContextFactoryForSsh.cs" />
-    <Compile Include="Services\Session\TestSshCredential.cs" />
-    <Compile Include="Services\Session\TestSshContext.cs" />
-    <Compile Include="Services\Session\TestSshParameters.cs" />
-    <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKeyProcessor.cs" />
-    <Compile Include="Services\Ssh\TestProjectMetadataAuthorizedPublicKeyProcessor.cs" />
-    <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKey.cs" />
-    <Compile Include="Services\Ssh\TestInstanceMetadataAuthorizedPublicKeyProcessor.cs" />
-    <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKeySet.cs" />
-    <Compile Include="Services\Adapter\TestOsLoginAdapter.cs" />
+    <Compile Include="Protocol\Adapter\TestKeyStoreAdapter.cs" />
+    <Compile Include="Protocol\Session\TestSshProtocol.cs" />
+    <Compile Include="Protocol\Session\TestRdpProtocol.cs" />
+    <Compile Include="Protocol\Session\TestRdpCredentialCallback.cs" />
+    <Compile Include="Protocol\Session\TestRdpCredential.cs" />
+    <Compile Include="Protocol\Session\TestRdpContext.cs" />
+    <Compile Include="Protocol\Session\TestRdpParameters.cs" />
+    <Compile Include="Protocol\Session\TestSessionContextFactoryForRdp.cs" />
+    <Compile Include="Protocol\Session\TestSessionContextFactoryForSsh.cs" />
+    <Compile Include="Protocol\Session\TestSshCredential.cs" />
+    <Compile Include="Protocol\Session\TestSshContext.cs" />
+    <Compile Include="Protocol\Session\TestSshParameters.cs" />
+    <Compile Include="Protocol\Ssh\TestMetadataAuthorizedPublicKeyProcessor.cs" />
+    <Compile Include="Protocol\Ssh\TestProjectMetadataAuthorizedPublicKeyProcessor.cs" />
+    <Compile Include="Protocol\Ssh\TestMetadataAuthorizedPublicKey.cs" />
+    <Compile Include="Protocol\Ssh\TestInstanceMetadataAuthorizedPublicKeyProcessor.cs" />
+    <Compile Include="Protocol\Ssh\TestMetadataAuthorizedPublicKeySet.cs" />
+    <Compile Include="Protocol\Adapter\TestOsLoginAdapter.cs" />
     <Compile Include="Settings\TestSshSettingsRepository.cs" />
     <Compile Include="Settings\TestTerminalSettingsRepository.cs" />
-    <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />
-    <Compile Include="Services\Ssh\TestKeyAuthorizationService.cs" />
-    <Compile Include="Services\Ssh\TestOsLoginService.cs" />
+    <Compile Include="Protocol\Ssh\TestAuthorizedKey.cs" />
+    <Compile Include="Protocol\Ssh\TestKeyAuthorizationService.cs" />
+    <Compile Include="Protocol\Ssh\TestOsLoginService.cs" />
     <Compile Include="Settings\TestConnectionSettingsService.cs" />
     <Compile Include="Settings\TestConnectionSettingsRepository.cs" />
     <Compile Include="Settings\TestIapRdpUrlConnectionSettings.cs" />
@@ -188,7 +188,7 @@
     <Compile Include="Views\Session\TestConnectRdpUrlCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\ConnectionSettings\" />
+    <Folder Include="Protocol\ConnectionSettings\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">

@@ -137,32 +137,32 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
-    <Compile Include="Services\Session\SshProtocol.cs" />
-    <Compile Include="Services\Session\RdpCredentialCallback.cs" />
-    <Compile Include="Services\Session\ISessionContext.cs" />
-    <Compile Include="Services\Session\RdpProtocol.cs" />
-    <Compile Include="Services\Session\RdpParameters.cs" />
-    <Compile Include="Services\Session\SessionContextBase.cs" />
-    <Compile Include="Services\Session\SessionContextFactory.cs" />
-    <Compile Include="Services\Session\RdpCredential.cs" />
-    <Compile Include="Services\Session\SessionParametersBase.cs" />
-    <Compile Include="Services\Session\SshCredential.cs" />
-    <Compile Include="Services\Session\RdpContext.cs" />
-    <Compile Include="Services\Session\SshContext.cs" />
-    <Compile Include="Services\Session\SshParameters.cs" />
-    <Compile Include="Services\Ssh\IAuthorizedPublicKey.cs" />
-    <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
-    <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
-    <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
+    <Compile Include="Protocol\Adapter\KeyStoreAdapter.cs" />
+    <Compile Include="Protocol\Session\SshProtocol.cs" />
+    <Compile Include="Protocol\Session\RdpCredentialCallback.cs" />
+    <Compile Include="Protocol\Session\ISessionContext.cs" />
+    <Compile Include="Protocol\Session\RdpProtocol.cs" />
+    <Compile Include="Protocol\Session\RdpParameters.cs" />
+    <Compile Include="Protocol\Session\SessionContextBase.cs" />
+    <Compile Include="Protocol\Session\SessionContextFactory.cs" />
+    <Compile Include="Protocol\Session\RdpCredential.cs" />
+    <Compile Include="Protocol\Session\SessionParametersBase.cs" />
+    <Compile Include="Protocol\Session\SshCredential.cs" />
+    <Compile Include="Protocol\Session\RdpContext.cs" />
+    <Compile Include="Protocol\Session\SshContext.cs" />
+    <Compile Include="Protocol\Session\SshParameters.cs" />
+    <Compile Include="Protocol\Ssh\IAuthorizedPublicKey.cs" />
+    <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKey.cs" />
+    <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeySet.cs" />
+    <Compile Include="Protocol\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Data\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Settings\SshSettings.cs" />
     <Compile Include="Settings\TerminalSettings.cs" />
-    <Compile Include="Services\Ssh\AuthorizedKeyPair.cs" />
-    <Compile Include="Services\Ssh\KeyAuthorizationService.cs" />
-    <Compile Include="Services\Ssh\IKeyAuthorizationService.cs" />
-    <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
-    <Compile Include="Services\Ssh\OsLoginService.cs" />
+    <Compile Include="Protocol\Ssh\AuthorizedKeyPair.cs" />
+    <Compile Include="Protocol\Ssh\KeyAuthorizationService.cs" />
+    <Compile Include="Protocol\Ssh\IKeyAuthorizationService.cs" />
+    <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
+    <Compile Include="Protocol\Ssh\OsLoginService.cs" />
     <Compile Include="Settings\ConnectionSettingsService.cs" />
     <Compile Include="Settings\ConnectionSettings.cs" />
     <Compile Include="Settings\ConnectionSettingsRepository.cs" />
@@ -195,7 +195,7 @@
     <Compile Include="Views\Credentials\ShowCredentialsView.Designer.cs">
       <DependentUpon>ShowCredentialsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\ShellExtension.cs" />
+    <Compile Include="Protocol\ShellExtension.cs" />
     <Compile Include="Views\Options\SshOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>

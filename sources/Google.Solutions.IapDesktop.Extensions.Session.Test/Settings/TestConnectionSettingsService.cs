@@ -30,7 +30,7 @@ using NUnit.Framework;
 using System;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
     public class TestConnectionSettingsService : ShellFixtureBase
