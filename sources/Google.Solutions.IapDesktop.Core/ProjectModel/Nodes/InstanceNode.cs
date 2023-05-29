@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -26,11 +27,51 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
     internal class InstanceNode : IProjectModelInstanceNode
     {
+        private readonly ProjectWorkspace workspace;
+
+
+        public InstanceNode(
+            ProjectWorkspace workspace,
+            ulong instanceId,
+            InstanceLocator instance,
+            IReadOnlyCollection<ITrait> traits,
+            string status)
+        {
+            status.ExpectNotNull(nameof(status));
+            Debug.Assert(status.All(char.IsUpper));
+
+            this.workspace = workspace.ExpectNotNull(nameof(workspace));
+            this.InstanceId = instanceId;
+            this.Instance = instance.ExpectNotNull(nameof(instance));
+            this.Traits = traits.ExpectNotNull(nameof(traits));
+
+            this.IsRunning = status == "RUNNING";
+
+            //
+            // See https://cloud.google.com/compute/docs/instances/instance-life-cycle.
+            //
+            this.CanStart = status == "TERMINATED";
+            this.CanResume = status == "SUSPENDED";
+            this.CanSuspend =
+                this.CanReset =
+                this.CanStop = status == "RUNNING" || status == "REPAIRING";
+        }
+
+        //---------------------------------------------------------------------
+        // IProtocolTarget.
+        //---------------------------------------------------------------------
+
+        public string TargetName => this.Instance.Name;
+        public IEnumerable<ITrait> Traits { get; }
+
+
         //---------------------------------------------------------------------
         // IProjectModelInstanceNode.
         //---------------------------------------------------------------------
@@ -57,43 +98,14 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
             }
         }
 
-        //---------------------------------------------------------------------
-        // IProtocolTarget.
-        //---------------------------------------------------------------------
-
-        public string TargetName => this.Instance.Name;
-        public IEnumerable<ITrait> Traits { get; }
-
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public InstanceNode(
-            ulong instanceId,
-            InstanceLocator locator,
-            IReadOnlyCollection<ITrait> traits,
-            string status)
+        public Task ControlInstanceAsync(
+            InstanceControlCommand command,
+            CancellationToken cancellationToken)
         {
-            locator.ExpectNotNull(nameof(locator));
-            traits.ExpectNotNull(nameof(traits));
-            status.ExpectNotNull(nameof(status));
-
-            Debug.Assert(status.All(char.IsUpper));
-
-            this.InstanceId = instanceId;
-            this.Instance = locator;
-            this.Traits = traits;
-
-            this.IsRunning = status == "RUNNING";
-
-            //
-            // See https://cloud.google.com/compute/docs/instances/instance-life-cycle.
-            //
-            this.CanStart = status == "TERMINATED";
-            this.CanResume = status == "SUSPENDED";
-            this.CanSuspend =
-                this.CanReset =
-                this.CanStop = status == "RUNNING" || status == "REPAIRING";
+            return this.workspace.ControlInstanceAsync(
+                this.Instance,
+                command, 
+                cancellationToken);
         }
     }
 }

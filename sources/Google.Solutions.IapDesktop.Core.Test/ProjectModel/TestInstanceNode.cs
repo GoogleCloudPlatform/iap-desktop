@@ -19,12 +19,21 @@
 // under the License.
 //
 
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel.Nodes;
+using Google.Solutions.Testing.Apis;
+using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 {
@@ -34,6 +43,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private static ProjectWorkspace CreateWorkspace()
+        { 
+            return new ProjectWorkspace(
+                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IProjectRepository>().Object,
+                new Mock<IEventQueue>().Object);
+        }
+
         //---------------------------------------------------------------------
         // TargetName.
         //---------------------------------------------------------------------
@@ -42,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void TargetName()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -58,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenNodeHasWindowsTraits_ThenOperatingSystemIsWindows()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new ITrait[] { InstanceTrait.Instance, WindowsTrait.Instance },
@@ -70,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenNodeHasNoOsTraits_ThenOperatingSystemIsLinux()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -86,6 +107,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenRunning_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -103,6 +125,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenTerminated_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -120,6 +143,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenSuspended_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -137,6 +161,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenRepariring_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -148,6 +173,128 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.IsTrue(node.CanSuspend);
             Assert.IsFalse(node.CanResume);
             Assert.IsTrue(node.CanStop);
+        }
+
+        //---------------------------------------------------------------------
+        // ControlInstance.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenStartOrResumeSucceeds_ThenControlInstanceFiresEvent(
+            [Values(
+                InstanceControlCommand.Reset,
+                InstanceControlCommand.Start, 
+                InstanceControlCommand.Resume)] 
+            InstanceControlCommand command)
+        {
+            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var eventQueue = new Mock<IEventQueue>();
+            var workspace = new ProjectWorkspace(
+                computeAdapter.Object,
+                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IProjectRepository>().Object,
+                eventQueue.Object);
+
+            var node = new InstanceNode(
+                workspace,
+                1,
+                SampleLocator,
+                new[] { InstanceTrait.Instance },
+                "RUNNING");
+
+            await node.ControlInstanceAsync(
+                    command,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeAdapter.Verify(
+                c => c.ControlInstanceAsync(
+                    SampleLocator,
+                    command,
+                    CancellationToken.None),
+                Times.Once);
+            eventQueue.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
+                It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && e.IsRunning)),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenStopOrSuspendSucceeds_ThenControlInstanceFiresEvent(
+            [Values(
+                InstanceControlCommand.Stop,
+                InstanceControlCommand.Suspend)]
+            InstanceControlCommand command)
+        {
+            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var eventQueue = new Mock<IEventQueue>();
+            var workspace = new ProjectWorkspace(
+                computeAdapter.Object,
+                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IProjectRepository>().Object,
+                eventQueue.Object);
+
+            var node = new InstanceNode(
+                workspace,
+                1,
+                SampleLocator,
+                new[] { InstanceTrait.Instance },
+                "RUNNING");
+
+            await node.ControlInstanceAsync(
+                    command,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeAdapter.Verify(
+                c => c.ControlInstanceAsync(
+                    SampleLocator,
+                    command,
+                    CancellationToken.None),
+                Times.Once);
+            eventQueue.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
+                It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && !e.IsRunning)),
+                Times.Once);
+        }
+
+        [Test]
+        public void WhenOperationFails_ThenControlInstanceFiresEvent()
+        {
+            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            computeAdapter
+                .Setup(a => a.ControlInstanceAsync(
+                    SampleLocator,
+                    InstanceControlCommand.Start,
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InvalidOperationException("mock"));
+
+            var eventQueue = new Mock<IEventQueue>();
+            var workspace = new ProjectWorkspace(
+                computeAdapter.Object,
+                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IProjectRepository>().Object,
+                eventQueue.Object);
+
+            var node = new InstanceNode(
+                workspace,
+                1,
+                SampleLocator,
+                new[] { InstanceTrait.Instance },
+                "RUNNING");
+
+            ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                () => node.ControlInstanceAsync(
+                    InstanceControlCommand.Start,
+                    CancellationToken.None).Wait());
+
+            computeAdapter.Verify(
+                c => c.ControlInstanceAsync(
+                    SampleLocator,
+                    InstanceControlCommand.Start,
+                    CancellationToken.None),
+                Times.Once);
+            eventQueue.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
+                It.IsAny<InstanceStateChangedEvent>()),
+                Times.Never);
         }
     }
 }

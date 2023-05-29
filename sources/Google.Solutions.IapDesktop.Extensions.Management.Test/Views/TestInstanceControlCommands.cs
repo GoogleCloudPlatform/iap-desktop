@@ -21,9 +21,7 @@
 
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Management.Views;
@@ -324,8 +322,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                     It.IsAny<string>()))
                 .Returns(DialogResult.Yes);
 
-            var controlService = serviceProvider.AddMock<IInstanceControlService>();
-
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanStart).Returns(true);
             vm.SetupGet(n => n.CanStop).Returns(true);
@@ -337,9 +333,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                 .ExecuteAsync(vm.Object)
                 .ConfigureAwait(false);
 
-            controlService.Verify(
+            vm.Verify(
                 s => s.ControlInstanceAsync(
-                    SampleLocator,
                     controlCommand,
                     It.IsAny<CancellationToken>()),
                 Times.Once());

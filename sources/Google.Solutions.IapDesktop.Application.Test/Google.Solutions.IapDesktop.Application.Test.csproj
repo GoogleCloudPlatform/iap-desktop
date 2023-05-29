@@ -104,7 +104,6 @@
     <Compile Include="Services\TestUpdateService.cs" />
     <Compile Include="Services\Auth\TestAuthorization.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
-    <Compile Include="Services\Management\TestInstanceControlService.cs" />
     <Compile Include="Services\Settings\TestToolWindowStateRepository.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
