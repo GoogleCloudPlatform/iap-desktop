@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
             var broker = new InstanceSessionBroker(serviceProvider);
 
             var sshCredential = new SshCredential(authorizedKey);
-            var sshParameters = new SshSessionParameters()
+            var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10),
                 Language = language
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                     "test",
                     true,
                     null));
-            var sshParameters = new SshSessionParameters()
+            var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                     "test",
                     true,
                     null));
-            var sshParameters = new SshSessionParameters()
+            var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                     "test",
                     true,
                     null));
-            var sshParameters = new SshSessionParameters()
+            var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };

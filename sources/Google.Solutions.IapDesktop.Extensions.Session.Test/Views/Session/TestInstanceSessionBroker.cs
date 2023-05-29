@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
                     credentials.Domain,
                     credentials.SecurePassword);
 
-                var rdpParameters = new RdpSessionParameters();
+                var rdpParameters = new RdpParameters();
 
                 // Connect
                 var broker = new InstanceSessionBroker(serviceProvider);

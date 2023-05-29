@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var serviceProvider = new Mock<IServiceProvider>();
 
-            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = serviceProvider.AddMock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))

@@ -19,11 +19,13 @@
 // under the License.
 //
 
-
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -34,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
-    public class TestRdpSessionContext
+    public class TestSshContext
     {
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -46,18 +48,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         [Test]
         public void AuthorizeCredentialReturnsCredential()
         {
-            var credential = new RdpCredential("user", null, null);
-            var context = new RdpSessionContext(
+            var authorizedKey = AuthorizedKeyPair.ForMetadata(
+                new Mock<ISshKeyPair>().Object,
+                "username",
+                false,
+                new Mock<IAuthorization>().Object);
+
+            var key = new Mock<ISshKeyPair>().Object;
+            var keyAuthService = new Mock<IKeyAuthorizationService>();
+            keyAuthService
+                .Setup(s => s.AuthorizeKeyAsync(
+                    SampleInstance,
+                    key,
+                    It.IsAny<TimeSpan>(),
+                    It.IsAny<string>(),
+                    KeyAuthorizationMethods.All,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(authorizedKey);
+
+            var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
+                keyAuthService.Object,
                 new Mock<IAddressResolver>().Object,
                 SampleInstance,
-                credential,
-                RdpSessionParameters.ParameterSources.Inventory);
+                key);
 
             Assert.AreSame(
-                credential,
-                context.AuthorizeCredentialAsync(CancellationToken.None).Result);
+                authorizedKey,
+                context.AuthorizeCredentialAsync(CancellationToken.None)
+                    .Result
+                    .Key);
         }
 
         //---------------------------------------------------------------------
@@ -73,29 +94,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
             var factory = new Mock<IIapTransportFactory>();
             factory
                 .Setup(b => b.CreateTransportAsync(
-                    RdpProtocol.Protocol,
+                    SshProtocol.Protocol,
                     It.IsAny<ITransportPolicy>(),
                     SampleInstance,
-                    3389,
+                    22,
                     It.IsAny<IPEndPoint>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(transport.Object);
 
-            var context = new RdpSessionContext(
+            var context = new SshContext(
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
+                new Mock<IKeyAuthorizationService>().Object,
                 new Mock<IAddressResolver>().Object,
                 SampleInstance,
-                RdpCredential.Empty,
-                RdpSessionParameters.ParameterSources.Inventory);
+                new Mock<ISshKeyPair>().Object);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
 
-            var rdpTransport = await context
+            var sshTransport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(transport.Object, rdpTransport);
+            Assert.AreSame(transport.Object, sshTransport);
         }
 
         [Test]
@@ -113,27 +134,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
             var factory = new Mock<IDirectTransportFactory>();
             factory
                 .Setup(b => b.CreateTransportAsync(
-                    RdpProtocol.Protocol,
+                    SshProtocol.Protocol,
                     SampleInstance,
                     NetworkInterfaceType.PrimaryInternal,
-                    3389,
+                    22,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(transport.Object);
 
-            var context = new RdpSessionContext(
+            var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
+                new Mock<IKeyAuthorizationService>().Object,
                 addressResolver.Object,
                 SampleInstance,
-                RdpCredential.Empty,
-                RdpSessionParameters.ParameterSources.Inventory);
+                new Mock<ISshKeyPair>().Object);
             context.Parameters.TransportType = SessionTransportType.Vpc;
 
-            var rdpTransport = await context
+            var sshTransport = await context
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(transport.Object, rdpTransport);
+            Assert.AreSame(transport.Object, sshTransport);
         }
     }
 }

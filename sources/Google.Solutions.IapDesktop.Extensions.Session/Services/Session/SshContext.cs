@@ -21,64 +21,82 @@
 
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
+using Google.Solutions.Ssh.Auth;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
-
     /// <summary>
-    /// Encapsulates settings and logic to create an RDP session.
+    /// Encapsulates settings and logic to create an SSH session.
     /// </summary>
-    internal sealed class RdpSessionContext
-        : SessionContextBase<RdpCredential, RdpSessionParameters>
+    internal sealed class SshContext
+        : SessionContextBase<SshCredential, SshParameters>
     {
-        internal RdpSessionContext(
+        private readonly IKeyAuthorizationService keyAuthorizationService;
+        private readonly ISshKeyPair localKeyPair;
+
+        internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
+            IKeyAuthorizationService keyAuthService,
             IAddressResolver addressResolver,
             InstanceLocator instance,
-            RdpCredential credential,
-            RdpSessionParameters.ParameterSources sources)
+            ISshKeyPair localKeyPair)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
                   addressResolver,
                   instance,
-                  new RdpSessionParameters()
-                  {
-                      Sources = sources
-                  })
+                  new SshParameters())
         {
-            this.Credential = credential.ExpectNotNull(nameof(credential));
+            this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
+            this.localKeyPair = localKeyPair.ExpectNotNull(nameof(localKeyPair));
         }
-
-        public RdpCredential Credential { get; }
 
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override Task<RdpCredential> AuthorizeCredentialAsync(
+        public override async Task<SshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
             //
-            // RDP credentials are ready to go.
+            // Authorize the key using OS Login or metadata-based keys.
             //
-            return Task.FromResult(this.Credential);
+            var authorizedKey = await this.keyAuthorizationService
+                .AuthorizeKeyAsync(
+                    this.Instance,
+                    this.localKeyPair,
+                    this.Parameters.PublicKeyValidity,
+                    this.Parameters.PreferredUsername.NullIfEmpty(),
+                    KeyAuthorizationMethods.All,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            return new SshCredential(authorizedKey);
         }
 
         public override Task<ITransport> ConnectTransportAsync(
             CancellationToken cancellationToken)
         {
             return ConnectTransportAsync(
-                RdpProtocol.Protocol,
+                SshProtocol.Protocol,
                 this.Parameters.TransportType,
                 this.Parameters.Port,
                 this.Parameters.ConnectionTimeout,
                 cancellationToken);
+        }
+
+        public override void Dispose()
+        {
+            this.localKeyPair.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

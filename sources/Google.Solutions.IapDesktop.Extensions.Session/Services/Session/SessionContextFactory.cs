@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<SshCredential, SshSessionParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<SshCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
         /// Create a new RDP session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
+        Task<ISessionContext<RdpCredential, RdpParameters>> CreateRdpSessionContextAsync(
             IProjectModelInstanceNode node,
             RdpCreateSessionFlags flags,
             CancellationToken cancellationToken);
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
         /// Create a new RDP session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
+        Task<ISessionContext<RdpCredential, RdpParameters>> CreateRdpSessionContextAsync(
             IapRdpUrl url,
             CancellationToken cancellationToken);
     }
@@ -135,13 +135,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
                 (SecureString)settings.RdpPassword.Value);
         }
 
-        private RdpSessionContext CreateRdpContext(
+        private RdpContext CreateRdpContext(
             InstanceLocator instance,
             RdpCredential credential,
             InstanceConnectionSettings settings,
-            RdpSessionParameters.ParameterSources sources)
+            RdpParameters.ParameterSources sources)
         {
-            var context = new RdpSessionContext(
+            var context = new RdpContext(
                 this.iapTransportFactory,
                 this.directTransportFactory,
                 this.addressResolver,
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
             return context;
         }
 
-        public async Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
+        public async Task<ISessionContext<RdpCredential, RdpParameters>> CreateRdpSessionContextAsync(
             IProjectModelInstanceNode node,
             RdpCreateSessionFlags flags,
             CancellationToken _)
@@ -217,16 +217,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
                 node.Instance,
                 credential,
                 instanceSettings,
-                RdpSessionParameters.ParameterSources.Inventory);
+                RdpParameters.ParameterSources.Inventory);
         }
 
-        public async Task<ISessionContext<RdpCredential, RdpSessionParameters>> CreateRdpSessionContextAsync(
+        public async Task<ISessionContext<RdpCredential, RdpParameters>> CreateRdpSessionContextAsync(
             IapRdpUrl url,
             CancellationToken cancellationToken)
         {
             url.ExpectNotNull(nameof(url));
 
-            RdpSessionParameters.ParameterSources sources;
+            RdpParameters.ParameterSources sources;
             InstanceConnectionSettings settings;
             var existingNode = await this.workspace
                 .GetNodeAsync(url.Instance, cancellationToken)
@@ -244,8 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
                 //
                 settings.ApplySettingsFromUrl(url);
 
-                sources = RdpSessionParameters.ParameterSources.Inventory
-                    | RdpSessionParameters.ParameterSources.Url;
+                sources = RdpParameters.ParameterSources.Inventory
+                    | RdpParameters.ParameterSources.Url;
             }
             else
             {
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
                 // We don't have that VM in the inventory, all we have is the URL.
                 //
                 settings = InstanceConnectionSettings.FromUrl(url);
-                sources = RdpSessionParameters.ParameterSources.Url;
+                sources = RdpParameters.ParameterSources.Url;
             }
 
 
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
             }
         }
 
-        public Task<ISessionContext<SshCredential, SshSessionParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<SshCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
             //
             // Initialize a context and pass ownership of the key to it.
             //
-            var context = new SshSessionContext(
+            var context = new SshContext(
                 this.iapTransportFactory,
                 this.directTransportFactory,
                 this.keyAuthorizationService,
@@ -344,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
                 ? CultureInfo.CurrentUICulture
                 : null;
 
-            return Task.FromResult<ISessionContext<SshCredential, SshSessionParameters>>(context);
+            return Task.FromResult<ISessionContext<SshCredential, SshParameters>>(context);
         }
     }
 }

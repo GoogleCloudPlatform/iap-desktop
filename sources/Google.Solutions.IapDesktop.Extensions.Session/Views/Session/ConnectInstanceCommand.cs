@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
                     .ConfigureAwait(true);
 
                 Debug.Assert(this.Flags == RdpCreateSessionFlags.None ||
-                    (context as RdpSessionContext)?.Credential.Password == null);
+                    (context as RdpContext)?.Credential.Password == null);
 
                 try
                 {

@@ -25,20 +25,20 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
-    public class TestSshSessionParameters
+    public class TestSshParameters
     {
         [Test]
         public void ParametersUseDefaults()
         {
-            var parameters = new SshSessionParameters();
+            var parameters = new SshParameters();
 
             Assert.IsNull(parameters.Language);
 
             Assert.AreEqual(SessionTransportType._Default, parameters.TransportType);
-            Assert.AreEqual(SshSessionParameters.DefaultPort, parameters.Port);
-            Assert.AreEqual(SshSessionParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
+            Assert.AreEqual(SshParameters.DefaultPort, parameters.Port);
+            Assert.AreEqual(SshParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
             Assert.IsNull(parameters.PreferredUsername);
-            Assert.AreEqual(SshSessionParameters.DefaultPublicKeyValidity, parameters.PublicKeyValidity);
+            Assert.AreEqual(SshParameters.DefaultPublicKeyValidity, parameters.PublicKeyValidity);
         }
     }
 }

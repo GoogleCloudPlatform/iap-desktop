@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
-    public class SshSessionParameters : SessionParametersBase
+    public class SshParameters : SessionParametersBase
     {
         internal const ushort DefaultPort = 22;
         internal static readonly TimeSpan DefaultPublicKeyValidity = TimeSpan.FromDays(30);

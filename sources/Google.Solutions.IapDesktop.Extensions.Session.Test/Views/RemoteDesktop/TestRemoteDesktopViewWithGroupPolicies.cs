@@ -66,9 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 windowsCredentials.SecurePassword);
         }
 
-        private RdpSessionParameters CreateSessionParameters()
+        private RdpParameters CreateSessionParameters()
         {
-            return new RdpSessionParameters()
+            return new RdpParameters()
             {
                 AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
                 BitmapPersistence = RdpBitmapPersistence.Disabled,

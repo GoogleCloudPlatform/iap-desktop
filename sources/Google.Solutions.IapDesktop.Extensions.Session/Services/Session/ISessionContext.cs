@@ -27,6 +27,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
+    /// <summary>
+    /// Protocol context that can be used for initiating a (terminal)
+    /// session.
+    /// </summary>
     public interface ISessionContext<TCredential, TParameters> : IProtocolContext
         where TCredential : ISessionCredential
     {
