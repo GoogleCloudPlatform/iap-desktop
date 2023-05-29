@@ -71,8 +71,8 @@
     <Compile Include="ClientModel\Protocol\AppProtocolFactory.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolContext.cs" />
     <Compile Include="ClientModel\Protocol\ProtocolTargetLocator.cs" />
+    <Compile Include="ClientModel\Traits\TraitDetector.cs" />
     <Compile Include="ClientModel\Traits\TypeTrait.cs">
-    <Compile Include="ClientModel\Protocol\Traits\TraitDetector.cs" />
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TypeTrait.tt</DependentUpon>
@@ -106,7 +106,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientModel\Protocol\IProtocol.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolTarget.cs" />
-    <Content Include="ClientModel\Protocol\Traits\TypeTrait.tt">
+    <Content Include="ClientModel\Traits\TypeTrait.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TypeTrait.cs</LastGenOutput>
     </Content>
