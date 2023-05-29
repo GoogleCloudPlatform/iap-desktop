@@ -28,7 +28,7 @@ using Google.Solutions.Mvvm.Binding;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
     [Service]
-    public class RemoteDesktopViewModel : ViewModelBase
+    public class RdpViewModel : ViewModelBase
     {
         public enum ConnectionState
         {
@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             ConnectionLost
         }
 
-        public RemoteDesktopViewModel()
+        public RdpViewModel()
         {
             this.State = ObservableProperty.Build(ConnectionState.Uninitialized);
         }

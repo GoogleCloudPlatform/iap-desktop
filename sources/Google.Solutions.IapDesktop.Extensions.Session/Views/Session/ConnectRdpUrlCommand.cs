@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
                 // There is an existing session, and it's now active.
                 //
                 Debug.Assert(activeSession != null);
-                Debug.Assert(activeSession is IRemoteDesktopSession);
+                Debug.Assert(activeSession is IRdpSession);
             }
             else
             {

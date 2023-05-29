@@ -45,8 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
         private IServiceProvider CreateServiceProvider(ICredential credential)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
-            registry.AddTransient<RemoteDesktopView>();
-            registry.AddTransient<RemoteDesktopViewModel>();
+            registry.AddTransient<RdpDesktopView>();
+            registry.AddTransient<RdpViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
             };
         }
 
-        private async Task<IRemoteDesktopSession> ConnectAsync(
+        private async Task<IRdpSession> ConnectAsync(
             IapTransport tunnel,
             InstanceLocator instance,
             ICredential credential)
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                     rdpCredential);
 
                 bool serverAuthWarningIsDisplayed = false;
-                ((RemoteDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>
+                ((RdpDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>
                 {
                     serverAuthWarningIsDisplayed = true;
                     MainWindow.Close();
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 instance,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, instance, credential).ConfigureAwait(true);
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
@@ -307,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
@@ -400,7 +400,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
@@ -437,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 locator,
                 credential))
             {
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
                         session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var sessionCommands = new SessionCommands();
 
-            var connectedRdpSession = new Mock<IRemoteDesktopSession>();
+            var connectedRdpSession = new Mock<IRdpSession>();
             connectedRdpSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedRdpSession.SetupGet(s => s.CanEnterFullScreen).Returns(true);
 
@@ -70,11 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var sessionCommands = new SessionCommands();
 
-            var connectedFullScreenRdpSession = new Mock<IRemoteDesktopSession>();
+            var connectedFullScreenRdpSession = new Mock<IRdpSession>();
             connectedFullScreenRdpSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedFullScreenRdpSession.SetupGet(s => s.CanEnterFullScreen).Returns(false);
 
-            var disconnectedRdpSession = new Mock<IRemoteDesktopSession>();
+            var disconnectedRdpSession = new Mock<IRdpSession>();
             disconnectedRdpSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var sshSession = new Mock<ISshTerminalSession>();
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var sessionCommands = new SessionCommands();
 
-            var connectedSession = new Mock<IRemoteDesktopSession>();
+            var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var sessionCommands = new SessionCommands();
 
-            var disconnectedSession = new Mock<IRemoteDesktopSession>();
+            var disconnectedSession = new Mock<IRdpSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var sshSession = new Mock<ISshTerminalSession>();
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var sessionCommands = new SessionCommands();
 
-            var connectedSession = new Mock<IRemoteDesktopSession>();
+            var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var sessionCommands = new SessionCommands();
 
-            var disconnectedSession = new Mock<IRemoteDesktopSession>();
+            var disconnectedSession = new Mock<IRdpSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var sshSession = new Mock<ISshTerminalSession>();
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
             var disconnectedSession = new Mock<ISshTerminalSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            var rdpSession = new Mock<IRemoteDesktopSession>();
+            var rdpSession = new Mock<IRdpSession>();
             rdpSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(

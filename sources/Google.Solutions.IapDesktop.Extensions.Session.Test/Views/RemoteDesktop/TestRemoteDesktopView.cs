@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
         private IServiceProvider CreateServiceProvider(ICredential credential = null)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
-            registry.AddTransient<RemoteDesktopView>();
-            registry.AddTransient<RemoteDesktopViewModel>();
+            registry.AddTransient<RdpDesktopView>();
+            registry.AddTransient<RdpViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                     () => session = broker.ConnectRdpSession(
                         instance,
@@ -262,9 +262,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                RemoteDesktopView session = null;
+                RdpDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                    () => session = (RdpDesktopView)broker.ConnectRdpSession(
                         instance,
                         tunnel,
                         rdpPparameters,
@@ -315,9 +315,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                RemoteDesktopView session = null;
+                RdpDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                    () => session = (RdpDesktopView)broker.ConnectRdpSession(
                         instance,
                         tunnel,
                         rdpParameters,

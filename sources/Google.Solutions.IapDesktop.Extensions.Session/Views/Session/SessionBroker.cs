@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
                 });
         }
 
-        internal IRemoteDesktopSession ConnectRdpSession(
+        internal IRdpSession ConnectRdpSession(
             InstanceLocator instance,
             ITransport transport,
             RdpParameters parameters,
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 
-            var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
+            var window = this.toolWindowHost.GetToolWindow<RdpDesktopView, RdpViewModel>();
 
             window.ViewModel.Instance = instance;
             window.ViewModel.Server = IPAddress.IsLoopback(transport.Endpoint.Address)
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 
         public ISession ActiveSession
         {
-            get => (ISession)RemoteDesktopView.TryGetActivePane(this.mainForm)
+            get => (ISession)RdpDesktopView.TryGetActivePane(this.mainForm)
                     ?? SshTerminalView.TryGetActivePane(this.mainForm)
                     ?? null;
         }
@@ -295,14 +295,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         public bool IsConnected(InstanceLocator vmInstance)
         {
             return
-                RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
+                RdpDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
                 SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
         }
 
         public bool TryActivate(InstanceLocator vmInstance, out ISession session)
         {
-            if (RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
-                RemoteDesktopView existingRdpSession &&
+            if (RdpDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
+                RdpDesktopView existingRdpSession &&
                 existingRdpSession != null)
             {
                 // Pane found, activate.
