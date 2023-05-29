@@ -20,11 +20,12 @@
 //
 
 using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.Apis.Locator
 {
-    public abstract class ResourceLocator
+    public abstract class ResourceLocator : IEquatable<ResourceLocator>
     {
         private const string ComputeGoogleapisPrefix = "https://compute.googleapis.com/compute/v1/";
         private const string GoogleapisUrlPrefix = "https://www.googleapis.com/compute/v1/";
@@ -63,5 +64,7 @@ namespace Google.Solutions.Apis.Locator
             this.ProjectId = projectId;
             this.Name = resourceName;
         }
+
+        public abstract bool Equals(ResourceLocator other);
     }
 }

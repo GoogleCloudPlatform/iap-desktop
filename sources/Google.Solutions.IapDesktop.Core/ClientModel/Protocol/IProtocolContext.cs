@@ -48,5 +48,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             IProtocolTarget target,
             uint flags,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Try to parse a URL as a protocol locator.
+        /// </summary>
+        bool TryParse(Uri uri, out ProtocolTargetLocator locator);
     }
 }

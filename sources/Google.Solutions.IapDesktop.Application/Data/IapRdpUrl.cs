@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Data
     /// 
     /// Rules:
     /// * The host part is empty, so a URL has to start with iap-rdp:/ or iap-rdp:///
-    /// * The query string may contains settings, but not all settings are supported
+    /// * The query string may contain settings, but not all settings are supported
     ///   (either for security reasons or because they are just not very relevant).
     /// </summary>
     public class IapRdpUrl
@@ -65,6 +65,10 @@ namespace Google.Solutions.IapDesktop.Application.Data
             this.Instance = instance;
             this.Parameters = parameters;
         }
+
+        //---------------------------------------------------------------------
+        // Parsing.
+        //---------------------------------------------------------------------
 
         private static InstanceLocator CreateVmInstanceReferenceFromPath(string absolutePath)
         {
@@ -128,6 +132,10 @@ namespace Google.Solutions.IapDesktop.Application.Data
                 HttpUtility.ParseQueryString(uri.Query));
         }
 
+        //---------------------------------------------------------------------
+        // Formatting.
+        //---------------------------------------------------------------------
+
         public string ToString(bool includeQuery)
         {
             var url = $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.Name}";
@@ -137,11 +145,12 @@ namespace Google.Solutions.IapDesktop.Application.Data
                 var formattedParameters = this.Parameters
                     .ToKeyValuePairs()
                     .Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
-                url += $"?{String.Join("&", formattedParameters)}";
+                url += $"?{string.Join("&", formattedParameters)}";
             }
 
             return url;
         }
+
         public override string ToString() => ToString(true);
     }
 

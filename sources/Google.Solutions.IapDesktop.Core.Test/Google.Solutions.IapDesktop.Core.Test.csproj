@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientModel\Protocol\TestProtocolTargetLocator.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocol.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocolComand.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocolFactory.cs" />
