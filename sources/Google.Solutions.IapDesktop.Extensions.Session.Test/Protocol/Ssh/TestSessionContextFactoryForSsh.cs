@@ -42,8 +42,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
     public class TestSessionContextFactoryForSsh

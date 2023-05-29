@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {

@@ -33,6 +33,7 @@ using System;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
 {

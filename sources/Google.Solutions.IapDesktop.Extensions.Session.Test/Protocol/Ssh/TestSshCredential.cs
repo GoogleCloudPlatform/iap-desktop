@@ -26,7 +26,7 @@ using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
     public class TestSshCredential

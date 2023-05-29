@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     public class SshCredential : ISessionCredential
     {

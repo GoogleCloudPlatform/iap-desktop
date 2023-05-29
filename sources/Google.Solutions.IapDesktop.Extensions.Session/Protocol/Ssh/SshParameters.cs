@@ -22,7 +22,7 @@
 using System;
 using System.Globalization;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     public class SshParameters : SessionParametersBase
     {

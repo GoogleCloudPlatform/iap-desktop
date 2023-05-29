@@ -38,6 +38,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Diagnostics
 {

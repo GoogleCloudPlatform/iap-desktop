@@ -37,6 +37,8 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
 {

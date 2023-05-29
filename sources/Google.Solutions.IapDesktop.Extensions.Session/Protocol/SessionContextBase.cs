@@ -29,7 +29,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
     public abstract class SessionContextBase<TCredential, TParameters>
         : ISessionContext<TCredential, TParameters>

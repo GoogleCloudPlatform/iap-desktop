@@ -138,19 +138,19 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Protocol\Adapter\KeyStoreAdapter.cs" />
-    <Compile Include="Protocol\Session\SshProtocol.cs" />
+    <Compile Include="Protocol\Ssh\SshProtocol.cs" />
     <Compile Include="Protocol\Session\RdpCredentialCallback.cs" />
-    <Compile Include="Protocol\Session\ISessionContext.cs" />
+    <Compile Include="Protocol\ISessionContext.cs" />
     <Compile Include="Protocol\Session\RdpProtocol.cs" />
     <Compile Include="Protocol\Session\RdpParameters.cs" />
-    <Compile Include="Protocol\Session\SessionContextBase.cs" />
-    <Compile Include="Protocol\Session\SessionContextFactory.cs" />
+    <Compile Include="Protocol\SessionContextBase.cs" />
+    <Compile Include="Protocol\SessionContextFactory.cs" />
     <Compile Include="Protocol\Session\RdpCredential.cs" />
-    <Compile Include="Protocol\Session\SessionParametersBase.cs" />
-    <Compile Include="Protocol\Session\SshCredential.cs" />
+    <Compile Include="Protocol\SessionParametersBase.cs" />
+    <Compile Include="Protocol\Ssh\SshCredential.cs" />
     <Compile Include="Protocol\Session\RdpContext.cs" />
-    <Compile Include="Protocol\Session\SshContext.cs" />
-    <Compile Include="Protocol\Session\SshParameters.cs" />
+    <Compile Include="Protocol\Ssh\SshContext.cs" />
+    <Compile Include="Protocol\Ssh\SshParameters.cs" />
     <Compile Include="Protocol\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeySet.cs" />

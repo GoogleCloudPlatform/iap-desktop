@@ -29,6 +29,7 @@ using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {

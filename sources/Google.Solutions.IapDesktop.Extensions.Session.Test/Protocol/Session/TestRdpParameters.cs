@@ -20,6 +20,7 @@
 //
 
 
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session;
 using NUnit.Framework;
 
