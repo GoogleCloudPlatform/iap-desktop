@@ -19,11 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel.Nodes;
+using Moq;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
@@ -34,6 +38,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private static ProjectWorkspace CreateWorkspace()
+        { 
+            return new ProjectWorkspace(
+                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IProjectRepository>().Object,
+                new Mock<IEventQueue>().Object);
+        }
+
         //---------------------------------------------------------------------
         // TargetName.
         //---------------------------------------------------------------------
@@ -42,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void TargetName()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -58,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenNodeHasWindowsTraits_ThenOperatingSystemIsWindows()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new ITrait[] { InstanceTrait.Instance, WindowsTrait.Instance },
@@ -70,6 +85,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenNodeHasNoOsTraits_ThenOperatingSystemIsLinux()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -86,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenRunning_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -103,6 +120,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenTerminated_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -120,6 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenSuspended_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },
@@ -137,6 +156,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenRepariring_ThenPropertiesAreSet()
         {
             var node = new InstanceNode(
+                CreateWorkspace(),
                 1,
                 SampleLocator,
                 new[] { InstanceTrait.Instance },

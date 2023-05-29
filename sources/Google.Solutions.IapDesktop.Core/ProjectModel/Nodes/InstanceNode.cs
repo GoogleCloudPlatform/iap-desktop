@@ -31,6 +31,8 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
     internal class InstanceNode : IProjectModelInstanceNode
     {
+        private readonly ProjectWorkspace workspace;
+
         //---------------------------------------------------------------------
         // IProjectModelInstanceNode.
         //---------------------------------------------------------------------
@@ -69,6 +71,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         //---------------------------------------------------------------------
 
         public InstanceNode(
+            ProjectWorkspace workspace,
             ulong instanceId,
             InstanceLocator locator,
             IReadOnlyCollection<ITrait> traits,

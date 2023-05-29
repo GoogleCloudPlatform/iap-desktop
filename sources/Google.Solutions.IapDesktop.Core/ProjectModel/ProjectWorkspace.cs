@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
         private readonly IProjectRepository projectRepository;
-        private readonly IEventQueue eventService;
+        private readonly IEventQueue eventQueue;
 
         private ResourceLocator activeNode;
 
@@ -216,6 +216,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         .Where(i => i.Disks != null && i.Disks.Any())
                         .OrderBy(i => i.Name)
                         .Select(i => new InstanceNode(
+                            this,
                             i.Id.Value,
                             new InstanceLocator(
                                 zoneLocator.ProjectId,
@@ -242,12 +243,12 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
             IProjectRepository projectRepository,
-            IEventQueue eventService)
+            IEventQueue eventQueue)
         {
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
             this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
-            this.eventService = eventService.ExpectNotNull(nameof(eventService));
+            this.eventQueue = eventQueue.ExpectNotNull(nameof(eventQueue));
         }
 
         //---------------------------------------------------------------------
@@ -260,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             {
                 this.projectRepository.AddProject(project);
 
-                await this.eventService
+                await this.eventQueue
                     .PublishAsync(new ProjectAddedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
@@ -281,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                     this.cachedZones.Remove(project);
                 }
 
-                await this.eventService
+                await this.eventQueue
                     .PublishAsync(new ProjectDeletedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
@@ -495,7 +496,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         //
                         this.activeNode = locator;
 
-                        await this.eventService
+                        await this.eventQueue
                             .PublishAsync(new ActiveProjectChangedEvent(node))
                             .ConfigureAwait(true);
 
@@ -510,7 +511,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                 this.activeNode = null;
                 if (this.cachedRoot != null)
                 {
-                    await this.eventService
+                    await this.eventQueue
                         .PublishAsync(new ActiveProjectChangedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
                 }
