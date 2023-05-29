@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         // IProtocolTarget.
         //---------------------------------------------------------------------
 
-        public string TargetName => this.Instance.Name; //TODO: Add test
-        public IEnumerable<IProtocolTargetTrait> Traits { get; }//TODO: Add test
+        public string TargetName => this.Instance.Name;
+        public IEnumerable<IProtocolTargetTrait> Traits { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
