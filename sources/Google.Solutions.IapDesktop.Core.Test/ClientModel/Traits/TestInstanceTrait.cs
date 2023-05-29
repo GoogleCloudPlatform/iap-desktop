@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 {
     [TestFixture]
-    public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, IProtocolTargetTrait>
+    public class TestInstanceTrait : EquatableFixtureBase<InstanceTrait, ITrait>
     {
         protected override InstanceTrait CreateInstance()
         {

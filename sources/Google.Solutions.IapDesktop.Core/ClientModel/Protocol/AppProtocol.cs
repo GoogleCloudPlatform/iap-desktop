@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     {
         public AppProtocol(
             string name,
-            IEnumerable<IProtocolTargetTrait> requiredTraits,
+            IEnumerable<ITrait> requiredTraits,
             ITransportPolicy policy,
             ushort remotePort,
             IPEndPoint localEndpoint,
@@ -58,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Traits that a target has to have to use this protocol.
         /// </summary>
-        public IEnumerable<IProtocolTargetTrait> RequiredTraits { get; }
+        public IEnumerable<ITrait> RequiredTraits { get; }
 
         /// <summary>
         /// Relay policy that defines who can connect to the local port.

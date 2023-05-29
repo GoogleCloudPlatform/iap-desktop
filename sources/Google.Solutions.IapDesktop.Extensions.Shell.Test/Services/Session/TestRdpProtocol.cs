@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
             var target = new Mock<IProtocolTarget>();
             target
                 .Setup(t => t.Traits)
-                .Returns((IEnumerable<IProtocolTargetTrait>)null);
+                .Returns((IEnumerable<ITrait>)null);
 
             Assert.IsFalse(RdpProtocol.Protocol.IsAvailable(target.Object));
         }

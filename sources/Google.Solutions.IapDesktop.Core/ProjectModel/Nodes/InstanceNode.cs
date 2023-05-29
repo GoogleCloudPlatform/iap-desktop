@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         //---------------------------------------------------------------------
 
         public string TargetName => this.Instance.Name;
-        public IEnumerable<IProtocolTargetTrait> Traits { get; }
+        public IEnumerable<ITrait> Traits { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         public InstanceNode(
             ulong instanceId,
             InstanceLocator locator,
-            IReadOnlyCollection<IProtocolTargetTrait> traits,
+            IReadOnlyCollection<ITrait> traits,
             string status)
         {
             locator.ExpectNotNull(nameof(locator));

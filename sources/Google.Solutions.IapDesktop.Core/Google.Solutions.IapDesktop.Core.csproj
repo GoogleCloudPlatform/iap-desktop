@@ -71,6 +71,7 @@
     <Compile Include="ClientModel\Protocol\AppProtocolFactory.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolContext.cs" />
     <Compile Include="ClientModel\Protocol\ProtocolTargetLocator.cs" />
+    <Compile Include="ClientModel\Traits\ITrait.cs" />
     <Compile Include="ClientModel\Traits\TraitDetector.cs" />
     <Compile Include="ClientModel\Traits\TypeTrait.cs">
       <AutoGen>True</AutoGen>

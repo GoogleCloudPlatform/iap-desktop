@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         /// Detect and list traits of an instance. Return an empty collection
         /// if no traits were found.
         /// </summary>
-        IEnumerable<IProtocolTargetTrait> DetectTraits(Instance instance);
+        IEnumerable<ITrait> DetectTraits(Instance instance);
     }
 
     public static class TraitDetector
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             finders.Add(finder);
         }
 
-        public static IReadOnlyCollection<IProtocolTargetTrait> DetectTraits(
+        public static IReadOnlyCollection<ITrait> DetectTraits(
             Instance instance)
         {
             return finders
@@ -72,12 +72,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 
         private class DefaultDetector : ITraitDetector
         {
-            public IEnumerable<IProtocolTargetTrait> DetectTraits(Instance instance)
+            public IEnumerable<ITrait> DetectTraits(Instance instance)
             {
                 yield return InstanceTrait.Instance;
                 yield return instance.IsWindowsInstance()
-                    ? (IProtocolTargetTrait)WindowsTrait.Instance
-                    : (IProtocolTargetTrait)LinuxTrait.Instance;
+                    ? (ITrait)WindowsTrait.Instance
+                    : (ITrait)LinuxTrait.Instance;
             }
         }
     }
