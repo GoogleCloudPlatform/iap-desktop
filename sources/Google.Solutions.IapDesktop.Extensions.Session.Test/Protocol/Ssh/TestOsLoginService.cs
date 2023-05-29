@@ -89,7 +89,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
-                    It.IsAny<ISshKeyPair>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
@@ -141,7 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
-                    It.IsAny<ISshKeyPair>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile());

@@ -134,7 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
                         project,
-                        key,
+                        key.Type,
+                        key.PublicKeyString,
                         validity,
                         token)
                     .ConfigureAwait(false);
@@ -145,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 var account = loginProfile.PosixAccounts
                     .EnsureNotNull()
                     .FirstOrDefault(a => a.Primary == true &&
-                                            a.OperatingSystemType == "LINUX");
+                                         a.OperatingSystemType == "LINUX");
 
                 if (account == null)
                 {

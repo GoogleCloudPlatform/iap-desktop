@@ -44,9 +44,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
         /// <summary>
         /// Import user's public key to OS Login.
         /// </summary>
+        /// <param name="keyType">Key type (for ex, 'ssh-rsa')</param>
+        /// <param name="keyBlob">SSH1/Base64-encoded public key</param>
         Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            ISshKeyPair key,
+            string keyType,
+            string keyBlob,
             TimeSpan validity,
             CancellationToken token);
 
@@ -97,10 +100,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
 
         public async Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            ISshKeyPair key,
+            string keyType,
+            string keyBlob,
             TimeSpan validity,
             CancellationToken token)
         {
+            project.ExpectNotNull(nameof(project));
+            keyType.ExpectNotEmpty(nameof(keyType));
+            keyBlob.ExpectNotEmpty(nameof(keyBlob));
+
+            Debug.Assert(!keyType.Contains(' '));
+
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
@@ -112,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
                 var request = this.service.Users.ImportSshPublicKey(
                     new SshPublicKey()
                     {
-                        Key = $"{key.Type} {key.PublicKeyString}",
+                        Key = $"{keyType} {keyBlob}",
                         ExpirationTimeUsec = expiryTimeUsec
                     },
                     $"users/{userEmail}");
@@ -135,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
                     //
                     if (response.LoginProfile.SshPublicKeys
                         .EnsureNotNull()
-                        .Any(kvp => kvp.Value.Key.Contains(key.PublicKeyString)))
+                        .Any(kvp => kvp.Value.Key.Contains(keyBlob)))
                     {
                         return response.LoginProfile;
                     }

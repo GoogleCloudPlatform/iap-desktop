@@ -69,13 +69,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         {
             var adapter = CreateAdapter("x@gmail.com");
 
-            var key = new Mock<ISshKeyPair>();
-            key.SetupGet(s => s.PublicKeyString).Returns("key");
-
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    key.Object,
+                    "ssh-rsa",
+                    "blob",
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());
         }
@@ -91,7 +89,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
             {
                 var profile = await adapter.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    keyPair,
+                    keyPair.Type,
+                    keyPair.PublicKeyString,
                     TimeSpan.FromMinutes(5),
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -152,7 +151,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
                 //
                 var profile = await adapter.ImportSshPublicKeyAsync(
                         new ProjectLocator(TestProject.ProjectId),
-                        keyPair,
+                        keyPair.Type,
+                        keyPair.PublicKeyString,
                         TimeSpan.FromMinutes(5),
                         CancellationToken.None)
                     .ConfigureAwait(false);
