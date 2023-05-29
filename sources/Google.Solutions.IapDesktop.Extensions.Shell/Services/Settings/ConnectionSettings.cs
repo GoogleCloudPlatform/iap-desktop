@@ -22,8 +22,8 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ using System.Security.Cryptography;
 
 #pragma warning disable CA1027 // Mark enums with FlagsAttribute
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
 {
 
 

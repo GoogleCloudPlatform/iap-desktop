@@ -21,12 +21,12 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using NUnit.Framework;
 using System.Collections.Specialized;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Settings
 {
     [TestFixture]
     public class TestIapRdpUrlConnectionSettings

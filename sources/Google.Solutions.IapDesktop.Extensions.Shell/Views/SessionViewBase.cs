@@ -26,7 +26,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views
 {
     /// <summary>
     /// Base class for sessions.

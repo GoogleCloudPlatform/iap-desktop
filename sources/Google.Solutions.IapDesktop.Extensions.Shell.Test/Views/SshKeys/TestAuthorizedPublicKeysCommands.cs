@@ -21,12 +21,12 @@
 
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
 {
     [TestFixture]
     public class TestAuthorizedPublicKeysCommands

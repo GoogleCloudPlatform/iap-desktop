@@ -28,7 +28,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
     public interface IRdpCredentialCallbackService
     {

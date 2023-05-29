@@ -29,7 +29,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
 {
     [SkipCodeCoverage("UI code")]
     [Service(ServiceLifetime.Transient)]

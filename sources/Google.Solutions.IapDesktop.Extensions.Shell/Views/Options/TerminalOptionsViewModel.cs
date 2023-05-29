@@ -21,12 +21,12 @@
 
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Options;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
 {
     [Service(ServiceLifetime.Transient)]
     public class TerminalOptionsViewModel : OptionsViewModelBase<TerminalSettings>

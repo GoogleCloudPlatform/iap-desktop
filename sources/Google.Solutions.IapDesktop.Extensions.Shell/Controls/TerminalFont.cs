@@ -24,7 +24,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     internal sealed class TerminalFont : IDisposable
     {

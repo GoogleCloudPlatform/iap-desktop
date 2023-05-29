@@ -23,14 +23,14 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {
     [Service]
     public class ConnectCommands

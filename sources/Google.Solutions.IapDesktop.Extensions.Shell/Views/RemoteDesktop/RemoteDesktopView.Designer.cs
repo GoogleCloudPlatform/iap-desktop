@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Tsc;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
     partial class RemoteDesktopView
     {
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             // 
             // timeoutIcon
             // 
-            this.timeoutIcon.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Disconnected_32;
+            this.timeoutIcon.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.Disconnected_32;
             this.timeoutIcon.Location = new System.Drawing.Point(86, 21);
             this.timeoutIcon.Name = "timeoutIcon";
             this.timeoutIcon.Size = new System.Drawing.Size(32, 32);

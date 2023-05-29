@@ -21,13 +21,13 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
     public class TestRdpProtocol : EquatableFixtureBase<RdpProtocol, IProtocol>

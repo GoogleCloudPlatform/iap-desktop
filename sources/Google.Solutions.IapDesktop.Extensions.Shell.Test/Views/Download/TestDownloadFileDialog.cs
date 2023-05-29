@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Download;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Testing.Apis.Integration;
@@ -35,7 +35,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Download
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]

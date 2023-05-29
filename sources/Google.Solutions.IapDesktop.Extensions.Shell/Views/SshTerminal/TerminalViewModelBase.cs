@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application;
 #endif
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
 {
 
     public abstract class TerminalViewModelBase : ViewModelBase, IDisposable

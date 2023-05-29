@@ -23,10 +23,10 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Data;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
 {
     public interface IConnectionSettingsService
     {

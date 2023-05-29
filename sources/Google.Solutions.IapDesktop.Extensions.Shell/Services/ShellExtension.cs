@@ -25,16 +25,16 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels;
+using Google.Solutions.IapDesktop.Extensions.Session.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Collections.Specialized;
@@ -42,7 +42,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services
 {
     /// <summary>
     /// Main class of the extension, instantiated on load.

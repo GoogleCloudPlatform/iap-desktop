@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
@@ -28,7 +28,7 @@ using System;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Adapter
 {
     [TestFixture]
     public class TestKeyStoreAdapter : ShellFixtureBase

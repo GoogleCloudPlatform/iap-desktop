@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
 {
     internal class AuthorizedPublicKeysList : SearchableList<AuthorizedPublicKeysModel.Item>
     {

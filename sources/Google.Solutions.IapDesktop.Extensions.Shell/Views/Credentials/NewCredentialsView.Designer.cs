@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
 {
     partial class NewCredentialsView
     {

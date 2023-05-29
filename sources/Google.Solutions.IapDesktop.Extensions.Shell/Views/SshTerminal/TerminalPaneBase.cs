@@ -23,8 +23,8 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
@@ -36,7 +36,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
 {
     public partial class TerminalViewBase : SessionViewBase
     {

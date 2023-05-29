@@ -22,14 +22,14 @@
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {
     [Service]
     public class SessionCommands

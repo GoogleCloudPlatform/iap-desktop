@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     partial class VirtualTerminal
     {

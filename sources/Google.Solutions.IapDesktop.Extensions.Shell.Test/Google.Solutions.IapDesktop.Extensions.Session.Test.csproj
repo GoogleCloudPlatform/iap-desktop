@@ -9,8 +9,8 @@
     <ProjectGuid>{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Shell.Test</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Shell.Test</AssemblyName>
+    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Session.Test</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Session.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -207,9 +207,9 @@
       <Project>{FF0BB781-E398-4E13-8182-83450082A818}</Project>
       <Name>Google.Solutions.IapDesktop.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Shell\Google.Solutions.IapDesktop.Extensions.Shell.csproj">
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Shell\Google.Solutions.IapDesktop.Extensions.Session.csproj">
       <Project>{b5f53a65-1b67-4ca1-9ab0-a81799c0c215}</Project>
-      <Name>Google.Solutions.IapDesktop.Extensions.Shell</Name>
+      <Name>Google.Solutions.IapDesktop.Extensions.Session</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>

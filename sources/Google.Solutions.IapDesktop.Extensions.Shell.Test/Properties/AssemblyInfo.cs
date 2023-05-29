@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
+[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.Session.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
+[assembly: AssemblyProduct("Google.Solutions.IapDesktop.Extensions.Session.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -30,7 +30,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Ssh
 {
     [TestFixture]
     public class TestProjectMetadataAuthorizedPublicKeyProcessor : ShellFixtureBase

@@ -24,13 +24,13 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
 {
     /// <summary>
     /// Registry-backed repository for SSH settings.

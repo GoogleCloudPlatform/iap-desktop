@@ -34,4 +34,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyFileVersion("1.0.1.0")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.Ssh.Test")]
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Session.Test")]

@@ -20,12 +20,12 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Data;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Data
 {
     [TestFixture]
     public class TestSamAccountName

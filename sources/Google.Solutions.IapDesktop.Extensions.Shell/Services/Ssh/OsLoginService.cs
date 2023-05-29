@@ -27,7 +27,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh
 {
     public interface IOsLoginService
     {

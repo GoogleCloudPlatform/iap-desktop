@@ -22,10 +22,10 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using Google.Solutions.Mvvm.Binding;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
     [Service]
     public class RemoteDesktopViewModel : ViewModelBase

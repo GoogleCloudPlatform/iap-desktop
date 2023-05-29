@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using NUnit.Framework;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
     public class TestRdpCredential : ShellFixtureBase

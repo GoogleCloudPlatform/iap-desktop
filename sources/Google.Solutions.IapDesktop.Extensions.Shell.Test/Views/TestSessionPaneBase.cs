@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views;
+using Google.Solutions.IapDesktop.Extensions.Session.Views;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
@@ -30,7 +30,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views
 {
     [TestFixture]
 

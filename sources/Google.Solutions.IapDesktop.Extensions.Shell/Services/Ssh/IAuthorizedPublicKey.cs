@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh
 {
     /// <summary>
     /// SSH public key that has been authorized to access a resource.

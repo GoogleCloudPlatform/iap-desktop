@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Download
 {
     partial class DownloadFileView
     {

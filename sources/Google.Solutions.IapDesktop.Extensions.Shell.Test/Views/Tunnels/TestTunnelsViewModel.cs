@@ -22,13 +22,13 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels;
 using Moq;
 using NUnit.Framework;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Tunnels
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Tunnels
 {
     [TestFixture]
     public class TestTunnelsViewModel : ShellFixtureBase

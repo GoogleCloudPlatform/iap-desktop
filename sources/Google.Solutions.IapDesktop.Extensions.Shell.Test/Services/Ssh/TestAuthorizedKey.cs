@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Ssh
 {
     [TestFixture]
     public class TestAuthorizedKey : ShellFixtureBase

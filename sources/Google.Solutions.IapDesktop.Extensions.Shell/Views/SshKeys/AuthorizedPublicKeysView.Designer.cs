@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
 {
     partial class AuthorizedPublicKeysView
     {
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizedPublicKeysView));
-            this.keysList = new Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys.AuthorizedPublicKeysList();
+            this.keysList = new Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys.AuthorizedPublicKeysList();
             this.panel = new NotificationBarPanel();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // refreshToolStripButton
             // 
             this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Refresh_16;
+            this.refreshToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.Refresh_16;
             this.refreshToolStripButton.Name = "refreshToolStripButton";
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.refreshToolStripButton.Text = "Refresh";
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // deleteToolStripButton
             // 
             this.deleteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.deleteToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.DeleteKey_16;
+            this.deleteToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.DeleteKey_16;
             this.deleteToolStripButton.Name = "deleteToolStripButton";
             this.deleteToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.deleteToolStripButton.Text = "Delete key";

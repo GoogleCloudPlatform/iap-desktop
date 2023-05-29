@@ -26,7 +26,7 @@ using Google.Solutions.Mvvm.Binding;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels
 {
     [Service]
     public class TunnelsViewModel : ViewModelBase

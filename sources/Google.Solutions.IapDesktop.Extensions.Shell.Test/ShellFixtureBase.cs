@@ -21,7 +21,7 @@
 
 using Google.Solutions.Testing.Application.Test;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test
 {
     public abstract class ShellFixtureBase : ApplicationFixtureBase // TODO: Remove
     {

@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Options;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Options
 {
     [TestFixture]
     public class TestTerminalOptionsViewModel : ShellFixtureBase

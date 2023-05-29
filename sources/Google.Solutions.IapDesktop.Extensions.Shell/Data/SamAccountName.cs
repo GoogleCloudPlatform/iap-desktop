@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
+namespace Google.Solutions.IapDesktop.Extensions.Session.Data
 {
     internal static class SamAccountName
     {

@@ -28,8 +28,8 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshKeys
 {
     [TestFixture]
     public class TestAuthorizedPublicKeysViewModel : ShellFixtureBase

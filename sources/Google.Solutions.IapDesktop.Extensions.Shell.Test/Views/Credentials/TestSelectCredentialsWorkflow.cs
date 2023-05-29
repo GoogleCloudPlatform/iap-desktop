@@ -22,9 +22,9 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Credentials
 {
     [TestFixture]
     public class TestSelectCredentialsWorkflow : ShellFixtureBase

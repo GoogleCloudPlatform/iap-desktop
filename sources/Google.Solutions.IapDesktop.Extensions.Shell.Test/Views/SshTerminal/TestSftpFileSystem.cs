@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
 {
     [TestFixture]
     public class TestSftpFileSystem

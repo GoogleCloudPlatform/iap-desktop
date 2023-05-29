@@ -24,7 +24,7 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -35,7 +35,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Adapter
 {
     [TestFixture]
     [UsesCloudResources]

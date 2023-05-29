@@ -21,7 +21,7 @@
 
 using System.ComponentModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
     public abstract class SessionParametersBase
     {

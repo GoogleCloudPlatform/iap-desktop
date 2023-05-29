@@ -25,7 +25,7 @@ using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
 {
     public interface INewCredentialsDialog
     {

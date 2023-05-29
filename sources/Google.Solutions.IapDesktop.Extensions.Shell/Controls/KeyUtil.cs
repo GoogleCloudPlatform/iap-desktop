@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1806 // return code ignored
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     internal static class KeyUtil
     {

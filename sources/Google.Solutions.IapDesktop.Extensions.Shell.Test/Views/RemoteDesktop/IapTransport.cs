@@ -26,11 +26,11 @@ using Google.Solutions.Iap;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using Google.Solutions.Testing.Apis.Integration;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDesktop
 {
     internal class IapTransport : DisposableBase, ITransport
     {

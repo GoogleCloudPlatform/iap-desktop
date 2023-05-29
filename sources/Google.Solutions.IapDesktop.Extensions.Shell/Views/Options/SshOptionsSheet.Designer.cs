@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
 {
     partial class SshOptionsSheet
     {

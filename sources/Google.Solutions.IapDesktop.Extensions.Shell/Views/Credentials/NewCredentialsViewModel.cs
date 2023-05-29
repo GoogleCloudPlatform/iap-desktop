@@ -24,7 +24,7 @@ using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
 {
     [Service]
     public class NewCredentialsViewModel : ViewModelBase

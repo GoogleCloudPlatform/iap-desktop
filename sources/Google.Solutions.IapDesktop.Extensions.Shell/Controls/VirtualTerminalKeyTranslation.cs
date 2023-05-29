@@ -25,7 +25,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     internal static class VirtualTerminalKeyTranslation
     {

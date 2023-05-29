@@ -25,9 +25,9 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
@@ -37,7 +37,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {
     public interface IInstanceSessionBroker : ISessionBroker
     {

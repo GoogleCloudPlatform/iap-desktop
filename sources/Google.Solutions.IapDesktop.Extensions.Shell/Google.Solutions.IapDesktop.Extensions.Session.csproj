@@ -7,8 +7,8 @@
     <ProjectGuid>{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Shell</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Shell</AssemblyName>
+    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Session</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Session</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

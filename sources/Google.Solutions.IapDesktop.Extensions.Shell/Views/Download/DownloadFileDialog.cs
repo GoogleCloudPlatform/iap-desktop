@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Download
 {
     public interface IDownloadFileDialog
     {

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]

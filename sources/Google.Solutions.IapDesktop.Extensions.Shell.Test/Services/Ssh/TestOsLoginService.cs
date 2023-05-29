@@ -22,8 +22,8 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -34,7 +34,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Ssh
 {
     [TestFixture]
     public class TestOsLoginService : ShellFixtureBase

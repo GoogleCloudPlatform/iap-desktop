@@ -23,13 +23,13 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
 {
     [SkipCodeCoverage("UI code")]
     [Service(ServiceLifetime.Transient)]

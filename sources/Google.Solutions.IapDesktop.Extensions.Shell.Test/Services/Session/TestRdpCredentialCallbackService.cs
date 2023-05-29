@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using Newtonsoft.Json;
@@ -31,7 +31,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
     public class TestRdpCredentialCallbackService

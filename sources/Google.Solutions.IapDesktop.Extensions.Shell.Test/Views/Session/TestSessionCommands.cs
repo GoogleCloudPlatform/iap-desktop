@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
 {
     [TestFixture]
     public class TestSessionCommands

@@ -31,7 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]

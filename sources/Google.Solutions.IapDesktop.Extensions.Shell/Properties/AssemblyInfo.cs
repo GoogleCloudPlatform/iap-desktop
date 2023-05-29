@@ -22,7 +22,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.Shell")]
+[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.Session")]
 [assembly: AssemblyDescription("Session extension")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
@@ -32,4 +32,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
 
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Session.Test")]

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
 {
     partial class TerminalOptionsSheet
     {
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             // selectBackgroundColorButton
             // 
-            this.selectBackgroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.BackgroundColor_16;
+            this.selectBackgroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.BackgroundColor_16;
             this.selectBackgroundColorButton.Location = new System.Drawing.Point(284, 52);
             this.selectBackgroundColorButton.Name = "selectBackgroundColorButton";
             this.selectBackgroundColorButton.Size = new System.Drawing.Size(30, 23);
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             // selectForegroundColorButton
             // 
-            this.selectForegroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.TextColor_16;
+            this.selectForegroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.TextColor_16;
             this.selectForegroundColorButton.Location = new System.Drawing.Point(250, 52);
             this.selectForegroundColorButton.Name = "selectForegroundColorButton";
             this.selectForegroundColorButton.Size = new System.Drawing.Size(30, 23);

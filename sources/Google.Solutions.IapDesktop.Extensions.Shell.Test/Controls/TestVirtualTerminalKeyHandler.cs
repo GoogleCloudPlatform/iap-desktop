@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using NUnit.Framework;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
     public class TestVirtualTerminalKeyHandler

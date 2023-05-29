@@ -29,7 +29,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {

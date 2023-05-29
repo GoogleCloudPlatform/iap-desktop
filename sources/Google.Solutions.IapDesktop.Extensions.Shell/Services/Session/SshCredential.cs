@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
     public class SshCredential : ISessionCredential
     {

@@ -24,12 +24,12 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ConnectionSettings
 {
     [Service]
     public class ConnectionSettingsViewModel : ViewModelBase, IPropertiesInspectorViewModel

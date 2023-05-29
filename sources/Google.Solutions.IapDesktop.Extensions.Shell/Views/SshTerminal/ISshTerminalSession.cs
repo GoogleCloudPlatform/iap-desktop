@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
 {
     public interface ISshTerminalSession : ISession
     {

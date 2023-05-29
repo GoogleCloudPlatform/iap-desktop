@@ -22,15 +22,15 @@
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {
     /// <summary>
     /// Connect to a VM by model node, or activate an existing session

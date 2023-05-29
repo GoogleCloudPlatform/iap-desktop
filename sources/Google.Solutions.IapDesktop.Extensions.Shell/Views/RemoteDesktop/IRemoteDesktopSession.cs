@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
     public interface IRemoteDesktopSession : ISession
     {

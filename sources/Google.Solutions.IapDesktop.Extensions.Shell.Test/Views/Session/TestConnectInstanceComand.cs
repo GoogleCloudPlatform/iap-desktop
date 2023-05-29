@@ -24,10 +24,10 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
 using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
@@ -36,7 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
 {
     [TestFixture]
     public class TestConnectInstanceComand

@@ -21,13 +21,13 @@
 
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 {
     /// <summary>
     /// Connect to a VM by iap-rdp:/// URL, or activate an existing session

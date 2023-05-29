@@ -35,7 +35,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
 {
     internal sealed class SftpFileSystem : FileBrowser.IFileSystem, IDisposable
     {

@@ -24,9 +24,9 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Net;
 using System;
@@ -39,7 +39,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Diagnostics
 {
     [SkipCodeCoverage("For testing only")]
     [Service]

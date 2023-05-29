@@ -24,7 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     /// <summary>
     /// Key handler, replacement for vtnetcore's own key handling

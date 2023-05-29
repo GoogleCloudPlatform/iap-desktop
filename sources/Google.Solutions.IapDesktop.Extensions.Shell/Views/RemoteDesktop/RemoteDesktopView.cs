@@ -32,7 +32,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using MSTSCLib;
@@ -48,7 +48,7 @@ using System.Windows.Forms;
 #pragma warning disable CA1031 // catch Exception
 #pragma warning disable CA1801 // Review unused parameters
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
     [Service]
     public partial class RemoteDesktopView

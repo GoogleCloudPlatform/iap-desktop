@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Credentials
 {
     [TestFixture]
     public class TestGenerateCredentialsViewModel : ShellFixtureBase

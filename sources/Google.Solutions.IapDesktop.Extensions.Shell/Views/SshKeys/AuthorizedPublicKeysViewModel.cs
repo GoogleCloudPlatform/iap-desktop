@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Cache;
 using System;
@@ -37,7 +37,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
 {
     [Service]
     public class AuthorizedPublicKeysViewModel

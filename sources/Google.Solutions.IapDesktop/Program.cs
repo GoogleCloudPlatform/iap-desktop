@@ -143,7 +143,8 @@ namespace Google.Solutions.IapDesktop
             {
                 "google.solutions.iapdesktop.extensions.rdp.dll",
                 "google.solutions.iapdesktop.extensions.activity.dll",
-                "google.solutions.iapdesktop.extensions.os.dll"
+                "google.solutions.iapdesktop.extensions.os.dll",
+                "google.solutions.iapdesktop.extensions.shell.dll"
             };
             return Directory.GetFiles(
                 Path.GetDirectoryName(

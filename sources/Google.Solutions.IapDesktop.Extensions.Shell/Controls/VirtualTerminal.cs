@@ -35,7 +35,7 @@ using VtNetCore.VirtualTerminal.Layout;
 using VtNetCore.VirtualTerminal.Model;
 using VtNetCore.XTermParser;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     /// <summary>
     /// Virtual terminal control.

@@ -30,8 +30,8 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Download;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -49,7 +49,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
 {
     [Service]
     public class SshTerminalViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal

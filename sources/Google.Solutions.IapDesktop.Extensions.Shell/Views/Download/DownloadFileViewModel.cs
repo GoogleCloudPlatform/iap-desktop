@@ -26,7 +26,7 @@ using Google.Solutions.Mvvm.Shell;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Download
 {
     [Service]
     internal class DownloadFileViewModel : ViewModelBase

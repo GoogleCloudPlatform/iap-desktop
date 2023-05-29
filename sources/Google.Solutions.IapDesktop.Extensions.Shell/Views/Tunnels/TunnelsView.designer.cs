@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels
 {
     partial class TunnelsView
     {
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
         {
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels.TunnelsListView();
+            this.tunnelsList = new Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels.TunnelsListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
             // refreshToolStripButton
             // 
             this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Refresh_16;
+            this.refreshToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.Refresh_16;
             this.refreshToolStripButton.Name = "refreshToolStripButton";
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.refreshToolStripButton.Text = "Refresh";

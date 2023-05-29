@@ -28,11 +28,11 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using Moq;
@@ -43,7 +43,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
     public class TestSessionContextFactoryForSsh

@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Settings
 {
     [TestFixture]
 

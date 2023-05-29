@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
 
     /// <summary>

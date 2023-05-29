@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Download
 {
     [Service]
     internal partial class DownloadFileView : Form, IView<DownloadFileViewModel>

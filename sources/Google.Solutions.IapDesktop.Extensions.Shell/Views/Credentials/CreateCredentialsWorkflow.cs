@@ -23,14 +23,14 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.Apis.Compute;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
 {
     public interface ICreateCredentialsWorkflow
     {

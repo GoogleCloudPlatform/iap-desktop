@@ -28,7 +28,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh
 {
     /// <summary>
     /// SSH key pair for which the public key has been authorized.

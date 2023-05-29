@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
 {
     partial class TerminalViewBase
     {
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
             this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
-            this.terminal = new Google.Solutions.IapDesktop.Extensions.Shell.Controls.VirtualTerminal();
+            this.terminal = new Google.Solutions.IapDesktop.Extensions.Session.Controls.VirtualTerminal();
             this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
             this.SuspendLayout();
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             // timeoutIcon
             // 
             this.timeoutIcon.BackColor = System.Drawing.Color.Transparent;
-            this.timeoutIcon.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Disconnected_32;
+            this.timeoutIcon.Image = global::Google.Solutions.IapDesktop.Extensions.Session.Properties.Resources.Disconnected_32;
             this.timeoutIcon.Location = new System.Drawing.Point(86, 21);
             this.timeoutIcon.Name = "timeoutIcon";
             this.timeoutIcon.Size = new System.Drawing.Size(32, 32);

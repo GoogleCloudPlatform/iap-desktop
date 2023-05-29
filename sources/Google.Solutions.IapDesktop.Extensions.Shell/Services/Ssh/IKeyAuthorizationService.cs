@@ -25,7 +25,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Ssh
 {
     public interface IKeyAuthorizationService
     {

@@ -29,7 +29,7 @@ using Google.Solutions.Mvvm.Format;
 using System;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]

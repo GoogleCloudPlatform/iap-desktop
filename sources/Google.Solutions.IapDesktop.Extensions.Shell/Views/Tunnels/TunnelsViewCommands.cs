@@ -21,11 +21,11 @@
 
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Tunnels
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels
 {
     [Service]
     public class TunnelsViewCommands

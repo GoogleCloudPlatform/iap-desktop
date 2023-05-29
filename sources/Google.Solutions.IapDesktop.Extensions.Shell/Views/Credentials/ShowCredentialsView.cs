@@ -22,13 +22,13 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
 {
     public interface IShowCredentialsDialog
     {

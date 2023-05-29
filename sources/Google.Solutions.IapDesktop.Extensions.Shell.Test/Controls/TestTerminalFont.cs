@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
     public class TestTerminalFont : ShellFixtureBase
