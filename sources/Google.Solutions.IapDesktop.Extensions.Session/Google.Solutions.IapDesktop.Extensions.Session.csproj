@@ -195,7 +195,7 @@
     <Compile Include="Views\Credentials\ShowCredentialsView.Designer.cs">
       <DependentUpon>ShowCredentialsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Protocol\ShellExtension.cs" />
+    <Compile Include="InitializeSessionExtension.cs" />
     <Compile Include="Views\Options\SshOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>

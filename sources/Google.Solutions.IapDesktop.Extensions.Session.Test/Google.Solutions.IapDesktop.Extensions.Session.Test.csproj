@@ -187,9 +187,7 @@
     <None Include="packages.config" />
     <Compile Include="Views\Session\TestConnectRdpUrlCommand.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Protocol\ConnectionSettings\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">
       <Project>{790f1966-eb34-4cf2-8ed3-3e6c96cba397}</Project>

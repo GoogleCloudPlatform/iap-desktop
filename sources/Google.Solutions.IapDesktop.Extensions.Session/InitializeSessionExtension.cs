@@ -41,14 +41,15 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
+namespace Google.Solutions.IapDesktop.Extensions.Session
 {
     /// <summary>
     /// Main class of the extension, instantiated on load.
     /// </summary>
     [Service(ServiceLifetime.Singleton, DelayCreation = false)]
-    public class ShellExtension
+    public class InitializeSessionExtension
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
@@ -107,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         // Setup
         //---------------------------------------------------------------------
 
-        public ShellExtension(IServiceProvider serviceProvider)
+        public InitializeSessionExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
 
