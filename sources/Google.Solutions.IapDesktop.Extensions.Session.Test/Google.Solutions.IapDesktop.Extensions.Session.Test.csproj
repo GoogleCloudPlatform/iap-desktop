@@ -131,7 +131,7 @@
     <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
     <Compile Include="Services\Session\TestSshProtocol.cs" />
     <Compile Include="Services\Session\TestRdpProtocol.cs" />
-    <Compile Include="Services\Session\TestRdpCredentialCallbackService.cs" />
+    <Compile Include="Services\Session\TestRdpCredentialCallback.cs" />
     <Compile Include="Services\Session\TestRdpCredential.cs" />
     <Compile Include="Services\Session\TestRdpContext.cs" />
     <Compile Include="Services\Session\TestRdpParameters.cs" />

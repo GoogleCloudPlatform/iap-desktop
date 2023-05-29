@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
         private readonly IDirectTransportFactory directTransportFactory;
         private readonly IAddressResolver addressResolver;
         private readonly ISelectCredentialsDialog credentialDialog;
-        private readonly IRdpCredentialCallbackService rdpCredentialCallbackService;
+        private readonly IRdpCredentialCallback rdpCredentialCallbackService;
 
         public SessionContextFactory(
             IMainWindow window,
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
             IDirectTransportFactory directTransportFactory,
             IAddressResolver addressResolver,
             ISelectCredentialsDialog credentialDialog,
-            IRdpCredentialCallbackService credentialCallbackService,
+            IRdpCredentialCallback credentialCallbackService,
             SshSettingsRepository sshSettingsRepository)
         {
             this.window = window.ExpectNotNull(nameof(window));

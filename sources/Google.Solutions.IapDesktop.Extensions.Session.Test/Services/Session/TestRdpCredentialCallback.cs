@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
-    public class TestRdpCredentialCallbackService
+    public class TestRdpCredentialCallback
     {
         private static readonly Uri SampleCallbackUrl = new Uri("http://example.com/callback");
 
@@ -43,12 +43,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         {
             var adapter = new Mock<IExternalRestAdapter>();
             adapter
-                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((RdpCredentialCallbackService.CredentialCallbackResponse)null);
+                .ReturnsAsync((RdpCredentialCallback.CredentialCallbackResponse)null);
 
-            var service = new RdpCredentialCallbackService(adapter.Object);
+            var service = new RdpCredentialCallback(adapter.Object);
             var credentials = await service
                 .GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None)
                 .ConfigureAwait(false);
@@ -63,12 +63,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         {
             var adapter = new Mock<IExternalRestAdapter>();
             adapter
-                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException());
 
-            var service = new RdpCredentialCallbackService(adapter.Object);
+            var service = new RdpCredentialCallback(adapter.Object);
 
             ExceptionAssert.ThrowsAggregateException<CredentialCallbackException>(
                 () => service.GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None).Wait());
@@ -79,12 +79,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         {
             var adapter = new Mock<IExternalRestAdapter>();
             adapter
-                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new JsonReaderException());
 
-            var service = new RdpCredentialCallbackService(adapter.Object);
+            var service = new RdpCredentialCallback(adapter.Object);
 
             ExceptionAssert.ThrowsAggregateException<CredentialCallbackException>(
                 () => service.GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None).Wait());
@@ -95,12 +95,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         {
             var adapter = new Mock<IExternalRestAdapter>();
             adapter
-                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new TimeoutException());
 
-            var service = new RdpCredentialCallbackService(adapter.Object);
+            var service = new RdpCredentialCallback(adapter.Object);
 
             ExceptionAssert.ThrowsAggregateException<CredentialCallbackException>(
                 () => service.GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None).Wait());
@@ -111,17 +111,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         {
             var adapter = new Mock<IExternalRestAdapter>();
             adapter
-                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new RdpCredentialCallbackService.CredentialCallbackResponse()
+                .ReturnsAsync(new RdpCredentialCallback.CredentialCallbackResponse()
                 {
                     User = "user",
                     Domain = "domain",
                     Password = "password"
                 });
 
-            var service = new RdpCredentialCallbackService(adapter.Object);
+            var service = new RdpCredentialCallback(adapter.Object);
             var credentials = await service
                 .GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None)
                 .ConfigureAwait(false);

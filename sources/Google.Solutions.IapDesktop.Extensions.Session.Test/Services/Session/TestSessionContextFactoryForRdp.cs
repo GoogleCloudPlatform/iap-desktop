@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             var context = (RdpContext)await factory
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             var context = (RdpContext)await factory
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
-            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            var callbackService = new Mock<IRdpCredentialCallback>();
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 credentialDialog.Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             var context = (RdpContext)await factory
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
-            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            var callbackService = new Mock<IRdpCredentialCallback>();
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 credentialDialog.Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             var context = (RdpContext)await factory
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            var callbackService = new Mock<IRdpCredentialCallback>();
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
@@ -333,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 credentialDialog.Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             var context = (RdpContext)await factory
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         [Test]
         public void WhenUrlCallbackFails_ThenCreateRdpSessionContextByUrlThrowsException()
         {
-            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            var callbackService = new Mock<IRdpCredentialCallback>();
             callbackService.Setup(
                 s => s.GetCredentialsAsync(
                     It.IsAny<Uri>(),
@@ -397,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
         [Test]
         public async Task WhenUrlCallbackSucceeds_ThenCreateRdpSessionContextByUrlUsesCallbackCredentials()
         {
-            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            var callbackService = new Mock<IRdpCredentialCallback>();
             callbackService.Setup(
                 s => s.GetCredentialsAsync(
                     It.IsAny<Uri>(),
