@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Extensions.Session.Services.Session;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using NUnit.Framework;
 using System.Collections.Specialized;
 

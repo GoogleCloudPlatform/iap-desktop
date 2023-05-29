@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
     /// <summary>
     /// Registry-backed repository for connection settings.

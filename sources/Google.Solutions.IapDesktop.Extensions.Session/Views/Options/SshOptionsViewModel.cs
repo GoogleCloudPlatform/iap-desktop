@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Options;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;

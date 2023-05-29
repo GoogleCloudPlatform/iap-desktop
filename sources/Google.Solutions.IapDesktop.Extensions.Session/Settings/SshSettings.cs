@@ -30,7 +30,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
     /// <summary>
     /// Registry-backed repository for SSH settings.

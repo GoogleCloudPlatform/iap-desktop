@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using NUnit.Framework;

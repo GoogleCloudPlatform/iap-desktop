@@ -34,7 +34,7 @@ using System.Security.Cryptography;
 
 #pragma warning disable CA1027 // Mark enums with FlagsAttribute
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
 
 

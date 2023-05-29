@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Data;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
     public interface IConnectionSettingsService
     {

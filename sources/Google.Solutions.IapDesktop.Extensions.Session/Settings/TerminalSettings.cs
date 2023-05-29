@@ -31,7 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
     /// <summary>
     /// Registry-backed repository for terminal settings.

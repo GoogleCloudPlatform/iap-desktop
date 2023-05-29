@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;

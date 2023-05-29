@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
-using Google.Solutions.IapDesktop.Extensions.Session.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
