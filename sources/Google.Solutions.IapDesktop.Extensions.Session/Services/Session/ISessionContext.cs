@@ -20,14 +20,18 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
-    public interface ISessionContext<TCredential, TParameters> : IDisposable
+    /// <summary>
+    /// Protocol context that can be used for initiating a (terminal)
+    /// session.
+    /// </summary>
+    public interface ISessionContext<TCredential, TParameters> : IProtocolContext
         where TCredential : ISessionCredential
     {
         /// <summary>
@@ -45,12 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
         /// remote calls, so the method should be called in a job.
         /// </summary>
         Task<TCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Create a transport, which might involve creating a tunnel.
-        /// This might require remote calls, so the method should be called in a job.
-        /// </summary>
-        Task<ITransport> ConnectTransportAsync(CancellationToken cancellationToken);
     }
 
     public interface ISessionCredential

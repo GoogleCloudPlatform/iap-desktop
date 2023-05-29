@@ -26,16 +26,16 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
 {
     [TestFixture]
-    public class TestRdpSessionParameters
+    public class TestRdpParameters
     {
         [Test]
         public void ParametersUseDefaults()
         {
-            var parameters = new RdpSessionParameters();
+            var parameters = new RdpParameters();
 
             Assert.AreEqual(SessionTransportType._Default, parameters.TransportType);
-            Assert.AreEqual(RdpSessionParameters.DefaultPort, parameters.Port);
-            Assert.AreEqual(RdpSessionParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
+            Assert.AreEqual(RdpParameters.DefaultPort, parameters.Port);
+            Assert.AreEqual(RdpParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
             Assert.AreEqual(RdpConnectionBarState._Default, parameters.ConnectionBar);
             Assert.AreEqual(RdpDesktopSize._Default, parameters.DesktopSize);
             Assert.AreEqual(RdpAuthenticationLevel._Default, parameters.AuthenticationLevel);

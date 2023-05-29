@@ -24,7 +24,7 @@ using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
-    public class RdpSessionParameters : SessionParametersBase
+    public class RdpParameters : SessionParametersBase
     {
         internal const ushort DefaultPort = 3389;
         internal static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(30);

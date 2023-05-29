@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
                 //
                 Debug.Assert(session != null);
                 Debug.Assert(
-                    (instanceNode.IsRdpSupported() && session is IRemoteDesktopSession) ||
+                    (instanceNode.IsRdpSupported() && session is IRdpSession) ||
                     (instanceNode.IsSshSupported() && session is ISshTerminalSession));
                 return;
             }
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
                     .ConfigureAwait(true);
 
                 Debug.Assert(this.Flags == RdpCreateSessionFlags.None ||
-                    (context as RdpSessionContext)?.Credential.Password == null);
+                    (context as RdpContext)?.Credential.Password == null);
 
                 try
                 {

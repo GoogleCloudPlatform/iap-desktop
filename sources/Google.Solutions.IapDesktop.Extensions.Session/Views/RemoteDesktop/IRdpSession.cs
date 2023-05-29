@@ -23,7 +23,10 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
-    public interface IRemoteDesktopSession : ISession
+    /// <summary>
+    /// A remote desktop session.
+    /// </summary>
+    public interface IRdpSession : ISession
     {
         bool TrySetFullscreen(FullScreenMode mode);
 

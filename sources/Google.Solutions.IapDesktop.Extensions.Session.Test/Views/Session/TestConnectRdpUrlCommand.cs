@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
             var contextFactory = serviceProvider.AddMock<ISessionContextFactory>();
             var sessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
 
-            var session = (ISession)new Mock<IRemoteDesktopSession>().Object;
+            var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out session))
                 .Returns(true);
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var serviceProvider = new Mock<IServiceProvider>();
 
-            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = serviceProvider.AddMock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))

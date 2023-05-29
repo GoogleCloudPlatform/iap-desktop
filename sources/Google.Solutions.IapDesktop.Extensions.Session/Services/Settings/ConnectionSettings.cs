@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
                 "Timeout for establishing a Remote Desktop connection, in seconds. " +
                     "Use a timeout that allows sufficient time for credential prompts.",
                 Categories.RdpAdvanced,
-                (int)RdpSessionParameters.DefaultConnectionTimeout.TotalSeconds,
+                (int)RdpParameters.DefaultConnectionTimeout.TotalSeconds,
                 key,
                 0, 300);
             this.RdpPort = RegistryDwordSetting.FromKey(
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
                 "Server port",
                 "Server port.",
                 Categories.RdpConnection,
-                RdpSessionParameters.DefaultPort,
+                RdpParameters.DefaultPort,
                 key,
                 1,
                 ushort.MaxValue);
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
                 "Server port",
                 "Server port",
                 Categories.SshConnection,
-                SshSessionParameters.DefaultPort,
+                SshParameters.DefaultPort,
                 key,
                 1,
                 ushort.MaxValue);
@@ -328,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Settings
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                (int)RdpSessionParameters.DefaultConnectionTimeout.TotalSeconds,
+                (int)RdpParameters.DefaultConnectionTimeout.TotalSeconds,
                 key,
                 0, 300);
 

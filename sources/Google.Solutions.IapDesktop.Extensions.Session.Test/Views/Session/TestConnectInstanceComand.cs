@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var workspace = new Mock<IProjectWorkspace>();
             var sessionBroker = new Mock<IInstanceSessionBroker>();
-            var session = (ISession)new Mock<IRemoteDesktopSession>().Object;
+            var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out session))
                 .Returns(true);
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var contextFactory = new Mock<ISessionContextFactory>();
             var sessionBroker = new Mock<IInstanceSessionBroker>();
-            var session = (ISession)new Mock<IRemoteDesktopSession>().Object;
+            var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out session))
                 .Returns(true);
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var instance = CreateInstanceNode(OperatingSystems.Windows).Object;
 
-            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         [Test]
         public async Task WhenSshSessionFoundAndForceNewIsFalse_ThenExecuteDoesNotCreateNewSession()
         {
-            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
-            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
-            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var context = new Mock<ISessionContext<SshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(

@@ -30,19 +30,19 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Services.Session
 {
-    public interface IRdpCredentialCallbackService
+    public interface IRdpCredentialCallback
     {
         Task<RdpCredential> GetCredentialsAsync(
             Uri callbackUrl,
             CancellationToken cancellationToken);
     }
 
-    [Service(typeof(IRdpCredentialCallbackService))]
-    public class RdpCredentialCallbackService : IRdpCredentialCallbackService
+    [Service(typeof(IRdpCredentialCallback))]
+    public class RdpCredentialCallback : IRdpCredentialCallback
     {
         private readonly IExternalRestAdapter restAdapter;
 
-        public RdpCredentialCallbackService(IExternalRestAdapter restAdapter)
+        public RdpCredentialCallback(IExternalRestAdapter restAdapter)
         {
             this.restAdapter = restAdapter;
         }

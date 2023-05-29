@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
         private IServiceProvider CreateServiceProvider(ICredential credential = null)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
-            registry.AddTransient<RemoteDesktopView>();
-            registry.AddTransient<RemoteDesktopViewModel>();
+            registry.AddTransient<RdpDesktopView>();
+            registry.AddTransient<RdpViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 () => broker.ConnectRdpSession(
                     SampleLocator,
                     transport,
-                    new RdpSessionParameters()
+                    new RdpParameters()
                     {
                         ConnectionTimeout = TimeSpan.FromSeconds(5)
                     },
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                 () => broker.ConnectRdpSession(
                     SampleLocator,
                     transport,
-                    new RdpSessionParameters(),
+                    new RdpParameters(),
                     RdpCredential.Empty))
                 .ConfigureAwait(true);
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                     "wrong",
                     null,
                     SecureStringExtensions.FromClearText("wrong"));
-                var rdpParameters = new RdpSessionParameters()
+                var rdpParameters = new RdpParameters()
                 {
                     AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
                     UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure,
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                     windowsCredentials.UserName,
                     windowsCredentials.Domain,
                     windowsCredentials.SecurePassword);
-                var rdpParameters = new RdpSessionParameters()
+                var rdpParameters = new RdpParameters()
                 {
                     ConnectionBar = connectionBarState,
                     DesktopSize = desktopSize,
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                IRemoteDesktopSession session = null;
+                IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                     () => session = broker.ConnectRdpSession(
                         instance,
@@ -258,13 +258,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                     windowsCredentials.UserName,
                     windowsCredentials.Domain,
                     windowsCredentials.SecurePassword);
-                var rdpPparameters = new RdpSessionParameters();
+                var rdpPparameters = new RdpParameters();
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                RemoteDesktopView session = null;
+                RdpDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                    () => session = (RdpDesktopView)broker.ConnectRdpSession(
                         instance,
                         tunnel,
                         rdpPparameters,
@@ -306,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                     windowsCredentials.UserName,
                     windowsCredentials.Domain,
                     windowsCredentials.SecurePassword);
-                var rdpParameters = new RdpSessionParameters()
+                var rdpParameters = new RdpParameters()
                 {
                     AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
                     BitmapPersistence = RdpBitmapPersistence.Disabled,
@@ -315,9 +315,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                RemoteDesktopView session = null;
+                RdpDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RemoteDesktopView)broker.ConnectRdpSession(
+                    () => session = (RdpDesktopView)broker.ConnectRdpSession(
                         instance,
                         tunnel,
                         rdpParameters,

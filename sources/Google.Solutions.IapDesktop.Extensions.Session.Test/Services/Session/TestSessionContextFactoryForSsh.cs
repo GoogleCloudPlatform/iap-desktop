@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             using (await factory
@@ -180,10 +180,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
-            using (var context = (SshSessionContext)await factory
+            using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
@@ -226,10 +226,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Services.Session
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IAddressResolver>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallbackService>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
                 sshSettingsRepository);
 
-            using (var context = (SshSessionContext)await factory
+            using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {

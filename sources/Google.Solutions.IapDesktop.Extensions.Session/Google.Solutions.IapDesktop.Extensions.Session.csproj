@@ -139,18 +139,18 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Session\SshProtocol.cs" />
-    <Compile Include="Services\Session\RdpCredentialCallbackService.cs" />
+    <Compile Include="Services\Session\RdpCredentialCallback.cs" />
     <Compile Include="Services\Session\ISessionContext.cs" />
     <Compile Include="Services\Session\RdpProtocol.cs" />
-    <Compile Include="Services\Session\RdpSessionParameters.cs" />
+    <Compile Include="Services\Session\RdpParameters.cs" />
     <Compile Include="Services\Session\SessionContextBase.cs" />
     <Compile Include="Services\Session\SessionContextFactory.cs" />
     <Compile Include="Services\Session\RdpCredential.cs" />
     <Compile Include="Services\Session\SessionParametersBase.cs" />
     <Compile Include="Services\Session\SshCredential.cs" />
-    <Compile Include="Services\Session\RdpSessionContext.cs" />
-    <Compile Include="Services\Session\SshSessionContext.cs" />
-    <Compile Include="Services\Session\SshSessionParameters.cs" />
+    <Compile Include="Services\Session\RdpContext.cs" />
+    <Compile Include="Services\Session\SshContext.cs" />
+    <Compile Include="Services\Session\SshParameters.cs" />
     <Compile Include="Services\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
@@ -210,16 +210,16 @@
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\TerminalOptionsViewModel.cs" />
-    <Compile Include="Views\RemoteDesktop\IRemoteDesktopSession.cs" />
+    <Compile Include="Views\RemoteDesktop\IRdpSession.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopView.cs">
+    <Compile Include="Views\RemoteDesktop\RdpDesktopView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopView.Designer.cs">
-      <DependentUpon>RemoteDesktopView.cs</DependentUpon>
+    <Compile Include="Views\RemoteDesktop\RdpDesktopView.Designer.cs">
+      <DependentUpon>RdpDesktopView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopViewModel.cs" />
+    <Compile Include="Views\RemoteDesktop\RdpViewModel.cs" />
     <Compile Include="Views\SessionViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -330,8 +330,8 @@
     <EmbeddedResource Include="Views\Options\TerminalOptionsSheet.resx">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopView.resx">
-      <DependentUpon>RemoteDesktopView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\RemoteDesktop\RdpDesktopView.resx">
+      <DependentUpon>RdpDesktopView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysView.resx">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>

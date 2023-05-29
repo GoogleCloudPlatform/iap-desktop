@@ -25,7 +25,7 @@ using Google.Solutions.Tsc;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
-    partial class RemoteDesktopView
+    partial class RdpDesktopView
     {
         /// <summary>
         /// Required designer variable.
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RdpDesktopView));
             this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             this.overlayPanel = new System.Windows.Forms.Panel();
             this.waitPanel = new System.Windows.Forms.Panel();

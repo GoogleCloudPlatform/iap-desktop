@@ -51,13 +51,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         /// Create a new SSH session.
         /// </summary>
         Task<ISession> CreateSessionAsync(
-            ISessionContext<SshCredential, SshSessionParameters> context);
+            ISessionContext<SshCredential, SshParameters> context);
 
         /// <summary>
         /// Create a new RDP session.
         /// </summary>
         Task<ISession> CreateSessionAsync(
-            ISessionContext<RdpCredential, RdpSessionParameters> context);
+            ISessionContext<RdpCredential, RdpParameters> context);
     }
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
@@ -199,15 +199,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
                 });
         }
 
-        internal IRemoteDesktopSession ConnectRdpSession(
+        internal IRdpSession ConnectRdpSession(
             InstanceLocator instance,
             ITransport transport,
-            RdpSessionParameters parameters,
+            RdpParameters parameters,
             RdpCredential credential)
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 
-            var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
+            var window = this.toolWindowHost.GetToolWindow<RdpDesktopView, RdpViewModel>();
 
             window.ViewModel.Instance = instance;
             window.ViewModel.Server = IPAddress.IsLoopback(transport.Endpoint.Address)
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
             ApplyTabStyle(
                 session.DockHandler,
                 parameters.TransportType,
-                parameters.Sources.HasFlag(RdpSessionParameters.ParameterSources.Url),
+                parameters.Sources.HasFlag(RdpParameters.ParameterSources.Url),
                 session.Instance,
                 credential,
                 parameters);
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         internal async Task<ISshTerminalSession> ConnectSshSessionAsync(
             InstanceLocator instance,
             ITransport transport,
-            SshSessionParameters parameters,
+            SshParameters parameters,
             SshCredential credential)
         {
             Debug.Assert(this.mainForm.IsWindowThread());
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
 
         public ISession ActiveSession
         {
-            get => (ISession)RemoteDesktopView.TryGetActivePane(this.mainForm)
+            get => (ISession)RdpDesktopView.TryGetActivePane(this.mainForm)
                     ?? SshTerminalView.TryGetActivePane(this.mainForm)
                     ?? null;
         }
@@ -295,14 +295,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         public bool IsConnected(InstanceLocator vmInstance)
         {
             return
-                RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
+                RdpDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
                 SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
         }
 
         public bool TryActivate(InstanceLocator vmInstance, out ISession session)
         {
-            if (RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
-                RemoteDesktopView existingRdpSession &&
+            if (RdpDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
+                RdpDesktopView existingRdpSession &&
                 existingRdpSession != null)
             {
                 // Pane found, activate.
@@ -333,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         public ICommandContainer<ISession> SessionMenu { get; }
 
         public async Task<ISession> CreateSessionAsync(
-            ISessionContext<SshCredential, SshSessionParameters> context)
+            ISessionContext<SshCredential, SshParameters> context)
         {
             try
             {
@@ -366,7 +366,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
         }
 
         public async Task<ISession> CreateSessionAsync(
-            ISessionContext<RdpCredential, RdpSessionParameters> context)
+            ISessionContext<RdpCredential, RdpParameters> context)
         {
             try
             {

@@ -131,14 +131,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
             protected override bool IsEnabled(ISession session)
             {
                 return session != null &&
-                    session is IRemoteDesktopSession rdpSession &&
+                    session is IRdpSession rdpSession &&
                     rdpSession.IsConnected &&
                     rdpSession.CanEnterFullScreen;
             }
 
             public override void Execute(ISession session)
             {
-                var rdpSession = (IRemoteDesktopSession)session;
+                var rdpSession = (IRdpSession)session;
                 rdpSession.TrySetFullscreen(this.mode);
             }
         }
@@ -152,13 +152,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
             protected override bool IsEnabled(ISession session)
             {
                 return session != null &&
-                    session is IRemoteDesktopSession rdpSession &&
+                    session is IRdpSession rdpSession &&
                     rdpSession.IsConnected;
             }
 
             public override void Execute(ISession session)
             {
-                var rdpSession = (IRemoteDesktopSession)session;
+                var rdpSession = (IRdpSession)session;
                 rdpSession.ShowSecurityScreen();
             }
         }
@@ -172,13 +172,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Session
             protected override bool IsEnabled(ISession session)
             {
                 return session != null &&
-                    session is IRemoteDesktopSession rdpSession &&
+                    session is IRdpSession rdpSession &&
                     rdpSession.IsConnected;
             }
 
             public override void Execute(ISession session)
             {
-                var rdpSession = (IRemoteDesktopSession)session;
+                var rdpSession = (IRdpSession)session;
                 rdpSession.ShowTaskManager();
             }
         }

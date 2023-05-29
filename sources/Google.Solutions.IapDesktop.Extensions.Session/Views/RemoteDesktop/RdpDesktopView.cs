@@ -51,14 +51,14 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 {
     [Service]
-    public partial class RemoteDesktopView
-        : SessionViewBase, IRemoteDesktopSession, IView<RemoteDesktopViewModel>
+    public partial class RdpDesktopView
+        : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventQueue eventService;
         private readonly IControlTheme theme;
 
-        private RemoteDesktopViewModel viewModel;
+        private RdpViewModel viewModel;
         private bool useAllScreensForFullScreen = false;
 
         private int keysSent = 0;
@@ -139,32 +139,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
         // Statics.
         //---------------------------------------------------------------------
 
-        public static RemoteDesktopView TryGetExistingPane(
+        public static RdpDesktopView TryGetExistingPane(
             IMainWindow mainForm,
             InstanceLocator vmInstance)
         {
             return mainForm.MainPanel
                 .Documents
                 .EnsureNotNull()
-                .OfType<RemoteDesktopView>()
+                .OfType<RdpDesktopView>()
                 .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
                 .FirstOrDefault();
         }
 
-        public static RemoteDesktopView TryGetActivePane(
+        public static RdpDesktopView TryGetActivePane(
             IMainWindow mainForm)
         {
             //
             // NB. The active content might be in a float window.
             //
-            return mainForm.MainPanel.ActivePane?.ActiveContent as RemoteDesktopView;
+            return mainForm.MainPanel.ActivePane?.ActiveContent as RdpDesktopView;
         }
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public RemoteDesktopView(IServiceProvider serviceProvider)
+        public RdpDesktopView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
         }
 
         public void Bind(
-            RemoteDesktopViewModel viewModel,
+            RdpViewModel viewModel,
             IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
@@ -425,13 +425,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
                 this.connecting = true;
                 this.rdpClient.Connect();
-                this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.Connecting;
+                this.viewModel.State.Value = RdpViewModel.ConnectionState.Connecting;
             }
         }
 
         private void Reconnect()
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.ConnectionLost);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -439,17 +439,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
                 this.connecting = true;
                 this.rdpClient.Connect();
-                this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.Connecting;
+                this.viewModel.State.Value = RdpViewModel.ConnectionState.Connecting;
             }
         }
 
         private void ReconnectToResize(Size size)
         {
             Debug.Assert( // TODO: Disallow when not logged on yet
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.ConnectionLost);
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.currentConnectionSize, size))
             {
@@ -465,7 +465,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                         // Full-screen requires a classic, reconnect-based resizing.
                         //
                         this.connecting = true;
-                        this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.Connecting;
+                        this.viewModel.State.Value = RdpViewModel.ConnectionState.Connecting;
                         this.rdpClient.Reconnect((uint)size.Width, (uint)size.Height);
                     }
                     else
@@ -494,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                             // Revert to classic, reconnect-based resizing.
                             //
                             this.connecting = true;
-                            this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.Connecting;
+                            this.viewModel.State.Value = RdpViewModel.ConnectionState.Connecting;
                             this.rdpClient.Reconnect((uint)size.Width, (uint)size.Height);
                         }
                     }
@@ -513,8 +513,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                     var value = this.rdpClient.Connected == 1 && !this.connecting;
 
                     Debug.Assert((this.rdpClient.Connected == 1) ==
-                        (this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected ||
-                        this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn));
+                        (this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
+                        this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn));
 
                     return value;
                 }
@@ -539,7 +539,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                     var value = this.rdpClient.Connected == 2 && !this.connecting;
 
                     Debug.Assert((this.rdpClient.Connected == 2) ==
-                        (this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting));
+                        (this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting));
 
                     return value;
                 }
@@ -679,7 +679,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
-            this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.ConnectionLost;
+            this.viewModel.State.Value = RdpViewModel.ConnectionState.ConnectionLost;
             await ShowErrorAndClose(
                     "Fatal error",
                     new RdpFatalException(args.errorCode))
@@ -693,7 +693,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             var e = new RdpLogonException(args.lError);
             if (!e.IsIgnorable)
             {
-                this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.ConnectionLost;
+                this.viewModel.State.Value = RdpViewModel.ConnectionState.ConnectionLost;
 
                 await ShowErrorAndClose("Logon failed", e)
                     .ConfigureAwait(true); ;
@@ -702,14 +702,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         private void rdpClient_OnLoginComplete(object sender, EventArgs e)
         {
-            this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.LoggedOn;
+            this.viewModel.State.Value = RdpViewModel.ConnectionState.LoggedOn;
         }
 
         private async void rdpClient_OnDisconnected(
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
-            this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.ConnectionLost;
+            this.viewModel.State.Value = RdpViewModel.ConnectionState.ConnectionLost;
 
             var e = new RdpDisconnectedException(
                 args.discReason,
@@ -753,7 +753,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         private async void rdpClient_OnConnected(object sender, EventArgs e)
         {
-            this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.Connected;
+            this.viewModel.State.Value = RdpViewModel.ConnectionState.Connected;
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.rdpClient.ConnectedStatusText))
             {
@@ -775,7 +775,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         private void rdpClient_OnConnecting(object sender, EventArgs e)
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             { }
@@ -783,7 +783,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         private void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -804,8 +804,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             IMsTscAxEvents_OnAutoReconnecting2Event args)
         {
             Debug.Assert(
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected);
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -821,13 +821,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                     args.networkAvailable);
 
 
-                this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.Connecting;
+                this.viewModel.State.Value = RdpViewModel.ConnectionState.Connecting;
             }
         }
 
         private async void rdpClient_OnAutoReconnected(object sender, EventArgs e)
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -839,7 +839,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                     this.connecting = false;
 
 
-                    this.viewModel.State.Value = RemoteDesktopViewModel.ConnectionState.LoggedOn;
+                    this.viewModel.State.Value = RdpViewModel.ConnectionState.LoggedOn;
                 }
             }
         }
@@ -863,9 +863,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
             Debug.Assert(
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connecting ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.autoResize))
             { }
@@ -881,7 +881,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.ConnectionLost);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -905,8 +905,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
         private void rdpClient_OnRequestGoFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             EnterFullscreen(this.useAllScreensForFullScreen);
 
@@ -916,7 +916,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         private void rdpClient_OnRequestLeaveFullScreen(object sender, EventArgs e)
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             LeaveFullScreen();
 
@@ -942,8 +942,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
         public bool TrySetFullscreen(FullScreenMode mode)
         {
             Debug.Assert( //TODO: Disallow when not logged on yet
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected ||
-                this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(mode))
             {
@@ -968,7 +968,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         public void ShowSecurityScreen()
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -981,7 +981,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         public void ShowTaskManager()
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -994,7 +994,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
 
         public void SendKeys(params Keys[] keys)
         {
-            Debug.Assert(this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn);
+            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
