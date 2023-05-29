@@ -100,7 +100,7 @@
     <Compile Include="ProjectModel\Nodes\InstanceNode.cs" />
     <Compile Include="ProjectModel\Nodes\ProjectNode.cs" />
     <Compile Include="ProjectModel\Nodes\ZoneNode.cs" />
-    <Compile Include="ClientModel\Protocol\Traits\OperatingSystems.cs" />
+    <Compile Include="ProjectModel\OperatingSystems.cs" />
     <Compile Include="ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="ProjectModel\ProjectModelService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

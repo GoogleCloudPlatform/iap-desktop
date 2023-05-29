@@ -21,10 +21,10 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
+namespace Google.Solutions.IapDesktop.Core.ProjectModel
 {
     [Flags]
-    public enum OperatingSystems //TODO: Move to Application?
+    public enum OperatingSystems
     {
         Windows = 1,
         Linux = 2,
