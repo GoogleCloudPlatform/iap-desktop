@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         public bool CanReset { get; }
         public string DisplayName => this.Instance.Name;
 
-        public OperatingSystems OperatingSystem //TODO: Add test
+        public OperatingSystems OperatingSystem
         {
             get
             {

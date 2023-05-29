@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
 
         public static IReadOnlyCollection<IProtocolTargetTrait> DetectTraits(
-            Instance instance) //TODO: Add test
+            Instance instance)
         {
             return finders
                 .SelectMany(f => f.DetectTraits(instance))
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Defaults.
         //---------------------------------------------------------------------
 
-        internal class DefaultDetector : ITraitDetector
+        private class DefaultDetector : ITraitDetector
         {
             public IEnumerable<IProtocolTargetTrait> DetectTraits(Instance instance)
             {
