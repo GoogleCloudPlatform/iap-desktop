@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private readonly IAuthorization authorization;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
-        private readonly IOsLoginService osLoginService;
+        private readonly IOsLoginProfile osLoginProfile;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -50,12 +50,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             IAuthorization authorization,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
-            IOsLoginService osLoginService)
+            IOsLoginProfile osLoginProfile)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
             this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
-            this.osLoginService = osLoginService.ExpectNotNull(nameof(osLoginService));
+            this.osLoginProfile = osLoginProfile.ExpectNotNull(nameof(osLoginProfile));
         }
 
         //---------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // NB. It's cheaper to unconditionally push the key than
                     // to check for previous keys first.
                     // 
-                    return await this.osLoginService.AuthorizeKeyPairAsync(
+                    return await this.osLoginProfile.AuthorizeKeyPairAsync(
                             new ProjectLocator(instance.ProjectId),
                             OsLoginSystemType.Linux,
                             key,

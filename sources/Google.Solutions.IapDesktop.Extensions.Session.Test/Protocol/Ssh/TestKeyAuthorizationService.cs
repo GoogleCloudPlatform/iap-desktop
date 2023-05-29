@@ -108,9 +108,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return adapter;
         }
 
-        private static Mock<IOsLoginService> CreateOsLoginServiceMock()
+        private static Mock<IOsLoginProfile> CreateOsLoginServiceMock()
         {
-            var osLoginService = new Mock<IOsLoginService>();
+            var osLoginService = new Mock<IOsLoginProfile>();
             osLoginService
                 .Setup(s => s.AuthorizeKeyPairAsync(
                         It.IsAny<ProjectLocator>(),

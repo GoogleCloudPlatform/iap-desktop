@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
-            var service = new OsLoginService(new Mock<IOsLoginAdapter>().Object);
+            var service = new OsLoginProfile(new Mock<IOsLoginAdapter>().Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyPairAsync(
                 null,
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenValidityIsZeroOrNegative_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
-            var service = new OsLoginService(new Mock<IOsLoginAdapter>().Object);
+            var service = new OsLoginProfile(new Mock<IOsLoginAdapter>().Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
                 new ProjectLocator("project-1"),
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         }
                     }
                 });
-            var service = new OsLoginService(adapter.Object);
+            var service = new OsLoginProfile(adapter.Object);
 
             var key = await service
                 .AuthorizeKeyPairAsync(
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile());
-            var service = new OsLoginService(adapter.Object);
+            var service = new OsLoginProfile(adapter.Object);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
                 () => service.AuthorizeKeyPairAsync(
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 {
                 });
 
-            var service = new OsLoginService(adapter.Object);
+            var service = new OsLoginProfile(adapter.Object);
 
             var keys = await service
                 .ListAuthorizedKeysAsync(CancellationToken.None)
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     }
                 });
 
-            var service = new OsLoginService(adapter.Object);
+            var service = new OsLoginProfile(adapter.Object);
 
             var keys = await service
                 .ListAuthorizedKeysAsync(CancellationToken.None)
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     }
                 });
 
-            var service = new OsLoginService(adapter.Object);
+            var service = new OsLoginProfile(adapter.Object);
 
             var keys = await service
                 .ListAuthorizedKeysAsync(CancellationToken.None)
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     }
                 });
 
-            var service = new OsLoginService(adapter.Object);
+            var service = new OsLoginProfile(adapter.Object);
             var keys = await service
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);

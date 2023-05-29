@@ -162,7 +162,7 @@
     <Compile Include="Protocol\Ssh\KeyAuthorizationService.cs" />
     <Compile Include="Protocol\Ssh\IKeyAuthorizationService.cs" />
     <Compile Include="Protocol\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
-    <Compile Include="Protocol\Ssh\OsLoginService.cs" />
+    <Compile Include="Protocol\Ssh\OsLoginProfile.cs" />
     <Compile Include="Settings\ConnectionSettingsService.cs" />
     <Compile Include="Settings\ConnectionSettings.cs" />
     <Compile Include="Settings\ConnectionSettingsRepository.cs" />

@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
         }
 
         public static async Task DeleteFromOsLoginAsync(
-            IOsLoginService osLoginService,
+            IOsLoginProfile osLoginProfile,
             Item item,
             CancellationToken cancellationToken)
         {
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
 
             if (item.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
             {
-                await osLoginService.DeleteAuthorizedKeyAsync(
+                await osLoginProfile.DeleteAuthorizedKeyAsync(
                         item.Key,
                         cancellationToken)
                     .ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
         internal static async Task<AuthorizedPublicKeysModel> LoadAsync(
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
-            IOsLoginService osLoginService,
+            IOsLoginProfile osLoginService,
             IProjectModelNode node,
             CancellationToken cancellationToken)
         {

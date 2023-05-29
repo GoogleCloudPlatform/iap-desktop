@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                 authorization.Object,
                 new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
                 new ResourceManagerAdapter(credential.ToAuthorization(), TestProject.UserAgent),
-                new Mock<IOsLoginService>().Object);
+                new Mock<IOsLoginProfile>().Object);
 
             var authorizedKey = await keyAdapter
                 .AuthorizeKeyAsync(

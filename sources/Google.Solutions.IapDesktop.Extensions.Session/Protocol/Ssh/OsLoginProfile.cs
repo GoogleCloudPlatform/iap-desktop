@@ -38,7 +38,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    public interface IOsLoginService
+    /// <summary>
+    /// A user's OS Login profile.
+    /// </summary>
+    public interface IOsLoginProfile
     {
         /// <summary>
         /// Upload an a public key to authorize it.
@@ -69,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         Linux
     }
 
-    [Service(typeof(IOsLoginService))]
-    public sealed class OsLoginService : IOsLoginService
+    [Service(typeof(IOsLoginProfile))]
+    public sealed class OsLoginProfile : IOsLoginProfile
     {
         private static readonly ProjectLocator WellKnownProject
             = new ProjectLocator("windows-cloud");
@@ -81,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginService(IOsLoginAdapter adapter)
+        public OsLoginProfile(IOsLoginAdapter adapter)
         {
             this.adapter = adapter.ExpectNotNull(nameof(adapter));
         }

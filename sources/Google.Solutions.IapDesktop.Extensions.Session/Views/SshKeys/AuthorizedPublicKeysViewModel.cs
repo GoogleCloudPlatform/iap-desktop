@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
 
         private readonly IConfirmationDialog confirmationDialog;
         private readonly IJobService jobService;
-        private readonly Service<IOsLoginService> osLoginService;
+        private readonly Service<IOsLoginProfile> osLoginService;
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
         private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
 
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys
         {
             this.confirmationDialog = serviceProvider.GetService<IConfirmationDialog>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.osLoginService = serviceProvider.GetService<Service<IOsLoginService>>();
+            this.osLoginService = serviceProvider.GetService<Service<IOsLoginProfile>>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
             this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
 
