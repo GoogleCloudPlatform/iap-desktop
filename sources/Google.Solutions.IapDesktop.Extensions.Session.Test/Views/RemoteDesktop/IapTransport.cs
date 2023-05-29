@@ -26,7 +26,7 @@ using Google.Solutions.Iap;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Testing.Apis.Integration;
 using System.Net;
 

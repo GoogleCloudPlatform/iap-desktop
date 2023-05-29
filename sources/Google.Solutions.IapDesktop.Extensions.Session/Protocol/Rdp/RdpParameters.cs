@@ -22,7 +22,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 {
     public class RdpParameters : SessionParametersBase
     {

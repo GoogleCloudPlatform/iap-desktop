@@ -40,7 +40,7 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {

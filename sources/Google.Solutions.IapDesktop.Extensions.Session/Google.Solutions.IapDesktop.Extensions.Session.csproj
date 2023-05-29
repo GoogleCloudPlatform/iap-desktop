@@ -139,16 +139,16 @@
     </Compile>
     <Compile Include="Protocol\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Protocol\Ssh\SshProtocol.cs" />
-    <Compile Include="Protocol\Session\RdpCredentialCallback.cs" />
+    <Compile Include="Protocol\Rdp\RdpCredentialCallback.cs" />
     <Compile Include="Protocol\ISessionContext.cs" />
-    <Compile Include="Protocol\Session\RdpProtocol.cs" />
-    <Compile Include="Protocol\Session\RdpParameters.cs" />
+    <Compile Include="Protocol\Rdp\RdpProtocol.cs" />
+    <Compile Include="Protocol\Rdp\RdpParameters.cs" />
     <Compile Include="Protocol\SessionContextBase.cs" />
     <Compile Include="Protocol\SessionContextFactory.cs" />
-    <Compile Include="Protocol\Session\RdpCredential.cs" />
+    <Compile Include="Protocol\Rdp\RdpCredential.cs" />
     <Compile Include="Protocol\SessionParametersBase.cs" />
     <Compile Include="Protocol\Ssh\SshCredential.cs" />
-    <Compile Include="Protocol\Session\RdpContext.cs" />
+    <Compile Include="Protocol\Rdp\RdpContext.cs" />
     <Compile Include="Protocol\Ssh\SshContext.cs" />
     <Compile Include="Protocol\Ssh\SshParameters.cs" />
     <Compile Include="Protocol\Ssh\IAuthorizedPublicKey.cs" />

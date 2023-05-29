@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
@@ -45,7 +45,7 @@ using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 {
     [TestFixture]
     public class TestSessionContextFactoryForRdp

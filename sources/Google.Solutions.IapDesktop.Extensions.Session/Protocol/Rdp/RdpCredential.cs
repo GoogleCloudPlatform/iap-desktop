@@ -21,7 +21,7 @@
 
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Session
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 {
     public class RdpCredential : ISessionCredential
     {
