@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;
 
@@ -81,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     /// <summary>
     /// Represents an instance.
     /// </summary>
-    public interface IProjectModelInstanceNode : IProjectModelNode
+    public interface IProjectModelInstanceNode : IProjectModelNode, IProtocolTarget
     {
         /// <summary>
         /// Unique instance ID.

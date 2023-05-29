@@ -21,7 +21,9 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -30,25 +32,37 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
     internal class InstanceNode : IProjectModelInstanceNode
     {
         //---------------------------------------------------------------------
-        // Readonly properties.
+        // IProjectModelInstanceNode.
         //---------------------------------------------------------------------
 
         public ulong InstanceId { get; }
 
         public InstanceLocator Instance { get; }
 
-        public OperatingSystems OperatingSystem { get; }
-
         public bool IsRunning { get; }
-
         public bool CanStart { get; }
         public bool CanStop { get; }
         public bool CanSuspend { get; }
         public bool CanResume { get; }
         public bool CanReset { get; }
+        public string DisplayName => this.Instance.Name;
 
-        public string DisplayName
-            => this.Instance.Name;
+        public OperatingSystems OperatingSystem //TODO: Add test
+        {
+            get
+            {
+                return this.Traits.Contains(WindowsTrait.Instance)
+                    ? OperatingSystems.Windows
+                    : OperatingSystems.Linux;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IProtocolTarget.
+        //---------------------------------------------------------------------
+
+        public string TargetName => this.Instance.Name; //TODO: Add test
+        public IEnumerable<IProtocolTargetTrait> Traits { get; }//TODO: Add test
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -57,15 +71,18 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         public InstanceNode(
             ulong instanceId,
             InstanceLocator locator,
-            OperatingSystems os,
+            IReadOnlyCollection<IProtocolTargetTrait> traits,
             string status)
         {
-            Debug.Assert(!os.IsFlagCombination());
+            locator.ExpectNotNull(nameof(locator));
+            traits.ExpectNotNull(nameof(traits));
+            status.ExpectNotNull(nameof(status));
+
             Debug.Assert(status.All(char.IsUpper));
 
             this.InstanceId = instanceId;
             this.Instance = locator;
-            this.OperatingSystem = os;
+            this.Traits = traits;
 
             this.IsRunning = status == "RUNNING";
 

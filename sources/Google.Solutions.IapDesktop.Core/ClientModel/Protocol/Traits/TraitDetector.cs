@@ -58,7 +58,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             finders.Add(finder);
         }
 
-        public static IEnumerable<IProtocolTargetTrait> DetectTraits(Instance instance)
+        public static IReadOnlyCollection<IProtocolTargetTrait> DetectTraits(
+            Instance instance) //TODO: Add test
         {
             return finders
                 .SelectMany(f => f.DetectTraits(instance))

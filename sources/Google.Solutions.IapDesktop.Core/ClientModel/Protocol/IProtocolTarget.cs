@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Display name of the target.
         /// </summary>
-        string DisplayName { get; }
+        string TargetName { get; }
 
         /// <summary>
         /// Traits of this target that can be used to determine

@@ -221,9 +221,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                                 zoneLocator.ProjectId,
                                 zoneLocator.Name,
                                 i.Name),
-                            i.IsWindowsInstance()
-                                ? OperatingSystems.Windows
-                                : OperatingSystems.Linux,
+                            TraitDetector.DetectTraits(i),
                             i.Status))
                         .ToList();
 
