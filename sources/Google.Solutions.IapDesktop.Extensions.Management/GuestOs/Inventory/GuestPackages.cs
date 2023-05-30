@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class GuestPackages
     {

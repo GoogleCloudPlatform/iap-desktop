@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Events
 {
     [TestFixture]
     public class TestEventFactory : ApplicationFixtureBase

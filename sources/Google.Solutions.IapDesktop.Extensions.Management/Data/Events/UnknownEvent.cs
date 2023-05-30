@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events
 {
     public class UnknownEvent : EventBase
     {

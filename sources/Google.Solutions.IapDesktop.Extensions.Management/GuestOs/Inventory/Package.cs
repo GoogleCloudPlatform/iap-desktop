@@ -22,22 +22,18 @@
 using Newtonsoft.Json;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
-    public class ZypperPatch : IPackage
+    public class Package : IPackage
     {
         [JsonProperty("Name")]
         public string Name { get; }
 
-        [JsonProperty("Category")]
-        public string Category { get; }
+        [JsonProperty("Arch")]
+        public string Architecture { get; }
 
-        [JsonProperty("Severity")]
-        public string Severity { get; }
-
-        [JsonProperty("Summary ")]
-        public string Summary { get; }
-
+        [JsonProperty("Version")]
+        public string Version { get; }
 
         //---------------------------------------------------------------------
         // IPackage
@@ -45,37 +41,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory
 
         string IPackage.PackageId => this.Name;
 
-        string IPackage.Architecture => null;
+        string IPackage.Description => null;
 
-        string IPackage.Version => null;
+        DateTime? IPackage.InstalledOn => null;
+
+        DateTime? IPackage.PublishedOn => null;
 
         Uri IPackage.Weblink => null;
 
-        string IPackage.Description => this.Summary +
-            (this.Category != null ? $" ({this.Category})" : string.Empty);
-
-        DateTime? IPackage.InstalledOn => null;
-        DateTime? IPackage.PublishedOn => null;
-
         PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
 
-        string IPackage.PackageType => "Patch";
+        string IPackage.PackageType => "Package";
 
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------
 
         [JsonConstructor]
-        public ZypperPatch(
+        public Package(
             [JsonProperty("Name")] string name,
-            [JsonProperty("Category")] string category,
-            [JsonProperty("Severity")] string severity,
-            [JsonProperty("Summary")] string summary)
+            [JsonProperty("Arch")] string arch,
+            [JsonProperty("Version")] string version)
         {
             this.Name = name;
-            this.Category = category;
-            this.Severity = severity;
-            this.Summary = summary;
+            this.Architecture = arch;
+            this.Version = version;
         }
     }
 }

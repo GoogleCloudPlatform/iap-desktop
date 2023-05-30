@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.System;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events.System
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Events.System
 {
     [TestFixture]
     public class TestAutomaticRestartEvent : ApplicationFixtureBase

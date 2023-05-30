@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Cache;
 using System;

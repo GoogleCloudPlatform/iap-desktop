@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Access
 {
     internal static class ModifiedMetadata
     {

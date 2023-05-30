@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Lifecycle
 {
     public class InsertInstanceEvent : InstanceOperationEventBase
     {

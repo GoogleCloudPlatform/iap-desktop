@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Lifecycle;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events.Lifecycle
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Events.Lifecycle
 {
     [TestFixture]
     public class TestInsertInstanceEvent : ApplicationFixtureBase

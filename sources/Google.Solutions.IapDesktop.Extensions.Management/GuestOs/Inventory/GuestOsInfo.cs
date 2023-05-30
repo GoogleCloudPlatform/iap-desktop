@@ -29,7 +29,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class GuestOsInfo
     {

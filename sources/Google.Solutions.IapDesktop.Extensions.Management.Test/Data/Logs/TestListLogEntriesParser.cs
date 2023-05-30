@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Lifecycle;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Google.Solutions.Testing.Application.Test;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Logs
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Logs
 {
     [TestFixture]
     public class TestListLogEntriesParser : ApplicationFixtureBase

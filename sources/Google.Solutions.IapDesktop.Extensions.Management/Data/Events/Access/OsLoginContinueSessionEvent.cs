@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Access
 {
     /// <summary>
     /// Event that indicates a continuation of an authentication session. 

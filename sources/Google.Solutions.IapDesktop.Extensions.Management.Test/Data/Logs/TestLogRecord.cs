@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Logs
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Logs
 {
     [TestFixture]
     public class TestLogRecord : ApplicationFixtureBase

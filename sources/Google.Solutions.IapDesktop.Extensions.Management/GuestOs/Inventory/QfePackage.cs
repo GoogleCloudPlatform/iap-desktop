@@ -22,7 +22,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class QfePackage : IPackage
     {

@@ -20,12 +20,12 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.System
 {
     public class NotifyInstanceLocationEvent : SystemEventBase
     {

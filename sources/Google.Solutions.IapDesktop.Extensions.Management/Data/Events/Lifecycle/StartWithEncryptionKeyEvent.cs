@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Lifecycle
 {
     public class StartWithEncryptionKeyEvent : InstanceOperationEventBase
     {

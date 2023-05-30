@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Logs
+namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs
 {
     internal static class ListLogEntriesParser
     {

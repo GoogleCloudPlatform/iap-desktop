@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Inventory
 {
     [TestFixture]
     public class TestWuaPackageType

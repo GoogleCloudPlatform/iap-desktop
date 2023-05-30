@@ -21,14 +21,14 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Inventory
 {
     [TestFixture]
     public class TestWindowsGuestOsInfo : ApplicationFixtureBase

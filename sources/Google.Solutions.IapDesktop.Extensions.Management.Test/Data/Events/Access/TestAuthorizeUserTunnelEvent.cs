@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Events.Access;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events.Access
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Events.Access
 {
     [TestFixture]
     public class TestAuthorizeUserTunnelEvent : ApplicationFixtureBase

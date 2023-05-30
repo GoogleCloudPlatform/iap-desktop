@@ -19,27 +19,26 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Inventory
 {
     [TestFixture]
-    public class TestZypperPatch
+    public class TestPackage
     {
         [Test]
         public void WhenFullyInitialized_ThenIPackagePropertiesAreSet()
         {
-            var package = (IPackage)new ZypperPatch(
-                "title",
-                "category",
-                "severity",
-                "summary");
+            var package = (IPackage)new Package(
+                "name",
+                "architecture",
+                "version");
 
-            Assert.AreEqual("Patch", package.PackageType);
-            Assert.AreEqual("title", package.PackageId);
-            Assert.AreEqual("summary (category)", package.Description);
-            Assert.IsNull(package.Version);
+            Assert.AreEqual("Package", package.PackageType);
+            Assert.AreEqual("name", package.PackageId);
+            Assert.IsNull(package.Description);
+            Assert.AreEqual("version", package.Version);
             Assert.IsNull(package.Weblink);
             Assert.IsNull(package.InstalledOn);
             Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
@@ -48,15 +47,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Inventory
         [Test]
         public void WhenBarelyInitialized_ThenIPackagePropertiesAreSet()
         {
-            var package = (IPackage)new ZypperPatch(
-                "title",
+            var package = (IPackage)new Package(
                 null,
                 null,
                 null);
 
-            Assert.AreEqual("Patch", package.PackageType);
-            Assert.AreEqual("title", package.PackageId);
-            Assert.AreEqual("", package.Description);
+            Assert.AreEqual("Package", package.PackageType);
+            Assert.IsNull(package.PackageId);
+            Assert.IsNull(package.Description);
             Assert.IsNull(package.Version);
             Assert.IsNull(package.Weblink);
             Assert.IsNull(package.InstalledOn);

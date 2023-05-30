@@ -19,41 +19,44 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using NUnit.Framework;
+using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Inventory
 {
     [TestFixture]
-    public class TestPackage
+    public class TestQfePackage
     {
         [Test]
         public void WhenFullyInitialized_ThenIPackagePropertiesAreSet()
         {
-            var package = (IPackage)new Package(
-                "name",
-                "architecture",
-                "version");
+            var package = (IPackage)new QfePackage(
+                "http://uri",
+                "description",
+                "kb123",
+                new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual("Package", package.PackageType);
-            Assert.AreEqual("name", package.PackageId);
-            Assert.IsNull(package.Description);
-            Assert.AreEqual("version", package.Version);
-            Assert.IsNull(package.Weblink);
-            Assert.IsNull(package.InstalledOn);
+            Assert.AreEqual("Hotfix", package.PackageType);
+            Assert.AreEqual("kb123", package.PackageId);
+            Assert.AreEqual("description", package.Description);
+            Assert.IsNull(package.Version);
+            Assert.AreEqual("http://uri/", package.Weblink.ToString());
+            Assert.AreEqual(new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc), package.InstalledOn);
             Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
         }
 
         [Test]
         public void WhenBarelyInitialized_ThenIPackagePropertiesAreSet()
         {
-            var package = (IPackage)new Package(
+            var package = (IPackage)new QfePackage(
+                "not.a.url",
                 null,
-                null,
+                "kb123",
                 null);
 
-            Assert.AreEqual("Package", package.PackageType);
-            Assert.IsNull(package.PackageId);
+            Assert.AreEqual("Hotfix", package.PackageType);
+            Assert.AreEqual("kb123", package.PackageId);
             Assert.IsNull(package.Description);
             Assert.IsNull(package.Version);
             Assert.IsNull(package.Weblink);
