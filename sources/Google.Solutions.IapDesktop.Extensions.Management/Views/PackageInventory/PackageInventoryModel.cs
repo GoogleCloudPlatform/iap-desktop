@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

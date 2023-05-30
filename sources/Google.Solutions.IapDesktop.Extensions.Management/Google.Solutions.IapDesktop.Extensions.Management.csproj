@@ -106,42 +106,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Events\Access\AuthorizeUserTunnelEvent.cs" />
-    <Compile Include="Data\Events\Access\ModifiedMetadata.cs" />
-    <Compile Include="Data\Events\Access\OsLoginContinueSessionEvent.cs" />
-    <Compile Include="Data\Events\Access\OsLoginEventBase.cs" />
-    <Compile Include="Data\Events\Access\OsLoginStartSessionEvent.cs" />
-    <Compile Include="Data\Events\Access\SetCommonInstanceMetadataEvent.cs" />
-    <Compile Include="Data\Events\Access\SetMetadataEvent.cs" />
-    <Compile Include="Data\Events\Access\OsLoginCheckPolicyEvent.cs" />
-    <Compile Include="Data\Events\IEventProcessor.cs" />
-    <Compile Include="Data\Events\ProjectOperationEventBase.cs" />
-    <Compile Include="Data\Events\ProjectEventBase.cs" />
-    <Compile Include="Data\Events\InstanceOperationEventBase.cs" />
-    <Compile Include="Data\Events\Lifecycle\ResumeInstanceEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\SuspendInstanceEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\ResetInstanceEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\StartWithEncryptionKeyEvent.cs" />
-    <Compile Include="Data\Events\System\GenericSystemEvent.cs" />
-    <Compile Include="Data\Events\System\InstanceManagerHaltForRestartEvent.cs" />
-    <Compile Include="Data\Events\System\InstanceResetEvent.cs" />
-    <Compile Include="Data\Events\System\InstancePreemptedEvent.cs" />
-    <Compile Include="Data\Events\System\HostErrorEvent.cs" />
-    <Compile Include="Data\Events\System\RecreateInstanceEvent.cs" />
-    <Compile Include="Data\Events\System\AutomaticRestartEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\DeleteInstanceEvent.cs" />
-    <Compile Include="Data\Events\EventBase.cs" />
-    <Compile Include="Data\Events\EventFactory.cs" />
-    <Compile Include="Data\Events\System\GuestTerminateEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\InsertInstanceEvent.cs" />
-    <Compile Include="Data\Events\System\MigrateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Data\Events\System\NotifyInstanceLocationEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\StartInstanceEvent.cs" />
-    <Compile Include="Data\Events\Lifecycle\StopInstanceEvent.cs" />
-    <Compile Include="Data\Events\System\SystemEventBase.cs" />
-    <Compile Include="Data\Events\System\TerminateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Data\Events\UnknownEvent.cs" />
-    <Compile Include="Data\Events\InstanceEventBase.cs" />
+    <Compile Include="Auditing\Events\Access\AuthorizeUserTunnelEvent.cs" />
+    <Compile Include="Auditing\Events\Access\ModifiedMetadata.cs" />
+    <Compile Include="Auditing\Events\Access\OsLoginContinueSessionEvent.cs" />
+    <Compile Include="Auditing\Events\Access\OsLoginEventBase.cs" />
+    <Compile Include="Auditing\Events\Access\OsLoginStartSessionEvent.cs" />
+    <Compile Include="Auditing\Events\Access\SetCommonInstanceMetadataEvent.cs" />
+    <Compile Include="Auditing\Events\Access\SetMetadataEvent.cs" />
+    <Compile Include="Auditing\Events\Access\OsLoginCheckPolicyEvent.cs" />
+    <Compile Include="Auditing\Events\IEventProcessor.cs" />
+    <Compile Include="Auditing\Events\ProjectOperationEventBase.cs" />
+    <Compile Include="Auditing\Events\ProjectEventBase.cs" />
+    <Compile Include="Auditing\Events\InstanceOperationEventBase.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\ResumeInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\SuspendInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\ResetInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\StartWithEncryptionKeyEvent.cs" />
+    <Compile Include="Auditing\Events\System\GenericSystemEvent.cs" />
+    <Compile Include="Auditing\Events\System\InstanceManagerHaltForRestartEvent.cs" />
+    <Compile Include="Auditing\Events\System\InstanceResetEvent.cs" />
+    <Compile Include="Auditing\Events\System\InstancePreemptedEvent.cs" />
+    <Compile Include="Auditing\Events\System\HostErrorEvent.cs" />
+    <Compile Include="Auditing\Events\System\RecreateInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\System\AutomaticRestartEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\DeleteInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\EventBase.cs" />
+    <Compile Include="Auditing\Events\EventFactory.cs" />
+    <Compile Include="Auditing\Events\System\GuestTerminateEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\InsertInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\System\MigrateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Auditing\Events\System\NotifyInstanceLocationEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\StartInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\Lifecycle\StopInstanceEvent.cs" />
+    <Compile Include="Auditing\Events\System\SystemEventBase.cs" />
+    <Compile Include="Auditing\Events\System\TerminateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Auditing\Events\UnknownEvent.cs" />
+    <Compile Include="Auditing\Events\InstanceEventBase.cs" />
     <Compile Include="GuestOs\Inventory\GuestOsInfo.cs" />
     <Compile Include="GuestOs\Inventory\GuestPackages.cs" />
     <Compile Include="GuestOs\Inventory\IPackage.cs" />
@@ -170,7 +170,7 @@
       <DependentUpon>EventLogView.cs</DependentUpon>
     </Compile>
     <Compile Include="Auditing\Adapters\AuditLogAdapter.cs" />
-    <Compile Include="Data\Logs\ListLogEntriesParser.cs" />
+    <Compile Include="Auditing\Logs\ListLogEntriesParser.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -178,8 +178,8 @@
     </Compile>
     <Compile Include="InitializeManagementExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\Logs\AuditLogRecord.cs" />
-    <Compile Include="Data\Logs\LogRecord.cs" />
+    <Compile Include="Auditing\Logs\AuditLogRecord.cs" />
+    <Compile Include="Auditing\Logs\LogRecord.cs" />
     <Compile Include="Views\InstanceControlCommands.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorCommands.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
