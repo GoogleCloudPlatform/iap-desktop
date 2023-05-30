@@ -152,7 +152,7 @@
     <Compile Include="GuestOs\ActiveDirectory\DomainJoinService.cs" />
     <Compile Include="GuestOs\ActiveDirectory\NetworkCredentialExtensions.cs" />
     <Compile Include="GuestOs\ActiveDirectory\StartupScriptOperation.cs" />
-    <Compile Include="GuestOs\Packages\PackageInventory.cs" />
+    <Compile Include="GuestOs\Inventory\GuestOsInventory.cs" />
     <Compile Include="Views\ActiveDirectory\JoinView.cs">
       <SubType>Form</SubType>
     </Compile>

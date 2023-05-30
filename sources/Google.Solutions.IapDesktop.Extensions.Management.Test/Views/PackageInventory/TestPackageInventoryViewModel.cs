@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
 
-            var packageInventory = new Mock<IPackageInventory>();
+            var packageInventory = new Mock<IGuestOsInventory>();
             packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                         It.Is<InstanceLocator>(loc => loc.Name == "instance-1"),
                         It.IsAny<CancellationToken>()))
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                             null)
                     });
 
-            registry.AddSingleton<IPackageInventory>(packageInventory.Object);
+            registry.AddSingleton<IGuestOsInventory>(packageInventory.Object);
 
             return new PackageInventoryViewModel(registry)
             {

@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Cache;
 using System;
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         internal const string DefaultWindowTitle = "VM instance";
 
         private readonly IJobService jobService;
-        private readonly Service<IPackageInventory> packageInventory;
+        private readonly Service<IGuestOsInventory> packageInventory;
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
 
 
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             : base(ModelCacheCapacity)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.packageInventory = serviceProvider.GetService<Service<IPackageInventory>>();
+            this.packageInventory = serviceProvider.GetService<Service<IGuestOsInventory>>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
 
             this.informationText = ObservableProperty.Build<string>(null);

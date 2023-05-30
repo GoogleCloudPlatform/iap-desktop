@@ -25,7 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 });
 
             registry.AddSingleton<IComputeEngineAdapter>(gceAdapter.Object);
-            registry.AddSingleton<IPackageInventory>(new Management.GuestOs.Packages.PackageInventory(gceAdapter.Object));
+            registry.AddSingleton<IGuestOsInventory>(new Management.GuestOs.Inventory.GuestOsInventory(gceAdapter.Object));
 
             return new InstancePropertiesInspectorViewModel(registry);
         }

@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .LoadAsync(
                     await testInstance,
                     gceAdapter,
-                    new Management.GuestOs.Packages.PackageInventory(gceAdapter),
+                    new Management.GuestOs.Inventory.GuestOsInventory(gceAdapter),
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             var gceAdapter = new ComputeEngineAdapter(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var packageInventory = new Mock<IPackageInventory>();
+            var packageInventory = new Mock<IGuestOsInventory>();
             packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<CancellationToken>()))

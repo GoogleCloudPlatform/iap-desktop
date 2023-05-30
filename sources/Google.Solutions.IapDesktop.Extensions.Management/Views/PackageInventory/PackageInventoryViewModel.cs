@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Cache;
 using System;
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         private const int ModelCacheCapacity = 5;
 
         private readonly IJobService jobService;
-        private readonly Service<IPackageInventory> packageInventory;
+        private readonly Service<IGuestOsInventory> packageInventory;
 
         private string filter;
 
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             : base(ModelCacheCapacity)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.packageInventory = serviceProvider.GetService<Service<IPackageInventory>>();
+            this.packageInventory = serviceProvider.GetService<Service<IGuestOsInventory>>();
 
             this.IsPackageListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);

@@ -28,7 +28,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         }
 
         public static async Task<PackageInventoryModel> LoadAsync(
-            IPackageInventory packageInventory,
+            IGuestOsInventory packageInventory,
             PackageInventoryType inventoryType,
             IProjectModelNode node,
             CancellationToken token)
