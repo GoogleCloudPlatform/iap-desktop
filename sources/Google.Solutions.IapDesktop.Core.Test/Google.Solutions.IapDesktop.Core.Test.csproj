@@ -87,7 +87,7 @@
   <ItemGroup>
     <Compile Include="ClientModel\Protocol\TestProtocolTargetLocator.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocol.cs" />
-    <Compile Include="ClientModel\Protocol\TestAppProtocolComand.cs" />
+    <Compile Include="ClientModel\Protocol\TestAppProtocolClient.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocolFactory.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocolFactoryConfigurationSection.cs" />
     <Compile Include="ClientModel\Traits\TestLinuxTrait.cs" />

@@ -18,9 +18,9 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using System;
 using System.IO;
@@ -34,6 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
     /// </summary>
     internal sealed class Ssms
     {
+        public const ushort DefaultServerPort = 1433;
         private const string SsmsFileExtension = ".ssmssln";
 
         public string ExecutablePath { get; }
@@ -46,24 +47,6 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Create command line arguments based on
-        /// https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
-        /// </summary>
-        public string GetCommandLineArguments(
-            Authentication authentication,
-            string serverName,
-            uint port)
-        {
-            serverName.ExpectNotEmpty(nameof(serverName));
-
-            var authFlag = authentication == Authentication.Windows
-                ? " -E"
-                : string.Empty;
-
-            return $"-S {serverName},{port}{authFlag}";
-        }
 
         /// <summary>
         /// Try to find a local installation of SSMS.
@@ -132,16 +115,6 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
 
             ssms = new Ssms(executablePath);
             return true;
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        public enum Authentication
-        {
-            SqlServer,
-            Windows
         }
 
         //---------------------------------------------------------------------

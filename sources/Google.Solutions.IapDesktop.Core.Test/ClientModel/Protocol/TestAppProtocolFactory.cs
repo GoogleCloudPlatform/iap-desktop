@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     'condition': 'isWindows()',
                     'accessPolicy': 'AllowAll',
                     'remotePort': 8080,
-                    'command': {
+                    'client': {
                         'executable': 'cmd'
                     }
                 }";
@@ -61,7 +61,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
             Assert.IsInstanceOf<AllowAllPolicy>(protocol.Policy);
             Assert.AreEqual(8080, protocol.RemotePort);
-            Assert.AreEqual("cmd", protocol.LaunchCommand.Executable);
+
+            var client = (AppProtocolClient)protocol.Client;
+            Assert.AreEqual("cmd", client.Executable);
         }
     }
 }

@@ -20,18 +20,44 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.Testing.Apis;
+using Moq;
 using NUnit.Framework;
+using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class TestAppProtocolComand
-        : EquatableFixtureBase<AppProtocol.Command, AppProtocol.Command>
+    public class TestAppProtocolClient
+        : EquatableFixtureBase<AppProtocolClient, IAppProtocolClient>
     {
-        protected override AppProtocol.Command CreateInstance()
+        protected override AppProtocolClient CreateInstance()
         {
-            return new AppProtocol.Command("cmd.exe", "args");
+            return new AppProtocolClient("cmd.exe", "args");
+        }
+
+        //---------------------------------------------------------------------
+        // IsAvailable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsAvailable()
+        {
+            Assert.IsTrue(new AppProtocolClient("NUL.exe", null).IsAvailable);
+        }
+
+        //---------------------------------------------------------------------
+        // Launch.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFileDoesNotExists_ThenLaunchThrowsException()
+        {
+            var app = new AppProtocolClient("doesnotexist.exe", null);
+
+            Assert.Throws<Win32Exception>(
+                () => app.Launch(new Mock<ITransport>().Object));
         }
 
         //---------------------------------------------------------------------
@@ -43,10 +69,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             Assert.AreEqual(
                 "cmd.exe",
-                new AppProtocol.Command("cmd.exe", null).ToString());
+                new AppProtocolClient("cmd.exe", null).ToString());
             Assert.AreEqual(
                 "cmd.exe args",
-                new AppProtocol.Command("cmd.exe", "args").ToString());
+                new AppProtocolClient("cmd.exe", "args").ToString());
         }
 
         //---------------------------------------------------------------------
@@ -56,23 +82,23 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenOtherHasDifferentExecutable_ThenEqualsReturnsFalse()
         {
-            var command1 = new AppProtocol.Command("cmd1.exe", "args");
-            var command2 = new AppProtocol.Command("cmd2.exe", "args");
+            var app1 = new AppProtocolClient("cmd1.exe", "args");
+            var app2 = new AppProtocolClient("cmd2.exe", "args");
 
-            Assert.IsFalse(command1.Equals(command2));
-            Assert.IsTrue(command1 != command2);
-            Assert.AreNotEqual(command1.GetHashCode(), command2.GetHashCode());
+            Assert.IsFalse(app1.Equals(app2));
+            Assert.IsTrue(app1 != app2);
+            Assert.AreNotEqual(app1.GetHashCode(), app2.GetHashCode());
         }
 
         [Test]
         public void WhenOtherHasDifferentArguments_ThenEqualsReturnsFalse()
         {
-            var command1 = new AppProtocol.Command("cmd.exe", "args");
-            var command2 = new AppProtocol.Command("cmd.exe", null);
+            var app1 = new AppProtocolClient("cmd.exe", "args");
+            var app2 = new AppProtocolClient("cmd.exe", null);
 
-            Assert.IsFalse(command1.Equals(command2));
-            Assert.IsTrue(command1 != command2);
-            Assert.AreNotEqual(command1.GetHashCode(), command2.GetHashCode());
+            Assert.IsFalse(app1.Equals(app2));
+            Assert.IsTrue(app1 != app2);
+            Assert.AreNotEqual(app1.GetHashCode(), app2.GetHashCode());
         }
     }
 }

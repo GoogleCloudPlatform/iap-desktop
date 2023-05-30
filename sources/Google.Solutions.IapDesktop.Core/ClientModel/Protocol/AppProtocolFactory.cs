@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Json;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
@@ -27,6 +28,8 @@ using Google.Solutions.Platform;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 
@@ -124,10 +127,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             public string LocalPort { get; set; }
 
             /// <summary>
-            /// Optional: Command to launch. 
+            /// Optional: Client application to launch. 
             /// </summary>
-            [JsonProperty("command")]
-            public CommandSection Command { get; set; }
+            [JsonProperty("client")]
+            public ClientSection Client { get; set; }
 
             internal string ParseName()
             {
@@ -237,21 +240,21 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     "format <ip>:<port>.");
             }
 
-            internal AppProtocol.Command ParseCommand()
+            internal IAppProtocolClient ParseCommand()
             {
-                if (this.Command == null ||
-                    string.IsNullOrWhiteSpace(this.Command.Executable))
+                if (this.Client == null ||
+                    string.IsNullOrWhiteSpace(this.Client.Executable))
                 {
                     return null;
                 }
 
-                return new AppProtocol.Command(
-                    UserEnvironment.ExpandEnvironmentStrings(this.Command.Executable),
-                    UserEnvironment.ExpandEnvironmentStrings(this.Command.Arguments));
+                return new AppProtocolClient(
+                    UserEnvironment.ExpandEnvironmentStrings(this.Client.Executable),
+                    UserEnvironment.ExpandEnvironmentStrings(this.Client.Arguments));
             }
         }
 
-        internal class CommandSection
+        internal class ClientSection
         {
             /// <summary>
             /// Path to executable to launch. The path can contain
@@ -280,7 +283,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             public string Arguments { get; set; }
         }
     }
-
 
     public class InvalidAppProtocolException : FormatException
     {

@@ -19,25 +19,29 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using System.Diagnostics;
+using System.Net;
 
-using Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer;
-using NUnit.Framework;
-using System.IO;
-
-namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Test.Protocol.SqlServer
+namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol
 {
-    [TestFixture]
-    public class TestSsms
+    /// <summary>
+    /// A client that can (or must) be launched with different
+    /// network credentials.
+    /// </summary>
+    internal interface INetonlyCredentialClient : IAppProtocolClient
     {
-        [Test]
-        public void TryFind()
-        {
-            if (!Ssms.TryFind(out var ssms))
-            {
-                Assert.Inconclusive("SSMS not installed");
-            }
+        /// <summary>
+        /// Indicates whether the requires network credentials.
+        /// </summary>
+        bool RequireNetonlyCredential { get; }
 
-            Assert.IsTrue(File.Exists(ssms.ExecutablePath));
-        }
+        /// <summary>
+        /// Launch the client with network-only credentials.
+        /// </summary>
+        Process LaunchWithNetonlyCredentials(
+            ITransport endpoint,
+            NetworkCredential credential);
     }
 }

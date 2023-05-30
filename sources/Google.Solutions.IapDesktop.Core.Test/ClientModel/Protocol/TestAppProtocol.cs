@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentLaunchCommand_ThenEqualsReturnsFalse()
+        public void WhenOtherHasDifferentClient_ThenEqualsReturnsFalse()
         {
             var protocol1 = new AppProtocol(
                 "app-1",
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new AllowAllPolicy(),
                 8080,
                 null,
-                new AppProtocol.Command("cmd.exe", null));
+                new AppProtocolClient("cmd.exe", null));
 
             Assert.IsFalse(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 != protocol2);

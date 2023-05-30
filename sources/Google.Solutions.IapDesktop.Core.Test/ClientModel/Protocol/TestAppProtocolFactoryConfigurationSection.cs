@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var section = new AppProtocolFactory.ConfigurationSection()
             {
-                Command = new AppProtocolFactory.CommandSection()
+                Client = new AppProtocolFactory.ClientSection()
                 {
                     Executable = value
                 }
@@ -258,21 +258,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var section = new AppProtocolFactory.ConfigurationSection()
             {
-                Command = new AppProtocolFactory.CommandSection()
+                Client = new AppProtocolFactory.ClientSection()
                 {
                     Executable = "%ProgramFiles(x86)%\\foo.exe",
                     Arguments = "%ProgramFiles(x86)%\\foo.txt %host%",
                 }
             };
 
-            var command = section.ParseCommand();
-            Assert.IsNotNull(command);
+            var client = (AppProtocolClient)section.ParseCommand();
+            Assert.IsNotNull(client);
 
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-            StringAssert.Contains(programsFolder, command.Executable);
-            StringAssert.Contains(programsFolder, command.Arguments);
-            StringAssert.Contains("%host%", command.Arguments);
+            StringAssert.Contains(programsFolder, client.Executable);
+            StringAssert.Contains(programsFolder, client.Arguments);
+            StringAssert.Contains("%host%", client.Arguments);
         }
     }
 }
