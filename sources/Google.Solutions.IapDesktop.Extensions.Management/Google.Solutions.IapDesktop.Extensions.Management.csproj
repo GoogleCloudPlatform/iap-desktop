@@ -149,10 +149,10 @@
     <Compile Include="Data\Inventory\QfePackage.cs" />
     <Compile Include="Data\Inventory\WuaPackage.cs" />
     <Compile Include="Data\Inventory\ZypperPatch.cs" />
-    <Compile Include="Services\ActiveDirectory\DomainJoinService.cs" />
-    <Compile Include="Services\ActiveDirectory\NetworkCredentialExtensions.cs" />
-    <Compile Include="Services\ActiveDirectory\StartupScriptOperation.cs" />
-    <Compile Include="Services\Packages\PackageInventory.cs" />
+    <Compile Include="GuestOs\ActiveDirectory\DomainJoinService.cs" />
+    <Compile Include="GuestOs\ActiveDirectory\NetworkCredentialExtensions.cs" />
+    <Compile Include="GuestOs\ActiveDirectory\StartupScriptOperation.cs" />
+    <Compile Include="GuestOs\Packages\PackageInventory.cs" />
     <Compile Include="Views\ActiveDirectory\JoinView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -247,7 +247,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Services\ActiveDirectory\DomainJoinService.StartupScript.ps1" />
+    <EmbeddedResource Include="GuestOs\ActiveDirectory\DomainJoinService.StartupScript.ps1" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

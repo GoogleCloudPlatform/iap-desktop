@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirectory;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
@@ -36,7 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveDirectory
 {
     [TestFixture]
     [UsesCloudResources]

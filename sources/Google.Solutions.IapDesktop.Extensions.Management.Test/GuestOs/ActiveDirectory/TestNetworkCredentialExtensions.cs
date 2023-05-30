@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirectory;
 using NUnit.Framework;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveDirectory
 {
     [TestFixture]
     public class TestNetworkCredentialExtensions

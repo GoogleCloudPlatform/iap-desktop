@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirectory;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
@@ -32,7 +32,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveDirectory
 {
     [TestFixture]
     public class TestStartupScriptOperation

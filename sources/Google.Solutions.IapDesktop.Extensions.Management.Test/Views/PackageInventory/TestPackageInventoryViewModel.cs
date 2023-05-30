@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.Packages.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Packages;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
