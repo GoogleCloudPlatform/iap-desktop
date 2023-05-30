@@ -24,10 +24,10 @@ using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
-using Google.Solutions.IapDesktop.Extensions.Management.Packages.Adapters;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
@@ -39,7 +39,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapters
 {
     [TestFixture]
     [UsesCloudResources]

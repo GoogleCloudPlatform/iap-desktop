@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
-using Google.Solutions.IapDesktop.Extensions.Management.Packages.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
@@ -40,6 +39,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
 {

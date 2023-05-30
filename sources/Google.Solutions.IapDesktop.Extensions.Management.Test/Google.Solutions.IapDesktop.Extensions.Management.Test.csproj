@@ -143,7 +143,7 @@
     <Compile Include="Services\ActiveDirectory\TestDomainJoinServiceStartupScript.cs" />
     <Compile Include="Services\ActiveDirectory\TestNetworkCredentialExtensions.cs" />
     <Compile Include="Services\ActiveDirectory\TestStartupScriptOperation.cs" />
-    <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
+    <Compile Include="Auditing\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Data\Logs\TestListLogEntriesParser.cs" />
     <Compile Include="Services\Packages\TestPackageInventory.cs" />
     <Compile Include="Views\ActiveDirectory\TestJoinViewModel.cs" />

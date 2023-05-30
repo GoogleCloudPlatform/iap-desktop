@@ -169,14 +169,14 @@
     <Compile Include="Views\EventLog\EventLogView.Designer.cs">
       <DependentUpon>EventLogView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
+    <Compile Include="Auditing\Adapters\AuditLogAdapter.cs" />
     <Compile Include="Data\Logs\ListLogEntriesParser.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\ManagementExtension.cs" />
+    <Compile Include="InitializeManagementExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\Logs\AuditLogRecord.cs" />
     <Compile Include="Data\Logs\LogRecord.cs" />

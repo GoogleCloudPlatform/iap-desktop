@@ -33,17 +33,17 @@ using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Packages
+namespace Google.Solutions.IapDesktop.Extensions.Management
 {
     /// <summary>
     /// Main class of the extension, instantiated on load.
     /// </summary>
     [Service(ServiceLifetime.Singleton, DelayCreation = false)]
-    public class ManagementExtension
+    public class InitializeManagementExtension
     {
         private readonly IServiceProvider serviceProvider;
 
-        public ManagementExtension(IServiceProvider serviceProvider)
+        public InitializeManagementExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
 
