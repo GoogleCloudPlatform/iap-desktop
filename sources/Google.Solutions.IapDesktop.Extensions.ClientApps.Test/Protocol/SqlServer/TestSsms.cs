@@ -19,9 +19,25 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.ClientApps
+
+using Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer;
+using NUnit.Framework;
+using System.IO;
+
+namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Test.Protocol.SqlServer
 {
-    public class Class1
+    [TestFixture]
+    public class TestSsms
     {
+        [Test]
+        public void Test()
+        {
+            if (!Ssms.TryFind(out var ssms))
+            {
+                Assert.Inconclusive("SSMS not installed");
+            }
+
+            Assert.IsTrue(File.Exists(ssms.ExecutablePath));
+        }
     }
 }

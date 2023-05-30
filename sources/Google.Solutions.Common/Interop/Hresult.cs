@@ -21,9 +21,23 @@
 
 namespace Google.Solutions.Common.Interop
 {
-    public enum HRESULT : uint
+    public enum HRESULT : int
     {
         S_OK = 0,
-        E_UNEXPECTED = 0x8000ffff,
+        S_FALSE = 1,
+        E_UNEXPECTED = unchecked((int)0x8000ffff),
+    }
+
+    public static class HresultExtensions
+    {
+        public static bool Succeeded(this HRESULT hr)
+        {
+            return hr >= 0;
+        }
+
+        public static bool Failed(this HRESULT hr)
+        {
+            return hr < 0;
+        }
     }
 }

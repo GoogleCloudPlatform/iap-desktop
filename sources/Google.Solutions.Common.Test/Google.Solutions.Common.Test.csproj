@@ -65,6 +65,7 @@
     <Compile Include="Format\TestBigEndian.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\TestCoTaskMemAllocSafeHandle.cs" />
+    <Compile Include="Interop\TestHresultExtensions.cs" />
     <Compile Include="Interop\TestWindowsFilename.cs" />
     <Compile Include="Interop\TestGlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\TestLocalAllocSafeHandle.cs" />

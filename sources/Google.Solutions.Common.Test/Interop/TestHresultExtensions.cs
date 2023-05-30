@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,19 +19,30 @@
 // under the License.
 //
 
-
+using Google.Solutions.Common.Interop;
 using NUnit.Framework;
 
-
-namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Test
+namespace Google.Solutions.Common.Test.Interop
 {
     [TestFixture]
-    public class TestClass1
+    public class TestHresultExtensions
     {
         [Test]
-        public void Test()
+        public void Succeeded()
         {
-            Assert.IsNotNull(new Class1());
+            Assert.IsTrue(HRESULT.S_OK.Succeeded());
+            Assert.IsTrue(HRESULT.S_FALSE.Succeeded());
+
+            Assert.IsFalse(HRESULT.E_UNEXPECTED.Succeeded());
+        }
+
+        [Test]
+        public void Failed()
+        {
+            Assert.IsFalse(HRESULT.S_OK.Failed());
+            Assert.IsFalse(HRESULT.S_FALSE.Failed());
+
+            Assert.IsTrue(HRESULT.E_UNEXPECTED.Failed());
         }
     }
 }
