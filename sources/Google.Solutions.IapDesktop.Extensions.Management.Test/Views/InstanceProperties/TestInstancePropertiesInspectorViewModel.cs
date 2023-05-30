@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 });
 
             registry.AddSingleton<IComputeEngineAdapter>(gceAdapter.Object);
-            registry.AddSingleton<IInventoryService>(new InventoryService(gceAdapter.Object));
+            registry.AddSingleton<IPackageInventory>(new Management.Services.Inventory.PackageInventory(gceAdapter.Object));
 
             return new InstancePropertiesInspectorViewModel(registry);
         }

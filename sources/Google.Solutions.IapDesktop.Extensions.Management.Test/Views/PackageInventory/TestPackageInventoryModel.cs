@@ -38,8 +38,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public async Task WhenGuestAttributesDisabledByPolicy_ThenPackageListIsEmpty()
         {
-            var inventoryService = new Mock<IInventoryService>();
-            inventoryService.Setup(s => s.GetInstanceInventoryAsync(
+            var packageInventory = new Mock<IPackageInventory>();
+            packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .Throws(new GoogleApiException("mock", "mock")
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
 
             var model = await PackageInventoryModel
                 .LoadAsync(
-                    inventoryService.Object,
+                    packageInventory.Object,
                     PackageInventoryType.AvailablePackages,
                     node.Object,
                     CancellationToken.None)

@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         internal const string DefaultWindowTitle = "VM instance";
 
         private readonly IJobService jobService;
-        private readonly Service<IInventoryService> inventoryService;
+        private readonly Service<IPackageInventory> packageInventory;
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
 
 
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             : base(ModelCacheCapacity)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
+            this.packageInventory = serviceProvider.GetService<Service<IPackageInventory>>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
 
             this.informationText = ObservableProperty.Build<string>(null);
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                                         .LoadAsync(
                                             vmNode.Instance,
                                             this.computeEngineAdapter.GetInstance(),
-                                            this.inventoryService.GetInstance(),
+                                            this.packageInventory.GetInstance(),
                                             combinedTokenSource.Token)
                                         .ConfigureAwait(false);
                                 }

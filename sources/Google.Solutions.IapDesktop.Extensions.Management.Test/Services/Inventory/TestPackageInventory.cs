@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestInventoryService : ApplicationFixtureBase
+    public class TestPackageInventory : ApplicationFixtureBase
     {
         // Publish dummy OS inventory data. The real data is published asynchronously,
         // so it's difficult to rely on it in integration tests.
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             var result = await service
                 .GetInstanceInventoryAsync(
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             var info = await service
                 .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.GetInstanceInventoryAsync(
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new InventoryService(computeAdapter);
+            var service = new PackageInventory(computeAdapter);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(

@@ -145,7 +145,7 @@
     <Compile Include="Services\ActiveDirectory\TestStartupScriptOperation.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Data\Logs\TestListLogEntriesParser.cs" />
-    <Compile Include="Services\Inventory\TestInventoryService.cs" />
+    <Compile Include="Services\Inventory\TestPackageInventory.cs" />
     <Compile Include="Views\ActiveDirectory\TestJoinViewModel.cs" />
     <Compile Include="Views\EventLog\TestEventLogCommands.cs" />
     <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />

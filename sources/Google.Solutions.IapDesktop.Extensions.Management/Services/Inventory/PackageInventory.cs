@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory
 {
-    public interface IInventoryService
+    public interface IPackageInventory
     {
         /// <summary>
         /// Get OS inventory data for instance.
@@ -64,12 +64,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory
             CancellationToken token);
     }
 
-    [Service(typeof(IInventoryService))]
-    public sealed class InventoryService : IInventoryService
+    [Service(typeof(IPackageInventory))]
+    public sealed class PackageInventory : IPackageInventory
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
-        public InventoryService(IComputeEngineAdapter computeEngineAdapter)
+        public PackageInventory(IComputeEngineAdapter computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
         }

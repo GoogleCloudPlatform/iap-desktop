@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .LoadAsync(
                     await testInstance,
                     gceAdapter,
-                    new InventoryService(gceAdapter),
+                    new Management.Services.Inventory.PackageInventory(gceAdapter),
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -82,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             var gceAdapter = new ComputeEngineAdapter(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var inventoryService = new Mock<IInventoryService>();
-            inventoryService.Setup(s => s.GetInstanceInventoryAsync(
+            var packageInventory = new Mock<IPackageInventory>();
+            packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .Throws(new GoogleApiException("mock", "mock")
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .LoadAsync(
                     await testInstance,
                     gceAdapter,
-                    inventoryService.Object,
+                    packageInventory.Object,
                     CancellationToken.None)
                 .ConfigureAwait(true);
 

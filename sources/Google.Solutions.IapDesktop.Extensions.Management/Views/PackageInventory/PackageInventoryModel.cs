@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         }
 
         public static async Task<PackageInventoryModel> LoadAsync(
-            IInventoryService inventoryService,
+            IPackageInventory packageInventory,
             PackageInventoryType inventoryType,
             IProjectModelNode node,
             CancellationToken token)
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             {
                 if (node is IProjectModelInstanceNode vmNode)
                 {
-                    var info = await inventoryService.GetInstanceInventoryAsync(
+                    var info = await packageInventory.GetInstanceInventoryAsync(
                             vmNode.Instance,
                             token)
                         .ConfigureAwait(false);
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 }
                 else if (node is IProjectModelZoneNode zoneNode)
                 {
-                    inventory = await inventoryService.ListZoneInventoryAsync(
+                    inventory = await packageInventory.ListZoneInventoryAsync(
                             new ZoneLocator(zoneNode.Zone.ProjectId, zoneNode.Zone.Name),
                             OperatingSystems.Windows,
                             token)
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 }
                 else if (node is IProjectModelProjectNode projectNode)
                 {
-                    inventory = await inventoryService.ListProjectInventoryAsync(
+                    inventory = await packageInventory.ListProjectInventoryAsync(
                             projectNode.Project.ProjectId,
                             OperatingSystems.Windows,
                             token)

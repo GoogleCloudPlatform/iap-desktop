@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         private const int ModelCacheCapacity = 5;
 
         private readonly IJobService jobService;
-        private readonly Service<IInventoryService> inventoryService;
+        private readonly Service<IPackageInventory> packageInventory;
 
         private string filter;
 
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             : base(ModelCacheCapacity)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
+            this.packageInventory = serviceProvider.GetService<Service<IPackageInventory>>();
 
             this.IsPackageListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                         async jobToken =>
                         {
                             return await PackageInventoryModel.LoadAsync(
-                                    this.inventoryService.GetInstance(),
+                                    this.packageInventory.GetInstance(),
                                     this.InventoryType,
                                     node,
                                     jobToken)

@@ -87,8 +87,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
 
-            var inventoryService = new Mock<IInventoryService>();
-            inventoryService.Setup(s => s.GetInstanceInventoryAsync(
+            var packageInventory = new Mock<IPackageInventory>();
+            packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                         It.Is<InstanceLocator>(loc => loc.Name == "instance-1"),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(CreateGuestOsInfo(
@@ -99,12 +99,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                         new Package("package-2", "arch-1", "ver-2")
                     }));
 
-            inventoryService.Setup(s => s.GetInstanceInventoryAsync(
+            packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                         It.Is<InstanceLocator>(loc => loc.Name == "instance-3"),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GuestOsInfo)null);
 
-            inventoryService.Setup(s => s.ListZoneInventoryAsync(
+            packageInventory.Setup(s => s.ListZoneInventoryAsync(
                         It.IsAny<ZoneLocator>(),
                         It.IsAny<OperatingSystems>(),
                         It.IsAny<CancellationToken>()))
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                             })
                     });
 
-            inventoryService.Setup(s => s.ListProjectInventoryAsync(
+            packageInventory.Setup(s => s.ListProjectInventoryAsync(
                         It.IsAny<string>(),
                         It.IsAny<OperatingSystems>(),
                         It.IsAny<CancellationToken>()))
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                             null)
                     });
 
-            registry.AddSingleton<IInventoryService>(inventoryService.Object);
+            registry.AddSingleton<IPackageInventory>(packageInventory.Object);
 
             return new PackageInventoryViewModel(registry)
             {
