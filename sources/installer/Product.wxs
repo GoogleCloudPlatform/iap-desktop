@@ -264,6 +264,12 @@
           DiskId="1"
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Session.dll"
           Vital="yes"/>
+        <File
+          Id="FileGoogleSolutionsClientAppsDll"
+          Name="Google.Solutions.IapDesktop.Extensions.ClientApps.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.ClientApps.dll"
+          Vital="yes"/>
         
         <!-- SDK and dependencies -->
         <File
