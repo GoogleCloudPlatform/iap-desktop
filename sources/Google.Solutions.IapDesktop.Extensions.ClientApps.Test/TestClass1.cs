@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,17 +19,19 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.ClientApps")]
-[assembly: AssemblyDescription("ClientApps extension")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
-[assembly: AssemblyTrademark("Google LLC")]
+using NUnit.Framework;
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
 
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.ClientApps.Test")]
+namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Test
+{
+    [TestFixture]
+    public class TestClass1
+    {
+        [Test]
+        public void Test()
+        {
+            Assert.IsNotNull(new Class1());
+        }
+    }
+}
