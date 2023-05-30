@@ -27,8 +27,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         }
 
         public static async Task<PackageInventoryModel> LoadAsync(
-            IInventoryService inventoryService,
+            IGuestOsInventory packageInventory,
             PackageInventoryType inventoryType,
             IProjectModelNode node,
             CancellationToken token)
@@ -98,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             {
                 if (node is IProjectModelInstanceNode vmNode)
                 {
-                    var info = await inventoryService.GetInstanceInventoryAsync(
+                    var info = await packageInventory.GetInstanceInventoryAsync(
                             vmNode.Instance,
                             token)
                         .ConfigureAwait(false);
@@ -108,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 }
                 else if (node is IProjectModelZoneNode zoneNode)
                 {
-                    inventory = await inventoryService.ListZoneInventoryAsync(
+                    inventory = await packageInventory.ListZoneInventoryAsync(
                             new ZoneLocator(zoneNode.Zone.ProjectId, zoneNode.Zone.Name),
                             OperatingSystems.Windows,
                             token)
@@ -116,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 }
                 else if (node is IProjectModelProjectNode projectNode)
                 {
-                    inventory = await inventoryService.ListProjectInventoryAsync(
+                    inventory = await packageInventory.ListProjectInventoryAsync(
                             projectNode.Project.ProjectId,
                             OperatingSystems.Windows,
                             token)

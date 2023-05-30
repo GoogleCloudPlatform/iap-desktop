@@ -25,8 +25,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Cache;
 using System;
@@ -47,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         private const int ModelCacheCapacity = 5;
 
         private readonly IJobService jobService;
-        private readonly Service<IInventoryService> inventoryService;
+        private readonly Service<IGuestOsInventory> packageInventory;
 
         private string filter;
 
@@ -62,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             : base(ModelCacheCapacity)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
+            this.packageInventory = serviceProvider.GetService<Service<IGuestOsInventory>>();
 
             this.IsPackageListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);
@@ -182,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                         async jobToken =>
                         {
                             return await PackageInventoryModel.LoadAsync(
-                                    this.inventoryService.GetInstance(),
+                                    this.packageInventory.GetInstance(),
                                     this.InventoryType,
                                     node,
                                     jobToken)

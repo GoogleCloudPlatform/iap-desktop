@@ -27,8 +27,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -275,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         public static async Task<InstancePropertiesInspectorModel> LoadAsync(
             InstanceLocator instanceLocator,
             IComputeEngineAdapter computeEngineAdapter,
-            IInventoryService inventoryService,
+            IGuestOsInventory packageInventory,
             CancellationToken token)
         {
             var instance = await computeEngineAdapter
@@ -297,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             GuestOsInfo osInfo;
             try
             {
-                osInfo = await inventoryService.GetInstanceInventoryAsync(
+                osInfo = await packageInventory.GetInstanceInventoryAsync(
                     instanceLocator,
                     token)
                 .ConfigureAwait(false);
