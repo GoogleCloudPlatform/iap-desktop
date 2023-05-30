@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="InitializeClientAppsExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\INetonlyCredentialClient.cs" />
+    <Compile Include="Protocol\INetworkCredentialClient.cs" />
     <Compile Include="Protocol\SqlServer\Ssms.cs" />
     <Compile Include="Protocol\SqlServer\SsmsClient.cs" />
   </ItemGroup>

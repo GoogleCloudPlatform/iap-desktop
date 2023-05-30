@@ -27,15 +27,16 @@ using System.Net;
 namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol
 {
     /// <summary>
-    /// A client that can (or must) be launched with different
+    /// A client that can (or must) be launched with Windows
     /// network credentials.
     /// </summary>
-    internal interface INetonlyCredentialClient : IAppProtocolClient
+    internal interface INetworkCredentialClient : IAppProtocolClient
     {
         /// <summary>
-        /// Indicates whether the requires network credentials.
+        /// Indicates whether the client must be launched
+        /// using network credentials.
         /// </summary>
-        bool RequireNetonlyCredential { get; }
+        NetworkCredentialType RequiredCredential { get; }
 
         /// <summary>
         /// Launch the client with network-only credentials.
@@ -43,5 +44,23 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol
         Process LaunchWithNetonlyCredentials(
             ITransport endpoint,
             NetworkCredential credential);
+    }
+
+    public enum NetworkCredentialType
+    {
+        /// <summary>
+        /// No special network credentials needed.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Use RDP credentials as network credentials.
+        /// </summary>
+        Rdp,
+
+        /// <summary>
+        /// Prompt user for network credentials.
+        /// </summary>
+        Prompt
     }
 }

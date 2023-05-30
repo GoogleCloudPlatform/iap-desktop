@@ -27,36 +27,31 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
 {
-    internal sealed class SsmsClient : INetonlyCredentialClient //TODO: Add tests
+    internal sealed class SsmsClient : INetworkCredentialClient //TODO: Add tests
     {
-        private readonly Authentication authentication;
-
         private string CreateCommandLine(IPEndPoint endpoint)
         {
             //
             // Create command line arguments based on
             // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
             //
-            var authFlag = authentication == Authentication.Windows
-                ? " -E"
-                : string.Empty;
+            var authFlag = this.RequiredCredential == NetworkCredentialType.Default
+                ? string.Empty  // SQL Server authentication.
+                : " -E";        // Windwos authentication.
 
             return $"-S {endpoint.Address},{endpoint.Port}{authFlag}";
         }
 
-        public SsmsClient(Authentication authentication)
+        public SsmsClient(NetworkCredentialType credentialType)
         {
-            this.authentication = authentication;
+            this.RequiredCredential = credentialType;
         }
 
         //---------------------------------------------------------------------
         // INetonlyCredentialClient.
         //---------------------------------------------------------------------
 
-        public bool RequireNetonlyCredential
-        {
-            get => this.authentication == Authentication.Windows;
-        }
+        public NetworkCredentialType RequiredCredential { get; }
 
         public bool IsAvailable
         {
@@ -66,16 +61,15 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
         public bool Equals(IAppProtocolClient other)
         {
             return other is SsmsClient ssms &&
-                ssms.authentication == this.authentication;
+                ssms.RequiredCredential == this.RequiredCredential;
         }
 
         public Process Launch(ITransport endpoint)
         {
-            if (this.authentication == Authentication.Windows &&
-                this.RequireNetonlyCredential)
+            if (this.RequiredCredential != NetworkCredentialType.Default)
             {
                 throw new InvalidOperationException(
-                    "SSMS must be launched with netonly credentials");
+                    "SSMS must be launched with network credentials");
             }
 
             throw new NotImplementedException(); //TODO: Create process
@@ -85,23 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
             ITransport endpoint,
             NetworkCredential credential)
         {
-            if (!this.RequireNetonlyCredential)
+            if (this.RequiredCredential == NetworkCredentialType.Default)
             {
                 return Launch(endpoint);
             }
 
             //TODO: Create process with netonly creds
             throw new NotImplementedException();
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        public enum Authentication
-        {
-            SqlServer,
-            Windows
         }
     }
 }

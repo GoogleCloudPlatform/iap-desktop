@@ -44,9 +44,16 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps
                     new AllowAllPolicy(), // TODO: Use same job/process policy
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient(SsmsClient.Authentication.Windows)));
+                    new SsmsClient(Protocol.NetworkCredentialType.Rdp)));
 
-            // TODO: How to initialize protocol for "as user"?
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio as user...",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(Protocol.NetworkCredentialType.Prompt)));
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
@@ -55,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps
                     new AllowAllPolicy(), // TODO: Use same job/process policy
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient(SsmsClient.Authentication.SqlServer)));
+                    new SsmsClient(Protocol.NetworkCredentialType.Default)));
         }
     }
 }
