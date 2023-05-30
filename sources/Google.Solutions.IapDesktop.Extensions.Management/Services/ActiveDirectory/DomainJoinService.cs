@@ -37,7 +37,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory
 {
     public interface IDomainJoinService
     {

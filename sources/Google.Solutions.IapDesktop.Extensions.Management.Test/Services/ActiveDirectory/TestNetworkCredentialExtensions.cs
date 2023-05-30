@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory;
 using NUnit.Framework;
 using System.Net;
 

@@ -32,7 +32,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory
 {
     /// <summary>
     /// A long-running operation that involves swapping out

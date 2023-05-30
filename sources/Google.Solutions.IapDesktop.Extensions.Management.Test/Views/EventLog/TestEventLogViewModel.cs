@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Packages.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;

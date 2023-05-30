@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;

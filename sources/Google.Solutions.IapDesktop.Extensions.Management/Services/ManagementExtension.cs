@@ -33,7 +33,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Services
+namespace Google.Solutions.IapDesktop.Extensions.Management.Packages
 {
     /// <summary>
     /// Main class of the extension, instantiated on load.

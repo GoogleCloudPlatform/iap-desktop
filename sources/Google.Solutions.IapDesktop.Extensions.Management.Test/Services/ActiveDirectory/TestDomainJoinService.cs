@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
@@ -33,7 +33,7 @@ using System;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory.DomainJoinService;
+using static Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory.DomainJoinService;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory
 {

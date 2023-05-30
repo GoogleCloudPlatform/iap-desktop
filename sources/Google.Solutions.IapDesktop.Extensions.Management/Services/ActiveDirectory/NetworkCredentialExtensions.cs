@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory
+namespace Google.Solutions.IapDesktop.Extensions.Management.Packages.ActiveDirectory
 {
     internal static class NetworkCredentialExtensions
     {

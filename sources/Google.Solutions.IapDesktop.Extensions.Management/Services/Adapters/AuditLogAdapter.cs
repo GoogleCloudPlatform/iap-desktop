@@ -41,7 +41,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Management.Packages.Adapters
 {
     public interface IAuditLogAdapter
     {

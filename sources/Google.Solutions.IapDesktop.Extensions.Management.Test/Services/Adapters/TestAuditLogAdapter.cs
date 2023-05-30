@@ -27,7 +27,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Packages.Adapters;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
