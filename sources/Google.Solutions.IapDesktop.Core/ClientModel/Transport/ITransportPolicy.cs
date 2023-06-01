@@ -25,7 +25,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 {
-    public interface ITransportPolicy : IapListenerPolicy, IEquatable<ITransportPolicy>
+    public interface ITransportPolicy : IIapListenerPolicy, IEquatable<ITransportPolicy>
     {
         /// <summary>
         /// Name of the policy, such as "allow-all".

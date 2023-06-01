@@ -58,7 +58,7 @@ namespace Google.Solutions.Iap
     /// Policy that determines which clients can connect to
     /// a listener.
     /// </summary>
-    public interface IapListenerPolicy
+    public interface IIapListenerPolicy
     {
         /// <summary>
         /// Decide whether a remote client should be allowed access.
@@ -71,7 +71,7 @@ namespace Google.Solutions.Iap
         private const int BacklogLength = 32;
 
         private readonly ISshRelayEndpoint server;
-        private readonly IapListenerPolicy policy;
+        private readonly IIapListenerPolicy policy;
         private readonly TcpListener listener;
 
         public event EventHandler<ClientEventArgs> ClientConnected;
@@ -112,7 +112,7 @@ namespace Google.Solutions.Iap
         /// </summary>
         public IapListener(
             ISshRelayEndpoint server,
-            IapListenerPolicy policy,
+            IIapListenerPolicy policy,
             IPEndPoint localEndpoint)
         {
             this.server = server.ExpectNotNull(nameof(server));

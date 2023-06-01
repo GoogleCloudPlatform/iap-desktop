@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             {
                 FileName = this.Executable,
                 Arguments = this.Arguments,
-                UseShellExecute = true
+                UseShellExecute = true //TODO: Launch suspended
             });
         }
 

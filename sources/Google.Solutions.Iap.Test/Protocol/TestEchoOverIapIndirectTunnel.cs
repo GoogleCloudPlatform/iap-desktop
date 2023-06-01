@@ -41,7 +41,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             InstanceLocator vmRef,
             ICredential credential)
         {
-            var policy = new Mock<IapListenerPolicy>();
+            var policy = new Mock<IIapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
             var listener = new IapListener(
