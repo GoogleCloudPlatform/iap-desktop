@@ -24,13 +24,12 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System.Diagnostics;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
     /// <summary>
-    /// A client that can (or must) be launched with Windows
-    /// network credentials.
+    /// A client that can (or must) use Windows authentication.
     /// </summary>
-    internal interface INetworkCredentialClient : IAppProtocolClient
+    internal interface IWindowsProtocolClient : IAppProtocolClient
     {
         /// <summary>
         /// Indicates whether the client must be launched
@@ -39,9 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol
         NetworkCredentialType RequiredCredential { get; }
 
         /// <summary>
-        /// Launch the client with network-only credentials.
+        /// Launch the client with network credentials.
         /// </summary>
-        Process LaunchWithNetonlyCredentials(
+        Process LaunchWithNetworkCredentials(
             ITransport endpoint,
             NetworkCredential credential);
     }

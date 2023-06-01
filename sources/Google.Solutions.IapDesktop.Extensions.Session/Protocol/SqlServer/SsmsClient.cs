@@ -25,9 +25,9 @@ using System;
 using System.Diagnostics;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer
 {
-    internal sealed class SsmsClient : INetworkCredentialClient //TODO: Add tests
+    internal sealed class SsmsClient : IWindowsProtocolClient //TODO: Add tests
     {
         private string CreateCommandLine(IPEndPoint endpoint)
         {
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer
             throw new NotImplementedException(); //TODO: Create process
         }
 
-        public Process LaunchWithNetonlyCredentials(
+        public Process LaunchWithNetworkCredentials(
             ITransport endpoint,
             NetworkCredential credential)
         {

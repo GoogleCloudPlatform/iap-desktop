@@ -138,6 +138,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Protocol\Adapter\KeyStoreAdapter.cs" />
+    <Compile Include="Protocol\IWindowsProtocolClient.cs" />
+    <Compile Include="Protocol\SqlServer\Ssms.cs" />
+    <Compile Include="Protocol\SqlServer\SsmsClient.cs" />
     <Compile Include="Protocol\Ssh\SshProtocol.cs" />
     <Compile Include="Protocol\Rdp\RdpCredentialCallback.cs" />
     <Compile Include="Protocol\ISessionContext.cs" />

@@ -42,6 +42,11 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using System.Linq;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {
@@ -219,6 +224,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.DownloadFiles);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
+
+
+
+            //
+            // Protocols.
+            //
+            var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(Protocol.NetworkCredentialType.Rdp)));
+
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio as user...",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(Protocol.NetworkCredentialType.Prompt)));
+
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio as SQL user...",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(Protocol.NetworkCredentialType.Default)));
         }
     }
 }

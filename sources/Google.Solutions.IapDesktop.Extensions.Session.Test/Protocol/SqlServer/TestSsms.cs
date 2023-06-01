@@ -20,11 +20,11 @@
 //
 
 
-using Google.Solutions.IapDesktop.Extensions.ClientApps.Protocol.SqlServer;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer;
 using NUnit.Framework;
 using System.IO;
 
-namespace Google.Solutions.IapDesktop.Extensions.ClientApps.Test.Protocol.SqlServer
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
 {
     [TestFixture]
     public class TestSsms
