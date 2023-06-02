@@ -30,6 +30,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Scheduling
 {
@@ -94,13 +95,12 @@ namespace Google.Solutions.Platform.Scheduling
         void Resume();
 
         /// <summary>
-        /// Request an orderly close by sending a a WM_CLOSE
-        /// message to the process. This only works for GUI
-        /// processes.
+        /// Send WM_CLOSE to process and wait for the process to
+        /// terminate gracefully. Otherwise, terminate forcefully.
         /// 
-        /// Returns true if at least one window was found.
+        /// Returns true if the process terminated gracefully.
         /// </summary>
-        bool Close();
+        Task<bool> CloseAsync(TimeSpan timeout);
 
         /// <summary>
         /// Forcefully terminate the process.
@@ -228,9 +228,10 @@ namespace Google.Solutions.Platform.Scheduling
 
             private void ThrowLastError(string message)
             {
+                var lastError = Marshal.GetLastWin32Error();
                 throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
-                    $"{this.name}: {message}");
+                    lastError,
+                    $"{this.name}: {message} ({lastError})");
             }
 
             private void EnumerateTopLevelWindows(Action<IntPtr> action)
@@ -298,7 +299,7 @@ namespace Google.Solutions.Platform.Scheduling
                 }
             }
 
-            public bool Close()
+            public async Task<bool> CloseAsync(TimeSpan timeout)
             {
                 //
                 // Attempt to gracefully close the process by sending a WM_CLOSE message.
@@ -323,7 +324,41 @@ namespace Google.Solutions.Platform.Scheduling
                     messagesPosted++;
                 });
 
-                return messagesPosted > 0;
+                if (messagesPosted > 0)
+                {
+                    var completionSource = new TaskCompletionSource<bool>();
+
+                    //
+                    // Give the process some time to digest the messages.
+                    //
+                    var waitHandle = this.process.ToWaitHandle(false);
+                    var registration = ThreadPool.RegisterWaitForSingleObject(
+                        waitHandle,
+                        (_, timeoutElapsed) =>
+                        {
+                            completionSource.SetResult(!timeoutElapsed);
+                        },
+                        null,
+                        (uint)timeout.TotalMilliseconds,
+                        true);
+
+                    using (Disposable.For(() => registration.Unregister(waitHandle)))
+                    {
+                        if (await completionSource.Task.ConfigureAwait(false))
+                        {
+                            //
+                            // Process exited gracefully within the timeout.
+                            //
+                            return true;
+                        }
+                    }
+                }
+
+                //
+                // Use force.
+                //
+                Terminate(0);
+                return false;
             }
 
             public void Resume()

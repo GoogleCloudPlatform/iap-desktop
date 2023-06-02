@@ -24,6 +24,7 @@ using NUnit.Framework;
 using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Test.Scheduling
 {
@@ -199,7 +200,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProcessHasNoWindows_ThenCloseReturnsFalse()
+        public async Task WhenProcessHasNoWindows_ThenCloseReturnsFalse()
         {
             var factory = new Win32ProcessFactory();
 
@@ -210,14 +211,16 @@ namespace Google.Solutions.Platform.Test.Scheduling
                 process.Resume();
                 Assert.AreEqual(0, process.WindowCount);
 
-                Assert.IsFalse(process.Close());
+                var terminatedGracefully = await process
+                    .CloseAsync(TimeSpan.Zero)
+                    .ConfigureAwait(false);
 
-                process.Terminate(1);
+                Assert.IsFalse(terminatedGracefully);
             }
         }
 
         [Test]
-        public void WhenProcessHasWindows_ThenCloseReturnsTrue()
+        public async Task WhenProcessHasWindows_ThenCloseReturnsTrue()
         {
             var factory = new Win32ProcessFactory();
 
@@ -235,11 +238,10 @@ namespace Google.Solutions.Platform.Test.Scheduling
                     Thread.Sleep(10);
                 }
 
-                Assert.IsTrue(process.Close());
-                
-                Thread.Sleep(100);
-
-                Assert.IsFalse(process.IsRunning);
+                var terminatedGracefully = await process
+                    .CloseAsync(TimeSpan.FromSeconds(10))
+                    .ConfigureAwait(false);
+                Assert.IsTrue(terminatedGracefully);
             }
         }
     }
