@@ -19,7 +19,7 @@
 // under the License.
 //
 
-
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
@@ -33,16 +33,16 @@ using System.Runtime.InteropServices;
 namespace Google.Solutions.Platform.Scheduling
 {
     /// <summary>
-    /// Creates processes.
+    /// Creates Win32 processes.
     /// </summary>
-    public interface IProcessFactory
+    public interface IWin32ProcessFactory
     {
         /// <summary>
         /// Start a new process.
         /// 
         /// The process is created suspended and must be resumed explicitly.
         /// </summary>
-        IProcess CreateProcess(
+        IWin32Process CreateProcess(
             string executable,
             string arguments);
 
@@ -51,7 +51,7 @@ namespace Google.Solutions.Platform.Scheduling
         /// 
         /// The process is created suspended and must be resumed explicitly.
         /// </summary>
-        IProcess CreateProcessAsUser(
+        IWin32Process CreateProcessAsUser(
             string executable,
             string arguments,
             LogonFlags flags,
@@ -65,17 +65,19 @@ namespace Google.Solutions.Platform.Scheduling
         NetCredentialsOnly = 2  // LOGON_NETCREDENTIALS_ONLY
     }
 
-    public interface IProcess : IDisposable
+    public interface IWin32Process : IDisposable
     {
         /// <summary>
         /// Image name, without path.
         /// </summary>
         string ImageName { get; }
 
+        uint Id { get;  }
+
         /// <summary>
         /// Process handle.
         /// </summary>
-        SafeHandle Handle { get; }
+        SafeProcessHandle Handle { get; }
 
         /// <summary>
         /// Resume the process.
@@ -107,14 +109,14 @@ namespace Google.Solutions.Platform.Scheduling
         int WindowCount { get; }
     }
 
-    public class ProcessFactory : IProcessFactory
+    public class Win32ProcessFactory : IWin32ProcessFactory
     {
         private static string Quote (string s)
         {
             return $"\"{s}\"";
         }
 
-        public IProcess CreateProcess(
+        public IWin32Process CreateProcess(
             string executable, 
             string arguments)
         {
@@ -149,7 +151,7 @@ namespace Google.Solutions.Platform.Scheduling
                 new SafeThreadHandle(processInfo.hThread, true));
         }
 
-        public IProcess CreateProcessAsUser(
+        public IWin32Process CreateProcessAsUser(
             string executable, 
             string arguments, 
             LogonFlags flags,
@@ -196,7 +198,7 @@ namespace Google.Solutions.Platform.Scheduling
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class Process : DisposableBase, IProcess
+        private class Process : DisposableBase, IWin32Process
         {
             private readonly string name;
             private readonly uint processId;
@@ -226,9 +228,11 @@ namespace Google.Solutions.Platform.Scheduling
             // IProcess.
             //---------------------------------------------------------------------
 
-            public SafeHandle Handle => this.process;
+            public SafeProcessHandle Handle => this.process;
 
             public string ImageName => this.name;
+
+            public uint Id => this.processId;
 
             public bool IsRunning
             {
@@ -343,6 +347,11 @@ namespace Google.Solutions.Platform.Scheduling
                 }
             }
 
+            public override string ToString()
+            {
+                return $"{this.ImageName} (PID {this.processId})";
+            }
+
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
@@ -441,9 +450,6 @@ namespace Google.Solutions.Platform.Scheduling
                 [In] ref STARTUPINFO lpStartupInfo,
                 out PROCESS_INFORMATION lpProcessInformation);
 
-            [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
-            internal static extern bool CloseHandle(IntPtr handle);
-
             internal delegate bool EnumWindowsProc(
                 IntPtr hwnd, 
                 int lParam);
@@ -468,19 +474,11 @@ namespace Google.Solutions.Platform.Scheduling
                 IntPtr lParam);
         }
 
-        private class SafeThreadHandle : SafeHandleZeroOrMinusOneIsInvalid
+        private class SafeThreadHandle : SafeWin32Handle
         {
             public SafeThreadHandle(IntPtr handle, bool ownsHandle) 
-                : base(ownsHandle)
+                : base(handle, ownsHandle)
             {
-                SetHandle(handle);
-            }
-
-            protected override bool ReleaseHandle()
-            {
-                var closed = NativeMethods.CloseHandle(this.handle);
-                Debug.Assert(closed);
-                return closed;
             }
         }
     }

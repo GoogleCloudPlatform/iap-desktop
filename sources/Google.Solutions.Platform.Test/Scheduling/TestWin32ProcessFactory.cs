@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Net;
 using Google.Solutions.Platform.Scheduling;
 using NUnit.Framework;
 using System;
@@ -29,7 +28,7 @@ using System.Threading;
 namespace Google.Solutions.Platform.Test.Scheduling
 {
     [TestFixture]
-    public class TestProcessFactory
+    public class TestWin32ProcessFactory
     {
         private static readonly string CmdExe
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
@@ -43,7 +42,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         [Test]
         public void WhenExecutableNotFound_ThenCreateProcessThrowsException()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             Assert.Throws<Win32Exception>(() => factory.CreateProcess("doesnotexist.exe", null));
         }
@@ -51,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         [Test]
         public void WhenExecutablePathFound_ThenCreateProcessSucceeds()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcess(
                 CmdExe, 
@@ -69,9 +68,9 @@ namespace Google.Solutions.Platform.Test.Scheduling
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenExecutableContainsPath_ThenImageNameReturnsFilename()
+        public void ImageName()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcess(
                 CmdExe,
@@ -84,13 +83,52 @@ namespace Google.Solutions.Platform.Test.Scheduling
         }
 
         //---------------------------------------------------------------------
+        // Id.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Id()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                Assert.AreNotEqual(0, process.Id);
+
+                process.Terminate(1);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ToStringContainsIdAndImageName()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                StringAssert.Contains("cmd.exe", process.ToString());
+                StringAssert.Contains(process.Id.ToString(), process.ToString());
+
+                process.Terminate(1);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Resume.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenResumedAlready_ThenResumeSucceeds()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcess(
                 CmdExe,
@@ -115,7 +153,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         [Test]
         public void WhenTerminatedAlready_ThenTerminateThrowsException()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcess(
                 CmdExe,
@@ -142,7 +180,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         [Test]
         public void WhenProcessHasNoWindows_ThenCloseReturnsFalse()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcess(
                 CmdExe,
@@ -160,7 +198,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         [Test]
         public void WhenProcessHasWindows_ThenCloseReturnsTrue()
         {
-            var factory = new ProcessFactory();
+            var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcess(
                 NotepadExe,
