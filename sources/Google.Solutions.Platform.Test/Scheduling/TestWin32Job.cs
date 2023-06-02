@@ -23,6 +23,7 @@ using Google.Solutions.Platform.Scheduling;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Google.Solutions.Platform.Test.Scheduling
 {
@@ -110,6 +111,38 @@ namespace Google.Solutions.Platform.Test.Scheduling
             {
                 Assert.Throws<Win32Exception>(
                     () => job.IsInJob(uint.MaxValue));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ProcessIds.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenJobEmpty_ThenProcessIdsIsEmpty()
+        {
+            using (var job = new Win32Job(true))
+            {
+                CollectionAssert.IsEmpty(job.ProcessIds);
+            }
+        }
+
+        [Test]
+        public void WhenJobContainsProcesses_ThenProcessIdsReturnsId()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var job = new Win32Job(true))
+            using (var process1 = factory.CreateProcess(CmdExe, null))
+            using (var process2 = factory.CreateProcess(CmdExe, null))
+            {
+                job.Add(process1);
+                job.Add(process2);
+
+                var ids = job.ProcessIds;
+                Assert.AreEqual(2, ids.Count());
+                CollectionAssert.Contains(ids, process1.Id);
+                CollectionAssert.Contains(ids, process2.Id);
             }
         }
     }

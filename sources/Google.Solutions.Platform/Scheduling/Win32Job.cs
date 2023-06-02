@@ -24,6 +24,7 @@ using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
@@ -53,6 +54,11 @@ namespace Google.Solutions.Platform.Scheduling
         /// Check if a process is in the job.
         /// </summary>
         bool IsInJob(uint processId);
+
+        /// <summary>
+        /// Return the IDs of processes in this job.
+        /// </summary>
+        IEnumerable<uint> ProcessIds { get; }
     }
 
     public class Win32Job : DisposableBase, IWin32Job
@@ -177,6 +183,61 @@ namespace Google.Solutions.Platform.Scheduling
             }
         }
 
+        public IEnumerable<uint> ProcessIds
+        {
+            get
+            {
+                var size = (uint)Marshal.SizeOf<NativeMethods.JOBOBJECT_BASIC_PROCESS_ID_LIST>();
+                while (true)
+                {
+                    using (var listHandle = GlobalAllocSafeHandle.GlobalAlloc(size))
+                    {
+                        var listPtr = listHandle.DangerousGetHandle();
+                        if (NativeMethods.QueryInformationJobObject(
+                            this.handle,
+                            NativeMethods.JOBOBJECTINFOCLASS.JobObjectBasicProcessIdList,
+                            listPtr,
+                            size,
+                            out var requiredLength))
+                        {
+                            var list = Marshal.PtrToStructure<NativeMethods.JOBOBJECT_BASIC_PROCESS_ID_LIST>(listPtr);
+
+                            var arrayOffset = 
+                                Marshal.SizeOf<NativeMethods.JOBOBJECT_BASIC_PROCESS_ID_LIST>() - UIntPtr.Size;
+                            var pids = new uint[list.NumberOfProcessIdsInList];
+                            for (int i = 0; i < pids.Length; i++)
+                            {
+                                pids[i] = (uint)Marshal.ReadIntPtr(listPtr, arrayOffset + i * UIntPtr.Size).ToInt32();
+                            }
+
+                            return pids;
+                        }
+                        else if (requiredLength > 0)
+                        {
+                            //
+                            // Try again with proper size.
+                            //
+                            size = requiredLength;
+                        }
+                        else if (size < ushort.MaxValue)
+                        {
+                            //
+                            // QueryInformationJobObject sometimes fails without
+                            // setting a required length.
+                            //
+                            size *= 2;
+                        }
+                        else
+                        {
+                            throw new Win32Exception(
+                                Marshal.GetLastWin32Error(),
+                                $"Querying process list failed");
+                        }
+                    }
+                }
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -191,6 +252,7 @@ namespace Google.Solutions.Platform.Scheduling
         private static class NativeMethods
         {
             internal const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+            internal const int ERROR_NO_TOKEN = 1008;
 
             [StructLayout(LayoutKind.Sequential)]
             internal struct SECURITY_ATTRIBUTES
@@ -208,7 +270,7 @@ namespace Google.Solutions.Platform.Scheduling
             [DllImport("kernel32.dll")]
             internal static extern bool SetInformationJobObject(
                 SafeJobHandle hJob,
-                JOBOBJECTINFOCLASS JobObjectInfoClass, 
+                JOBOBJECTINFOCLASS infoClass, 
                 ref JOBOBJECT_EXTENDED_LIMIT_INFORMATION lpJobObjectInfo,
                 uint cbJobObjectInfoLength);
 
@@ -230,6 +292,15 @@ namespace Google.Solutions.Platform.Scheduling
                 bool bInheritHandle,
                 uint processId);
 
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool QueryInformationJobObject(
+                SafeJobHandle hJob,
+                JOBOBJECTINFOCLASS infoClass, 
+                IntPtr lpJobObjectInfo, 
+                uint cbJobObjectInfoLength, 
+                out uint lpReturnLength);
+
             internal enum JOB_OBJECT_LIMIT
             {
                 KILL_ON_JOB_CLOSE = 0x00002000
@@ -237,6 +308,7 @@ namespace Google.Solutions.Platform.Scheduling
 
             public enum JOBOBJECTINFOCLASS
             {
+                JobObjectBasicProcessIdList = 3,
                 JobObjectExtendedLimitInformation = 9
             }
 
@@ -276,6 +348,13 @@ namespace Google.Solutions.Platform.Scheduling
                 public UIntPtr PeakJobMemoryUsed;
             }
 
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct JOBOBJECT_BASIC_PROCESS_ID_LIST
+            {
+                public uint NumberOfAssignedProcesses;
+                public uint NumberOfProcessIdsInList;
+                public UIntPtr ProcessIdListStart;
+            }
         }
 
         private class SafeJobHandle : SafeWin32Handle
