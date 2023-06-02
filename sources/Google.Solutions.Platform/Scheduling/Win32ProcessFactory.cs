@@ -103,6 +103,13 @@ namespace Google.Solutions.Platform.Scheduling
         Task<bool> CloseAsync(TimeSpan timeout);
 
         /// <summary>
+        /// Wait for process to terminate.
+        /// 
+        /// Returns the exit code.
+        /// </summary>
+        Task<uint> WaitAsync(TimeSpan timeout);
+
+        /// <summary>
         /// Forcefully terminate the process.
         /// </summary>
         void Terminate(uint exitCode);
@@ -269,6 +276,35 @@ namespace Google.Solutions.Platform.Scheduling
                 }
             }
 
+            private Task<bool> WaitForProcessExitAsync(TimeSpan timeout)
+            {
+                var completionSource = new TaskCompletionSource<bool>();
+
+                var waitHandle = this.process.ToWaitHandle(false);
+                var registration = ThreadPool.RegisterWaitForSingleObject(
+                    waitHandle,
+                    (_, timeoutElapsed) =>
+                    {
+                        //
+                        // Return true if the process was signalled (= exited)
+                        // within the timeout, or false otherwise.
+                        //
+                        completionSource.SetResult(!timeoutElapsed);
+                    },
+                    null,
+                    (uint)timeout.TotalMilliseconds,
+                    true);
+
+                return completionSource.Task
+                    .ContinueWith(t =>
+                    {
+                        registration.Unregister(waitHandle);
+                        waitHandle.Dispose();
+
+                        return t.Result;
+                    });
+            }
+
             //-----------------------------------------------------------------
             // IProcess.
             //---------------------------------------------------------------------
@@ -296,6 +332,23 @@ namespace Google.Solutions.Platform.Scheduling
                     EnumerateTopLevelWindows(_ => windowCount++);
 
                     return windowCount;
+                }
+            }
+
+            public async Task<uint> WaitAsync(TimeSpan timeout)
+            {
+                if (await WaitForProcessExitAsync(timeout).ConfigureAwait(false))
+                {
+                    //
+                    // Terminated.
+                    //
+                    NativeMethods.GetExitCodeProcess(this.process, out var exitCode);
+                    return exitCode;
+                }
+                else
+                {
+                    throw new TimeoutException(
+                        "The process did not terminate within the allotted timeout");
                 }
             }
 
@@ -331,26 +384,13 @@ namespace Google.Solutions.Platform.Scheduling
                     //
                     // Give the process some time to digest the messages.
                     //
-                    var waitHandle = this.process.ToWaitHandle(false);
-                    var registration = ThreadPool.RegisterWaitForSingleObject(
-                        waitHandle,
-                        (_, timeoutElapsed) =>
-                        {
-                            completionSource.SetResult(!timeoutElapsed);
-                        },
-                        null,
-                        (uint)timeout.TotalMilliseconds,
-                        true);
 
-                    using (Disposable.For(() => registration.Unregister(waitHandle)))
+                    if (await WaitForProcessExitAsync(timeout).ConfigureAwait(false))
                     {
-                        if (await completionSource.Task.ConfigureAwait(false))
-                        {
-                            //
-                            // Process exited gracefully within the timeout.
-                            //
-                            return true;
-                        }
+                        //
+                        // Process exited gracefully within the timeout.
+                        //
+                        return true;
                     }
                 }
 

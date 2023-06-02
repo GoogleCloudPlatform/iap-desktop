@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Platform.Scheduling;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
@@ -242,6 +243,48 @@ namespace Google.Solutions.Platform.Test.Scheduling
                     .CloseAsync(TimeSpan.FromSeconds(10))
                     .ConfigureAwait(false);
                 Assert.IsTrue(terminatedGracefully);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Wait.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTimeoutElapses_ThenWaitThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                process.Resume();
+
+                ExceptionAssert.ThrowsAggregateException<TimeoutException>(
+                    () => process.WaitAsync(TimeSpan.FromMilliseconds(5)).Wait());
+
+                process.Terminate(0);
+            }
+        }
+
+        [Test]
+        public async Task WhenProcessTerminated_ThenWaitSucceeds()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                process.Resume();
+                process.Terminate(1);
+
+                var exitCode = await process
+                    .WaitAsync(TimeSpan.FromMilliseconds(5))
+                    .ConfigureAwait(false);
+
+                Assert.AreEqual(1, exitCode);
             }
         }
     }
