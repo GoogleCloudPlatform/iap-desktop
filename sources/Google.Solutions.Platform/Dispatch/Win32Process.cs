@@ -24,12 +24,11 @@ using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Platform.Scheduling
+namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
     /// A Win32 process.
@@ -112,14 +111,6 @@ namespace Google.Solutions.Platform.Scheduling
             this.mainThread = mainThread.ExpectNotNull(nameof(mainThread));
         }
 
-        private void ThrowLastError(string message)
-        {
-            var lastError = Marshal.GetLastWin32Error();
-            throw new Win32Exception(
-                lastError,
-                $"{this.name}: {message} ({lastError})");
-        }
-
         private void EnumerateTopLevelWindows(Action<IntPtr> action)
         {
             NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
@@ -151,7 +142,8 @@ namespace Google.Solutions.Platform.Scheduling
             //
             if (!NativeMethods.EnumWindows(callback, IntPtr.Zero))
             {
-                ThrowLastError("Enumerating windows failed");
+                throw DispatchException.FromLastWin32Error(
+                    $"{this.name}: Enumerating windows failed");
             }
         }
 
@@ -258,7 +250,8 @@ namespace Google.Solutions.Platform.Scheduling
         {
             if (NativeMethods.ResumeThread(this.mainThread) < 0)
             {
-                ThrowLastError("Resuming the process failed"); // TODO: Add test
+                throw DispatchException.FromLastWin32Error(
+                    $"{this.name}: Resuming the process failed");
             }
         }
 
@@ -266,7 +259,8 @@ namespace Google.Solutions.Platform.Scheduling
         {
             if (!NativeMethods.TerminateProcess(this.process, exitCode))
             {
-                ThrowLastError("Terminating the process failed");
+                throw DispatchException.FromLastWin32Error(
+                    $"{this.name}: Terminating the process failed");
             }
         }
 

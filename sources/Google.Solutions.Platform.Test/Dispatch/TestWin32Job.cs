@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Scheduling;
+using Google.Solutions.Platform.Dispatch;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Google.Solutions.Platform.Test.Scheduling
+namespace Google.Solutions.Platform.Test.Dispatch
 {
     [TestFixture]
     public class TestWin32Job
@@ -109,7 +109,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
         {
             using (var job = new Win32Job(true))
             {
-                Assert.Throws<Win32Exception>(
+                Assert.Throws<DispatchException>(
                     () => job.IsInJob(uint.MaxValue));
             }
         }

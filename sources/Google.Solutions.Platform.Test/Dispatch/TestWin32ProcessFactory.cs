@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Scheduling;
+using Google.Solutions.Platform.Dispatch;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
 
-namespace Google.Solutions.Platform.Test.Scheduling
+namespace Google.Solutions.Platform.Test.Dispatch
 {
     [TestFixture]
     public class TestWin32ProcessFactory

@@ -43,9 +43,10 @@
   <ItemGroup>
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Cryptography\CertificateStore.cs" />
-    <Compile Include="Scheduling\Win32Process.cs" />
-    <Compile Include="Scheduling\Win32ProcessFactory.cs" />
-    <Compile Include="Scheduling\Win32Job.cs" />
+    <Compile Include="Dispatch\DispatchException.cs" />
+    <Compile Include="Dispatch\Win32Process.cs" />
+    <Compile Include="Dispatch\Win32ProcessFactory.cs" />
+    <Compile Include="Dispatch\Win32Job.cs" />
     <Compile Include="Security\Quarantine.cs" />
     <Compile Include="UserEnvironment.cs" />
     <Compile Include="Net\BrowserProtocolRegistry.cs" />

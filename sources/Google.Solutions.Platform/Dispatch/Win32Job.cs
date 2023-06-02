@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Platform.Scheduling
+namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
     /// A Win32 job.
@@ -81,9 +81,7 @@ namespace Google.Solutions.Platform.Scheduling
             var job = NativeMethods.CreateJobObject(ref securityAttributes, null);
             if (job.IsInvalid)
             {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
-                    "Creating job object failed");
+                throw DispatchException.FromLastWin32Error("Creating job object failed");
             }
 
             if (killOnJobClose)
@@ -108,9 +106,7 @@ namespace Google.Solutions.Platform.Scheduling
                 {
                     job.Close();
 
-                    throw new Win32Exception(
-                        Marshal.GetLastWin32Error(),
-                        "Configuring job limits failed");
+                    throw DispatchException.FromLastWin32Error("Configuring job limits failed");
                 }
             }
 
@@ -131,8 +127,7 @@ namespace Google.Solutions.Platform.Scheduling
                 this.handle, 
                 process.Handle))
             {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
+                throw DispatchException.FromLastWin32Error(
                     $"Assigining the process {process} to the job failed");
             }
         }
@@ -146,8 +141,7 @@ namespace Google.Solutions.Platform.Scheduling
                 this.handle, 
                 out var inJob))
             {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
+                throw DispatchException.FromLastWin32Error(
                     $"Checking if the process {process} is in the job failed");
             }
 
@@ -163,8 +157,7 @@ namespace Google.Solutions.Platform.Scheduling
             {
                 if (process.IsInvalid)
                 {
-                    throw new Win32Exception(
-                        Marshal.GetLastWin32Error(),
+                    throw DispatchException.FromLastWin32Error(
                         $"Accessing the process with PID {processId} failed");
                 }
 
@@ -173,10 +166,9 @@ namespace Google.Solutions.Platform.Scheduling
                     this.handle,
                     out var inJob))
                 {
-                    throw new Win32Exception(
-                        Marshal.GetLastWin32Error(),
+                    throw DispatchException.FromLastWin32Error(
                         $"Checking if the process with PID {processId} " +
-                            "is in the job failed");
+                        "is in the job failed");
                 }
 
                 return inJob;
@@ -252,6 +244,8 @@ namespace Google.Solutions.Platform.Scheduling
         private static class NativeMethods
         {
             internal const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+            internal const uint SYNCHRONIZE = 0x00100000;
+
             internal const int ERROR_NO_TOKEN = 1008;
 
             [StructLayout(LayoutKind.Sequential)]

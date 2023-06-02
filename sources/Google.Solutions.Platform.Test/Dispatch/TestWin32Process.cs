@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Scheduling;
+using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
@@ -27,7 +27,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Platform.Test.Scheduling
+namespace Google.Solutions.Platform.Test.Dispatch
 {
     [TestFixture]
     public class TestWin32Process
@@ -165,7 +165,7 @@ namespace Google.Solutions.Platform.Test.Scheduling
 
                 Assert.IsFalse(process.IsRunning);
 
-                Assert.Throws<Win32Exception>(() => process.Terminate(1));
+                Assert.Throws<DispatchException>(() => process.Terminate(1));
             }
         }
 

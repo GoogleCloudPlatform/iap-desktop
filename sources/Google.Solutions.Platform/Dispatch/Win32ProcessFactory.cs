@@ -28,7 +28,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Platform.Scheduling
+namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
     /// Creates Win32 processes.
