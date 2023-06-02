@@ -46,11 +46,23 @@ namespace Google.Solutions.Platform.Scheduling
             string executable,
             string arguments);
 
+        /// <summary>
+        /// Start a new process as a different user.
+        /// 
+        /// The process is created suspended and must be resumed explicitly.
+        /// </summary>
         IProcess CreateProcessAsUser(
             string executable,
             string arguments,
-            // flags...
+            LogonFlags flags,
             NetworkCredential credential);
+    }
+
+    [Flags]
+    public enum LogonFlags : uint
+    {
+        WithProfile = 1,        // LOGON_WITH_PROFILE
+        NetCredentialsOnly = 2  // LOGON_NETCREDENTIALS_ONLY
     }
 
     public interface IProcess : IDisposable
@@ -106,6 +118,8 @@ namespace Google.Solutions.Platform.Scheduling
             string executable, 
             string arguments)
         {
+            executable.ExpectNotEmpty(nameof(executable));
+
             var startupInfo = new NativeMethods.STARTUPINFO()
             {
                 cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
@@ -138,9 +152,44 @@ namespace Google.Solutions.Platform.Scheduling
         public IProcess CreateProcessAsUser(
             string executable, 
             string arguments, 
+            LogonFlags flags,
             NetworkCredential credential)
         {
-            throw new NotImplementedException();
+            executable.ExpectNotEmpty(nameof(executable));
+            credential.ExpectNotNull(nameof(credential));
+
+            Debug.Assert(
+                credential.UserName.Contains("@") || 
+                credential.Domain != null);
+
+            var startupInfo = new NativeMethods.STARTUPINFO()
+            {
+                cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
+            };
+
+            if (!NativeMethods.CreateProcessWithLogonW(
+                credential.UserName,
+                credential.Domain,
+                credential.Password,
+                flags,
+                null,
+                $"{Quote(executable)} {arguments}",
+                NativeMethods.CREATE_SUSPENDED,
+                IntPtr.Zero,
+                null,
+                ref startupInfo,
+                out var processInfo))
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    $"Launching process for {executable} failed");
+            }
+
+            return new Process(
+                new FileInfo(executable).Name,
+                processInfo.dwProcessId,
+                new SafeProcessHandle(processInfo.hProcess, true),
+                new SafeThreadHandle(processInfo.hThread, true));
         }
 
         //---------------------------------------------------------------------
@@ -375,6 +424,20 @@ namespace Google.Solutions.Platform.Scheduling
                 uint dwCreationFlags,
                 IntPtr lpEnvironment,
                 string lpCurrentDirectory,
+                [In] ref STARTUPINFO lpStartupInfo,
+                out PROCESS_INFORMATION lpProcessInformation);
+
+            [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            public static extern bool CreateProcessWithLogonW(
+                string userName,
+                string domain,
+                string password,
+                LogonFlags logonFlags,
+                string applicationName,
+                string commandLine,
+                uint dwCreationFlags,
+                IntPtr environment,
+                string currentDirectory,
                 [In] ref STARTUPINFO lpStartupInfo,
                 out PROCESS_INFORMATION lpProcessInformation);
 
