@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Google.Solutions.Platform.Scheduling
 {
@@ -72,7 +73,15 @@ namespace Google.Solutions.Platform.Scheduling
         /// </summary>
         string ImageName { get; }
 
-        uint Id { get;  }
+        /// <summary>
+        /// Process ID.
+        /// </summary>
+        uint Id { get; }
+
+        /// <summary>
+        /// Handle for awaiting process termination.
+        /// </summary>
+        WaitHandle WaitHandle { get;}
 
         /// <summary>
         /// Process handle.
@@ -224,6 +233,41 @@ namespace Google.Solutions.Platform.Scheduling
                     $"{this.name}: {message}");
             }
 
+            private void EnumerateTopLevelWindows(Action<IntPtr> action)
+            {
+                NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
+                {
+                    //
+                    // Lookup the process ID that owns this window.
+                    //
+                    if (NativeMethods.GetWindowThreadProcessId(
+                            hwnd,
+                            out var ownerProcessId) != 0 &&
+                        ownerProcessId == this.processId)
+                    {
+                        //
+                        // This window belongs to our process. 
+                        //
+                        action(hwnd);
+                    }
+
+                    //
+                    // NB. There might be more top-level windows, so continue
+                    // the search.
+                    //
+
+                    return true;
+                };
+
+                //
+                // Enumerate all top-level windows.
+                //
+                if (!NativeMethods.EnumWindows(callback, IntPtr.Zero))
+                {
+                    ThrowLastError("Enumerating windows failed");
+                }
+            }
+
             //-----------------------------------------------------------------
             // IProcess.
             //---------------------------------------------------------------------
@@ -231,6 +275,8 @@ namespace Google.Solutions.Platform.Scheduling
             public SafeProcessHandle Handle => this.process;
 
             public string ImageName => this.name;
+
+            public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
 
             public uint Id => this.processId;
 
@@ -246,33 +292,7 @@ namespace Google.Solutions.Platform.Scheduling
                 get
                 {
                     int windowCount = 0;
-
-                    NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
-                    {
-                        //
-                        // Lookup the process ID that owns this window.
-                        //
-                        if (NativeMethods.GetWindowThreadProcessId(
-                                hwnd,
-                                out var ownerProcessId) != 0 &&
-                            ownerProcessId == this.processId)
-                        {
-                            //
-                            // This window belongs to our process. 
-                            //
-                            windowCount++;
-                        }
-
-                        return true;
-                    };
-
-                    //
-                    // Enumerate all top-level windows.
-                    //
-                    if (!NativeMethods.EnumWindows(callback, IntPtr.Zero))
-                    {
-                        ThrowLastError("Enumerating windows failed");
-                    }
+                    EnumerateTopLevelWindows(_ => windowCount++);
 
                     return windowCount;
                 }
@@ -288,45 +308,20 @@ namespace Google.Solutions.Platform.Scheduling
                 //
                 int messagesPosted = 0;
 
-                NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
+                EnumerateTopLevelWindows(hwnd =>
                 {
                     //
-                    // Lookup the process ID that owns this window.
+                    // This window belongs to our process. Post a message to 
+                    // tell it to close.
                     //
-                    if (NativeMethods.GetWindowThreadProcessId(
-                            hwnd, 
-                            out var ownerProcessId) != 0 &&
-                        ownerProcessId == this.processId)
-                    {
-                        //
-                        // This window belongs to our process. Post a message to 
-                        // tell it to close.
-                        //
-                        NativeMethods.PostMessage(
-                            hwnd, 
-                            NativeMethods.WM_CLOSE, 
-                            IntPtr.Zero, 
-                            IntPtr.Zero);
-                        
-                        messagesPosted++;
+                    NativeMethods.PostMessage(
+                        hwnd,
+                        NativeMethods.WM_CLOSE,
+                        IntPtr.Zero,
+                        IntPtr.Zero);
 
-                        //
-                        // NB. There might be more top-level windows, so continue
-                        // the search.
-                        //
-                    }
-
-                    return true;
-                };
-
-                //
-                // Enumerate all top-level windows.
-                //
-                if (!NativeMethods.EnumWindows(callback, IntPtr.Zero))
-                {
-                    ThrowLastError(
-                        "Gracefully closing process failed");
-                }
+                    messagesPosted++;
+                });
 
                 return messagesPosted > 0;
             }
@@ -409,17 +404,17 @@ namespace Google.Solutions.Platform.Scheduling
 
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int ResumeThread(
-                SafeHandle hThread);
+                SafeThreadHandle hThread);
 
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern bool TerminateProcess(
-                SafeHandle hProcess,
+                SafeProcessHandle hProcess,
                 uint exitCode);
 
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool GetExitCodeProcess(
-                SafeHandle hProcess, 
+                SafeProcessHandle hProcess, 
                 out uint lpExitCode);
 
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]

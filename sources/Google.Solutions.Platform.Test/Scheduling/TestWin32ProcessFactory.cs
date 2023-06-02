@@ -122,6 +122,27 @@ namespace Google.Solutions.Platform.Test.Scheduling
         }
 
         //---------------------------------------------------------------------
+        // WaitHandle.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WaitHandleReturnsHandle()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                Assert.IsNotNull(process.WaitHandle);
+                Assert.IsFalse(process.WaitHandle.WaitOne(1));
+
+                process.Terminate(1);
+                Assert.IsTrue(process.WaitHandle.WaitOne(1));
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Resume.
         //---------------------------------------------------------------------
 
