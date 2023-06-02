@@ -155,36 +155,7 @@ namespace Google.Solutions.Platform.Scheduling
             }
         }
 
-        private Task<bool> WaitForProcessExitAsync(TimeSpan timeout)
-        {
-            var completionSource = new TaskCompletionSource<bool>();
-
-            var waitHandle = this.process.ToWaitHandle(false);
-            var registration = ThreadPool.RegisterWaitForSingleObject(
-                waitHandle,
-                (_, timeoutElapsed) =>
-                {
-                    //
-                    // Return true if the process was signalled (= exited)
-                    // within the timeout, or false otherwise.
-                    //
-                    completionSource.SetResult(!timeoutElapsed);
-                },
-                null,
-                (uint)timeout.TotalMilliseconds,
-                true);
-
-            return completionSource.Task
-                .ContinueWith(t =>
-                {
-                    registration.Unregister(waitHandle);
-                    waitHandle.Dispose();
-
-                    return t.Result;
-                });
-        }
-
-        //-----------------------------------------------------------------
+        //---------------------------------------------------------------------
         // IProcess.
         //---------------------------------------------------------------------
 
@@ -216,18 +187,21 @@ namespace Google.Solutions.Platform.Scheduling
 
         public async Task<uint> WaitAsync(TimeSpan timeout)
         {
-            if (await WaitForProcessExitAsync(timeout).ConfigureAwait(false))
+            using (var waitHandle = this.process.ToWaitHandle(false))
             {
-                //
-                // Terminated.
-                //
-                NativeMethods.GetExitCodeProcess(this.process, out var exitCode);
-                return exitCode;
-            }
-            else
-            {
-                throw new TimeoutException(
-                    "The process did not terminate within the allotted timeout");
+                if (await waitHandle.WaitAsync(timeout).ConfigureAwait(false))
+                {
+                    //
+                    // Terminated.
+                    //
+                    NativeMethods.GetExitCodeProcess(this.process, out var exitCode);
+                    return exitCode;
+                }
+                else
+                {
+                    throw new TimeoutException(
+                        "The process did not terminate within the allotted timeout");
+                }
             }
         }
 
@@ -258,18 +232,18 @@ namespace Google.Solutions.Platform.Scheduling
 
             if (messagesPosted > 0)
             {
-                var completionSource = new TaskCompletionSource<bool>();
-
                 //
                 // Give the process some time to digest the messages.
                 //
-
-                if (await WaitForProcessExitAsync(timeout).ConfigureAwait(false))
+                using (var waitHandle = this.process.ToWaitHandle(false))
                 {
-                    //
-                    // Process exited gracefully within the timeout.
-                    //
-                    return true;
+                    if (await waitHandle.WaitAsync(timeout).ConfigureAwait(false))
+                    {
+                        //
+                        // Process exited gracefully within the timeout.
+                        //
+                        return true;
+                    }
                 }
             }
 
