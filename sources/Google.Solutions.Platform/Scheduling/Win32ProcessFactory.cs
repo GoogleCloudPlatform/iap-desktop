@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
-using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
@@ -29,8 +27,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Scheduling
 {
@@ -65,64 +61,6 @@ namespace Google.Solutions.Platform.Scheduling
     {
         WithProfile = 1,        // LOGON_WITH_PROFILE
         NetCredentialsOnly = 2  // LOGON_NETCREDENTIALS_ONLY
-    }
-
-    public interface IWin32Process : IDisposable
-    {
-        /// <summary>
-        /// Image name, without path.
-        /// </summary>
-        string ImageName { get; }
-
-        /// <summary>
-        /// Process ID.
-        /// </summary>
-        uint Id { get; }
-
-        /// <summary>
-        /// Handle for awaiting process termination.
-        /// </summary>
-        WaitHandle WaitHandle { get;}
-
-        /// <summary>
-        /// Process handle.
-        /// </summary>
-        SafeProcessHandle Handle { get; }
-
-        /// <summary>
-        /// Resume the process.
-        /// </summary>
-        void Resume();
-
-        /// <summary>
-        /// Send WM_CLOSE to process and wait for the process to
-        /// terminate gracefully. Otherwise, terminate forcefully.
-        /// 
-        /// Returns true if the process terminated gracefully.
-        /// </summary>
-        Task<bool> CloseAsync(TimeSpan timeout);
-
-        /// <summary>
-        /// Wait for process to terminate.
-        /// 
-        /// Returns the exit code.
-        /// </summary>
-        Task<uint> WaitAsync(TimeSpan timeout);
-
-        /// <summary>
-        /// Forcefully terminate the process.
-        /// </summary>
-        void Terminate(uint exitCode);
-
-        /// <summary>
-        /// Indicates whether the process is running.
-        /// </summary>
-        bool IsRunning { get; }
-
-        /// <summary>
-        /// Numer of top-level windows owned by this process.
-        /// </summary>
-        int WindowCount { get; }
     }
 
     public class Win32ProcessFactory : IWin32ProcessFactory
@@ -160,7 +98,7 @@ namespace Google.Solutions.Platform.Scheduling
                     $"Launching process for {executable} failed");
             }
 
-            return new Process(
+            return new Win32Process(
                 new FileInfo(executable).Name,
                 processInfo.dwProcessId,
                 new SafeProcessHandle(processInfo.hProcess, true),
@@ -203,233 +141,13 @@ namespace Google.Solutions.Platform.Scheduling
                     $"Launching process for {executable} failed");
             }
 
-            return new Process(
+            return new Win32Process(
                 new FileInfo(executable).Name,
                 processInfo.dwProcessId,
                 new SafeProcessHandle(processInfo.hProcess, true),
                 new SafeThreadHandle(processInfo.hThread, true));
         }
 
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private class Process : DisposableBase, IWin32Process
-        {
-            private readonly string name;
-            private readonly uint processId;
-            private readonly SafeProcessHandle process;
-            private readonly SafeThreadHandle mainThread;
-
-            public Process(
-                string name,
-                uint processId,
-                SafeProcessHandle process,
-                SafeThreadHandle mainThread)
-            {
-                this.name = name.ExpectNotNull(nameof(name));
-                this.processId = processId;
-                this.process = process.ExpectNotNull(nameof(process));
-                this.mainThread = mainThread.ExpectNotNull(nameof(mainThread));
-            }
-
-            private void ThrowLastError(string message)
-            {
-                var lastError = Marshal.GetLastWin32Error();
-                throw new Win32Exception(
-                    lastError,
-                    $"{this.name}: {message} ({lastError})");
-            }
-
-            private void EnumerateTopLevelWindows(Action<IntPtr> action)
-            {
-                NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
-                {
-                    //
-                    // Lookup the process ID that owns this window.
-                    //
-                    if (NativeMethods.GetWindowThreadProcessId(
-                            hwnd,
-                            out var ownerProcessId) != 0 &&
-                        ownerProcessId == this.processId)
-                    {
-                        //
-                        // This window belongs to our process. 
-                        //
-                        action(hwnd);
-                    }
-
-                    //
-                    // NB. There might be more top-level windows, so continue
-                    // the search.
-                    //
-
-                    return true;
-                };
-
-                //
-                // Enumerate all top-level windows.
-                //
-                if (!NativeMethods.EnumWindows(callback, IntPtr.Zero))
-                {
-                    ThrowLastError("Enumerating windows failed");
-                }
-            }
-
-            private Task<bool> WaitForProcessExitAsync(TimeSpan timeout)
-            {
-                var completionSource = new TaskCompletionSource<bool>();
-
-                var waitHandle = this.process.ToWaitHandle(false);
-                var registration = ThreadPool.RegisterWaitForSingleObject(
-                    waitHandle,
-                    (_, timeoutElapsed) =>
-                    {
-                        //
-                        // Return true if the process was signalled (= exited)
-                        // within the timeout, or false otherwise.
-                        //
-                        completionSource.SetResult(!timeoutElapsed);
-                    },
-                    null,
-                    (uint)timeout.TotalMilliseconds,
-                    true);
-
-                return completionSource.Task
-                    .ContinueWith(t =>
-                    {
-                        registration.Unregister(waitHandle);
-                        waitHandle.Dispose();
-
-                        return t.Result;
-                    });
-            }
-
-            //-----------------------------------------------------------------
-            // IProcess.
-            //---------------------------------------------------------------------
-
-            public SafeProcessHandle Handle => this.process;
-
-            public string ImageName => this.name;
-
-            public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
-
-            public uint Id => this.processId;
-
-            public bool IsRunning
-            {
-                get => 
-                    NativeMethods.GetExitCodeProcess(this.process, out var exitCode) &&
-                    exitCode == NativeMethods.STILL_ACTIVE;
-            }
-
-            public int WindowCount
-            {
-                get
-                {
-                    int windowCount = 0;
-                    EnumerateTopLevelWindows(_ => windowCount++);
-
-                    return windowCount;
-                }
-            }
-
-            public async Task<uint> WaitAsync(TimeSpan timeout)
-            {
-                if (await WaitForProcessExitAsync(timeout).ConfigureAwait(false))
-                {
-                    //
-                    // Terminated.
-                    //
-                    NativeMethods.GetExitCodeProcess(this.process, out var exitCode);
-                    return exitCode;
-                }
-                else
-                {
-                    throw new TimeoutException(
-                        "The process did not terminate within the allotted timeout");
-                }
-            }
-
-            public async Task<bool> CloseAsync(TimeSpan timeout)
-            {
-                //
-                // Attempt to gracefully close the process by sending a WM_CLOSE message.
-                //
-                // See https://web.archive.org/web/20150311053121/http://support.microsoft.com/kb/178893
-                // for details.
-                //
-                int messagesPosted = 0;
-
-                EnumerateTopLevelWindows(hwnd =>
-                {
-                    //
-                    // This window belongs to our process. Post a message to 
-                    // tell it to close.
-                    //
-                    NativeMethods.PostMessage(
-                        hwnd,
-                        NativeMethods.WM_CLOSE,
-                        IntPtr.Zero,
-                        IntPtr.Zero);
-
-                    messagesPosted++;
-                });
-
-                if (messagesPosted > 0)
-                {
-                    var completionSource = new TaskCompletionSource<bool>();
-
-                    //
-                    // Give the process some time to digest the messages.
-                    //
-
-                    if (await WaitForProcessExitAsync(timeout).ConfigureAwait(false))
-                    {
-                        //
-                        // Process exited gracefully within the timeout.
-                        //
-                        return true;
-                    }
-                }
-
-                //
-                // Use force.
-                //
-                Terminate(0);
-                return false;
-            }
-
-            public void Resume()
-            {
-                if (NativeMethods.ResumeThread(this.mainThread) < 0)
-                {
-                    ThrowLastError("Resuming the process failed"); // TODO: Add test
-                }
-            }
-
-            public void Terminate(uint exitCode)
-            {
-                if (!NativeMethods.TerminateProcess(this.process, exitCode))
-                {
-                    ThrowLastError("Terminating the process failed");
-                }
-            }
-
-            public override string ToString()
-            {
-                return $"{this.ImageName} (PID {this.processId})";
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-
-                this.mainThread.Close();
-                this.process.Close();
-            }
-        }
 
         //---------------------------------------------------------------------
         // P/Invoke.
@@ -437,9 +155,6 @@ namespace Google.Solutions.Platform.Scheduling
 
         private static class NativeMethods
         {
-            internal const uint WM_CLOSE = 0x0010;
-            internal const int STILL_ACTIVE = 259;
-
             internal const uint CREATE_SUSPENDED = 0x00000004;
             internal const uint EXTENDED_STARTUPINFO_PRESENT = 0x00080000;
             internal const uint STARTF_USESTDHANDLES = 0x00000100;
@@ -477,21 +192,6 @@ namespace Google.Solutions.Platform.Scheduling
                 public uint dwThreadId;
             }
 
-            [DllImport("kernel32.dll", SetLastError = true)]
-            internal static extern int ResumeThread(
-                SafeThreadHandle hThread);
-
-            [DllImport("kernel32.dll", SetLastError = true)]
-            internal static extern bool TerminateProcess(
-                SafeProcessHandle hProcess,
-                uint exitCode);
-
-            [DllImport("kernel32.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool GetExitCodeProcess(
-                SafeProcessHandle hProcess, 
-                out uint lpExitCode);
-
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool CreateProcess(
@@ -519,37 +219,6 @@ namespace Google.Solutions.Platform.Scheduling
                 string currentDirectory,
                 [In] ref STARTUPINFO lpStartupInfo,
                 out PROCESS_INFORMATION lpProcessInformation);
-
-            internal delegate bool EnumWindowsProc(
-                IntPtr hwnd, 
-                int lParam);
-
-            [DllImport("user32.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool EnumWindows(
-                EnumWindowsProc lpEnumFunc, 
-                IntPtr lParam);
-
-            [DllImport("user32.dll", SetLastError = true)]
-            internal static extern uint GetWindowThreadProcessId(
-                IntPtr hWnd, 
-                out uint lpdwProcessId);
-
-            [return: MarshalAs(UnmanagedType.Bool)]
-            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-            internal static extern bool PostMessage(
-                IntPtr hWnd, 
-                uint msg, 
-                IntPtr wParam, 
-                IntPtr lParam);
-        }
-
-        private class SafeThreadHandle : SafeWin32Handle
-        {
-            public SafeThreadHandle(IntPtr handle, bool ownsHandle) 
-                : base(handle, ownsHandle)
-            {
-            }
         }
     }
 }

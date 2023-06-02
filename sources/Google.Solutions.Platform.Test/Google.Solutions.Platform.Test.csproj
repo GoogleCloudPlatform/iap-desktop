@@ -52,6 +52,7 @@
     <Compile Include="Net\TestChromePolicyUrlPattern.cs" />
     <Compile Include="Net\TestTcpTable.cs" />
     <Compile Include="Scheduling\TestWin32Job.cs" />
+    <Compile Include="Scheduling\TestWin32Process.cs" />
     <Compile Include="Scheduling\TestWin32ProcessFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\TestQuarantine.cs" />

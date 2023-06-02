@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Cryptography\CertificateStore.cs" />
+    <Compile Include="Scheduling\Win32Process.cs" />
     <Compile Include="Scheduling\Win32ProcessFactory.cs" />
     <Compile Include="Scheduling\Win32Job.cs" />
     <Compile Include="Security\Quarantine.cs" />
