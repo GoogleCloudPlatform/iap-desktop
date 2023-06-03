@@ -47,6 +47,7 @@
     <Compile Include="Dispatch\Win32Process.cs" />
     <Compile Include="Dispatch\Win32ProcessFactory.cs" />
     <Compile Include="Dispatch\Win32Job.cs" />
+    <Compile Include="Dispatch\WtsSession.cs" />
     <Compile Include="Security\Quarantine.cs" />
     <Compile Include="UserEnvironment.cs" />
     <Compile Include="Net\BrowserProtocolRegistry.cs" />

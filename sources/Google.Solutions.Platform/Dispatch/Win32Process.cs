@@ -89,6 +89,11 @@ namespace Google.Solutions.Platform.Dispatch
         /// Numer of top-level windows owned by this process.
         /// </summary>
         int WindowCount { get; }
+
+        /// <summary>
+        /// The NT/WTS session that this process is running in.
+        /// </summary>
+        IWtsSession Session { get; }
     }
 
 
@@ -162,6 +167,8 @@ namespace Google.Solutions.Platform.Dispatch
         public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
 
         public uint Id => this.processId;
+
+        public IWtsSession Session => WtsSession.FromProcessId(this.processId);
 
         public bool IsRunning
         {

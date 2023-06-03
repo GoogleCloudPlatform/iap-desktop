@@ -97,6 +97,25 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         //---------------------------------------------------------------------
+        // Session.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Session()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                Assert.AreEqual(process.Session, WtsSession.GetCurrent());
+
+                process.Terminate(1);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // WaitHandle.
         //---------------------------------------------------------------------
 
