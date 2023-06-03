@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Json;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
@@ -28,8 +27,6 @@ using Google.Solutions.Platform;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 

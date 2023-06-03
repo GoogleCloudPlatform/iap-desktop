@@ -25,6 +25,7 @@ using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System.ComponentModel;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
@@ -48,16 +49,33 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
-        // Launch.
+        // FormatArguments.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFileDoesNotExists_ThenLaunchThrowsException()
+        public void WhenArgumentsNull_ThenFormatArgumentsReturnsNull()
         {
-            var app = new AppProtocolClient("doesnotexist.exe", null);
+            var transport = new Mock<ITransport>();
+            var client = new AppProtocolClient("doesnotexist.exe", null);
 
-            Assert.Throws<Win32Exception>(
-                () => app.Launch(new Mock<ITransport>().Object));
+            Assert.IsNull(client.FormatArguments(transport.Object));
+        }
+
+        [Test]
+        public void WhenArgumentsContainsPlaceholders_ThenFormatArgumentsResolvesPlaceholders()
+        {
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 8080));
+
+            var client = new AppProtocolClient(
+                "doesnotexist.exe", 
+                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%%");
+
+            Assert.AreEqual(
+                "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%%",
+                client.FormatArguments(transport.Object));
         }
 
         //---------------------------------------------------------------------

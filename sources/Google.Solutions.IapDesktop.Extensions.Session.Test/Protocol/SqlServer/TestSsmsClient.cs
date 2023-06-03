@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer;
 using Moq;
 using NUnit.Framework;
-using System.IO;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
 {
@@ -33,24 +33,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
     public class TestSsmsClient
     {
         //---------------------------------------------------------------------
-        // Launch.
+        // FormatArguments.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCredentialsRequired_ThenLaunchThrowsException(
-            [Values(
-                NetworkCredentialType.Prompt,
-                NetworkCredentialType.Rdp)] NetworkCredentialType credentialType)
+        public void WhenNetworkCredentialTypeIsDefault_ThenFormatArgumentsReturnsString()
         {
-            var endpoint = new Mock<ITransport>();
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
+            var client = new SsmsClient(NetworkCredentialType.Default);
 
-            var client = new SsmsClient(credentialType);
-            Assert.Throws<InvalidDataException>(() => client.Launch(endpoint.Object));
+            Assert.AreEqual(
+                "-S 127.0.0.2,11443",
+                client.FormatArguments(transport.Object));
         }
 
-        //---------------------------------------------------------------------
-        // LaunchWithNetworkCredentials.
-        //---------------------------------------------------------------------
+        [Test]
+        public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsString(
+            [Values(
+                NetworkCredentialType.Rdp, 
+                NetworkCredentialType.Prompt)] NetworkCredentialType type)
+        {
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
+            var client = new SsmsClient(type);
 
+            Assert.AreEqual(
+                "-S 127.0.0.2,11443 -E",
+                client.FormatArguments(transport.Object));
+        }
     }
 }

@@ -38,11 +38,16 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         bool IsAvailable { get; }
 
         /// <summary>
-        /// Launch the application and let it the transport.
+        /// Path to the executable to be launched. 
         /// </summary>
-        Process Launch(ITransport endpoint);
-    }
+        string Executable { get; }
 
+        /// <summary>
+        /// Create command line arguments, incorporating the information
+        /// from the transport if necessary.
+        /// </summary>
+        string FormatArguments(ITransport transport);
+    }
 
     public class AppProtocolClient : IAppProtocolClient
     {
@@ -59,22 +64,24 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         ///   %host% - contain the locat IP address to connect to
         ///   
         /// </summary>
-        public string Arguments { get; }
+        internal string ArgumentsTemplate { get; }
 
-        internal protected AppProtocolClient(string executable, string arguments)
+        internal protected AppProtocolClient(
+            string executable, 
+            string argumentsTemplate)
         {
             this.Executable = executable.ExpectNotEmpty(nameof(executable));
-            this.Arguments = arguments;
+            this.ArgumentsTemplate = argumentsTemplate;
         }
 
         public override string ToString()
         {
             return this.Executable +
-                (this.Arguments == null ? string.Empty : " " + this.Arguments);
+                (this.ArgumentsTemplate == null ? string.Empty : " " + this.ArgumentsTemplate);
         }
 
         //-----------------------------------------------------------------
-        // IApplication.
+        // IAppProtocolClient.
         //-----------------------------------------------------------------
 
         public bool IsAvailable
@@ -82,14 +89,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             get => true;
         }
 
-        public Process Launch(ITransport endpoint) 
+        public string FormatArguments(ITransport transport)
         {
-            return Process.Start(new ProcessStartInfo()
-            {
-                FileName = this.Executable,
-                Arguments = this.Arguments,
-                UseShellExecute = true //TODO: Launch suspended
-            });
+            return this.ArgumentsTemplate?
+                .Replace("%port%", transport.Endpoint.Port.ToString())?
+                .Replace("%host%", transport.Endpoint.Address.ToString());
         }
 
         //-----------------------------------------------------------------
@@ -100,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             return other is AppProtocolClient cmd &&
                 Equals(cmd.Executable, this.Executable) &&
-                Equals(cmd.Arguments, this.Arguments);
+                Equals(cmd.ArgumentsTemplate, this.ArgumentsTemplate);
         }
 
         public override bool Equals(object obj)
@@ -112,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             return
                 this.Executable.GetHashCode() ^
-                (this.Arguments?.GetHashCode() ?? 0);
+                (this.ArgumentsTemplate?.GetHashCode() ?? 0);
         }
 
         public static bool operator ==(AppProtocolClient obj1, AppProtocolClient obj2)

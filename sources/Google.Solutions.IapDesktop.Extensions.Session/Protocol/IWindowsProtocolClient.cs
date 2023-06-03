@@ -20,9 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System.Diagnostics;
-using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
@@ -32,17 +29,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
     internal interface IWindowsProtocolClient : IAppProtocolClient
     {
         /// <summary>
-        /// Indicates whether the client must be launched
-        /// using network credentials.
+        /// Type of network credentials that the client 
+        /// must be launched with.
         /// </summary>
         NetworkCredentialType RequiredCredential { get; }
-
-        /// <summary>
-        /// Launch the client with network credentials.
-        /// </summary>
-        Process LaunchWithNetworkCredentials(
-            ITransport endpoint,
-            NetworkCredential credential);
     }
 
     public enum NetworkCredentialType

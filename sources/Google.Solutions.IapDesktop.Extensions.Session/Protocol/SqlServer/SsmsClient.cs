@@ -21,30 +21,17 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System;
-using System.Diagnostics;
-using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer
 {
-    internal sealed class SsmsClient : IWindowsProtocolClient //TODO: Add tests
+    internal sealed class SsmsClient : IWindowsProtocolClient
     {
-        private string CreateCommandLine(IPEndPoint endpoint)
-        {
-            //
-            // Create command line arguments based on
-            // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
-            //
-            var authFlag = this.RequiredCredential == NetworkCredentialType.Default
-                ? string.Empty  // SQL Server authentication.
-                : " -E";        // Windwos authentication.
-
-            return $"-S {endpoint.Address},{endpoint.Port}{authFlag}";
-        }
+        private readonly Ssms ssms; // null if not found.
 
         public SsmsClient(NetworkCredentialType credentialType)
         {
             this.RequiredCredential = credentialType;
+            Ssms.TryFind(out this.ssms);
         }
 
         //---------------------------------------------------------------------
@@ -55,37 +42,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer
 
         public bool IsAvailable
         {
-            get => Ssms.TryFind(out var _);
+            get => this.ssms != null;
+        }
+
+        public string Executable
+        {
+            get => this.ssms?.ExecutablePath;
+        }
+
+        public string FormatArguments(ITransport transport)
+        {
+            //
+            // Create command line arguments based on
+            // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
+            //
+            var authFlag = this.RequiredCredential == NetworkCredentialType.Default
+                ? string.Empty  // SQL Server authentication.
+                : " -E";        // Windows authentication.
+
+            var endpoint = transport.Endpoint;
+            return $"-S {endpoint.Address},{endpoint.Port}{authFlag}";
         }
 
         public bool Equals(IAppProtocolClient other)
         {
             return other is SsmsClient ssms &&
                 ssms.RequiredCredential == this.RequiredCredential;
-        }
-
-        public Process Launch(ITransport endpoint)
-        {
-            if (this.RequiredCredential != NetworkCredentialType.Default)
-            {
-                throw new InvalidOperationException(
-                    "SSMS must be launched with network credentials");
-            }
-
-            throw new NotImplementedException(); //TODO: Create process
-        }
-
-        public Process LaunchWithNetworkCredentials(
-            ITransport endpoint,
-            NetworkCredential credential)
-        {
-            if (this.RequiredCredential == NetworkCredentialType.Default)
-            {
-                return Launch(endpoint);
-            }
-
-            //TODO: Create process with netonly creds
-            throw new NotImplementedException();
         }
     }
 }
