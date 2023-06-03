@@ -6,7 +6,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Dispatch;
@@ -17,10 +17,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
 {
     [Service]
-    public class ClientAppCommands
+    public class AppCommands
     {
         private readonly IWin32Window ownerWindow;
         private readonly ProtocolRegistry protocolRegistry;
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
                     .OfType<AppProtocol>()
                     .OrderBy(p => p.Name))
                 {
-                    var factory = new ClientAppContextFactory(
+                    var factory = new AppContextFactory(
                         protocol,
                         this.transportFactory,
                         this.processFactory,
@@ -65,12 +65,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
         {
             private readonly IWin32Window ownerWindow;
             private readonly ICredentialDialog credentialDialog;
-            private readonly ClientAppContextFactory contextFactory;
+            private readonly AppContextFactory contextFactory;
 
             public OpenWithClientCommand(
                 IWin32Window ownerWindow,
                 string name,
-                ClientAppContextFactory contextFactory,
+                AppContextFactory contextFactory,
                 ICredentialDialog credentialDialog) 
                 : base(name)
             {
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
 
                 var requiredCredential = NetworkCredentialType.Default;
                 var client = this.contextFactory.Protocol.Client;
-                if (client is IWindowsClientApp windowsClient)
+                if (client is IWindowsAppClient windowsClient)
                 {
                     requiredCredential = windowsClient.RequiredCredential;
                 }

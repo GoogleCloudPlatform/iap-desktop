@@ -23,17 +23,17 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Platform.Dispatch;
 using Moq;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.ClientApp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
     [TestFixture]
-    public class TestClientAppContextFactory
+    public class TestAppContextFactory
     {
         //---------------------------------------------------------------------
         // CreateContext.
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.ClientApp
         [Test]
         public void TryParse()
         {
-            var factory = new ClientAppContextFactory(
+            var factory = new AppContextFactory(
                 new AppProtocol(
                     "app-1",
                     Enumerable.Empty<ITrait>(),

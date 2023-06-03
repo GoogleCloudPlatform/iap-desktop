@@ -22,12 +22,12 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Moq;
 using NUnit.Framework;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.ClientApp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
     [TestFixture]
     public class TestSsmsClient

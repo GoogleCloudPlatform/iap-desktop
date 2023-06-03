@@ -46,7 +46,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using System.Linq;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {

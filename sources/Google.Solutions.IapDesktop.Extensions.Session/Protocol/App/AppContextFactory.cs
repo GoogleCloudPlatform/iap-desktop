@@ -11,15 +11,15 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    internal class ClientAppContextFactory : IProtocolContextFactory //TODO: Add test
+    internal class AppContextFactory : IProtocolContextFactory //TODO: Add test
     {
         private readonly IConnectionSettingsService settingsService;
         private readonly IIapTransportFactory transportFactory;
         private readonly IWin32ProcessFactory processFactory;
 
-        internal ClientAppContextFactory(
+        internal AppContextFactory(
             AppProtocol protocol,
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory,

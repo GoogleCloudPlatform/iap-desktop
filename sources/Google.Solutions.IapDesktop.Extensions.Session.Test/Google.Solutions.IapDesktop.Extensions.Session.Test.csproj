@@ -129,9 +129,9 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\Adapter\TestKeyStoreAdapter.cs" />
-    <Compile Include="Protocol\ClientApp\TestClientAppContextFactory.cs" />
-    <Compile Include="Protocol\ClientApp\TestSsms.cs" />
-    <Compile Include="Protocol\ClientApp\TestSsmsClient.cs" />
+    <Compile Include="Protocol\App\TestAppContextFactory.cs" />
+    <Compile Include="Protocol\App\TestSsms.cs" />
+    <Compile Include="Protocol\App\TestSsmsClient.cs" />
     <Compile Include="Protocol\Ssh\TestSshProtocol.cs" />
     <Compile Include="Protocol\Rdp\TestRdpProtocol.cs" />
     <Compile Include="Protocol\Rdp\TestRdpCredentialCallback.cs" />

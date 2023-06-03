@@ -27,7 +27,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
     /// <summary>
     /// SQL Server Management Studio executable.

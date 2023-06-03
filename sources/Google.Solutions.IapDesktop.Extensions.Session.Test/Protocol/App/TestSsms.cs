@@ -19,37 +19,25 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using NUnit.Framework;
+using System.IO;
+
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
-    /// <summary>
-    /// A client that can use Windows network authentication.
-    /// </summary>
-    internal interface IWindowsClientApp : IAppProtocolClient
+    [TestFixture]
+    public class TestSsms
     {
-        /// <summary>
-        /// Required type of network credential.
-        /// </summary>
-        NetworkCredentialType RequiredCredential { get; }
-    }
+        [Test]
+        public void TryFind()
+        {
+            if (!Ssms.TryFind(out var ssms))
+            {
+                Assert.Inconclusive("SSMS not installed");
+            }
 
-    public enum NetworkCredentialType
-    {
-        /// <summary>
-        /// Use default network credentials.
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Use RDP credentials as network credentials,
-        /// if available.
-        /// </summary>
-        Rdp,
-
-        /// <summary>
-        /// Prompt user for network credentials.
-        /// </summary>
-        Prompt
+            Assert.IsTrue(File.Exists(ssms.ExecutablePath));
+        }
     }
 }

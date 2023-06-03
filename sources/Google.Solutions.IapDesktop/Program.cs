@@ -481,6 +481,7 @@ namespace Google.Solutions.IapDesktop
                 // Load windows.
                 //
                 mainLayer.AddSingleton<IMainWindow>(mainForm);
+                mainLayer.AddSingleton<IWin32Window>(mainForm);
                 mainLayer.AddTransient<AboutView>();
                 mainLayer.AddTransient<AboutViewModel>();
                 mainLayer.AddTransient<DeviceFlyoutView>();
