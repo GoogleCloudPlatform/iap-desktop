@@ -45,12 +45,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cryptography\TestCertificateStore.cs" />
+    <Compile Include="Dispatch\TestWtsSession.cs" />
     <Compile Include="Net\TestBrowserProtocolRegistry.cs" />
     <Compile Include="Net\TestBrowser.cs" />
     <Compile Include="Net\TestChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Net\TestChromeCertificateSelector.cs" />
     <Compile Include="Net\TestChromePolicyUrlPattern.cs" />
     <Compile Include="Net\TestTcpTable.cs" />
+    <Compile Include="Dispatch\TestWin32Job.cs" />
+    <Compile Include="Dispatch\TestWin32Process.cs" />
+    <Compile Include="Dispatch\TestWin32ProcessFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\TestQuarantine.cs" />
     <Compile Include="TestUserEnvironment.cs" />
@@ -61,6 +65,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj">
       <Project>{a74d041e-639f-4c53-a0c4-f8f936a980c8}</Project>
       <Name>Google.Solutions.Platform</Name>

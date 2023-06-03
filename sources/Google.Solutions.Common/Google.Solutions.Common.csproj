@@ -52,6 +52,8 @@
     <Compile Include="Interop\GlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\HRESULT.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
+    <Compile Include="Interop\SafeHandleExtensions.cs" />
+    <Compile Include="Interop\SafeWin32Handle.cs" />
     <Compile Include="Interop\WindowsFilename.cs" />
     <Compile Include="Runtime\DisposableExtensions.cs" />
     <Compile Include="Text\IAsyncReader.cs" />
