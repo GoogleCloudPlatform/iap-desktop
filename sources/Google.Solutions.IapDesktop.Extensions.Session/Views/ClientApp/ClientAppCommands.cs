@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
 
             protected override bool IsEnabled(IProjectModelNode context)
             {
-                return this.contextFactory.Protocol.Client.IsAvailable;
+                return true;
             }
 
             public override async Task ExecuteAsync(IProjectModelNode node)

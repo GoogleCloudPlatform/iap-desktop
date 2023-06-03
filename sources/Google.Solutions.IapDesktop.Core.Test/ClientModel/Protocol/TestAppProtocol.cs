@@ -50,6 +50,68 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
+        // IsAvailable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenClientNotAvailable_ThenIsAvailableReturnsFalse()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(false);
+
+            var target = new Mock<IProtocolTarget>();
+            var protocol = new AppProtocol(
+                "test",
+                Enumerable.Empty<ITrait>(),
+                new AllowAllPolicy(),
+                8080,
+                null,
+                client.Object);
+
+            Assert.IsFalse(protocol.IsAvailable(target.Object));
+        }
+
+        [Test]
+        public void WhenRequiredTraitMissing_ThenIsAvailableReturnsFalse()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+
+            var target = new Mock<IProtocolTarget>();
+            var protocol = new AppProtocol(
+                "test",
+                new [] { new Mock<ITrait>().Object },
+                new AllowAllPolicy(),
+                8080,
+                null,
+                client.Object);
+
+            Assert.IsFalse(protocol.IsAvailable(target.Object));
+        }
+
+        [Test]
+        public void WhenPrerequisitesMet_ThenIsAvailableReturnsTrue()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+
+            var trait = new Mock<ITrait>().Object;
+
+            var target = new Mock<IProtocolTarget>();
+            target.SetupGet(t => t.Traits).Returns(new[] { trait });
+
+            var protocol = new AppProtocol(
+                "test",
+                new[] { trait },
+                new AllowAllPolicy(),
+                8080,
+                null,
+                client.Object);
+
+            Assert.IsTrue(protocol.IsAvailable(target.Object));
+        }
+
+        //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
 
