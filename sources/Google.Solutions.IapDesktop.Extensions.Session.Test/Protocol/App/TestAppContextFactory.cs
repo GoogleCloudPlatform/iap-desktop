@@ -19,48 +19,192 @@
 // under the License.
 //
 
-
+using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
     [TestFixture]
     public class TestAppContextFactory
     {
+        private static readonly InstanceLocator SampleLocator =
+            new InstanceLocator("project-1", "zone-1", "instance-1");
+
+        private static AppProtocol CreateProtocol(bool clientAvailable)
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(clientAvailable);
+
+            return new AppProtocol(
+                "app-1",
+                Enumerable.Empty<ITrait>(),
+                new Mock<ITransportPolicy>().Object,
+                80,
+                null,
+                client.Object);
+        }
+
+        private static IProjectModelInstanceNode CreateInstanceNode()
+        {
+            var node = new Mock<IProjectModelInstanceNode>();
+            node.SetupGet(i => i.Instance).Returns(SampleLocator);
+            return node.Object;
+        }
+
         //---------------------------------------------------------------------
-        // CreateContext.
+        // CreateContext - targets.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenTargetUnsupported_ThenCreateContextThrowsException()
         {
-            Assert.Fail();
+            var factory = new AppContextFactory(
+                CreateProtocol(true),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                new Mock<IConnectionSettingsService>().Object);
+
+            ExceptionAssert.ThrowsAggregateException<ProtocolTargetException>(
+                () => factory.CreateContextAsync(
+                    new Mock<IProtocolTarget>().Object,
+                    0,
+                    CancellationToken.None).Wait());
         }
 
         [Test]
-        public void WhenFlagsClear_ThenCreateContextUsesNoNetworkCredentials()
+        public void WhenClientUnavailable_ThenCreateContextThrowsException()
         {
-            Assert.Fail();
+            var factory = new AppContextFactory(
+                CreateProtocol(false),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                new Mock<IConnectionSettingsService>().Object);
+
+            ExceptionAssert.ThrowsAggregateException<ProtocolTargetException>(
+                () => factory.CreateContextAsync(
+                    CreateInstanceNode(),
+                    (uint)AppProtocolContextFlags.None,
+                    CancellationToken.None).Wait());
+        }
+
+
+        //---------------------------------------------------------------------
+        // CreateContext - flags.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFlagsUnsupported_ThenCreateContextThrowsException()
+        {
+            var factory = new AppContextFactory(
+                CreateProtocol(true),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                new Mock<IConnectionSettingsService>().Object);
+
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(
+                () => factory.CreateContextAsync(
+                    CreateInstanceNode(),
+                    0x10000,
+                    CancellationToken.None).Wait());
         }
 
         [Test]
-        public void WhenTryUseRdpNetworkCredentialsIsSetButNoCredentialsFound_ThenCreateContextUsesNoNetworkCredentials()
+        public async Task WhenFlagsClear_ThenCreateContextUsesNoNetworkCredentials()
         {
-            Assert.Fail();
+            var settingsService = new Mock<IConnectionSettingsService>();
+
+            var factory = new AppContextFactory(
+                CreateProtocol(true),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                settingsService.Object);
+
+            var context = (AppProtocolContext)await factory
+                .CreateContextAsync(
+                    CreateInstanceNode(),
+                    (uint)AppProtocolContextFlags.None,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(context.NetworkCredential);
+
+            settingsService.Verify(
+                s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()),
+                Times.Never);
         }
 
         [Test]
-        public void WhenTryUseRdpNetworkCredentials_ThenCreateContextUsesRdpNetworkCredentials()
+        public async Task WhenTryUseRdpNetworkCredentialsIsSetButNoCredentialsFound_ThenCreateContextUsesNoNetworkCredentials()
         {
-            Assert.Fail();
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var factory = new AppContextFactory(
+                CreateProtocol(true),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                settingsService.Object);
+
+            var context = (AppProtocolContext)await factory
+                .CreateContextAsync(
+                    CreateInstanceNode(),
+                    (uint)AppProtocolContextFlags.TryUseRdpNetworkCredentials,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(context.NetworkCredential);
+
+            settingsService.Verify(
+                s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenTryUseRdpNetworkCredentials_ThenCreateContextUsesRdpNetworkCredentials()
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.RdpUsername.StringValue = "user";
+            settings.RdpPassword.ClearTextValue = "password";
+            settings.RdpDomain.StringValue = "domain";
+
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var factory = new AppContextFactory(
+                CreateProtocol(true),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                settingsService.Object);
+
+            var context = (AppProtocolContext)await factory
+                .CreateContextAsync(
+                    CreateInstanceNode(),
+                    (uint)AppProtocolContextFlags.TryUseRdpNetworkCredentials,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(context.NetworkCredential);
+            Assert.AreEqual("password", context.NetworkCredential.Password);
+            Assert.AreEqual("domain", context.NetworkCredential.Domain);
         }
 
         //---------------------------------------------------------------------
@@ -71,13 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public void TryParse()
         {
             var factory = new AppContextFactory(
-                new AppProtocol(
-                    "app-1",
-                    Enumerable.Empty<ITrait>(),
-                    new Mock<ITransportPolicy>().Object,
-                    80,
-                    null,
-                    new Mock<IAppProtocolClient>().Object),
+                CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
                 new Mock<IConnectionSettingsService>().Object);

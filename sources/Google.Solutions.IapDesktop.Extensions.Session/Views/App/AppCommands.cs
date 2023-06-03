@@ -29,6 +29,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
         private readonly IConnectionSettingsService settingsService;
         private readonly ICredentialDialog credentialDialog;
 
+        public AppCommands(
+            IWin32Window ownerWindow,
+            ProtocolRegistry protocolRegistry,
+            IIapTransportFactory transportFactory,
+            IWin32ProcessFactory processFactory,
+            IConnectionSettingsService settingsService,
+            ICredentialDialog credentialDialog)
+        {
+            this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
+            this.protocolRegistry = protocolRegistry.ExpectNotNull(nameof(protocolRegistry));
+            this.transportFactory = transportFactory.ExpectNotNull(nameof(transportFactory));
+            this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
+            this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
+            this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
+        }
+
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------

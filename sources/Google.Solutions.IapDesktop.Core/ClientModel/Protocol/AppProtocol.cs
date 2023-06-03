@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             {
                 return this.RequiredTraits
                     .EnsureNotNull()
-                    .All(target.Traits.Contains);
+                    .All(target.Traits.EnsureNotNull().Contains);
             }
         }
 

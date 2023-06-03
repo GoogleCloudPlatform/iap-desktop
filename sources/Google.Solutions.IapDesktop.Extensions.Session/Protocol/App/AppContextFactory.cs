@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    internal class AppContextFactory : IProtocolContextFactory //TODO: Add test
+    internal class AppContextFactory : IProtocolContextFactory
     {
         private readonly IConnectionSettingsService settingsService;
         private readonly IIapTransportFactory transportFactory;
