@@ -140,7 +140,11 @@ namespace Google.Solutions.Platform.Dispatch
             //
             // Enumerate all top-level windows.
             //
-            if (!NativeMethods.EnumWindows(callback, IntPtr.Zero))
+            // Ignore ERROR_INVALID_PARAMETER errors as those are expected
+            // in non-interactive sessions.
+            //
+            if (!NativeMethods.EnumWindows(callback, IntPtr.Zero) &&
+                Marshal.GetLastWin32Error() != NativeMethods.ERROR_INVALID_PARAMETER)
             {
                 throw DispatchException.FromLastWin32Error(
                     $"{this.name}: Enumerating windows failed");
@@ -285,6 +289,7 @@ namespace Google.Solutions.Platform.Dispatch
         {
             internal const uint WM_CLOSE = 0x0010;
             internal const int STILL_ACTIVE = 259;
+            internal const int ERROR_INVALID_PARAMETER = 87;
 
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int ResumeThread(
