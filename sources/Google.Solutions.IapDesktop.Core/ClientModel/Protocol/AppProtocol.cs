@@ -22,14 +22,9 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
