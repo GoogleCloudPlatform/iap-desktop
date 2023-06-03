@@ -138,8 +138,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Protocol\Adapter\KeyStoreAdapter.cs" />
-    <Compile Include="Protocol\ClientApp\AppProtocolContextFactory.cs" />
-    <Compile Include="Protocol\ClientApp\IWindowsProtocolClient.cs" />
+    <Compile Include="Protocol\ClientApp\ClientAppContextFactory.cs" />
+    <Compile Include="Protocol\ClientApp\IWindowsClientApp.cs" />
     <Compile Include="Protocol\ClientApp\Ssms.cs" />
     <Compile Include="Protocol\ClientApp\SsmsClient.cs" />
     <Compile Include="Protocol\Ssh\SshProtocol.cs" />

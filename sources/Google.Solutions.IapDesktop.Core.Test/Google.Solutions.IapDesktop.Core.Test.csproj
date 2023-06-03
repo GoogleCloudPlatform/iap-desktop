@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientModel\Protocol\TestAppProtocolContext.cs" />
     <Compile Include="ClientModel\Protocol\TestProtocolTargetLocator.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocol.cs" />
     <Compile Include="ClientModel\Protocol\TestAppProtocolClient.cs" />
@@ -124,6 +125,10 @@
     <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj">
       <Project>{D9493479-1751-402B-880F-60ED33EBB885}</Project>
       <Name>Google.Solutions.Iap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj">
+      <Project>{a74d041e-639f-4c53-a0c4-f8f936a980c8}</Project>
+      <Name>Google.Solutions.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>

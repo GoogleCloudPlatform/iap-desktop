@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.Platform.Dispatch;
 using System;
@@ -29,7 +28,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
     public class AppProtocolContext : IProtocolContext
     {

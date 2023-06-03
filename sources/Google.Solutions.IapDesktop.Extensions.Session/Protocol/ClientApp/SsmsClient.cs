@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
 {
-    internal sealed class SsmsClient : IWindowsProtocolClient
+    internal sealed class SsmsClient : IWindowsClientApp
     {
         private readonly Ssms ssms; // null if not found.
 

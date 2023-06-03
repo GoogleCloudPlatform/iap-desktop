@@ -34,12 +34,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
         {
             private readonly IWin32Window ownerWindow;
             private readonly ICredentialDialog credentialDialog;
-            private readonly AppProtocolContextFactory contextFactory;
+            private readonly ClientAppContextFactory contextFactory;
 
             public OpenWithClientCommand(
                 IWin32Window ownerWindow,
                 string name,
-                AppProtocolContextFactory contextFactory,
+                ClientAppContextFactory contextFactory,
                 ICredentialDialog credentialDialog) 
                 : base(name)
             {
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
 
                 var requiredCredential = NetworkCredentialType.Default;
                 var client = this.contextFactory.Protocol.Client;
-                if (client is IWindowsProtocolClient windowsClient)
+                if (client is IWindowsClientApp windowsClient)
                 {
                     requiredCredential = windowsClient.RequiredCredential;
                 }

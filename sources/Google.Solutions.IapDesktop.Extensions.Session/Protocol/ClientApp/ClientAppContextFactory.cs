@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
 {
-    internal class AppProtocolContextFactory : IProtocolContextFactory
+    internal class ClientAppContextFactory : IProtocolContextFactory
     {
         private readonly IConnectionSettingsService settingsService;
         private readonly IIapTransportFactory transportFactory;
