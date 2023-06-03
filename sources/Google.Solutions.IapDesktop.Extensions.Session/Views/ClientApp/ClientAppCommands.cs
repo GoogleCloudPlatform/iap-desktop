@@ -35,18 +35,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
             private readonly IWin32Window ownerWindow;
             private readonly ICredentialDialog credentialDialog;
             private readonly AppProtocolContextFactory contextFactory;
-            private readonly NetworkCredentialType networkCredentialType;
 
             public OpenWithClientCommand(
                 IWin32Window ownerWindow,
                 string name,
-                NetworkCredentialType networkCredentialType,
                 AppProtocolContextFactory contextFactory,
                 ICredentialDialog credentialDialog) 
                 : base(name)
             {
                 this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
-                this.networkCredentialType = networkCredentialType;
                 this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
                 this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
             }
@@ -66,17 +63,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
             {
                 var instance = (IProjectModelInstanceNode)node;
 
+                var requiredCredential = NetworkCredentialType.Default;
+                var client = this.contextFactory.Protocol.Client;
+                if (client is IWindowsProtocolClient windowsClient)
+                {
+                    requiredCredential = windowsClient.RequiredCredential;
+                }
+
                 var context = (AppProtocolContext)await this.contextFactory
                     .CreateContextAsync(
-                        instance, 
-                        this.networkCredentialType == NetworkCredentialType.Rdp 
+                        instance,
+                        requiredCredential == NetworkCredentialType.Rdp 
                             ? (uint)AppProtocolContextFlags.TryUseRdpNetworkCredentials
                             : (uint)AppProtocolContextFlags.None, 
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
-                if (this.networkCredentialType == NetworkCredentialType.Prompt ||
-                        (this.networkCredentialType == NetworkCredentialType.Rdp && 
+                if (requiredCredential == NetworkCredentialType.Prompt ||
+                        (requiredCredential == NetworkCredentialType.Rdp && 
                         context.NetworkCredential == null))
                 {
                     //
@@ -106,24 +110,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
 
                 // wait for process, then dispose transport.
             }
-        }
-
-        public enum NetworkCredentialType
-        {
-            /// <summary>
-            /// Use default network credentials.
-            /// </summary>
-            Default,
-
-            /// <summary>
-            /// Use RDP credentials as network credentials.
-            /// </summary>
-            Rdp,
-
-            /// <summary>
-            /// Prompt user for network credentials.
-            /// </summary>
-            Prompt
         }
     }
 }

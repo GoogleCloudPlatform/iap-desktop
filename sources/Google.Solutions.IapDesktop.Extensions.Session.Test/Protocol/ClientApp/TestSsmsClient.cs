@@ -37,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.ClientApp
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAuthenticationTypeIsSqlServer_ThenFormatArgumentsReturnsString()
+        public void WhenNetworkCredentialTypeIsDefault_ThenFormatArgumentsReturnsString()
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient(SsmsAuthenticationType.SqlServer);
+            var client = new SsmsClient(NetworkCredentialType.Default);
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443",
@@ -51,13 +51,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.ClientApp
         }
 
         [Test]
-        public void WhenAuthenticationTypeIsWindows_ThenFormatArgumentsReturnsString()
+        public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsString(
+            [Values(
+                NetworkCredentialType.Rdp, 
+                NetworkCredentialType.Prompt)] NetworkCredentialType type)
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient(SsmsAuthenticationType.Windows);
+            var client = new SsmsClient(type);
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -E",

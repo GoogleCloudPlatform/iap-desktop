@@ -24,20 +24,21 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
 {
-    internal sealed class SsmsClient : IAppProtocolClient
+    internal sealed class SsmsClient : IWindowsProtocolClient
     {
         private readonly Ssms ssms; // null if not found.
-        private readonly SsmsAuthenticationType authenticationType;
 
-        public SsmsClient(SsmsAuthenticationType authenticationType)
+        public SsmsClient(NetworkCredentialType credentialType)
         {
-            this.authenticationType = authenticationType;
+            this.RequiredCredential = credentialType;
             Ssms.TryFind(out this.ssms);
         }
 
         //---------------------------------------------------------------------
-        // IAppProtocolClient.
+        // INetonlyCredentialClient.
         //---------------------------------------------------------------------
+
+        public NetworkCredentialType RequiredCredential { get; }
 
         public bool IsAvailable
         {
@@ -55,8 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
             // Create command line arguments based on
             // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
             //
-            var authFlag = this.authenticationType == SsmsAuthenticationType.Windows
-                ? " -E" : string.Empty;
+            var authFlag = this.RequiredCredential == NetworkCredentialType.Default
+                ? string.Empty  // SQL Server authentication.
+                : " -E";        // Windows authentication.
 
             var endpoint = transport.Endpoint;
             return $"-S {endpoint.Address},{endpoint.Port}{authFlag}";
@@ -65,13 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
         public bool Equals(IAppProtocolClient other)
         {
             return other is SsmsClient ssms &&
-                ssms.authenticationType == this.authenticationType;
+                ssms.RequiredCredential == this.RequiredCredential;
         }
-    }
-
-    internal enum SsmsAuthenticationType
-    {
-        SqlServer,
-        Windows
     }
 }
