@@ -23,6 +23,7 @@ using Google.Solutions.Platform.Dispatch;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
+using System.Net;
 
 namespace Google.Solutions.Platform.Test.Dispatch
 {
@@ -41,7 +42,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            Assert.Throws<Win32Exception>(() => factory.CreateProcess("doesnotexist.exe", null));
+            Assert.Throws<DispatchException>(() => factory.CreateProcess("doesnotexist.exe", null));
         }
 
         [Test]
@@ -58,6 +59,41 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 process.Terminate(1);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // CreateProcessAsUser.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUsingInvalidDomainCredentialsForNetonlyLogon_ThenCreateProcessAsUserSucceeds()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcessAsUser(
+                CmdExe,
+                null,
+                LogonFlags.NetCredentialsOnly,
+                new NetworkCredential("invalid", "invalid", "invalid")))
+            {
+                Assert.IsNotNull(process.Handle);
+                Assert.IsFalse(process.Handle.IsInvalid);
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenUsingInvalidLocalCredentialsForNetonlyLogon_ThenCreateProcessAsUserThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            Assert.Throws<DispatchException>(
+                () => factory.CreateProcessAsUser(
+                CmdExe,
+                null,
+                LogonFlags.NetCredentialsOnly,
+                new NetworkCredential("invalid", "invalid")));
         }
     }
 }

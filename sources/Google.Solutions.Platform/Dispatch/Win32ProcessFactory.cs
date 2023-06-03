@@ -93,8 +93,7 @@ namespace Google.Solutions.Platform.Dispatch
                 ref startupInfo,
                 out var processInfo))
             {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
+                throw DispatchException.FromLastWin32Error(
                     $"Launching process for {executable} failed");
             }
 
@@ -136,8 +135,7 @@ namespace Google.Solutions.Platform.Dispatch
                 ref startupInfo,
                 out var processInfo))
             {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
+                throw DispatchException.FromLastWin32Error(
                     $"Launching process for {executable} failed");
             }
 

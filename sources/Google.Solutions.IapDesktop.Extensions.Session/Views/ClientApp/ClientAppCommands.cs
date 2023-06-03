@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
         // Command classes.
         //---------------------------------------------------------------------
 
-        private class OpenWithClientCommand : MenuCommandBase<IProjectModelNode>
+        private class OpenWithClientCommand : MenuCommandBase<IProjectModelNode>  //TODO: Add test
         {
             private readonly IWin32Window ownerWindow;
             private readonly ICredentialDialog credentialDialog;
