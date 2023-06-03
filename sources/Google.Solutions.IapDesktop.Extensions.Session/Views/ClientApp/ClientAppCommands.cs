@@ -7,10 +7,12 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Dispatch;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,11 +22,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.ClientApp
     [Service]
     public class ClientAppCommands
     {
+        private readonly IWin32Window ownerWindow;
+        private readonly ProtocolRegistry protocolRegistry;
+        private readonly IIapTransportFactory transportFactory;
+        private readonly IWin32ProcessFactory processFactory;
+        private readonly IConnectionSettingsService settingsService;
+        private readonly ICredentialDialog credentialDialog;
+
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------
 
-        public IReadOnlyCollection<IContextCommand<IProjectModelNode>> OpenWithClient { get; }
+        public IEnumerable<IContextCommand<IProjectModelNode>> OpenContextCommands
+        {
+            get
+            {
+                foreach (var protocol in this.protocolRegistry
+                    .Protocols
+                    .OfType<AppProtocol>()
+                    .OrderBy(p => p.Name))
+                {
+                    var factory = new ClientAppContextFactory(
+                        protocol,
+                        this.transportFactory,
+                        this.processFactory,
+                        this.settingsService);
+
+                    yield return new OpenWithClientCommand(
+                        this.ownerWindow,
+                        protocol.Name,
+                        factory,
+                        this.credentialDialog);
+                }
+            }
+        }
 
         //---------------------------------------------------------------------
         // Command classes.

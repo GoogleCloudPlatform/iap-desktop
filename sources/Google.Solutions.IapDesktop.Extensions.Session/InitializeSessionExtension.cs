@@ -225,8 +225,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
 
-
-
             //
             // Protocols.
             //
@@ -257,6 +255,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient(NetworkCredentialType.Default)));
+
+            // TODO: Add commands
         }
     }
 }
