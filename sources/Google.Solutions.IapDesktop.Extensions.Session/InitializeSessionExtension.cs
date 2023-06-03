@@ -46,7 +46,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using System.Linq;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {
@@ -230,33 +230,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             //
             // Protocols.
             //
-            var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server Management Studio",
-                    Enumerable.Empty<ITrait>(),
-                    new AllowAllPolicy(), // TODO: Use same job/process policy
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(Protocol.NetworkCredentialType.Rdp)));
+            //var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
+            //protocolRegistry.RegisterProtocol(
+            //    new AppProtocol(
+            //        "SQL Server Management Studio",
+            //        Enumerable.Empty<ITrait>(),
+            //        new AllowAllPolicy(), // TODO: Use same job/process policy
+            //        Ssms.DefaultServerPort,
+            //        null,
+            //        new SsmsClient(WindowsNetworkCredentialType.Rdp)));
 
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server Management Studio as user...",
-                    Enumerable.Empty<ITrait>(),
-                    new AllowAllPolicy(), // TODO: Use same job/process policy
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(Protocol.NetworkCredentialType.Prompt)));
+            //protocolRegistry.RegisterProtocol(
+            //    new AppProtocol(
+            //        "SQL Server Management Studio as user...",
+            //        Enumerable.Empty<ITrait>(),
+            //        new AllowAllPolicy(), // TODO: Use same job/process policy
+            //        Ssms.DefaultServerPort,
+            //        null,
+            //        new SsmsClient(WindowsNetworkCredentialType.Prompt)));
 
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server Management Studio as SQL user...",
-                    Enumerable.Empty<ITrait>(),
-                    new AllowAllPolicy(), // TODO: Use same job/process policy
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(Protocol.NetworkCredentialType.Default)));
+            //protocolRegistry.RegisterProtocol(
+            //    new AppProtocol(
+            //        "SQL Server Management Studio as SQL user...",
+            //        Enumerable.Empty<ITrait>(),
+            //        new AllowAllPolicy(), // TODO: Use same job/process policy
+            //        Ssms.DefaultServerPort,
+            //        null,
+            //        new SsmsClient(WindowsNetworkCredentialType.Default)));
         }
     }
 }

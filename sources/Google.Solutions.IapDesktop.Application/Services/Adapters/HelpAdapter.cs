@@ -75,6 +75,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public static readonly IHelpTopic NodeUsageReporting = new HelpTopic(
            "Track VM and sole-tenant node usage for license reporting",
            "https://cloud.google.com/compute/docs/nodes/determining-server-usage");
+
+        public static readonly IHelpTopic AppProtocols = new HelpTopic(
+            "App protocols",
+            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki");
     }
 
     public class HelpAdapter

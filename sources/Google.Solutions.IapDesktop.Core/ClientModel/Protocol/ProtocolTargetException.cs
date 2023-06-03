@@ -19,25 +19,29 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Diagnostics;
+using System;
 
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer;
-using NUnit.Framework;
-using System.IO;
-
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
-    [TestFixture]
-    public class TestSsms
+    public class ProtocolTargetException : ApplicationException, IExceptionWithHelpTopic
     {
-        [Test]
-        public void TryFind()
-        {
-            if (!Ssms.TryFind(out var ssms))
-            {
-                Assert.Inconclusive("SSMS not installed");
-            }
+        public IHelpTopic Help { get; }
 
-            Assert.IsTrue(File.Exists(ssms.ExecutablePath));
+        public ProtocolTargetException(
+            string message,
+            IHelpTopic helpTopic) : base(message)
+        {
+            this.Help = helpTopic;
+        }
+
+        public ProtocolTargetException(
+            string message,
+            IHelpTopic helpTopic,
+            Exception innerException)
+            : base(message, innerException)
+        {
+            this.Help = helpTopic;
         }
     }
 }

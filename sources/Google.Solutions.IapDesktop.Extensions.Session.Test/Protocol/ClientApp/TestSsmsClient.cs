@@ -22,12 +22,12 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp;
 using Moq;
 using NUnit.Framework;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.ClientApp
 {
     [TestFixture]
     public class TestSsmsClient
@@ -37,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNetworkCredentialTypeIsDefault_ThenFormatArgumentsReturnsString()
+        public void WhenAuthenticationTypeIsSqlServer_ThenFormatArgumentsReturnsString()
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient(NetworkCredentialType.Default);
+            var client = new SsmsClient(SsmsAuthenticationType.SqlServer);
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443",
@@ -51,16 +51,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.SqlServer
         }
 
         [Test]
-        public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsString(
-            [Values(
-                NetworkCredentialType.Rdp, 
-                NetworkCredentialType.Prompt)] NetworkCredentialType type)
+        public void WhenAuthenticationTypeIsWindows_ThenFormatArgumentsReturnsString()
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient(type);
+            var client = new SsmsClient(SsmsAuthenticationType.Windows);
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -E",

@@ -22,23 +22,22 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.ClientApp
 {
-    internal sealed class SsmsClient : IWindowsProtocolClient
+    internal sealed class SsmsClient : IAppProtocolClient
     {
         private readonly Ssms ssms; // null if not found.
+        private readonly SsmsAuthenticationType authenticationType;
 
-        public SsmsClient(NetworkCredentialType credentialType)
+        public SsmsClient(SsmsAuthenticationType authenticationType)
         {
-            this.RequiredCredential = credentialType;
+            this.authenticationType = authenticationType;
             Ssms.TryFind(out this.ssms);
         }
 
         //---------------------------------------------------------------------
-        // INetonlyCredentialClient.
+        // IAppProtocolClient.
         //---------------------------------------------------------------------
-
-        public NetworkCredentialType RequiredCredential { get; }
 
         public bool IsAvailable
         {
@@ -56,9 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer
             // Create command line arguments based on
             // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
             //
-            var authFlag = this.RequiredCredential == NetworkCredentialType.Default
-                ? string.Empty  // SQL Server authentication.
-                : " -E";        // Windows authentication.
+            var authFlag = this.authenticationType == SsmsAuthenticationType.Windows
+                ? " -E" : string.Empty;
 
             var endpoint = transport.Endpoint;
             return $"-S {endpoint.Address},{endpoint.Port}{authFlag}";
@@ -67,7 +65,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.SqlServer
         public bool Equals(IAppProtocolClient other)
         {
             return other is SsmsClient ssms &&
-                ssms.RequiredCredential == this.RequiredCredential;
+                ssms.authenticationType == this.authenticationType;
         }
+    }
+
+    internal enum SsmsAuthenticationType
+    {
+        SqlServer,
+        Windows
     }
 }
