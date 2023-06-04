@@ -25,6 +25,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 
@@ -121,6 +122,19 @@ namespace Google.Solutions.Platform.Dispatch
             {
                 cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
             };
+
+            //
+            // NB. CreateProcessWithLogonW does not accept the
+            // DOMAIN\user format.
+            //
+            if (credential.UserName.Contains('\\'))
+            {
+                var usernameParts = credential.UserName.Split('\\');
+                credential = new NetworkCredential(
+                    usernameParts[1], 
+                    credential.SecurePassword, 
+                    usernameParts[0]);
+            }
 
             if (!NativeMethods.CreateProcessWithLogonW(
                 credential.UserName,

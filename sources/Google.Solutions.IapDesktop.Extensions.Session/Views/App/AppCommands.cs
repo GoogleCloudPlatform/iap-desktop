@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -10,6 +11,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Dispatch;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,6 +25,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
     public class AppCommands
     {
         private readonly IWin32Window ownerWindow;
+        private readonly IJobService jobService;
         private readonly ProtocolRegistry protocolRegistry;
         private readonly IIapTransportFactory transportFactory;
         private readonly IWin32ProcessFactory processFactory;
@@ -31,6 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
 
         public AppCommands(
             IWin32Window ownerWindow,
+            IJobService jobService,
             ProtocolRegistry protocolRegistry,
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory,
@@ -38,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
             ICredentialDialog credentialDialog)
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
+            this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.protocolRegistry = protocolRegistry.ExpectNotNull(nameof(protocolRegistry));
             this.transportFactory = transportFactory.ExpectNotNull(nameof(transportFactory));
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
@@ -69,8 +74,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
                         this.settingsService);
 
                     yield return new OpenWithClientCommand(
-                        this.ownerWindow,
                         protocol.Name,
+                        this.ownerWindow,
+                        this.jobService,
                         factory,
                         this.credentialDialog);
                 }
@@ -102,17 +108,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
         private class OpenWithClientCommand : MenuCommandBase<IProjectModelNode>  //TODO: Add test
         {
             private readonly IWin32Window ownerWindow;
+            private readonly IJobService jobService;
             private readonly ICredentialDialog credentialDialog;
             private readonly AppContextFactory contextFactory;
 
             public OpenWithClientCommand(
-                IWin32Window ownerWindow,
                 string name,
+                IWin32Window ownerWindow,
+                IJobService jobService,
                 AppContextFactory contextFactory,
                 ICredentialDialog credentialDialog) 
                 : base($"&{name}")
             {
                 this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
+                this.jobService = jobService.ExpectNotNull(nameof(jobService));
                 this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
                 this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
             }
@@ -148,6 +157,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
+                //
+                // Check which credential we need to use.
+                //
                 if (requiredCredential == NetworkCredentialType.Prompt ||
                         (requiredCredential == NetworkCredentialType.Rdp && 
                         context.NetworkCredential == null))
@@ -172,12 +184,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
                     context.NetworkCredential = credential;
                 }
 
+                //
+                // Connect a transport. This can take a bit, so do it in a job.
+                //
+                var transport = await this.jobService
+                    .RunInBackground(
+                        new JobDescription(
+                            $"Connecting to {instance.Instance.Name}...",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        cancellationToken => context.ConnectTransportAsync(cancellationToken))
+                    .ConfigureAwait(false);
 
-                // use job! context.ConnectTransportAsync
+                if (context.CanLaunchClient)
+                {
+                    var process = context.LaunchClient(transport);
 
-                // context.LaunchClient()
+                    // TODO: Add process to job.
+                    process.Resume();
 
-                // wait for process, then dispose transport.
+                    //
+                    // Client app launched successfully. Keep the transport
+                    // open until the app is closed, but don't await.
+                    //
+                    _ = process
+                        .WaitAsync(TimeSpan.MaxValue)
+                        .ContinueWith(t =>
+                        {
+                            transport.Dispose();
+                            process.Dispose();
+
+                            return t.Result;
+                        });
+                }
+                else
+                {
+                    throw new NotImplementedException("Client cannot be launched");
+                }
             }
         }
     }

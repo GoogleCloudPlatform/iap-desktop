@@ -57,11 +57,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
             //
             var authFlag = this.RequiredCredential == NetworkCredentialType.Default
-                ? string.Empty  // SQL Server authentication.
-                : " -E";        // Windows authentication.
+                ? "-U sa"  // SQL Server authentication.
+                : "-E";    // Windows authentication.
 
             var endpoint = transport.Endpoint;
-            return $"-S {endpoint.Address},{endpoint.Port}{authFlag}";
+            return $"-S {endpoint.Address},{endpoint.Port} {authFlag}";
         }
 
         public bool Equals(IAppProtocolClient other)

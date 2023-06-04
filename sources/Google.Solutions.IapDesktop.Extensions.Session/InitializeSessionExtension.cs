@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
-                    "SQL Server Management Studio with SQL authentication",
+                    "SQL Server Management Studio (SQL authentication)",
                     Enumerable.Empty<ITrait>(),
                     new AllowAllPolicy(), // TODO: Use same job/process policy
                     Ssms.DefaultServerPort,
