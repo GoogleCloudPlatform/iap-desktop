@@ -43,13 +43,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
+
+            this.ConnectWithContextCommand = new ConnectWithAppCommand();
         }
 
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------
 
-        public IEnumerable<IContextCommand<IProjectModelNode>> OpenContextCommands
+        public IContextCommand<IProjectModelNode> ConnectWithContextCommand { get; }
+
+        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithAppCommands
         {
             get
             {
@@ -77,6 +81,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
         // Command classes.
         //---------------------------------------------------------------------
 
+        private class ConnectWithAppCommand : MenuCommandBase<IProjectModelNode>
+        {
+            public ConnectWithAppCommand() 
+                : base("Connect &with")
+            {
+            }
+
+            protected override bool IsAvailable(IProjectModelNode context)
+            {
+                return context is IProjectModelInstanceNode;
+            }
+
+            protected override bool IsEnabled(IProjectModelNode context)
+            {
+                return ((IProjectModelInstanceNode)context).IsRunning;
+            }
+        }
+
         private class OpenWithClientCommand : MenuCommandBase<IProjectModelNode>  //TODO: Add test
         {
             private readonly IWin32Window ownerWindow;
@@ -88,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
                 string name,
                 AppContextFactory contextFactory,
                 ICredentialDialog credentialDialog) 
-                : base(name)
+                : base($"&{name}")
             {
                 this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
                 this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));

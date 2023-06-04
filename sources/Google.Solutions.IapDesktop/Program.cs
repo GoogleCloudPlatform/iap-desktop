@@ -66,6 +66,8 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.Platform.Dispatch;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -368,6 +370,9 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<BuganizerAdapter>();
                 preAuthLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
+
+                preAuthLayer.AddSingleton<ProtocolRegistry>();
+                preAuthLayer.AddSingleton<IWin32ProcessFactory, Win32ProcessFactory>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),

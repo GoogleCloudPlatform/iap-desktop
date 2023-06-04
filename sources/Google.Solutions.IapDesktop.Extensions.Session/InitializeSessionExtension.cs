@@ -47,6 +47,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using System.Linq;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.App;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {
@@ -120,6 +121,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
+            // Protocols.
+            //
+            var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(NetworkCredentialType.Rdp)));
+
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio as user...",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(NetworkCredentialType.Prompt)));
+
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server Management Studio with SQL authentication",
+                    Enumerable.Empty<ITrait>(),
+                    new AllowAllPolicy(), // TODO: Use same job/process policy
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(NetworkCredentialType.Default)));
+
+            //
             // Let this extension handle all URL activations.
             //
             var connectCommands = new ConnectCommands(
@@ -151,6 +183,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             projectExplorer.ContextMenuCommands.AddCommand(
                 connectCommands.ContextMenuConnectSshInNewTerminal,
                 2);
+
+            var appCommands = serviceProvider.GetService<AppCommands>();
+
+            var openWithCommands = projectExplorer.ContextMenuCommands.AddCommand(
+                appCommands.ConnectWithContextCommand,
+                3);
+            foreach (var appCommand in appCommands.ConnectWithAppCommands)
+            {
+                openWithCommands.AddCommand(appCommand);
+            }
+
+
             projectExplorer.ToolbarCommands.AddCommand(
                 connectCommands.ToolbarActivateOrConnectInstance);
 
@@ -166,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     Image = Resources.AddCredentials_16,
                     ActivityText = "Generating Windows logon credentials"
                 },
-                3);
+                4);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new ContextCommand<IProjectModelNode>(
@@ -184,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var connectionSettingsCommands = serviceProvider.GetService<ConnectionSettingsCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
                 connectionSettingsCommands.ContextMenuOpen,
-                4);
+                5);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 connectionSettingsCommands.ToolbarOpen,
@@ -224,39 +268,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.DownloadFiles);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
-
-            //
-            // Protocols.
-            //
-            var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server Management Studio",
-                    Enumerable.Empty<ITrait>(),
-                    new AllowAllPolicy(), // TODO: Use same job/process policy
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(NetworkCredentialType.Rdp)));
-
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server Management Studio as user...",
-                    Enumerable.Empty<ITrait>(),
-                    new AllowAllPolicy(), // TODO: Use same job/process policy
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(NetworkCredentialType.Prompt)));
-
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server Management Studio as SQL user...",
-                    Enumerable.Empty<ITrait>(),
-                    new AllowAllPolicy(), // TODO: Use same job/process policy
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(NetworkCredentialType.Default)));
-
-            // TODO: Add commands
         }
     }
 }

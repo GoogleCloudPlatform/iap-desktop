@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             }
         }
 
-        public bool TryParse(Uri uri, out ProtocolTargetLocator locator)//TODO: Add test
+        public bool TryParse(Uri uri, out ProtocolTargetLocator locator)
         {
             locator = null;
             return false;
