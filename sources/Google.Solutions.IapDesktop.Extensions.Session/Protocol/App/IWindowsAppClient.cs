@@ -26,7 +26,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     /// <summary>
     /// A client that can use Windows network authentication.
     /// </summary>
-    internal interface IWindowsAppClient : IAppProtocolClient
+    public interface IWindowsAppClient : IAppProtocolClient
     {
         /// <summary>
         /// Required type of network credential.

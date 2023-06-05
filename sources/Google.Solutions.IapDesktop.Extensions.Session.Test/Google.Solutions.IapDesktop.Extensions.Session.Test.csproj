@@ -157,6 +157,7 @@
     <Compile Include="Settings\TestConnectionSettingsRepository.cs" />
     <Compile Include="Settings\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="ShellFixtureBase.cs" />
+    <Compile Include="Views\App\TestOpenWithAppCommand.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsCommands.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Views\Credentials\TestSelectCredentialsWorkflow.cs" />

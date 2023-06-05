@@ -169,6 +169,7 @@
     <Compile Include="Settings\ConnectionSettings.cs" />
     <Compile Include="Settings\ConnectionSettingsRepository.cs" />
     <Compile Include="Views\App\AppCommands.cs" />
+    <Compile Include="Views\App\OpenWithAppCommand.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommand.cs" />
     <Compile Include="Views\Session\ConnectCommands.cs" />
