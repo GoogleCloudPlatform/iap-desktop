@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
@@ -77,32 +78,36 @@ namespace Google.Solutions.Platform.Dispatch
         {
             executable.ExpectNotEmpty(nameof(executable));
 
-            var startupInfo = new NativeMethods.STARTUPINFO()
+            using (PlatformTraceSources.Default.TraceMethod()
+                .WithParameters(executable, arguments))
             {
-                cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
-            };
+                var startupInfo = new NativeMethods.STARTUPINFO()
+                {
+                    cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
+                };
 
-            if (!NativeMethods.CreateProcess(
-                null,
-                $"{Quote(executable)} {arguments}",
-                IntPtr.Zero,
-                IntPtr.Zero,
-                false,
-                NativeMethods.CREATE_SUSPENDED,
-                IntPtr.Zero,
-                null,
-                ref startupInfo,
-                out var processInfo))
-            {
-                throw DispatchException.FromLastWin32Error(
-                    $"Launching process for {executable} failed");
+                if (!NativeMethods.CreateProcess(
+                    null,
+                    $"{Quote(executable)} {arguments}",
+                    IntPtr.Zero,
+                    IntPtr.Zero,
+                    false,
+                    NativeMethods.CREATE_SUSPENDED,
+                    IntPtr.Zero,
+                    null,
+                    ref startupInfo,
+                    out var processInfo))
+                {
+                    throw DispatchException.FromLastWin32Error(
+                        $"Launching process for {executable} failed");
+                }
+
+                return new Win32Process(
+                    new FileInfo(executable).Name,
+                    processInfo.dwProcessId,
+                    new SafeProcessHandle(processInfo.hProcess, true),
+                    new SafeThreadHandle(processInfo.hThread, true));
             }
-
-            return new Win32Process(
-                new FileInfo(executable).Name,
-                processInfo.dwProcessId,
-                new SafeProcessHandle(processInfo.hProcess, true),
-                new SafeThreadHandle(processInfo.hThread, true));
         }
 
         public IWin32Process CreateProcessAsUser(
@@ -114,52 +119,55 @@ namespace Google.Solutions.Platform.Dispatch
             executable.ExpectNotEmpty(nameof(executable));
             credential.ExpectNotNull(nameof(credential));
 
-            Debug.Assert(
-                credential.UserName.Contains("@") || 
-                credential.Domain != null);
-
-            var startupInfo = new NativeMethods.STARTUPINFO()
+            using (PlatformTraceSources.Default.TraceMethod()
+                .WithParameters(executable, arguments, flags, credential.UserName))
             {
-                cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
-            };
+                Debug.Assert(
+                    credential.UserName.Contains("@") ||
+                    credential.Domain != null);
 
-            //
-            // NB. CreateProcessWithLogonW does not accept the
-            // DOMAIN\user format.
-            //
-            if (credential.UserName.Contains('\\'))
-            {
-                var usernameParts = credential.UserName.Split('\\');
-                credential = new NetworkCredential(
-                    usernameParts[1], 
-                    credential.SecurePassword, 
-                    usernameParts[0]);
+                var startupInfo = new NativeMethods.STARTUPINFO()
+                {
+                    cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
+                };
+
+                //
+                // NB. CreateProcessWithLogonW does not accept the
+                // DOMAIN\user format.
+                //
+                if (credential.UserName.Contains('\\'))
+                {
+                    var usernameParts = credential.UserName.Split('\\');
+                    credential = new NetworkCredential(
+                        usernameParts[1],
+                        credential.SecurePassword,
+                        usernameParts[0]);
+                }
+
+                if (!NativeMethods.CreateProcessWithLogonW(
+                    credential.UserName,
+                    credential.Domain,
+                    credential.Password,
+                    flags,
+                    null,
+                    $"{Quote(executable)} {arguments}",
+                    NativeMethods.CREATE_SUSPENDED,
+                    IntPtr.Zero,
+                    null,
+                    ref startupInfo,
+                    out var processInfo))
+                {
+                    throw DispatchException.FromLastWin32Error(
+                        $"Launching process for {executable} failed");
+                }
+
+                return new Win32Process(
+                    new FileInfo(executable).Name,
+                    processInfo.dwProcessId,
+                    new SafeProcessHandle(processInfo.hProcess, true),
+                    new SafeThreadHandle(processInfo.hThread, true));
             }
-
-            if (!NativeMethods.CreateProcessWithLogonW(
-                credential.UserName,
-                credential.Domain,
-                credential.Password,
-                flags,
-                null,
-                $"{Quote(executable)} {arguments}",
-                NativeMethods.CREATE_SUSPENDED,
-                IntPtr.Zero,
-                null,
-                ref startupInfo,
-                out var processInfo))
-            {
-                throw DispatchException.FromLastWin32Error(
-                    $"Launching process for {executable} failed");
-            }
-
-            return new Win32Process(
-                new FileInfo(executable).Name,
-                processInfo.dwProcessId,
-                new SafeProcessHandle(processInfo.hProcess, true),
-                new SafeThreadHandle(processInfo.hThread, true));
         }
-
 
         //---------------------------------------------------------------------
         // P/Invoke.
