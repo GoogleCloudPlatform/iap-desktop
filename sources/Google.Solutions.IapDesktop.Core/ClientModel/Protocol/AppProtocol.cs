@@ -109,8 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 this.Name.GetHashCode() ^
                 this.RemotePort ^
                 this.Policy.GetHashCode() ^
-                (this.LocalEndpoint?.GetHashCode() ?? 0) ^
-                (this.Client?.GetHashCode() ?? 0);
+                (this.LocalEndpoint?.GetHashCode() ?? 0);
         }
 
         public override bool Equals(object obj)
@@ -120,13 +119,18 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool Equals(IProtocol other)
         {
+            //
+            // NB. Ignore if the client is the same or not as the client
+            // doesn't "define" the protocol, and different clients
+            // should share the same transport if their protocol is
+            // equivalent otherwise.
+            //
             return other is AppProtocol protocol &&
                 Equals(protocol.Name, this.Name) &&
                 Enumerable.SequenceEqual(protocol.RequiredTraits, this.RequiredTraits) &&
                 Equals(protocol.Policy, this.Policy) &&
                 Equals(protocol.RemotePort, this.RemotePort) &&
-                Equals(protocol.LocalEndpoint, this.LocalEndpoint) &&
-                Equals(protocol.Client, this.Client);
+                Equals(protocol.LocalEndpoint, this.LocalEndpoint);
         }
 
         public static bool operator ==(AppProtocol obj1, AppProtocol obj2)

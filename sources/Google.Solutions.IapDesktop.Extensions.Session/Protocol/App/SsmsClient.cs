@@ -63,11 +63,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             var endpoint = transport.Endpoint;
             return $"-S {endpoint.Address},{endpoint.Port} {authFlag}";
         }
-
-        public bool Equals(IAppProtocolClient other)
-        {
-            return other is SsmsClient ssms &&
-                ssms.RequiredCredential == this.RequiredCredential;
-        }
     }
 }

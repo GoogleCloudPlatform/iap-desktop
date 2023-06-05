@@ -31,13 +31,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
     public class TestAppProtocolClient
-        : EquatableFixtureBase<AppProtocolClient, IAppProtocolClient>
     {
-        protected override AppProtocolClient CreateInstance()
-        {
-            return new AppProtocolClient("cmd.exe", "args");
-        }
-
         //---------------------------------------------------------------------
         // IsAvailable.
         //---------------------------------------------------------------------

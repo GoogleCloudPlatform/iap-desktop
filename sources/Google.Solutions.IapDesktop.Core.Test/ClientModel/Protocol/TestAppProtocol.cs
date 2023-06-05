@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentClient_ThenEqualsReturnsFalse()
+        public void WhenOtherHasDifferentClient_ThenEqualsReturnsTrue()
         {
             var protocol1 = new AppProtocol(
                 "app-1",
@@ -237,9 +237,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 new AppProtocolClient("cmd.exe", null));
 
-            Assert.IsFalse(protocol1.Equals(protocol2));
-            Assert.IsTrue(protocol1 != protocol2);
-            Assert.AreNotEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
+            Assert.IsTrue(protocol1.Equals(protocol2));
+            Assert.IsFalse(protocol1 != protocol2);
+            Assert.AreEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
         }
     }
 }

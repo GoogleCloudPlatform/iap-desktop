@@ -21,16 +21,13 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System;
-using System.Diagnostics;
-using System.IO;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
     /// <summary>
     /// A thick client application.
     /// </summary>
-    public interface IAppProtocolClient : IEquatable<IAppProtocolClient>
+    public interface IAppProtocolClient
     {
         /// <summary>
         /// Indicates if the application is available on this system.
@@ -94,44 +91,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return this.ArgumentsTemplate?
                 .Replace("%port%", transport.Endpoint.Port.ToString())?
                 .Replace("%host%", transport.Endpoint.Address.ToString());
-        }
-
-        //-----------------------------------------------------------------
-        // Equality.
-        //-----------------------------------------------------------------
-
-        public bool Equals(IAppProtocolClient other)
-        {
-            return other is AppProtocolClient cmd &&
-                Equals(cmd.Executable, this.Executable) &&
-                Equals(cmd.ArgumentsTemplate, this.ArgumentsTemplate);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as AppProtocolClient);
-        }
-
-        public override int GetHashCode()
-        {
-            return
-                this.Executable.GetHashCode() ^
-                (this.ArgumentsTemplate?.GetHashCode() ?? 0);
-        }
-
-        public static bool operator ==(AppProtocolClient obj1, AppProtocolClient obj2)
-        {
-            if (obj1 is null)
-            {
-                return obj2 is null;
-            }
-
-            return obj1.Equals(obj2);
-        }
-
-        public static bool operator !=(AppProtocolClient obj1, AppProtocolClient obj2)
-        {
-            return !(obj1 == obj2);
         }
     }
 }
