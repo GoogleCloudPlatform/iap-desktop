@@ -95,6 +95,7 @@
     <Compile Include="ClientModel\Traits\TestTraitDetector.cs" />
     <Compile Include="ClientModel\Traits\TestWindowsTrait.cs" />
     <Compile Include="ClientModel\Traits\TestInstanceTrait.cs" />
+    <Compile Include="ClientModel\Transport\Policies\TestProcessInJobPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\TestCurrentProcessPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\TestAllowAllPolicy.cs" />
     <Compile Include="ClientModel\Transport\TestDirectTransportFactory.cs" />

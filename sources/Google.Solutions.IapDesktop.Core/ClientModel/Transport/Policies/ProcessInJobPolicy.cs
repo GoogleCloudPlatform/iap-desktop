@@ -19,24 +19,33 @@
 // under the License.
 //
 
-using System.Diagnostics;
+using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Dispatch;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 {
     /// <summary>
-    /// Policy that only allows access from the current process.
+    /// Policy that only allows access from processes in a 
+    /// certain job.
     /// </summary>
-    public class CurrentProcessPolicy : ProcessPolicyBase
+    public class ProcessInJobPolicy : ProcessPolicyBase
     {
+        public IWin32Job Job { get; }
+
+        public ProcessInJobPolicy(IWin32Job job)
+        {
+            this.Job = job.ExpectNotNull(nameof(job));
+        }
+
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override string Name => "Current process";
+        public override string Name => "Child processes";
 
         protected internal override bool IsClientProcessAllowed(uint processId)
         {
-            return processId == Process.GetCurrentProcess().Id;
+            return this.Job.IsInJob(processId);
         }
     }
 }

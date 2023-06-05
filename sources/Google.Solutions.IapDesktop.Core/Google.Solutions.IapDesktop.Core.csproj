@@ -83,7 +83,9 @@
     </Compile>
     <Compile Include="ClientModel\Transport\ITransportPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\AllowAllPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\ProcessInJobPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\CurrentProcessPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\ProcessPolicyBase.cs" />
     <Compile Include="CoreTraceSources.cs" />
     <Compile Include="ClientModel\Transport\IapTunnel.cs" />
     <Compile Include="ClientModel\Transport\TransportFailedException.cs" />

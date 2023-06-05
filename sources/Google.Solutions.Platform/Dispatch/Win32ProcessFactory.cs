@@ -38,6 +38,11 @@ namespace Google.Solutions.Platform.Dispatch
     public interface IWin32ProcessFactory
     {
         /// <summary>
+        /// Optional: Job that all child processes are added to.
+        /// </summary>
+        IWin32Job Job { get; }
+
+        /// <summary>
         /// Start a new process.
         /// 
         /// The process is created suspended and must be resumed explicitly.
@@ -67,9 +72,6 @@ namespace Google.Solutions.Platform.Dispatch
 
     public class Win32ProcessFactory : IWin32ProcessFactory
     {
-        /// <summary>
-        /// Optional: Job to add all child processes to.
-        /// </summary>
         public IWin32Job Job { get; }
 
         public Win32ProcessFactory(IWin32Job jobForChildProcesses = null)
