@@ -21,7 +21,6 @@
 
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Moq;
 using NUnit.Framework;
@@ -46,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             var client = new SsmsClient(NetworkCredentialType.Default);
 
             Assert.AreEqual(
-                "-S 127.0.0.2,11443",
+                "-S 127.0.0.2,11443 -U sa",
                 client.FormatArguments(transport.Object));
         }
 
