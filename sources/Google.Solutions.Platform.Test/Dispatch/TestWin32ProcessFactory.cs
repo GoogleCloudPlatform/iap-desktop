@@ -51,9 +51,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe, 
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
@@ -68,9 +66,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var job = new Mock<IWin32Job>();
             var factory = new Win32ProcessFactory(job.Object);
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 job.Verify(j => j.Add(process), Times.Once);
 
@@ -78,12 +74,26 @@ namespace Google.Solutions.Platform.Test.Dispatch
             }
         }
 
+        [Test]
+        public void WhenAddingToJobFails_ThenCreateProcessTerminatesProcess()
+        {
+            var job = new Mock<IWin32Job>();
+            job
+                .Setup(j => j.Add(It.IsAny<IWin32Process>()))
+                .Throws(new InvalidOperationException("mock"));
+
+            var factory = new Win32ProcessFactory(job.Object);
+
+            Assert.Throws<InvalidOperationException>(
+                () => factory.CreateProcess(CmdExe, null));
+        }
+
         //---------------------------------------------------------------------
         // CreateProcessAsUser.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingInvalidDomainCredentialsForNetonlyLogon_ThenCreateProcessAsUserSucceeds()
+        public void WhenUsingDomainCredentialsForNetonlyLogon_ThenCreateProcessAsUserSucceeds()
         {
             var factory = new Win32ProcessFactory();
 
@@ -91,7 +101,43 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 CmdExe,
                 null,
                 LogonFlags.NetCredentialsOnly,
-                new NetworkCredential("invalid", "invalid", "invalid")))
+                new NetworkCredential("user", "invalid", "domain")))
+            {
+                Assert.IsNotNull(process.Handle);
+                Assert.IsFalse(process.Handle.IsInvalid);
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenUsingDomainCredentialsInBackslashNotation_ThenCreateProcessAsUserSucceeds()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcessAsUser(
+                CmdExe,
+                null,
+                LogonFlags.NetCredentialsOnly,
+                new NetworkCredential("example\\user", "invalid", null)))
+            {
+                Assert.IsNotNull(process.Handle);
+                Assert.IsFalse(process.Handle.IsInvalid);
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenUsingDomainCredentialsInUpnNotation_ThenCreateProcessAsUserSucceeds()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcessAsUser(
+                CmdExe,
+                null,
+                LogonFlags.NetCredentialsOnly,
+                new NetworkCredential("user@example.com", "invalid", null)))
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);

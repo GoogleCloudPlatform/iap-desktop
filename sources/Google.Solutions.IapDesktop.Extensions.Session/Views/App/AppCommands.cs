@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
 
         public IContextCommand<IProjectModelNode> ConnectWithContextCommand { get; }
 
-        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithAppCommands
+        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithAppCommands // TODO: Add tests
         {
             get
             {

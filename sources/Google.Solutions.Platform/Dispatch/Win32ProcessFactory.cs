@@ -127,7 +127,7 @@ namespace Google.Solutions.Platform.Dispatch
                     this.Job?.Add(process);
                     return process;
                 }
-                catch (Exception e)
+                catch (Exception e) // TODO: Add tests
                 {
                     PlatformTraceSources.Default.TraceError(e);
                     process.Terminate(ExitCodeForFailedJobAssignment);
