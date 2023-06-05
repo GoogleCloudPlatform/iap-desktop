@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 
@@ -35,6 +37,11 @@ namespace Google.Solutions.Platform.Dispatch
     /// </summary>
     public interface IWin32ProcessFactory
     {
+        /// <summary>
+        /// Optional: Job that all child processes are added to.
+        /// </summary>
+        IWin32Job Job { get; }
+
         /// <summary>
         /// Start a new process.
         /// 
@@ -65,6 +72,15 @@ namespace Google.Solutions.Platform.Dispatch
 
     public class Win32ProcessFactory : IWin32ProcessFactory
     {
+        private const int ExitCodeForFailedJobAssignment = 250;
+
+        public IWin32Job Job { get; }
+
+        public Win32ProcessFactory(IWin32Job jobForChildProcesses = null)
+        {
+            this.Job = jobForChildProcesses;
+        }
+
         private static string Quote (string s)
         {
             return $"\"{s}\"";
@@ -76,33 +92,49 @@ namespace Google.Solutions.Platform.Dispatch
         {
             executable.ExpectNotEmpty(nameof(executable));
 
-            var startupInfo = new NativeMethods.STARTUPINFO()
+            using (PlatformTraceSources.Default.TraceMethod()
+                .WithParameters(executable, arguments))
             {
-                cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
-            };
+                var startupInfo = new NativeMethods.STARTUPINFO()
+                {
+                    cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
+                };
 
-            if (!NativeMethods.CreateProcess(
-                null,
-                $"{Quote(executable)} {arguments}",
-                IntPtr.Zero,
-                IntPtr.Zero,
-                false,
-                NativeMethods.CREATE_SUSPENDED,
-                IntPtr.Zero,
-                null,
-                ref startupInfo,
-                out var processInfo))
-            {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
-                    $"Launching process for {executable} failed");
+                if (!NativeMethods.CreateProcess(
+                    null,
+                    $"{Quote(executable)} {arguments}",
+                    IntPtr.Zero,
+                    IntPtr.Zero,
+                    false,
+                    NativeMethods.CREATE_SUSPENDED,
+                    IntPtr.Zero,
+                    null,
+                    ref startupInfo,
+                    out var processInfo))
+                {
+                    throw DispatchException.FromLastWin32Error(
+                        $"Launching process for {executable} failed");
+                }
+
+                var process =  new Win32Process(
+                    new FileInfo(executable).Name,
+                    processInfo.dwProcessId,
+                    new SafeProcessHandle(processInfo.hProcess, true),
+                    new SafeThreadHandle(processInfo.hThread, true));
+
+                try
+                {
+                    this.Job?.Add(process);
+                    return process;
+                }
+                catch (Exception e) // TODO: Add tests
+                {
+                    PlatformTraceSources.Default.TraceError(e);
+                    process.Terminate(ExitCodeForFailedJobAssignment);
+                    process.Dispose();
+                    throw;
+                }
             }
-
-            return new Win32Process(
-                new FileInfo(executable).Name,
-                processInfo.dwProcessId,
-                new SafeProcessHandle(processInfo.hProcess, true),
-                new SafeThreadHandle(processInfo.hThread, true));
         }
 
         public IWin32Process CreateProcessAsUser(
@@ -114,40 +146,64 @@ namespace Google.Solutions.Platform.Dispatch
             executable.ExpectNotEmpty(nameof(executable));
             credential.ExpectNotNull(nameof(credential));
 
-            Debug.Assert(
-                credential.UserName.Contains("@") || 
-                credential.Domain != null);
-
-            var startupInfo = new NativeMethods.STARTUPINFO()
+            using (PlatformTraceSources.Default.TraceMethod()
+                .WithParameters(executable, arguments, flags, credential.UserName))
             {
-                cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
-            };
+                Debug.Assert(
+                    credential.UserName.Contains("@") ||
+                    credential.Domain != null);
 
-            if (!NativeMethods.CreateProcessWithLogonW(
-                credential.UserName,
-                credential.Domain,
-                credential.Password,
-                flags,
-                null,
-                $"{Quote(executable)} {arguments}",
-                NativeMethods.CREATE_SUSPENDED,
-                IntPtr.Zero,
-                null,
-                ref startupInfo,
-                out var processInfo))
-            {
-                throw new Win32Exception(
-                    Marshal.GetLastWin32Error(),
-                    $"Launching process for {executable} failed");
+                var startupInfo = new NativeMethods.STARTUPINFO()
+                {
+                    cb = Marshal.SizeOf<NativeMethods.STARTUPINFO>()
+                };
+
+                //
+                // NB. CreateProcessWithLogonW does not accept the
+                // DOMAIN\user format.
+                //
+                if (credential.UserName.Contains('\\'))
+                {
+                    var usernameParts = credential.UserName.Split('\\');
+                    credential = new NetworkCredential(
+                        usernameParts[1],
+                        credential.SecurePassword,
+                        usernameParts[0]);
+                }
+
+                if (!NativeMethods.CreateProcessWithLogonW(
+                    credential.UserName,
+                    credential.Domain,
+                    credential.Password,
+                    flags,
+                    null,
+                    $"{Quote(executable)} {arguments}",
+                    NativeMethods.CREATE_SUSPENDED,
+                    IntPtr.Zero,
+                    null,
+                    ref startupInfo,
+                    out var processInfo))
+                {
+                    throw DispatchException.FromLastWin32Error(
+                        $"Launching process for {executable} failed");
+                }
+
+                var process = new Win32Process(
+                    new FileInfo(executable).Name,
+                    processInfo.dwProcessId,
+                    new SafeProcessHandle(processInfo.hProcess, true),
+                    new SafeThreadHandle(processInfo.hThread, true));
+
+                //
+                // NB. CreateProcessWithLogonW puts the process in a job
+                // that's inaccessible outside session 0. We therefore
+                // can't add the process to our own job (it would fail
+                // with an access denied-error).
+                //
+
+                return process;
             }
-
-            return new Win32Process(
-                new FileInfo(executable).Name,
-                processInfo.dwProcessId,
-                new SafeProcessHandle(processInfo.hProcess, true),
-                new SafeThreadHandle(processInfo.hThread, true));
         }
-
 
         //---------------------------------------------------------------------
         // P/Invoke.

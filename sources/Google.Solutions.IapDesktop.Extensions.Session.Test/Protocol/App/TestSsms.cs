@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,25 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Interop
+
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using NUnit.Framework;
+using System.IO;
+
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
-    public enum HRESULT : int
+    [TestFixture]
+    public class TestSsms
     {
-        S_OK = 0,
-        S_FALSE = 1,
-        E_UNEXPECTED = unchecked((int)0x8000ffff),
-    }
-
-    public static class HresultExtensions
-    {
-        public static bool Succeeded(this HRESULT hr)
+        [Test]
+        public void TryFind()
         {
-            return hr >= 0;
-        }
+            if (!Ssms.TryFind(out var ssms))
+            {
+                Assert.Inconclusive("SSMS not installed");
+            }
 
-        public static bool Failed(this HRESULT hr)
-        {
-            return hr < 0;
+            Assert.IsTrue(File.Exists(ssms.ExecutablePath));
         }
     }
 }

@@ -19,25 +19,30 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Interop
-{
-    public enum HRESULT : int
-    {
-        S_OK = 0,
-        S_FALSE = 1,
-        E_UNEXPECTED = unchecked((int)0x8000ffff),
-    }
+using Google.Solutions.Common.Interop;
+using NUnit.Framework;
 
-    public static class HresultExtensions
+namespace Google.Solutions.Common.Test.Interop
+{
+    [TestFixture]
+    public class TestHresultExtensions
     {
-        public static bool Succeeded(this HRESULT hr)
+        [Test]
+        public void Succeeded()
         {
-            return hr >= 0;
+            Assert.IsTrue(HRESULT.S_OK.Succeeded());
+            Assert.IsTrue(HRESULT.S_FALSE.Succeeded());
+
+            Assert.IsFalse(HRESULT.E_UNEXPECTED.Succeeded());
         }
 
-        public static bool Failed(this HRESULT hr)
+        [Test]
+        public void Failed()
         {
-            return hr < 0;
+            Assert.IsFalse(HRESULT.S_OK.Failed());
+            Assert.IsFalse(HRESULT.S_FALSE.Failed());
+
+            Assert.IsTrue(HRESULT.E_UNEXPECTED.Failed());
         }
     }
 }

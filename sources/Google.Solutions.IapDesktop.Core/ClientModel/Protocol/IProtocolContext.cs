@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         Task<ITransport> ConnectTransportAsync(CancellationToken cancellationToken);
     }
 
-    public interface IProtocolFactory
+    public interface IProtocolContextFactory
     {
         /// <summary>
         /// Create a protocol context for the given target.

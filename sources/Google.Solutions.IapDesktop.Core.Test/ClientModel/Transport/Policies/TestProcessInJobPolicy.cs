@@ -22,20 +22,21 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Testing.Apis;
+using Moq;
 using NUnit.Framework;
-using System.Diagnostics;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
 {
     [TestFixture]
-    public class TestCurrentProcessPolicy
+    public class TestProcessInJobPolicyPolicy
         : EquatableFixtureBase<ProcessPolicyBase, ITransportPolicy>
     {
         protected override ProcessPolicyBase CreateInstance()
         {
-            return new CurrentProcessPolicy();
+            return new ProcessInJobPolicy(new Mock<IWin32Job>().Object);
         }
 
         //---------------------------------------------------------------------
@@ -45,7 +46,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToStringReturnsName()
         {
-            Assert.AreEqual("Current process", new CurrentProcessPolicy().ToString());
+            Assert.AreEqual(
+                "Child processes", 
+                new ProcessInJobPolicy(new Mock<IWin32Job>().Object).ToString());
         }
 
         //---------------------------------------------------------------------
@@ -56,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenEndpointNotLoopback_ThenIsClientAllowedReturnsFalse()
         {
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
-            var policy = new CurrentProcessPolicy();
+            var policy = new ProcessInJobPolicy(new Mock<IWin32Job>().Object);
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
         }
@@ -65,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenEndpointBelongsToDifferentProcess_ThenIsClientAllowedReturnsFalse()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
-            var policy = new CurrentProcessPolicy();
+            var policy = new ProcessInJobPolicy(new Mock<IWin32Job>().Object);
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
         }
@@ -75,16 +78,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProcessIdCurrent_ThenIsClientProcessAllowedReturnsTrue()
+        public void WhenProcessInJob_ThenIsClientProcessAllowedReturnsTrue()
         {
-            var pid = (uint)Process.GetCurrentProcess().Id;
-            Assert.IsTrue(new CurrentProcessPolicy().IsClientProcessAllowed(pid));
+            var job = new Mock<IWin32Job>();
+            job.Setup(j => j.IsInJob(It.IsAny<uint>())).Returns(true);
+
+            Assert.IsTrue(new ProcessInJobPolicy(job.Object).IsClientProcessAllowed(1));
         }
 
         [Test]
-        public void WhenProcessIdNotCurrent_ThenIsClientProcessAllowedReturnsFalse()
+        public void WhenProcessNotInJob_ThenIsClientProcessAllowedReturnsFalse()
         {
-            Assert.IsFalse(new CurrentProcessPolicy().IsClientProcessAllowed(4));
+            var job = new Mock<IWin32Job>();
+            job.Setup(j => j.IsInJob(It.IsAny<uint>())).Returns(false);
+
+            Assert.IsFalse(new ProcessInJobPolicy(job.Object).IsClientProcessAllowed(1));
         }
     }
 }

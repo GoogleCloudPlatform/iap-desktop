@@ -68,8 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientModel\Protocol\AppProtocolContext.cs" />
     <Compile Include="ClientModel\Protocol\AppProtocolFactory.cs" />
+    <Compile Include="ClientModel\Protocol\AppProtocolClient.cs" />
     <Compile Include="ClientModel\Protocol\IProtocolContext.cs" />
+    <Compile Include="ClientModel\Protocol\ProtocolTargetException.cs" />
     <Compile Include="ClientModel\Protocol\ProtocolTargetLocator.cs" />
     <Compile Include="ClientModel\Traits\ITrait.cs" />
     <Compile Include="ClientModel\Traits\TraitDetector.cs" />
@@ -80,7 +83,9 @@
     </Compile>
     <Compile Include="ClientModel\Transport\ITransportPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\AllowAllPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\ProcessInJobPolicy.cs" />
     <Compile Include="ClientModel\Transport\Policies\CurrentProcessPolicy.cs" />
+    <Compile Include="ClientModel\Transport\Policies\ProcessPolicyBase.cs" />
     <Compile Include="CoreTraceSources.cs" />
     <Compile Include="ClientModel\Transport\IapTunnel.cs" />
     <Compile Include="ClientModel\Transport\TransportFailedException.cs" />

@@ -22,12 +22,9 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
@@ -42,14 +39,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             ITransportPolicy policy,
             ushort remotePort,
             IPEndPoint localEndpoint,
-            Command launchCommand)
+            IAppProtocolClient client)
         {
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
             this.Policy = policy.ExpectNotNull(nameof(policy));
             this.RemotePort = remotePort.ExpectNotNull(nameof(remotePort));
             this.LocalEndpoint = localEndpoint;
-            this.LaunchCommand = launchCommand;
+            this.Client = client;
         }
 
         //---------------------------------------------------------------------
@@ -78,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         public IPEndPoint LocalEndpoint { get; }
 
         /// <summary>
-        /// Optional: Command to launch after connecting transport.
+        /// Optional: Client app to launch after connecting transport.
         /// </summary>
-        public Command LaunchCommand { get; }
+        public IAppProtocolClient Client { get; }
 
         //---------------------------------------------------------------------
         // IProtocol.
@@ -90,9 +87,16 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool IsAvailable(IProtocolTarget target)
         {
-            return this.RequiredTraits
-                .EnsureNotNull()
-                .All(target.Traits.Contains);
+            if (this.Client != null && !this.Client.IsAvailable)
+            {
+                return false; 
+            }
+            else
+            {
+                return this.RequiredTraits
+                    .EnsureNotNull()
+                    .All(target.Traits.EnsureNotNull().Contains);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -105,8 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 this.Name.GetHashCode() ^
                 this.RemotePort ^
                 this.Policy.GetHashCode() ^
-                (this.LocalEndpoint?.GetHashCode() ?? 0) ^
-                (this.LaunchCommand?.GetHashCode() ?? 0);
+                (this.LocalEndpoint?.GetHashCode() ?? 0);
         }
 
         public override bool Equals(object obj)
@@ -116,13 +119,18 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool Equals(IProtocol other)
         {
+            //
+            // NB. Ignore if the client is the same or not as the client
+            // doesn't "define" the protocol, and different clients
+            // should share the same transport if their protocol is
+            // equivalent otherwise.
+            //
             return other is AppProtocol protocol &&
                 Equals(protocol.Name, this.Name) &&
                 Enumerable.SequenceEqual(protocol.RequiredTraits, this.RequiredTraits) &&
                 Equals(protocol.Policy, this.Policy) &&
                 Equals(protocol.RemotePort, this.RemotePort) &&
-                Equals(protocol.LocalEndpoint, this.LocalEndpoint) &&
-                Equals(protocol.LaunchCommand, this.LaunchCommand);
+                Equals(protocol.LocalEndpoint, this.LocalEndpoint);
         }
 
         public static bool operator ==(AppProtocol obj1, AppProtocol obj2)
@@ -147,78 +155,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         public override string ToString()
         {
             return this.Name;
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        public class Command : IEquatable<Command>
-        {
-            /// <summary>
-            /// Path to the executable to be launched. 
-            /// </summary>
-            public string Executable { get; }
-
-            /// <summary>
-            /// Optional: Arguments to be passed. Arguments can contain the
-            /// following placeholders:
-            /// 
-            ///   %port% - contains the local port to connect to
-            ///   %host% - contain the locat IP address to connect to
-            ///   
-            /// </summary>
-            public string Arguments { get; }
-
-            internal Command(string executable, string arguments)
-            {
-                this.Executable = executable.ExpectNotEmpty(nameof(executable));
-                this.Arguments = arguments;
-            }
-
-            public override string ToString()
-            {
-                return this.Executable +
-                    (this.Arguments == null ? string.Empty : " " + this.Arguments);
-            }
-
-            //-----------------------------------------------------------------
-            // Equality.
-            //-----------------------------------------------------------------
-
-            public bool Equals(Command other)
-            {
-                return other is Command cmd &&
-                    Equals(cmd.Executable, this.Executable) &&
-                    Equals(cmd.Arguments, this.Arguments);
-            }
-
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as Command);
-            }
-
-            public override int GetHashCode()
-            {
-                return
-                    this.Executable.GetHashCode() ^
-                    (this.Arguments?.GetHashCode() ?? 0);
-            }
-
-            public static bool operator ==(Command obj1, Command obj2)
-            {
-                if (obj1 is null)
-                {
-                    return obj2 is null;
-                }
-
-                return obj1.Equals(obj2);
-            }
-
-            public static bool operator !=(Command obj1, Command obj2)
-            {
-                return !(obj1 == obj2);
-            }
         }
     }
 }

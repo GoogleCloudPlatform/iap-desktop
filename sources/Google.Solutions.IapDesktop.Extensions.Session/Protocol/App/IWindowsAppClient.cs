@@ -19,17 +19,42 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 
-using Google.Solutions.Iap;
-using System;
-
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    public interface ITransportPolicy : IIapListenerPolicy, IEquatable<ITransportPolicy>
+    /// <summary>
+    /// A client that can use Windows network authentication.
+    /// </summary>
+    public interface IWindowsAppClient : IAppProtocolClient
     {
         /// <summary>
-        /// Name of the policy, such as "allow-all".
+        /// Name of application.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Required type of network credential.
+        /// </summary>
+        NetworkCredentialType RequiredCredential { get; }
+    }
+
+    public enum NetworkCredentialType
+    {
+        /// <summary>
+        /// Use default network credentials.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Use RDP credentials as network credentials,
+        /// if available.
+        /// </summary>
+        Rdp,
+
+        /// <summary>
+        /// Prompt user for network credentials.
+        /// </summary>
+        Prompt
     }
 }

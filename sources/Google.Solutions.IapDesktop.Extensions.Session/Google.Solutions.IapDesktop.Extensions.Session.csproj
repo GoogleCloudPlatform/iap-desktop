@@ -138,6 +138,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Protocol\Adapter\KeyStoreAdapter.cs" />
+    <Compile Include="Protocol\App\AppContextFactory.cs" />
+    <Compile Include="Protocol\App\IWindowsAppClient.cs" />
+    <Compile Include="Protocol\App\Ssms.cs" />
+    <Compile Include="Protocol\App\SsmsClient.cs" />
     <Compile Include="Protocol\Ssh\SshProtocol.cs" />
     <Compile Include="Protocol\Rdp\RdpCredentialCallback.cs" />
     <Compile Include="Protocol\ISessionContext.cs" />
@@ -164,6 +168,8 @@
     <Compile Include="Settings\ConnectionSettingsService.cs" />
     <Compile Include="Settings\ConnectionSettings.cs" />
     <Compile Include="Settings\ConnectionSettingsRepository.cs" />
+    <Compile Include="Views\App\AppCommands.cs" />
+    <Compile Include="Views\App\OpenWithAppCommand.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommand.cs" />
     <Compile Include="Views\Session\ConnectCommands.cs" />

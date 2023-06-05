@@ -41,7 +41,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiTraceSources.cs" />
+    <Compile Include="PlatformTraceSources.cs" />
     <Compile Include="Cryptography\CertificateStore.cs" />
     <Compile Include="Dispatch\DispatchException.cs" />
     <Compile Include="Dispatch\Win32Process.cs" />

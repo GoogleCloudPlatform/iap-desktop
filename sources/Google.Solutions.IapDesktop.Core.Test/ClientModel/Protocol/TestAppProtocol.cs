@@ -50,6 +50,68 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
+        // IsAvailable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenClientNotAvailable_ThenIsAvailableReturnsFalse()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(false);
+
+            var target = new Mock<IProtocolTarget>();
+            var protocol = new AppProtocol(
+                "test",
+                Enumerable.Empty<ITrait>(),
+                new AllowAllPolicy(),
+                8080,
+                null,
+                client.Object);
+
+            Assert.IsFalse(protocol.IsAvailable(target.Object));
+        }
+
+        [Test]
+        public void WhenRequiredTraitMissing_ThenIsAvailableReturnsFalse()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+
+            var target = new Mock<IProtocolTarget>();
+            var protocol = new AppProtocol(
+                "test",
+                new [] { new Mock<ITrait>().Object },
+                new AllowAllPolicy(),
+                8080,
+                null,
+                client.Object);
+
+            Assert.IsFalse(protocol.IsAvailable(target.Object));
+        }
+
+        [Test]
+        public void WhenPrerequisitesMet_ThenIsAvailableReturnsTrue()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+
+            var trait = new Mock<ITrait>().Object;
+
+            var target = new Mock<IProtocolTarget>();
+            target.SetupGet(t => t.Traits).Returns(new[] { trait });
+
+            var protocol = new AppProtocol(
+                "test",
+                new[] { trait },
+                new AllowAllPolicy(),
+                8080,
+                null,
+                client.Object);
+
+            Assert.IsTrue(protocol.IsAvailable(target.Object));
+        }
+
+        //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
 
@@ -158,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentLaunchCommand_ThenEqualsReturnsFalse()
+        public void WhenOtherHasDifferentClient_ThenEqualsReturnsTrue()
         {
             var protocol1 = new AppProtocol(
                 "app-1",
@@ -173,11 +235,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new AllowAllPolicy(),
                 8080,
                 null,
-                new AppProtocol.Command("cmd.exe", null));
+                new AppProtocolClient("cmd.exe", null));
 
-            Assert.IsFalse(protocol1.Equals(protocol2));
-            Assert.IsTrue(protocol1 != protocol2);
-            Assert.AreNotEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
+            Assert.IsTrue(protocol1.Equals(protocol2));
+            Assert.IsFalse(protocol1 != protocol2);
+            Assert.AreEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,33 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Interop
-{
-    public enum HRESULT : int
-    {
-        S_OK = 0,
-        S_FALSE = 1,
-        E_UNEXPECTED = unchecked((int)0x8000ffff),
-    }
+using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Dispatch;
 
-    public static class HresultExtensions
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
+{
+    /// <summary>
+    /// Policy that only allows access from processes in a 
+    /// certain job.
+    /// </summary>
+    public class ProcessInJobPolicy : ProcessPolicyBase
     {
-        public static bool Succeeded(this HRESULT hr)
+        public IWin32Job Job { get; }
+
+        public ProcessInJobPolicy(IWin32Job job)
         {
-            return hr >= 0;
+            this.Job = job.ExpectNotNull(nameof(job));
         }
 
-        public static bool Failed(this HRESULT hr)
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        public override string Name => "Child processes";
+
+        protected internal override bool IsClientProcessAllowed(uint processId)
         {
-            return hr < 0;
+            return this.Job.IsInJob(processId);
         }
     }
 }

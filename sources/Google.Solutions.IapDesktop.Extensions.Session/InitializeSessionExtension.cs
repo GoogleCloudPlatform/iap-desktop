@@ -42,6 +42,13 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using System.Linq;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.App;
+using Google.Solutions.Platform.Dispatch;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {
@@ -115,6 +122,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
+            // Protocols.
+            //
+            var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
+
+            //
+            // Only allow connections from our own child processes.
+            //
+            var clientAppPolicy = new ProcessInJobPolicy(
+                serviceProvider.GetService<IWin32ProcessFactory>().Job);
+            
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server",
+                    Enumerable.Empty<ITrait>(),
+                    clientAppPolicy,
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(
+                         "SQL Server Management Studio",
+                         NetworkCredentialType.Rdp)));
+
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server",
+                    Enumerable.Empty<ITrait>(),
+                    clientAppPolicy,
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(
+                        "SQL Server Management Studio as user...",
+                        NetworkCredentialType.Prompt)));
+
+            protocolRegistry.RegisterProtocol(
+                new AppProtocol(
+                    "SQL Server",
+                    Enumerable.Empty<ITrait>(),
+                    clientAppPolicy,
+                    Ssms.DefaultServerPort,
+                    null,
+                    new SsmsClient(
+                        "SQL Server Management Studio with SQL authentication",
+                        NetworkCredentialType.Default)));
+
+            //
             // Let this extension handle all URL activations.
             //
             var connectCommands = new ConnectCommands(
@@ -146,6 +197,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             projectExplorer.ContextMenuCommands.AddCommand(
                 connectCommands.ContextMenuConnectSshInNewTerminal,
                 2);
+
+            var appCommands = serviceProvider.GetService<AppCommands>();
+
+            var openWithCommands = projectExplorer.ContextMenuCommands.AddCommand(
+                appCommands.ConnectWithContextCommand,
+                3);
+            foreach (var appCommand in appCommands
+                .ConnectWithAppCommands
+                .OrderBy(c => c.Text))
+            {
+                openWithCommands.AddCommand(appCommand);
+            }
+
+
             projectExplorer.ToolbarCommands.AddCommand(
                 connectCommands.ToolbarActivateOrConnectInstance);
 
@@ -161,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     Image = Resources.AddCredentials_16,
                     ActivityText = "Generating Windows logon credentials"
                 },
-                3);
+                4);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new ContextCommand<IProjectModelNode>(
@@ -179,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var connectionSettingsCommands = serviceProvider.GetService<ConnectionSettingsCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
                 connectionSettingsCommands.ContextMenuOpen,
-                4);
+                5);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 connectionSettingsCommands.ToolbarOpen,

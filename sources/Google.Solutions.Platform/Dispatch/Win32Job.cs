@@ -268,7 +268,7 @@ namespace Google.Solutions.Platform.Dispatch
                 ref JOBOBJECT_EXTENDED_LIMIT_INFORMATION lpJobObjectInfo,
                 uint cbJobObjectInfoLength);
 
-            [DllImport("kernel32.dll")]
+            [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool AssignProcessToJobObject(
                 SafeJobHandle hJob, 

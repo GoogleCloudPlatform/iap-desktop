@@ -19,87 +19,24 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Net;
 using System.Diagnostics;
-using System.Linq;
-using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 {
     /// <summary>
     /// Policy that only allows access from the current process.
     /// </summary>
-    public class CurrentProcessPolicy : ITransportPolicy
+    public class CurrentProcessPolicy : ProcessPolicyBase
     {
-        //---------------------------------------------------------------------
-        // ITransportPolicy.
-        //---------------------------------------------------------------------
-
-        public string Name => "Current process";
-
-        public bool IsClientAllowed(IPEndPoint remote)
-        {
-            //
-            // NB. For connections from localhost, there are two
-            // entries in the table - one tracking the outgoing
-            // connection and one tracking the incoming connection.
-            //
-            // To find out the client process id, we need to find
-            // the entry for the outgoing connection.
-            //
-            var tcpTableEntry = TcpTable.GetTcpTable2()
-                .Where(e => e.LocalEndpoint.Equals(remote));
-
-            //
-            // Only permit access if the originating process is
-            // the current process.
-            //
-            return remote.Address.Equals(IPAddress.Loopback) &&
-                tcpTableEntry.Any() &&
-                tcpTableEntry.First().ProcessId == Process.GetCurrentProcess().Id;
-        }
-
-        //---------------------------------------------------------------------
-        // Equality.
-        //---------------------------------------------------------------------
-
-        public override int GetHashCode()
-        {
-            return this.Name.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as CurrentProcessPolicy);
-        }
-
-        public bool Equals(ITransportPolicy other)
-        {
-            return other is CurrentProcessPolicy && other != null;
-        }
-
-        public static bool operator ==(CurrentProcessPolicy obj1, CurrentProcessPolicy obj2)
-        {
-            if (obj1 is null)
-            {
-                return obj2 is null;
-            }
-
-            return obj1.Equals(obj2);
-        }
-
-        public static bool operator !=(CurrentProcessPolicy obj1, CurrentProcessPolicy obj2)
-        {
-            return !(obj1 == obj2);
-        }
-
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override string ToString()
+        public override string Name => "Current process";
+
+        protected internal override bool IsClientProcessAllowed(uint processId)
         {
-            return this.Name;
+            return processId == Process.GetCurrentProcess().Id;
         }
     }
 }

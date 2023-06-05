@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,29 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Interop
-{
-    public enum HRESULT : int
-    {
-        S_OK = 0,
-        S_FALSE = 1,
-        E_UNEXPECTED = unchecked((int)0x8000ffff),
-    }
+using Google.Solutions.Apis.Diagnostics;
+using System;
 
-    public static class HresultExtensions
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
+{
+    public class ProtocolTargetException : ApplicationException, IExceptionWithHelpTopic
     {
-        public static bool Succeeded(this HRESULT hr)
+        public IHelpTopic Help { get; }
+
+        public ProtocolTargetException(
+            string message,
+            IHelpTopic helpTopic) : base(message)
         {
-            return hr >= 0;
+            this.Help = helpTopic;
         }
 
-        public static bool Failed(this HRESULT hr)
+        public ProtocolTargetException(
+            string message,
+            IHelpTopic helpTopic,
+            Exception innerException)
+            : base(message, innerException)
         {
-            return hr < 0;
+            this.Help = helpTopic;
         }
     }
 }

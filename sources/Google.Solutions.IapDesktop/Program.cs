@@ -66,6 +66,8 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.Platform.Dispatch;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -341,6 +343,7 @@ namespace Google.Solutions.IapDesktop
 
             var install = new Install(Install.DefaultBaseKeyPath);
             using (var profile = LoadProfileOrExit(install, this.commandLineOptions))
+            using (var jobForChildProcesses = new Win32Job(true))
             {
                 Debug.Assert(!Install.IsExecutingTests);
 
@@ -368,6 +371,10 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<BuganizerAdapter>();
                 preAuthLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
+
+                preAuthLayer.AddSingleton<ProtocolRegistry>();
+                preAuthLayer.AddSingleton<IWin32ProcessFactory>(
+                    new Win32ProcessFactory(jobForChildProcesses));
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
@@ -481,6 +488,7 @@ namespace Google.Solutions.IapDesktop
                 // Load windows.
                 //
                 mainLayer.AddSingleton<IMainWindow>(mainForm);
+                mainLayer.AddSingleton<IWin32Window>(mainForm);
                 mainLayer.AddTransient<AboutView>();
                 mainLayer.AddTransient<AboutViewModel>();
                 mainLayer.AddTransient<DeviceFlyoutView>();

@@ -56,7 +56,7 @@ namespace Google.Solutions.Iap.Test
                 (int)SshRelayFormat.Data.MaxPayloadLength,
                 (int)SshRelayFormat.Data.MaxPayloadLength * 2)] int length)
         {
-            var policy = new Mock<IapListenerPolicy>();
+            var policy = new Mock<IIapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
             var message = new byte[length];
