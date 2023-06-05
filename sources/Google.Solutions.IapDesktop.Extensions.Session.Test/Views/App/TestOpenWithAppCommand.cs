@@ -91,7 +91,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
         public void WhenContextOfWrongType_ThenQueryStateReturnsUnavailable()
         {
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(new Mock<IAppProtocolClient>().Object, null),
@@ -115,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
             client.SetupGet(c => c.IsAvailable).Returns(false);
 
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -138,7 +136,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
             client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Default);
 
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -160,7 +157,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
 
             var rdpCredential = new NetworkCredential("user", "password", "domain");
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, rdpCredential),
@@ -195,7 +191,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
             client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Prompt);
 
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -227,7 +222,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
             client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Prompt);
 
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, new NetworkCredential("notused", "notused", "notused")),
@@ -262,7 +256,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
             client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Rdp);
 
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -307,7 +300,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.App
                 new Mock<IConnectionSettingsService>().Object);
 
             var command = new OpenWithAppCommand(
-                "&Open",
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 factory,

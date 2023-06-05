@@ -134,30 +134,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
-                    "SQL Server Management Studio",
+                    "SQL Server",
                     Enumerable.Empty<ITrait>(),
                     clientAppPolicy,
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient(NetworkCredentialType.Rdp)));
+                    new SsmsClient(
+                         "SQL Server Management Studio",
+                         NetworkCredentialType.Rdp)));
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
-                    "SQL Server Management Studio as user...",
+                    "SQL Server",
                     Enumerable.Empty<ITrait>(),
                     clientAppPolicy,
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient(NetworkCredentialType.Prompt)));
+                    new SsmsClient(
+                        "SQL Server Management Studio as user...",
+                        NetworkCredentialType.Prompt)));
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
-                    "SQL Server Management Studio (SQL authentication)",
+                    "SQL Server",
                     Enumerable.Empty<ITrait>(),
                     clientAppPolicy,
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient(NetworkCredentialType.Default)));
+                    new SsmsClient(
+                        "SQL Server Management Studio with SQL authentication",
+                        NetworkCredentialType.Default)));
 
             //
             // Let this extension handle all URL activations.
@@ -197,7 +203,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var openWithCommands = projectExplorer.ContextMenuCommands.AddCommand(
                 appCommands.ConnectWithContextCommand,
                 3);
-            foreach (var appCommand in appCommands.ConnectWithAppCommands)
+            foreach (var appCommand in appCommands
+                .ConnectWithAppCommands
+                .OrderBy(c => c.Text))
             {
                 openWithCommands.AddCommand(appCommand);
             }

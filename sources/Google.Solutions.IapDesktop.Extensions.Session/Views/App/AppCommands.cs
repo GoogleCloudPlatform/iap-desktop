@@ -85,8 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
             {
                 foreach (var protocol in this.protocolRegistry
                     .Protocols
-                    .OfType<AppProtocol>()
-                    .OrderBy(p => p.Name))
+                    .OfType<AppProtocol>())
                 {
                     var factory = new AppContextFactory(
                         protocol,
@@ -95,7 +94,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
                         this.settingsService);
 
                     yield return new OpenWithAppCommand(
-                        protocol.Name,
                         this.ownerWindow,
                         this.jobService,
                         factory,

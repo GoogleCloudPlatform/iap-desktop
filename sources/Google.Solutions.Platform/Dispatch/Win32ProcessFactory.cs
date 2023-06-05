@@ -72,6 +72,8 @@ namespace Google.Solutions.Platform.Dispatch
 
     public class Win32ProcessFactory : IWin32ProcessFactory
     {
+        private const int ExitCodeForFailedJobAssignment = 250;
+
         public IWin32Job Job { get; }
 
         public Win32ProcessFactory(IWin32Job jobForChildProcesses = null)
@@ -120,8 +122,18 @@ namespace Google.Solutions.Platform.Dispatch
                     new SafeProcessHandle(processInfo.hProcess, true),
                     new SafeThreadHandle(processInfo.hThread, true));
 
-                this.Job?.Add(process);
-                return process;
+                try
+                {
+                    this.Job?.Add(process);
+                    return process;
+                }
+                catch (Exception e)
+                {
+                    PlatformTraceSources.Default.TraceError(e);
+                    process.Terminate(ExitCodeForFailedJobAssignment);
+                    process.Dispose();
+                    throw;
+                }
             }
         }
 
@@ -182,7 +194,13 @@ namespace Google.Solutions.Platform.Dispatch
                     new SafeProcessHandle(processInfo.hProcess, true),
                     new SafeThreadHandle(processInfo.hThread, true));
 
-                this.Job?.Add(process);
+                //
+                // NB. CreateProcessWithLogonW puts the process in a job
+                // that's inaccessible outside session 0. We therefore
+                // can't add the process to our own job (it would fail
+                // with an access denied-error).
+                //
+
                 return process;
             }
         }

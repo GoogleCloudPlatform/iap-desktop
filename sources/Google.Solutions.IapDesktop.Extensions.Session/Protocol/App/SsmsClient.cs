@@ -28,15 +28,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     {
         private readonly Ssms ssms; // null if not found.
 
-        public SsmsClient(NetworkCredentialType credentialType)
+        public SsmsClient(
+            string name,
+            NetworkCredentialType credentialType)
         {
+            this.Name = name;
             this.RequiredCredential = credentialType;
             Ssms.TryFind(out this.ssms);
         }
 
         //---------------------------------------------------------------------
-        // INetonlyCredentialClient.
+        // IWindowsAppClient.
         //---------------------------------------------------------------------
+        public string Name { get; }
 
         public NetworkCredentialType RequiredCredential { get; }
 

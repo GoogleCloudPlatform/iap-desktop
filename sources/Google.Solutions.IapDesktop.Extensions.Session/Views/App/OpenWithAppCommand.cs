@@ -41,13 +41,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
         private readonly ICredentialDialog credentialDialog;
         private readonly AppContextFactory contextFactory;
 
+        private static string CreateName(AppProtocol protocol)
+        {
+            return (protocol.Client as IWindowsAppClient)?.Name ?? protocol.Name;
+        }
+
         public OpenWithAppCommand(
-            string name,
             IWin32Window ownerWindow,
             IJobService jobService,
             AppContextFactory contextFactory,
             ICredentialDialog credentialDialog)
-            : base($"&{name}")
+            : base($"&{CreateName(contextFactory.Protocol)}")
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
             this.jobService = jobService.ExpectNotNull(nameof(jobService));

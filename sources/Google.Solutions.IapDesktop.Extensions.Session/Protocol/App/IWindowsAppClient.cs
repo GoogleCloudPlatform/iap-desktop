@@ -29,6 +29,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     public interface IWindowsAppClient : IAppProtocolClient
     {
         /// <summary>
+        /// Name of application.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Required type of network credential.
         /// </summary>
         NetworkCredentialType RequiredCredential { get; }

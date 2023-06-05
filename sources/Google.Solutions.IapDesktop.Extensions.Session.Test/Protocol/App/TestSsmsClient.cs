@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient(NetworkCredentialType.Default);
+            var client = new SsmsClient("SSMS", NetworkCredentialType.Default);
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -U sa",
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient(type);
+            var client = new SsmsClient("SSMS", type);
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -E",
