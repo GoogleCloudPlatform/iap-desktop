@@ -149,8 +149,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
             if (context.CanLaunchClient)
             {
                 var process = context.LaunchClient(transport);
-
-                // TODO: Add process to job.
                 process.Resume();
 
                 //

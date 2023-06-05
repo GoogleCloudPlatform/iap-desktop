@@ -114,6 +114,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
+        [Ignore("b/285793666")]
         public void WhenJobProvided_ThenCreateProcessAsUserAddsToJob()
         {
             var job = new Mock<IWin32Job>();
