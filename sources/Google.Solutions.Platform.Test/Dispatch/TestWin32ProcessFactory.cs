@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Platform.Dispatch;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
@@ -61,6 +62,22 @@ namespace Google.Solutions.Platform.Test.Dispatch
             }
         }
 
+        [Test]
+        public void WhenJobProvided_ThenCreateProcessAddsToJob()
+        {
+            var job = new Mock<IWin32Job>();
+            var factory = new Win32ProcessFactory(job.Object);
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                job.Verify(j => j.Add(process), Times.Once);
+
+                process.Terminate(1);
+            }
+        }
+
         //---------------------------------------------------------------------
         // CreateProcessAsUser.
         //---------------------------------------------------------------------
@@ -94,6 +111,24 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null,
                 LogonFlags.NetCredentialsOnly,
                 new NetworkCredential("invalid", "invalid")));
+        }
+
+        [Test]
+        public void WhenJobProvided_ThenCreateProcessAsUserAddsToJob()
+        {
+            var job = new Mock<IWin32Job>();
+            var factory = new Win32ProcessFactory(job.Object);
+
+            using (var process = factory.CreateProcessAsUser(
+                CmdExe,
+                null,
+                LogonFlags.NetCredentialsOnly,
+                new NetworkCredential("invalid", "invalid", "invalid")))
+            {
+                job.Verify(j => j.Add(process), Times.Once);
+
+                process.Terminate(1);
+            }
         }
     }
 }

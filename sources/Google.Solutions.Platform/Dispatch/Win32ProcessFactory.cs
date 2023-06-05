@@ -67,6 +67,16 @@ namespace Google.Solutions.Platform.Dispatch
 
     public class Win32ProcessFactory : IWin32ProcessFactory
     {
+        /// <summary>
+        /// Optional: Job to add all child processes to.
+        /// </summary>
+        public IWin32Job Job { get; }
+
+        public Win32ProcessFactory(IWin32Job jobForChildProcesses = null)
+        {
+            this.Job = jobForChildProcesses;
+        }
+
         private static string Quote (string s)
         {
             return $"\"{s}\"";
@@ -102,11 +112,14 @@ namespace Google.Solutions.Platform.Dispatch
                         $"Launching process for {executable} failed");
                 }
 
-                return new Win32Process(
+                var process =  new Win32Process(
                     new FileInfo(executable).Name,
                     processInfo.dwProcessId,
                     new SafeProcessHandle(processInfo.hProcess, true),
                     new SafeThreadHandle(processInfo.hThread, true));
+
+                this.Job?.Add(process);
+                return process;
             }
         }
 
@@ -161,11 +174,14 @@ namespace Google.Solutions.Platform.Dispatch
                         $"Launching process for {executable} failed");
                 }
 
-                return new Win32Process(
+                var process = new Win32Process(
                     new FileInfo(executable).Name,
                     processInfo.dwProcessId,
                     new SafeProcessHandle(processInfo.hProcess, true),
                     new SafeThreadHandle(processInfo.hThread, true));
+
+                this.Job?.Add(process);
+                return process;
             }
         }
 

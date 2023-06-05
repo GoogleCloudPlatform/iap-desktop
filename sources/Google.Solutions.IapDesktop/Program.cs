@@ -343,6 +343,7 @@ namespace Google.Solutions.IapDesktop
 
             var install = new Install(Install.DefaultBaseKeyPath);
             using (var profile = LoadProfileOrExit(install, this.commandLineOptions))
+            using (var jobForChildProcesses = new Win32Job(true))
             {
                 Debug.Assert(!Install.IsExecutingTests);
 
@@ -372,7 +373,8 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 preAuthLayer.AddSingleton<ProtocolRegistry>();
-                preAuthLayer.AddSingleton<IWin32ProcessFactory, Win32ProcessFactory>();
+                preAuthLayer.AddSingleton<IWin32ProcessFactory>(
+                    new Win32ProcessFactory(jobForChildProcesses));
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
