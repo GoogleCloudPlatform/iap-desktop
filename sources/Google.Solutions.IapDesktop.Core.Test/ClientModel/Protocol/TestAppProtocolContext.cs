@@ -52,6 +52,52 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
+        // CanLaunchClient.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenClientIsNull_ThenCanLaunchClientReturnsFalse()
+        {
+            var context = new AppProtocolContext(
+                CreateProtocol(null),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                SampleLocator);
+
+            Assert.IsFalse(context.CanLaunchClient);
+        }
+
+        [Test]
+        public void WhenClientIsNotAvailable_ThenCanLaunchClientReturnsFalse()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(false);
+
+            var context = new AppProtocolContext(
+                CreateProtocol(client.Object),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                SampleLocator);
+
+            Assert.IsFalse(context.CanLaunchClient);
+        }
+
+        [Test]
+        public void WhenClientIsAvailable_ThenCanLaunchClientReturnsTrue()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+
+            var context = new AppProtocolContext(
+                CreateProtocol(client.Object),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                SampleLocator);
+
+            Assert.IsTrue(context.CanLaunchClient);
+        }
+
+        //---------------------------------------------------------------------
         // LaunchClient.
         //---------------------------------------------------------------------
 

@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool CanLaunchClient
         {
-            get => this.protocol.Client != null && this.protocol.Client.IsAvailable; // TODO: Add test
+            get => this.protocol.Client != null && this.protocol.Client.IsAvailable;
         }
 
         public IWin32Process LaunchClient(ITransport transport)
