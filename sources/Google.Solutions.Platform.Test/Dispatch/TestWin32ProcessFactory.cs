@@ -20,10 +20,8 @@
 //
 
 using Google.Solutions.Platform.Dispatch;
-using Moq;
 using NUnit.Framework;
 using System;
-using System.ComponentModel;
 using System.Net;
 
 namespace Google.Solutions.Platform.Test.Dispatch
@@ -33,6 +31,17 @@ namespace Google.Solutions.Platform.Test.Dispatch
     {
         private static readonly string CmdExe
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
+
+        private class Win32ProcessFactoryWithEvent : Win32ProcessFactory
+        {
+            public event EventHandler<IWin32Process> ProcessCreated;
+
+            protected override void OnProcessCreated(IWin32Process process)
+            {
+                this.ProcessCreated?.Invoke(this, process);
+                base.OnProcessCreated(process);
+            }
+        }
 
         //---------------------------------------------------------------------
         // CreateProcess.
@@ -61,31 +70,20 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenJobProvided_ThenCreateProcessAddsToJob()
+        public void WhenOnProcessCreatedFails_ThenCreateProcessDisposesProcess()
         {
-            var job = new Mock<IWin32Job>();
-            var factory = new Win32ProcessFactory(job.Object);
-
-            using (var process = factory.CreateProcess(CmdExe, null))
+            var factory = new Win32ProcessFactoryWithEvent();
+            IWin32Process createdProcess = null;
+            factory.ProcessCreated += (_, p) =>
             {
-                job.Verify(j => j.Add(process), Times.Once);
-
-                process.Terminate(1);
-            }
-        }
-
-        [Test]
-        public void WhenAddingToJobFails_ThenCreateProcessTerminatesProcess()
-        {
-            var job = new Mock<IWin32Job>();
-            job
-                .Setup(j => j.Add(It.IsAny<IWin32Process>()))
-                .Throws(new InvalidOperationException("mock"));
-
-            var factory = new Win32ProcessFactory(job.Object);
+                createdProcess = p;
+                throw new InvalidOperationException("mock");
+            };
 
             Assert.Throws<InvalidOperationException>(
                 () => factory.CreateProcess(CmdExe, null));
+
+            Assert.IsTrue(((Win32Process)createdProcess).IsDisposed);
         }
 
         //---------------------------------------------------------------------
@@ -159,23 +157,26 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 new NetworkCredential("invalid", "invalid")));
         }
 
+
         [Test]
-        [Ignore("b/285793666")]
-        public void WhenJobProvided_ThenCreateProcessAsUserAddsToJob()
+        public void WhenOnProcessCreatedFails_ThenCreateProcessAsUserDisposesProcess()
         {
-            var job = new Mock<IWin32Job>();
-            var factory = new Win32ProcessFactory(job.Object);
-
-            using (var process = factory.CreateProcessAsUser(
-                CmdExe,
-                null,
-                LogonFlags.NetCredentialsOnly,
-                new NetworkCredential("invalid", "invalid", "invalid")))
+            var factory = new Win32ProcessFactoryWithEvent();
+            IWin32Process createdProcess = null;
+            factory.ProcessCreated += (_, p) =>
             {
-                job.Verify(j => j.Add(process), Times.Once);
+                createdProcess = p;
+                throw new InvalidOperationException("mock");
+            };
 
-                process.Terminate(1);
-            }
+            Assert.Throws<InvalidOperationException>(
+                () => factory.CreateProcessAsUser(
+                    CmdExe,
+                    null,
+                    LogonFlags.NetCredentialsOnly,
+                    new NetworkCredential("user", "invalid", "domain")));
+
+            Assert.IsTrue(((Win32Process)createdProcess).IsDisposed);
         }
     }
 }

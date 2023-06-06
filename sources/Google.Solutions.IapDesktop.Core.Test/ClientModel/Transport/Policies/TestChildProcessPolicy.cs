@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
     {
         protected override ProcessPolicyBase CreateInstance()
         {
-            return new ProcessInJobPolicy(new Mock<IWin32Job>().Object);
+            return new ChildProcessPolicy(new Mock<IWin32ChildProcessCollection>().Object);
         }
 
         //---------------------------------------------------------------------
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         {
             Assert.AreEqual(
                 "Child processes", 
-                new ProcessInJobPolicy(new Mock<IWin32Job>().Object).ToString());
+                new ChildProcessPolicy(new Mock<IWin32ChildProcessCollection>().Object).ToString());
         }
 
         //---------------------------------------------------------------------
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenEndpointNotLoopback_ThenIsClientAllowedReturnsFalse()
         {
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
-            var policy = new ProcessInJobPolicy(new Mock<IWin32Job>().Object);
+            var policy = new ChildProcessPolicy(new Mock<IWin32ChildProcessCollection>().Object);
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
         }
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenEndpointBelongsToDifferentProcess_ThenIsClientAllowedReturnsFalse()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
-            var policy = new ProcessInJobPolicy(new Mock<IWin32Job>().Object);
+            var policy = new ChildProcessPolicy(new Mock<IWin32ChildProcessCollection>().Object);
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
         }
@@ -80,19 +80,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void WhenProcessInJob_ThenIsClientProcessAllowedReturnsTrue()
         {
-            var job = new Mock<IWin32Job>();
-            job.Setup(j => j.IsInJob(It.IsAny<uint>())).Returns(true);
+            var job = new Mock<IWin32ChildProcessCollection>();
+            job.Setup(j => j.Contains(It.IsAny<uint>())).Returns(true);
 
-            Assert.IsTrue(new ProcessInJobPolicy(job.Object).IsClientProcessAllowed(1));
+            Assert.IsTrue(new ChildProcessPolicy(job.Object).IsClientProcessAllowed(1));
         }
 
         [Test]
         public void WhenProcessNotInJob_ThenIsClientProcessAllowedReturnsFalse()
         {
-            var job = new Mock<IWin32Job>();
-            job.Setup(j => j.IsInJob(It.IsAny<uint>())).Returns(false);
+            var job = new Mock<IWin32ChildProcessCollection>();
+            job.Setup(j => j.Contains(It.IsAny<uint>())).Returns(false);
 
-            Assert.IsFalse(new ProcessInJobPolicy(job.Object).IsClientProcessAllowed(1));
+            Assert.IsFalse(new ChildProcessPolicy(job.Object).IsClientProcessAllowed(1));
         }
     }
 }

@@ -25,16 +25,15 @@ using Google.Solutions.Platform.Dispatch;
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 {
     /// <summary>
-    /// Policy that only allows access from processes in a 
-    /// certain job.
+    /// Policy that only allows access from child processes.
     /// </summary>
-    public class ProcessInJobPolicy : ProcessPolicyBase
+    public class ChildProcessPolicy : ProcessPolicyBase
     {
-        public IWin32Job Job { get; }
+        private readonly IWin32ChildProcessCollection childProcesses;
 
-        public ProcessInJobPolicy(IWin32Job job)
+        public ChildProcessPolicy(IWin32ChildProcessCollection processFactory)
         {
-            this.Job = job.ExpectNotNull(nameof(job));
+            this.childProcesses = processFactory.ExpectNotNull(nameof(processFactory));
         }
 
         //---------------------------------------------------------------------
@@ -45,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
 
         protected internal override bool IsClientProcessAllowed(uint processId)
         {
-            return this.Job.IsInJob(processId);
+            return this.childProcesses.Contains(processId);
         }
     }
 }

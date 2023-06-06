@@ -373,8 +373,10 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 preAuthLayer.AddSingleton<ProtocolRegistry>();
-                preAuthLayer.AddSingleton<IWin32ProcessFactory>(
-                    new Win32ProcessFactory(jobForChildProcesses));
+
+                var processFactory = new Win32ChildProcessFactory(true);
+                preAuthLayer.AddSingleton<IWin32ProcessFactory>(processFactory);
+                preAuthLayer.AddSingleton<IWin32ChildProcessCollection>(processFactory);
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),

@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cryptography\TestCertificateStore.cs" />
+    <Compile Include="Dispatch\TestWin32ChildProcessFactory.cs" />
     <Compile Include="Dispatch\TestWtsSession.cs" />
     <Compile Include="Net\TestBrowserProtocolRegistry.cs" />
     <Compile Include="Net\TestBrowser.cs" />
