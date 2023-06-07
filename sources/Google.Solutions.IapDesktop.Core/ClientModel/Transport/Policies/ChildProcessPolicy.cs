@@ -29,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
     /// </summary>
     public class ChildProcessPolicy : ProcessPolicyBase
     {
-        private readonly IWin32ChildProcessCollection childProcesses;
+        private readonly IWin32ProcessSet childProcesses;
 
-        public ChildProcessPolicy(IWin32ChildProcessCollection processFactory)
+        public ChildProcessPolicy(IWin32ProcessSet processFactory)
         {
             this.childProcesses = processFactory.ExpectNotNull(nameof(processFactory));
         }

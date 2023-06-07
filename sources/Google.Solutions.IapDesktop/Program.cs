@@ -376,7 +376,7 @@ namespace Google.Solutions.IapDesktop
 
                 var processFactory = new Win32ChildProcessFactory(true);
                 preAuthLayer.AddSingleton<IWin32ProcessFactory>(processFactory);
-                preAuthLayer.AddSingleton<IWin32ChildProcessCollection>(processFactory);
+                preAuthLayer.AddSingleton<IWin32ProcessSet>(processFactory);
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),

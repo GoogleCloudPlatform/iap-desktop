@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             // Only allow connections from our own child processes.
             //
             var clientAppPolicy = new ChildProcessPolicy(
-                serviceProvider.GetService<IWin32ChildProcessCollection>());
+                serviceProvider.GetService<IWin32ProcessSet>());
             
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(

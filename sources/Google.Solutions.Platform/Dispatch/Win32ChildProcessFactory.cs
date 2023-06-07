@@ -26,26 +26,9 @@ using System.Linq;
 namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
-    /// Collection that contains all direct and indirect
-    /// child processes.
-    /// </summary>
-    public interface IWin32ChildProcessCollection // TODO: DOcument
-    {
-        /// <summary>
-        /// Check if a process is direct or indirect child process.
-        /// </summary>
-        bool Contains(IWin32Process process);
-
-        /// <summary>
-        /// Check if a process is direct or indirect child process.
-        /// </summary>
-        bool Contains(uint processId);
-    }
-
-    /// <summary>
     /// Factory for Win32 processes that uses jobs to track child processes
     /// </summary>
-    public class Win32ChildProcessFactory : Win32ProcessFactory, IWin32ChildProcessCollection, IDisposable
+    public class Win32ChildProcessFactory : Win32ProcessFactory, IWin32ProcessSet, IDisposable
     {
         //
         // NB. The easiest way to implement this class would be to use a single
@@ -77,14 +60,18 @@ namespace Google.Solutions.Platform.Dispatch
             this.TerminateOnClose = terminateOnClose;
         }
 
+        //---------------------------------------------------------------------
+        // IWin32ProcessSet.
+        //---------------------------------------------------------------------
+
         public bool Contains(IWin32Process process)
         {
-            return this.jobs.Any(j => j.IsInJob(process));
+            return this.jobs.Any(j => j.Contains(process));
         }
 
         public bool Contains(uint processId)
         {
-            return this.jobs.Any(j => j.IsInJob(processId));
+            return this.jobs.Any(j => j.Contains(processId));
         }
 
         //---------------------------------------------------------------------

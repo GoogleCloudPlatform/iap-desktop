@@ -80,11 +80,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         //---------------------------------------------------------------------
-        // Add, IsInJob.
+        // Add, Contains.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAdded_ThenIsInJobReturnsTrue()
+        public void WhenAdded_ThenContainsReturnsTrue()
         {
             var factory = new Win32ProcessFactory();
 
@@ -93,24 +93,24 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 CmdExe,
                 null))
             {
-                Assert.IsFalse(job.IsInJob(process));
-                Assert.IsFalse(job.IsInJob(process.Id));
+                Assert.IsFalse(job.Contains(process));
+                Assert.IsFalse(job.Contains(process.Id));
 
                 job.Add(process);
                 job.Add(process); // Again.
 
-                Assert.IsTrue(job.IsInJob(process));
-                Assert.IsTrue(job.IsInJob(process.Id));
+                Assert.IsTrue(job.Contains(process));
+                Assert.IsTrue(job.Contains(process.Id));
             }
         }
 
         [Test]
-        public void WhenProcessDoesNotExist_ThenIsInJobThrowsException()
+        public void WhenProcessDoesNotExist_ThenContainsThrowsException()
         {
             using (var job = new Win32Job(true))
             {
                 Assert.Throws<DispatchException>(
-                    () => job.IsInJob(uint.MaxValue));
+                    () => job.Contains(uint.MaxValue));
             }
         }
 

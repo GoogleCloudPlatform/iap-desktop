@@ -33,7 +33,7 @@ namespace Google.Solutions.Platform.Dispatch
     /// <summary>
     /// A Win32 job.
     /// </summary>
-    public interface IWin32Job : IDisposable
+    public interface IWin32Job : IWin32ProcessSet, IDisposable
     {
         /// <summary>
         /// Job handle.
@@ -44,16 +44,6 @@ namespace Google.Solutions.Platform.Dispatch
         /// Add a process to the job.
         /// </summary>
         void Add(IWin32Process process);
-
-        /// <summary>
-        /// Check if a process is in the job.
-        /// </summary>
-        bool IsInJob(IWin32Process process);
-
-        /// <summary>
-        /// Check if a process is in the job.
-        /// </summary>
-        bool IsInJob(uint processId);
 
         /// <summary>
         /// Return the IDs of processes in this job.
@@ -132,7 +122,7 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        public bool IsInJob(IWin32Process process)
+        public bool Contains(IWin32Process process)
         {
             process.ExpectNotNull(nameof(process));
 
@@ -148,7 +138,7 @@ namespace Google.Solutions.Platform.Dispatch
             return inJob;
         }
 
-        public bool IsInJob(uint processId)
+        public bool Contains(uint processId)
         {
             using (var process = NativeMethods.OpenProcess(
                 NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION,
