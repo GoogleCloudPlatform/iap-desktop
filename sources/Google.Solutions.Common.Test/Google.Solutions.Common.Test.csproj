@@ -63,6 +63,7 @@
     <Compile Include="Diagnostics\TestDumpObjectExtensions.cs" />
     <Compile Include="Diagnostics\TestTraceSourceExtensions.cs" />
     <Compile Include="Format\TestBigEndian.cs" />
+    <Compile Include="Format\TestBsdChecksum.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\TestCoTaskMemAllocSafeHandle.cs" />
     <Compile Include="Interop\TestHresultExtensions.cs" />

@@ -224,6 +224,15 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 this.LocalEndpoint = localEndpoint; // Optional.
             }
 
+            // TODO: Implement
+            //public ushort PreferredPort
+            //{
+            //    get
+            //    {
+            //        var buffer = EntryWrittenEventArgs
+            //    }
+            //}
+
             public override int GetHashCode()
             {
                 return
@@ -320,10 +329,16 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         .ProbeAsync(probeTimeout)
                         .ConfigureAwait(false);
 
+                    var localEndpoint = profile.LocalEndpoint;
+                    if (localEndpoint == null)
+                    {
+                        // TODO: determine deterministic port.
+                    }
+
                     var listener = new IapListener(
                         client,
                         profile.Policy,
-                        profile.LocalEndpoint);
+                        localEndpoint);
 
                     var tunnel = new IapTunnel(
                         listener,
