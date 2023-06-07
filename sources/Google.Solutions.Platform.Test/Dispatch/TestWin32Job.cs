@@ -42,9 +42,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 var job = new Win32Job(true);
 
@@ -63,9 +61,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 var job = new Win32Job(false);
 
@@ -76,6 +72,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 job.Dispose();
 
                 Assert.IsTrue(process.IsRunning);
+                process.Terminate(0);
             }
         }
 
