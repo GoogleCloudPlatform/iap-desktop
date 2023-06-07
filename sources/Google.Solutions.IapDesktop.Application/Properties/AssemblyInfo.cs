@@ -21,15 +21,6 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
-[assembly: AssemblyTitle("IAP Desktop")]
-[assembly: AssemblyDescription("IAP Desktop")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
 [assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Application.Test")]

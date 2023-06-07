@@ -1,231 +1,148 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{010F4F95-3623-45E1-85A6-67958A1256DB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Debug</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Debug</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
     <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
-    
-    
-    <Platforms>x86;x64</Platforms>
+    <Platforms>x64;x86</Platforms>
     <TargetFramework>net462</TargetFramework>
+    <AssemblyTitle>Google.Solutions.IapDesktop.Extensions.Debug</AssemblyTitle>
+    <Company>Google LLC</Company>
+    <Product>IAP Desktop</Product>
+    <Description>Management extension</Description>
+    <Copyright>Copyright © 2019-2023 Google LLC</Copyright>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Google.Apis, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.60.0\lib\net45\Google.Apis.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.60.0\lib\net461\Google.Apis.Auth.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.60.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.60.0\lib\net45\Google.Apis.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.60.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6.5\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-    </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6.5\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ErrorHandling\ThrowExceptionCommands.cs" />
-    <Compile Include="DebugMenu.cs" />
-    <Compile Include="ToolWindows\ToolWindowCommands.cs" />
-    <Compile Include="ToolWindows\DebugCommonControlsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugCommonControlsView.Designer.cs">
-      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugCommonControlsViewModel.cs" />
-    <Compile Include="ToolWindows\DebugDockingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugDockingView.Designer.cs">
-      <DependentUpon>DebugDockingView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugDockingViewModel.cs" />
-    <Compile Include="ToolWindows\DebugFullScreenView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugFullScreenView.Designer.cs">
-      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugFullScreenViewModel.cs" />
-    <Compile Include="ToolWindows\DebugJobServiceView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugJobServiceView.Designer.cs">
-      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugJobServiceViewModel.cs" />
-    <Compile Include="Options\DebugOptionsSheet.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\DebugOptionsSheet.Designer.cs">
-      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\DebugOptionsSheetViewModel.cs" />
-    <Compile Include="ToolWindows\DebugProjectExplorerTrackingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugProjectExplorerTrackingView.Designer.cs">
-      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugProjectExplorerTrackingViewModel.cs" />
-    <Compile Include="ToolWindows\DebugServiceRegistryView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugServiceRegistryView.Designer.cs">
-      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugServiceRegistryViewModel.cs" />
-    <Compile Include="ToolWindows\DebugThemeView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\DebugThemeView.Designer.cs">
-      <DependentUpon>DebugThemeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\DebugThemeViewModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">
-      <Project>{790F1966-EB34-4CF2-8ED3-3E6C96CBA397}</Project>
-      <Name>Google.Solutions.Apis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
-      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
-      <Name>Google.Solutions.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
-      <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
-      <Name>Google.Solutions.IapDesktop.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj">
-      <Project>{ff0bb781-e398-4e13-8182-83450082a818}</Project>
-      <Name>Google.Solutions.IapDesktop.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
-      <Project>{83571a48-14e9-4cb2-8d7e-c12deeb967b7}</Project>
-      <Name>Google.Solutions.Mvvm</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ToolWindows\DebugCommonControlsView.resx">
-      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugDockingView.resx">
-      <DependentUpon>DebugDockingView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugFullScreenView.resx">
-      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugJobServiceView.resx">
-      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\DebugOptionsSheet.resx">
-      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugProjectExplorerTrackingView.resx">
-      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugServiceRegistryView.resx">
-      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\DebugThemeView.resx">
-      <DependentUpon>DebugThemeView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />
+  <ItemGroup>
+    <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
+    <PackageReference Include="Google.Apis" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.60.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="ToolWindows\DebugCommonControlsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugCommonControlsView.Designer.cs">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\DebugDockingView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugDockingView.Designer.cs">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\DebugFullScreenView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugFullScreenView.Designer.cs">
+      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\DebugJobServiceView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugJobServiceView.Designer.cs">
+      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Options\DebugOptionsSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Options\DebugOptionsSheet.Designer.cs">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\DebugProjectExplorerTrackingView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugProjectExplorerTrackingView.Designer.cs">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\DebugServiceRegistryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugServiceRegistryView.Designer.cs">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\DebugThemeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolWindows\DebugThemeView.Designer.cs">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj" />
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="ToolWindows\DebugCommonControlsView.resx">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ToolWindows\DebugDockingView.resx">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ToolWindows\DebugFullScreenView.resx">
+      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ToolWindows\DebugJobServiceView.resx">
+      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Options\DebugOptionsSheet.resx">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ToolWindows\DebugProjectExplorerTrackingView.resx">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ToolWindows\DebugServiceRegistryView.resx">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ToolWindows\DebugThemeView.resx">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="obj\x86\Debug\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
+    <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
+  </ItemGroup>
 </Project>
