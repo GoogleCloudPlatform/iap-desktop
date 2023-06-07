@@ -20,6 +20,8 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <Platforms>x86;x64</Platforms>
+    <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>

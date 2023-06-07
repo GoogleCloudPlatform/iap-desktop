@@ -16,6 +16,8 @@
     <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Platforms>AnyCPU</Platforms>
+    <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
