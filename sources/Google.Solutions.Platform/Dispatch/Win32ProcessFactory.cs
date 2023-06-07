@@ -23,7 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -33,15 +32,10 @@ using System.Runtime.InteropServices;
 namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
-    /// Creates Win32 processes.
+    /// Factory for Win32 processes.
     /// </summary>
     public interface IWin32ProcessFactory
     {
-        /// <summary>
-        /// Optional: Job that all child processes are added to.
-        /// </summary>
-        IWin32Job Job { get; }
-
         /// <summary>
         /// Start a new process.
         /// 
@@ -72,19 +66,38 @@ namespace Google.Solutions.Platform.Dispatch
 
     public class Win32ProcessFactory : IWin32ProcessFactory
     {
-        private const int ExitCodeForFailedJobAssignment = 250;
-
-        public IWin32Job Job { get; }
-
-        public Win32ProcessFactory(IWin32Job jobForChildProcesses = null)
-        {
-            this.Job = jobForChildProcesses;
-        }
+        private const int ExitCodeForFailedProcessCreation = 250;
 
         private static string Quote (string s)
         {
             return $"\"{s}\"";
         }
+
+        /// <summary>
+        /// Allow deriving classes to do something with the process
+        /// before the factory returns it.
+        /// </summary>
+        protected virtual void OnProcessCreated(IWin32Process process)
+        { }
+
+        private void InvokeOnProcessCreated(IWin32Process process)
+        {
+            try
+            {
+                OnProcessCreated(process);
+            }
+            catch (Exception e)
+            {
+                PlatformTraceSources.Default.TraceError(e);
+                process.Terminate(ExitCodeForFailedProcessCreation);
+                process.Dispose();
+                throw;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IWin32ProcessFactory.
+        //---------------------------------------------------------------------
 
         public IWin32Process CreateProcess(
             string executable, 
@@ -122,18 +135,8 @@ namespace Google.Solutions.Platform.Dispatch
                     new SafeProcessHandle(processInfo.hProcess, true),
                     new SafeThreadHandle(processInfo.hThread, true));
 
-                try
-                {
-                    this.Job?.Add(process);
-                    return process;
-                }
-                catch (Exception e) // TODO: Add tests
-                {
-                    PlatformTraceSources.Default.TraceError(e);
-                    process.Terminate(ExitCodeForFailedJobAssignment);
-                    process.Dispose();
-                    throw;
-                }
+                InvokeOnProcessCreated(process);
+                return process;
             }
         }
 
@@ -194,13 +197,7 @@ namespace Google.Solutions.Platform.Dispatch
                     new SafeProcessHandle(processInfo.hProcess, true),
                     new SafeThreadHandle(processInfo.hThread, true));
 
-                //
-                // NB. CreateProcessWithLogonW puts the process in a job
-                // that's inaccessible outside session 0. We therefore
-                // can't add the process to our own job (it would fail
-                // with an access denied-error).
-                //
-
+                InvokeOnProcessCreated(process);
                 return process;
             }
         }

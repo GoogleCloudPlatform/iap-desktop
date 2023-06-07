@@ -19,33 +19,51 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Common.Runtime;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
+namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
-    /// Policy that only allows access from processes in a 
-    /// certain job.
+    /// Collection of jobs.
     /// </summary>
-    public class ProcessInJobPolicy : ProcessPolicyBase
+    public interface IWin32JobCollection : IDisposable
     {
-        public IWin32Job Job { get; }
+        void Add(IWin32Job job);
 
-        public ProcessInJobPolicy(IWin32Job job)
+        IEnumerable<IWin32Job> Jobs { get; }
+    }
+
+    public class Win32JobCollection : DisposableBase, IWin32JobCollection
+    {
+        private readonly ConcurrentBag<IWin32Job> jobs = new ConcurrentBag<IWin32Job>();
+
+        //---------------------------------------------------------------------
+        // IWin32JobCollection.
+        //---------------------------------------------------------------------
+
+        public IEnumerable<IWin32Job> Jobs => this.jobs;
+
+        public void Add(IWin32Job job)
         {
-            this.Job = job.ExpectNotNull(nameof(job));
+            this.jobs.Add(job);
         }
 
+
         //---------------------------------------------------------------------
-        // Overrides.
+        // DisposableBase.
         //---------------------------------------------------------------------
 
-        public override string Name => "Child processes";
-
-        protected internal override bool IsClientProcessAllowed(uint processId)
+        protected override void Dispose(bool disposing)
         {
-            return this.Job.IsInJob(processId);
+            foreach (var job in this.jobs)
+            {
+                job.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

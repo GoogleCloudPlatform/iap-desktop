@@ -41,6 +41,9 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dispatch\IWin32ProcessSet.cs" />
+    <Compile Include="Dispatch\Win32JobCollection.cs" />
+    <Compile Include="Dispatch\Win32ChildProcessFactory.cs" />
     <Compile Include="PlatformTraceSources.cs" />
     <Compile Include="Cryptography\CertificateStore.cs" />
     <Compile Include="Dispatch\DispatchException.cs" />
