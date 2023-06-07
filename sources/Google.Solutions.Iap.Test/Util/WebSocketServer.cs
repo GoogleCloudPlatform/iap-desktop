@@ -38,7 +38,7 @@ namespace Google.Solutions.Iap.Test.Util
         {
             this.listener = new HttpListener();
 
-            var port = PortFinder.FindFreeLocalPort();
+            var port = new PortFinder().FindPort(out var _);
             this.Endpoint = new Uri($"ws://localhost:{port}/");
 
             this.listener.Prefixes.Add($"http://localhost:{port}/");

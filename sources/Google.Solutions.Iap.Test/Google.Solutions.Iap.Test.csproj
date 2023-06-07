@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="IapFixtureBase.cs" />
     <Compile Include="InitializeScripts.cs" />
+    <Compile Include="Net\TestPortFinder.cs" />
     <Compile Include="Protocol\Mocks.cs" />
     <Compile Include="Util\WebSocketServerExtensions.cs" />
     <Compile Include="Protocol\TestEchoOverIapBase.cs" />

@@ -23,13 +23,16 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Format;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap;
+using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -320,10 +323,29 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         .ProbeAsync(probeTimeout)
                         .ConfigureAwait(false);
 
+                    var localEndpoint = profile.LocalEndpoint;
+                    if (localEndpoint == null)
+                    {
+                        //
+                        // Try to use the same port number every time. For
+                        // client apps, this helps avoid polluting their
+                        // connection history and possibly to save credentials.
+                        // 
+                        var portFinder = new PortFinder();
+                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.ProjectId));
+                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Zone));
+                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Name));
+                        portFinder.AddSeed(BitConverter.GetBytes(profile.TargetPort));
+
+                        localEndpoint = new IPEndPoint(
+                            IPAddress.Loopback,
+                            portFinder.FindPort(out var _));
+                    }
+
                     var listener = new IapListener(
                         client,
                         profile.Policy,
-                        profile.LocalEndpoint);
+                        localEndpoint);
 
                     var tunnel = new IapTunnel(
                         listener,

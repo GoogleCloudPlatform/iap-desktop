@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Format;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -31,41 +33,85 @@ namespace Google.Solutions.Iap.Net
     /// <summary>
     /// Helper class to find unsed local TCP ports.
     /// </summary>
-    internal static class PortFinder
+    public class PortFinder
     {
         private const int MaxAttempts = 1000;
-        private const int PortRangeStart = 10000;
-        private const int PortRangeEnd = 49000;
 
-        public static HashSet<int> QueryOccupiedPorts()
+        //
+        // Try to stay below the ephemeral port range, which
+        // starts around 49000.
+        //
+        // Cf. https://support.microsoft.com/en-us/help/929851.
+        //
+        private const ushort PortRangeStart = 10000;
+        private const ushort PortRangeEnd = 49000;
+
+        /// <summary>
+        /// Size of the available port range, in bits.
+        /// </summary>
+        private const ushort PortRangeSize = 15;
+
+        //
+        // Seed for determining a preferred port.
+        //
+        private readonly BsdChecksum seed = new BsdChecksum(PortRangeSize);
+
+        static PortFinder()
+        {
+            Debug.Assert(PortRangeStart + (1 << (PortRangeSize - 1)) < PortRangeEnd);
+        }
+
+        private static HashSet<ushort> QueryOccupiedPorts()
         {
             var occupiedServerPorts = IPGlobalProperties.GetIPGlobalProperties()
                 .GetActiveTcpListeners()
-                .Select(l => l.Port)
+                .Select(l => (ushort)l.Port)
                 .ToHashSet();
 
             var occupiedClientPorts = IPGlobalProperties.GetIPGlobalProperties()
                 .GetActiveTcpConnections()
-                .Select(c => c.LocalEndPoint.Port)
+                .Select(c => (ushort)c.LocalEndPoint.Port)
                 .ToHashSet();
 
-            var allOccupiedPorts = new HashSet<int>(occupiedClientPorts);
+            var allOccupiedPorts = new HashSet<ushort>(occupiedClientPorts);
             allOccupiedPorts.UnionWith(occupiedServerPorts);
             return allOccupiedPorts;
         }
 
-        public static int FindFreeLocalPort()
+        /// <summary>
+        /// Add seed to use for assigning a deterministic port.
+        /// </summary>
+        public void AddSeed(byte[] data)
+        {
+            this.seed.Add(data);
+        }
+
+        /// <summary>
+        /// Determine an unused port. If possible, return a deterministic
+        /// port number based on the seed.
+        /// </summary>
+        /// <returns></returns>
+        public ushort FindPort(out bool isPreferred)
         {
             var occupiedPorts = QueryOccupiedPorts();
+            if (this.seed.Value != 0)
+            {
+                var preferredPort = (ushort)(PortRangeStart + this.seed.Value);
+                Debug.Assert(preferredPort >= PortRangeStart);
+                Debug.Assert(preferredPort <= PortRangeEnd);
+
+                if (!occupiedPorts.Contains(preferredPort))
+                {
+                    //
+                    // Preferred port is available.
+                    //
+                    isPreferred = true;
+                    return preferredPort;
+                }
+            }
 
             //
-            // Ephemeral ports tend to start around 49000 (see 
-            // https://support.microsoft.com/en-us/help/929851/the-default-dynamic-port-range-for-tcp-ip-has-changed-in-windows-vista)
-            // Try to stay below
-            //
-
-            //
-            // Use a random port to make port numbers less predictable.
+            // Find a random port.
             //
             var random = new Random(Environment.TickCount);
 
@@ -75,9 +121,10 @@ namespace Google.Solutions.Iap.Net
             //
             for (int attempts = 0; attempts < MaxAttempts; attempts++)
             {
-                var port = random.Next(PortRangeStart, PortRangeEnd);
+                var port = (ushort)random.Next(PortRangeStart, PortRangeEnd);
                 if (!occupiedPorts.Contains(port))
                 {
+                    isPreferred = false;
                     return port;
                 }
             }
@@ -86,4 +133,5 @@ namespace Google.Solutions.Iap.Net
                 "Attempting to dynamically allocating a TCP port failed");
         }
     }
+
 }
