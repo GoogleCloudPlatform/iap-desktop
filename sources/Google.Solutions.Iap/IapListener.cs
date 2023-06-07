@@ -126,7 +126,7 @@ namespace Google.Solutions.Iap
                 //
                 localEndpoint = new IPEndPoint(
                     IPAddress.Loopback,
-                    PortFinder.FindFreeLocalPort());
+                    new PortFinder().FindPort(out var _));
             }
 
             this.listener = new TcpListener(localEndpoint);

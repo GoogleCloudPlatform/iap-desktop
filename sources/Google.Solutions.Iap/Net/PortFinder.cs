@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Format;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace Google.Solutions.Iap.Net
     /// <summary>
     /// Helper class to find unsed local TCP ports.
     /// </summary>
-    internal static class PortFinder
+    public class PortFinder
     {
         private const int MaxAttempts = 1000;
 
@@ -44,6 +45,21 @@ namespace Google.Solutions.Iap.Net
         //
         private const ushort PortRangeStart = 10000;
         private const ushort PortRangeEnd = 49000;
+
+        /// <summary>
+        /// Size of the available port range, in bits.
+        /// </summary>
+        private const ushort PortRangeSize = 15;
+
+        //
+        // Seed for determining a preferred port.
+        //
+        private readonly BsdChecksum seed = new BsdChecksum(PortRangeSize);
+
+        static PortFinder()
+        {
+            Debug.Assert(PortRangeStart + (1 << (PortRangeSize - 1)) < PortRangeEnd);
+        }
 
         private static HashSet<ushort> QueryOccupiedPorts()
         {
@@ -63,14 +79,39 @@ namespace Google.Solutions.Iap.Net
         }
 
         /// <summary>
-        /// Find a random local port that's currently not in use. 
+        /// Add seed to use for assigning a deterministic port.
         /// </summary>
-        public static ushort FindFreeLocalPort()
+        public void AddSeed(byte[] data)
+        {
+            this.seed.Add(data);
+        }
+
+        /// <summary>
+        /// Determine an unused port. If possible, return a deterministic
+        /// port number based on the seed.
+        /// </summary>
+        /// <returns></returns>
+        public ushort FindPort(out bool isPreferred)
         {
             var occupiedPorts = QueryOccupiedPorts();
+            if (this.seed.Value != 0)
+            {
+                var preferredPort = (ushort)(PortRangeStart + this.seed.Value);
+                Debug.Assert(preferredPort >= PortRangeStart);
+                Debug.Assert(preferredPort <= PortRangeEnd);
+
+                if (!occupiedPorts.Contains(preferredPort))
+                {
+                    //
+                    // Preferred port is available.
+                    //
+                    isPreferred = true;
+                    return preferredPort;
+                }
+            }
 
             //
-            // Use a random port to make port numbers less predictable.
+            // Find a random port.
             //
             var random = new Random(Environment.TickCount);
 
@@ -83,6 +124,7 @@ namespace Google.Solutions.Iap.Net
                 var port = (ushort)random.Next(PortRangeStart, PortRangeEnd);
                 if (!occupiedPorts.Contains(port))
                 {
+                    isPreferred = false;
                     return port;
                 }
             }
@@ -90,38 +132,6 @@ namespace Google.Solutions.Iap.Net
             throw new IOException(
                 "Attempting to dynamically allocating a TCP port failed");
         }
-
-        /// <summary>
-        /// Find a local port that's currently not in use. Given the same
-        /// seed, try to return the same port each time.
-        /// </summary>
-        //public static ushort FindFreeLocalPort(byte[] seed)
-        //{
-        //    ushort portRangeInBits = 15;
-        //    Debug.Assert(PortRangeStart + (1 << (portRangeInBits - 1)) < PortRangeEnd);
-
-        //    //
-        //    // Create a 15-bit checksum of the seed and use that as an offset
-        //    // in the usable port range.
-        //    //
-        //    var preferredPort = (ushort)
-        //        (PortRangeStart + BsdChecksum.Checksum(seed, portRangeInBits));
-
-        //    var occupiedPorts = QueryOccupiedPorts();
-        //    if (!occupiedPorts.Contains(preferredPort))
-        //    {
-        //        //
-        //        // Preferred port can be used.
-        //        //
-        //    }
-        //    else
-        //    {
-        //        //
-        //        // Port is taken, use a random one instead.
-        //        //
-        //        return FindFreeLocalPort();
-        //    }
-        //}
     }
 
 }
