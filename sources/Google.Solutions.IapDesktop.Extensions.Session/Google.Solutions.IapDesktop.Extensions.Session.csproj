@@ -65,9 +65,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\ConnectionSettings\ConnectionSettingsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Views\ConnectionSettings\ConnectionSettingsView.cs" />
     <Compile Update="Views\Credentials\NewCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,18 +90,12 @@
     <Compile Update="Views\Options\TerminalOptionsSheet.Designer.cs">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\RemoteDesktop\RdpDesktopView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Views\RemoteDesktop\RdpDesktopView.cs" />
     <Compile Update="Views\RemoteDesktop\RdpDesktopView.Designer.cs">
       <DependentUpon>RdpDesktopView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SessionViewBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Views\SshKeys\AuthorizedPublicKeysView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Views\SessionViewBase.cs" />
+    <Compile Update="Views\SshKeys\AuthorizedPublicKeysView.cs" />
     <Compile Update="Views\SshKeys\AuthorizedPublicKeysView.Designer.cs">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
@@ -122,18 +114,12 @@
     <Compile Update="Views\SshTerminal\SshAuthenticationPromptView.Designer.cs">
       <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SshTerminal\SshTerminalView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Views\SshTerminal\TerminalPaneBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Views\SshTerminal\SshTerminalView.cs" />
+    <Compile Update="Views\SshTerminal\TerminalPaneBase.cs" />
     <Compile Update="Views\SshTerminal\TerminalPaneBase.Designer.cs">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\Tunnels\TunnelsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Views\Tunnels\TunnelsView.cs" />
     <Compile Update="Views\Tunnels\TunnelsView.designer.cs">
       <DependentUpon>TunnelsView.cs</DependentUpon>
     </Compile>

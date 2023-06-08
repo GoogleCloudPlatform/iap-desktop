@@ -51,27 +51,19 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="ToolWindows\DebugCommonControlsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugCommonControlsView.cs" />
     <Compile Update="ToolWindows\DebugCommonControlsView.Designer.cs">
       <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugDockingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugDockingView.cs" />
     <Compile Update="ToolWindows\DebugDockingView.Designer.cs">
       <DependentUpon>DebugDockingView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugFullScreenView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugFullScreenView.cs" />
     <Compile Update="ToolWindows\DebugFullScreenView.Designer.cs">
       <DependentUpon>DebugFullScreenView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugJobServiceView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugJobServiceView.cs" />
     <Compile Update="ToolWindows\DebugJobServiceView.Designer.cs">
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </Compile>
@@ -81,21 +73,15 @@
     <Compile Update="Options\DebugOptionsSheet.Designer.cs">
       <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugProjectExplorerTrackingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugProjectExplorerTrackingView.cs" />
     <Compile Update="ToolWindows\DebugProjectExplorerTrackingView.Designer.cs">
       <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugServiceRegistryView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugServiceRegistryView.cs" />
     <Compile Update="ToolWindows\DebugServiceRegistryView.Designer.cs">
       <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugThemeView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\DebugThemeView.cs" />
     <Compile Update="ToolWindows\DebugThemeView.Designer.cs">
       <DependentUpon>DebugThemeView.cs</DependentUpon>
     </Compile>

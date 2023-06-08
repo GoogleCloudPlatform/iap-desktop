@@ -100,7 +100,7 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): themes Google.Solutions.IapDesktop\OAuthCl
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
 
-	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
+	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);Version=$(BINARY_VERSION)
 	
 !if ( "$(SKIP_ASSEMBLY_BUILD)" == "" ) 
 $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
