@@ -4,7 +4,6 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>

@@ -8,5 +8,6 @@
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <FileVersion>1.0.1.0</FileVersion>
     <Copyright>Copyright 2019-2023 Google LLC</Copyright>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 </Project>

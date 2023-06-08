@@ -7,7 +7,6 @@
     <Description>Session extension</Description>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugType>full</DebugType>
