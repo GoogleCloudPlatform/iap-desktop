@@ -12,8 +12,6 @@
     <FileVersion>1.0.1.0</FileVersion>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <LangVersion>7.3</LangVersion>
-    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -31,8 +29,10 @@ copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDe
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
+    <PostBuildEvent>
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\$(AssemblyName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />

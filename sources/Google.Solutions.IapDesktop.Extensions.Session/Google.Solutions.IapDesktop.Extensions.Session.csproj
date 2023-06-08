@@ -13,12 +13,6 @@
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>7.3</LangVersion>
-    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\*ssh* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugType>full</DebugType>
@@ -33,12 +27,13 @@ copy /Y $(TargetDir)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\*ssh* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-</PostBuildEvent>
+    <PostBuildEvent>
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\$(AssemblyName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*ssh* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
