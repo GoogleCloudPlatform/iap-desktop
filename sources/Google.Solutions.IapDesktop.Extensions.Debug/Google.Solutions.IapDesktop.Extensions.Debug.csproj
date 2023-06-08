@@ -1,13 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\$(SolutionName).props" />
   <PropertyGroup>
-    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Platforms>x64;x86</Platforms>
-    <TargetFramework>net462</TargetFramework>
-    <AssemblyTitle>Google.Solutions.IapDesktop.Extensions.Debug</AssemblyTitle>
-    <Company>Google LLC</Company>
-    <Product>IAP Desktop</Product>
     <Description>Management extension</Description>
-    <Copyright>Copyright © 2019-2023 Google LLC</Copyright>
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <FileVersion>1.0.1.0</FileVersion>
   </PropertyGroup>

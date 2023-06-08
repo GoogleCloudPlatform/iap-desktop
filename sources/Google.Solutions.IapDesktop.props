@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <DefaultTargetFramework>net462</DefaultTargetFramework>
+    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
+    <Company>Google LLC</Company>
+    <Product>IAP Desktop</Product>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Copyright>Copyright 2019-2023 Google LLC</Copyright>
+  </PropertyGroup>
+</Project>

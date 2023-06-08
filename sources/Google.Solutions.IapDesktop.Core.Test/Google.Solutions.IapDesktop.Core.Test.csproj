@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\$(SolutionName).props" />
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
-    <AssemblyTitle>Google.Solutions.IapDesktop.Core.Test</AssemblyTitle>
-    <Company>Google LLC</Company>
-    <Product>IAP Desktop</Product>
-    <Description>Google.Solutions.IapDesktop.Core.Test</Description>
-    <Copyright>Copyright © 2019-2023 Google LLC</Copyright>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

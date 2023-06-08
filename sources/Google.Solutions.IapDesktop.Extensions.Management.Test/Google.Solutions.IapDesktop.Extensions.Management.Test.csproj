@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\$(SolutionName).props" />
   <PropertyGroup>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Platforms>x64;x86</Platforms>
-    <TargetFramework>net462</TargetFramework>
-    <AssemblyTitle>Google.Solutions.Logging.Test</AssemblyTitle>
-    <Company>Google LLC</Company>
-    <Product>Google.Solutions.Logging.Test</Product>
-    <Copyright>Copyright ©  2020</Copyright>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>

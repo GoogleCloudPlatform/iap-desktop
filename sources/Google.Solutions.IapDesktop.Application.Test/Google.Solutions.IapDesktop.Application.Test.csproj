@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\$(SolutionName).props" />
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
-    <AssemblyTitle>Google.Solutions.IapDesktop.Application.Test</AssemblyTitle>
-    <Company>Google LLC</Company>
-    <Product>Google.Solutions.IapDesktop.Application.Test</Product>
-    <Copyright>Copyright ©  2020</Copyright>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
