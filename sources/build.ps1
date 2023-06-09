@@ -122,21 +122,23 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 		exit $LastExitCode
 	}
 
+    $PackageReferences = ` 
+        Get-ChildItem -Recurse -Include "*.csproj" `
+            | % { [xml](Get-Content $_) | Select-Xml "//PackageReference" | Select-Object -ExpandProperty Node } `
+            | sort -Property Include -Unique
+        
 	#
 	# Add all tools to PATH.
 	#
-	$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
-		| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
-		| Select-Object -ExpandProperty FullName)
-
+    $ToolsDirectories = $PackageReferences | % { "$($env:USERPROFILE)\.nuget\packages\$($_.Include)\$($_.Version)\tools" }
 	$env:Path += ";" + ($ToolsDirectories -join ";")
 
 	#
 	# Add environment variables indicating package versions, for example
 	# $env:Google_Apis_Auth = 1.2.3
 	#
-	(nuget list -Source (Resolve-Path ${PSScriptRoot}\packages)) `
-		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: -Force }
+    $PackageReferences `
+        | ForEach-Object { New-Item -Name $_.Include.Replace(".", "_") -value $_.Version -ItemType Variable -Path Env: -Force }
 }
 
 Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow

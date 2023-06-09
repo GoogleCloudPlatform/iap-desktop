@@ -1,76 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Google.Solutions.IapDesktop.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A74D041E-639F-4C53-A0C4-F8F936A980C8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.Platform</RootNamespace>
-    <AssemblyName>Google.Solutions.Platform</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
+    <Description>Platform extensions library</Description>
+    
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dispatch\IWin32ProcessSet.cs" />
-    <Compile Include="Dispatch\Win32JobCollection.cs" />
-    <Compile Include="Dispatch\Win32ChildProcessFactory.cs" />
-    <Compile Include="PlatformTraceSources.cs" />
-    <Compile Include="Cryptography\CertificateStore.cs" />
-    <Compile Include="Dispatch\DispatchException.cs" />
-    <Compile Include="Dispatch\Win32Process.cs" />
-    <Compile Include="Dispatch\Win32ProcessFactory.cs" />
-    <Compile Include="Dispatch\Win32Job.cs" />
-    <Compile Include="Dispatch\WtsSession.cs" />
-    <Compile Include="Security\Quarantine.cs" />
-    <Compile Include="UserEnvironment.cs" />
-    <Compile Include="Net\BrowserProtocolRegistry.cs" />
-    <Compile Include="Net\Browser.cs" />
-    <Compile Include="Net\ChromeAutoSelectCertificateForUrlsPolicy.cs" />
-    <Compile Include="Net\ChromeCertificateSelector.cs" />
-    <Compile Include="Net\ChromePolicyUrlPattern.cs" />
-    <Compile Include="Net\IChromeAutoSelectCertificateForUrlsPolicy.cs" />
-    <Compile Include="Net\TcpTable.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
-      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
-      <Name>Google.Solutions.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />
 </Project>

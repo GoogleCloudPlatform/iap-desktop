@@ -26,7 +26,7 @@ $SourcesRoot = "${PSScriptRoot}\.."
 $FilesWithoutCopyrightHeader = (Get-ChildItem $SourcesRoot -Recurse `
     | Where-Object {$_.Name.EndsWith(".cs")} `
     | Where-Object {-not $_.Name.EndsWith("AssemblyAttributes.cs")} `
-    | Where-Object {-not $_.FullName.Contains("\packages\")} `
+    | Where-Object {-not $_.Name.EndsWith("AssemblyInfo.cs")} `
     | Where-Object {$_.Name -ne "OAuthClient.cs"} `
     | Where-Object {$_.Name -ne "Settings.Designer.cs"} `
     | Where-Object {$_.Name -ne "Resources.Designer.cs"} `

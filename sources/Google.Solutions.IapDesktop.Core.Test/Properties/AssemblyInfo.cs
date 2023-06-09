@@ -20,13 +20,4 @@
 //
 
 using System.Reflection;
-
-[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Core.Test")]
-[assembly: AssemblyDescription("Google.Solutions.IapDesktop.Core.Test")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
 [assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]

@@ -1,275 +1,105 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Google.Solutions.IapDesktop.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B804D76C-E02E-4320-94A7-579034644AA0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Management</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Management</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
+    
+    <Description>Management extension</Description>
+    
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
+  <PropertyGroup>
+    <PostBuildEvent>
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\$(AssemblyName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.Apis, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.60.0\lib\net45\Google.Apis.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.60.0\lib\net461\Google.Apis.Auth.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.60.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.60.0.3050, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.60.0.3050\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.60.0\lib\net45\Google.Apis.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.60.0.3046, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.60.0.3046\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.60.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.60.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Diagnostics.TraceSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.TraceSource.4.3.0\lib\net46\System.Diagnostics.TraceSource.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Forms.DataVisualization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="vtnetcore, Version=1.0.30.30, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\vtnetcore.1.0.30.30\lib\net46\vtnetcore.dll</HintPath>
-    </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6.5\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-    </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6.5\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
-    </Reference>
+    <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
+    <PackageReference Include="Google.Apis" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.60.0.3050" />
+    <PackageReference Include="Google.Apis.Core" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Logging.v2" Version="1.60.0.3046" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
+    <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+    <PackageReference Include="vtnetcore" Version="1.0.30.30" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auditing\Events\Access\AuthorizeUserTunnelEvent.cs" />
-    <Compile Include="Auditing\Events\Access\ModifiedMetadata.cs" />
-    <Compile Include="Auditing\Events\Access\OsLoginContinueSessionEvent.cs" />
-    <Compile Include="Auditing\Events\Access\OsLoginEventBase.cs" />
-    <Compile Include="Auditing\Events\Access\OsLoginStartSessionEvent.cs" />
-    <Compile Include="Auditing\Events\Access\SetCommonInstanceMetadataEvent.cs" />
-    <Compile Include="Auditing\Events\Access\SetMetadataEvent.cs" />
-    <Compile Include="Auditing\Events\Access\OsLoginCheckPolicyEvent.cs" />
-    <Compile Include="Auditing\Events\IEventProcessor.cs" />
-    <Compile Include="Auditing\Events\ProjectOperationEventBase.cs" />
-    <Compile Include="Auditing\Events\ProjectEventBase.cs" />
-    <Compile Include="Auditing\Events\InstanceOperationEventBase.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\ResumeInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\SuspendInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\ResetInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\StartWithEncryptionKeyEvent.cs" />
-    <Compile Include="Auditing\Events\System\GenericSystemEvent.cs" />
-    <Compile Include="Auditing\Events\System\InstanceManagerHaltForRestartEvent.cs" />
-    <Compile Include="Auditing\Events\System\InstanceResetEvent.cs" />
-    <Compile Include="Auditing\Events\System\InstancePreemptedEvent.cs" />
-    <Compile Include="Auditing\Events\System\HostErrorEvent.cs" />
-    <Compile Include="Auditing\Events\System\RecreateInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\System\AutomaticRestartEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\DeleteInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\EventBase.cs" />
-    <Compile Include="Auditing\Events\EventFactory.cs" />
-    <Compile Include="Auditing\Events\System\GuestTerminateEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\InsertInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\System\MigrateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Auditing\Events\System\NotifyInstanceLocationEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\StartInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\Lifecycle\StopInstanceEvent.cs" />
-    <Compile Include="Auditing\Events\System\SystemEventBase.cs" />
-    <Compile Include="Auditing\Events\System\TerminateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Auditing\Events\UnknownEvent.cs" />
-    <Compile Include="Auditing\Events\InstanceEventBase.cs" />
-    <Compile Include="GuestOs\Inventory\GuestOsInfo.cs" />
-    <Compile Include="GuestOs\Inventory\GuestPackages.cs" />
-    <Compile Include="GuestOs\Inventory\IPackage.cs" />
-    <Compile Include="GuestOs\Inventory\Package.cs" />
-    <Compile Include="GuestOs\Inventory\QfePackage.cs" />
-    <Compile Include="GuestOs\Inventory\WuaPackage.cs" />
-    <Compile Include="GuestOs\Inventory\ZypperPatch.cs" />
-    <Compile Include="GuestOs\ActiveDirectory\DomainJoinService.cs" />
-    <Compile Include="GuestOs\ActiveDirectory\NetworkCredentialExtensions.cs" />
-    <Compile Include="GuestOs\ActiveDirectory\StartupScriptOperation.cs" />
-    <Compile Include="GuestOs\Inventory\GuestOsInventory.cs" />
-    <Compile Include="Views\ActiveDirectory\JoinView.cs">
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\ActiveDirectory\JoinView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ActiveDirectory\JoinView.Designer.cs">
+    <Compile Update="Views\ActiveDirectory\JoinView.Designer.cs">
       <DependentUpon>JoinView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ActiveDirectory\JoinViewModel.cs" />
-    <Compile Include="Views\EventLog\EventLogCommands.cs" />
-    <Compile Include="Views\EventLog\EventLogModel.cs" />
-    <Compile Include="Views\EventLog\EventLogViewModel.cs" />
-    <Compile Include="Views\EventLog\EventLogView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\EventLog\EventLogView.Designer.cs">
+    <Compile Update="Views\EventLog\EventLogView.cs" />
+    <Compile Update="Views\EventLog\EventLogView.Designer.cs">
       <DependentUpon>EventLogView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Auditing\Adapters\AuditLogAdapter.cs" />
-    <Compile Include="Auditing\Logs\ListLogEntriesParser.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="InitializeManagementExtension.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Auditing\Logs\AuditLogRecord.cs" />
-    <Compile Include="Auditing\Logs\LogRecord.cs" />
-    <Compile Include="Views\InstanceControlCommands.cs" />
-    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorCommands.cs" />
-    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
-    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorViewModel.cs" />
-    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\PackageInventory\AvailablePackageInventoryView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\PackageInventory\InstalledPackageInventoryView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\PackageInventory\PackageInventoryCommands.cs" />
-    <Compile Include="Views\PackageInventory\PackageInventoryModel.cs" />
-    <Compile Include="Views\PackageInventory\PackageInventoryType.cs" />
-    <Compile Include="Views\PackageInventory\PackageInventoryViewModel.cs" />
-    <Compile Include="Views\PackageInventory\PackageInventoryViewBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\PackageInventory\PackageInventoryViewBase.Designer.cs">
+    <Compile Update="Views\InstanceProperties\InstancePropertiesInspectorView.cs" />
+    <Compile Update="Views\PackageInventory\AvailablePackageInventoryView.cs" />
+    <Compile Update="Views\PackageInventory\InstalledPackageInventoryView.cs" />
+    <Compile Update="Views\PackageInventory\PackageInventoryViewBase.cs" />
+    <Compile Update="Views\PackageInventory\PackageInventoryViewBase.Designer.cs">
       <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\PackageInventory\PackageList.cs">
+    <Compile Update="Views\PackageInventory\PackageList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\SerialOutput\SerialOutputCommands.cs" />
-    <Compile Include="Views\SerialOutput\SerialOutputWindowComX.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\SerialOutput\XtermReader.cs" />
-    <Compile Include="Views\SerialOutput\SerialOutputModel.cs" />
-    <Compile Include="Views\SerialOutput\SerialOutputViewModel.cs" />
-    <Compile Include="Views\SerialOutput\SerialOutputViewBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\SerialOutput\SerialOutputViewBase.Designer.cs">
+    <Compile Update="Views\SerialOutput\SerialOutputWindowComX.cs" />
+    <Compile Update="Views\SerialOutput\SerialOutputViewBase.cs" />
+    <Compile Update="Views\SerialOutput\SerialOutputViewBase.Designer.cs">
       <DependentUpon>SerialOutputViewBase.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">
-      <Project>{790f1966-eb34-4cf2-8ed3-3e6c96cba397}</Project>
-      <Name>Google.Solutions.Apis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
-      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
-      <Name>Google.Solutions.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
-      <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
-      <Name>Google.Solutions.IapDesktop.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj">
-      <Project>{FF0BB781-E398-4E13-8182-83450082A818}</Project>
-      <Name>Google.Solutions.IapDesktop.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
-      <Project>{83571a48-14e9-4cb2-8d7e-c12deeb967b7}</Project>
-      <Name>Google.Solutions.Mvvm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj">
-      <Project>{a74d041e-639f-4c53-a0c4-f8f936a980c8}</Project>
-      <Name>Google.Solutions.Platform</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj" />
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GuestOs\ActiveDirectory\DomainJoinService.StartupScript.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ActiveDirectory\JoinView.resx">
+    <EmbeddedResource Update="Views\ActiveDirectory\JoinView.resx">
       <DependentUpon>JoinView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EventLog\EventLogView.resx">
+    <EmbeddedResource Update="Views\EventLog\EventLogView.resx">
       <DependentUpon>EventLogView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\PackageInventory\PackageInventoryViewBase.resx">
+    <EmbeddedResource Update="Views\PackageInventory\PackageInventoryViewBase.resx">
       <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\SerialOutput\SerialOutputViewBase.resx">
+    <EmbeddedResource Update="Views\SerialOutput\SerialOutputViewBase.resx">
       <DependentUpon>SerialOutputViewBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Resources\Report_32.png" />
   </ItemGroup>
   <ItemGroup>
@@ -317,16 +147,7 @@
   <ItemGroup>
     <None Include="Resources\ComputerDetails_16.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets'))" />
-  </Target>
+  <ItemGroup>
+    <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
+  </ItemGroup>
 </Project>
