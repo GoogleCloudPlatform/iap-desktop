@@ -122,16 +122,15 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 		exit $LastExitCode
 	}
 
-    $SolutionFile = (Resolve-Path *.sln).Path
-    dotnet list $SolutionFile package
     $PackageReferences = ` 
-        (dotnet list $SolutionFile package --format json | ConvertFrom-Json).projects.frameworks.topLevelPackages `
-        | sort -Property id -Unique
+        Get-ChildItem -Recurse -Include "*.csproj" `
+            | % { [xml](Get-Content $_) | Select-Xml "//PackageReference" | Select-Object -ExpandProperty Node } `
+            | sort -Property Include -Unique
         
 	#
 	# Add all tools to PATH.
 	#
-    $ToolsDirectories = $PackageReferences | % { "$($env:USERPROFILE)\.nuget\packages\$($_.id)\$($_.resolvedVersion)\tools" }
+    $ToolsDirectories = $PackageReferences | % { "$($env:USERPROFILE)\.nuget\packages\$($_.Include)\$($_.Version)\tools" }
 	$env:Path += ";" + ($ToolsDirectories -join ";")
 
 	#
@@ -139,7 +138,7 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	# $env:Google_Apis_Auth = 1.2.3
 	#
     $PackageReferences `
-        | ForEach-Object { New-Item -Name $_.id.Replace(".", "_") -value $_.resolvedVersion -ItemType Variable -Path Env: -Force }
+        | ForEach-Object { New-Item -Name $_.Include.Replace(".", "_") -value $_.Version -ItemType Variable -Path Env: -Force }
 }
 
 Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
