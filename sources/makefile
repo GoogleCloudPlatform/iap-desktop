@@ -182,7 +182,7 @@ $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 		-Path $(MAKEDIR)\makefile, \
 			  $(MAKEDIR)\build.ps1, \
 			  $(MAKEDIR)\installer, \
-			  $(HOMEPATH)\.nuget\packages\Wix\$(WIX)\tools
+			  $(USERPROFILE)\.nuget\packages\Wix\$(WIX)\tools
 
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
