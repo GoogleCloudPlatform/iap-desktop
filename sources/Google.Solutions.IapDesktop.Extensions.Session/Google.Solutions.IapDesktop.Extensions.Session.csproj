@@ -8,18 +8,6 @@
     
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\$(AssemblyName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\

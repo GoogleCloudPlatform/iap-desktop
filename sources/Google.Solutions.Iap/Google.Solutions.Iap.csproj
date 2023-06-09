@@ -6,12 +6,6 @@
     <Description>IAP client library</Description>
     
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis" Version="1.60.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />

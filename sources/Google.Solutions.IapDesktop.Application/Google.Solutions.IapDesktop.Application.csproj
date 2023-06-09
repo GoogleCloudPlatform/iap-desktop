@@ -6,12 +6,6 @@
     <Description>IAP Desktop</Description>
     
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
     <PackageReference Include="Google.Apis" Version="1.60.0" />

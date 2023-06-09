@@ -8,6 +8,18 @@
     <LangVersion>7.3</LangVersion>
     <Platforms>x64;x86</Platforms>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-     <RuntimeIdentifiers>win7-x86;win7-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win7-x86;win7-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
 </Project>
