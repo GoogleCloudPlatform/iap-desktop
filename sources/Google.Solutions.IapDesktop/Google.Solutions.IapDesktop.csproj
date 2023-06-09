@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\$(SolutionName).props" />
+  <Import Project="..\Google.Solutions.IapDesktop.props" />
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <AssemblyName>IapDesktop</AssemblyName>

@@ -122,25 +122,23 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 		exit $LastExitCode
 	}
 
+    $SolutionFile = (Resolve-Path *.sln).Path
+    $PackageReferences = ` 
+        (dotnet list $SolutionFile package --format json | ConvertFrom-Json).projects.frameworks.topLevelPackages `
+        | sort -Property id -Unique
+        
 	#
 	# Add all tools to PATH.
 	#
-    
-    # TODO: Resolve tools
-	#$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
-	#	| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
-	#	| Select-Object -ExpandProperty FullName)
-    #
-	#$env:Path += ";" + ($ToolsDirectories -join ";")
+    $ToolsDirectories = $PackageReferences | % { "$($env:USERPROFILE)\.nuget\packages\$($_.id)\$($_.resolvedVersion)\tools" }
+	$env:Path += ";" + ($ToolsDirectories -join ";")
 
 	#
 	# Add environment variables indicating package versions, for example
 	# $env:Google_Apis_Auth = 1.2.3
 	#
-    
-    # TODO: Resolve tools
-	#(nuget list -Source (Resolve-Path ${PSScriptRoot}\packages)) `
-	#	| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: -Force }
+    $PackageReferences `
+        | ForEach-Object { New-Item -Name $_.id.Replace(".", "_") -value $_.resolvedVersion -ItemType Variable -Path Env: -Force }
 }
 
 Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow

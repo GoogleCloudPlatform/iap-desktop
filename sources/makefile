@@ -26,6 +26,7 @@
 PRODUCT_VERSION = 2.36
 CONFIGURATION = Release
 PLATFORM=x86
+TARGET_FRAMEWORK=net462
 
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
 BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
@@ -35,7 +36,7 @@ BUILD_NUMBER = 1
 
 BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
-MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
+MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\IapDesktop.exe
 
 INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 INSTALLER_PACKAGE  = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
@@ -43,16 +44,16 @@ SYMBOLS_PACKAGE    = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(
 POLICIES_PACKAGE   = installer\bin\$(CONFIGURATION)\PolicyTemplates-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 
 NUNIT_ASSEMBLIES = \
-	Google.Solutions.Apis.Test\bin\$(CONFIGURATION)\Google.Solutions.Apis.Test.dll	\
-	Google.Solutions.Platform.Test\bin\$(CONFIGURATION)\Google.Solutions.Platform.Test.dll	\
-	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
-	Google.Solutions.Iap.Test\bin\$(CONFIGURATION)\Google.Solutions.Iap.Test.dll \
-	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Ssh.Test.dll \
-	Google.Solutions.Mvvm.Test\bin\$(CONFIGURATION)\Google.Solutions.Mvvm.Test.dll \
-	Google.Solutions.IapDesktop.Core.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Core.Test.dll \
-	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Application.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Management.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Management.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Session.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Session.Test.dll
+	Google.Solutions.Apis.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Apis.Test.dll	\
+	Google.Solutions.Platform.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Platform.Test.dll	\
+	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Common.Test.dll	\
+	Google.Solutions.Iap.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Iap.Test.dll \
+	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Ssh.Test.dll \
+	Google.Solutions.Mvvm.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Mvvm.Test.dll \
+	Google.Solutions.IapDesktop.Core.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Core.Test.dll \
+	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Application.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Management.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Management.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Session.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Session.Test.dll
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Apis]* \
@@ -115,9 +116,9 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 		
 	copy $(MAKEDIR)\installer\*.* \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
-	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.exe* \
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.exe* \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
-	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.dll \
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.dll \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 !endif
 
@@ -146,15 +147,15 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 
 !if ( "$(CODESIGN)" != "" ) 
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\Google.*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\libssh2.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\vtnetcore.dll
-    signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*Interop*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\IapDesktop.exe
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\libssh2.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\vtnetcore.dll
+    signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\WeifenLuo.WinFormsUI.Docking*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*Interop*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\IapDesktop.exe
     
-    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.exe
-    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.dll
+    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.exe
+    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.dll
 !endif
 
 	light \
@@ -181,7 +182,7 @@ $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 		-Path $(MAKEDIR)\makefile, \
 			  $(MAKEDIR)\build.ps1, \
 			  $(MAKEDIR)\installer, \
-			  $(MAKEDIR)\packages\Wix.$(WIX)\tools
+			  $(HOMEPATH)\.nuget\packages\Wix\$(WIX)\tools
 
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
@@ -189,9 +190,9 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 
 	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols \
-		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\\symbols
 
-	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.pdb \
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.pdb \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
