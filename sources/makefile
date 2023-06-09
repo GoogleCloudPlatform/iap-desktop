@@ -25,8 +25,8 @@
 
 PRODUCT_VERSION = 2.36
 CONFIGURATION = Release
-PLATFORM=x86
-TARGET_FRAMEWORK=net462
+PLATFORM = x86
+TARGET_FRAMEWORK = net462
 
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
 BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
@@ -264,7 +264,7 @@ test: $(NUNIT_ASSEMBLIES)
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml
 
-	$(NUGET_PACKAGEES)\ReportGenerator\$(ReportGenerator)\tools\net47\ReportGenerator.exe \
+	$(NUGET_PACKAGEES)\ReportGenerator\$(REPORTGENERATOR)\tools\net47\ReportGenerator.exe \
 		-reports:opencovertests.xml \
 		-targetdir:coveragereport \
 		-reporttypes:HTML
