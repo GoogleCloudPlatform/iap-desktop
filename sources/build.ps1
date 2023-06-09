@@ -123,6 +123,7 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	}
 
     $SolutionFile = (Resolve-Path *.sln).Path
+    dotnet list $SolutionFile package
     $PackageReferences = ` 
         (dotnet list $SolutionFile package --format json | ConvertFrom-Json).projects.frameworks.topLevelPackages `
         | sort -Property id -Unique
