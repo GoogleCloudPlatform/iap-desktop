@@ -99,9 +99,7 @@
     <Compile Update="Views\SshKeys\AuthorizedPublicKeysView.Designer.cs">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SshKeys\AuthorizedPublicKeysList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Views\SshKeys\AuthorizedPublicKeysList.cs" />
     <Compile Update="Views\Download\DownloadFileView.cs">
       <SubType>Form</SubType>
     </Compile>
