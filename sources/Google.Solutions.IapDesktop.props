@@ -7,4 +7,10 @@
     <Copyright>Copyright 2019-2023 Google LLC</Copyright>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x86'">
+     <RuntimeIdentifiers>win81-x86</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
+     <RuntimeIdentifiers>win81-x64</RuntimeIdentifiers>
+  </PropertyGroup>
 </Project>
