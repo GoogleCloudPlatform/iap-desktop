@@ -68,6 +68,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Session]*
 	
 SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /n Google /a /fd sha256 /td sha256
+NUGET_PACKAGEES = $(USERPROFILE)\.nuget\packages
 
 #------------------------------------------------------------------------------
 # Ancillary variables
@@ -182,7 +183,7 @@ $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 		-Path $(MAKEDIR)\makefile, \
 			  $(MAKEDIR)\build.ps1, \
 			  $(MAKEDIR)\installer, \
-			  $(USERPROFILE)\.nuget\packages\Wix\$(WIX)\tools
+			  $(NUGET_PACKAGEES)\Wix\$(WIX)\tools
 
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
@@ -263,7 +264,7 @@ test: $(NUNIT_ASSEMBLIES)
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml
 
-	ReportGenerator.exe \
+	$(NUGET_PACKAGEES)\ReportGenerator\$(ReportGenerator)\tools\net47\ReportGenerator.exe \
 		-reports:opencovertests.xml \
 		-targetdir:coveragereport \
 		-reporttypes:HTML
