@@ -36,7 +36,7 @@ BUILD_NUMBER = 1
 
 BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
-MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\IapDesktop.exe
+MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\IapDesktop.exe
 
 INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 INSTALLER_PACKAGE  = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
@@ -44,14 +44,14 @@ SYMBOLS_PACKAGE    = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(
 POLICIES_PACKAGE   = installer\bin\$(CONFIGURATION)\PolicyTemplates-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 
 NUNIT_ASSEMBLIES = \
-	Google.Solutions.Apis.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Apis.Test.dll	\
-	Google.Solutions.Platform.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Platform.Test.dll	\
-	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Common.Test.dll	\
-	Google.Solutions.Iap.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Iap.Test.dll \
+	Google.Solutions.Apis.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Apis.Test.dll	\
+	Google.Solutions.Platform.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Platform.Test.dll	\
+	Google.Solutions.Common.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Common.Test.dll	\
+	Google.Solutions.Iap.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Iap.Test.dll \
 	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Ssh.Test.dll \
-	Google.Solutions.Mvvm.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Mvvm.Test.dll \
-	Google.Solutions.IapDesktop.Core.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Core.Test.dll \
-	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Application.Test.dll \
+	Google.Solutions.Mvvm.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Mvvm.Test.dll \
+	Google.Solutions.IapDesktop.Core.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Core.Test.dll \
+	Google.Solutions.IapDesktop.Application.Test\bin\AnyCPU\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Application.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Management.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Management.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Session.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Session.Test.dll
 
