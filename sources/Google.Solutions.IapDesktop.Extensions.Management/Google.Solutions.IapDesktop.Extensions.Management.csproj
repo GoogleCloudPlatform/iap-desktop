@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
-    <Platforms>x64;x86</Platforms>
+    
     <Description>Management extension</Description>
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>

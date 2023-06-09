@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
-    <Platforms>x64;x86</Platforms>
+    
     <Description>Session extension</Description>
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">

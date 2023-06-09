@@ -4,10 +4,11 @@
     <OutputType>WinExe</OutputType>
     <AssemblyName>IapDesktop</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>IAP Desktop</AssemblyTitle>
     <Description>Zero-trust Remote Desktop and SSH client</Description>
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
