@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Tsc;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Rdp
 {
     partial class RdpDesktopView
     {

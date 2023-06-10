@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Apis.Mocks;
 using Moq;

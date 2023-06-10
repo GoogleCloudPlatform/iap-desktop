@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh
 {
     partial class TerminalViewBase
     {

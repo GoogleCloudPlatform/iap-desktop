@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Apis.Integration;
@@ -36,7 +36,7 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Rdp
 {
     [TestFixture]
     [UsesCloudResources]

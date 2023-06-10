@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;

@@ -24,7 +24,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Rdp
 {
     internal static class RdpClientExtensions
     {

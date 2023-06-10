@@ -26,7 +26,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh
 {
     [SkipCodeCoverage("UI code")]
     [Service]

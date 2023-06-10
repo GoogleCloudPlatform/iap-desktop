@@ -31,7 +31,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh
 {
     [Service]
     public class SshTerminalView : TerminalViewBase, ISshTerminalSession, IView<SshTerminalViewModel>

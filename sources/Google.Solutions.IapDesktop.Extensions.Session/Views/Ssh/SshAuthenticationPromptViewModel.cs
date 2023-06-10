@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh
 {
     [Service]
     public class SshAuthenticationPromptViewModel : ViewModelBase

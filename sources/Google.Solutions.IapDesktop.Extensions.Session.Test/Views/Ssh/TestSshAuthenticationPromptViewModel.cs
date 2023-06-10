@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Ssh
 {
     [TestFixture]
     public class TestSshAuthenticationPromptViewModel : ShellFixtureBase

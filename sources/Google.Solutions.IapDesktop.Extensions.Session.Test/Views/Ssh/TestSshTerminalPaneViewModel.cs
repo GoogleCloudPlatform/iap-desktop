@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Download;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
@@ -49,7 +49,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Ssh
 {
     [TestFixture]
     [UsesCloudResources]

@@ -19,28 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh
 {
-    /// <summary>
-    /// A remote desktop session.
-    /// </summary>
-    public interface IRdpSession : ISession
+    public interface ISshTerminalSession : ISession
     {
-        bool TrySetFullscreen(FullScreenMode mode);
+        InstanceLocator Instance { get; }
 
-        void ShowSecurityScreen();
-
-        void ShowTaskManager();
-
-        bool CanEnterFullScreen { get; }
-    }
-
-    public enum FullScreenMode
-    {
-        Off,
-        SingleScreen,
-        AllScreens
+        Task DownloadFilesAsync();
     }
 }

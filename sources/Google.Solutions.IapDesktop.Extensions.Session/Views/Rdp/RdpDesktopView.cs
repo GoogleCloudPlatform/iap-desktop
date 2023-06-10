@@ -48,7 +48,7 @@ using System.Windows.Forms;
 #pragma warning disable CA1031 // catch Exception
 #pragma warning disable CA1801 // Review unused parameters
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Rdp
 {
     [Service]
     public partial class RdpDesktopView

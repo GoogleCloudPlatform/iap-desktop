@@ -49,7 +49,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh
 {
     [Service]
     public class SshTerminalViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal

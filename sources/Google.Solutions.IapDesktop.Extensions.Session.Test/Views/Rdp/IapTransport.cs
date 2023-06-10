@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Testing.Apis.Integration;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Rdp
 {
     internal class IapTransport : DisposableBase, ITransport
     {

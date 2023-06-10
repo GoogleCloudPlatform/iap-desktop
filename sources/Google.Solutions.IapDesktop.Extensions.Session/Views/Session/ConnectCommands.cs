@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading;
 using System.Threading.Tasks;

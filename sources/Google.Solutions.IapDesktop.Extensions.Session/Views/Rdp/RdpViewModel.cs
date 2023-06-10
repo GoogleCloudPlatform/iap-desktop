@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Rdp
 {
     [Service]
     public class RdpViewModel : ViewModelBase
