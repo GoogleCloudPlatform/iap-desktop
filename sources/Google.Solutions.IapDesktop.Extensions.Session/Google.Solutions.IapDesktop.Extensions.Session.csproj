@@ -53,60 +53,60 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\ConnectionSettings\ConnectionSettingsView.cs" />
-    <Compile Update="Views\Credentials\NewCredentialsView.cs">
+    <Compile Update="ToolWindows\ConnectionSettings\ConnectionSettingsView.cs" />
+    <Compile Update="ToolWindows\Credentials\NewCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Views\Credentials\NewCredentialsView.Designer.cs">
+    <Compile Update="ToolWindows\Credentials\NewCredentialsView.Designer.cs">
       <DependentUpon>NewCredentialsView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\Credentials\ShowCredentialsView.cs">
+    <Compile Update="ToolWindows\Credentials\ShowCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Views\Credentials\ShowCredentialsView.Designer.cs">
+    <Compile Update="ToolWindows\Credentials\ShowCredentialsView.Designer.cs">
       <DependentUpon>ShowCredentialsView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\Options\SshOptionsSheet.cs">
+    <Compile Update="ToolWindows\Options\SshOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Views\Options\SshOptionsSheet.Designer.cs">
+    <Compile Update="ToolWindows\Options\SshOptionsSheet.Designer.cs">
       <DependentUpon>SshOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\Options\TerminalOptionsSheet.cs">
+    <Compile Update="ToolWindows\Options\TerminalOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Views\Options\TerminalOptionsSheet.Designer.cs">
+    <Compile Update="ToolWindows\Options\TerminalOptionsSheet.Designer.cs">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\RemoteDesktop\RdpDesktopView.cs" />
-    <Compile Update="Views\RemoteDesktop\RdpDesktopView.Designer.cs">
+    <Compile Update="ToolWindows\Rdp\RdpDesktopView.cs" />
+    <Compile Update="ToolWindows\Rdp\RdpDesktopView.Designer.cs">
       <DependentUpon>RdpDesktopView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SessionViewBase.cs" />
-    <Compile Update="Views\SshKeys\AuthorizedPublicKeysView.cs" />
-    <Compile Update="Views\SshKeys\AuthorizedPublicKeysView.Designer.cs">
+    <Compile Update="ToolWindows\SessionViewBase.cs" />
+    <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.cs" />
+    <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.Designer.cs">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SshKeys\AuthorizedPublicKeysList.cs" />
-    <Compile Update="Views\Download\DownloadFileView.cs">
+    <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysList.cs" />
+    <Compile Update="ToolWindows\Download\DownloadFileView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Views\Download\DownloadFileView.Designer.cs">
+    <Compile Update="ToolWindows\Download\DownloadFileView.Designer.cs">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SshTerminal\SshAuthenticationPromptView.cs">
+    <Compile Update="ToolWindows\Ssh\SshAuthenticationPromptView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Views\SshTerminal\SshAuthenticationPromptView.Designer.cs">
+    <Compile Update="ToolWindows\Ssh\SshAuthenticationPromptView.Designer.cs">
       <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\SshTerminal\SshTerminalView.cs" />
-    <Compile Update="Views\SshTerminal\TerminalPaneBase.cs" />
-    <Compile Update="Views\SshTerminal\TerminalPaneBase.Designer.cs">
+    <Compile Update="ToolWindows\Ssh\SshTerminalView.cs" />
+    <Compile Update="ToolWindows\Ssh\TerminalPaneBase.cs" />
+    <Compile Update="ToolWindows\Ssh\TerminalPaneBase.Designer.cs">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\Tunnels\TunnelsView.cs" />
-    <Compile Update="Views\Tunnels\TunnelsView.designer.cs">
+    <Compile Update="ToolWindows\Tunnels\TunnelsView.cs" />
+    <Compile Update="ToolWindows\Tunnels\TunnelsView.designer.cs">
       <DependentUpon>TunnelsView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -129,34 +129,34 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Credentials\NewCredentialsView.resx">
+    <EmbeddedResource Update="ToolWindows\Credentials\NewCredentialsView.resx">
       <DependentUpon>NewCredentialsView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Credentials\ShowCredentialsView.resx">
+    <EmbeddedResource Update="ToolWindows\Credentials\ShowCredentialsView.resx">
       <DependentUpon>ShowCredentialsView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Options\SshOptionsSheet.resx">
+    <EmbeddedResource Update="ToolWindows\Options\SshOptionsSheet.resx">
       <DependentUpon>SshOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Options\TerminalOptionsSheet.resx">
+    <EmbeddedResource Update="ToolWindows\Options\TerminalOptionsSheet.resx">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\RemoteDesktop\RdpDesktopView.resx">
+    <EmbeddedResource Update="ToolWindows\Rdp\RdpDesktopView.resx">
       <DependentUpon>RdpDesktopView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\SshKeys\AuthorizedPublicKeysView.resx">
+    <EmbeddedResource Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.resx">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Download\DownloadFileView.resx">
+    <EmbeddedResource Update="ToolWindows\Download\DownloadFileView.resx">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\SshTerminal\SshAuthenticationPromptView.resx">
+    <EmbeddedResource Update="ToolWindows\Ssh\SshAuthenticationPromptView.resx">
       <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\SshTerminal\TerminalPaneBase.resx">
+    <EmbeddedResource Update="ToolWindows\Ssh\TerminalPaneBase.resx">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Tunnels\TunnelsView.resx">
+    <EmbeddedResource Update="ToolWindows\Tunnels\TunnelsView.resx">
       <DependentUpon>TunnelsView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

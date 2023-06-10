@@ -25,11 +25,11 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Properties;
-using Google.Solutions.IapDesktop.Extensions.Management.Views;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
+using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows;
+using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog;
+using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.InstanceProperties;
+using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageInventory;
+using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOutput;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 

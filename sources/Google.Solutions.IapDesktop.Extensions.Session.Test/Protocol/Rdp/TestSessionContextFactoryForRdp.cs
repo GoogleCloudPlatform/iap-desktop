@@ -34,7 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.Testing.Apis;
 using Microsoft.Win32;
 using Moq;
