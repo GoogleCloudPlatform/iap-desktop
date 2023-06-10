@@ -20,15 +20,15 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Extensions.Session.Data;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Data
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Rdp
 {
     [TestFixture]
-    public class TestSamAccountName
+    public class TestWindowsUser
     {
         private static IAuthorization CreateAuthorization(string email)
         {
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Data
         {
             Assert.AreEqual(
                 "bob.b",
-                SamAccountName.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestFromGoogleEmailAddress(
                     CreateAuthorization("bob.b@example.com")));
         }
 
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Data
         {
             Assert.AreEqual(
                 "bob01234567890123456",
-                SamAccountName.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestFromGoogleEmailAddress(
                     CreateAuthorization("bob01234567890123456789@example.com")));
         }
 
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Data
         {
             Assert.AreEqual(
                 Environment.UserName,
-                SamAccountName.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestFromGoogleEmailAddress(
                     CreateAuthorization(null)));
         }
 
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Data
         {
             Assert.AreEqual(
                 Environment.UserName,
-                SamAccountName.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestFromGoogleEmailAddress(
                     CreateAuthorization("bob")));
         }
     }

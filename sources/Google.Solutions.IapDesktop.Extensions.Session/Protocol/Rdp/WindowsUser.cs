@@ -22,9 +22,9 @@
 using Google.Solutions.Apis.Auth;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Data
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 {
-    internal static class SamAccountName
+    internal static class WindowsUser
     {
         public static string SuggestFromGoogleEmailAddress(IAuthorization authorization)
         {
