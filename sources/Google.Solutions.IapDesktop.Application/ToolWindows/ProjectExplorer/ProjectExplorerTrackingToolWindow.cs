@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -29,7 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
     [ComVisible(false)]
     [SkipCodeCoverage("GUI plumbing")]

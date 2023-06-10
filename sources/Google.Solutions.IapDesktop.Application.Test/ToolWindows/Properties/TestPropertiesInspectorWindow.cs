@@ -21,7 +21,8 @@
 
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -39,7 +40,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1034 // Nested types should not be visible
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
+namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
 {
     [TestFixture]
     public class TestPropertiesInspectorWindow : WindowTestFixtureBase
@@ -81,12 +82,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 
             public void SaveChanges()
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
 
             public Task SwitchToModelAsync(IProjectModelNode node)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 

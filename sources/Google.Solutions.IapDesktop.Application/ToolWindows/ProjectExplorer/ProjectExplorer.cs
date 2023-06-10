@@ -20,11 +20,13 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
     public interface IProjectExplorer
     {

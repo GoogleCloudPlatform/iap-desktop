@@ -26,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
     internal interface IProjectExplorerSettings : IDisposable
     {

@@ -21,11 +21,12 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Microsoft.Win32;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplorer
 {
     [TestFixture]
     public class TestProjectExplorerSettings

@@ -38,7 +38,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
     public class ProjectExplorerViewModel : ViewModelBase, IDisposable
     {
@@ -652,7 +652,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 // significant CPU load.
                 //
                 var newFilteredNodes = ApplyFilter(this.nodes);
-                if (!Enumerable.SequenceEqual(this.filteredNodes, newFilteredNodes))
+                if (!this.filteredNodes.SequenceEqual(newFilteredNodes))
                 {
                     this.filteredNodes.Clear();
                     this.filteredNodes.AddRange(newFilteredNodes);

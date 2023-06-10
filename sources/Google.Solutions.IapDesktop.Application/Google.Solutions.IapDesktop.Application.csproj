@@ -91,7 +91,7 @@
     <Compile Update="Views\Options\NetworkOptionsSheet.Designer.cs">
       <DependentUpon>NetworkOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs" />
+    <Compile Update="ToolWindows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs" />
     <Compile Update="Views\ProjectPicker\ProjectList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -101,8 +101,8 @@
     <Compile Update="Views\ProjectPicker\ProjectPickerView.Designer.cs">
       <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\Properties\PropertiesInspectorViewBase.cs" />
-    <Compile Update="Views\Properties\PropertiesInspectorViewBase.Designer.cs">
+    <Compile Update="ToolWindows\Properties\PropertiesInspectorViewBase.cs" />
+    <Compile Update="ToolWindows\Properties\PropertiesInspectorViewBase.Designer.cs">
       <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
     </Compile>
     <Compile Update="Views\About\AboutView.cs">
@@ -111,8 +111,8 @@
     <Compile Update="Views\About\AboutView.Designer.cs">
       <DependentUpon>AboutView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\ProjectExplorer\ProjectExplorerView.cs" />
-    <Compile Update="Views\ProjectExplorer\ProjectExplorerView.Designer.cs">
+    <Compile Update="ToolWindows\ProjectExplorer\ProjectExplorerView.cs" />
+    <Compile Update="ToolWindows\ProjectExplorer\ProjectExplorerView.Designer.cs">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </Compile>
     <Compile Update="Views\ToolWindowViewBase.cs" />
@@ -184,10 +184,10 @@
     <EmbeddedResource Update="Views\ProjectPicker\ProjectPickerView.resx">
       <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Properties\PropertiesInspectorViewBase.resx">
+    <EmbeddedResource Update="ToolWindows\Properties\PropertiesInspectorViewBase.resx">
       <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\ProjectExplorer\ProjectExplorerView.resx">
+    <EmbeddedResource Update="ToolWindows\ProjectExplorer\ProjectExplorerView.resx">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Help\ReleaseNotesView.resx">
@@ -243,8 +243,8 @@
     <None Include="Resources\GoogleSignIn_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Views\Properties\PropertiesViewBase.cs" />
-    <Compile Remove="Views\Properties\PropertiesViewBase.Designer.cs" />
-    <Compile Remove="Views\Properties\PropertiesViewModelBase.cs" />
+    <Compile Remove="ToolWindows\Properties\PropertiesViewBase.cs" />
+    <Compile Remove="ToolWindows\Properties\PropertiesViewBase.Designer.cs" />
+    <Compile Remove="ToolWindows\Properties\PropertiesViewModelBase.cs" />
   </ItemGroup>
 </Project>

@@ -26,7 +26,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 {
     internal class SettingsCollectionTypeDescriptor : CustomTypeDescriptor
     {

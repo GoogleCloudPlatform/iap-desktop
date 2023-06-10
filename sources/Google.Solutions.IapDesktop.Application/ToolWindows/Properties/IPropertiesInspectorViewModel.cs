@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 {
     public interface IPropertiesInspectorViewModel
     {
