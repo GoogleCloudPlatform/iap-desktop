@@ -19,10 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;

@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Integration
+namespace Google.Solutions.IapDesktop.Application.Views
 {
     public interface ISession : IDisposable
     {

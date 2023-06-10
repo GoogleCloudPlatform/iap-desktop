@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
+namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
     [TestFixture]
     public class TestSessionBroker : ApplicationFixtureBase
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(new Mock<ISession>().Object);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton<ISessionBroker>(service.Object);
+            registry.AddSingleton(service.Object);
             registry.AddServiceToCategory(typeof(ISessionBroker), typeof(ISessionBroker));
 
             var broker = new GlobalSessionBroker(registry);
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(true);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton<ISessionBroker>(service.Object);
+            registry.AddSingleton(service.Object);
             registry.AddServiceToCategory(typeof(ISessionBroker), typeof(ISessionBroker));
 
             var broker = new GlobalSessionBroker(registry);
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(true);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton<ISessionBroker>(service.Object);
+            registry.AddSingleton(service.Object);
             registry.AddServiceToCategory(typeof(ISessionBroker), typeof(ISessionBroker));
 
             var broker = new GlobalSessionBroker(registry);

@@ -28,7 +28,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Integration
+namespace Google.Solutions.IapDesktop.Application.Views
 {
     /// <summary>
     /// Allows long-running background jobs to be run. While the job is run,

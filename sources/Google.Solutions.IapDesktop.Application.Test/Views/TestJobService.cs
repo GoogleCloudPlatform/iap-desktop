@@ -21,7 +21,7 @@
 
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -31,7 +31,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
+namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
     [TestFixture]
     public class TestJobService : ApplicationFixtureBase
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground<string>(
+                .RunInBackground(
                     new JobDescription("test"),
                     token =>
                     {
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground<string>(
+                .RunInBackground(
                     new JobDescription("test"),
                     token =>
                     {
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground<string>(
+                .RunInBackground(
                     new JobDescription("test"),
                     token =>
                     {
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground<string>(
+                .RunInBackground(
                     new JobDescription("test"),
                     token =>
                     {
