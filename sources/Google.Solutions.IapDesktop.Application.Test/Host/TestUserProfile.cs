@@ -58,40 +58,40 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNameIsNullOrEmpty_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(Profile.IsValidProfileName(null));
-            Assert.IsFalse(Profile.IsValidProfileName(string.Empty));
-            Assert.IsFalse(Profile.IsValidProfileName(" "));
+            Assert.IsFalse(UserProfile.IsValidProfileName(null));
+            Assert.IsFalse(UserProfile.IsValidProfileName(string.Empty));
+            Assert.IsFalse(UserProfile.IsValidProfileName(" "));
         }
 
         [Test]
         public void WhenNameHasLeadingOrTrailingSpaces_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(Profile.IsValidProfileName(" foo"));
-            Assert.IsFalse(Profile.IsValidProfileName("foo\t"));
+            Assert.IsFalse(UserProfile.IsValidProfileName(" foo"));
+            Assert.IsFalse(UserProfile.IsValidProfileName("foo\t"));
         }
 
         [Test]
         public void WhenNameContainsUmlauts_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(Profile.IsValidProfileName("Föö"));
+            Assert.IsFalse(UserProfile.IsValidProfileName("Föö"));
         }
 
         [Test]
         public void WhenNameIsTooLong_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(Profile.IsValidProfileName("This profile name is way too long"));
+            Assert.IsFalse(UserProfile.IsValidProfileName("This profile name is way too long"));
         }
 
         [Test]
         public void WhenNameIsAlphanumeric_ThenIsValidProfileNameReturnsTrue()
         {
-            Assert.IsTrue(Profile.IsValidProfileName("This is a valid name"));
+            Assert.IsTrue(UserProfile.IsValidProfileName("This is a valid name"));
         }
 
         [Test]
         public void WhenNameIsDefault_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(Profile.IsValidProfileName(Profile.DefaultProfileName.ToLower()));
+            Assert.IsFalse(UserProfile.IsValidProfileName(UserProfile.DefaultProfileName.ToLower()));
         }
 
         //---------------------------------------------------------------------
@@ -102,21 +102,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => Profile.CreateProfile(CreateInstall(), "Föö"));
+                () => UserProfile.CreateProfile(CreateInstall(), "Föö"));
         }
 
         [Test]
         public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => Profile.CreateProfile(CreateInstall(), null));
+                () => UserProfile.CreateProfile(CreateInstall(), null));
         }
 
         [Test]
         public void WhenProfileExists_ThenCreateProfileOpensProfile()
         {
-            Profile.CreateProfile(CreateInstall(), TestProfileName);
-            using (var profile = Profile.CreateProfile(CreateInstall(), TestProfileName))
+            UserProfile.CreateProfile(CreateInstall(), TestProfileName);
+            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             {
                 Assert.IsNotNull(profile);
                 Assert.AreEqual(TestProfileName, profile.Name);
@@ -131,23 +131,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => Profile.OpenProfile(CreateInstall(), "Föö"));
+                () => UserProfile.OpenProfile(CreateInstall(), "Föö"));
         }
 
         [Test]
         public void WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
         {
             Assert.Throws<ProfileNotFoundException>(
-                () => Profile.OpenProfile(CreateInstall(), "This does not exist"));
+                () => UserProfile.OpenProfile(CreateInstall(), "This does not exist"));
         }
 
         [Test]
         public void WhenProfileExists_ThenOpenProfileOpensProfile()
         {
-            using (Profile.CreateProfile(CreateInstall(), TestProfileName))
+            using (UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             { }
 
-            using (var profile = Profile.OpenProfile(CreateInstall(), TestProfileName))
+            using (var profile = UserProfile.OpenProfile(CreateInstall(), TestProfileName))
             {
                 Assert.IsNotNull(profile);
                 Assert.AreEqual(TestProfileName, profile.Name);
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
         {
-            var profile = Profile.OpenProfile(CreateInstall(), null);
+            var profile = UserProfile.OpenProfile(CreateInstall(), null);
             Assert.AreEqual("Default", profile.Name);
             Assert.IsTrue(profile.IsDefault);
         }
@@ -171,19 +171,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
         {
-            Profile.DeleteProfile(CreateInstall(), "This does not exist");
+            UserProfile.DeleteProfile(CreateInstall(), "This does not exist");
         }
 
         [Test]
         public void WhenProfileExists_ThenDeleteProfileDeletesProfile()
         {
-            using (Profile.CreateProfile(CreateInstall(), TestProfileName))
+            using (UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             { }
 
-            Profile.DeleteProfile(CreateInstall(), TestProfileName);
+            UserProfile.DeleteProfile(CreateInstall(), TestProfileName);
 
             Assert.Throws<ProfileNotFoundException>(
-                () => Profile.OpenProfile(CreateInstall(), TestProfileName));
+                () => UserProfile.OpenProfile(CreateInstall(), TestProfileName));
         }
 
         //---------------------------------------------------------------------
@@ -193,10 +193,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileCreated_ThenListProfilesIncludesProfile()
         {
-            using (Profile.CreateProfile(CreateInstall(), TestProfileName))
+            using (UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             { }
 
-            var list = Profile.ListProfiles(CreateInstall());
+            var list = UserProfile.ListProfiles(CreateInstall());
 
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, TestProfileName);
@@ -205,10 +205,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
         {
-            using (Profile.OpenProfile(CreateInstall(), null))
+            using (UserProfile.OpenProfile(CreateInstall(), null))
             { }
 
-            var list = Profile.ListProfiles(CreateInstall());
+            var list = UserProfile.ListProfiles(CreateInstall());
 
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, "Default");
@@ -221,10 +221,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             this.hkcu.CreateSubKey($"{install.BaseKeyPath}\\________Notaprofile", true);
 
-            using (Profile.OpenProfile(install, null))
+            using (UserProfile.OpenProfile(install, null))
             { }
 
-            var list = Profile.ListProfiles(CreateInstall());
+            var list = UserProfile.ListProfiles(CreateInstall());
 
             Assert.IsNotNull(list);
             Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
@@ -237,10 +237,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenDefaultProfileDoesNotExist_ThenSchemaVersionIsCurrent()
         {
-            using (var profile = Profile.OpenProfile(CreateInstall(), null))
+            using (var profile = UserProfile.OpenProfile(CreateInstall(), null))
             {
-                Assert.AreNotEqual(Profile.SchemaVersion.Initial, profile.Version);
-                Assert.AreEqual(Profile.SchemaVersion.Current, profile.Version);
+                Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
             }
         }
 
@@ -250,40 +250,40 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var install = CreateInstall();
 
             this.hkcu.CreateSubKey($@"{install.BaseKeyPath}\1.0");
-            using (var profile = Profile.OpenProfile(install, null))
+            using (var profile = UserProfile.OpenProfile(install, null))
             {
-                Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
             }
         }
 
         [Test]
         public void WhenNewProfileCreated_ThenSchemaVersionIsCurrent()
         {
-            using (var profile = Profile.CreateProfile(CreateInstall(), TestProfileName))
+            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             {
-                Assert.AreNotEqual(Profile.SchemaVersion.Initial, profile.Version);
-                Assert.AreEqual(Profile.SchemaVersion.Current, profile.Version);
+                Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
             }
         }
 
         [Test]
         public void WhenProfileLacksVersionValue_ThenSchemaVersionIsOne()
         {
-            using (var profile = Profile.CreateProfile(CreateInstall(), TestProfileName))
+            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
-                Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
             }
         }
 
         [Test]
         public void WhenProfileVersionInvalid_ThenSchemaVersionIsOne()
         {
-            using (var profile = Profile.CreateProfile(CreateInstall(), TestProfileName))
+            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
                 profile.SettingsKey.SetValue("SchemaVersion", "junk");
-                Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
             }
         }
     }

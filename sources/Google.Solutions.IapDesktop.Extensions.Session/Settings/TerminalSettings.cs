@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             Precondition.ExpectNotNull(baseKey, nameof(baseKey));
         }
 
-        public TerminalSettingsRepository(Profile profile)
+        public TerminalSettingsRepository(UserProfile profile)
             : this(profile.SettingsKey.CreateSubKey("Terminal"))
         {
             profile.ExpectNotNull(nameof(profile));

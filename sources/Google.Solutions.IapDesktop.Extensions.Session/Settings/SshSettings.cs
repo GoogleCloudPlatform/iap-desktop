@@ -40,19 +40,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     [Service(ServiceLifetime.Singleton)]
     public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
     {
-        private readonly Profile.SchemaVersion schemaVersion;
+        private readonly UserProfile.SchemaVersion schemaVersion;
 
         public SshSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey,
-            Profile.SchemaVersion schemaVersion) : base(settingsKey, machinePolicyKey, userPolicyKey)
+            UserProfile.SchemaVersion schemaVersion) : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
             Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));
             this.schemaVersion = schemaVersion;
         }
 
-        public SshSettingsRepository(Profile profile)
+        public SshSettingsRepository(UserProfile profile)
             : this(
                   profile.SettingsKey.CreateSubKey("Ssh"),
                   profile.MachinePolicyKey?.OpenSubKey("Ssh"),
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey,
-            Profile.SchemaVersion schemaVersion)
+            UserProfile.SchemaVersion schemaVersion)
         {
             return new SshSettings()
             {
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                         "PublicKeyType",
                         "Key type for public key authentication",
                         null,
-                        schemaVersion >= Profile.SchemaVersion.Version229
+                        schemaVersion >= UserProfile.SchemaVersion.Version229
                             ? SshKeyType.EcdsaNistp384
                             : SshKeyType.Rsa3072,
                         settingsKey)

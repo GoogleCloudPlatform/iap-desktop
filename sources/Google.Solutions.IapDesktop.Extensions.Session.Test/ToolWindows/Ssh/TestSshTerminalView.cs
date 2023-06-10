@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null,
-                Profile.SchemaVersion.Current));
+                UserProfile.SchemaVersion.Current));
         }
 
         public static async Task CompleteBackgroundWorkAsync()

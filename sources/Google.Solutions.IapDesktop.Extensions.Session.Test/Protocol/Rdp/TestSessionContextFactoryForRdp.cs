@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 hkcu.CreateSubKey(@"Software\Google\__Test"),
                 null,
                 null,
-                Profile.SchemaVersion.Current);
+                UserProfile.SchemaVersion.Current);
         }
 
         //---------------------------------------------------------------------

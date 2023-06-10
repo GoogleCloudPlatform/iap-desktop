@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 
         public bool IsProfileNameInvalid
             => !string.IsNullOrEmpty(this.profileName) &&
-               !Profile.IsValidProfileName(this.ProfileName);
+               !UserProfile.IsValidProfileName(this.ProfileName);
 
         public bool IsOkButtonEnabled
             => !string.IsNullOrWhiteSpace(this.profileName) &&

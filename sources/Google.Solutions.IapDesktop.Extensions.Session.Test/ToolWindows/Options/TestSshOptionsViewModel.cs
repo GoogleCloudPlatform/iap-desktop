@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
                 baseKey,
                 policyKey,
                 null,
-                Profile.SchemaVersion.Current);
+                UserProfile.SchemaVersion.Current);
         }
 
         //---------------------------------------------------------------------

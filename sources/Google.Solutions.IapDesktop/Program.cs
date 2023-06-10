@@ -156,11 +156,11 @@ namespace Google.Solutions.IapDesktop
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 
-        private static Profile LoadProfileOrExit(Install install, CommandLineOptions options)
+        private static UserProfile LoadProfileOrExit(Install install, CommandLineOptions options)
         {
             try
             {
-                return Profile.OpenProfile(install, options.Profile);
+                return UserProfile.OpenProfile(install, options.Profile);
             }
             catch (Exception e)
             {

@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewModel = new MainFormViewModel(
                 this,
                 this.serviceProvider.GetService<IInstall>(),
-                this.serviceProvider.GetService<Profile>(),
+                this.serviceProvider.GetService<UserProfile>(),
                 this.serviceProvider.GetService<IAuthorization>(),
                 this.themeService);
 
@@ -422,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void MainForm_Shown(object sender, EventArgs __)
         {
-            var profile = this.serviceProvider.GetService<Profile>();
+            var profile = this.serviceProvider.GetService<UserProfile>();
             if (!profile.IsDefault)
             {
                 //
@@ -662,7 +662,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 await this.viewModel.RevokeAuthorizationAsync().ConfigureAwait(true);
 
-                var profile = this.serviceProvider.GetService<Profile>();
+                var profile = this.serviceProvider.GetService<UserProfile>();
                 if (!profile.IsDefault)
                 {
                     if (this.serviceProvider
@@ -685,7 +685,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         // selection, we couldn't know for sure that the profile
                         // isn't currently being used by another instance.
                         //
-                        Profile.DeleteProfile(
+                        UserProfile.DeleteProfile(
                             this.serviceProvider.GetService<IInstall>(),
                             profile.Name);
 
@@ -839,7 +839,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
-                        using (var profile = Profile.CreateProfile(
+                        using (var profile = UserProfile.CreateProfile(
                             this.serviceProvider.GetService<IInstall>(),
                             dialog.ViewModel.ProfileName))
                         {
