@@ -183,7 +183,7 @@ namespace Google.Solutions.Platform.Dispatch
         {
             get
             {
-                int windowCount = 0;
+                var windowCount = 0;
                 EnumerateTopLevelWindows(_ => windowCount++);
 
                 return windowCount;
@@ -218,7 +218,7 @@ namespace Google.Solutions.Platform.Dispatch
             // See https://web.archive.org/web/20150311053121/http://support.microsoft.com/kb/178893
             // for details.
             //
-            int messagesPosted = 0;
+            var messagesPosted = 0;
 
             EnumerateTopLevelWindows(hwnd =>
             {

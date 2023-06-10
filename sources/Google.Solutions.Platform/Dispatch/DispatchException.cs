@@ -27,7 +27,7 @@ namespace Google.Solutions.Platform.Dispatch
 {
     public class DispatchException : Exception
     {
-        internal DispatchException(string message, Exception innerException) 
+        internal DispatchException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

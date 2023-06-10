@@ -31,7 +31,7 @@ namespace Google.Solutions.Testing.Application.Views
             foreach (Control control in parent.Controls)
             {
                 yield return control;
-                foreach (Control descendant in control.GetAllControls())
+                foreach (var descendant in control.GetAllControls())
                 {
                     yield return descendant;
                 }

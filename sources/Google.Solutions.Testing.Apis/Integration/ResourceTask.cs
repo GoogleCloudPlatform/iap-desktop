@@ -86,7 +86,7 @@ namespace Google.Solutions.Testing.Apis.Integration
 
             lock (cache)
             {
-                if (cache.TryGetValue(fingerprint, out ResourceTask<T> cached))
+                if (cache.TryGetValue(fingerprint, out var cached))
                 {
                     return cached;
                 }

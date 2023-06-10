@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
                 UnsafeNativeMethods.TaskDialogIndirect(
                     ref config,
-                    out int buttonPressed,
+                    out var buttonPressed,
                     out _,
                     out _);
 

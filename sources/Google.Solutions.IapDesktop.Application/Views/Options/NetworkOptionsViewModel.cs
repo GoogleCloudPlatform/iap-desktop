@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 !settings.ProxyPacUrl.IsReadOnly;
 
             if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue) &&
-                Uri.TryCreate(settings.ProxyUrl.StringValue, UriKind.Absolute, out Uri proxyUrl))
+                Uri.TryCreate(settings.ProxyUrl.StringValue, UriKind.Absolute, out var proxyUrl))
             {
                 this.proxyServer = proxyUrl.Host;
                 this.proxyPort = proxyUrl.Port.ToString();
@@ -344,15 +344,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
 
         public bool IsValidProxyPort(string port)
-            => int.TryParse(port, out int portNumber) &&
+            => int.TryParse(port, out var portNumber) &&
                 portNumber > 0 &&
                 portNumber <= ushort.MaxValue;
 
         public bool IsValidProxyHost(string host)
-            => Uri.TryCreate($"http://{host}", UriKind.Absolute, out Uri _);
+            => Uri.TryCreate($"http://{host}", UriKind.Absolute, out var _);
 
         public bool IsValidProxyAutoConfigurationAddress(string pacAddress)
-            => Uri.TryCreate(pacAddress, UriKind.Absolute, out Uri uri) &&
+            => Uri.TryCreate(pacAddress, UriKind.Absolute, out var uri) &&
                (uri.Scheme == "http" || uri.Scheme == "https");
 
         public void OpenProxyControlPanelApplet()

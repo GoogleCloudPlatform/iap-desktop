@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Credentials
                     It.IsAny<InstanceLocator>()))
                 .ReturnsAsync(isGrantedPermissionToGenerateCredentials);
 
-            return new SelectCredentialsDialog(serviceRegistry);
+            return new SelectCredentialsDialog(this.serviceRegistry);
         }
 
         //---------------------------------------------------------------------

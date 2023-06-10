@@ -125,7 +125,7 @@ namespace Google.Solutions.Mvvm.Controls
                     sheetBackgroundBrush,
                     new Rectangle(this.TabWidth + 4, 0, this.Width - this.TabWidth - 4, this.Height));
 
-                for (int i = 0; i <= this.TabCount - 1; i++)
+                for (var i = 0; i <= this.TabCount - 1; i++)
                 {
                     //
                     // Use the tab rect, but leave some space at the left for the arrow

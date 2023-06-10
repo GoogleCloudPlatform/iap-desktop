@@ -88,12 +88,12 @@ namespace Google.Solutions.Mvvm.Drawing
 
         public static HslColor FromRgb(int pR, int pG, int pB)
         {
-            float r = pR / 255f;
-            float g = pG / 255f;
-            float b = pB / 255f;
+            var r = pR / 255f;
+            var g = pG / 255f;
+            var b = pB / 255f;
 
-            float max = (r > g && r > b) ? r : (g > b) ? g : b;
-            float min = (r < g && r < b) ? r : (g < b) ? g : b;
+            var max = (r > g && r > b) ? r : (g > b) ? g : b;
+            var min = (r < g && r < b) ? r : (g < b) ? g : b;
 
             float h, s, l;
             l = (max + min) / 2.0f;
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Drawing
             }
             else
             {
-                float d = max - min;
+                var d = max - min;
                 s = (l > 0.5f) ? d / (2.0f - max - min) : d / (max + min);
 
                 if (r > g && r > b)
@@ -140,11 +140,11 @@ namespace Google.Solutions.Mvvm.Drawing
             }
             else
             {
-                float q = this.L < 0.5f
+                var q = this.L < 0.5f
                     ? this.L * (1 + this.S)
                     : this.L + this.S - this.L * this.S;
 
-                float p = 2 * this.L - q;
+                var p = 2 * this.L - q;
                 r = HueToRgb(p, q, this.H + 1f / 3f);
                 g = HueToRgb(p, q, this.H);
                 b = HueToRgb(p, q, this.H - 1f / 3f);

@@ -94,14 +94,14 @@ namespace Google.Solutions.Common.Test.Text
         [Test]
         public void WhenStringIsEmpty_ThenNullIfEmptyReturnsNull()
         {
-            string s = string.Empty;
+            var s = string.Empty;
             Assert.IsNull(s.NullIfEmpty());
         }
 
         [Test]
         public void WhenStringIsWhitespace_ThenNullIfEmptyReturnsString()
         {
-            string s = " ";
+            var s = " ";
             Assert.AreEqual(" ", s.NullIfEmpty());
         }
 
@@ -119,21 +119,21 @@ namespace Google.Solutions.Common.Test.Text
         [Test]
         public void WhenStringIsEmpty_ThenNullIfEmptyOrWhitespaceReturnsNull()
         {
-            string s = string.Empty;
+            var s = string.Empty;
             Assert.IsNull(s.NullIfEmptyOrWhitespace());
         }
 
         [Test]
         public void WhenStringIsWhitespace_ThenNullIfEmptyOrWhitespaceReturnsNull()
         {
-            string s = " ";
+            var s = " ";
             Assert.IsNull(s.NullIfEmptyOrWhitespace());
         }
 
         [Test]
         public void WhenStringIsNotWhitespace_ThenNullIfEmptyOrWhitespaceReturnsString()
         {
-            string s = " a ";
+            var s = " a ";
             Assert.AreEqual(" a ", s.NullIfEmptyOrWhitespace());
         }
     }

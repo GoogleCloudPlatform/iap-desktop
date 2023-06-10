@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
             this.viewModel.NewOutputAvailable += (sender, output) =>
             {
-                this.BeginInvoke((Action)(() => this.output.AppendText(output)));
+                BeginInvoke((Action)(() => this.output.AppendText(output)));
             };
         }
 

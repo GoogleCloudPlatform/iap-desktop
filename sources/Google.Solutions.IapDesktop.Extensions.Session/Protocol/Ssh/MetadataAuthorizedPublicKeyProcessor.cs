@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             if (this.IsLegacySshKeyPresent)
             {
                 throw new UnsupportedLegacySshKeyEncounteredException(
-                    $"Connecting to the VM instance {instance.Name} is not supported " +
+                    $"Connecting to the VM instance {this.instance.Name} is not supported " +
                     "because the instance uses legacy SSH keys in its metadata (sshKeys)",
                     HelpTopics.ManagingMetadataAuthorizedKeys);
             }

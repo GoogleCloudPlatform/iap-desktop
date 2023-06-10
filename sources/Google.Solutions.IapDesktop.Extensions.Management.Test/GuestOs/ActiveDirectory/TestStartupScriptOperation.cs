@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         [Test]
         public async Task WhenStartupScriptReplaced_ThenRestoreStartupScriptsRestoresMetadata()
         {
-            Metadata metadata = new Metadata()
+            var metadata = new Metadata()
             {
                 Items = new List<Metadata.ItemsData>()
                 {

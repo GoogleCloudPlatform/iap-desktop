@@ -112,7 +112,7 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken token)
         {
             using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
+            using (var rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
 
@@ -215,7 +215,7 @@ namespace Google.Solutions.Apis.Compute
 
                         token.ThrowIfCancellationRequested();
 
-                        string logDelta = await serialPortStream.ReadAsync(token).ConfigureAwait(false);
+                        var logDelta = await serialPortStream.ReadAsync(token).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(logDelta))
                         {
                             // Reached end of stream, wait and try again.

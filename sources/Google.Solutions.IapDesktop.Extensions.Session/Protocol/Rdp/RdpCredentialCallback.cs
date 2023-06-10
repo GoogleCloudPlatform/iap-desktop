@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;

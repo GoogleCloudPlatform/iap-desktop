@@ -22,7 +22,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.Testing.Application.Test;
 using Moq;

@@ -95,7 +95,7 @@ namespace Google.Solutions.Mvvm.Controls
             // possibility of Text.Length < c.cpMax
             // 
 
-            int numCharacters = c.cpMax - c.cpMin + 1; // +1 for null termination
+            var numCharacters = c.cpMax - c.cpMin + 1; // +1 for null termination
             if (numCharacters > 0)
             {
                 using (var buffer = LocalAllocSafeHandle.LocalAlloc((uint)numCharacters * 2))

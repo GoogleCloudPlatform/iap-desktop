@@ -29,7 +29,7 @@ using System.Collections.Specialized;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class TestProtocolTargetLocator 
+    public class TestProtocolTargetLocator
         : EquatableFixtureBase<TestProtocolTargetLocator.TargetLocator, ProtocolTargetLocator>
     {
         private static readonly IProtocol ProtocolOne = new Mock<IProtocol>().Object;
@@ -41,8 +41,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             public TargetLocator(
                 string scheme,
                 IProtocol protocol,
-                ResourceLocator resource, 
-                NameValueCollection parameters) 
+                ResourceLocator resource,
+                NameValueCollection parameters)
                 : base(resource, parameters)
             {
                 this.Scheme = scheme;

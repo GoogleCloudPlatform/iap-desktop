@@ -20,9 +20,8 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
@@ -34,7 +33,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageInventory
 {

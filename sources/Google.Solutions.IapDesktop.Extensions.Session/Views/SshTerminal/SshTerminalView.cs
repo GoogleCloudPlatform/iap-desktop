@@ -21,9 +21,9 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
@@ -60,8 +60,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             this.AllowDrop = true;
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragEnter);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(SshTerminalPane_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(SshTerminalPane_DragEnter);
         }
 
         private void OnAuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)

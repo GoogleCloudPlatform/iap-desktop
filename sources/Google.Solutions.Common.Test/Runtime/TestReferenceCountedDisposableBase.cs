@@ -65,7 +65,7 @@ namespace Google.Solutions.Common.Test.Runtime
         public void WhenRefCountAboveOne_ThenDisposeDoesNothingUntilRefCountDropsToZero()
         {
             var d = new SampleDisposable();
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var refCount = d.AddReference();
                 Assert.AreEqual(2, refCount);

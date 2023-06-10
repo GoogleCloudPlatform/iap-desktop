@@ -70,7 +70,7 @@ namespace Google.Solutions.Testing.Apis.Net
             var buffer = new StringBuilder();
             while (true)
             {
-                int b = stream.ReadByte();
+                var b = stream.ReadByte();
                 if (b == -1 || b == (byte)'\n')
                 {
                     return buffer.ToString();

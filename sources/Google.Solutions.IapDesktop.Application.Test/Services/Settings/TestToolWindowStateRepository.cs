@@ -38,13 +38,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new ToolWindowStateRepository(baseKey);
 
             var settings = repository.GetSetting(
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new ToolWindowStateRepository(baseKey);
 
             var settings = repository.GetSetting(

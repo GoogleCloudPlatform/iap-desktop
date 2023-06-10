@@ -61,18 +61,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 Size = new Size(800, 600)
             };
 
-            terminal = new VirtualTerminal()
+            this.terminal = new VirtualTerminal()
             {
                 Dock = DockStyle.Fill
             };
-            form.Controls.Add(terminal);
+            this.form.Controls.Add(this.terminal);
 
-            terminal.SendData += (sender, args) =>
+            this.terminal.SendData += (sender, args) =>
             {
                 this.sendData.Append(args.Data);
             };
 
-            form.Show();
+            this.form.Show();
             PumpWindowMessages();
 
             Clipboard.Clear();
@@ -125,12 +125,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
             ClipboardUtil.SetText("text");
 
-            this.terminal.ReceiveData($"{Esc}[?2004h"); // Set bracketed paste mode.
+            this.terminal.ReceiveData($"{this.Esc}[?2004h"); // Set bracketed paste mode.
             this.terminal.PasteClipboard();
-            this.terminal.ReceiveData($"{Esc}[?2004l"); // Reset bracketed paste mode.
+            this.terminal.ReceiveData($"{this.Esc}[?2004l"); // Reset bracketed paste mode.
             this.terminal.PasteClipboard();
 
-            Assert.AreEqual($"{Esc}[200~text{Esc}[201~text", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[200~text{this.Esc}[201~text", this.sendData.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableShiftInsert = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Insert);
 
-            Assert.AreEqual($"{Esc}[2;2~", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[2;2~", this.sendData.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
 
             Assert.AreEqual("", ClipboardUtil.GetText());
-            Assert.AreEqual($"{Esc}[2;5~", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[2;5~", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
 
             Assert.AreEqual("", ClipboardUtil.GetText());
-            Assert.AreEqual($"{Esc}[2;5~", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[2;5~", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -338,10 +338,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             Debug.Assert(columns >= 10);
             var buffer = new StringBuilder();
 
-            for (int i = 0; i < rows; i++)
+            for (var i = 0; i < rows; i++)
             {
                 buffer.Append($"{i:D8}: ");
-                for (int j = 0; j < columns - 10; j++)
+                for (var j = 0; j < columns - 10; j++)
                 {
                     buffer.Append('.');
                 }
@@ -531,7 +531,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableShiftLeftRight = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Left);
 
-            Assert.AreEqual($"{Esc}[1;2D", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;2D", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -541,7 +541,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableShiftLeftRight = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Right);
 
-            Assert.AreEqual($"{Esc}[1;2C", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;2C", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -590,7 +590,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableShiftUpDown = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Down);
 
-            Assert.AreEqual($"{Esc}[1;2B", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;2B", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -600,7 +600,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableShiftUpDown = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Up);
 
-            Assert.AreEqual($"{Esc}[1;2A", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;2A", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -648,7 +648,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlLeftRight = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Left);
 
-            Assert.AreEqual($"{Esc}[1;5D", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5D", this.sendData.ToString());
         }
 
         [Test]
@@ -657,7 +657,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlLeftRight = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Right);
 
-            Assert.AreEqual($"{Esc}[1;5C", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5C", this.sendData.ToString());
         }
 
         [Test]
@@ -666,7 +666,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlLeftRight = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Right);
 
-            Assert.AreEqual($"{Esc}[1;5C", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5C", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -676,7 +676,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlLeftRight = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Left);
 
-            Assert.AreEqual($"{Esc}[1;5D", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5D", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -752,7 +752,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlUpDown = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Up);
 
-            Assert.AreEqual($"{Esc}[1;5A", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5A", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -762,7 +762,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlUpDown = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Down);
 
-            Assert.AreEqual($"{Esc}[1;5B", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5B", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -839,7 +839,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlHomeEnd = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Home);
 
-            Assert.AreEqual($"{Esc}[1;5H", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5H", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -849,7 +849,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.terminal.EnableCtrlHomeEnd = false;
             this.terminal.SimulateKey(Keys.Control | Keys.End);
 
-            Assert.AreEqual($"{Esc}[1;5F", this.sendData.ToString());
+            Assert.AreEqual($"{this.Esc}[1;5F", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -1011,7 +1011,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         [Test]
         public void WhenReceivedDataContainsInvalidUnicodeSequence_ThenCharacterIsIgnored()
         {
-            var text = $"abc{Esc}\u0090\u0091xyz";
+            var text = $"abc{this.Esc}\u0090\u0091xyz";
             this.terminal.ReceiveData(text);
             var buffer = this.terminal.GetBuffer();
 

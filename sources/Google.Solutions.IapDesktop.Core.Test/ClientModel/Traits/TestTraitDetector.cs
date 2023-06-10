@@ -20,9 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 

@@ -248,7 +248,7 @@ namespace Google.Solutions.Ssh
                             // Make sure the readyToSend handle remains valid throughout
                             // this thread's lifetime.
                             //
-                            bool readyToSendHandleSafeToUse = false;
+                            var readyToSendHandleSafeToUse = false;
                             this.readyToSend.DangerousAddRef(ref readyToSendHandleSafeToUse);
                             Debug.Assert(readyToSendHandleSafeToUse);
 
@@ -389,12 +389,12 @@ namespace Google.Solutions.Ssh
 
                                         if ((currentOperation & Operation.Sending) != 0)
                                         {
-                                            this.OnSendError(e);
+                                            OnSendError(e);
                                         }
                                         else
                                         {
                                             // Consider it a receive error.
-                                            this.OnReceiveError(e);
+                                            OnReceiveError(e);
                                         }
 
                                         // Bail out.

@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenAddUsed_ThenIndividualEventsAreFired()
         {
-            int callbacks = 0;
+            var callbacks = 0;
             var collection = new RangeObservableCollection<string>();
             collection.CollectionChanged += (sender, args) => { callbacks++; };
 
@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenAddRangeUsed_ThenSingleEventIsFired()
         {
-            int callbacks = 0;
+            var callbacks = 0;
             var collection = new RangeObservableCollection<string>();
             collection.CollectionChanged += (sender, args) =>
             {

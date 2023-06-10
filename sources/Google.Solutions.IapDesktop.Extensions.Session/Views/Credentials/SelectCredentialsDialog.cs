@@ -21,8 +21,8 @@
 
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using System;
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
                     null,
                     options.Select(o => o.Title).ToList(),
                     null,   //"Do not show this prompt again",
-                    out bool donotAskAgain);
+                    out var donotAskAgain);
                 selectedOption = options[optionIndex];
             }
             else

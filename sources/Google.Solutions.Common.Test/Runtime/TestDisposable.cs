@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Runtime
         [Test]
         public void WhenWrappedAsComponent_ThenDisposingComponentInvokesAction()
         {
-            bool called = false;
+            var called = false;
 
             var component = Disposable
                 .For(() => called = true)

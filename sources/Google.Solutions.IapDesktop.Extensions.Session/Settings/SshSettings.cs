@@ -21,15 +21,14 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {

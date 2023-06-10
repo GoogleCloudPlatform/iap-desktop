@@ -43,8 +43,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
 
             this.settingsRepository = new ApplicationSettingsRepository(
                 baseKey,

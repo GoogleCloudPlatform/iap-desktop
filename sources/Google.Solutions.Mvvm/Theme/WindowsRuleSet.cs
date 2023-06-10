@@ -118,7 +118,7 @@ namespace Google.Solutions.Mvvm.Theme
             // Use dark title bar, see
             // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
             //
-            int darkMode = 1;
+            var darkMode = 1;
             var hr = NativeMethods.DwmSetWindowAttribute(
                 form.Handle,
                 NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
@@ -164,7 +164,7 @@ namespace Google.Solutions.Mvvm.Theme
             //
             NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
 
-            bool designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
+            var designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
             if (this.IsDarkModeEnabled && !designMode)
             {
                 //

@@ -41,7 +41,7 @@ namespace Google.Solutions.Iap.Test
     {
         private static void FillArray(byte[] array)
         {
-            for (int i = 0; i < array.Length; i++)
+            for (var i = 0; i < array.Length; i++)
             {
                 array[i] = (byte)('A' + (i % 26));
             }
@@ -92,7 +92,7 @@ namespace Google.Solutions.Iap.Test
 
                 // Read entire response.
                 var response = new byte[length];
-                int totalBytesRead = 0;
+                var totalBytesRead = 0;
                 while (true)
                 {
                     var bytesRead = await clientStream

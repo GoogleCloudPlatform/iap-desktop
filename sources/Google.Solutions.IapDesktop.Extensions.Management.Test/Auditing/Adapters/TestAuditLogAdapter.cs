@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapte
             var events = new List<EventBase>();
 
             // Creating the VM might be quicker than the logs become available.
-            for (int retry = 0; retry < 4 && !events.Any(); retry++)
+            for (var retry = 0; retry < 4 && !events.Any(); retry++)
             {
                 await adapter.ListEventsAsync(
                         request,

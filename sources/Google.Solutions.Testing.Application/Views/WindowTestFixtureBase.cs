@@ -23,11 +23,12 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
@@ -38,7 +39,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Core.ProjectModel;
 
 namespace Google.Solutions.Testing.Application.Views
 {
@@ -139,7 +139,7 @@ namespace Google.Solutions.Testing.Application.Views
             // Wait for event in case it has not been delivered yet.
             //
             var lastLog = DateTime.Now;
-            for (int i = 0; deliveredEvent == null; i++)
+            for (var i = 0; deliveredEvent == null; i++)
             {
                 if (deadline < DateTime.Now)
                 {

@@ -297,7 +297,7 @@ namespace Google.Solutions.Iap.Protocol
                 SshRelayCloseCode closeCode,
                 string closeReason)
             {
-                byte[] closeReasonBytes = closeReason == null
+                var closeReasonBytes = closeReason == null
                     ? Array.Empty<byte>()
                     : Encoding.UTF8.GetBytes(closeReason);
 

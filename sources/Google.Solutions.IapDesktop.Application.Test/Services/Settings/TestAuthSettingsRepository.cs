@@ -39,13 +39,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
         [Test]
         public void WhenBaseKeyIsEmpty_SettingsAreEmpty()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             var settings = repository.GetSettings();
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenSettingsSaved_GetSettingsReturnsData()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             var originalSettings = repository.GetSettings();
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenDeleteAsyncWithUnknownKey_KeyNotFoundExceptionThrown()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenGetAsyncWithUnknownKey_KeyNotFoundExceptionThrown()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenStoreAsyncWithUnknownKey_KeyNotFoundExceptionThrown()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public async Task WhenStoreWithValidKey_GetReturnsSameData()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             await repository
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public async Task WhenStoreWithValidKeyAndClear_GetReturnsNull()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             await repository

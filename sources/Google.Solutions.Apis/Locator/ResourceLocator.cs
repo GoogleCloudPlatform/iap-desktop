@@ -57,8 +57,8 @@ namespace Google.Solutions.Apis.Locator
             Precondition.ExpectNotNull(projectId, nameof(projectId));
             Precondition.ExpectNotNull(resourceName, nameof(resourceName));
 
-            Debug.Assert(!long.TryParse(projectId, out long _));
-            Debug.Assert(!long.TryParse(resourceName, out long _));
+            Debug.Assert(!long.TryParse(projectId, out var _));
+            Debug.Assert(!long.TryParse(resourceName, out var _));
             Debug.Assert(!projectId.Contains("/"));
 
             this.ProjectId = projectId;

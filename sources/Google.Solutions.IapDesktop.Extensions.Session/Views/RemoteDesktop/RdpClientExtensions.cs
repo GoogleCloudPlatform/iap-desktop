@@ -37,10 +37,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                 throw new ArgumentOutOfRangeException(nameof(keyCodes));
             }
 
-            short[] keyUp = new short[keyCodes.Length * 2];
-            int[] keyData = new int[keyCodes.Length * 2];
+            var keyUp = new short[keyCodes.Length * 2];
+            var keyData = new int[keyCodes.Length * 2];
 
-            for (int i = 0; i < keyCodes.Length; i++)
+            for (var i = 0; i < keyCodes.Length; i++)
             {
                 var virtualKeyCode = (int)UnsafeNativeMethods.MapVirtualKey((uint)keyCodes[i], 0);
 

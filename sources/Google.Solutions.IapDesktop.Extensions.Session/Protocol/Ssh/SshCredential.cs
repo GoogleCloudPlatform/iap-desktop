@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {

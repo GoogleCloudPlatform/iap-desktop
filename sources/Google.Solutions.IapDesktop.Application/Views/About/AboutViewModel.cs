@@ -21,9 +21,9 @@
 
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.IO;
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var reader = new StreamReader(stream))
             {
-                string rtf = reader.ReadToEnd();
+                var rtf = reader.ReadToEnd();
 
                 if (themeService.DockPanelTheme is VSTheme theme && theme.IsDark)
                 {

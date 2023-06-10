@@ -45,13 +45,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
 
         public bool IsError => this.Severity == "ERROR";
 
-        public override string Message => IsError
-            ? $"{TunnelDescription} [{this.Status.Message}]"
-            : TunnelDescription;
+        public override string Message => this.IsError
+            ? $"{this.TunnelDescription} [{this.Status.Message}]"
+            : this.TunnelDescription;
 
         private string TunnelDescription
             => $"Authorize tunnel from {this.SourceHost ?? "(unknown)"} to " +
-                $"{DestinationHost ?? "(unknown host)"}:{this.DestinationPort ?? "(unknown port)"} " +
+                $"{this.DestinationHost ?? "(unknown host)"}:{this.DestinationPort ?? "(unknown port)"} " +
                 $"using {base.UserAgentShort ?? "(unknown agent"}";
 
         //---------------------------------------------------------------------

@@ -25,7 +25,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -38,6 +37,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Help;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Drawing;
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewMenuCommands = new CommandContainer<IMainWindow>(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource,
-                bindingContext);
+                this.bindingContext);
             this.viewMenuCommands.BindTo(
                 this.viewToolStripMenuItem,
                 this.bindingContext);
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.windowMenuCommands = new CommandContainer<ToolWindowViewBase>(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource,
-                bindingContext);
+                this.bindingContext);
             this.windowMenuCommands.BindTo(
                 this.windowToolStripMenuItem,
                 this.bindingContext);
@@ -192,12 +192,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.WindowTitle,
-                bindingContext);
+                this.bindingContext);
             this.reportInternalIssueToolStripMenuItem.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsReportInternalIssueVisible,
-                bindingContext);
+                this.bindingContext);
 
             //
             // Status bar.
@@ -206,37 +206,37 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.BackColor,
                 this.viewModel,
                 m => m.StatusBarBackColor,
-                bindingContext);
+                this.bindingContext);
             this.toolStripStatus.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.StatusText,
-                bindingContext);
+                this.bindingContext);
             this.backgroundJobLabel.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsBackgroundJobStatusVisible,
-                bindingContext);
+                this.bindingContext);
             this.cancelBackgroundJobsButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsBackgroundJobStatusVisible,
-                bindingContext);
+                this.bindingContext);
             this.backgroundJobLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.BackgroundJobStatus,
-                bindingContext);
+                this.bindingContext);
             this.deviceStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.DeviceStateCaption,
-                bindingContext);
+                this.bindingContext);
             this.deviceStateButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDeviceStateVisible,
-                bindingContext);
+                this.bindingContext);
             this.profileStateButton.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsLoggingEnabled,
-                bindingContext);
+                this.bindingContext);
 
             //
             // Bind menu commands.
@@ -398,7 +398,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     updateService.CheckForUpdates(
                         this,
-                        out bool donotCheckForUpdatesAgain);
+                        out var donotCheckForUpdatesAgain);
 
                     settings.IsUpdateCheckEnabled.BoolValue = !donotCheckForUpdatesAgain;
                     settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();

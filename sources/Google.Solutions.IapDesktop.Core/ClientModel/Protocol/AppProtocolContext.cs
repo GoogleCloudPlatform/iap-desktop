@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Network credential to use for launching the client.
         /// </summary>
-        public NetworkCredential NetworkCredential { get; set;  }
+        public NetworkCredential NetworkCredential { get; set; }
 
         /// <summary>
         /// Timeout for connecting transport.

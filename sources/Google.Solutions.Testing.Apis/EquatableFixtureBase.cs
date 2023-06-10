@@ -81,7 +81,7 @@ namespace Google.Solutions.Testing.Apis
         public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
         {
             var obj = CreateInstance();
-            T other = obj;
+            var other = obj;
             Assert.IsTrue(obj.Equals(other));
             Assert.IsTrue(EqualityOperator(obj, other));
             Assert.IsFalse(InequalityOperator(obj, other));

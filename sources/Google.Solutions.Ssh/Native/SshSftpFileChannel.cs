@@ -105,7 +105,7 @@ namespace Google.Solutions.Ssh.Native
                 try
                 {
 
-                    int totalBytesWritten = 0;
+                    var totalBytesWritten = 0;
                     while (totalBytesWritten < length)
                     {
                         var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(

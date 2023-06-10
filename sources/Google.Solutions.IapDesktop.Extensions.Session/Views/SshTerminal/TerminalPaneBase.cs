@@ -21,8 +21,8 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
             void reapplyTerminalSettings(object s, EventArgs<TerminalSettings> e)
                 => ApplyTerminalSettings(e.Data);
 
-            terminalSettingsRepository.SettingsChanged += reapplyTerminalSettings;
+            this.terminalSettingsRepository.SettingsChanged += reapplyTerminalSettings;
 
             //
             // Disposing.
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal
                     this.ViewModel.ConnectionFailed -= OnErrorReceivedFromServerAsync;
                     this.ViewModel.DataReceived -= OnDataReceivedFromServerAsync;
 
-                    terminalSettingsRepository.SettingsChanged -= reapplyTerminalSettings;
+                    this.terminalSettingsRepository.SettingsChanged -= reapplyTerminalSettings;
                 }
             };
             this.FormClosed += OnFormClosed;

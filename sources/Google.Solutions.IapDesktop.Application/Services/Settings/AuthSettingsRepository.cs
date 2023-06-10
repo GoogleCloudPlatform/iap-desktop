@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         {
             Precondition.ExpectNotEmpty(key, nameof(key));
 
-            if (key == CredentialStoreKey)
+            if (key == this.CredentialStoreKey)
             {
                 return ClearAsync();
             }
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         {
             Precondition.ExpectNotEmpty(key, nameof(key));
 
-            if (key == CredentialStoreKey)
+            if (key == this.CredentialStoreKey)
             {
                 var clearText = GetSettings().Credentials.ClearTextValue;
                 return Task.FromResult(
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         {
             Precondition.ExpectNotEmpty(key, nameof(key));
 
-            if (key == CredentialStoreKey)
+            if (key == this.CredentialStoreKey)
             {
                 var settings = GetSettings();
                 settings.Credentials.Value = SecureStringExtensions.FromClearText(

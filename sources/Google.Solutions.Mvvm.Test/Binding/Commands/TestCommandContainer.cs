@@ -338,7 +338,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 source,
                 new Mock<IBindingContext>().Object))
             {
-                bool commandExecuted = false;
+                var commandExecuted = false;
                 container.AddCommand(
                     new ContextCommand<string>(
                         "test",
@@ -447,7 +447,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 container.ExecuteDefaultCommand();
 
-                for (int i = 0; i < 10 && exception == null; i++)
+                for (var i = 0; i < 10 && exception == null; i++)
                 {
                     await Task.Delay(5);
                 }

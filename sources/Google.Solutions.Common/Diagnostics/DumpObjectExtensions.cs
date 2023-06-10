@@ -34,8 +34,8 @@ namespace Google.Solutions.Common.Diagnostics
             {
                 foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
                 {
-                    string name = descriptor.Name;
-                    object value = descriptor.GetValue(obj);
+                    var name = descriptor.Name;
+                    var value = descriptor.GetValue(obj);
                     buffer.Append($"{name}: {value}\n");
                 }
             }

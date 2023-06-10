@@ -161,7 +161,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            bool eventRaised = false;
+            var eventRaised = false;
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
@@ -183,7 +183,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            bool eventRaised = false;
+            var eventRaised = false;
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
@@ -209,7 +209,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            bool eventRaised = false;
+            var eventRaised = false;
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
@@ -235,7 +235,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            bool eventRaised = false;
+            var eventRaised = false;
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
@@ -264,7 +264,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            bool eventRaised = false;
+            var eventRaised = false;
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
@@ -288,7 +288,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            bool eventRaised = false;
+            var eventRaised = false;
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;

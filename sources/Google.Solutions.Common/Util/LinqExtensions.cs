@@ -69,7 +69,7 @@ namespace Google.Solutions.Common.Util
         public static IEnumerable<T> ConcatItem<T>(this IEnumerable<T> target, T item)
         {
             Precondition.ExpectNotNull(target, nameof(target));
-            foreach (T t in target)
+            foreach (var t in target)
             {
                 yield return t;
             }

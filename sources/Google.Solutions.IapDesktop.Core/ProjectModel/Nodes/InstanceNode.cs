@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -104,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         {
             return this.workspace.ControlInstanceAsync(
                 this.Instance,
-                command, 
+                command,
                 cancellationToken);
         }
     }

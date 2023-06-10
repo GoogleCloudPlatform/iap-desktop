@@ -231,14 +231,14 @@ namespace Google.Solutions.Mvvm.Binding
                                 .Where(item => oldModelItems.Contains((TModel)item.Tag))
                                 .ToList())
                             {
-                                view.Remove(oldViewItem);
+                                this.view.Remove(oldViewItem);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            view.Clear();
+                            this.view.Clear();
                         }
                         break;
 

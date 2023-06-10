@@ -125,15 +125,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         {
             [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
             public static extern HRESULT AssocQueryString(
-                ASSOCF flags, 
-                ASSOCSTR str, 
-                string pszAssoc, 
-                string pszExtra, 
-                [Out] StringBuilder pszOut, 
+                ASSOCF flags,
+                ASSOCSTR str,
+                string pszAssoc,
+                string pszExtra,
+                [Out] StringBuilder pszOut,
                 ref uint pcchOut);
 
             public enum ASSOCF
-            { 
+            {
                 NONE = 0
             }
 

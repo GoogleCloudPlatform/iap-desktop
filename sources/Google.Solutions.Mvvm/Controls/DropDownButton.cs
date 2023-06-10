@@ -94,8 +94,8 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 // Draw arrow.
                 //
-                int arrowX = this.ClientRectangle.Width - 14;
-                int arrowY = this.ClientRectangle.Height / 2 - 1;
+                var arrowX = this.ClientRectangle.Width - 14;
+                var arrowY = this.ClientRectangle.Height / 2 - 1;
 
                 var arrowPoints = new[]
                 {
@@ -113,9 +113,9 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     // Draw a dashed separator.
                     //
-                    int lineX = this.ClientRectangle.Width - this.SplitWidth;
-                    int lineYFrom = arrowY - 4;
-                    int lineYTo = arrowY + 8;
+                    var lineX = this.ClientRectangle.Width - this.SplitWidth;
+                    var lineYFrom = arrowY - 4;
+                    var lineYTo = arrowY + 8;
                     using (var separatorPen = new Pen(arrowBrush)
                     {
                         DashStyle = DashStyle.Dot

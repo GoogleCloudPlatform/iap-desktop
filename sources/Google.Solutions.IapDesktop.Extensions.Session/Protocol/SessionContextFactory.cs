@@ -24,14 +24,15 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Data;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
 using System;
 using System.Diagnostics;
@@ -40,7 +41,6 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {

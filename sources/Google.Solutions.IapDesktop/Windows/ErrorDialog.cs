@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.report = new BugReport(exception);
 
-            this.errorText.Text = report.ToString().Replace("\n", "\r\n");
+            this.errorText.Text = this.report.ToString().Replace("\n", "\r\n");
             this.errorText.SelectionStart = 0;
             this.errorText.SelectionLength = 0;
         }

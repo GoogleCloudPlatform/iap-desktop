@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// Registry-backed repository for Project-related settings.
     /// </summary>
     public interface IProjectSettingsRepository : IProjectRepository
-    { 
+    {
         RegistryKey OpenRegistryKey(string projectId);
 
         RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);

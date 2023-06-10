@@ -104,10 +104,10 @@ namespace Google.Solutions.Mvvm.Test.Theme
             {
                 var theme = new ControlTheme();
 
-                int buttonsApplied = 0;
+                var buttonsApplied = 0;
                 theme.AddRule<Button>(c => buttonsApplied++);
 
-                int controlsApplied = 0;
+                var controlsApplied = 0;
                 theme.AddRule<Control>(c => controlsApplied++);
 
                 form.Controls.Add(new Button());
@@ -130,12 +130,12 @@ namespace Google.Solutions.Mvvm.Test.Theme
             {
                 var theme = new ControlTheme();
 
-                int buttonsApplied = 0;
+                var buttonsApplied = 0;
                 theme.AddRule<Button>(
                     c => buttonsApplied++,
                     ControlTheme.Options.IgnoreDerivedTypes);
 
-                int controlsApplied = 0;
+                var controlsApplied = 0;
                 theme.AddRule<Control>(
                     c => controlsApplied++,
                     ControlTheme.Options.IgnoreDerivedTypes);
@@ -164,7 +164,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
             {
                 var theme = new ControlTheme();
 
-                int appliedCalls = 0;
+                var appliedCalls = 0;
                 theme.AddRule<Form>(c => appliedCalls++);
 
                 theme.ApplyTo(form);
@@ -180,7 +180,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
             {
                 var theme = new ControlTheme();
 
-                int appliedCalls = 0;
+                var appliedCalls = 0;
                 theme.AddRule<Form>(c => appliedCalls++, ControlTheme.Options.ApplyWhenHandleCreated);
 
                 theme.ApplyTo(form);

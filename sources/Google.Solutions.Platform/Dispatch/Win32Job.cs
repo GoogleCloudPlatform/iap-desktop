@@ -114,7 +114,7 @@ namespace Google.Solutions.Platform.Dispatch
             process.ExpectNotNull(nameof(process));
 
             if (!NativeMethods.AssignProcessToJobObject(
-                this.handle, 
+                this.handle,
                 process.Handle))
             {
                 throw DispatchException.FromLastWin32Error(
@@ -127,8 +127,8 @@ namespace Google.Solutions.Platform.Dispatch
             process.ExpectNotNull(nameof(process));
 
             if (!NativeMethods.IsProcessInJob(
-                process.Handle, 
-                this.handle, 
+                process.Handle,
+                this.handle,
                 out var inJob))
             {
                 throw DispatchException.FromLastWin32Error(
@@ -184,10 +184,10 @@ namespace Google.Solutions.Platform.Dispatch
                         {
                             var list = Marshal.PtrToStructure<NativeMethods.JOBOBJECT_BASIC_PROCESS_ID_LIST>(listPtr);
 
-                            var arrayOffset = 
+                            var arrayOffset =
                                 Marshal.SizeOf<NativeMethods.JOBOBJECT_BASIC_PROCESS_ID_LIST>() - UIntPtr.Size;
                             var pids = new uint[list.NumberOfProcessIdsInList];
-                            for (int i = 0; i < pids.Length; i++)
+                            for (var i = 0; i < pids.Length; i++)
                             {
                                 pids[i] = (uint)Marshal.ReadIntPtr(listPtr, arrayOffset + i * UIntPtr.Size).ToInt32();
                             }
@@ -248,20 +248,20 @@ namespace Google.Solutions.Platform.Dispatch
 
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern SafeJobHandle CreateJobObject(
-                [In] ref SECURITY_ATTRIBUTES lpJobAttributes, 
+                [In] ref SECURITY_ATTRIBUTES lpJobAttributes,
                 string lpName);
 
             [DllImport("kernel32.dll")]
             internal static extern bool SetInformationJobObject(
                 SafeJobHandle hJob,
-                JOBOBJECTINFOCLASS infoClass, 
+                JOBOBJECTINFOCLASS infoClass,
                 ref JOBOBJECT_EXTENDED_LIMIT_INFORMATION lpJobObjectInfo,
                 uint cbJobObjectInfoLength);
 
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool AssignProcessToJobObject(
-                SafeJobHandle hJob, 
+                SafeJobHandle hJob,
                 SafeProcessHandle hProcess);
 
             [DllImport("kernel32.dll")]
@@ -280,9 +280,9 @@ namespace Google.Solutions.Platform.Dispatch
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool QueryInformationJobObject(
                 SafeJobHandle hJob,
-                JOBOBJECTINFOCLASS infoClass, 
-                IntPtr lpJobObjectInfo, 
-                uint cbJobObjectInfoLength, 
+                JOBOBJECTINFOCLASS infoClass,
+                IntPtr lpJobObjectInfo,
+                uint cbJobObjectInfoLength,
                 out uint lpReturnLength);
 
             internal enum JOB_OBJECT_LIMIT

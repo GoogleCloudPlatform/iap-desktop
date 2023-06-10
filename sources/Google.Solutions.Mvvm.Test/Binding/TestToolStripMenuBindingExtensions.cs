@@ -151,7 +151,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             this.contextMenu.Items.Add(menuItem);
 
             var model = new ObservableCollection<Observable>();
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 model.Add(new Observable()
                 {
@@ -211,7 +211,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var menuItem = new ToolStripMenuItem("do not touch me");
 
             var model = new ObservableCollection<Observable>();
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 model.Add(new Observable()
                 {
@@ -258,7 +258,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var menuItem = new ToolStripMenuItem("do not touch me");
 
             var model = new ObservableCollection<Observable>();
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 model.Add(new Observable()
                 {

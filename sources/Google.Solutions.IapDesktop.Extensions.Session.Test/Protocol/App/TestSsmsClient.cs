@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsString(
             [Values(
-                NetworkCredentialType.Rdp, 
+                NetworkCredentialType.Rdp,
                 NetworkCredentialType.Prompt)] NetworkCredentialType type)
         {
             var transport = new Mock<ITransport>();

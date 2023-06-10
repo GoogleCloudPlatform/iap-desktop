@@ -23,7 +23,6 @@ using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -226,7 +225,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 //
                 // Give notepad some time to create its window.
                 //
-                for (int i = 0; i < 100 && process.WindowCount == 0; i++)
+                for (var i = 0; i < 100 && process.WindowCount == 0; i++)
                 {
                     Thread.Sleep(10);
                 }

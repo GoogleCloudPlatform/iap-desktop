@@ -37,9 +37,9 @@ namespace Google.Solutions.Common.Diagnostics
 
         public TraceCallScope WithoutParameters()
         {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (this.source.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                source.TraceData(
+                this.source.TraceData(
                     TraceEventType.Verbose,
                     0,
                     string.Format("Enter {0}()", this.method));
@@ -50,9 +50,9 @@ namespace Google.Solutions.Common.Diagnostics
 
         public TraceCallScope WithParameters(params object[] args)
         {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (this.source.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                source.TraceData(
+                this.source.TraceData(
                     TraceEventType.Verbose,
                     0,
                     string.Format("Enter {0}({1})", this.method, string.Join(", ", args)));
@@ -63,9 +63,9 @@ namespace Google.Solutions.Common.Diagnostics
 
         public void Dispose()
         {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (this.source.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                source.TraceData(
+                this.source.TraceData(
                     TraceEventType.Verbose,
                     0,
                     string.Format("Exit {0}()", this.method));

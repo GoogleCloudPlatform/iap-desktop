@@ -140,7 +140,7 @@ namespace Google.Solutions.Mvvm.Shell
                 cbSize = NativeMethods.SHSTOCKICONINFO.StructSize
             };
 
-            int hr = NativeMethods.SHGetStockIconInfo(
+            var hr = NativeMethods.SHGetStockIconInfo(
                 iconId,
                 NativeMethods.SHGFI_ICON | (uint)size,
                 ref iconInfo);

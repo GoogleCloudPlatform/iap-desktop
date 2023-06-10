@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private void cancelButton_Click(object sender, EventArgs e)
         {
             this.cancellationSource.Cancel();
-            this.Close();
+            Close();
         }
 
         private void WaitDialog_Shown(object sender, EventArgs e)

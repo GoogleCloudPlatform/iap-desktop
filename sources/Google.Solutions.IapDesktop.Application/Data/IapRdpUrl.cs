@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Data
                 throw new IapRdpUrlFormatException($"Path must start with /");
             }
 
-            string[] pathComponents = absolutePath.Split('/');
+            var pathComponents = absolutePath.Split('/');
             if (pathComponents.Length != 4)
             {
                 throw new IapRdpUrlFormatException($"Path not in format project/zone/instance-name: {absolutePath}");

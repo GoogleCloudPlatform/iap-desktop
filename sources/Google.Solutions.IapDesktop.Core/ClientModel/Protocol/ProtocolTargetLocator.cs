@@ -106,8 +106,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public override int GetHashCode()
         {
-            return 
-                this.Scheme.GetHashCode() ^ 
+            return
+                this.Scheme.GetHashCode() ^
                 this.Resource.GetHashCode() ^
                 this.Parameters.Count;
         }

@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
             var packageId = LookupAuthenticationPackageId(package);
 
-            bool save = false;
+            var save = false;
 
             var error = NativeMethods.CredUIPromptForWindowsCredentials(
                 ref uiInfo,

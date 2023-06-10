@@ -21,9 +21,9 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Diagnostics;
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     screens = Screen.AllScreens;
                 }
 
-                Rectangle r = new Rectangle();
+                var r = new Rectangle();
                 foreach (var s in screens)
                 {
                     r = Rectangle.Union(r, s.Bounds);

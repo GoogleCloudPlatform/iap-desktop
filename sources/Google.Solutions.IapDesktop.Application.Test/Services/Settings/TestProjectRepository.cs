@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             this.repository = new ProjectRepository(baseKey);
         }
 
@@ -63,8 +63,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
         {
-            repository.AddProject(new ProjectLocator("test-123"));
-            repository.AddProject(new ProjectLocator("test-123"));
+            this.repository.AddProject(new ProjectLocator("test-123"));
+            this.repository.AddProject(new ProjectLocator("test-123"));
 
             var projects = this.repository.ListProjectsAsync().Result;
 
@@ -75,10 +75,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProjectsDeleted_ListProjectsExcludesProject()
         {
-            repository.AddProject(new ProjectLocator("test-123"));
-            repository.AddProject(new ProjectLocator("test-456"));
-            repository.RemoveProject(new ProjectLocator("test-456"));
-            repository.RemoveProject(new ProjectLocator("test-456"));
+            this.repository.AddProject(new ProjectLocator("test-123"));
+            this.repository.AddProject(new ProjectLocator("test-456"));
+            this.repository.RemoveProject(new ProjectLocator("test-456"));
+            this.repository.RemoveProject(new ProjectLocator("test-456"));
 
             var projects = this.repository.ListProjectsAsync().Result;
 
@@ -89,8 +89,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
         {
-            repository.AddProject(new ProjectLocator("test-123"));
-            using (var key = repository.OpenRegistryKey("test-123"))
+            this.repository.AddProject(new ProjectLocator("test-123"));
+            using (var key = this.repository.OpenRegistryKey("test-123"))
             {
                 Assert.IsNotNull(key);
             }
@@ -99,8 +99,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProjectExists_ThenCreateRegistryKeyWithSubkeyReturnsKey()
         {
-            repository.AddProject(new ProjectLocator("test-123"));
-            using (var key = repository.OpenRegistryKey("test-123", "subkey", true))
+            this.repository.AddProject(new ProjectLocator("test-123"));
+            using (var key = this.repository.OpenRegistryKey("test-123", "subkey", true))
             {
                 Assert.IsNotNull(key);
             }
@@ -109,8 +109,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenSubkeyDoesNotExist_ThenOpenRegistryReturnsNull()
         {
-            repository.AddProject(new ProjectLocator("test-123"));
-            using (var key = repository.OpenRegistryKey("test-123", "subkey", false))
+            this.repository.AddProject(new ProjectLocator("test-123"));
+            using (var key = this.repository.OpenRegistryKey("test-123", "subkey", false))
             {
                 Assert.IsNull(key);
             }

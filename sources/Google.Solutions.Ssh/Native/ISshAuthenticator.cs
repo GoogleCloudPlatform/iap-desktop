@@ -66,7 +66,7 @@ namespace Google.Solutions.Ssh.Native
             ISshKeyPair keyPair)
         {
             this.Username = username.ExpectNotNull(nameof(username));
-            this.KeyPair = keyPair.ExpectNotNull(nameof(KeyPair));
+            this.KeyPair = keyPair.ExpectNotNull(nameof(this.KeyPair));
         }
 
         public virtual string Prompt(

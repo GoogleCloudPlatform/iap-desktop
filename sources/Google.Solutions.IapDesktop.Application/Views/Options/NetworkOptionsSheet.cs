@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             this.proxyBox.BindProperty(
                 c => c.Enabled,
-                viewModel,
+                this.viewModel,
                 m => m.IsProxyEditable,
                 bindingContext);
 

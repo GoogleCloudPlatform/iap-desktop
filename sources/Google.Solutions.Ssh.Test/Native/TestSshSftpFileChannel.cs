@@ -86,7 +86,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var channel = authSession.OpenSftpChannel())
             {
                 var sendData = new StringBuilder();
-                for (int i = 0; i < 500; i++)
+                for (var i = 0; i < 500; i++)
                 {
                     sendData.Append(i);
                     sendData.Append("The quick brown fox jumps over the lazy dog\n");

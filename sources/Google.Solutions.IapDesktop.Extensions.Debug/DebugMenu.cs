@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Debug
 {

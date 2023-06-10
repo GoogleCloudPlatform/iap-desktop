@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             get
             {
 
-                if (knownErrors.TryGetValue(this.ErrorCode, out string message))
+                if (knownErrors.TryGetValue(this.ErrorCode, out var message))
                 {
                     return message;
                 }
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
             get
             {
 
-                if (knownErrors.TryGetValue(this.ErrorCode, out string message))
+                if (knownErrors.TryGetValue(this.ErrorCode, out var message))
                 {
                     return message;
                 }
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop
                 message.Append("\n\n");
             }
 
-            if (knownErrors.TryGetValue(disconnectReason, out string reasonText))
+            if (knownErrors.TryGetValue(disconnectReason, out var reasonText))
             {
                 message.Append(reasonText);
             }

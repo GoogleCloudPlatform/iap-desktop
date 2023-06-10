@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 try
                 {
                     // Prompt for upgrade.
-                    int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
+                    var selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                         parent,
                         TaskDialogIcons.TD_SHIELD_ICON_INFO_BACKGROUND,
                         "Update available",

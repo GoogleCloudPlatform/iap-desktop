@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.validate,
                 readOnly);
 
-        protected override bool IsValid(string value) => validate(value);
+        protected override bool IsValid(string value) => this.validate(value);
 
         protected override string Parse(string value) => value;
 

@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             get
             {
                 var userAgent = this.UserAgent ?? "(unknown agent)";
-                int parenthesis = userAgent.IndexOf('(');
+                var parenthesis = userAgent.IndexOf('(');
                 if (parenthesis > 0)
                 {
                     // Strip version and details.

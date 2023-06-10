@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         {
             Debug.Assert(!this.host.Invoker.InvokeRequired, "RunInBackground must be called on UI thread");
 
-            for (int attempt = 0; ; attempt++)
+            for (var attempt = 0; ; attempt++)
             {
                 try
                 {

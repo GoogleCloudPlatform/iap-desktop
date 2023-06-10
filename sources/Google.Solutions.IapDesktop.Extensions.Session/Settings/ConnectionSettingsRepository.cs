@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings

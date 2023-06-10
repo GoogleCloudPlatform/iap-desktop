@@ -48,9 +48,9 @@ namespace Google.Solutions.Common.Text
             Precondition.ExpectNotNull(s, nameof(s));
 
             var sanitized = new char[s.Length];
-            for (int i = 0; i < s.Length; i++)
+            for (var i = 0; i < s.Length; i++)
             {
-                if (conversionTable.TryGetValue(s[i], out char replacement))
+                if (conversionTable.TryGetValue(s[i], out var replacement))
                 {
                     sanitized[i] = replacement;
                 }

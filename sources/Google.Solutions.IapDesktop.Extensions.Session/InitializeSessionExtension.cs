@@ -21,14 +21,19 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Data;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.Views.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Diagnostics;
@@ -36,19 +41,13 @@ using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Tunnels;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Platform.Dispatch;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
-using System.Linq;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.App;
-using Google.Solutions.Platform.Dispatch;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {
@@ -131,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             //
             var clientAppPolicy = new ChildProcessPolicy(
                 serviceProvider.GetService<IWin32ProcessSet>());
-            
+
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
                     "SQL Server",

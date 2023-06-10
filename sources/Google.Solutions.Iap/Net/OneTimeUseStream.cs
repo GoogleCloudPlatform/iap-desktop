@@ -84,7 +84,7 @@ namespace Google.Solutions.Iap.Net
 
             try
             {
-                int bytesRead = await ReadAsyncWithCloseProtection(
+                var bytesRead = await ReadAsyncWithCloseProtection(
                     buffer,
                     offset,
                     count,

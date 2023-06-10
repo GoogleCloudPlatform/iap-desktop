@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Data

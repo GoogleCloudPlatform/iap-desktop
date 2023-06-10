@@ -404,7 +404,7 @@ namespace Google.Solutions.Ssh
                     {
                         using (c.Session.AsBlocking())
                         {
-                            this.Dispose();
+                            Dispose();
                         }
                     })
                     .ContinueWith(_ => { });

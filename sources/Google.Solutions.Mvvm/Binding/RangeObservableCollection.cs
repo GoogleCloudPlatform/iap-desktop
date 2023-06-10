@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (!suppressNotification)
+            if (!this.suppressNotification)
             {
                 base.OnCollectionChanged(e);
             }
@@ -42,14 +42,14 @@ namespace Google.Solutions.Mvvm.Binding
         {
             Precondition.ExpectNotNull(list, nameof(list));
 
-            suppressNotification = true;
+            this.suppressNotification = true;
 
-            foreach (T item in list)
+            foreach (var item in list)
             {
                 Add(item);
             }
 
-            suppressNotification = false;
+            this.suppressNotification = false;
 
             OnCollectionChanged(
                 new NotifyCollectionChangedEventArgs(

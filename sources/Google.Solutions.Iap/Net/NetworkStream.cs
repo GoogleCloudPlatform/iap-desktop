@@ -55,7 +55,7 @@ namespace Google.Solutions.Iap.Net
                             readStream,
                             writeStream);
 
-                        int bytesRead = await readStream.ReadAsync(
+                        var bytesRead = await readStream.ReadAsync(
                             buffer,
                             0,
                             buffer.Length,

@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
-                eventService.Verify(s => s.PublishAsync(
+                this.eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
 
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
-                eventService.Verify(s => s.PublishAsync(
+                this.eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
         }

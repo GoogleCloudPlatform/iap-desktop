@@ -39,7 +39,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         private static void FillArray(byte[] array)
         {
-            for (int i = 0; i < array.Length; i++)
+            for (var i = 0; i < array.Length; i++)
             {
                 array[i] = (byte)('A' + (i % 26));
             }
@@ -61,9 +61,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                 locator,
                 credential);
 
-            for (int i = 0; i < repetitions; i++)
+            for (var i = 0; i < repetitions; i++)
             {
-                int totalBytesWritten = 0;
+                var totalBytesWritten = 0;
                 while (totalBytesWritten < messageSize)
                 {
                     var bytesToWrite = Math.Min(
@@ -81,7 +81,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
                 var response = new byte[messageSize];
-                int totalBytesRead = 0;
+                var totalBytesRead = 0;
                 while (true)
                 {
                     var readBuffer = new byte[readSize];

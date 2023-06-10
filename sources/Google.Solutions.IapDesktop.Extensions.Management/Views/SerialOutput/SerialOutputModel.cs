@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             {
                 ApplicationTraceSources.Default.TraceVerbose("Start polling serial output");
 
-                bool exceptionCaught = false;
+                var exceptionCaught = false;
                 while (!exceptionCaught)
                 {
                     // Check if we can continue to tail.
