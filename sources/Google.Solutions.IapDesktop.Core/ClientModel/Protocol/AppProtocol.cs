@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             if (this.Client != null && !this.Client.IsAvailable)
             {
-                return false; 
+                return false;
             }
             else
             {

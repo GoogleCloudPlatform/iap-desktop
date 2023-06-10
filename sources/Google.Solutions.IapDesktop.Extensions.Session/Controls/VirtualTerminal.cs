@@ -190,9 +190,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private static Color GetSolidColorBrush(string hex)
         {
             byte a = 255;
-            byte r = (byte)(Convert.ToUInt32(hex.Substring(1, 2), 16));
-            byte g = (byte)(Convert.ToUInt32(hex.Substring(3, 2), 16));
-            byte b = (byte)(Convert.ToUInt32(hex.Substring(5, 2), 16));
+            var r = (byte)(Convert.ToUInt32(hex.Substring(1, 2), 16));
+            var g = (byte)(Convert.ToUInt32(hex.Substring(3, 2), 16));
+            var b = (byte)(Convert.ToUInt32(hex.Substring(5, 2), 16));
             return Color.FromArgb(a, r, g, b);
         }
 
@@ -202,13 +202,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             {
                 var rowDimensions = this.terminalFont.Measure(graphics, this.Columns);
 
-                int overColumn = (int)Math.Floor(point.X / rowDimensions.Width * this.Columns);
+                var overColumn = (int)Math.Floor(point.X / rowDimensions.Width * this.Columns);
                 if (overColumn >= this.Columns)
                 {
                     overColumn = this.Columns - 1;
                 }
 
-                int overRow = (int)Math.Floor(point.Y / rowDimensions.Height);
+                var overRow = (int)Math.Floor(point.Y / rowDimensions.Height);
                 if (overRow >= this.Rows)
                 {
                     overRow = this.Rows - 1;
@@ -225,8 +225,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             using (var graphics = CreateGraphics())
             {
-                int columns = this.terminalFont.MeasureColumns(graphics, this.Width);
-                int rows = this.terminalFont.MeasureRows(graphics, this.Height);
+                var columns = this.terminalFont.MeasureColumns(graphics, this.Width);
+                var rows = this.terminalFont.MeasureRows(graphics, this.Height);
 
                 if (this.Columns != columns || this.Rows != rows)
                 {
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             Debug.Assert(this.Rows > 0);
             Debug.Assert(this.Columns > 0);
-            Debug.Assert(this.controller.ViewPort.CursorPosition.Row <= Rows);
+            Debug.Assert(this.controller.ViewPort.CursorPosition.Row <= this.Rows);
 
             var terminalTop = this.controller.ViewPort.TopRow;
             var spans = this.controller.ViewPort.GetPageSpans(
@@ -296,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             List<LayoutRow> spans)
         {
             float drawY = 0;
-            int rowsPainted = 0;
+            var rowsPainted = 0;
             foreach (var textRow in spans)
             {
                 var rowDimensions = this.terminalFont.Measure(graphics, this.Columns);
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 }
 
                 float drawX = 0;
-                int columnsPainted = 0;
+                var columnsPainted = 0;
                 foreach (var textSpan in textRow.Spans)
                 {
                     var spanDimension = this.terminalFont.Measure(graphics, textSpan.Text.Length);
@@ -397,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private void PaintCaret(Graphics graphics, TextPosition caretPosition)
         {
             var caretY = caretPosition.Row;
-            if (caretY < 0 || caretY >= Rows)
+            if (caretY < 0 || caretY >= this.Rows)
             {
                 // When scrolling, the caret position might escape the viewport.
                 // Do not paint a caret if this happens.
@@ -545,7 +545,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     var changeCount = this.controller.ChangeCount;
                     this.controller.ClearChanges();
 
-                    if (oldTopRow != this.controller.ViewPort.TopRow && oldTopRow >= ViewTop)
+                    if (oldTopRow != this.controller.ViewPort.TopRow && oldTopRow >= this.ViewTop)
                     {
                         this.ViewTop = this.controller.ViewPort.TopRow;
                     }
@@ -1020,7 +1020,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 }
 
                 // Scan preceeding rows.
-                for (int row = startPosition.Row - 1; row >= 0; row--)
+                for (var row = startPosition.Row - 1; row >= 0; row--)
                 {
                     index = GetRow(row, true).LastIndexOf(c => !predicate(c));
                     if (index == this.Columns - 1)
@@ -1053,7 +1053,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 }
 
                 // Scan subsequent rows.
-                for (int row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
+                for (var row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
                 {
                     index = GetRow(row, true).IndexOf(c => !predicate(c));
                     if (index == 0)
@@ -1090,7 +1090,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         internal void ScrollViewPort(int rowsDelta)
         {
-            int oldViewTop = this.ViewTop;
+            var oldViewTop = this.ViewTop;
 
             this.ViewTop += rowsDelta;
             this.scrolling = true;
@@ -1137,7 +1137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         internal void SimulateKey(Keys keyCode, int repeat)
         {
-            for (int i = 0; i < repeat; i++)
+            for (var i = 0; i < repeat; i++)
             {
                 SimulateKey(keyCode);
             }

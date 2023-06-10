@@ -73,7 +73,7 @@ namespace Google.Solutions.Common.Test.Threading
                 InvokeRequired = false
             };
 
-            bool invoked = false;
+            var invoked = false;
             var task = invoker.InvokeAsync(() =>
             {
                 invoked = true;
@@ -93,7 +93,7 @@ namespace Google.Solutions.Common.Test.Threading
 
             var tcs = new TaskCompletionSource<object>();
 
-            bool invoked = false;
+            var invoked = false;
             var task = invoker.InvokeAsync(async () =>
             {
                 await tcs.Task.ConfigureAwait(false);
@@ -117,7 +117,7 @@ namespace Google.Solutions.Common.Test.Threading
 
             var tcs = new TaskCompletionSource<object>();
 
-            bool invoked = false;
+            var invoked = false;
             var task = invoker.InvokeAsync(async () =>
             {
                 await tcs.Task.ConfigureAwait(false);

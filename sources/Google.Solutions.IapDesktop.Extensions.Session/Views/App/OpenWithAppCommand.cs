@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
 {
-    internal class OpenWithAppCommand : MenuCommandBase<IProjectModelNode> 
+    internal class OpenWithAppCommand : MenuCommandBase<IProjectModelNode>
     {
         private readonly IWin32Window ownerWindow;
         private readonly IJobService jobService;

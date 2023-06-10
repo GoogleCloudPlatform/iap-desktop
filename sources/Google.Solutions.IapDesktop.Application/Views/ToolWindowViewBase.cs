@@ -22,10 +22,10 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public ToolWindowViewBase()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             this.AutoScaleMode = AutoScaleMode.Dpi;
         }
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     // Persist the restore state. This may or may not
                     // be the same we read during startup.
                     //
-                    state.DockState.EnumValue = restoreState;
+                    state.DockState.EnumValue = this.restoreState;
                     stateRepository.SetSetting(state);
                 }
                 catch (Exception e)
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         private void closeMenuItem_Click(object sender, System.EventArgs e)
         {
-            this.CloseSafely();
+            CloseSafely();
         }
 
         private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             (this.IsAutoHide && this.Size.Height == 0 && this.Size.Width == 0) ||
             (this.IsDocked && this.Pane.ActiveContent != this);
 
-        protected bool IsUserVisible => !this.IsHidden && !IsInBackground;
+        protected bool IsUserVisible => !this.IsHidden && !this.IsInBackground;
         private bool wasUserVisible = false;
 
         private void RaiseUserVisibilityChanged()

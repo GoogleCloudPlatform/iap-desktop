@@ -142,9 +142,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var processFactory = new Mock<IWin32ProcessFactory>();
             processFactory
                 .Setup(f => f.CreateProcessAsUser(
-                    It.IsAny<string>(), 
                     It.IsAny<string>(),
-                    It.IsAny<LogonFlags>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<LogonFlags>(),
                     It.IsAny<NetworkCredential>()))
                 .Returns(new Mock<IWin32Process>().Object);
 

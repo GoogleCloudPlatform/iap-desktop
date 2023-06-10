@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public CommandState QueryState(TContext context)
         {
-            if (!this.IsAvailable(context))
+            if (!IsAvailable(context))
             {
                 if (this.CommandType == MenuCommandType.ToolbarCommand)
                 {
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     return CommandState.Unavailable;
                 }
             }
-            else if (this.IsEnabled(context))
+            else if (IsEnabled(context))
             {
                 return CommandState.Enabled;
             }
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             Debug.Assert(IsAvailable(context) && IsEnabled(context));
 
-            toolWindowHost
+            this.toolWindowHost
                 .GetToolWindow<TView, TViewModel>()
                 .Show();
             return Task.CompletedTask;

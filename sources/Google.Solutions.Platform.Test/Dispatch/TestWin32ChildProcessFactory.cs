@@ -22,7 +22,6 @@
 using Google.Solutions.Platform.Dispatch;
 using NUnit.Framework;
 using System;
-using System.Net;
 
 namespace Google.Solutions.Platform.Test.Dispatch
 {

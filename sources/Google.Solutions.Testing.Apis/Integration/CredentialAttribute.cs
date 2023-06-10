@@ -78,7 +78,7 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         public override string ToString()
         {
-            return this.CreateSpecificationFingerprint();
+            return CreateSpecificationFingerprint();
         }
     }
 }

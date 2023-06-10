@@ -84,7 +84,7 @@ namespace Google.Solutions.Apis.Client
             ExponentialBackOff backOff,
             CancellationToken cancellationToken)
         {
-            int retries = 0;
+            var retries = 0;
             while (true)
             {
                 try

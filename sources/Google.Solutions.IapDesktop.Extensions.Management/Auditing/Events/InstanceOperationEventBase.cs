@@ -29,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
         protected abstract string SuccessMessage { get; }
         protected abstract string ErrorMessage { get; }
 
-        public override string Message => IsError
-            ? $"{ErrorMessage} [{this.Status.Message}]" + this.OperationSuffix
-            : SuccessMessage + this.OperationSuffix;
+        public override string Message => this.IsError
+            ? $"{this.ErrorMessage} [{this.Status.Message}]" + this.OperationSuffix
+            : this.SuccessMessage + this.OperationSuffix;
 
         protected string OperationSuffix
         {
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 
         protected InstanceOperationEventBase(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(!IsError || logRecord.ProtoPayload.Status != null);
+            Debug.Assert(!this.IsError || logRecord.ProtoPayload.Status != null);
         }
     }
 }

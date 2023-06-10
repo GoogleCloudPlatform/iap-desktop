@@ -25,7 +25,6 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis;

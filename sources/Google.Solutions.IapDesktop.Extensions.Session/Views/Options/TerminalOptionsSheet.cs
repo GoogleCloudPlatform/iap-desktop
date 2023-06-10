@@ -21,8 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
         {
             get
             {
-                using (var graphics = this.CreateGraphics())
+                using (var graphics = CreateGraphics())
                 {
                     return graphics.DpiX / 72;
                 }
@@ -155,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Options
                     ShowEffects = false,
 
                     // Sizes are in pixel, not points.
-                    MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * PointsToPixelRatio),
-                    MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * PointsToPixelRatio),
+                    MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * this.PointsToPixelRatio),
+                    MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * this.PointsToPixelRatio),
 
                     Font = this.viewModel.TerminalFont.Value
                 })

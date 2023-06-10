@@ -56,7 +56,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.form.Controls.Add(picker);
             this.form.Show();
             System.Windows.Forms.Application.DoEvents();
-            form.Close();
+            this.form.Close();
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.AreEqual(2, picker.Screens.First().Bounds.X);
             Assert.AreEqual(2, picker.Screens.First().Bounds.Y);
 
-            Assert.AreEqual(form.ClientSize.Height - 2, picker.Screens.Last().Bounds.Y + picker.Screens.Last().Bounds.Height, 2);
+            Assert.AreEqual(this.form.ClientSize.Height - 2, picker.Screens.Last().Bounds.Y + picker.Screens.Last().Bounds.Height, 2);
             this.form.Close();
         }
     }

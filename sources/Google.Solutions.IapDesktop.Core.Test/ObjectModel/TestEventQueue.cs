@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
 
-            bool invoked = false;
+            var invoked = false;
             var sub = (EventQueue.Subscription<EventOne>)
                 queue.Subscribe<EventOne>(e => { invoked = true; });
             sub.Dispose();
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var queue = new EventQueue(invoker.Object);
 
-            bool invoked = false;
+            var invoked = false;
             using (queue.Subscribe<EventOne>(e => { invoked = true; }))
             {
                 var t = queue.PublishAsync(new EventOne());

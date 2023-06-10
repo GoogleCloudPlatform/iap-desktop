@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Drawing
             get => this.grayFactor;
             set
             {
-                this.grayFactor = value.ExpectInRange(0.0f, 1.0f, nameof(GrayFactor));
+                this.grayFactor = value.ExpectInRange(0.0f, 1.0f, nameof(this.GrayFactor));
             }
         }
 
@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Drawing
             get => this.colorFactor;
             set
             {
-                this.colorFactor = value.ExpectInRange(0.0f, 1.0f, nameof(ColorFactor));
+                this.colorFactor = value.ExpectInRange(0.0f, 1.0f, nameof(this.ColorFactor));
             }
         }
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.Mvvm.Drawing
                 return false;
             }
 
-            for (int i = 0; i < bitmapLength; i += 4)
+            for (var i = 0; i < bitmapLength; i += 4)
             {
                 var red = bitmapBGRA[i + 2];
                 var green = bitmapBGRA[i + 1];

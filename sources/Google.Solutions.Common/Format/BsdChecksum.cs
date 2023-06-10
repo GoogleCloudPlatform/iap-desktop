@@ -45,8 +45,8 @@ namespace Google.Solutions.Common.Format
         {
             data.ExpectNotNull(nameof(data));
 
-            uint mask = (uint)(1 << this.lengthInBits) - 1;
-            for (int i = 0; i < data.Length; i++)
+            var mask = (uint)(1 << this.lengthInBits) - 1;
+            for (var i = 0; i < data.Length; i++)
             {
                 this.checksum = (this.checksum >> 1) + ((this.checksum & 1) << (this.lengthInBits - 1));
                 this.checksum += data[i];

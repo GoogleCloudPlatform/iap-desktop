@@ -58,13 +58,13 @@ namespace Google.Solutions.Iap.Test.Protocol
             var locator = await vm;
             var stream = ConnectToWebServer(locator, await credential);
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
             await stream
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[64];
+            var buffer = new byte[64];
 
             ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(() =>
             {
@@ -78,7 +78,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         {
             // NB. Fiddler might cause this test to fail.
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
 
             var stream = new SshRelayStream(
@@ -105,7 +105,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 locator,
                 await credential);
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
 
             Assert.IsNull(stream.Sid);
@@ -125,12 +125,12 @@ namespace Google.Solutions.Iap.Test.Protocol
                 await vm,
                 await credential);
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
 
             ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
             {
-                byte[] buffer = new byte[SshRelayStream.MinReadSize];
+                var buffer = new byte[SshRelayStream.MinReadSize];
                 stream.WriteAsync(request, 0, request.Length, CancellationToken.None).Wait();
             });
         }

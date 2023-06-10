@@ -42,7 +42,7 @@ namespace Google.Solutions.Apis.Diagnostics
         // ILogger.
         //---------------------------------------------------------------------
 
-        bool ILogger.IsDebugEnabled => traceSource.Switch.ShouldTrace(TraceEventType.Verbose);
+        bool ILogger.IsDebugEnabled => this.traceSource.Switch.ShouldTrace(TraceEventType.Verbose);
 
         void ILogger.Debug(string message, params object[] formatArgs)
         {

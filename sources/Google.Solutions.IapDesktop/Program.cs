@@ -32,12 +32,10 @@ using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -49,11 +47,15 @@ using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Core;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
 using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
@@ -66,8 +68,6 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.Platform.Dispatch;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop
                             "Change network settings"
                                 },
                                 null,
-                                out bool _) == 0)
+                                out var _) == 0)
                         {
                             //
                             // Open settings.

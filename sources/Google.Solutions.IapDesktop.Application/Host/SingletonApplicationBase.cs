@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 using (var mutex = new Mutex(
                     true,   // Try to claim ownership.
                     this.MutexName,
-                    out bool ownsMutex,
+                    out var ownsMutex,
                     mutexSecurity))
                 {
                     if (ownsMutex)
@@ -213,13 +213,13 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 {
                     writer.Write(args.Length);
 
-                    for (int i = 0; i < args.Length; i++)
+                    for (var i = 0; i < args.Length; i++)
                     {
                         writer.Write(args[i]);
                     }
 
-                    int returnCode = reader.ReadInt32();
-                    int processIdOfMainInstance = reader.ReadInt32();
+                    var returnCode = reader.ReadInt32();
+                    var processIdOfMainInstance = reader.ReadInt32();
 
                     TrySetForegroundWindow(processIdOfMainInstance);
 
@@ -272,16 +272,16 @@ namespace Google.Solutions.IapDesktop.Application.Host
                             var reader = new BinaryReader(pipe);
                             var writer = new BinaryWriter(pipe);
 
-                            int argsCount = reader.ReadInt32();
+                            var argsCount = reader.ReadInt32();
                             var args = new string[argsCount];
-                            for (int i = 0; i < argsCount; i++)
+                            for (var i = 0; i < argsCount; i++)
                             {
                                 args[i] = reader.ReadString();
                             }
 
                             try
                             {
-                                int result = HandleSubsequentInvocation(args);
+                                var result = HandleSubsequentInvocation(args);
                                 writer.Write(result);
                             }
                             catch (Exception e)

@@ -243,11 +243,11 @@ namespace Google.Solutions.Mvvm.Controls
                         {
                             if (expanded)
                             {
-                                this.Expand();
+                                Expand();
                             }
                             else
                             {
-                                this.Collapse();
+                                Collapse();
                             }
                         }));
                 }
@@ -265,7 +265,7 @@ namespace Google.Solutions.Mvvm.Controls
                     if (this.treeView.isExpandedFunc(this.Model))
                     {
                         // Eagerly load children.
-                        this.Expand();
+                        Expand();
                         LazyLoadChildren();
                     }
                     else
@@ -353,7 +353,7 @@ namespace Google.Solutions.Mvvm.Controls
                             //
                             // Reset state so that the action can be retried.
                             //
-                            this.Collapse();
+                            Collapse();
                             this.treeView.setExpandedFunc(this.Model, false);
                             this.lazyLoadTriggered = false;
 

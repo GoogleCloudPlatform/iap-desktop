@@ -22,7 +22,6 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 
     public static class TraitDetector
     {
-        private static readonly ConcurrentBag<ITraitDetector> finders 
+        private static readonly ConcurrentBag<ITraitDetector> finders
             = new ConcurrentBag<ITraitDetector>();
 
 

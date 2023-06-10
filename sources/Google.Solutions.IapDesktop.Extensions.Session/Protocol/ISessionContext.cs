@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

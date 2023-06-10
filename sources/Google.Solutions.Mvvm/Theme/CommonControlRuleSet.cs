@@ -43,8 +43,8 @@ namespace Google.Solutions.Mvvm.Theme
                     return;
                 }
 
-                int widthsOfAllButLastColumns = 0;
-                for (int i = 0; i < listView.Columns.Count - 1; i++)
+                var widthsOfAllButLastColumns = 0;
+                for (var i = 0; i < listView.Columns.Count - 1; i++)
                 {
                     widthsOfAllButLastColumns += listView.Columns[i].Width;
                 }

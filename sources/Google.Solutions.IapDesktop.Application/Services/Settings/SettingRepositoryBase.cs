@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         public void ClearSettings()
         {
             // Delete values, but keep any subkeys.
-            foreach (string valueName in this.BaseKey.GetValueNames())
+            foreach (var valueName in this.BaseKey.GetValueNames())
             {
                 this.BaseKey.DeleteValue(valueName);
             }

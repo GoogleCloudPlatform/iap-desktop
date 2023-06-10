@@ -27,17 +27,12 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Dispatch;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
@@ -108,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.App
 
         private class ConnectWithAppCommand : MenuCommandBase<IProjectModelNode>
         {
-            public ConnectWithAppCommand() 
+            public ConnectWithAppCommand()
                 : base("Connect &with client")
             {
             }

@@ -79,12 +79,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                 Marshal.SizeOf<UnsafeNativeMethods.TASKDIALOG_BUTTON_RAW>() * options.Length);
 
             var currentButton = buttonsBuffer;
-            for (int i = 0; i < options.Length; i++)
+            for (var i = 0; i < options.Length; i++)
             {
                 Marshal.StructureToPtr<UnsafeNativeMethods.TASKDIALOG_BUTTON_RAW>(
                     new UnsafeNativeMethods.TASKDIALOG_BUTTON_RAW()
                     {
-                        nButtonID = ButtonIdOffset + i, // Add offset to avoid conflict with IDOK/IDCANCEL.
+                        nButtonID = this.ButtonIdOffset + i, // Add offset to avoid conflict with IDOK/IDCANCEL.
                         pszButtonText = options[i]
                     },
                     currentButton,
@@ -113,8 +113,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
                 UnsafeNativeMethods.TaskDialogIndirect(
                     ref config,
-                    out int buttonPressed,
-                    out int radioButtonPressed,
+                    out var buttonPressed,
+                    out var radioButtonPressed,
                     out verificationFlagPressed);
 
                 if (buttonPressed == UnsafeNativeMethods.IDOK)
@@ -122,10 +122,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     // Pick first option.
                     return 0;
                 }
-                else if (buttonPressed >= ButtonIdOffset)
+                else if (buttonPressed >= this.ButtonIdOffset)
                 {
                     // Option selected.
-                    return buttonPressed - ButtonIdOffset;
+                    return buttonPressed - this.ButtonIdOffset;
                 }
                 else
                 {

@@ -21,8 +21,6 @@
 
 using Google.Solutions.Iap.Net;
 using NUnit.Framework;
-using System;
-using System.Net.WebSockets;
 using System.Text;
 
 namespace Google.Solutions.Iap.Test.Net
@@ -59,7 +57,7 @@ namespace Google.Solutions.Iap.Test.Net
             portFinder.AddSeed(Encoding.ASCII.GetBytes("some seed"));
 
             var port1 = portFinder.FindPort(out var preferred);
-            
+
             if (!preferred)
             {
                 Assert.Inconclusive();

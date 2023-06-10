@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var target = new Mock<IProtocolTarget>();
             var protocol = new AppProtocol(
                 "test",
-                new [] { new Mock<ITrait>().Object },
+                new[] { new Mock<ITrait>().Object },
                 new AllowAllPolicy(),
                 8080,
                 null,

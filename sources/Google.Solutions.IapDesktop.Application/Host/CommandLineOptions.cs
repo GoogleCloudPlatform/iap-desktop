@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         {
             var options = new CommandLineOptions();
 
-            for (int i = 0; i < args.Length; i++)
+            for (var i = 0; i < args.Length; i++)
             {
                 if (args[i] == "/debug")
                 {

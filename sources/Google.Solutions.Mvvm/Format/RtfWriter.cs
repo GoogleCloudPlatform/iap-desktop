@@ -90,7 +90,7 @@ namespace Google.Solutions.Mvvm.Format
         {
             this.writer.Write("{\\fonttbl");
 
-            for (int i = 0; i < fonts.Length; i++)
+            for (var i = 0; i < fonts.Length; i++)
             {
                 this.writer.Write("{\\f");
                 this.writer.Write(i.ToString());

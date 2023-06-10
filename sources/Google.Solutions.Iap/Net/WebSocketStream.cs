@@ -126,8 +126,8 @@ namespace Google.Solutions.Iap.Net
 
             try
             {
-                int bytesReceived = 0;
-                int bytesLeftInBuffer = count;
+                var bytesReceived = 0;
+                var bytesLeftInBuffer = count;
                 WebSocketReceiveResult result;
                 do
                 {

@@ -119,7 +119,7 @@ namespace Google.Solutions.Iap.Net
             // Make a reasonable number of attempts without risking getting
             // stuck in an infinite loop.
             //
-            for (int attempts = 0; attempts < MaxAttempts; attempts++)
+            for (var attempts = 0; attempts < MaxAttempts; attempts++)
             {
                 var port = (ushort)random.Next(PortRangeStart, PortRangeEnd);
                 if (!occupiedPorts.Contains(port))

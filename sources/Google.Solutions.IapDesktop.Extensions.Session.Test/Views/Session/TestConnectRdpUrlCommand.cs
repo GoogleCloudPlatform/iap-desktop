@@ -21,8 +21,9 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
@@ -33,7 +34,6 @@ using System;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.Session
 {

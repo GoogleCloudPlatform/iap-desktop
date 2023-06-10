@@ -163,7 +163,7 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(methodType))
             {
-                int count = UnsafeNativeMethods.libssh2_session_supported_algs(
+                var count = UnsafeNativeMethods.libssh2_session_supported_algs(
                     this.sessionHandle,
                     methodType,
                     out var algorithmsPtrPtr);
@@ -316,7 +316,7 @@ namespace Google.Solutions.Ssh.Native
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_keepalive_send(
                     this.sessionHandle,
-                    out int secondsTillNextKeepalive);
+                    out var secondsTillNextKeepalive);
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
@@ -386,7 +386,7 @@ namespace Google.Solutions.Ssh.Native
             var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_error(
                 this.sessionHandle,
                 out var errorMessage,
-                out int errorMessageLength,
+                out var errorMessageLength,
                 0);
 
             if (lastError == error)

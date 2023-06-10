@@ -68,7 +68,7 @@ namespace Google.Solutions.Platform.Dispatch
     {
         private const int ExitCodeForFailedProcessCreation = 250;
 
-        private static string Quote (string s)
+        private static string Quote(string s)
         {
             return $"\"{s}\"";
         }
@@ -100,7 +100,7 @@ namespace Google.Solutions.Platform.Dispatch
         //---------------------------------------------------------------------
 
         public IWin32Process CreateProcess(
-            string executable, 
+            string executable,
             string arguments)
         {
             executable.ExpectNotEmpty(nameof(executable));
@@ -129,7 +129,7 @@ namespace Google.Solutions.Platform.Dispatch
                         $"Launching process for {executable} failed");
                 }
 
-                var process =  new Win32Process(
+                var process = new Win32Process(
                     new FileInfo(executable).Name,
                     processInfo.dwProcessId,
                     new SafeProcessHandle(processInfo.hProcess, true),
@@ -141,8 +141,8 @@ namespace Google.Solutions.Platform.Dispatch
         }
 
         public IWin32Process CreateProcessAsUser(
-            string executable, 
-            string arguments, 
+            string executable,
+            string arguments,
             LogonFlags flags,
             NetworkCredential credential)
         {

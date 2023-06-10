@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Help
 
             try
             {
-                var releases = await githubAdapter
+                var releases = await this.githubAdapter
                     .ListReleases(MaxReleases, CancellationToken.None)
                     .ConfigureAwait(true);
 

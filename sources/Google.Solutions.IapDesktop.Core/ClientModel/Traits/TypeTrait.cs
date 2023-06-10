@@ -20,12 +20,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
 {
-	
+
     public class InstanceTrait : ITrait
     {
         private const string Expression = "isInstance()";
@@ -104,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-	
+
     public class WindowsTrait : ITrait
     {
         private const string Expression = "isWindows()";
@@ -183,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-	
+
     public class LinuxTrait : ITrait
     {
         private const string Expression = "isLinux()";
@@ -262,4 +261,4 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         }
     }
 
-	}
+}

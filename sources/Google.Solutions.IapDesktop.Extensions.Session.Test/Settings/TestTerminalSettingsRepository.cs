@@ -39,13 +39,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new TerminalSettingsRepository(baseKey);
 
             var settings = repository.GetSettings();
@@ -73,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenSettingsChanged_ThenEventIsFired()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new TerminalSettingsRepository(baseKey);
 
-            bool eventFired = false;
+            var eventFired = false;
             repository.SettingsChanged += (sender, args) =>
             {
                 Assert.AreSame(repository, sender);

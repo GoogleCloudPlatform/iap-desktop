@@ -154,7 +154,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
                 form.Controls.Add(browser);
 
-                bool eventRaised = false;
+                var eventRaised = false;
                 browser.NavigationFailed += (sender, args) =>
                 {
                     Assert.AreSame(browser, sender);
@@ -401,7 +401,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .NavigateAsync(new[] { "Item", "Item" })
                     .ConfigureAwait(true);
 
-                for (int i = 0; i < 5; i++)
+                for (var i = 0; i < 5; i++)
                 {
                     await browser
                         .NavigateUpAsync()
@@ -486,7 +486,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
 
-                int selectionEvents = 0;
+                var selectionEvents = 0;
                 browser.SelectedFilesChanged += (s, a) => selectionEvents++;
 
                 foreach (var item in browser.Files.Items.Cast<ListViewItem>())
@@ -533,7 +533,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
 
-                int selectionEvents = 0;
+                var selectionEvents = 0;
                 browser.SelectedFilesChanged += (s, a) => selectionEvents++;
 
                 browser.SelectedFiles = new[] { files[0], files[1] };

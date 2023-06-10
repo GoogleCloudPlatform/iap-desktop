@@ -463,7 +463,7 @@ namespace Google.Solutions.Mvvm.Format
             public static IEnumerable<Token> Tokenize(string text)
             {
                 var textStart = -1;
-                for (int i = 0; i < text.Length; i++)
+                for (var i = 0; i < text.Length; i++)
                 {
                     switch (text[i])
                     {

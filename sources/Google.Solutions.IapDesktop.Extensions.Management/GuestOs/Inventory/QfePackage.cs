@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
                 if (this.Caption != null && Uri.TryCreate(
                     this.Caption, UriKind
                     .Absolute,
-                    out Uri uri))
+                    out var uri))
                 {
                     return uri;
                 }

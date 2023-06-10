@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
         //---------------------------------------------------------------------

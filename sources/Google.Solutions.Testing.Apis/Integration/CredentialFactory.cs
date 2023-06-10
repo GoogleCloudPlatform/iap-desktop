@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Iam.v1.Data;
 using System;
 using System.Diagnostics;
@@ -70,7 +69,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             var service = TestProject.CreateCloudResourceManagerService();
 
-            for (int attempt = 0; attempt < 6; attempt++)
+            for (var attempt = 0; attempt < 6; attempt++)
             {
                 var policy = await service.Projects
                     .GetIamPolicy(

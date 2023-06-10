@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         public void WhenMinSizeReached_NextSmallerFontKeepsSize()
         {
             var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f);
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 font = font.NextSmallerFont();
             }
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         public void WhenMaxSizeReached_NextLargerFontKeepsSize()
         {
             var font = new TerminalFont(TerminalFont.DefaultFontFamily, 40f);
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 font = font.NextLargerFont();
             }

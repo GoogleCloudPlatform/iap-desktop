@@ -53,20 +53,20 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             public void Accumulate(byte[] buffer, int offset, int count)
             {
-                response.Append(new ASCIIEncoding().GetString(buffer, offset, count));
+                this.response.Append(new ASCIIEncoding().GetString(buffer, offset, count));
                 this.TotalBytesRead += count;
 
-                if (response.ToString().IndexOf("\r\n\r\n") > 0)
+                if (this.response.ToString().IndexOf("\r\n\r\n") > 0)
                 {
                     // Full HTTP header read.
 
-                    var contentLengthMatch = new Regex("Content-Length: (\\d+)").Match(response.ToString());
+                    var contentLengthMatch = new Regex("Content-Length: (\\d+)").Match(this.response.ToString());
                     if (this.ExpectedBytes == int.MaxValue && contentLengthMatch.Success)
                     {
                         this.ExpectedBytes = int.Parse(contentLengthMatch.Groups[1].Value);
 
                         // Subtract header from bytes read.
-                        var headerLength = response.ToString().IndexOf("\r\n\r\n");
+                        var headerLength = this.response.ToString().IndexOf("\r\n\r\n");
                         this.TotalBytesRead -= headerLength + 4;
                     }
                 }
@@ -84,13 +84,13 @@ namespace Google.Solutions.Iap.Test.Protocol
                 await vm,
                 await credential);
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
             await stream
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[SshRelayStream.MinReadSize];
+            var buffer = new byte[SshRelayStream.MinReadSize];
 
             var response = new HttpResponseAccumulator();
             int bytesRead;
@@ -118,15 +118,15 @@ namespace Google.Solutions.Iap.Test.Protocol
                 locator,
                 await credential);
 
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
-                byte[] request = new ASCIIEncoding().GetBytes(
+                var request = new ASCIIEncoding().GetBytes(
                     $"GET /?_={i} HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
                 await stream
                     .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                     .ConfigureAwait(false);
 
-                byte[] buffer = new byte[SshRelayStream.MinReadSize];
+                var buffer = new byte[SshRelayStream.MinReadSize];
 
                 var response = new HttpResponseAccumulator();
                 int bytesRead;
@@ -161,17 +161,17 @@ namespace Google.Solutions.Iap.Test.Protocol
                 locator,
                 await credential);
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
             await stream
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[SshRelayStream.MinReadSize];
+            var buffer = new byte[SshRelayStream.MinReadSize];
 
             // Read a bit.
             var response = new HttpResponseAccumulator();
-            int bytesRead = await stream
+            var bytesRead = await stream
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             response.Accumulate(buffer, 0, bytesRead);

@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
+            Debug.Assert(!this.InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }

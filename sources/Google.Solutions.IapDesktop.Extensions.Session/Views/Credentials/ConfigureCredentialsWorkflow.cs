@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
 
         public void ShowCredentialsDialog()
         {
-            toolWindowHost
+            this.toolWindowHost
                 .GetToolWindow<ConnectionSettingsView, ConnectionSettingsViewModel>()
                 .Show();
         }

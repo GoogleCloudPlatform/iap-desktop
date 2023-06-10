@@ -21,10 +21,8 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
-using System.ComponentModel;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
@@ -64,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 8080));
 
             var client = new AppProtocolClient(
-                "doesnotexist.exe", 
+                "doesnotexist.exe",
                 "/port %port% /host %host% /ignore %HOST%Port%% %foo%%%");
 
             Assert.AreEqual(

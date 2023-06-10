@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// project are accessible.
         /// </summary>
         bool IsAccesible { get; }
-        
+
         /// <summary>
         /// Project locator.
         /// </summary>

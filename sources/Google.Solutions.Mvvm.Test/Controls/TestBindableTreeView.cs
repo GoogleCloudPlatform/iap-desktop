@@ -194,7 +194,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 IsExpanded = true
             };
 
-            int eventCount = 0;
+            var eventCount = 0;
             this.tree.LoadingChildrenFailed += (sender, args) =>
             {
                 eventCount++;

@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Apis;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;

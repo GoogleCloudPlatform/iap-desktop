@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
 
             updateService.CheckForUpdates(null, out var _);
 
-            bool f = false;
+            var f = false;
             taskDialog.Verify(d => d.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
 
             updateService.CheckForUpdates(null, out var _);
 
-            bool f = false;
+            var f = false;
             taskDialog.Verify(d => d.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
 
             updateService.CheckForUpdates(null, out var _);
 
-            bool f = false;
+            var f = false;
             taskDialog.Verify(d => d.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
                 .ReturnsAsync(release.Object);
 
             var taskDialog = new Mock<ITaskDialog>();
-            bool f = false;
+            var f = false;
             taskDialog
                 .Setup(d => d.ShowOptionsTaskDialog(
                     It.IsAny<IWin32Window>(),
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
                 .ReturnsAsync(release.Object);
 
             var taskDialog = new Mock<ITaskDialog>();
-            bool f = false;
+            var f = false;
             taskDialog
                 .Setup(d => d.ShowOptionsTaskDialog(
                     It.IsAny<IWin32Window>(),

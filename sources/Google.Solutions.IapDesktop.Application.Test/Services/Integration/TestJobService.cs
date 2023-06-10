@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 It.IsNotNull<JobDescription>(),
                 It.IsNotNull<CancellationTokenSource>())).Returns(new UserFeedback());
 
-            this.jobService = new JobService(authorization.Object, this.jobHost.Object);
+            this.jobService = new JobService(this.authorization.Object, this.jobHost.Object);
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
-            int funcCall = 0;
+            var funcCall = 0;
             var result = await this.jobService
                 .RunInBackground<string>(
                     new JobDescription("test"),
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
-            int funcCall = 0;
+            var funcCall = 0;
             var result = await this.jobService
                 .RunInBackground<string>(
                     new JobDescription("test"),
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
-            int funcCall = 0;
+            var funcCall = 0;
             var result = await this.jobService
                 .RunInBackground<string>(
                     new JobDescription("test"),
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
-            int funcCall = 0;
+            var funcCall = 0;
             var result = await this.jobService
                 .RunInBackground<string>(
                     new JobDescription("test"),

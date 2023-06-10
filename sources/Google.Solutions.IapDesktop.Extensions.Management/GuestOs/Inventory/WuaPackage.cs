@@ -144,8 +144,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         public static WuaPackageType FromCategoryId(string categoryId)
         {
-            if (Guid.TryParse(categoryId, out Guid guid) &&
-                Types.TryGetValue(guid, out WuaPackageType type))
+            if (Guid.TryParse(categoryId, out var guid) &&
+                Types.TryGetValue(guid, out var type))
             {
                 return type;
             }

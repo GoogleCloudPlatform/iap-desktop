@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void ToStringReturnsName()
         {
             Assert.AreEqual(
-                "Child processes", 
+                "Child processes",
                 new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object).ToString());
         }
 

@@ -21,10 +21,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
@@ -179,11 +179,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.RemoteDeskto
                     rdpParameters,
                     rdpCredential);
 
-                bool serverAuthWarningIsDisplayed = false;
+                var serverAuthWarningIsDisplayed = false;
                 ((RdpDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>
                 {
                     serverAuthWarningIsDisplayed = true;
-                    MainWindow.Close();
+                    this.MainWindow.Close();
                 };
 
                 var deadline = DateTime.Now.AddSeconds(45);

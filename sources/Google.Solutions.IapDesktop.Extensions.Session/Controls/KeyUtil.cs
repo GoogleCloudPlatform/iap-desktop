@@ -32,17 +32,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
     {
         public static string CharFromKeyCode(Keys key)
         {
-            byte[] keyboardState = new byte[255];
+            var keyboardState = new byte[255];
             if (!UnsafeNativeMethods.GetKeyboardState(keyboardState))
             {
                 return "";
             }
 
-            uint virtualKeyCode = (uint)key;
-            uint scanCode = UnsafeNativeMethods.MapVirtualKey(virtualKeyCode, 0);
-            IntPtr inputLocaleIdentifier = UnsafeNativeMethods.GetKeyboardLayout(0);
+            var virtualKeyCode = (uint)key;
+            var scanCode = UnsafeNativeMethods.MapVirtualKey(virtualKeyCode, 0);
+            var inputLocaleIdentifier = UnsafeNativeMethods.GetKeyboardLayout(0);
 
-            StringBuilder result = new StringBuilder(10);
+            var result = new StringBuilder(10);
             UnsafeNativeMethods.ToUnicodeEx(
                 virtualKeyCode,
                 scanCode,

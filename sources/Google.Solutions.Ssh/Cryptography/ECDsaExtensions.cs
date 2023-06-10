@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Cryptography
             //
             // Get size in bytes (rounding up).
             //
-            int keySizeInBytes = (key.KeySize + 7) / 8;
+            var keySizeInBytes = (key.KeySize + 7) / 8;
             if (qX.Length > keySizeInBytes || qY.Length > keySizeInBytes)
             {
                 throw new ArgumentException("Point coordinates do not match field size");
@@ -119,7 +119,7 @@ namespace Google.Solutions.Ssh.Cryptography
             // Input is (r, s), each of them exactly half of the array.
             Debug.Assert(signature.Length % 2 == 0);
             Debug.Assert(signature.Length > 1);
-            int halfLength = signature.Length / 2;
+            var halfLength = signature.Length / 2;
 
             return new ECDsaSignature(
                 signature.Take(halfLength).ToArray(),

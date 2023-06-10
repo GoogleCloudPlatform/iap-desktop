@@ -60,7 +60,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             Assert.AreEqual(0, endpoint.ConnectCount);
 
-            byte[] request = new byte[] { 1, 2, 3 };
+            var request = new byte[] { 1, 2, 3 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
@@ -92,13 +92,13 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write and read something.
-            byte[] request = new byte[] { 1 };
+            var request = new byte[] { 1 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[SshRelayStream.MinReadSize];
-            int bytesRead = await relay
+            var buffer = new byte[SshRelayStream.MinReadSize];
+            var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             Assert.AreEqual(1, bytesRead);
@@ -138,7 +138,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write two requests with no read in between.
-            byte[] request = new byte[] { 1 };
+            var request = new byte[] { 1 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
@@ -174,7 +174,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write first request.
-            byte[] request = new byte[] { 1 };
+            var request = new byte[] { 1 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
@@ -208,7 +208,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write first request, then close.
-            byte[] request = new byte[] { 1 };
+            var request = new byte[] { 1 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
@@ -246,7 +246,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write first request.
-            byte[] request = new byte[] { 1 };
+            var request = new byte[] { 1 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
@@ -307,7 +307,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write two requests, but do not await ACK.
-            byte[] request = new byte[] { 1 };
+            var request = new byte[] { 1 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
@@ -387,7 +387,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             // Read something..
             var buffer = new byte[SshRelayStream.MinReadSize];
-            int bytesRead = await relay
+            var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             Assert.AreEqual(2, bytesRead);
@@ -465,7 +465,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             // Read something..
             var buffer = new byte[SshRelayStream.MinReadSize];
-            int bytesRead = await relay
+            var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             Assert.AreEqual(2, bytesRead);

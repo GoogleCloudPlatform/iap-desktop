@@ -25,7 +25,6 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Properties;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
@@ -220,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 
             try
             {
-                bool retry = true;
+                var retry = true;
                 while (retry)
                 {
                     try

@@ -150,7 +150,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public Dialog<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
-            var view = new Dialog<TView, TViewModel>(serviceProvider, viewModel);
+            var view = new Dialog<TView, TViewModel>(this.serviceProvider, viewModel);
 
             if (this.Theme != null)
             {
@@ -168,8 +168,8 @@ namespace Google.Solutions.Mvvm.Binding
         public Window<TView, TViewModel> CreateWindow()
         {
             var view = new Window<TView, TViewModel>(
-                serviceProvider,
-                (TViewModel)serviceProvider.GetService(typeof(TViewModel)));
+                this.serviceProvider,
+                (TViewModel)this.serviceProvider.GetService(typeof(TViewModel)));
 
             if (this.Theme != null)
             {
@@ -312,7 +312,7 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Tie lifetime of the view model to that of the view.
             //
-            bool disposed = false;
+            var disposed = false;
             viewControl.Disposed += (_, __) =>
             {
                 if (!disposed)

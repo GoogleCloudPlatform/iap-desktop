@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         {
             using (var form = new Form())
             {
-                int messagesReceived = 0;
+                var messagesReceived = 0;
                 var callback = new SubclassCallback(form, (ref Message m) =>
                 {
                     messagesReceived++;

@@ -60,7 +60,7 @@ namespace Google.Solutions.Ssh.Test
                 TimeSpan timeout,
                 string token)
             {
-                for (int i = 0; i < 10; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     await Task
                         .Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10))

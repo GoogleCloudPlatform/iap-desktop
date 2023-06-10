@@ -76,12 +76,12 @@ namespace Google.Solutions.Ssh.Native
 
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
                         this.ChannelHandle,
-                        out IntPtr signalPtr,
-                        out IntPtr signalLength,
-                        out IntPtr errmsgPtr,
-                        out IntPtr errmsgLength,
-                        out IntPtr langTagPtr,
-                        out IntPtr langTagLength);
+                        out var signalPtr,
+                        out var signalLength,
+                        out var errmsgPtr,
+                        out var errmsgLength,
+                        out var langTagPtr,
+                        out var langTagLength);
                     if (result != LIBSSH2_ERROR.NONE)
                     {
                         throw this.Session.CreateException(result);

@@ -45,9 +45,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
 
             this.projectRepository = new ProjectRepository(baseKey);
             this.repository = new ConnectionSettingsRepository(
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetZoneSettings(originalSettings);
 
-            projectRepository.RemoveProject(new ProjectLocator("pro-1"));
+            this.projectRepository.RemoveProject(new ProjectLocator("pro-1"));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetVmInstanceSettings(originalSettings);
 
-            projectRepository.RemoveProject(new ProjectLocator("pro-1"));
+            this.projectRepository.RemoveProject(new ProjectLocator("pro-1"));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {

@@ -46,7 +46,7 @@ namespace Google.Solutions.Testing.Apis.Integration
             InstancesResource resource,
             InstanceLocator locator)
         {
-            for (int i = 0; i < 60; i++)
+            for (var i = 0; i < 60; i++)
             {
                 try
                 {

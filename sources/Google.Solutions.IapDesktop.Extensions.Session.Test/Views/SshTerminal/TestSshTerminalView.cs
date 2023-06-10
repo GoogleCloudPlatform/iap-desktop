@@ -25,15 +25,14 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.Views.SshTerminal;
@@ -195,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Views.SshTerminal
             // the dreaded 'Work posted to the synchronization context did
             // not complete within ten seconds' error.
             //
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
                 await Task.Delay(5).ConfigureAwait(true);
                 await Task.Yield();

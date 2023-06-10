@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
 using System;
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
             themeService.DialogTheme.ApplyTo(this);
 
             var copyButton = this.passwordText.AddOverlayButton(Resources.Copy_16x);
-            copyButton.Click += (s, a) => ClipboardUtil.SetText(passwordText.Text);
+            copyButton.Click += (s, a) => ClipboardUtil.SetText(this.passwordText.Text);
             copyButton.TabIndex = this.passwordText.TabIndex + 1;
         }
 
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials
             this.usernameText.Text = username;
             this.passwordText.Text = password;
 
-            this.ShowDialog(owner);
+            ShowDialog(owner);
         }
 
         //---------------------------------------------------------------------

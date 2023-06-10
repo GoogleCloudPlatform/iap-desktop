@@ -319,7 +319,7 @@ namespace Google.Solutions.Ssh.Native
                 Debug.Assert(SshSession.Alloc != null);
 
                 var responses = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE[prompts.Length];
-                for (int i = 0; i < prompts.Length; i++)
+                for (var i = 0; i < prompts.Length; i++)
                 {
                     var promptText = UnsafeNativeMethods.PtrToString(
                         prompts[i].TextPtr,
@@ -425,7 +425,7 @@ namespace Google.Solutions.Ssh.Native
                         //
                         // Retry to account for wrong user input.
                         //
-                        for (int retry = 0; retry < KeyboardInteractiveRetries; retry++)
+                        for (var retry = 0; retry < KeyboardInteractiveRetries; retry++)
                         {
                             result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
                                 this.session.Handle,

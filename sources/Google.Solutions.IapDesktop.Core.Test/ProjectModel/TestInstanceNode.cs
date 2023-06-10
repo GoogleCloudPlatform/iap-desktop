@@ -19,11 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -44,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
         private static ProjectWorkspace CreateWorkspace()
-        { 
+        {
             return new ProjectWorkspace(
                 new Mock<IComputeEngineAdapter>().Object,
                 new Mock<IResourceManagerAdapter>().Object,
@@ -183,8 +181,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenStartOrResumeSucceeds_ThenControlInstanceFiresEvent(
             [Values(
                 InstanceControlCommand.Reset,
-                InstanceControlCommand.Start, 
-                InstanceControlCommand.Resume)] 
+                InstanceControlCommand.Start,
+                InstanceControlCommand.Resume)]
             InstanceControlCommand command)
         {
             var computeAdapter = new Mock<IComputeEngineAdapter>();

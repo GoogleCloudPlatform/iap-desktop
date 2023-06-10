@@ -123,7 +123,7 @@ namespace Google.Solutions.Platform.Dispatch
             [DllImport("kernel32.dll")]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool ProcessIdToSessionId(
-                uint dwProcessId, 
+                uint dwProcessId,
                 out uint pSessionId);
         }
     }

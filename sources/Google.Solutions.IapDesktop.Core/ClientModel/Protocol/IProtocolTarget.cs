@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol

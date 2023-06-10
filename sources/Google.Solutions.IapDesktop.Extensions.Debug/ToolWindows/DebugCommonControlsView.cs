@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
         {
             InitializeComponent();
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var item = new ListViewItem()
                 {

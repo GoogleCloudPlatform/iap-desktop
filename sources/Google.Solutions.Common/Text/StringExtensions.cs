@@ -27,7 +27,7 @@ namespace Google.Solutions.Common.Text
     {
         public static int IndexOf(this string str, Predicate<char> predicate)
         {
-            for (int i = 0; i < str.Length; i++)
+            for (var i = 0; i < str.Length; i++)
             {
                 if (predicate(str[i]))
                 {
@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Text
 
         public static int LastIndexOf(this string str, Predicate<char> predicate)
         {
-            for (int i = str.Length - 1; i >= 0; i--)
+            for (var i = str.Length - 1; i >= 0; i--)
             {
                 if (predicate(str[i]))
                 {

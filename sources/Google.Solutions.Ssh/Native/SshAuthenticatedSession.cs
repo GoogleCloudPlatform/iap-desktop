@@ -66,8 +66,8 @@ namespace Google.Solutions.Ssh.Native
                     this.Session.Handle,
                     SshSessionChannelBase.Type,
                     (uint)SshSessionChannelBase.Type.Length,
-                    DefaultWindowSize,
-                    DefaultPacketSize,
+                    this.DefaultWindowSize,
+                    this.DefaultPacketSize,
                     null,
                     0);
 

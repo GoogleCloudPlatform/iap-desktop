@@ -47,9 +47,9 @@ namespace Google.Solutions.Mvvm.Cache
 
         public V Lookup(K key)
         {
-            if (this.cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
+            if (this.cacheMap.TryGetValue(key, out var node))
             {
-                V value = node.Value.Value;
+                var value = node.Value.Value;
 
                 // Track this as most recently accessed.
                 this.lruList.Remove(node);
@@ -82,7 +82,7 @@ namespace Google.Solutions.Mvvm.Cache
 
         public void Remove(K key)
         {
-            if (this.cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
+            if (this.cacheMap.TryGetValue(key, out var node))
             {
                 this.cacheMap.Remove(key);
                 this.lruList.Remove(node);

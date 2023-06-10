@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    string logDelta = await serialPortStream
+                    var logDelta = await serialPortStream
                         .ReadAsync(cancellationToken)
                         .ConfigureAwait(false);
                     if (string.IsNullOrEmpty(logDelta))

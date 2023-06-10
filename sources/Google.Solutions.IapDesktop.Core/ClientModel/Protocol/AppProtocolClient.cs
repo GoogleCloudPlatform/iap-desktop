@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         internal string ArgumentsTemplate { get; }
 
         internal protected AppProtocolClient(
-            string executable, 
+            string executable,
             string argumentsTemplate)
         {
             this.Executable = executable.ExpectNotEmpty(nameof(executable));

@@ -46,8 +46,8 @@ namespace Google.Solutions.Platform.Net
                 //
                 // Get buffer length.
                 //
-                uint bufferSize = 0u;
-                uint error = UnsafeNativeMethods.GetTcpTable2(
+                var bufferSize = 0u;
+                var error = UnsafeNativeMethods.GetTcpTable2(
                     LocalAllocSafeHandle.Zero,
                     ref bufferSize,
                     false);
@@ -63,7 +63,7 @@ namespace Google.Solutions.Platform.Net
                                 false) == UnsafeNativeMethods.NO_ERROR)
                             {
                                 // Got the data.
-                                IntPtr ptr = buffer.DangerousGetHandle();
+                                var ptr = buffer.DangerousGetHandle();
                                 var tcpTable = (UnsafeNativeMethods.MIB_TCPTABLE2)Marshal.PtrToStructure(
                                     ptr,
                                     typeof(UnsafeNativeMethods.MIB_TCPTABLE2));
@@ -75,7 +75,7 @@ namespace Google.Solutions.Platform.Net
                                     ptr = (IntPtr)((long)ptr + Marshal.SizeOf(tcpTable.dwNumEntries));
 
                                     // Read array entries, one by one.
-                                    for (int i = 0; i < tcpTable.dwNumEntries; i++)
+                                    for (var i = 0; i < tcpTable.dwNumEntries; i++)
                                     {
                                         var row = (UnsafeNativeMethods.MIB_TCPROW2)Marshal.PtrToStructure(
                                             ptr,

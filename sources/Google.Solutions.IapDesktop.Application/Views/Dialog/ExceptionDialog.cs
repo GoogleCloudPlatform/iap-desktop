@@ -135,9 +135,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                 {
                     UnsafeNativeMethods.TaskDialogIndirect(
                         ref config,
-                        out int buttonPressed,
-                        out int radioButtonPressed,
-                        out bool verificationFlagPressed);
+                        out var buttonPressed,
+                        out var radioButtonPressed,
+                        out var verificationFlagPressed);
                 }
                 catch (COMException e)
                 {
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, e))
             {
                 var details = new StringBuilder();
-                string message = string.Empty;
+                var message = string.Empty;
                 if (e is GoogleApiException apiException && apiException.Error != null)
                 {
                     // The .Message property contains a rather ugly concatenation of

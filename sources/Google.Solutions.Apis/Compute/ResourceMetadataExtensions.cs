@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Compute
             Action<Metadata> updateMetadata,
             uint maxAttempts)
         {
-            for (int attempt = 1; ; attempt++)
+            for (var attempt = 1; ; attempt++)
             {
                 //
                 // NB. Metadata must be updated all-at-once. Therefore,
@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Compute
                         // Fingerprint mismatch - that happens when somebody else updated metadata
                         // in patallel. 
 
-                        int backoff = 100;
+                        var backoff = 100;
                         CommonTraceSources.Default.TraceWarning(
                             "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
                             e.Error?.Code,

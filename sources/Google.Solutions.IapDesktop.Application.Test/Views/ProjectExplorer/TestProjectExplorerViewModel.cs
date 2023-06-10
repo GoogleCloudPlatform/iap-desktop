@@ -24,15 +24,13 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
@@ -44,7 +42,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 {
@@ -446,7 +443,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)
@@ -476,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)
@@ -516,7 +513,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)
@@ -547,7 +544,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)
@@ -578,7 +575,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)
@@ -619,7 +616,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)
@@ -660,7 +657,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            int nofifications = 0;
+            var nofifications = 0;
             var projects = await viewModel
                 .RootNode
                 .GetFilteredNodesAsync(false)

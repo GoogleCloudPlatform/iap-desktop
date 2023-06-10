@@ -428,8 +428,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 SampleUserAgent,
                 tunnelFactory.Object);
 
-            int poolSizeWhenCreated = 0;
-            int poolSizeWhenClosed = 0;
+            var poolSizeWhenCreated = 0;
+            var poolSizeWhenClosed = 0;
             eventQueue.Subscribe<TunnelEvents.TunnelCreated>(
                 _ =>
                 {
@@ -574,7 +574,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(SampleInstance, 22),
                 IapTunnelFlags.None);
 
-            int tunnelClosedEvents = 0;
+            var tunnelClosedEvents = 0;
             tunnel.Closed += (_, __) => tunnelClosedEvents++;
 
             var transport = new IapTransportFactory.Transport(

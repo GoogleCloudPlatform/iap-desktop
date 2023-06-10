@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 var property = ObservableProperty.Build(string.Empty, viewModel);
 
-                bool eventRaised = false;
+                var eventRaised = false;
                 property.PropertyChanged += (_, __) =>
                 {
                     Assert.IsFalse(form.InvokeRequired);
@@ -73,7 +73,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     property,
                     s => s.ToUpper());
 
-                bool eventRaised = false;
+                var eventRaised = false;
                 dependent1.PropertyChanged += (_, __) =>
                 {
                     Assert.IsFalse(form.InvokeRequired);

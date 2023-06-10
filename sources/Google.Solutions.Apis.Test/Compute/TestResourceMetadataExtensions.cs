@@ -125,7 +125,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var key = Guid.NewGuid().ToString();
 
-            int callbacks = 0;
+            var callbacks = 0;
             await this.instancesResource.UpdateMetadataAsync(
                     locator,
                     metadata =>
@@ -166,7 +166,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var key = Guid.NewGuid().ToString();
 
-            int callbacks = 0;
+            var callbacks = 0;
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => this.instancesResource.UpdateMetadataAsync(
                     locator,
@@ -245,7 +245,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var key = Guid.NewGuid().ToString();
 
-            int callbacks = 0;
+            var callbacks = 0;
             await this.projectsResource.UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>
@@ -280,7 +280,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var key = Guid.NewGuid().ToString();
 
-            int callbacks = 0;
+            var callbacks = 0;
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => this.projectsResource.UpdateMetadataAsync(
                     TestProject.ProjectId,

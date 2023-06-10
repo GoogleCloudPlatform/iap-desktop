@@ -73,13 +73,13 @@ namespace Google.Solutions.Iap.Test.Protocol
                 locator,
                 await credential);
 
-            byte[] request = new ASCIIEncoding().GetBytes(
+            var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
             await stream
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[SshRelayStream.MinReadSize];
+            var buffer = new byte[SshRelayStream.MinReadSize];
             Assert.AreEqual(0, stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Result);
         }
     }

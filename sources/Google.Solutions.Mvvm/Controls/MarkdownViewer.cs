@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException(nameof(Markdown));
+                    throw new ArgumentNullException(nameof(this.Markdown));
                 }
 
                 var document = MarkdownDocument.Parse(value);

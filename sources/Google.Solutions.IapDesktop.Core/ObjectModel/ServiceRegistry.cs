@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
             {
                 return singletonStub.Object;
             }
-            else if (this.transients.TryGetValue(serviceType, out Func<object> transientFactory))
+            else if (this.transients.TryGetValue(serviceType, out var transientFactory))
             {
                 return transientFactory();
             }

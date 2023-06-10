@@ -41,7 +41,7 @@ namespace Google.Solutions.Mvvm.Drawing
 
         private static Color ColorFromText(string text)
         {
-            ushort hue = (ushort)(text.GetHashCode() % 255);
+            var hue = (ushort)(text.GetHashCode() % 255);
             ushort lightness = 128;
             ushort saturation = 255;
 

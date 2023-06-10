@@ -672,9 +672,9 @@ namespace Google.Solutions.Ssh.Native
             var size = Marshal.SizeOf(typeof(T));
             var array = new T[count];
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                IntPtr elementPtr = new IntPtr(ptr.ToInt64() + i * size);
+                var elementPtr = new IntPtr(ptr.ToInt64() + i * size);
                 array[i] = Marshal.PtrToStructure<T>(elementPtr);
             }
 
@@ -686,9 +686,9 @@ namespace Google.Solutions.Ssh.Native
             T[] array) where T : struct
         {
             var size = Marshal.SizeOf(typeof(T));
-            for (int i = 0; i < array.Length; i++)
+            for (var i = 0; i < array.Length; i++)
             {
-                IntPtr elementPtr = new IntPtr(ptr.ToInt64() + i * size);
+                var elementPtr = new IntPtr(ptr.ToInt64() + i * size);
                 Marshal.StructureToPtr(array[i], elementPtr, false);
             }
         }
@@ -862,7 +862,7 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         protected override bool ReleaseHandle()
         {
-            bool result = UnsafeNativeMethods.WSACloseEvent(this.handle);
+            var result = UnsafeNativeMethods.WSACloseEvent(this.handle);
             Debug.Assert(result);
             return result;
         }

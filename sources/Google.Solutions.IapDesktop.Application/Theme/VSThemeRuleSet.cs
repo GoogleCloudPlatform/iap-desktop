@@ -78,8 +78,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             if (this.theme.IsDark)
             {
-                darkModeIconInverter.Invert(treeView.ImageList);
-                darkModeIconInverter.Invert(treeView.StateImageList);
+                this.darkModeIconInverter.Invert(treeView.ImageList);
+                this.darkModeIconInverter.Invert(treeView.StateImageList);
             }
         }
 
@@ -93,8 +93,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 listView.GridLines = false;
                 listView.HotTracking = false;
-                darkModeIconInverter.Invert(listView.SmallImageList);
-                darkModeIconInverter.Invert(listView.LargeImageList);
+                this.darkModeIconInverter.Invert(listView.SmallImageList);
+                this.darkModeIconInverter.Invert(listView.LargeImageList);
 
                 //
                 // When disabled, the list view's background turns gray by default.
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             groupBox.ForeColor = this.theme.Palette.Label.Text;
 
-            if (theme.IsDark)
+            if (this.theme.IsDark)
             {
                 //
                 // In dark mode, the border is drawn in black by default,
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     var box = (GroupBox)sender;
 
                     using (var textBrush = new SolidBrush(box.ForeColor))
-                    using (var borderBrush = new SolidBrush(theme.Palette.Button.Border))
+                    using (var borderBrush = new SolidBrush(this.theme.Palette.Button.Border))
                     using (var borderPen = new Pen(borderBrush))
                     {
                         var headerTextSize = e.Graphics.MeasureString(box.Text, box.Font);

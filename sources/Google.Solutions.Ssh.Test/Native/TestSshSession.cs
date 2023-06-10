@@ -309,7 +309,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.SOCKET_DISCONNECT,
-                    () => session.Connect(NonSshEndpoint));
+                    () => session.Connect(this.NonSshEndpoint));
             }
         }
     }
