@@ -26,7 +26,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     /// <summary>
     /// Adapter for external REST resources.

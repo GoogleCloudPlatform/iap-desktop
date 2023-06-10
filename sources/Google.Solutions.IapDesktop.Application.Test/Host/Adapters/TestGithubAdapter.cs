@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -30,7 +30,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
 {
     [TestFixture]
     public class TestGithubAdapter : ApplicationFixtureBase
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     "1.2.3.4",
                     null,
                     null,
-                    new System.Collections.Generic.List<GithubAdapter.ReleaseAsset>()
+                    new List<GithubAdapter.ReleaseAsset>()
                     {
                         new GithubAdapter.ReleaseAsset("http://example.com/test.txt")
                     }));
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     "1.2.3.4",
                     null,
                     null,
-                    new System.Collections.Generic.List<GithubAdapter.ReleaseAsset>()
+                    new List<GithubAdapter.ReleaseAsset>()
                     {
                         new GithubAdapter.ReleaseAsset("http://example.com/test.txt"),
                         new GithubAdapter.ReleaseAsset("http://example.com/download.msi")

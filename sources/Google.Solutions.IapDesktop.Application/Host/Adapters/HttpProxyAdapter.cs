@@ -32,7 +32,7 @@ using System.Security;
 
 #pragma warning disable CA1810 // Initialize reference type static fields inline
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public interface IHttpProxyAdapter
     {

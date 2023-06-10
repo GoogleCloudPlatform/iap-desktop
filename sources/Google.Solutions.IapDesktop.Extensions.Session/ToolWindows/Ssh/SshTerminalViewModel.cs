@@ -26,7 +26,7 @@ using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;

@@ -21,15 +21,14 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Host
 {
     public interface IUpdateService
     {

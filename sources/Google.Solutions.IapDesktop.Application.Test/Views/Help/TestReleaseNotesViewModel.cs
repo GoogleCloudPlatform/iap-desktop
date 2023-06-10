@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Help;
 using Moq;
 using NUnit.Framework;

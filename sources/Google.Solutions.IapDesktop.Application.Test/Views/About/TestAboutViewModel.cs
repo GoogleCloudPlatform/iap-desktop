@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.Testing.Application.Test;

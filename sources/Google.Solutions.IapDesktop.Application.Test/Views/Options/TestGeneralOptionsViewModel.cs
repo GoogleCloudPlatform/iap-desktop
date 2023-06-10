@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Application.Test;

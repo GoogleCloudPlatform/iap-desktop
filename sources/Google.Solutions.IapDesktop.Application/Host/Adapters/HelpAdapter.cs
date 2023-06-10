@@ -24,7 +24,7 @@ using Google.Solutions.Platform.Net;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public static class HelpTopics
     {

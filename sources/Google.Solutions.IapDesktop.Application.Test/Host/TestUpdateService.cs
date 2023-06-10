@@ -21,8 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -32,7 +31,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services
+namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
     [TestFixture]
     public class TestUpdateService : ApplicationFixtureBase

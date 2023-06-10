@@ -28,7 +28,7 @@ using System.Net;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public interface ICloudConsoleAdapter
     {

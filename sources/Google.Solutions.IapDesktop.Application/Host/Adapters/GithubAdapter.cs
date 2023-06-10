@@ -28,7 +28,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public interface IGithubAdapter
     {

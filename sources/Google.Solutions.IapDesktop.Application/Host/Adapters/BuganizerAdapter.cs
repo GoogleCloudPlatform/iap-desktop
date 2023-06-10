@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Platform.Net;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public class BuganizerAdapter
     {

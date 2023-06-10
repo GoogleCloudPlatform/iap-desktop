@@ -136,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\About.rtf" />
-    <None Include="Services\Adapters\README.md" />
     <EmbeddedResource Include="Theme\Resources\Dark.vstheme.gz" />
     <EmbeddedResource Include="Theme\Resources\Light.vstheme.gz" />
     <None Include="Theme\Resources\Dark.vstheme" />

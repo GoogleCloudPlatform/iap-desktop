@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using System;
 using System.Windows.Forms;
 
