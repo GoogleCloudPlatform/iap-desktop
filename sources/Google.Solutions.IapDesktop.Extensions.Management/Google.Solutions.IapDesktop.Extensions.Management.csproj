@@ -38,14 +38,14 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\ActiveDirectory\JoinView.cs">
+    <Compile Update="ToolWindows\ActiveDirectory\JoinView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Views\ActiveDirectory\JoinView.Designer.cs">
+    <Compile Update="ToolWindows\ActiveDirectory\JoinView.Designer.cs">
       <DependentUpon>JoinView.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\EventLog\EventLogView.cs" />
-    <Compile Update="Views\EventLog\EventLogView.Designer.cs">
+    <Compile Update="ToolWindows\EventLog\EventLogView.cs" />
+    <Compile Update="ToolWindows\EventLog\EventLogView.Designer.cs">
       <DependentUpon>EventLogView.cs</DependentUpon>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -53,19 +53,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\InstanceProperties\InstancePropertiesInspectorView.cs" />
-    <Compile Update="Views\PackageInventory\AvailablePackageInventoryView.cs" />
-    <Compile Update="Views\PackageInventory\InstalledPackageInventoryView.cs" />
-    <Compile Update="Views\PackageInventory\PackageInventoryViewBase.cs" />
-    <Compile Update="Views\PackageInventory\PackageInventoryViewBase.Designer.cs">
+    <Compile Update="ToolWindows\InstanceProperties\InstancePropertiesInspectorView.cs" />
+    <Compile Update="ToolWindows\PackageInventory\AvailablePackageInventoryView.cs" />
+    <Compile Update="ToolWindows\PackageInventory\InstalledPackageInventoryView.cs" />
+    <Compile Update="ToolWindows\PackageInventory\PackageInventoryViewBase.cs" />
+    <Compile Update="ToolWindows\PackageInventory\PackageInventoryViewBase.Designer.cs">
       <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </Compile>
-    <Compile Update="Views\PackageInventory\PackageList.cs">
+    <Compile Update="ToolWindows\PackageInventory\PackageList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Views\SerialOutput\SerialOutputWindowComX.cs" />
-    <Compile Update="Views\SerialOutput\SerialOutputViewBase.cs" />
-    <Compile Update="Views\SerialOutput\SerialOutputViewBase.Designer.cs">
+    <Compile Update="ToolWindows\SerialOutput\SerialOutputWindowComX.cs" />
+    <Compile Update="ToolWindows\SerialOutput\SerialOutputViewBase.cs" />
+    <Compile Update="ToolWindows\SerialOutput\SerialOutputViewBase.Designer.cs">
       <DependentUpon>SerialOutputViewBase.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -86,16 +86,16 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\ActiveDirectory\JoinView.resx">
+    <EmbeddedResource Update="ToolWindows\ActiveDirectory\JoinView.resx">
       <DependentUpon>JoinView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\EventLog\EventLogView.resx">
+    <EmbeddedResource Update="ToolWindows\EventLog\EventLogView.resx">
       <DependentUpon>EventLogView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\PackageInventory\PackageInventoryViewBase.resx">
+    <EmbeddedResource Update="ToolWindows\PackageInventory\PackageInventoryViewBase.resx">
       <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\SerialOutput\SerialOutputViewBase.resx">
+    <EmbeddedResource Update="ToolWindows\SerialOutput\SerialOutputViewBase.resx">
       <DependentUpon>SerialOutputViewBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

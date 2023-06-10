@@ -32,7 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using System;
 using System.Diagnostics;
 using System.Globalization;
