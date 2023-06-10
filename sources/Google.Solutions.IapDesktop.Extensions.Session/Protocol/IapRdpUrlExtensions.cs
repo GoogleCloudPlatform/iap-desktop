@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Data
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
     internal static class IapRdpUrlExtensions
     {
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Data
             }
             else
             {
-                value = default(TEnum);
+                value = default;
                 return false;
             }
         }
@@ -78,12 +78,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Data
             Action<RdpParameters, TEnum> apply)
             where TEnum : struct
         {
-            Precondition.ExpectNotNull(context, nameof(context));
-            Precondition.ExpectNotNull(url, nameof(url));
-            Precondition.ExpectNotNull(queryParameterName, nameof(queryParameterName));
-            Precondition.ExpectNotNull(apply, nameof(apply));
+            context.ExpectNotNull(nameof(context));
+            url.ExpectNotNull(nameof(url));
+            queryParameterName.ExpectNotNull(nameof(queryParameterName));
+            apply.ExpectNotNull(nameof(apply));
 
-            if (TryGetParameter<TEnum>(url, queryParameterName, out var value))
+            if (url.TryGetParameter<TEnum>(queryParameterName, out var value))
             {
                 apply(context, value);
             }

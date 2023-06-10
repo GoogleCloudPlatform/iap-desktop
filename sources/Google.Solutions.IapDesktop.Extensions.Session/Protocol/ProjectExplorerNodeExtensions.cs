@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Data
+namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
     internal static class ProjectExplorerNodeExtensions
     {
