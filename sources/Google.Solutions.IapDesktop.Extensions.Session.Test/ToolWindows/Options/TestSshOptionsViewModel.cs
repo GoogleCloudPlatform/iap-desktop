@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options;
 using Google.Solutions.Ssh.Auth;

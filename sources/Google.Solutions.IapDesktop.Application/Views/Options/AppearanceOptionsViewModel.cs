@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 

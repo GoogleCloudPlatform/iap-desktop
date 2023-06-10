@@ -20,8 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 

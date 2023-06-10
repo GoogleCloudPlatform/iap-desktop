@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using System;
 using System.ComponentModel;
 using System.Linq;

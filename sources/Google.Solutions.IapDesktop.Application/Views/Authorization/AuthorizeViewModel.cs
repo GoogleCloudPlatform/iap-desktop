@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 try
                 {
                     // Try to authorize using OAuth.
-                    var authorization = await Services.Auth.Authorization.TryLoadExistingAuthorizationAsync(
+                    var authorization = await Profile.Auth.Authorization.TryLoadExistingAuthorizationAsync(
                             CreateSignInAdapter(BrowserPreference.Default),
                             this.DeviceEnrollment,
                             CancellationToken.None)
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                         //
                         await this.TokenStore.ClearAsync();
 
-                        this.Authorization.Value = await Services.Auth.Authorization
+                        this.Authorization.Value = await Profile.Auth.Authorization
                             .CreateAuthorizationAsync(
                                 CreateSignInAdapter(browserPreference),
                                 this.DeviceEnrollment,

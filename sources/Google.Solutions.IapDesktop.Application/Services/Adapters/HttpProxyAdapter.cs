@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

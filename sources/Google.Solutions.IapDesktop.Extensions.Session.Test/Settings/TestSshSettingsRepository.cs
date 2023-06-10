@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;

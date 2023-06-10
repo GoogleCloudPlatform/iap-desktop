@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;

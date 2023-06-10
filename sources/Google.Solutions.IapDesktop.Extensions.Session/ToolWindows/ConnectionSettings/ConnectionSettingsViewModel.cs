@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Core.ObjectModel;

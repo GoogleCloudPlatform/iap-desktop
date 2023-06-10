@@ -19,8 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Diagnostics;
 

@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
