@@ -34,7 +34,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
     [TestFixture]
-    public class TestUpdateService : ApplicationFixtureBase
+    public class TestUpdateCheck : ApplicationFixtureBase
     {
         private static IClock CreateClock(DateTime dateTime)
         {
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var now = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 new Mock<ITaskDialog>().Object,
@@ -65,8 +65,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             Assert.IsFalse(updateService.IsUpdateCheckDue(now));
             Assert.IsFalse(updateService.IsUpdateCheckDue(now.AddYears(1)));
-            Assert.IsFalse(updateService.IsUpdateCheckDue(now.AddDays(-UpdateService.DaysBetweenUpdateChecks).AddMinutes(1)));
-            Assert.IsFalse(updateService.IsUpdateCheckDue(now.AddDays(-UpdateService.DaysBetweenUpdateChecks + 1)));
+            Assert.IsFalse(updateService.IsUpdateCheckDue(now.AddDays(-UpdateCheck.DaysBetweenUpdateChecks).AddMinutes(1)));
+            Assert.IsFalse(updateService.IsUpdateCheckDue(now.AddDays(-UpdateCheck.DaysBetweenUpdateChecks + 1)));
         }
 
         [Test]
@@ -74,14 +74,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var now = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
 
-            Assert.IsTrue(updateService.IsUpdateCheckDue(now.AddDays(-UpdateService.DaysBetweenUpdateChecks)));
-            Assert.IsTrue(updateService.IsUpdateCheckDue(now.AddDays(-UpdateService.DaysBetweenUpdateChecks - 1)));
+            Assert.IsTrue(updateService.IsUpdateCheckDue(now.AddDays(-UpdateCheck.DaysBetweenUpdateChecks)));
+            Assert.IsTrue(updateService.IsUpdateCheckDue(now.AddDays(-UpdateCheck.DaysBetweenUpdateChecks - 1)));
         }
 
         //---------------------------------------------------------------------
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var taskDialog = new Mock<ITaskDialog>();
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var taskDialog = new Mock<ITaskDialog>();
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenSameVersionAvailable_ThenCheckForUpdatesReturns()
         {
-            var installedVersion = new UpdateService(
+            var installedVersion = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 new Mock<ITaskDialog>().Object,
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var taskDialog = new Mock<ITaskDialog>();
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                     out f))
                 .Throws(new OperationCanceledException());
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                     out f))
                 .Returns(2);
 
-            var updateService = new UpdateService(
+            var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,

@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
-    public interface IUpdateService
+    public interface IUpdateCheck
     {
         Version InstalledVersion { get; }
 
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             out bool donotCheckForUpdatesAgain);
     }
 
-    public class UpdateService : IUpdateService
+    public class UpdateCheck : IUpdateCheck
     {
         /// <summary>
         /// Determines how often update checks are performed. 
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public Version InstalledVersion => this.install.CurrentVersion;
 
-        public UpdateService(
+        public UpdateCheck(
             IInstall install,
             IGithubAdapter githubAdapter,
             ITaskDialog taskDialog,

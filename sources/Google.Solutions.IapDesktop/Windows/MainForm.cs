@@ -388,7 +388,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             var settings = this.applicationSettings.GetSettings();
 
-            var updateService = this.serviceProvider.GetService<IUpdateService>();
+            var updateService = this.serviceProvider.GetService<IUpdateCheck>();
             if (settings.IsUpdateCheckEnabled.BoolValue &&
                 updateService.IsUpdateCheckDue(DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
             {

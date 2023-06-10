@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.About
         [Test]
         public void Information()
         {
-            var updateService = new Mock<IUpdateService>();
+            var updateService = new Mock<IUpdateCheck>();
             updateService
                 .SetupGet(s => s.InstalledVersion)
                 .Returns(new Version(1, 2, 3, 4));
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.About
         public void LicenseText()
         {
             var viewModel = new AboutViewModel(
-                new Mock<IUpdateService>().Object,
+                new Mock<IUpdateCheck>().Object,
                 new Mock<IThemeService>().Object);
 
             Assert.IsNotNull(viewModel.LicenseText);

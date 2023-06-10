@@ -482,7 +482,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
-                mainLayer.AddTransient<IUpdateService, UpdateService>();
+                mainLayer.AddTransient<IUpdateCheck, UpdateCheck>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 

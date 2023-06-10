@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
     public class AboutViewModel : ViewModelBase
     {
         public AboutViewModel(
-            IUpdateService updateService,
+            IUpdateCheck updateService,
             IThemeService themeService)
         {
             this.Information = $"IAP Desktop\n" +
