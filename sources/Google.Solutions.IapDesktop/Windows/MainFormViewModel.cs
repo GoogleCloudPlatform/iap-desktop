@@ -24,7 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;

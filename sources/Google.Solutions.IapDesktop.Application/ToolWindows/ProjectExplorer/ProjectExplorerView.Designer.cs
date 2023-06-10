@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
 {
     partial class ProjectExplorerView
     {
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.windowsInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linuxInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.treeView = new Google.Solutions.IapDesktop.Application.Views.ProjectExplorer.ProjectExplorerView.NodeTreeView();
+            this.treeView = new Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer.ProjectExplorerView.NodeTreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.searchTextBox = new System.Windows.Forms.TextBox();

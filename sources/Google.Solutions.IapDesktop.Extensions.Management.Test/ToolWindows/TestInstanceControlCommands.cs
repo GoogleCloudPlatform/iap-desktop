@@ -21,8 +21,8 @@
 
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows;
 using Google.Solutions.Mvvm.Binding.Commands;

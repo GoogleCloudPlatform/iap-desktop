@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;

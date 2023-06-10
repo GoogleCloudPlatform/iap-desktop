@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;

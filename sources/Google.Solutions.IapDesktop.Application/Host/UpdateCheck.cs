@@ -22,7 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using System;
 using System.Diagnostics;
 using System.Threading;

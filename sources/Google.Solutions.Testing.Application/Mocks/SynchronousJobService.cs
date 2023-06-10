@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

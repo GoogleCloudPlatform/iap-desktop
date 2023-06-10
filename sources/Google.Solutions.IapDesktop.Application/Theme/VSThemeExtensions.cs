@@ -18,7 +18,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Diagnostics;

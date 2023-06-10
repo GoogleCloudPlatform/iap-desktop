@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;

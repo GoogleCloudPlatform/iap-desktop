@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;

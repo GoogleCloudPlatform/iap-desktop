@@ -27,7 +27,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;

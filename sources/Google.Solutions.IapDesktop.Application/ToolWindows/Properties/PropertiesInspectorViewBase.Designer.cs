@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 {
     partial class PropertiesInspectorViewBase
     {

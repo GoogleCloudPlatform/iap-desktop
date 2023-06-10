@@ -25,8 +25,8 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows.ProjectPicker;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -42,7 +42,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
 {
     [ComVisible(false)]
     [SkipCodeCoverage("Logic is in view model")]

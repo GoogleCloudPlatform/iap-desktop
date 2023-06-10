@@ -26,7 +26,7 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;

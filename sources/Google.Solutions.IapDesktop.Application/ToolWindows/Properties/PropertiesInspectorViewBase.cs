@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 {
     [SkipCodeCoverage("All logic in view model")]
     public abstract partial class PropertiesInspectorViewBase

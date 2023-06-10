@@ -141,7 +141,6 @@
     <None Include="Theme\Resources\Dark.vstheme" />
     <None Include="Theme\Resources\Light.vstheme" />
     <None Include="Theme\Resources\README.md" />
-    <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

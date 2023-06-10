@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp;
