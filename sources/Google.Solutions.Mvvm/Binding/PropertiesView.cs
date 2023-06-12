@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using System.Drawing;
 using System.Windows.Forms;
@@ -28,7 +29,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Binding
 {
     [SkipCodeCoverage("UI code")]
-    public partial class PropertiesView : Form, IThemedView<PropertiesViewModel>
+    public partial class PropertiesView : CompositeForm, IThemedView<PropertiesViewModel>
     {
         public IControlTheme Theme { get; set; }
 

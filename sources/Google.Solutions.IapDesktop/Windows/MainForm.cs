@@ -40,6 +40,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Shell;
 using System;
@@ -57,7 +58,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost, IMainWindow
+    public partial class MainForm : CompositeForm, IJobHost, IMainWindow
     {
         //
         // Calculate minimum size so that it's a quarter of a 1080p screen,
