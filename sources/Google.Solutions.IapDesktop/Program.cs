@@ -53,6 +53,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Platform;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Dispatch;
@@ -535,12 +536,13 @@ namespace Google.Solutions.IapDesktop
                     this.initializedMainForm = null;
                 };
 
+                MessageThrottle.Install();
+
                 //
                 // Replace the standard WinForms exception dialog.
                 //
                 System.Windows.Forms.Application.ThreadException += (_, exArgs)
                     => ShowFatalError(exArgs.Exception);
-
 
                 mainForm.Shown += (_, __) =>
                 {
@@ -552,6 +554,7 @@ namespace Google.Solutions.IapDesktop
                     //
                     TrySetForegroundWindow(Process.GetCurrentProcess().Id);
                 };
+
                 //
                 // Show the main window.
                 //
@@ -647,6 +650,39 @@ namespace Google.Solutions.IapDesktop
                     WindowStyle = ProcessWindowStyle.Normal
                 };
                 process.Start();
+            }
+        }
+
+        /// <summary>
+        /// Debug only: Throttles window messages by introducing a sleep
+        /// between each message.
+        /// 
+        /// Can be enabled and disabled by pressing F12.
+        /// </summary>
+        private class MessageThrottle : IMessageFilter
+        {
+            public bool IsEnabled { get; private set; } = false;
+
+            public bool PreFilterMessage(ref Message m)
+            {
+                if ((WindowMessage)m.Msg == WindowMessage.WM_KEYDOWN &&
+                    (Keys)m.WParam.ToInt32() == Keys.F12)
+                {
+                    this.IsEnabled = !this.IsEnabled;
+                }
+
+                if (this.IsEnabled)
+                {
+                    Thread.Sleep(100);
+                }
+
+                return false;
+            }
+
+            [Conditional("DEBUG")]
+            public static void Install()
+            {
+                System.Windows.Forms.Application.AddMessageFilter(new MessageThrottle());
             }
         }
     }
