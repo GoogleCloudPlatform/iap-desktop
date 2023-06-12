@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
 {
     [SkipCodeCoverage("UI code")]
     [Service]
-    public partial class AboutView : Form, IView<AboutViewModel>
+    public partial class AboutView : CompositeForm, IView<AboutViewModel>
     {
 
         public static Version ProgramVersion => typeof(AboutView).Assembly.GetName().Version;
