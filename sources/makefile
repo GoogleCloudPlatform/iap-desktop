@@ -134,7 +134,7 @@ $(INSTALLER_PACKAGE).wixobj: \
 		-nologo \
 		-out $(INSTALLER_PACKAGE).wixobj \
 		-dCONFIGURATION=$(CONFIGURATION) \
-        -dPLATFORM=$(PLATFORM) \
+		-dPLATFORM=$(PLATFORM) \
 		-dVERSION=$(BINARY_VERSION) \
 		-dBASEDIR=$(MAKEDIR)\installer \
 		-arch x86 \
@@ -148,15 +148,15 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 
 !if ( "$(CODESIGN)" != "" ) 
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\libssh2.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\vtnetcore.dll
-    signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\WeifenLuo.WinFormsUI.Docking*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*Interop*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\IapDesktop.exe
-    
-    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.exe
-    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\Google.*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\libssh2.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\vtnetcore.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*Interop*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\IapDesktop.exe
+	
+	signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.exe
+	signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.dll
 !endif
 
 	light \
