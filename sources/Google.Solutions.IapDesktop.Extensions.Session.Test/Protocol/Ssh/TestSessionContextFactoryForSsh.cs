@@ -22,9 +22,9 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 hkcu.CreateSubKey(@"Software\Google\__Test"),
                 null,
                 null,
-                Profile.SchemaVersion.Current);
+                UserProfile.SchemaVersion.Current);
         }
 
         private Mock<IKeyStoreAdapter> CreateKeyStoreAdapterMock()

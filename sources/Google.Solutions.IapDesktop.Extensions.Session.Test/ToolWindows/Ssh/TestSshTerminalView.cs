@@ -24,11 +24,10 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
@@ -173,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null,
-                Profile.SchemaVersion.Current));
+                UserProfile.SchemaVersion.Current));
         }
 
         public static async Task CompleteBackgroundWorkAsync()

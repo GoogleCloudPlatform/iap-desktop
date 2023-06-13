@@ -32,20 +32,20 @@ using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.IapDesktop.Application.Profile.Auth;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.About;
-using Google.Solutions.IapDesktop.Application.Views.Authorization;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Application.Views.Help;
-using Google.Solutions.IapDesktop.Application.Views.Options;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
+using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.About;
+using Google.Solutions.IapDesktop.Application.Windows.Authorization;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows.Help;
+using Google.Solutions.IapDesktop.Application.Windows.Options;
+using Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Windows.ProjectPicker;
 using Google.Solutions.IapDesktop.Core;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -156,11 +156,11 @@ namespace Google.Solutions.IapDesktop
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 
-        private static Profile LoadProfileOrExit(Install install, CommandLineOptions options)
+        private static UserProfile LoadProfileOrExit(Install install, CommandLineOptions options)
         {
             try
             {
-                return Profile.OpenProfile(install, options.Profile);
+                return UserProfile.OpenProfile(install, options.Profile);
             }
             catch (Exception e)
             {
@@ -482,7 +482,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
-                mainLayer.AddTransient<IUpdateService, UpdateService>();
+                mainLayer.AddTransient<IUpdateCheck, UpdateCheck>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 

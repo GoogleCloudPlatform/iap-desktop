@@ -22,8 +22,9 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         private readonly IThemeService themeService;
         private readonly IInstall install;
-        private readonly Profile profile;
+        private readonly UserProfile profile;
         private readonly IAuthorization authorization;
 
         // NB. This list is only access from the UI thread, so no locking required.
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public MainFormViewModel(
             Control view,
             IInstall install,
-            Profile profile,
+            UserProfile profile,
             IAuthorization authorization,
             IThemeService themeService)
         {
@@ -197,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IEnumerable<string> AlternativeProfileNames
         {
-            get => Profile
+            get => UserProfile
                 .ListProfiles(this.install)
                 .Where(name => name != this.profile.Name);
         }
@@ -264,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             Program.LaunchNewInstance(new CommandLineOptions()
             {
-                Profile = profileName != Profile.DefaultProfileName
+                Profile = profileName != UserProfile.DefaultProfileName
                     ? profileName
                     : null
             });

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Theme;

@@ -23,20 +23,20 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.About;
-using Google.Solutions.IapDesktop.Application.Views.Authorization;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Application.Views.Help;
-using Google.Solutions.IapDesktop.Application.Views.Options;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.About;
+using Google.Solutions.IapDesktop.Application.Windows.Authorization;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.IapDesktop.Application.Windows.Help;
+using Google.Solutions.IapDesktop.Application.Windows.Options;
+using Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewModel = new MainFormViewModel(
                 this,
                 this.serviceProvider.GetService<IInstall>(),
-                this.serviceProvider.GetService<Profile>(),
+                this.serviceProvider.GetService<UserProfile>(),
                 this.serviceProvider.GetService<IAuthorization>(),
                 this.themeService);
 
@@ -388,7 +388,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             var settings = this.applicationSettings.GetSettings();
 
-            var updateService = this.serviceProvider.GetService<IUpdateService>();
+            var updateService = this.serviceProvider.GetService<IUpdateCheck>();
             if (settings.IsUpdateCheckEnabled.BoolValue &&
                 updateService.IsUpdateCheckDue(DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
             {
@@ -422,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void MainForm_Shown(object sender, EventArgs __)
         {
-            var profile = this.serviceProvider.GetService<Profile>();
+            var profile = this.serviceProvider.GetService<UserProfile>();
             if (!profile.IsDefault)
             {
                 //
@@ -662,7 +662,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 await this.viewModel.RevokeAuthorizationAsync().ConfigureAwait(true);
 
-                var profile = this.serviceProvider.GetService<Profile>();
+                var profile = this.serviceProvider.GetService<UserProfile>();
                 if (!profile.IsDefault)
                 {
                     if (this.serviceProvider
@@ -685,7 +685,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         // selection, we couldn't know for sure that the profile
                         // isn't currently being used by another instance.
                         //
-                        Profile.DeleteProfile(
+                        UserProfile.DeleteProfile(
                             this.serviceProvider.GetService<IInstall>(),
                             profile.Name);
 
@@ -839,7 +839,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
-                        using (var profile = Profile.CreateProfile(
+                        using (var profile = UserProfile.CreateProfile(
                             this.serviceProvider.GetService<IInstall>(),
                             dialog.ViewModel.ProfileName))
                         {

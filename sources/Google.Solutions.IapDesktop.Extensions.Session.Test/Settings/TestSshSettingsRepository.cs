@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.IsPropagateLocaleEnabled.BoolValue = false;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
                 Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Initial);
+                    UserProfile.SchemaVersion.Initial);
 
                 var settings = repository.GetSettings();
 
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Version229);
+                    UserProfile.SchemaVersion.Version229);
 
                 var settings = repository.GetSettings();
 
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.PublicKeyType.Reset();
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     machinePolicyKey,
                     userPolicyKey,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
                 userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     machinePolicyKey,
                     userPolicyKey,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
                 machinePolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     machinePolicyKey,
                     userPolicyKey,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
                 userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
                 Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     null,
                     null,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.PublicKeyValidity.Reset();
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     machinePolicyKey,
                     userPolicyKey,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyValidity", 60);
                 userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     machinePolicyKey,
                     userPolicyKey,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyValidity", 60);
                 machinePolicyKey.SetValue("PublicKeyValidity", 3 * 60);
@@ -311,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     settingsKey,
                     machinePolicyKey,
                     userPolicyKey,
-                    Profile.SchemaVersion.Current);
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyValidity", 60);
                 userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);

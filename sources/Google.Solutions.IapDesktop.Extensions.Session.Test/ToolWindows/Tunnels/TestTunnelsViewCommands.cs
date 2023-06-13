@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;

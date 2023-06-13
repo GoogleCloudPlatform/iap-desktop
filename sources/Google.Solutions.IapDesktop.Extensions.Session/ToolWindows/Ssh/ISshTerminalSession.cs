@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Windows;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
