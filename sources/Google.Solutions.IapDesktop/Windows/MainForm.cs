@@ -58,7 +58,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : CompositeForm, IJobHost, IMainWindow
+    public partial class MainForm : Form, IJobHost, IMainWindow
     {
         //
         // Calculate minimum size so that it's a quarter of a 1080p screen,
