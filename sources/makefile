@@ -23,7 +23,7 @@
 # Basic configuration
 #------------------------------------------------------------------------------
 
-PRODUCT_VERSION = 2.36
+PRODUCT_VERSION = 2.37
 CONFIGURATION = Release
 PLATFORM = x86
 TARGET_FRAMEWORK = net462
