@@ -26,7 +26,7 @@ using System.Drawing;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
-    public class TestTerminalFont : ShellFixtureBase
+    public class TestTerminalFont
     {
         //---------------------------------------------------------------------
         // NextLargerFont.

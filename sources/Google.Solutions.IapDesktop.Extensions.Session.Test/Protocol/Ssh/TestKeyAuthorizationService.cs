@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestKeyAuthorizationService : ShellFixtureBase
+    public class TestKeyAuthorizationService
     {
         private const string SampleEmailAddress = "bob@example.com";
         private static readonly InstanceLocator SampleLocator

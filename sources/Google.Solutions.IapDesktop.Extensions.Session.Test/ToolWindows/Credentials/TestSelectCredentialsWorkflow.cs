@@ -37,7 +37,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Credentials
 {
     [TestFixture]
-    public class TestSelectCredentialsWorkflow : ShellFixtureBase
+    public class TestSelectCredentialsWorkflow
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 

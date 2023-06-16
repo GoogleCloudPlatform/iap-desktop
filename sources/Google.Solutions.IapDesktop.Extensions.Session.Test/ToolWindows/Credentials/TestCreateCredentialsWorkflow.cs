@@ -39,7 +39,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Credentials
 {
     [TestFixture]
-    public class TestCreateCredentialsWorkflow : ShellFixtureBase
+    public class TestCreateCredentialsWorkflow
     {
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");

@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
     [TestFixture]
     [UsesCloudResources]
     [Apartment(ApartmentState.STA)]
-    public class TestSshTerminalPaneViewModel : ShellFixtureBase
+    public class TestSshTerminalPaneViewModel
     {
         private Mock<IEventQueue> eventService;
         private Mock<IConfirmationDialog> confirmationDialog;

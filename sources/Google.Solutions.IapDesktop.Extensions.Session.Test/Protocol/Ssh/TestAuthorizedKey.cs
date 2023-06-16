@@ -29,7 +29,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestAuthorizedKey : ShellFixtureBase
+    public class TestAuthorizedKey
     {
         //---------------------------------------------------------------------
         // Metadata with preferred username.

@@ -31,7 +31,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnels
 {
     [TestFixture]
-    public class TestTunnelsViewModel : ShellFixtureBase
+    public class TestTunnelsViewModel
     {
         private static Mock<IIapTunnel> CreateTunnel(string instanceName)
         {
