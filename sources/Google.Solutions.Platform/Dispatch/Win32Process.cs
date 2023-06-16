@@ -212,6 +212,11 @@ namespace Google.Solutions.Platform.Dispatch
 
         public async Task<bool> CloseAsync(TimeSpan timeout)
         {
+            if (!this.IsRunning)
+            {
+                return true;
+            }
+
             //
             // Attempt to gracefully close the process by sending a WM_CLOSE message.
             //

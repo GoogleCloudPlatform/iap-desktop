@@ -237,6 +237,25 @@ namespace Google.Solutions.Platform.Test.Dispatch
             }
         }
 
+        [Test]
+        public async Task WhenProcessTerminated_ThenCloseReturnsTrue()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                NotepadExe,
+                null))
+            {
+                process.Terminate(0);
+
+
+                var terminatedGracefully = await process
+                    .CloseAsync(TimeSpan.FromSeconds(10))
+                    .ConfigureAwait(false);
+                Assert.IsTrue(terminatedGracefully);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Wait.
         //---------------------------------------------------------------------
