@@ -69,27 +69,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
+            //
+            // NB. The order determines the default order in the propertg grid.
+            //
+            this.RdpTransport,
+            this.RdpConnectionTimeout,
+            this.RdpPort,
+            
             this.RdpUsername,
             this.RdpPassword,
             this.RdpDomain,
-            this.RdpConnectionBar,
-            this.RdpDesktopSize,
-            this.RdpAuthenticationLevel,
-            this.RdpColorDepth,
-            this.RdpAudioMode,
-            this.RdpUserAuthenticationBehavior,
+
             this.RdpBitmapPersistence,
-            this.RdpNetworkLevelAuthentication,
-            this.RdpConnectionTimeout,
-            this.RdpPort,
-            this.RdpTransport,
+            this.RdpColorDepth,
+            this.RdpDesktopSize,
+            this.RdpConnectionBar,
+
+            this.RdpAudioMode,
+            this.RdpHookWindowsKeys,
             this.RdpRedirectClipboard,
             this.RdpRedirectPrinter,
             this.RdpRedirectSmartCard,
             this.RdpRedirectPort,
             this.RdpRedirectDrive,
             this.RdpRedirectDevice,
-            this.RdpHookWindowsKeys
+
+            this.RdpUserAuthenticationBehavior,
+            this.RdpNetworkLevelAuthentication,
+            this.RdpAuthenticationLevel,
         };
 
         internal bool IsRdpSetting(ISetting setting) => this.RdpSettings.Contains(setting);
@@ -105,10 +112,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
-            this.SshPort,
+            //
+            // NB. The order determines the default order in the propertg grid.
+            //
             this.SshTransport,
+            this.SshConnectionTimeout,
+            this.SshPort,
             this.SshUsername,
-            this.SshConnectionTimeout
         };
 
         internal bool IsSshSetting(ISetting setting) => this.SshSettings.Contains(setting);
@@ -123,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             public const string RdpConnection = "Remote Desktop Connection";
             public const string RdpDisplay = "Remote Desktop Display";
             public const string RdpResources = "Remote Desktop Resources";
-            public const string RdpAdvanced = "Remote Desktop Security Settings";
+            public const string RdpSecurity = "Remote Desktop Security Settings";
 
             public const string SshConnection = "SSH Connection";
             public const string SshCredentials = "SSH Credentials";
@@ -177,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "AuthenticationLevel",
                 "Server authentication",
                 "Require server authentication when connecting.",
-                Categories.RdpAdvanced,
+                Categories.RdpSecurity,
                 Protocol.Rdp.RdpAuthenticationLevel._Default,
                 key);
             this.RdpColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
@@ -205,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "BitmapPersistence",
                 "Bitmap caching",
                 "Use persistent bitmap cache. Enabling caching substantially increases memory usage.",
-                Categories.RdpResources,
+                Categories.RdpDisplay,
                 Protocol.Rdp.RdpBitmapPersistence._Default,
                 key);
             this.RdpNetworkLevelAuthentication = RegistryEnumSetting<RdpNetworkLevelAuthentication>.FromKey(
@@ -214,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Secure connection using network level authentication (NLA). " +
                     "Disable NLA only if the server uses a custom credential service provider." +
                     "Disabling NLA automatically enables server authentication.",
-                Categories.RdpAdvanced,
+                Categories.RdpSecurity,
                 Protocol.Rdp.RdpNetworkLevelAuthentication._Default,
                 key);
             this.RdpConnectionTimeout = RegistryDwordSetting.FromKey(
@@ -290,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "RdpHookWindowsKeys",
                 "Enable Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
-                Categories.RdpAdvanced,
+                Categories.RdpResources,
                 Protocol.Rdp.RdpHookWindowsKeys._Default,
                 key);
 
