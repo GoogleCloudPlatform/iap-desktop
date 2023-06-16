@@ -56,6 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
+
+            if (contextFactory.Protocol.Client is IWindowsAppClient appClient &&
+                appClient.Icon != null)
+            {
+                this.Image = appClient.Icon;
+            }
         }
 
         internal async Task<AppProtocolContext> CreateContextAsync(

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
@@ -27,19 +28,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     {
         private readonly Ssms ssms; // null if not found.
 
+        internal SsmsClient(
+            Ssms ssms, 
+            string name, 
+            NetworkCredentialType requiredCredential)
+        {
+            this.ssms = ssms;
+            this.Name = name;
+            this.RequiredCredential = requiredCredential;
+        }
+
         public SsmsClient(
             string name,
             NetworkCredentialType credentialType)
+            : this(TryFindSsms(), name, credentialType)
+        { }
+
+        private static Ssms TryFindSsms()
         {
-            this.Name = name;
-            this.RequiredCredential = credentialType;
-            Ssms.TryFind(out this.ssms);
+            Ssms.TryFind(out var ssms);
+            return ssms;
         }
 
         //---------------------------------------------------------------------
         // IWindowsAppClient.
         //---------------------------------------------------------------------
+
         public string Name { get; }
+
+        public Image Icon => this.ssms?.Icon;
 
         public NetworkCredentialType RequiredCredential { get; }
 

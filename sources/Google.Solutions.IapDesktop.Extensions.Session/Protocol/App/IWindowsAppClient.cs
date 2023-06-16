@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
@@ -32,6 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         /// Name of application.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Application icon, if available
+        /// </summary>
+        Image Icon { get; }
 
         /// <summary>
         /// Required type of network credential.
