@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             public const string RdpConnection = "Remote Desktop Connection";
             public const string RdpDisplay = "Remote Desktop Display";
             public const string RdpResources = "Remote Desktop Resources";
-            public const string RdpAdvanced = "Remote Desktop Specialist Settings";
+            public const string RdpAdvanced = "Remote Desktop Security Settings";
 
             public const string SshConnection = "SSH Connection";
             public const string SshCredentials = "SSH Credentials";
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "BitmapPersistence",
                 "Bitmap caching",
                 "Use persistent bitmap cache. Enabling caching substantially increases memory usage.",
-                Categories.RdpAdvanced,
+                Categories.RdpResources,
                 Protocol.Rdp.RdpBitmapPersistence._Default,
                 key);
             this.RdpNetworkLevelAuthentication = RegistryEnumSetting<RdpNetworkLevelAuthentication>.FromKey(
@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Connection timeout",
                 "Timeout for establishing a Remote Desktop connection, in seconds. " +
                     "Use a timeout that allows sufficient time for credential prompts.",
-                Categories.RdpAdvanced,
+                Categories.RdpConnection,
                 (int)RdpParameters.DefaultConnectionTimeout.TotalSeconds,
                 key,
                 0, 300);
@@ -326,10 +326,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                             AuthorizedKeyPair.IsValidUsername(username));
             this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
                 "SshConnectionTimeout",
-                null, // Hidden.
-                null, // Hidden.
-                null, // Hidden.
-                (int)RdpParameters.DefaultConnectionTimeout.TotalSeconds,
+                "Connection timeout",
+                "Timeout for establishing SSH connections, in seconds.",
+                Categories.SshConnection,
+                (int)SshParameters.DefaultConnectionTimeout.TotalSeconds,
                 key,
                 0, 300);
 
