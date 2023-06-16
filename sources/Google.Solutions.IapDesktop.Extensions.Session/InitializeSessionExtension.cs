@@ -168,9 +168,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             //
             var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
-                serviceProvider.GetService<Service<ISessionContextFactory>>(),
-                serviceProvider.GetService<Service<IProjectWorkspace>>(),
-                serviceProvider.GetService<Service<IInstanceSessionBroker>>());
+                serviceProvider.GetService<ISessionContextFactory>(),
+                serviceProvider.GetService<IProjectWorkspace>(),
+                serviceProvider.GetService<IInstanceSessionBroker>());
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(

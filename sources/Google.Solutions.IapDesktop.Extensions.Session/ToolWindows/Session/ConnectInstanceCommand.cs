@@ -38,9 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     /// </summary>
     internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
-        private readonly Service<ISessionContextFactory> sessionContextFactory;
-        private readonly Service<IInstanceSessionBroker> sessionBroker;
-        private readonly Service<IProjectWorkspace> workspace;
+        private readonly ISessionContextFactory sessionContextFactory;
+        private readonly IInstanceSessionBroker sessionBroker;
+        private readonly IProjectWorkspace workspace;
 
         public bool AvailableForSsh { get; set; } = false;
         public bool AvailableForRdp { get; set; } = false;
@@ -49,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public ConnectInstanceCommand(
             string text,
-            Service<ISessionContextFactory> sessionContextFactory,
-            Service<IInstanceSessionBroker> sessionBroker,
-            Service<IProjectWorkspace> workspace)
+            ISessionContextFactory sessionContextFactory,
+            IInstanceSessionBroker sessionBroker,
+            IProjectWorkspace workspace)
             : base(text)
         {
             this.sessionContextFactory = sessionContextFactory;
@@ -85,7 +85,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Select node so that tracking windows are updated.
             //
             await this.workspace
-                .GetInstance()
                 .SetActiveNodeAsync(
                     node,
                     CancellationToken.None)
@@ -94,9 +93,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             //
             // Try to activate existing session, if any.
             //
-            if (!this.ForceNewConnection && this.sessionBroker
-                .GetInstance()
-                .TryActivate(instanceNode.Instance, out session))
+            if (!this.ForceNewConnection && 
+                this.sessionBroker.TryActivate(instanceNode.Instance, out session))
             {
                 //
                 // There is an existing session, and it's now active.
@@ -114,7 +112,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             if (instanceNode.IsRdpSupported())
             {
                 var context = await this.sessionContextFactory
-                    .GetInstance()
                     .CreateRdpSessionContextAsync(
                         instanceNode,
                         this.Flags,
@@ -127,7 +124,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 try
                 {
                     session = await this.sessionBroker
-                        .GetInstance()
                         .CreateSessionAsync(context)
                         .ConfigureAwait(true);
                 }
@@ -140,14 +136,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             else if (instanceNode.IsSshSupported())
             {
                 var context = await this.sessionContextFactory
-                    .GetInstance()
                     .CreateSshSessionContextAsync(instanceNode, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 try
                 {
                     session = await this.sessionBroker
-                        .GetInstance()
                         .CreateSessionAsync(context)
                         .ConfigureAwait(true);
                 }

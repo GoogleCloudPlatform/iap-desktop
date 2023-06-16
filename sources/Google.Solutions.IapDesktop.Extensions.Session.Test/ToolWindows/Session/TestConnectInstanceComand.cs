@@ -49,16 +49,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             Mock<IInstanceSessionBroker> sessionBroker,
             Mock<IProjectWorkspace> workspace)
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Add(sessionContextFactory.Object);
-            serviceProvider.Add(sessionBroker.Object);
-            serviceProvider.Add(workspace.Object);
-
             return new ConnectInstanceCommand(
                 "&test",
-                new Service<ISessionContextFactory>(serviceProvider.Object),
-                new Service<IInstanceSessionBroker>(serviceProvider.Object),
-                new Service<IProjectWorkspace>(serviceProvider.Object))
+                sessionContextFactory.Object,
+                sessionBroker.Object,
+                workspace.Object)
             {
                 AvailableForRdp = true,
                 AvailableForSsh = true

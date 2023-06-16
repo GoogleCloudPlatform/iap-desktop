@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
         protected override bool IsAvailable(IProjectModelNode context)
         {
-            return context is IProjectModelInstanceNode instance;
+            return context is IProjectModelInstanceNode;
         }
 
         protected override bool IsEnabled(IProjectModelNode context)
