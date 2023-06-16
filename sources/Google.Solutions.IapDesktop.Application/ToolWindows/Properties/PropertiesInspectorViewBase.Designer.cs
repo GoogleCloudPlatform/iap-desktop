@@ -52,13 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertiesInspectorViewBase));
-            this.panel = new NotificationBarPanel();
+            this.panel = new Google.Solutions.Mvvm.Controls.NotificationBarPanel();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.panel)).BeginInit();
-            this.panel.Panel1.SuspendLayout();
             this.panel.Panel2.SuspendLayout();
             this.panel.SuspendLayout();
             this.contextMenu.SuspendLayout();
@@ -66,14 +64,15 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             // 
             // panel
             // 
-            this.panel.Name = "splitContainer";
+            this.panel.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.panel.Name = "panel";
+            this.panel.NotificationBarBackColor = System.Drawing.SystemColors.Info;
+            this.panel.NotificationBarForeColor = System.Drawing.SystemColors.InfoText;
             // 
-            // splitContainer.Panel1
-            // 
-            // 
-            // splitContainer.Panel2
+            // panel.Panel2
             // 
             this.panel.Panel2.Controls.Add(this.propertyGrid);
+            this.panel.Size = new System.Drawing.Size(800, 450);
             this.panel.TabIndex = 0;
             // 
             // propertyGrid
@@ -82,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
             this.propertyGrid.Size = new System.Drawing.Size(800, 450);
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
@@ -109,8 +109,6 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             this.Controls.Add(this.panel);
             this.Name = "PropertiesInspectorViewBase";
             this.Text = "Properties";
-            this.panel.Panel1.ResumeLayout(false);
-            this.panel.Panel1.PerformLayout();
             this.panel.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panel)).EndInit();
             this.panel.ResumeLayout(false);
