@@ -22,7 +22,9 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.Mvvm.Shell;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -38,10 +40,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         private const string SsmsFileExtension = ".ssmssln";
 
         public string ExecutablePath { get; }
+        public Image Icon { get; }
 
         private Ssms(string executablePath)
         {
             this.ExecutablePath = executablePath;
+
+            //
+            // Try to extract the icon from the EXE file.
+            //
+            try
+            {
+                this.Icon = FileType
+                    .Lookup(executablePath, FileAttributes.Normal, FileType.IconFlags.None)
+                    .FileIcon;
+            }
+            catch
+            { }
         }
 
         //---------------------------------------------------------------------
