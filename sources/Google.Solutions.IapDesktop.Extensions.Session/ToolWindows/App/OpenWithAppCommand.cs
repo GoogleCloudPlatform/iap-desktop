@@ -20,6 +20,7 @@
 //
 
 
+using Google.Solutions.Platform.Net;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -28,9 +29,12 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
     internal class OpenWithAppCommand : MenuCommandBase<IProjectModelNode>
@@ -87,21 +91,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 //
                 // Prompt for network credentials.
                 //
-                if (this.credentialDialog.PromptForWindowsCredentials(
-                    this.ownerWindow,
-                    this.contextFactory.Protocol.Name,
-                    $"Enter credentials for {instance.DisplayName}",
-                    AuthenticationPackage.Any,
-                    out var credential) != DialogResult.OK)
+                var promptDetails = string.Empty;
+
+                while (true)
                 {
-                    //
-                    // Cancelled.
-                    //
-                    throw new TaskCanceledException();
+                    if (this.credentialDialog.PromptForWindowsCredentials(
+                        this.ownerWindow,
+                        $"Connect to {instance.DisplayName}",
+                        $"Enter your Windows username and password for {instance.DisplayName}" 
+                            + promptDetails,
+                        AuthenticationPackage.Any,
+                        out var credential) != DialogResult.OK)
+                    {
+                        //
+                        // Cancelled.
+                        //
+                        throw new TaskCanceledException();
+                    }
+
+                    Debug.Assert(credential != null);
+
+                    if (!IsProbablyCurrentUser(credential) &&
+                        IsCredentialForSameDomain(credential))
+                    {
+                        //
+                        // We can't use credentials for the same domain;
+                        // Windows would silently ignore those and use the
+                        // user's current credentials instead.
+                        //
+                        promptDetails = 
+                            $"\n\nThe user {credential.UserName} can't be used because " +
+                            $"it's a member of the same domain as you are. Enter a " +
+                            $"username and password for a different domain or press " +
+                            $"Cancel to use your current Windows " +
+                            $"credentials ({Environment.UserName}).";
+                    }
+                    else
+                    {
+                        context.NetworkCredential = credential;
+                        break;
+                    }
                 }
 
-                Debug.Assert(credential != null);
-                context.NetworkCredential = credential;
             }
             else if (requiredCredential == NetworkCredentialType.Default)
             {
@@ -109,6 +140,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             }
 
             return context;
+        }
+
+        internal bool IsProbablyCurrentUser(NetworkCredential credential)
+        {
+            //
+            // NB. This is not an exhaustive check as the user's
+            // UPN might be different from what Environment.UserName
+            // reports.
+            //
+            return string.Equals(
+                Environment.UserName,
+                credential.UserName,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        internal static bool IsCredentialForSameDomain(NetworkCredential credential)
+        {
+            return string.Equals(
+                credential.IsUpnFormat()
+                    ? Environment.GetEnvironmentVariable("USERDNSDOMAIN")
+                    : Environment.GetEnvironmentVariable("USERDOMAIN"),
+                credential.GetDomainComponent(),
+                StringComparison.OrdinalIgnoreCase);
         }
 
         //---------------------------------------------------------------------
