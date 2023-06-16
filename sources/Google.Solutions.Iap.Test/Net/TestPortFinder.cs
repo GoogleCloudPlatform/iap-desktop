@@ -35,12 +35,10 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public void WhenNoSeedProvided_ThenFindPortReturnsRandomPort()
         {
-            var portFinder = new PortFinder();
-
-            var port1 = portFinder.FindPort(out var preferred);
+            var port1 = new PortFinder().FindPort(out var preferred);
             Assert.IsFalse(preferred);
 
-            var port2 = portFinder.FindPort(out preferred);
+            var port2 = new PortFinder().FindPort(out preferred);
             Assert.IsFalse(preferred);
 
             Assert.AreNotEqual(port1, port2);
@@ -53,19 +51,22 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public void WhenSeedProvided_ThenFindPortReturnsSamePort()
         {
-            var portFinder = new PortFinder();
-            portFinder.AddSeed(Encoding.ASCII.GetBytes("some seed"));
+            var seed = Encoding.ASCII.GetBytes("some seed");
 
-            var port1 = portFinder.FindPort(out var preferred);
+            var portFinder1 = new PortFinder();
+            portFinder1.AddSeed(seed);
+            var port1 = portFinder1.FindPort(out var preferred);
 
             if (!preferred)
             {
                 Assert.Inconclusive();
             }
 
-            var port2 = portFinder.FindPort(out preferred);
+            var portFinder2 = new PortFinder();
+            portFinder2.AddSeed(seed);
+            var port2 = portFinder2.FindPort(out preferred);
+            
             Assert.IsTrue(preferred);
-
             Assert.AreEqual(port1, port2);
         }
     }

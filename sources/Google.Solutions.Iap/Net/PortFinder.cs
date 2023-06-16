@@ -113,15 +113,12 @@ namespace Google.Solutions.Iap.Net
             //
             // Find a random port.
             //
-            var random = new Random(Environment.TickCount);
-
-            //
             // Make a reasonable number of attempts without risking getting
             // stuck in an infinite loop.
             //
             for (var attempts = 0; attempts < MaxAttempts; attempts++)
             {
-                var port = (ushort)random.Next(PortRangeStart, PortRangeEnd);
+                var port = (ushort)StaticRandom.Next(PortRangeStart, PortRangeEnd);
                 if (!occupiedPorts.Contains(port))
                 {
                     isPreferred = false;
@@ -132,6 +129,23 @@ namespace Google.Solutions.Iap.Net
             throw new IOException(
                 "Attempting to dynamically allocating a TCP port failed");
         }
-    }
 
+        private static class StaticRandom
+        {
+            private static readonly Random random = new Random(Environment.TickCount);
+
+            public static int Next(int minValue, int maxValue)
+            {
+                //
+                // Use the same instance of Random every time.
+                // 
+                // NB. Random is not thread-safe, so we need a lock.
+                //
+                lock (random)
+                {
+                    return random.Next(minValue, maxValue);
+                }
+            }
+        }
+    }
 }
