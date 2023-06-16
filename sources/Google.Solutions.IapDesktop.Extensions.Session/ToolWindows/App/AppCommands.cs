@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
         public IContextCommand<IProjectModelNode> ConnectWithContextCommand { get; }
 
-        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithAppCommands // TODO: Add tests
+        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithAppCommands
         {
             get
             {
