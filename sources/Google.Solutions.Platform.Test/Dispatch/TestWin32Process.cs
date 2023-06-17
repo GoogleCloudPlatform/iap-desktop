@@ -31,6 +31,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
     [TestFixture]
     public class TestWin32Process
     {
+        private const uint SystemProcessId = 4;
+
         private static readonly string CmdExe
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
 
@@ -296,6 +298,70 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 Assert.AreEqual(1, exitCode);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // FromProcessId.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProcessAccessible_ThenFromProcessIdReturnsProcess()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                process.Resume();
+
+                using (var openedProcess = Win32Process.FromProcessId(process.Id))
+                {
+                    Assert.IsNotNull(openedProcess);
+                    Assert.AreEqual(process.ImageName, openedProcess.ImageName);
+                    Assert.IsTrue(openedProcess.IsRunning);
+                }
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenProcessInccessible_ThenFromProcessThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            Assert.Throws<DispatchException>(
+                () => Win32Process.FromProcessId(SystemProcessId));
+        }
+
+        [Test]
+        public void WhenProcessOpenedById_ThenResumeThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                process.Resume();
+                
+                using (var openedProcess = Win32Process.FromProcessId(process.Id))
+                {
+                    Assert.Throws<DispatchException>(() => openedProcess.Resume());
+                }
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenProcessIdDoesNotExist_ThenFromProcessThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            Assert.Throws<DispatchException>(
+                () => Win32Process.FromProcessId(1));
         }
     }
 }

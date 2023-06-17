@@ -24,7 +24,11 @@ using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -99,21 +103,23 @@ namespace Google.Solutions.Platform.Dispatch
 
     internal class Win32Process : DisposableBase, IWin32Process
     {
-        private readonly string name;
+        private readonly string imageName;
         private readonly uint processId;
         private readonly SafeProcessHandle process;
         private readonly SafeThreadHandle mainThread;
 
         public Win32Process(
-            string name,
+            string imageName,
             uint processId,
             SafeProcessHandle process,
             SafeThreadHandle mainThread)
         {
-            this.name = name.ExpectNotNull(nameof(name));
+            this.imageName = imageName.ExpectNotNull(nameof(imageName));
             this.processId = processId;
             this.process = process.ExpectNotNull(nameof(process));
             this.mainThread = mainThread.ExpectNotNull(nameof(mainThread));
+
+            Debug.Assert(!imageName.Contains("\\"), "Name does not contain path");
         }
 
         private void EnumerateTopLevelWindows(Action<IntPtr> action)
@@ -154,7 +160,7 @@ namespace Google.Solutions.Platform.Dispatch
                 lastError != NativeMethods.ERROR_INVALID_PARAMETER)
             {
                 throw DispatchException.FromLastWin32Error(
-                    $"{this.name}: Enumerating windows failed");
+                    $"{this.imageName}: Enumerating windows failed");
             }
         }
 
@@ -164,7 +170,7 @@ namespace Google.Solutions.Platform.Dispatch
 
         public SafeProcessHandle Handle => this.process;
 
-        public string ImageName => this.name;
+        public string ImageName => this.imageName;
 
         public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
 
@@ -269,7 +275,7 @@ namespace Google.Solutions.Platform.Dispatch
             if (NativeMethods.ResumeThread(this.mainThread) < 0)
             {
                 throw DispatchException.FromLastWin32Error(
-                    $"{this.name}: Resuming the process failed");
+                    $"{this.imageName}: Resuming the process failed");
             }
         }
 
@@ -278,7 +284,7 @@ namespace Google.Solutions.Platform.Dispatch
             if (!NativeMethods.TerminateProcess(this.process, exitCode))
             {
                 throw DispatchException.FromLastWin32Error(
-                    $"{this.name}: Terminating the process failed");
+                    $"{this.imageName}: Terminating the process failed");
             }
         }
 
@@ -296,11 +302,57 @@ namespace Google.Solutions.Platform.Dispatch
         }
 
         //---------------------------------------------------------------------
+        // Factory methods.
+        //---------------------------------------------------------------------
+
+        public static Win32Process FromProcessId(uint processId)
+        {
+            //
+            // Open process.
+            //
+            var process = NativeMethods.OpenProcess(
+                NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION | NativeMethods.SYNCHRONIZE,
+                false,
+                processId);
+            if (process.IsInvalid)
+            {
+                throw DispatchException.FromLastWin32Error(
+                    $"The process with ID {processId} does not exist or is inaccessible");
+            }
+
+            //
+            // Get image name.
+            //
+            var imageNameBuffer = new StringBuilder(260);
+            var imageNameBufferLength = imageNameBuffer.Capacity;
+            if (!NativeMethods.QueryFullProcessImageName(
+                process,
+                0,
+                imageNameBuffer,
+                ref imageNameBufferLength))
+            {
+                process.Dispose();
+
+                throw DispatchException.FromLastWin32Error(
+                    $"Querying the image name of the process with ID {processId} failed");
+            }
+
+            return new Win32Process(
+                new FileInfo(imageNameBuffer.ToString()).Name,
+                processId,
+                process,
+                new SafeThreadHandle(IntPtr.Zero, true));
+        }
+
+        //---------------------------------------------------------------------
         // P/Invoke.
         //---------------------------------------------------------------------
 
         private static class NativeMethods
         {
+            internal const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+            internal const uint SYNCHRONIZE = 0x00100000;
+
             internal const uint WM_CLOSE = 0x0010;
             internal const int STILL_ACTIVE = 259;
             internal const int ERROR_SUCCESS = 0;
@@ -343,6 +395,20 @@ namespace Google.Solutions.Platform.Dispatch
                 uint msg,
                 IntPtr wParam,
                 IntPtr lParam);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            public static extern SafeProcessHandle OpenProcess(
+                uint processAccess,
+                bool bInheritHandle,
+                uint processId);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool QueryFullProcessImageName(
+                [In] SafeProcessHandle hProcess, 
+                [In] int dwFlags, 
+                [Out] StringBuilder lpExeName, 
+                ref int lpdwSize);
         }
     }
 
