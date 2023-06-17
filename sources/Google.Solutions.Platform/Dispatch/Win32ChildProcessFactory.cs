@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Dispatch
 {
@@ -50,7 +51,7 @@ namespace Google.Solutions.Platform.Dispatch
         // CreateProcessAsUser behavior and also capture child processes.
         //
 
-        private readonly ConcurrentBag<IWin32Job> jobs = new ConcurrentBag<IWin32Job>();
+        private readonly ConcurrentBag<ChildProcess> children = new ConcurrentBag<ChildProcess>();
 
         public bool TerminateOnClose { get; }
         public bool IsDisposed { get; private set; }
@@ -60,18 +61,38 @@ namespace Google.Solutions.Platform.Dispatch
             this.TerminateOnClose = terminateOnClose;
         }
 
+        public int ChildProcesses
+        {
+            get => this.children
+                .Where(c => c.Process.IsRunning)
+                .Count();
+        }
+
+        /// <summary>
+        /// Gracefully close all child processes.
+        /// </summary>
+        /// <returns>Number of processes that were closed gracefully</returns>
+        public async Task<int> CloseAsync(TimeSpan timeout) // TODO: add tests
+        {
+            var result = await Task.WhenAll(this.children
+                .Where(c => c.Process.IsRunning)
+                .Select(c => c.Process.CloseAsync(timeout)));
+
+            return result.Count(r => r);
+        }
+
         //---------------------------------------------------------------------
         // IWin32ProcessSet.
         //---------------------------------------------------------------------
 
         public bool Contains(IWin32Process process)
         {
-            return this.jobs.Any(j => j.Contains(process));
+            return this.children.Any(j => j.Job.Contains(process));
         }
 
         public bool Contains(uint processId)
         {
-            return this.jobs.Any(j => j.Contains(processId));
+            return this.children.Any(j => j.Job.Contains(processId));
         }
 
         //---------------------------------------------------------------------
@@ -84,7 +105,11 @@ namespace Google.Solutions.Platform.Dispatch
             try
             {
                 job.Add(process);
-                this.jobs.Add(job);
+                this.children.Add(new ChildProcess
+                {
+                    Process = process,
+                    Job = job
+                });
 
                 //
                 // NB. We're not holding on to the process object
@@ -108,9 +133,9 @@ namespace Google.Solutions.Platform.Dispatch
         {
             if (!this.IsDisposed)
             {
-                foreach (var job in this.jobs)
+                foreach (var child in this.children)
                 {
-                    job.Dispose();
+                    child.Job.Dispose();
                 }
 
                 this.IsDisposed = true;
@@ -121,6 +146,29 @@ namespace Google.Solutions.Platform.Dispatch
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        private struct ChildProcess
+        {
+            /// <summary>
+            /// The process.
+            /// 
+            /// We don't own the process, and it might be disposed at
+            /// any time.
+            /// </summary>
+            public IWin32Process Process;
+
+            /// <summary>
+            /// Job containing the leader process and all
+            /// its children.
+            /// 
+            /// We own the job and must dispose it.
+            /// </summary>
+            public IWin32Job Job;
         }
     }
 }

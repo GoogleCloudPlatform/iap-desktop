@@ -22,6 +22,7 @@
 using Google.Solutions.Platform.Dispatch;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Test.Dispatch
 {
@@ -52,6 +53,42 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var factory = new Win32ChildProcessFactory(true))
             {
                 Assert.IsFalse(factory.Contains(4));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Close.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenChildTerminated_ThenCloseReturns()
+        {
+            using (var factory = new Win32ChildProcessFactory(false))
+            {
+                using (var process = factory.CreateProcess(CmdExe, null))
+                {
+                    process.Terminate(0);
+                }
+
+                var closed = await factory
+                    .CloseAsync(TimeSpan.FromSeconds(1))
+                    .ConfigureAwait(false);
+
+                Assert.AreEqual(0, closed);
+            }
+        }
+
+        [Test]
+        public async Task WhenChildRunning_ThenCloseReturns()
+        {
+            using (var factory = new Win32ChildProcessFactory(false))
+            using (var process = factory.CreateProcess(CmdExe, null))
+            {
+                var closed = await factory
+                    .CloseAsync(TimeSpan.FromSeconds(1))
+                    .ConfigureAwait(false);
+
+                Assert.AreEqual(1, closed);
             }
         }
 

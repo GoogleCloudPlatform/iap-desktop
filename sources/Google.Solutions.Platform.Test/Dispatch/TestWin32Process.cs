@@ -77,6 +77,29 @@ namespace Google.Solutions.Platform.Test.Dispatch
             }
         }
 
+
+        //---------------------------------------------------------------------
+        // IsRunning.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsRunning()
+        {
+            var factory = new Win32ProcessFactory();
+
+            var process = factory.CreateProcess(
+                CmdExe,
+                null);
+            
+            Assert.IsTrue(process.IsRunning);
+
+            process.Resume();
+            Assert.IsTrue(process.IsRunning);
+
+            process.Dispose();
+            Assert.IsFalse(process.IsRunning);
+        }
+
         //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
@@ -194,7 +217,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProcessHasNoWindows_ThenCloseReturnsFalse()
+        public async Task WhenProcessHasNoWindows_ThenCloseReturnsTrue()
         {
             var factory = new Win32ProcessFactory();
 
@@ -209,7 +232,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .CloseAsync(TimeSpan.Zero)
                     .ConfigureAwait(false);
 
-                Assert.IsFalse(terminatedGracefully);
+                Assert.IsTrue(terminatedGracefully);
             }
         }
 

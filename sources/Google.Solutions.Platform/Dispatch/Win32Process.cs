@@ -126,10 +126,13 @@ namespace Google.Solutions.Platform.Dispatch
         {
             NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
             {
-                //
-                // Lookup the process ID that owns this window.
-                //
-                if (NativeMethods.GetWindowThreadProcessId(
+                if (!NativeMethods.IsWindowVisible(hwnd))
+                {
+                    //
+                    // Window is top-level, but hidden. Ignore.
+                    //
+                }
+                else if (NativeMethods.GetWindowThreadProcessId(
                         hwnd,
                         out var ownerProcessId) != 0 &&
                     ownerProcessId == this.processId)
@@ -181,6 +184,7 @@ namespace Google.Solutions.Platform.Dispatch
         public bool IsRunning
         {
             get =>
+                !this.process.IsClosed &&
                 NativeMethods.GetExitCodeProcess(this.process, out var exitCode) &&
                 exitCode == NativeMethods.STILL_ACTIVE;
         }
@@ -267,7 +271,12 @@ namespace Google.Solutions.Platform.Dispatch
             // Use force.
             //
             Terminate(0);
-            return false;
+
+            //
+            // If we posted a message and got here anyway, then it wasn't
+            // a graceful close.
+            //
+            return messagesPosted == 0;
         }
 
         public void Resume()
@@ -408,7 +417,10 @@ namespace Google.Solutions.Platform.Dispatch
                 [In] SafeProcessHandle hProcess, 
                 [In] int dwFlags, 
                 [Out] StringBuilder lpExeName, 
-                ref int lpdwSize);
+                ref int lpdwSize); [DllImport("user32.dll")]
+
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool IsWindowVisible(IntPtr hWnd);
         }
     }
 
