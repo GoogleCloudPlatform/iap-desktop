@@ -24,11 +24,9 @@ CONFIGURATION = Release
 TAG = 31
 
 #
-# NB. We're using custom ports for libssh2 and openssl:
+# NB. We're using custom ports for libssh2:
 #
 #  libssh2 port: Uses custom build flags and embeds version number
-#  openssl port: Uses 1.1.1 instead of 3.0 
-#                (vcpkg migrated from 1.1.1 to 3.0 in 22Q2)
 #
 # To update the versions of ports, edit:
 #
@@ -133,11 +131,11 @@ clean: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 	@echo "========================================================"
 	@echo "=== Cleaning libssh2                                 ==="
 	@echo "========================================================"
-	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove openssl libssh2 \
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove libssh2 \
 		--triplet libssh2-x86-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
-	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove openssl libssh2 \
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove libssh2 \
 		--triplet libssh2-x64-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
@@ -147,3 +145,7 @@ clean: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 
 distclean: clean
     -rd /S /Q $(MAKEDIR)\obj
+	
+debug: package
+	copy /Y $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\debug\bin\libssh2.* "$(USERPROFILE)\.nuget\packages\libssh2\$(LIBSSH2_VERSION)\runtimes\win10-x86\native\"
+	copy /Y $(MAKEDIR)\obj\vcpkg\installed\libssh2-x64-windows-mixed\debug\bin\libssh2.* "$(USERPROFILE)\.nuget\packages\libssh2\$(LIBSSH2_VERSION)\runtimes\win10-x64\native\"

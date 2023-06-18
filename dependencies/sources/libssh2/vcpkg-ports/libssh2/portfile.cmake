@@ -42,10 +42,6 @@ vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "#define RC_VERSION" "//#de
 vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "RC_VERSION" "${LIBSSH2_BUILD_COMMA}")
 vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "LIBSSH2_VERSION" "\"${LIBSSH2_BUILD}\"")
 
-# Patch resource file to embed OpenSSL version number
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "#include <winver.h>" "#include <winver.h>\n#include <openssl/opensslv.h>")
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "libssh2 Shared Library" "libssh2 with \" OPENSSL_VERSION_TEXT \"")
-
 vcpkg_cmake_configure(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
@@ -54,6 +50,7 @@ vcpkg_cmake_configure(
         -DENABLE_ZLIB_COMPRESSION=OFF
         -DCMAKE_CXX_FLAGS_RELEASE=/MT
         -DCMAKE_C_FLAGS_RELEASE=/MT
+		-DCRYPTO_BACKEND=WinCNG
     OPTIONS_RELEASE
         -DENABLE_DEBUG_LOGGING=ON
 )
