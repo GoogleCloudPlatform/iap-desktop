@@ -68,6 +68,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -564,6 +565,33 @@ namespace Google.Solutions.IapDesktop
                 // Ensure logs are flushed.
                 //
                 IsLoggingEnabled = false;
+
+                if (processFactory.ChildProcesses > 0)
+                {
+                    using (var tokenSource = new CancellationTokenSource())
+                    using (var dialog = new WaitDialog(
+                        null,
+                        "Waiting for applications to close...",
+                        tokenSource)
+                    {
+                        StartPosition = FormStartPosition.CenterScreen
+                    })
+                    {
+
+                        // TODO: Add WaitDialog.Wait(Task)
+                        // TODO: Cancellation
+
+                        processFactory
+                            .CloseAsync(TimeSpan.FromSeconds(15))
+                            .ContinueWith(_ =>
+                            {
+                                dialog.Finish();
+                            },
+                            TaskScheduler.FromCurrentSynchronizationContext());
+
+                        dialog.Start();
+                    }
+                }
 
                 return 0;
             }

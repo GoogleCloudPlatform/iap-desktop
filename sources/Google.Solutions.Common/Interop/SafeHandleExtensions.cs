@@ -51,7 +51,8 @@ namespace Google.Solutions.Common.Interop
         /// <returns>true if signalled, false if timeout elapsed</returns>
         public static Task<bool> WaitAsync(
             this WaitHandle waitHandle,
-            TimeSpan timeout)
+            TimeSpan timeout,
+            CancellationToken cancellationToken)
         {
             var completionSource = new TaskCompletionSource<bool>();
 
@@ -68,6 +69,12 @@ namespace Google.Solutions.Common.Interop
                 null,
                 (uint)timeout.TotalMilliseconds,
                 true);
+
+            cancellationToken.Register(() => //TODO: Add Test
+            {
+                registration.Unregister(waitHandle);
+                completionSource.SetCanceled();
+            });
 
             return completionSource.Task
                 .ContinueWith(t =>
