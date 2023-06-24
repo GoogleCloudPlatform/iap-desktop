@@ -1049,7 +1049,7 @@
         <Background Type="CT_RAW" Source="FFCCCEDB" />
       </Color>
       <Color Name="ButtonBorderFocused">
-        <Background Type="CT_RAW" Source="FF2D2D2D" />
+        <Background Type="CT_RAW" Source="FF006CBE" />
       </Color>
       <Color Name="ButtonBorderHover">
         <Background Type="CT_RAW" Source="FF006CBE" />

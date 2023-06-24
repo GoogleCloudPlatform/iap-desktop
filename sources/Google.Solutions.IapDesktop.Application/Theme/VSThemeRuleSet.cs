@@ -26,7 +26,9 @@ using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
@@ -165,6 +167,38 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 dropDownButton.GlyphColor = this.theme.Palette.Button.DropDownGlyphColor;
                 dropDownButton.GlyphDisabledColor = this.theme.Palette.Button.DropDownGlyphDisabledColor;
+            }
+
+            //
+            // Draw a custom border so that (1) we prevent the extra-thick
+            // border that Windows draws by default for buttons that have focus
+            // and (2) use a different border color for buttons that have focus.
+            //
+            button.FlatAppearance.BorderSize = 0;
+
+            button.Paint += OnPaint;
+            button.Disposed += (_, __) =>
+            {
+                button.Paint -= OnPaint;
+            };
+
+            void OnPaint(object sender, PaintEventArgs args)
+            {
+                var senderButton = (Button)sender;
+                var borderColor = senderButton.Focused
+                    ? this.theme.Palette.Button.BorderFocused
+                    : this.theme.Palette.Button.Border;
+
+                using (var pen = new Pen(borderColor, 1))
+                {
+                    args.Graphics.DrawRectangle(
+                        pen,
+                        new Rectangle(
+                            0,
+                            0,
+                            senderButton.Size.Width - 1,
+                            senderButton.Size.Height - 1));
+                }
             }
         }
 
