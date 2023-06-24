@@ -561,37 +561,41 @@ namespace Google.Solutions.IapDesktop
                 //
                 System.Windows.Forms.Application.Run(mainForm);
 
+                if (processFactory.ChildProcesses > 0)
+                {
+                    //
+                    // Instead of killing child processes outright, give
+                    // them a chance to close gracefully (and possibly
+                    // save any work).
+                    //
+                    try
+                    {
+                        WaitDialog.Wait(
+                            null,
+                            "Waiting for applications to close...",
+                            cancellationToken =>
+                            {
+                                //
+                                // Give child processes a fixed time to close,
+                                // but the user might cancel early.
+                                //
+                                return processFactory.CloseAsync(
+                                    TimeSpan.FromSeconds(30),
+                                    cancellationToken);
+                            });
+                    }
+                    catch (Exception e)
+                    {
+#if DEBUG
+                        ShowFatalError(e);
+#endif
+                    }
+                }
+
                 //
                 // Ensure logs are flushed.
                 //
                 IsLoggingEnabled = false;
-
-                if (processFactory.ChildProcesses > 0)
-                {
-                    using (var tokenSource = new CancellationTokenSource())
-                    using (var dialog = new WaitDialog(
-                        null,
-                        "Waiting for applications to close...",
-                        tokenSource)
-                    {
-                        StartPosition = FormStartPosition.CenterScreen
-                    })
-                    {
-
-                        // TODO: Add WaitDialog.Wait(Task)
-                        // TODO: Cancellation
-
-                        processFactory
-                            .CloseAsync(TimeSpan.FromSeconds(15), CancellationToken.None)
-                            .ContinueWith(_ =>
-                            {
-                                dialog.Finish();
-                            },
-                            TaskScheduler.FromCurrentSynchronizationContext());
-
-                        dialog.Start();
-                    }
-                }
 
                 return 0;
             }

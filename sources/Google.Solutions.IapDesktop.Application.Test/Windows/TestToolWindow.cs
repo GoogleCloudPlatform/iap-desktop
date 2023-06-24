@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;

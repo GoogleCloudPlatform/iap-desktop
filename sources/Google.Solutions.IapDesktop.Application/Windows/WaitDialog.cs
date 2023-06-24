@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
@@ -76,6 +77,43 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             Debug.Assert(!this.InvokeRequired, "Finish must be called on UI thread");
             this.disposed = true;
             Close();
+        }
+
+        //---------------------------------------------------------------------
+        // Statics.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Show dialog until a task completes, and propagates any exceptions
+        /// (incl. TaskCancellationExceptions).
+        /// </summary>
+        public static void Wait(
+            IWin32Window parent,
+            string message,
+            Func<CancellationToken, Task> asyncFunc)
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            using (var dialog = new WaitDialog(
+                parent,
+                message,
+                tokenSource)
+            {
+                StartPosition = parent == null
+                    ? FormStartPosition.CenterScreen
+                    : FormStartPosition.CenterParent
+            })
+            {
+                //
+                // NB. Because we're forcing the callback to run
+                // on the window thread, the callback won't run
+                // after Start() was called.
+                //
+                asyncFunc(tokenSource.Token).ContinueWith(
+                    _ => dialog.Finish(),
+                    TaskScheduler.FromCurrentSynchronizationContext());
+
+                dialog.Start();
+            }
         }
     }
 }
