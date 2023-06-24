@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         private void StyleButton(Button button)
         {
             button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderColor = this.theme.Palette.Button.Border;
+            //button.FlatAppearance.BorderColor = this.theme.Palette.Button.Border;
             button.FlatAppearance.MouseDownBackColor = this.theme.Palette.Button.BackgroundPressed;
             button.FlatAppearance.MouseOverBackColor = this.theme.Palette.Button.BackgroundHover;
             button.BackColor = this.theme.Palette.Button.Background;
@@ -185,9 +185,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             void OnPaint(object sender, PaintEventArgs args)
             {
                 var senderButton = (Button)sender;
-                var borderColor = senderButton.Focused
-                    ? this.theme.Palette.Button.BorderFocused
-                    : this.theme.Palette.Button.Border;
+
+                Color borderColor;
+                if (senderButton.Focused)
+                {
+                    borderColor = this.theme.Palette.Button.BorderFocused;
+                }
+                else if (args.ClipRectangle.Contains(senderButton.PointToClient(Cursor.Position)))
+                {
+                    borderColor = this.theme.Palette.Button.BorderHover;
+                }
+                else
+                {
+                    borderColor = this.theme.Palette.Button.Border;
+                }
 
                 using (var pen = new Pen(borderColor, 1))
                 {
