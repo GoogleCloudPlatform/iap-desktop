@@ -26,9 +26,7 @@ using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
-using System.Runtime.Remoting.Channels;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
@@ -156,7 +154,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         private void StyleButton(Button button)
         {
             button.FlatStyle = FlatStyle.Flat;
-            //button.FlatAppearance.BorderColor = this.theme.Palette.Button.Border;
             button.FlatAppearance.MouseDownBackColor = this.theme.Palette.Button.BackgroundPressed;
             button.FlatAppearance.MouseOverBackColor = this.theme.Palette.Button.BackgroundHover;
             button.BackColor = this.theme.Palette.Button.Background;
