@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -108,11 +109,27 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 // on the window thread, the callback won't run
                 // after Start() was called.
                 //
-                asyncFunc(tokenSource.Token).ContinueWith(
-                    _ => dialog.Finish(),
+                Exception exception = null;
+                var tx = asyncFunc(tokenSource.Token).ContinueWith(
+                    t => {
+                        dialog.Finish();
+
+                        if (t.IsFaulted)
+                        {
+                            exception = t.Exception;
+                        }
+                    },
                     TaskScheduler.FromCurrentSynchronizationContext());
 
-                dialog.Start();
+                if (dialog.ShowDialog() == DialogResult.Cancel && tokenSource.IsCancellationRequested)
+                {
+                    throw new TaskCanceledException();
+                }
+
+                if (exception != null)
+                {
+                    throw exception;
+                }
             }
         }
     }

@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,6 +53,41 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 null,
                 "Test...",
                 _ => Task.Delay(1));
+        }
+
+        [Test]
+        public void WhenTaskThrowsException_ThenWaitPropagatesException()
+        {
+            Assert.Throws<ArgumentException>(
+                () => WaitDialog.Wait(
+                    null,
+                    "Test...",
+                    _ => throw new ArgumentException()));
+        }
+
+        [Test]
+        public void WhenTaskThrowsTaskCanceledException_ThenWaitPropagatesException()
+        {
+            Assert.Throws<TaskCanceledException>(
+                () => WaitDialog.Wait(
+                    null,
+                    "Test...",
+                    _ => throw new TaskCanceledException()));
+        }
+
+        [Test]
+        [InteractiveTest]
+        public void WhenDialogCancelled_ThenWaitThrowsException()
+        {
+            Assert.Throws<TaskCanceledException>(
+                () => WaitDialog.Wait(
+                    null,
+                    "Press cancel...",
+                    async token =>
+                    {
+                        await Task.Delay(int.MaxValue, token);
+                        return;
+                    }));
         }
     }
 }
