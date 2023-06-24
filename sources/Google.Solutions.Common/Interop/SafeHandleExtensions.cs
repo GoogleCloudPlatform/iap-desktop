@@ -70,7 +70,7 @@ namespace Google.Solutions.Common.Interop
                 (uint)timeout.TotalMilliseconds,
                 true);
 
-            cancellationToken.Register(() => //TODO: Add Test
+            cancellationToken.Register(() =>
             {
                 registration.Unregister(waitHandle);
                 completionSource.SetCanceled();
