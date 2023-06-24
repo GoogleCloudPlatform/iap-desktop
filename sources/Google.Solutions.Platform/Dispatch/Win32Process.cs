@@ -70,14 +70,18 @@ namespace Google.Solutions.Platform.Dispatch
         /// 
         /// Returns true if the process terminated gracefully.
         /// </summary>
-        Task<bool> CloseAsync(TimeSpan timeout);
+        Task<bool> CloseAsync(
+            TimeSpan timeout,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Wait for process to terminate.
         /// 
         /// Returns the exit code.
         /// </summary>
-        Task<uint> WaitAsync(TimeSpan timeout);
+        Task<uint> WaitAsync(
+            TimeSpan timeout,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Forcefully terminate the process.
@@ -200,11 +204,15 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        public async Task<uint> WaitAsync(TimeSpan timeout)
+        public async Task<uint> WaitAsync(
+            TimeSpan timeout, 
+            CancellationToken cancellationToken)
         {
             using (var waitHandle = this.process.ToWaitHandle(false))
             {
-                if (await waitHandle.WaitAsync(timeout).ConfigureAwait(false))
+                if (await waitHandle
+                    .WaitAsync(timeout, cancellationToken)
+                    .ConfigureAwait(false))
                 {
                     //
                     // Terminated.
@@ -220,7 +228,9 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        public async Task<bool> CloseAsync(TimeSpan timeout)
+        public async Task<bool> CloseAsync(
+            TimeSpan timeout,
+            CancellationToken cancellationToken)
         {
             if (!this.IsRunning)
             {
@@ -257,7 +267,9 @@ namespace Google.Solutions.Platform.Dispatch
                 //
                 using (var waitHandle = this.process.ToWaitHandle(false))
                 {
-                    if (await waitHandle.WaitAsync(timeout).ConfigureAwait(false))
+                    if (await waitHandle
+                        .WaitAsync(timeout, cancellationToken)
+                        .ConfigureAwait(false))
                     {
                         //
                         // Process exited gracefully within the timeout.

@@ -582,7 +582,7 @@ namespace Google.Solutions.IapDesktop
                         // TODO: Cancellation
 
                         processFactory
-                            .CloseAsync(TimeSpan.FromSeconds(15))
+                            .CloseAsync(TimeSpan.FromSeconds(15), CancellationToken.None)
                             .ContinueWith(_ =>
                             {
                                 dialog.Finish();

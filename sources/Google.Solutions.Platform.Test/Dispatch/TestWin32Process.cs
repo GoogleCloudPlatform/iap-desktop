@@ -229,7 +229,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.AreEqual(0, process.WindowCount);
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.Zero)
+                    .CloseAsync(TimeSpan.Zero, CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsTrue(terminatedGracefully);
@@ -256,7 +256,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 }
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.FromSeconds(10))
+                    .CloseAsync(TimeSpan.FromSeconds(10), CancellationToken.None)
                     .ConfigureAwait(false);
                 Assert.IsTrue(terminatedGracefully);
             }
@@ -275,7 +275,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.FromSeconds(10))
+                    .CloseAsync(TimeSpan.FromSeconds(10), CancellationToken.None)
                     .ConfigureAwait(false);
                 Assert.IsTrue(terminatedGracefully);
             }
@@ -297,7 +297,30 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Resume();
 
                 ExceptionAssert.ThrowsAggregateException<TimeoutException>(
-                    () => process.WaitAsync(TimeSpan.FromMilliseconds(5)).Wait());
+                    () => process
+                        .WaitAsync(TimeSpan.FromMilliseconds(5), CancellationToken.None)
+                        .Wait());
+
+                process.Terminate(0);
+            }
+        }
+
+        [Test]
+        public void WhenCancelled_ThenWaitThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            using (var cts = new CancellationTokenSource())
+            {
+                var task = process.WaitAsync(TimeSpan.FromMilliseconds(5), cts.Token);
+
+                cts.Cancel();
+
+                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                    () => task.Wait());
 
                 process.Terminate(0);
             }
@@ -316,7 +339,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Terminate(1);
 
                 var exitCode = await process
-                    .WaitAsync(TimeSpan.FromMilliseconds(5))
+                    .WaitAsync(TimeSpan.FromMilliseconds(5), CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(1, exitCode);

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Dispatch
@@ -72,11 +73,13 @@ namespace Google.Solutions.Platform.Dispatch
         /// Gracefully close all child processes.
         /// </summary>
         /// <returns>Number of processes that were closed gracefully</returns>
-        public async Task<int> CloseAsync(TimeSpan timeout) // TODO: add tests
+        public async Task<int> CloseAsync(
+            TimeSpan timeout, 
+            CancellationToken cancellationToken) // TODO: add tests
         {
             var result = await Task.WhenAll(this.children
                 .Where(c => c.Process.IsRunning)
-                .Select(c => c.Process.CloseAsync(timeout)));
+                .Select(c => c.Process.CloseAsync(timeout, cancellationToken)));
 
             return result.Count(r => r);
         }

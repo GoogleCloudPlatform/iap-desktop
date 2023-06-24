@@ -87,10 +87,11 @@ namespace Google.Solutions.Common.Test.Interop
             using (var ev = new ManualResetEvent(false))
             using (var cts = new CancellationTokenSource())
             {
-                cts.CancelAfter(TimeSpan.FromMilliseconds(5));
+                var task = ev.WaitAsync(TimeSpan.FromSeconds(60), cts.Token);
+                cts.Cancel();
                 
                 ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                    () => ev.WaitAsync(TimeSpan.FromSeconds(60), cts.Token).Wait());
+                    () => task.Wait());
             }
         }
 

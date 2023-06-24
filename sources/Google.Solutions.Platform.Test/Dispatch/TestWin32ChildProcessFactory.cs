@@ -22,6 +22,7 @@
 using Google.Solutions.Platform.Dispatch;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Test.Dispatch
@@ -71,7 +72,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 }
 
                 var closed = await factory
-                    .CloseAsync(TimeSpan.FromSeconds(1))
+                    .CloseAsync(TimeSpan.FromSeconds(1), CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(0, closed);
@@ -85,7 +86,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 var closed = await factory
-                    .CloseAsync(TimeSpan.FromSeconds(1))
+                    .CloseAsync(TimeSpan.FromSeconds(1), CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(1, closed);
