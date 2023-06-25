@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
+    [InteractiveTest]
     public class TestWaitDialog : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
@@ -76,7 +77,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        [InteractiveTest]
         public void WhenDialogCancelled_ThenWaitThrowsException()
         {
             Assert.Throws<TaskCanceledException>(

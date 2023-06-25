@@ -315,7 +315,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null))
             using (var cts = new CancellationTokenSource())
             {
-                var task = process.WaitAsync(TimeSpan.FromMilliseconds(5), cts.Token);
+                var task = process.WaitAsync(TimeSpan.FromSeconds(5), cts.Token);
 
                 cts.Cancel();
 
