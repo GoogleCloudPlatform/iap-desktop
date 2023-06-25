@@ -126,6 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Background = GetColor(xml, "CommonControls", "Button", "Background"),
                     Text = GetColor(xml, "CommonControls", "Button", "Foreground"),
                     Border = GetColor(xml, "CommonControls", "ButtonBorder", "Background"),
+                    BorderFocused = GetColor(xml, "CommonControls", "ButtonBorderFocused", "Background"),
+                    BorderHover = GetColor(xml, "CommonControls", "ButtonBorderHover", "Background"),
                     BackgroundHover = GetColor(xml, "CommonControls", "ButtonHover", "Background"),
                     BackgroundPressed = GetColor(xml, "CommonControls", "ButtonPressed", "Background"),
                     DropDownGlyphColor = GetColor(xml, "CommonControls", "ComboBoxGlyph", "Background"),
@@ -144,6 +146,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Text = GetColor(xml, "CommonControls", "TextBoxText", "Background"),
                     Background = GetColor(xml, "CommonControls", "TextBoxBackground", "Background"),
                     BackgroundDisabled = GetColor(xml, "CommonControls", "TextBoxBackgroundDisabled", "Background"),
+                    Border = GetColor(xml, "CommonControls", "TextBoxBorder", "Background"),
+                    BorderFocused = GetColor(xml, "CommonControls", "TextBoxBorderFocused", "Background"),
+                    BorderHover = GetColor(xml, "CommonControls", "ButtonBorderHover", "Background"),
                 };
                 this.ComboBox = new ComboBoxPalette()
                 {
@@ -235,6 +240,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color Background { get; set; }
             public Color Text { get; set; }
             public Color Border { get; set; }
+            public Color BorderFocused { get; set; }
+            public Color BorderHover { get; set; }
             public Color BackgroundHover { get; set; }
             public Color BackgroundPressed { get; set; }
             public Color DropDownGlyphColor { get; set; }
@@ -251,6 +258,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color Text { get; set; }
             public Color Background { get; set; }
             public Color BackgroundDisabled { get; set; }
+            public Color Border { get; set; }
+            public Color BorderFocused { get; set; }
+            public Color BorderHover { get; set; }
         }
 
         internal struct ComboBoxPalette

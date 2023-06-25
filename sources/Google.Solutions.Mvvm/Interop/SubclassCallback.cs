@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Interop
     /// <summary>
     /// Callback for subclassing external windows. 
     /// </summary>
-    internal sealed class SubclassCallback : IDisposable
+    public sealed class SubclassCallback : IDisposable
     {
         private readonly NativeMethods.SubclassProcedure hookProc;
 
