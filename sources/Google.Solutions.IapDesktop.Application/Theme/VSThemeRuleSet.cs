@@ -23,11 +23,14 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
+using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
@@ -60,6 +63,73 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 MarkerPixel = true
 #endif
             };
+        }
+
+        private void SetControlBorder(
+            Control control,
+            Color color,
+            Color hoverColor,
+            Color focusColor)
+        {
+            if (control is TextBoxBase textBox)
+            {
+                //
+                // TextBoxes don't fire Paint events, so we have to use
+                // subclassing to synthesize an event.
+                //
+                var subclass = new SubclassCallback(textBox, (ref Message m) =>
+                {
+                    SubclassCallback.DefaultWndProc(ref m);
+
+                    if ((WindowMessage)m.Msg == WindowMessage.WM_PAINT)
+                    {
+                        using (var g = Graphics.FromHwnd(textBox.Handle))
+                        {
+                            OnPaint(textBox, new PaintEventArgs(g, textBox.ClientRectangle));
+                        }
+                    }
+                });
+
+                subclass.UnhandledException += (_, args) => Debug.Fail(args.FullMessage());
+            }
+            else
+            {
+                control.Paint += OnPaint;
+                control.Disposed += (_, __) =>
+                {
+                    control.Paint -= OnPaint;
+                };
+            }
+
+            void OnPaint(object sender, PaintEventArgs args)
+            {
+                var senderControl = (Control)sender;
+
+                Color borderColor;
+                if (senderControl.Focused)
+                {
+                    borderColor = focusColor;
+                }
+                else if (args.ClipRectangle.Contains(senderControl.PointToClient(Cursor.Position)))
+                {
+                    borderColor = hoverColor;
+                }
+                else
+                {
+                    borderColor = color;
+                }
+
+                using (var pen = new Pen(borderColor, 1))
+                {
+                    args.Graphics.DrawRectangle(
+                        pen,
+                        new Rectangle(
+                            0,
+                            0,
+                            senderControl.Size.Width - 1,
+                            senderControl.Size.Height - 1));
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -173,41 +243,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             button.FlatAppearance.BorderSize = 0;
 
-            button.Paint += OnPaint;
-            button.Disposed += (_, __) =>
-            {
-                button.Paint -= OnPaint;
-            };
-
-            void OnPaint(object sender, PaintEventArgs args)
-            {
-                var senderButton = (Button)sender;
-
-                Color borderColor;
-                if (senderButton.Focused)
-                {
-                    borderColor = this.theme.Palette.Button.BorderFocused;
-                }
-                else if (args.ClipRectangle.Contains(senderButton.PointToClient(Cursor.Position)))
-                {
-                    borderColor = this.theme.Palette.Button.BorderHover;
-                }
-                else
-                {
-                    borderColor = this.theme.Palette.Button.Border;
-                }
-
-                using (var pen = new Pen(borderColor, 1))
-                {
-                    args.Graphics.DrawRectangle(
-                        pen,
-                        new Rectangle(
-                            0,
-                            0,
-                            senderButton.Size.Width - 1,
-                            senderButton.Size.Height - 1));
-                }
-            }
+            SetControlBorder(
+                button,
+                this.theme.Palette.Button.Border,
+                this.theme.Palette.Button.BorderHover,
+                this.theme.Palette.Button.BorderFocused);
         }
 
         private void StyleDropDownButton(DropDownButton button)
@@ -290,6 +330,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     ? this.theme.Palette.TextBox.BackgroundDisabled
                     : this.theme.Palette.TextBox.Background;
             }
+
+            SetControlBorder(
+                text,
+                this.theme.Palette.TextBox.Border,
+                this.theme.Palette.TextBox.BorderHover,
+                this.theme.Palette.TextBox.BorderFocused);
         }
 
         private void StyleMarkdownViewer(MarkdownViewer md)

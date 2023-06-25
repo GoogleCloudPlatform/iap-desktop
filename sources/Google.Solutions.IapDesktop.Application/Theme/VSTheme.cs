@@ -146,6 +146,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Text = GetColor(xml, "CommonControls", "TextBoxText", "Background"),
                     Background = GetColor(xml, "CommonControls", "TextBoxBackground", "Background"),
                     BackgroundDisabled = GetColor(xml, "CommonControls", "TextBoxBackgroundDisabled", "Background"),
+                    Border = GetColor(xml, "CommonControls", "TextBoxBorder", "Background"),
+                    BorderFocused = GetColor(xml, "CommonControls", "TextBoxBorderFocused", "Background"),
+                    BorderHover = GetColor(xml, "CommonControls", "ButtonBorderHover", "Background"),
                 };
                 this.ComboBox = new ComboBoxPalette()
                 {
@@ -255,6 +258,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color Text { get; set; }
             public Color Background { get; set; }
             public Color BackgroundDisabled { get; set; }
+            public Color Border { get; set; }
+            public Color BorderFocused { get; set; }
+            public Color BorderHover { get; set; }
         }
 
         internal struct ComboBoxPalette
