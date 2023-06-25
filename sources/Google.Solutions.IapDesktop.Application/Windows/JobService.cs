@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         ///
         /// to ensure reauth errors are propagated.
         /// </summary>
-        Task<T> RunInBackground<T>(
+        Task<T> RunAsync<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc);
     }
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             this.host = host;
         }
 
-        private Task<T> RunInBackgroundWithUserFeedback<T>(
+        private Task<T> RunWithUserFeedbackAsync<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             return completionSource.Task;
         }
 
-        public async Task<T> RunInBackground<T>(
+        public async Task<T> RunAsync<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             {
                 try
                 {
-                    return await RunInBackgroundWithUserFeedback(
+                    return await RunWithUserFeedbackAsync(
                         jobDescription,
                         jobFunc).ConfigureAwait(true);  // Continue on UI thread.
                 }
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     {
                         // Reauthorize. This might take a while since the user has to use 
                         // a browser - show the WaitDialog in the meantime.
-                        await RunInBackgroundWithUserFeedback(
+                        await RunWithUserFeedbackAsync(
                             new JobDescription("Authorizing..."),
                             async reauthCancellationToken =>
                             {

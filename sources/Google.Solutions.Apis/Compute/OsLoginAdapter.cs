@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Delete existing authorized key.
         /// </summary>
-        Task DeleteSshPublicKey(
+        Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken);
     }
@@ -198,7 +198,7 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
-        public async Task DeleteSshPublicKey(
+        public async Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken)
         {

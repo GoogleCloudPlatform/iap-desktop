@@ -613,7 +613,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     // Wrap loading task in a job since it might kick of
                     // I/O (if data has not been cached yet).
                     //
-                    return await this.viewModel.jobService.RunInBackground(
+                    return await this.viewModel.jobService.RunAsync(
                             new JobDescription(
                                 $"Loading {this.Text}...",
                                 JobUserFeedbackType.BackgroundFeedback),

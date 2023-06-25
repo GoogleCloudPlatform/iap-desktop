@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             ISessionContext<TCredential, TParameters> context)
             where TCredential : ISessionCredential
         {
-            return this.jobService.RunInBackground(
+            return this.jobService.RunAsync(
                 new JobDescription(
                     $"Connecting to {context.Instance.Name}...",
                     JobUserFeedbackType.BackgroundFeedback),

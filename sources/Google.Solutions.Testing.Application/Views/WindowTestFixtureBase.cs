@@ -212,7 +212,7 @@ namespace Google.Solutions.Testing.Application.Views
             return authorization;
         }
 
-        protected async Task<NetworkCredential> GenerateWindowsCredentials(InstanceLocator locator)
+        protected async Task<NetworkCredential> GenerateWindowsCredentialsAsync(InstanceLocator locator)
         {
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
             var credentialAdapter = new WindowsCredentialGenerator(

@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground(
+                .RunAsync(
                     new JobDescription("test"),
                     token =>
                     {
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground(
+                .RunAsync(
                     new JobDescription("test"),
                     token =>
                     {
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
-                this.jobService.RunInBackground<string>(
+                this.jobService.RunAsync<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
-                this.jobService.RunInBackground<string>(
+                this.jobService.RunAsync<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground(
+                .RunAsync(
                     new JobDescription("test"),
                     token =>
                     {
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             var funcCall = 0;
             var result = await this.jobService
-                .RunInBackground(
+                .RunAsync(
                     new JobDescription("test"),
                     token =>
                     {
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
-                this.jobService.RunInBackground<string>(
+                this.jobService.RunAsync<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
-                this.jobService.RunInBackground<string>(
+                this.jobService.RunAsync<string>(
                     new JobDescription("test"),
                     token =>
                     {

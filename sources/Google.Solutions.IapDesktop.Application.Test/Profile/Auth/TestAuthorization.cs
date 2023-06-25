@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             await authorization.RevokeAsync();
 
-            adapter.Verify(a => a.DeleteStoredRefreshToken(), Times.Once);
+            adapter.Verify(a => a.DeleteRefreshTokenAsync(), Times.Once);
         }
 
         //---------------------------------------------------------------------

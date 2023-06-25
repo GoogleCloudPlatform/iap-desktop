@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 instance,
                 await credential))
             {
-                var credentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
+                var credentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
                 var rdpCredential = new RdpCredential(
                     credentials.UserName,
                     credentials.Domain,

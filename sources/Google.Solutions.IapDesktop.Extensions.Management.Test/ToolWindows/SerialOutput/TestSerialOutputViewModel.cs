@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
     {
         private class MockJobService : IJobService
         {
-            public Task<T> RunInBackground<T>(
+            public Task<T> RunAsync<T>(
                 JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
             {

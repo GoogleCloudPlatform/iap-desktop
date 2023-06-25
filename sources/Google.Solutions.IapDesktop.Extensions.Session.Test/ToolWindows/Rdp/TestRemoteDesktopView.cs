@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             var serviceProvider = CreateServiceProvider(await credential);
             var instance = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
+            var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
 
             // To avoid excessive combinations, combine some settings.
             var redirectPrinter = (RdpRedirectPrinter)(int)redirectClipboard;
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             var serviceProvider = CreateServiceProvider(await credential);
             var instance = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
+            var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             var serviceProvider = CreateServiceProvider(await credential);
             var instance = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentials(instance).ConfigureAwait(true);
+            var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,

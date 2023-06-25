@@ -92,7 +92,7 @@ namespace Google.Solutions.Platform.Security
             //
             // NB. Scanning can be slow, but needs to be done on a STA-enabled thread.
             //
-            return StaTask.Run(() =>
+            return StaTask.RunAsync(() =>
             {
                 var attachment = (IAttachmentExecute)new AttachmentServices();
                 try
@@ -159,7 +159,7 @@ namespace Google.Solutions.Platform.Security
             //
             // NB. Zone lookups can be slow, but need to be done on a STA-enabled thread.
             //
-            return StaTask.Run<Zone>(() =>
+            return StaTask.RunAsync<Zone>(() =>
             {
                 var securityManager = (IInternetSecurityManager)new InternetSecurityManager();
                 try

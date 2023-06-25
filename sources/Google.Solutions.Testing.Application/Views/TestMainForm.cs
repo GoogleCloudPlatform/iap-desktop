@@ -71,7 +71,7 @@ namespace Google.Solutions.Testing.Application.Views
         // IJobService.
         //---------------------------------------------------------------------
 
-        public Task<T> RunInBackground<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
+        public Task<T> RunAsync<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
         {
             // Run on UI thread to avoid multthreading issues in tests.
             var result = jobFunc(CancellationToken.None).Result;

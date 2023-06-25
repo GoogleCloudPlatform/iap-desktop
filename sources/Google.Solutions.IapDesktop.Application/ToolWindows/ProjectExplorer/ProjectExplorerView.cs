@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         {
             try
             {
-                await this.jobService.RunInBackground(
+                await this.jobService.RunAsync(
                         new JobDescription("Loading projects..."),
                         _ => this.authorization.Credential.GetAccessTokenForRequestAsync())
                     .ConfigureAwait(true);

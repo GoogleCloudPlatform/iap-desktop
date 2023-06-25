@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             // Connect a transport. This can take a bit, so do it in a job.
             //
             var transport = await this.jobService
-                .RunInBackground(
+                .RunAsync(
                     new JobDescription(
                         $"Connecting to {instance.Instance.Name}...",
                         JobUserFeedbackType.BackgroundFeedback),

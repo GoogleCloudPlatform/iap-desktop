@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
     {
         private class JobServiceMock : IJobService
         {
-            public Task<T> RunInBackground<T>(
+            public Task<T> RunAsync<T>(
                 JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
                 => jobFunc(CancellationToken.None);

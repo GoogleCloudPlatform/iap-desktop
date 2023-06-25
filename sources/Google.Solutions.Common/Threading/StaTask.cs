@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Threading
         /// <summary>
         /// Run a function on a STA background thread.
         /// </summary>
-        public static Task<T> Run<T>(Func<T> func)
+        public static Task<T> RunAsync<T>(Func<T> func)
         {
             //
             // NB. We can't use the standard thread pool as it doesn't
@@ -56,9 +56,9 @@ namespace Google.Solutions.Common.Threading
         /// <summary>
         /// Run an action on a STA background thread.
         /// </summary>
-        public static Task Run(Action action)
+        public static Task RunAsync(Action action)
         {
-            return Run<object>(() =>
+            return RunAsync<object>(() =>
             {
                 action();
                 return null;

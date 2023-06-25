@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
             try
             {
                 await this.jobService
-                    .RunInBackground<object>(
+                    .RunAsync<object>(
                         CreateJobDescription("This takes a while, but can be cancelled..."),
                         async token =>
                         {
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
             try
             {
                 await this.jobService
-                    .RunInBackground<object>(
+                    .RunAsync<object>(
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         async token =>
                         {
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
             try
             {
                 await this.jobService
-                    .RunInBackground<object>(
+                    .RunAsync<object>(
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         token =>
                         {
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
             try
             {
                 await this.jobService
-                    .RunInBackground<object>(
+                    .RunAsync<object>(
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         token =>
                         {

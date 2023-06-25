@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 return;
             }
 
-            await this.jobService.RunInBackground<object>(
+            await this.jobService.RunAsync<object>(
                 new JobDescription(
                     $"Deleting SSH keys for {this.selectedItem.Key.Email}",
                     JobUserFeedbackType.BackgroundFeedback),
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
                     //
-                    return await this.jobService.RunInBackground(
+                    return await this.jobService.RunAsync(
                         new JobDescription(
                             $"Loading SSH keys for {node.DisplayName}",
                             JobUserFeedbackType.BackgroundFeedback),

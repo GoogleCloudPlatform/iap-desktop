@@ -165,11 +165,11 @@ namespace Google.Solutions.Apis.Test.Compute
             //
             // Delete key twice.
             //
-            await adapter.DeleteSshPublicKey(
+            await adapter.DeleteSshPublicKeyAsync(
                     key.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            await adapter.DeleteSshPublicKey(
+            await adapter.DeleteSshPublicKeyAsync(
                     key.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -194,7 +194,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var credential = (TemporaryServiceCredential)(await credentialTask);
             var adapter = CreateAdapter(credential);
 
-            await adapter.DeleteSshPublicKey(
+            await adapter.DeleteSshPublicKeyAsync(
                     "nonexisting",
                     CancellationToken.None)
                 .ConfigureAwait(false);

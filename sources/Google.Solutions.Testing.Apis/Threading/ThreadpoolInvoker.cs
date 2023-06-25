@@ -39,7 +39,7 @@ namespace Google.Solutions.Testing.Apis.Threading
 
         public Task AwaitPendingInvocations()
         {
-            return this.idle.Await();
+            return this.idle.WaitAsync();
         }
 
         //---------------------------------------------------------------------

@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Help
             try
             {
                 var releases = await this.githubAdapter
-                    .ListReleases(MaxReleases, CancellationToken.None)
+                    .ListReleasesAsync(MaxReleases, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 foreach (var release in releases

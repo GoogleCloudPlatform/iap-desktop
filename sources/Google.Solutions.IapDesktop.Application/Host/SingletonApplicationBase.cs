@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         using (var cts = new CancellationTokenSource())
                         {
                             var serverTask = Task.Factory.StartNew(
-                                async () => await RunNamedPipeServer(cts.Token).ConfigureAwait(false),
+                                async () => await RunNamedPipeServerAsync(cts.Token).ConfigureAwait(false),
                                 TaskCreationOptions.LongRunning);
 
                             // Run main invocation in foreground and wait for it to finish.
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        private async Task RunNamedPipeServer(CancellationToken token)
+        private async Task RunNamedPipeServerAsync(CancellationToken token)
         {
             var pipeSecurity = new PipeSecurity();
             pipeSecurity.AddAccessRule(

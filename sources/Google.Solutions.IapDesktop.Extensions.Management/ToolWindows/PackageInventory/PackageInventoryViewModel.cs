@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
                     //
-                    return await this.jobService.RunInBackground(
+                    return await this.jobService.RunAsync(
                         new JobDescription(
                             $"Loading inventory for {node.DisplayName}",
                             JobUserFeedbackType.BackgroundFeedback),

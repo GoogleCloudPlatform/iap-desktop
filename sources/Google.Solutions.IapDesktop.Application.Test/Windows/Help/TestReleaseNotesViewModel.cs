@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
         {
             var adapter = new Mock<IGithubAdapter>();
             adapter
-                .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
+                .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("mock"));
 
             var viewModel = new ReleaseNotesViewModel(
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
 
             var adapter = new Mock<IGithubAdapter>();
             adapter
-                .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
+                .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
                     oldRelease.Object,
                     currentRelease.Object,
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
 
             var adapter = new Mock<IGithubAdapter>();
             adapter
-                .Setup(a => a.ListReleases(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
+                .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
                      oldRelease.Object,
                      currentRelease.Object,
