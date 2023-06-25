@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 // open until the app is closed, but don't await.
                 //
                 _ = process
-                    .WaitAsync(TimeSpan.MaxValue)
+                    .WaitAsync(TimeSpan.MaxValue, CancellationToken.None)
                     .ContinueWith(_ =>
                     {
                         transport.Dispose();

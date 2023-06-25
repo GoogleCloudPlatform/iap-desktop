@@ -31,6 +31,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
     [TestFixture]
     public class TestWin32Process
     {
+        private const uint SystemProcessId = 4;
+
         private static readonly string CmdExe
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
 
@@ -73,6 +75,29 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 process.Terminate(1);
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // IsRunning.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsRunning()
+        {
+            var factory = new Win32ProcessFactory();
+
+            var process = factory.CreateProcess(
+                CmdExe,
+                null);
+            
+            Assert.IsTrue(process.IsRunning);
+
+            process.Resume();
+            Assert.IsTrue(process.IsRunning);
+
+            process.Dispose();
+            Assert.IsFalse(process.IsRunning);
         }
 
         //---------------------------------------------------------------------
@@ -192,7 +217,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProcessHasNoWindows_ThenCloseReturnsFalse()
+        public async Task WhenProcessHasNoWindows_ThenCloseReturnsTrue()
         {
             var factory = new Win32ProcessFactory();
 
@@ -204,10 +229,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.AreEqual(0, process.WindowCount);
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.Zero)
+                    .CloseAsync(TimeSpan.Zero, CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsFalse(terminatedGracefully);
+                Assert.IsTrue(terminatedGracefully);
             }
         }
 
@@ -231,7 +256,26 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 }
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.FromSeconds(10))
+                    .CloseAsync(TimeSpan.FromSeconds(10), CancellationToken.None)
+                    .ConfigureAwait(false);
+                Assert.IsTrue(terminatedGracefully);
+            }
+        }
+
+        [Test]
+        public async Task WhenProcessTerminated_ThenCloseReturnsTrue()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                NotepadExe,
+                null))
+            {
+                process.Terminate(0);
+
+
+                var terminatedGracefully = await process
+                    .CloseAsync(TimeSpan.FromSeconds(10), CancellationToken.None)
                     .ConfigureAwait(false);
                 Assert.IsTrue(terminatedGracefully);
             }
@@ -253,7 +297,30 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Resume();
 
                 ExceptionAssert.ThrowsAggregateException<TimeoutException>(
-                    () => process.WaitAsync(TimeSpan.FromMilliseconds(5)).Wait());
+                    () => process
+                        .WaitAsync(TimeSpan.FromMilliseconds(5), CancellationToken.None)
+                        .Wait());
+
+                process.Terminate(0);
+            }
+        }
+
+        [Test]
+        public void WhenCancelled_ThenWaitThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            using (var cts = new CancellationTokenSource())
+            {
+                var task = process.WaitAsync(TimeSpan.FromSeconds(5), cts.Token);
+
+                cts.Cancel();
+
+                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                    () => task.Wait());
 
                 process.Terminate(0);
             }
@@ -272,11 +339,75 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Terminate(1);
 
                 var exitCode = await process
-                    .WaitAsync(TimeSpan.FromMilliseconds(5))
+                    .WaitAsync(TimeSpan.FromMilliseconds(5), CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(1, exitCode);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // FromProcessId.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProcessAccessible_ThenFromProcessIdReturnsProcess()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                process.Resume();
+
+                using (var openedProcess = Win32Process.FromProcessId(process.Id))
+                {
+                    Assert.IsNotNull(openedProcess);
+                    Assert.AreEqual(process.ImageName, openedProcess.ImageName);
+                    Assert.IsTrue(openedProcess.IsRunning);
+                }
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenProcessInccessible_ThenFromProcessThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            Assert.Throws<DispatchException>(
+                () => Win32Process.FromProcessId(SystemProcessId));
+        }
+
+        [Test]
+        public void WhenProcessOpenedById_ThenResumeThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(
+                CmdExe,
+                null))
+            {
+                process.Resume();
+                
+                using (var openedProcess = Win32Process.FromProcessId(process.Id))
+                {
+                    Assert.Throws<DispatchException>(() => openedProcess.Resume());
+                }
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenProcessIdDoesNotExist_ThenFromProcessThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            Assert.Throws<DispatchException>(
+                () => Win32Process.FromProcessId(1));
         }
     }
 }

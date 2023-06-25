@@ -68,6 +68,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -559,6 +560,37 @@ namespace Google.Solutions.IapDesktop
                 // Show the main window.
                 //
                 System.Windows.Forms.Application.Run(mainForm);
+
+                if (processFactory.ChildProcesses > 0)
+                {
+                    //
+                    // Instead of killing child processes outright, give
+                    // them a chance to close gracefully (and possibly
+                    // save any work).
+                    //
+                    try
+                    {
+                        WaitDialog.Wait(
+                            null,
+                            "Waiting for applications to close...",
+                            cancellationToken =>
+                            {
+                                //
+                                // Give child processes a fixed time to close,
+                                // but the user might cancel early.
+                                //
+                                return processFactory.CloseAsync(
+                                    TimeSpan.FromSeconds(30),
+                                    cancellationToken);
+                            });
+                    }
+                    catch (Exception e)
+                    {
+#if DEBUG
+                        ShowFatalError(e);
+#endif
+                    }
+                }
 
                 //
                 // Ensure logs are flushed.
