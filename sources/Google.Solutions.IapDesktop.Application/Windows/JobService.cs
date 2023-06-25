@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
             var feedback = this.host.ShowFeedback(jobDescription, cts);
 
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 using (cts)
                 {
