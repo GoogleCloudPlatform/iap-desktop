@@ -26,6 +26,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CS0067 // The event 'ResourceTaskExtensions.Authorization.Reauthorized' is never used
+#pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
+
 namespace Google.Solutions.Testing.Apis.Integration
 {
     public static class ResourceTaskExtensions
