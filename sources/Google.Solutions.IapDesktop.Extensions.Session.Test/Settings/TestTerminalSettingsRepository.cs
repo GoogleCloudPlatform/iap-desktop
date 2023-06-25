@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
 
-    public class TestTerminalSettingsRepository : ShellFixtureBase
+    public class TestTerminalSettingsRepository
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(

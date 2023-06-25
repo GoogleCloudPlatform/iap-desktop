@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
     [TestFixture]
 
     [Apartment(ApartmentState.STA)]
-    public class TestSessionPaneBase : ShellFixtureBase
+    public class TestSessionPaneBase
     {
         //---------------------------------------------------------------------
         // Context menu.

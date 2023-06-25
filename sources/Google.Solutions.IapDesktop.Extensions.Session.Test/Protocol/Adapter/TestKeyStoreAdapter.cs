@@ -31,7 +31,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
 {
     [TestFixture]
-    public class TestKeyStoreAdapter : ShellFixtureBase
+    public class TestKeyStoreAdapter
     {
         // This is for testing only, so use a weak key size.
         private static readonly string KeyName = "test-" + typeof(TestKeyStoreAdapter).Name;

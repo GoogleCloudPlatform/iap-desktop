@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.ConnectionSettings
 {
     [TestFixture]
-    public class TestConnectionSettingsViewModel : ShellFixtureBase
+    public class TestConnectionSettingsViewModel
     {
         private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";

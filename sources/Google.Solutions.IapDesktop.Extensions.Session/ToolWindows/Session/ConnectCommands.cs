@@ -36,9 +36,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     {
         public ConnectCommands(
             UrlCommands urlCommands,
-            Service<ISessionContextFactory> sessionContextFactory,
-            Service<IProjectWorkspace> workspace,
-            Service<IInstanceSessionBroker> sessionBroker)
+            ISessionContextFactory sessionContextFactory,
+            IProjectWorkspace workspace,
+            IInstanceSessionBroker sessionBroker)
         {
             //
             // Install command for launching URLs.
@@ -123,12 +123,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class DuplicateSessionCommand : MenuCommandBase<ISession>
         {
-            private readonly Service<IProjectWorkspace> workspace;
+            private readonly IProjectWorkspace workspace;
             private readonly IContextCommand<IProjectModelNode> connectInNewTerminalCommand;
 
             public DuplicateSessionCommand(
                 string text,
-                Service<IProjectWorkspace> workspace,
+                IProjectWorkspace workspace,
                 IContextCommand<IProjectModelNode> connectInNewTerminalCommand)
                 : base(text)
             {
@@ -158,7 +158,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 // been unloaded in the meantime).
                 //
                 var node = await this.workspace
-                    .GetInstance()
                     .GetNodeAsync(sshSession.Instance, CancellationToken.None)
                     .ConfigureAwait(true);
 

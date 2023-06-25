@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Credentials
 {
     [TestFixture]
-    public class TestGenerateCredentialsViewModel : ShellFixtureBase
+    public class TestGenerateCredentialsViewModel
     {
         //---------------------------------------------------------------------
         // IsUsernameReserved.

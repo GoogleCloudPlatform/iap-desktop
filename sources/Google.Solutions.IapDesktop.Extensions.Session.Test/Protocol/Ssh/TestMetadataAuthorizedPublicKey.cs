@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestMetadataAuthorizedPublicKey : ShellFixtureBase
+    public class TestMetadataAuthorizedPublicKey
     {
         //---------------------------------------------------------------------
         // Parse.

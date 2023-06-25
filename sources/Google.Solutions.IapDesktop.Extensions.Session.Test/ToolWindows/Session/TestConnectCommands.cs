@@ -56,16 +56,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             Mock<IProjectWorkspace> modelService,
             Mock<IInstanceSessionBroker> sessionBroker)
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Add(contextFactory.Object);
-            serviceProvider.Add(modelService.Object);
-            serviceProvider.Add(sessionBroker.Object);
-
             return new ConnectCommands(
                 urlCommands,
-                new Service<ISessionContextFactory>(serviceProvider.Object),
-                new Service<IProjectWorkspace>(serviceProvider.Object),
-                new Service<IInstanceSessionBroker>(serviceProvider.Object));
+                contextFactory.Object,
+                modelService.Object,
+                sessionBroker.Object);
         }
 
         //---------------------------------------------------------------------

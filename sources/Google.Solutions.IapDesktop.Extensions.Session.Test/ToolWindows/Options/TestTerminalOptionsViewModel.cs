@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Options
 {
     [TestFixture]
-    public class TestTerminalOptionsViewModel : ShellFixtureBase
+    public class TestTerminalOptionsViewModel
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey

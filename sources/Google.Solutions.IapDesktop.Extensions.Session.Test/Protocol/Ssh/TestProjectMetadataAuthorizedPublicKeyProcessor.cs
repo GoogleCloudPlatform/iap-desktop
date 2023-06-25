@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestProjectMetadataAuthorizedPublicKeyProcessor : ShellFixtureBase
+    public class TestProjectMetadataAuthorizedPublicKeyProcessor
     {
         private static readonly ProjectLocator SampleLocator
             = new ProjectLocator("project-1");

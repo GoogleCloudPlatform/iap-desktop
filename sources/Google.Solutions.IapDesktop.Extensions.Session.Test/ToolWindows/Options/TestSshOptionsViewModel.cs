@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Options
 {
     [TestFixture]
-    public class TestSshOptionsViewModel : ShellFixtureBase
+    public class TestSshOptionsViewModel
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";

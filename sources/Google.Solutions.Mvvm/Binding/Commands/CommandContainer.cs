@@ -64,7 +64,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     {
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
-        private readonly CommandContainer<TContext> parent; // TODO: Remove unused field
         private readonly IBindingContext bindingContext;
 
         internal IContextSource<TContext> ContextSource { get; }
@@ -74,11 +73,9 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
             IContextSource<TContext> contextSource,
-            CommandContainer<TContext> parent,
             ObservableCollection<MenuItemViewModelBase> items,
             IBindingContext bindingContext)
         {
-            this.parent = parent;
             this.displayStyle = displayStyle;
             this.menuItems = items;
             this.ContextSource = contextSource;
@@ -92,7 +89,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             : this(
                   displayStyle,
                   contextSource,
-                  null,
                   new ObservableCollection<MenuItemViewModelBase>(),
                   bindingContext)
         {
@@ -207,7 +203,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             return new CommandContainer<TContext>(
                 this.displayStyle,
                 this.ContextSource,
-                this,
                 item.Children,
                 this.bindingContext);
         }

@@ -35,12 +35,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     /// </summary>
     internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
-        private readonly Service<ISessionContextFactory> sessionContextFactory;
-        private readonly Service<IInstanceSessionBroker> sessionBroker;
+        private readonly ISessionContextFactory sessionContextFactory;
+        private readonly IInstanceSessionBroker sessionBroker;
 
         public ConnectRdpUrlCommand(
-            Service<ISessionContextFactory> sessionContextFactory,
-            Service<IInstanceSessionBroker> sessionBroker)
+            ISessionContextFactory sessionContextFactory,
+            IInstanceSessionBroker sessionBroker)
             : base("Launch &RDP URL")
         {
             this.sessionContextFactory = sessionContextFactory;
@@ -59,9 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public override async Task ExecuteAsync(IapRdpUrl url)
         {
-            if (this.sessionBroker
-                .GetInstance()
-                .TryActivate(url.Instance, out var activeSession))
+            if (this.sessionBroker.TryActivate(url.Instance, out var activeSession))
             {
                 //
                 // There is an existing session, and it's now active.
@@ -75,12 +73,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 // Create new session.
                 //
                 var context = await this.sessionContextFactory
-                    .GetInstance()
                     .CreateRdpSessionContextAsync(url, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 var session = await this.sessionBroker
-                    .GetInstance()
                     .CreateSessionAsync(context)
                     .ConfigureAwait(true);
 

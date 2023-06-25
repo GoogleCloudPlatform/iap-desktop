@@ -41,7 +41,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKeys
 {
     [TestFixture]
-    public class TestAuthorizedPublicKeysViewModel : ShellFixtureBase
+    public class TestAuthorizedPublicKeysViewModel
     {
         private class JobServiceMock : IJobService
         {

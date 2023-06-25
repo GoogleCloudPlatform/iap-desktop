@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestVirtualTerminal : ShellFixtureBase
+    public class TestVirtualTerminal
     {
         private readonly string Esc = "\u001b";
 

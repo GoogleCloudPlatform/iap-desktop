@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
 
-    public class TestSshSettingsRepository : ShellFixtureBase
+    public class TestSshSettingsRepository
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";

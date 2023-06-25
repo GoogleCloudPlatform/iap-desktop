@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 {
     [TestFixture]
-    public class TestSshAuthenticationPromptViewModel : ShellFixtureBase
+    public class TestSshAuthenticationPromptViewModel
     {
         [Test]
         public void WhenTitleSet_ThenNotificationIsRaised()

@@ -31,7 +31,7 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
-    public class TestConnectionSettingsRepository : ShellFixtureBase
+    public class TestConnectionSettingsRepository
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(

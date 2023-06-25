@@ -26,7 +26,7 @@ using System.Security;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 {
     [TestFixture]
-    public class TestRdpCredential : ShellFixtureBase
+    public class TestRdpCredential
     {
         //---------------------------------------------------------------------
         // ToString.

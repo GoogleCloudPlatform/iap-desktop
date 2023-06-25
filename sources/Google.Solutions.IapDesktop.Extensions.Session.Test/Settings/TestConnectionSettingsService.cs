@@ -31,7 +31,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
-    public class TestConnectionSettingsService : ShellFixtureBase
+    public class TestConnectionSettingsService
     {
         private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";

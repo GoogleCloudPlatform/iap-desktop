@@ -64,8 +64,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .Returns(true);
 
             var command = new ConnectRdpUrlCommand(
-                new Service<ISessionContextFactory>(serviceProvider.Object),
-                new Service<IInstanceSessionBroker>(serviceProvider.Object));
+                contextFactory.Object,
+                sessionBroker.Object);
 
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
             await command
@@ -89,17 +89,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ReturnsAsync(context.Object);
 
             ISession nullSession;
-            var rdpSessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
-            rdpSessionBroker
+            var sessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
-            rdpSessionBroker
+            sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
                 .Returns(false);
 
             var command = new ConnectRdpUrlCommand(
-                new Service<ISessionContextFactory>(serviceProvider.Object),
-                new Service<IInstanceSessionBroker>(serviceProvider.Object));
+                contextFactory.Object,
+                sessionBroker.Object);
 
             await command
                 .ExecuteAsync(SampleUrl)

@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKeys
 {
     [TestFixture]
-    public class TestAuthorizedPublicKeysModel : ShellFixtureBase
+    public class TestAuthorizedPublicKeysModel
     {
         private static Mock<IProjectModelProjectNode> CreateProjectNodeMock(
             string projectId,
