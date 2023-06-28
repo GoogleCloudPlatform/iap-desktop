@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
         private class SynchrounousJobService : IJobService
         {
-            public Task<T> RunInBackground<T>(
+            public Task<T> RunAsync<T>(
                 JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
                 => jobFunc(CancellationToken.None);

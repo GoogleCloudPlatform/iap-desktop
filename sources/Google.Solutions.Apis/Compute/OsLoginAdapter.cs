@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Delete existing authorized key.
         /// </summary>
-        Task DeleteSshPublicKey(
+        Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken);
     }
@@ -152,7 +152,7 @@ namespace Google.Solutions.Apis.Compute
                             "You do not have sufficient permissions to publish an SSH " +
                             "key to OS Login",
                             HelpTopics.ManagingOsLogin,
-                            new GoogleApiException("oslogin", response.Details ?? String.Empty));
+                            new GoogleApiException("oslogin", response.Details ?? string.Empty));
                     }
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
@@ -198,7 +198,7 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
-        public async Task DeleteSshPublicKey(
+        public async Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken)
         {

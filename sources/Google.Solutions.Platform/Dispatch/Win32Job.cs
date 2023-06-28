@@ -299,8 +299,8 @@ namespace Google.Solutions.Platform.Dispatch
             [StructLayout(LayoutKind.Sequential)]
             internal struct JOBOBJECT_BASIC_LIMIT_INFORMATION
             {
-                public Int64 PerProcessUserTimeLimit;
-                public Int64 PerJobUserTimeLimit;
+                public long PerProcessUserTimeLimit;
+                public long PerJobUserTimeLimit;
                 public JOB_OBJECT_LIMIT LimitFlags;
                 public UIntPtr MinimumWorkingSetSize;
                 public UIntPtr MaximumWorkingSetSize;
@@ -313,12 +313,12 @@ namespace Google.Solutions.Platform.Dispatch
             [StructLayout(LayoutKind.Sequential)]
             internal struct IO_COUNTERS
             {
-                public UInt64 ReadOperationCount;
-                public UInt64 WriteOperationCount;
-                public UInt64 OtherOperationCount;
-                public UInt64 ReadTransferCount;
-                public UInt64 WriteTransferCount;
-                public UInt64 OtherTransferCount;
+                public ulong ReadOperationCount;
+                public ulong WriteOperationCount;
+                public ulong OtherOperationCount;
+                public ulong ReadTransferCount;
+                public ulong WriteTransferCount;
+                public ulong OtherTransferCount;
             }
 
             [StructLayout(LayoutKind.Sequential)]

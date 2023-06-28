@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            adapter.Verify(a => a.DeleteSshPublicKey(
+            adapter.Verify(a => a.DeleteSshPublicKeyAsync(
                     It.Is<string>(f => f == "fingerprint-1"),
                     It.IsAny<CancellationToken>()),
                 Times.Once());

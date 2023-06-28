@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         private async Task<RdpCredential> GenerateRdpCredentialAsync(
             InstanceLocator instanceLocator)
         {
-            var windowsCredentials = await GenerateWindowsCredentials(instanceLocator)
+            var windowsCredentials = await GenerateWindowsCredentialsAsync(instanceLocator)
                 .ConfigureAwait(true);
 
             return new RdpCredential(

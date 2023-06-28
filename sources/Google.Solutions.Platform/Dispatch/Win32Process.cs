@@ -128,7 +128,7 @@ namespace Google.Solutions.Platform.Dispatch
 
         private void EnumerateTopLevelWindows(Action<IntPtr> action)
         {
-            NativeMethods.EnumWindowsProc callback = (hwnd, _) =>
+            bool callback(IntPtr hwnd, int _)
             {
                 if (!NativeMethods.IsWindowVisible(hwnd))
                 {
@@ -153,7 +153,7 @@ namespace Google.Solutions.Platform.Dispatch
                 //
 
                 return true;
-            };
+            }
 
             //
             // Enumerate all top-level windows.

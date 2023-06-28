@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                     // of authentication issues.
                     //
                     return await this.jobService
-                        .RunInBackground(
+                        .RunAsync(
                             new JobDescription(
                                 $"Loading information about {vmNode.Instance.Name}",
                                 JobUserFeedbackType.BackgroundFeedback),

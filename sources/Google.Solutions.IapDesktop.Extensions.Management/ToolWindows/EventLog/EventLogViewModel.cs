@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    return await this.jobService.RunInBackground(
+                    return await this.jobService.RunAsync(
                         new JobDescription(
                             $"Loading logs for {displayName}",
                             JobUserFeedbackType.BackgroundFeedback),

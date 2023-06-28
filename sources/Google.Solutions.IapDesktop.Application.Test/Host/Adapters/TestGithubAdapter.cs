@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
-                    .ListReleases(1, CancellationToken.None)
+                    .ListReleasesAsync(1, CancellationToken.None)
                     .Wait());
         }
 
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
             var adapter = new GithubAdapter(restAdapter.Object);
 
             CollectionAssert.IsEmpty(await adapter
-                .ListReleases(1, CancellationToken.None)
+                .ListReleasesAsync(1, CancellationToken.None)
                 .ConfigureAwait(false));
         }
 

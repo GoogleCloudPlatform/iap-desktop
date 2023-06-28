@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         {
             public int Calls = 0;
 
-            public Task<T> RunInBackground<T>(
+            public Task<T> RunAsync<T>(
                 JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
             {

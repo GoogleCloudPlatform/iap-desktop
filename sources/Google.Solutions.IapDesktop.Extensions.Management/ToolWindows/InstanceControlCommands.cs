@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 //
                 await this.serviceProvider
                     .GetService<IJobService>()
-                    .RunInBackground<object>(
+                    .RunAsync<object>(
                         new JobDescription(
                             $"{this.ActivityText} {instance.Name}...",
                             JobUserFeedbackType.BackgroundFeedback),
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 //
                 await this.serviceProvider
                     .GetService<IJobService>()
-                    .RunInBackground<object>(
+                    .RunAsync<object>(
                         new JobDescription(
                             $"Joining {instance.DisplayName} to {domainName}...",
                             JobUserFeedbackType.BackgroundFeedback),

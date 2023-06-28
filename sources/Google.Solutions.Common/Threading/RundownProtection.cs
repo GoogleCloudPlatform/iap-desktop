@@ -51,7 +51,7 @@ namespace Google.Solutions.Common.Threading
 
         public Task AwaitRundown()
         {
-            return this.rundownEvent.Await();
+            return this.rundownEvent.WaitAsync();
         }
 
         public void Dispose()

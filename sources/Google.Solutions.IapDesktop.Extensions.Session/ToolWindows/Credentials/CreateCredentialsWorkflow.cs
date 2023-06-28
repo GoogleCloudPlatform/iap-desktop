@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 }
             }
 
-            var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
+            var credentials = await this.serviceProvider.GetService<IJobService>().RunAsync(
                 new JobDescription("Generating Windows logon credentials..."),
                 token => this.serviceProvider
                     .GetService<IWindowsCredentialGenerator>()

@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Debug.Assert(key is AuthorizedPublicKey);
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(key))
             {
-                await this.adapter.DeleteSshPublicKey(
+                await this.adapter.DeleteSshPublicKeyAsync(
                         ((AuthorizedPublicKey)key).Fingerprint,
                         cancellationToken)
                     .ConfigureAwait(false);

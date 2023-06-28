@@ -419,7 +419,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                         (ulong)selectedFiles.Count(),
                         (ulong)selectedFiles.Sum(f => (long)f.Size)))
                     {
-                        return await this.jobService.RunInBackground<bool>(
+                        return await this.jobService.RunAsync<bool>(
                             new JobDescription(
                                 $"Downloading files from {this.Instance.Name}",
                                 JobUserFeedbackType.BackgroundFeedback),
@@ -538,7 +538,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     (ulong)files.Count(),
                     (ulong)files.Sum(f => f.Length)))
                 {
-                    return await this.jobService.RunInBackground<bool>(
+                    return await this.jobService.RunAsync<bool>(
                         new JobDescription(
                             $"Uploading files to {this.Instance.Name}",
                             JobUserFeedbackType.BackgroundFeedback),

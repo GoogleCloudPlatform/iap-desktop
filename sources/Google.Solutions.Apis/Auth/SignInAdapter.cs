@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Auth
 {
     public interface ISignInAdapter
     {
-        Task DeleteStoredRefreshToken();
+        Task DeleteRefreshTokenAsync();
 
         Task<UserCredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token);
@@ -124,7 +124,7 @@ namespace Google.Solutions.Apis.Auth
             }
         }
 
-        public Task DeleteStoredRefreshToken()
+        public Task DeleteRefreshTokenAsync()
         {
             return this.dataStore.DeleteAsync<TokenResponse>(StoreUserId);
         }
@@ -163,7 +163,7 @@ namespace Google.Solutions.Apis.Auth
                     // The existing auth might be fine, but it lacks a scope.
                     // Delete it so that it does not cause harm later.
                     //
-                    await DeleteStoredRefreshToken().ConfigureAwait(false);
+                    await DeleteRefreshTokenAsync().ConfigureAwait(false);
 
                     flow.Dispose();
                     return null;

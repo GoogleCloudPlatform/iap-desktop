@@ -28,7 +28,7 @@ namespace Google.Solutions.Testing.Application.Mocks
 {
     public class SynchronousJobService : IJobService
     {
-        public Task<T> RunInBackground<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
+        public Task<T> RunAsync<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
         {
             return jobFunc(CancellationToken.None);
         }

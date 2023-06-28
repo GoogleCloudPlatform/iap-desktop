@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             }
         }
 
-        private async Task<IReadOnlyCollection<IProjectModelZoneNode>> LoadZones(
+        private async Task<IReadOnlyCollection<IProjectModelZoneNode>> LoadZonesAsync(
             ProjectLocator project,
             CancellationToken token)
         {
@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         .Projects
                         .Select(p => new {
                             p.Project,
-                            Zones = LoadZones(p.Project, token)
+                            Zones = LoadZonesAsync(p.Project, token)
                         })
 
                         //
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         //
                         // Load from backend and cache.
                         //
-                        zones = await LoadZones(project, token)
+                        zones = await LoadZonesAsync(project, token)
                             .ConfigureAwait(false);
                         this.cachedZones[project] = zones;
                     }

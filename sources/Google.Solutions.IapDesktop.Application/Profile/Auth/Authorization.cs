@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         public Task RevokeAsync()
         {
-            return this.adapter.DeleteStoredRefreshToken();
+            return this.adapter.DeleteRefreshTokenAsync();
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)

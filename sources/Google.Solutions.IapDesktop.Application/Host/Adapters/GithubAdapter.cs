@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         /// <summary>
         /// List latest releases.
         /// </summary>
-        Task<IEnumerable<IGitHubRelease>> ListReleases(
+        Task<IEnumerable<IGitHubRelease>> ListReleasesAsync(
             ushort maxCount,
             CancellationToken cancellationToken);
     }
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
         }
 
-        public async Task<IEnumerable<IGitHubRelease>> ListReleases(
+        public async Task<IEnumerable<IGitHubRelease>> ListReleasesAsync(
             ushort maxCount,
             CancellationToken cancellationToken)
         {

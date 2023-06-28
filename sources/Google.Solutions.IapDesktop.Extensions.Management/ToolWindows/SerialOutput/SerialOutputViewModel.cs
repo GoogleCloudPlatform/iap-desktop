@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    return await this.jobService.RunInBackground(
+                    return await this.jobService.RunAsync(
                         new JobDescription(
                             $"Reading serial port output for {vmNode.Instance.Name}",
                             JobUserFeedbackType.BackgroundFeedback),

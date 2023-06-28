@@ -73,7 +73,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 throw new IOException(
                     $"The theme {resourceName} does not exist");
-
             }
 
             using (var gzipStream = assembly.GetManifestResourceStream(qualifiedResourceName))
