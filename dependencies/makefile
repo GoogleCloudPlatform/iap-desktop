@@ -30,9 +30,13 @@ DIRS=\
     $(MAKEDIR)\sources\dockpanelsuite \
     $(MAKEDIR)\sources\libssh2
     
+!if ( "$(KOKORO_BUILD_NUMBER)" == "" ) 
+# This package cannot be built in Kokoro
+PACKAGES=$(MAKEDIR)\sources\tsc\obj\google.solutions.tsc.nupkg
+!endif
+
 # Nuget packages to build
-PACKAGES=\
-    $(MAKEDIR)\sources\tsc\obj\google.solutions.tsc.nupkg \
+PACKAGES=$(PACKAGES) \
     $(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
     $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
     $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
