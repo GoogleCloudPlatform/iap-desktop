@@ -110,12 +110,8 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "=== Creating staging area for installer              ==="
 	@echo "========================================================"
     
-	dir /S $(MAKEDIR)\installer
-    
-    cacls .
-    md test
-    md test\test2
-    
+    if not exist $(MAKEDIR)\installer\obj \
+        md $(MAKEDIR)\installer\obj
     if not exist $(MAKEDIR)\installer\obj\$(PLATFORM) \
         md $(MAKEDIR)\installer\obj\$(PLATFORM)
     if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION) \
