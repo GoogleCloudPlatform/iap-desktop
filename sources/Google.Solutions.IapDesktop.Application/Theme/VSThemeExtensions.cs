@@ -20,6 +20,7 @@
 
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Interop;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -88,14 +89,30 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private class MinimizableFloatWindow : FloatWindow
         {
-            public MinimizableFloatWindow(DockPanel dockPanel, DockPane pane)
+            private readonly IControlTheme theme;
+
+            public MinimizableFloatWindow(
+                DockPanel dockPanel, 
+                DockPane pane,
+                IControlTheme theme)
                 : base(dockPanel, pane)
             {
+                this.theme = theme;
             }
 
-            public MinimizableFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+            public MinimizableFloatWindow(
+                DockPanel dockPanel, 
+                DockPane pane, 
+                Rectangle bounds,
+                IControlTheme theme)
                 : base(dockPanel, pane, bounds)
             {
+                this.theme = theme;
+            }
+
+            public void ApplyTheme()
+            {
+                this.theme?.ApplyTo(this);
             }
 
             protected override void WndProc(ref Message m)
@@ -146,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 {
                     //
                     // b/262842025: When the parent window is closed, it requests float 
-                    // windows to dispose by sending it a WM_USER+1 message (see FloátWindow 
+                    // windows to dispose by sending it a WM_USER+1 message (see FloatWindow 
                     // in DockPanelSuite).
                     //
                     // This WM_USER+1 message is handled asynchronously. Thus, the parent 
@@ -163,14 +180,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         internal class FloatWindowFactory : DockPanelExtender.IFloatWindowFactory
         {
+            public IControlTheme Theme { get; set; }
+
             public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
             {
-                return new MinimizableFloatWindow(dockPanel, pane, bounds);
+                var window = new MinimizableFloatWindow(dockPanel, pane, bounds, this.Theme);
+                window.ApplyTheme();
+                return window;
             }
 
             public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
             {
-                return new MinimizableFloatWindow(dockPanel, pane);
+                var window = new MinimizableFloatWindow(dockPanel, pane, this.Theme);
+                window.ApplyTheme();
+                return window;
             }
         }
 
@@ -248,6 +271,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     pane.FloatWindow.ShowInTaskbar = true;
                     pane.FloatWindow.Owner = null;
 
+                    //
+                    // Setting the properties above makes Windows forget about
+                    // whether the window was supposed to use light or dark mode.
+                    // Reapply theme to restore theming consistency.
+                    //
+                    ((MinimizableFloatWindow)pane.FloatWindow).ApplyTheme();
+
                     return pane;
                 }
                 else
@@ -256,7 +286,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 }
             }
         }
-
 
         //---------------------------------------------------------------------
         // P/Invoke.
