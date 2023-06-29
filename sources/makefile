@@ -193,7 +193,7 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 
 	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols \
-		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\\symbols
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
 	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.pdb \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
@@ -206,6 +206,8 @@ $(POLICIES_PACKAGE):
 	@echo "=== Packaging policy templates                       ==="
 	@echo "========================================================"
 
+	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies \
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies
 	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us \
 		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us
 
