@@ -112,6 +112,7 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
     
 	dir /S $(MAKEDIR)\installer
     
+    cacls .
     md test
     md test\test2
     
