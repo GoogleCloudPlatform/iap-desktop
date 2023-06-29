@@ -111,6 +111,8 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
     
 	dir /S $(MAKEDIR)\installer
+    
+    md /?
     md test
     md test2\test
     
