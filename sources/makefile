@@ -102,9 +102,6 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): themes Google.Solutions.IapDesktop\OAuthCl
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
     
-    echo "Path"
-    echo $(PATH)
-
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);Version=$(BINARY_VERSION)
 	
 !if ( "$(SKIP_ASSEMBLY_BUILD)" == "" ) 
