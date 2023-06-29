@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     [SkipCodeCoverage("UI")]
-    public partial class AuthorizeView : Form, IView<AuthorizeViewModel>
+    public partial class AuthorizeView : CompositeForm, IView<AuthorizeViewModel>
     {
         public AuthorizeView()
         {
