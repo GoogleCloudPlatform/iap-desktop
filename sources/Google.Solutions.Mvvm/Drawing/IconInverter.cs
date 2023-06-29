@@ -189,13 +189,34 @@ namespace Google.Solutions.Mvvm.Drawing
         /// <summary>
         /// Invert and adjust colors of all images in an image list.
         /// </summary>
-        public void Invert(ImageList imageList)
+        /// <returns>true if inverted, false if it was inverted before.</returns>
+        public bool Invert(ImageList imageList)
         {
             if (imageList == null)
             {
-                return;
+                return false;
             }
 
+            Debug.Assert(
+                imageList.Tag == null || imageList.Tag == invertedTag,
+                "ImageList has existing tag");
+
+            if (imageList.Tag == invertedTag)
+            {
+                //
+                // Icon has been inverted already.
+                // 
+                // NB. This check seems redundant to the check we do 
+                // for individual images. But when we invert an image
+                // from an image list, the tag is lost. Therefore, we
+                // must attach a tag to the image list as well.
+                //
+                return false;
+            }
+
+            //
+            // Invert all icons.
+            //
             var images = imageList.Images.Cast<Image>().ToList();
             imageList.Images.Clear();
 
@@ -204,6 +225,13 @@ namespace Google.Solutions.Mvvm.Drawing
                 Invert((Bitmap)image);
                 imageList.Images.Add(image);
             }
+
+            //
+            // Add guard tag as indicator that this icon was inverted.
+            //
+            imageList.Tag = invertedTag;
+
+            return true;
         }
     }
 }
