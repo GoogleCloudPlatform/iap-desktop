@@ -106,6 +106,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.DialogTheme = dialogTheme;
             this.MainWindowTheme = dockWindowTheme;
             this.ToolWindowTheme = dockWindowTheme;
+
+            if (vsTheme.Extender.FloatWindowFactory is VSThemeExtensions.FloatWindowFactory factory)
+            {
+                factory.Theme = dialogTheme;
+            }
         }
 
         //---------------------------------------------------------------------
