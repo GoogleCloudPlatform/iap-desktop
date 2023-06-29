@@ -112,9 +112,8 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
     
 	dir /S $(MAKEDIR)\installer
     
-    md /?
     md test
-    md test2\test
+    md test\test2
     
     if not exist $(MAKEDIR)\installer\obj\$(PLATFORM) \
         md $(MAKEDIR)\installer\obj\$(PLATFORM)
