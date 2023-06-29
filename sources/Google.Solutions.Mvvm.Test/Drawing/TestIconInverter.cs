@@ -108,7 +108,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInvertedBefore_ThenInvertReturnsFalse()
+        public void WhenImageInvertedBefore_ThenInvertReturnsFalse()
         {
             var icon = Resources.Copy_16x;
             var inverter = new IconInverter()
@@ -119,6 +119,24 @@ namespace Google.Solutions.Mvvm.Test.Drawing
 
             Assert.IsTrue(inverter.Invert(icon));
             Assert.IsFalse(inverter.Invert(icon));
+        }
+
+        [Test]
+        public void WhenImageListInvertedBefore_ThenInvertReturnsFalse()
+        {
+            var icon = Resources.Copy_16x;
+            using (var imageList = new ImageList())
+            {
+                imageList.Images.Add(icon);
+                var inverter = new IconInverter()
+                {
+                    GrayFactor = .8f,
+                    ColorFactor = .8f
+                };
+
+                Assert.IsTrue(inverter.Invert(imageList));
+                Assert.IsFalse(inverter.Invert(imageList));
+            }
         }
     }
 }
