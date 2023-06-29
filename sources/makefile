@@ -109,11 +109,8 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Creating staging area for installer              ==="
 	@echo "========================================================"
-	dir /S $(MAKEDIR)\installer
-    if not exist $(MAKEDIR)\installer\obj\$(PLATFORM) \
-        md $(MAKEDIR)\installer\obj\$(PLATFORM)
-    if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION) \
-        md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+	
+    -md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 		
 	copy $(MAKEDIR)\installer\*.* \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
