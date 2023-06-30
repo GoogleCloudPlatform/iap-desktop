@@ -49,10 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             private static string Order(ushort order, string name)
             {
                 //
-                // PrpertyGrid don't provide a way to explicitly specify the order
-                // of categories. To work around that limitation, prefix the category
-                // names with zero-width spaces so that alphabetical sorting yields
-                // the desired result.
+                // The PropertyGrid control doesn't let us explicitly specify the
+                // order of categories. To work around that limitation, prefix 
+                // category names with zero-width spaces so that alphabetical 
+                // sorting yields the desired result.
                 //
 
                 Debug.Assert(order <= MaxIndex);
