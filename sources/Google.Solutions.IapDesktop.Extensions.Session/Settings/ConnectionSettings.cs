@@ -410,7 +410,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Categories.AppCredentials,
                 null,
                 key,
-                username => string.IsNullOrEmpty(username));
+                username => string.IsNullOrEmpty(username) || !username.Contains(' '));
 
             Debug.Assert(this.Settings.All(s => s != null));
         }

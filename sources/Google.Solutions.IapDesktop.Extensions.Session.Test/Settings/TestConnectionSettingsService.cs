@@ -58,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             settingsRepository.SetProjectSettings(projectSettings);
         }
 
-
         private IProjectModelProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectModelProjectNode>();
@@ -313,6 +312,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             CollectionAssert.IsNotSupersetOf(
                 settings.Settings,
                 settings.TypedCollection.RdpSettings);
+        }
+
+        //---------------------------------------------------------------------
+        // AppSettings.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void AppUsername()
+        {
+            var vmNode = CreateVmInstanceNode(false);
+
+            var settings = this.service.GetConnectionSettings(vmNode);
+
+            settings.TypedCollection.AppUsername.Value = "sa";
+            settings.TypedCollection.AppUsername.Value = null;
+            settings.TypedCollection.AppUsername.Value = string.Empty;
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => settings.TypedCollection.AppUsername.Value = "has spaces");
         }
     }
 }
