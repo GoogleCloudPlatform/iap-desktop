@@ -278,25 +278,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceIsWindows_ThenSettingsOnlyContainRdpSettings()
+        public void WhenInstanceIsWindows_ThenSettingsContainRdpAndAppSettings()
         {
             var vmNode = CreateVmInstanceNode(true);
 
             var settings = this.service.GetConnectionSettings(vmNode);
-            CollectionAssert.AreEquivalent(
-                settings.TypedCollection.RdpSettings,
-                settings.Settings);
+
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.RdpSettings);
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.AppSettings);
+
+            CollectionAssert.IsNotSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.SshSettings);
         }
 
         [Test]
-        public void WhenInstanceIsLinux_ThenSettingsOnlyContainRdpSettings()
+        public void WhenInstanceIsLinux_ThenSettingsContainSshAndAppSettings()
         {
             var vmNode = CreateVmInstanceNode(false);
 
             var settings = this.service.GetConnectionSettings(vmNode);
-            CollectionAssert.AreEquivalent(
-                settings.TypedCollection.SshSettings,
-                settings.Settings);
+
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.SshSettings);
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.AppSettings);
+
+            CollectionAssert.IsNotSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.RdpSettings);
         }
     }
 }

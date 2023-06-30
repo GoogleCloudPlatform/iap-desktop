@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     {
         private static class Categories
         {
-            private const ushort MaxIndex = 6;
+            private const ushort MaxIndex = 7;
 
             private static string Order(ushort order, string name)
             {
@@ -65,6 +65,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
             public static readonly string SshConnection = Order(5, "SSH Connection");
             public static readonly string SshCredentials = Order(6, "SSH Credentials");
+
+            public static readonly string AppCredentials = Order(7, "Client Application Credentials");
         }
 
         //---------------------------------------------------------------------
@@ -148,7 +150,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         };
 
         //---------------------------------------------------------------------
-        // Internals.
+        // App settings.
+        //---------------------------------------------------------------------
+
+        public RegistryStringSetting AppUsername { get; private set; }
+
+        internal IEnumerable<ISetting> AppSettings => new ISetting[]
+        {
+            //
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
+            //
+            this.AppUsername,
+        };
+
+        //---------------------------------------------------------------------
+        // Filtering.
         //---------------------------------------------------------------------
 
         internal bool AppliesTo(
@@ -173,7 +190,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // IRegistrySettingsCollection.
         //---------------------------------------------------------------------
 
-        public IEnumerable<ISetting> Settings => this.RdpSettings.Concat(this.SshSettings);
+        public IEnumerable<ISetting> Settings
+        {
+            get => this.RdpSettings
+                .Concat(this.SshSettings)
+                .Concat(this.AppSettings);
+        }
 
         protected void InitializeFromKey(RegistryKey key)
         {
@@ -377,6 +399,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 key,
                 0, 300);
 
+            //
+            // App Settings.
+            //
+
+            this.AppUsername = RegistryStringSetting.FromKey(
+                "AppUsername",
+                "Username",
+                "Preferred username for client applications",
+                Categories.AppCredentials,
+                null,
+                key,
+                username => string.IsNullOrEmpty(username));
+
             Debug.Assert(this.Settings.All(s => s != null));
         }
 
@@ -437,6 +472,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 baseSettings.SshUsername.OverlayBy(overlaySettings.SshUsername);
             prototype.SshConnectionTimeout = (RegistryDwordSetting)
                 baseSettings.SshConnectionTimeout.OverlayBy(overlaySettings.SshConnectionTimeout);
+
+            prototype.AppUsername = (RegistryStringSetting)
+                baseSettings.AppUsername.OverlayBy(overlaySettings.AppUsername);
 
             Debug.Assert(prototype.Settings.All(s => s != null));
             Debug.Assert(baseSettings.Settings.All(s => s != null));
