@@ -41,6 +41,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
+
+        private static class Categories
+        {
+            private const ushort MaxIndex = 6;
+
+            private static string Order(ushort order, string name)
+            {
+                //
+                // The PropertyGrid control doesn't let us explicitly specify the
+                // order of categories. To work around that limitation, prefix 
+                // category names with zero-width spaces so that alphabetical 
+                // sorting yields the desired result.
+                //
+
+                Debug.Assert(order <= MaxIndex);
+                return new string('\u200B', MaxIndex - order) + name;
+            }
+
+            public static readonly string RdpCredentials = Order(0, "Remote Desktop Credentials");
+            public static readonly string RdpConnection = Order(1, "Remote Desktop Connection");
+            public static readonly string RdpDisplay = Order(2, "Remote Desktop Display");
+            public static readonly string RdpResources = Order(3, "Remote Desktop Resources");
+            public static readonly string RdpSecurity = Order(4, "Remote Desktop Security Settings");
+
+            public static readonly string SshConnection = Order(5, "SSH Connection");
+            public static readonly string SshCredentials = Order(6, "SSH Credentials");
+        }
+
         //---------------------------------------------------------------------
         // RDP settings.
         //---------------------------------------------------------------------
@@ -70,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
             //
-            // NB. The order determines the default order in the propertg grid.
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
             //
             this.RdpTransport,
             this.RdpConnectionTimeout,
@@ -113,7 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
             //
-            // NB. The order determines the default order in the propertg grid.
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
             //
             this.SshTransport,
             this.SshConnectionTimeout,
@@ -126,18 +156,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         //---------------------------------------------------------------------
         // IRegistrySettingsCollection.
         //---------------------------------------------------------------------
-
-        private static class Categories
-        {
-            public const string RdpCredentials = "Remote Desktop Credentials";
-            public const string RdpConnection = "Remote Desktop Connection";
-            public const string RdpDisplay = "Remote Desktop Display";
-            public const string RdpResources = "Remote Desktop Resources";
-            public const string RdpSecurity = "Remote Desktop Security Settings";
-
-            public const string SshConnection = "SSH Connection";
-            public const string SshCredentials = "SSH Credentials";
-        }
 
         public IEnumerable<ISetting> Settings => this.RdpSettings.Concat(this.SshSettings);
 
