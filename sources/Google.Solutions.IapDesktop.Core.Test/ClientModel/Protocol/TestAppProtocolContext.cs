@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                         SampleLocator,
                         protocol.RemotePort,
                         protocol.LocalEndpoint,
-                        context.ConnectionTimeout,
+                        context.Parameters.ConnectionTimeout,
                         CancellationToken.None),
                     Times.Once);
             }

@@ -42,10 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// </summary>
         public NetworkCredential NetworkCredential { get; set; }
 
-        /// <summary>
-        /// Timeout for connecting transport.
-        /// </summary>
-        public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(20);
+        public AppProtocolParameters Parameters { get; }
 
         public AppProtocolContext(
             AppProtocol protocol,
@@ -57,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             this.transportFactory = transportFactory.ExpectNotNull(nameof(transportFactory));
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
             this.target = target.ExpectNotNull(nameof(target));
+            this.Parameters = new AppProtocolParameters();
         }
 
         //---------------------------------------------------------------------
@@ -101,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 this.target,
                 this.protocol.RemotePort,
                 this.protocol.LocalEndpoint,
-                this.ConnectionTimeout,
+                this.Parameters.ConnectionTimeout,
                 cancellationToken);
         }
 

@@ -51,7 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             var context = new RdpContext(
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 credential,
                 RdpParameters.ParameterSources.Inventory);
@@ -86,7 +85,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             var context = new RdpContext(
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpParameters.ParameterSources.Inventory);
@@ -102,14 +100,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
         {
-            var addressResolver = new Mock<IAddressResolver>();
-            addressResolver.Setup(
-                r => r.GetAddressAsync(
-                    SampleInstance,
-                    NetworkInterfaceType.PrimaryInternal,
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(IPAddress.Parse("20.21.22.23"));
-
             var transport = new Mock<ITransport>();
             var factory = new Mock<IDirectTransportFactory>();
             factory
@@ -124,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             var context = new RdpContext(
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
-                addressResolver.Object,
                 SampleInstance,
                 RdpCredential.Empty,
                 RdpParameters.ParameterSources.Inventory);
