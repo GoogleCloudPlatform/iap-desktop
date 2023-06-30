@@ -402,7 +402,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             // App Settings.
             //
-
             this.AppUsername = RegistryStringSetting.FromKey(
                 "AppUsername",
                 "Username",

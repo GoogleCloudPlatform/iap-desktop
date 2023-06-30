@@ -37,7 +37,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
     {
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;
-        private readonly IAddressResolver addressResolver;
 
         protected async Task<ITransport> ConnectTransportAsync(
             IProtocol protocol,
@@ -78,13 +77,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         protected SessionContextBase(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IAddressResolver addressResolver,
             InstanceLocator instance,
             TParameters parameters)
         {
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(SessionContextBase<TCredential, TParameters>.iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
-            this.addressResolver = addressResolver.ExpectNotNull(nameof(addressResolver));
             this.Instance = instance.ExpectNotNull(nameof(instance));
             this.Parameters = parameters.ExpectNotNull(nameof(parameters));
         }
