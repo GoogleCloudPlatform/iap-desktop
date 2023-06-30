@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
@@ -37,11 +38,8 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
-
-
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
-
         private static class Categories
         {
             private const ushort MaxIndex = 6;
@@ -128,8 +126,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpAuthenticationLevel,
         };
 
-        internal bool IsRdpSetting(ISetting setting) => this.RdpSettings.Contains(setting);
-
         //---------------------------------------------------------------------
         // SSH settings.
         //---------------------------------------------------------------------
@@ -151,7 +147,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.SshUsername,
         };
 
-        internal bool IsSshSetting(ISetting setting) => this.SshSettings.Contains(setting);
+        //---------------------------------------------------------------------
+        // Internals.
+        //---------------------------------------------------------------------
+
+        internal bool AppliesTo(
+            ISetting setting,
+            IProjectModelInstanceNode node)
+        {
+            if (this.SshSettings.Contains(setting))
+            {
+                return node.IsSshSupported();
+            }
+            else if (this.RdpSettings.Contains(setting))
+            {
+                return node.IsRdpSupported();
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         //---------------------------------------------------------------------
         // IRegistrySettingsCollection.
