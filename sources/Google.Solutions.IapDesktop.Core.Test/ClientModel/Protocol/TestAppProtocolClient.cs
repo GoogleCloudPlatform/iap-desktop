@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenArgumentsContainsPlaceholders_ThenFormatArgumentsResolvesPlaceholders()
+        public void WhenArgumentsContainsPlaceholdersButParametersAreEmpty_ThenFormatArgumentsResolvesPlaceholders()
         {
             var transport = new Mock<ITransport>();
             transport
@@ -66,12 +66,34 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = new AppProtocolClient(
                 "doesnotexist.exe",
-                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%%");
+                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%% /user %username%%");
 
             var parameters = new AppProtocolParameters();
 
             Assert.AreEqual(
-                "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%%",
+                "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%% /user %",
+                client.FormatArguments(transport.Object, parameters));
+        }
+
+        [Test]
+        public void WhenArgumentsContainsPlaceholdersAndParametersSet_ThenFormatArgumentsResolvesPlaceholders()
+        {
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 8080));
+
+            var client = new AppProtocolClient(
+                "doesnotexist.exe",
+                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%% /user %username%%");
+
+            var parameters = new AppProtocolParameters()
+            {
+                PreferredUsername = "root",
+            };
+
+            Assert.AreEqual(
+                "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%% /user root%",
                 client.FormatArguments(transport.Object, parameters));
         }
 

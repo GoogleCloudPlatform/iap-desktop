@@ -62,7 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNetworkCredentialTypeIsDefault_ThenFormatArgumentsReturnsString()
+        public void WhenNetworkCredentialTypeIsDefaultAndUsernameEmpty_ThenFormatArgumentsReturnsStringForSqlAuth(
+            [Values("", " ", null)] string emptyish)
         {
             var transport = new Mock<ITransport>();
             transport
@@ -70,7 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
             var client = new SsmsClient("SSMS", NetworkCredentialType.Default);
 
-            var parameters = new AppProtocolParameters();
+            var parameters = new AppProtocolParameters()
+            {
+                PreferredUsername = emptyish
+            };
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -U sa",
@@ -78,7 +82,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsString(
+        public void WhenNetworkCredentialTypeIsDefaultAndUsernameSet_ThenFormatArgumentsReturnsStringForSqlAuth()
+        {
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
+            var client = new SsmsClient("SSMS", NetworkCredentialType.Default);
+
+            var parameters = new AppProtocolParameters()
+            {
+                PreferredUsername = "username",
+            };
+
+            Assert.AreEqual(
+                "-S 127.0.0.2,11443 -U username",
+                client.FormatArguments(transport.Object, parameters));
+        }
+
+        [Test]
+        public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsStringForWindowsAuth(
             [Values(
                 NetworkCredentialType.Rdp,
                 NetworkCredentialType.Prompt)] NetworkCredentialType type)

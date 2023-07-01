@@ -33,5 +33,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel
         /// Timeout for connecting transport.
         /// </summary>
         public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(20);
+
+        /// <summary>
+        /// Preferred username.
+        /// </summary>
+        public string PreferredUsername { get; set; } = null;
     }
 }

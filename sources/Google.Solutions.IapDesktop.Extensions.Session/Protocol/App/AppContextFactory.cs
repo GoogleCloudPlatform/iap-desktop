@@ -90,6 +90,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                     .GetConnectionSettings(instance)
                     .TypedCollection;
 
+                //
+                // Populate parameters from settings.
+                //
+                context.Parameters.PreferredUsername = settings.AppUsername.StringValue;
+
                 var contextFlags = (AppProtocolContextFlags)flags;
                 if (contextFlags.HasFlag(AppProtocolContextFlags.TryUseRdpNetworkCredentials))
                 {

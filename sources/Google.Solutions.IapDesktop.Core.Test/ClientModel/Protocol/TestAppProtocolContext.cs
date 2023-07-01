@@ -142,7 +142,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.Executable).Returns("client.exe");
-            client.Setup(c => c.FormatArguments(It.IsAny<ITransport>())).Returns("args");
+            client
+                .Setup(c => c.FormatArguments(
+                    It.IsAny<ITransport>(),
+                    It.IsAny<AppProtocolParameters>()))
+                .Returns("args");
 
             var processFactory = new Mock<IWin32ProcessFactory>();
             processFactory

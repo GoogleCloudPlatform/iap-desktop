@@ -59,8 +59,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Optional: Arguments to be passed. Arguments can contain the
         /// following placeholders:
         /// 
-        ///   %port% - contains the local port to connect to
-        ///   %host% - contain the locat IP address to connect to
+        ///   %port%:     the local port to connect to
+        ///   %host%:     the locat IP address to connect to
+        ///   %username%: the username to authenticate with (can be empty)
         ///   
         /// </summary>
         internal string ArgumentsTemplate { get; }
@@ -97,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             {
                 arguments = arguments
                     .Replace("%port%", transport.Endpoint.Port.ToString())
-                    .Replace("%host%", transport.Endpoint.Address.ToString());
+                    .Replace("%host%", transport.Endpoint.Address.ToString())
+                    .Replace("%username%", parameters.PreferredUsername ?? string.Empty);
             }
 
             return arguments;
