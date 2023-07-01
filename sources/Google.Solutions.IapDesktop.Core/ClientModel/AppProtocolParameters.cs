@@ -25,6 +25,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel
 {
     public class AppProtocolParameters
     {
+        internal AppProtocolParameters()
+        {
+        }
 
         /// <summary>
         /// Timeout for connecting transport.

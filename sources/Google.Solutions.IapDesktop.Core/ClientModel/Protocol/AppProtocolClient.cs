@@ -43,7 +43,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Create command line arguments, incorporating the information
         /// from the transport if necessary.
         /// </summary>
-        string FormatArguments(ITransport transport);
+        string FormatArguments(
+            ITransport transport,
+            AppProtocolParameters parameters);
     }
 
     public class AppProtocolClient : IAppProtocolClient
@@ -63,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// </summary>
         internal string ArgumentsTemplate { get; }
 
-        internal protected AppProtocolClient(
+        protected internal AppProtocolClient(
             string executable,
             string argumentsTemplate)
         {
@@ -86,11 +88,19 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             get => true;
         }
 
-        public string FormatArguments(ITransport transport)
+        public string FormatArguments(
+            ITransport transport,
+            AppProtocolParameters parameters)
         {
-            return this.ArgumentsTemplate?
-                .Replace("%port%", transport.Endpoint.Port.ToString())?
-                .Replace("%host%", transport.Endpoint.Address.ToString());
+            string arguments = this.ArgumentsTemplate;
+            if (arguments != null)
+            {
+                arguments = arguments
+                    .Replace("%port%", transport.Endpoint.Port.ToString())
+                    .Replace("%host%", transport.Endpoint.Address.ToString());
+            }
+
+            return arguments;
         }
     }
 }

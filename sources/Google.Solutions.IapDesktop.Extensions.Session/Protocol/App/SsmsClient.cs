@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System.Drawing;
 
@@ -70,7 +71,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             get => this.ssms?.ExecutablePath;
         }
 
-        public string FormatArguments(ITransport transport)
+        public string FormatArguments(
+            ITransport transport,
+            AppProtocolParameters parameters)
         {
             //
             // Create command line arguments based on

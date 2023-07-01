@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
@@ -50,7 +51,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var transport = new Mock<ITransport>();
             var client = new AppProtocolClient("doesnotexist.exe", null);
 
-            Assert.IsNull(client.FormatArguments(transport.Object));
+            Assert.IsNull(client.FormatArguments(
+                transport.Object, 
+                new AppProtocolParameters()));
         }
 
         [Test]
@@ -65,9 +68,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 "doesnotexist.exe",
                 "/port %port% /host %host% /ignore %HOST%Port%% %foo%%%");
 
+            var parameters = new AppProtocolParameters();
+
             Assert.AreEqual(
                 "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%%",
-                client.FormatArguments(transport.Object));
+                client.FormatArguments(transport.Object, parameters));
         }
 
         //---------------------------------------------------------------------

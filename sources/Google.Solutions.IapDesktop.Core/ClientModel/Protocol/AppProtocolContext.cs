@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             {
                 return this.processFactory.CreateProcessAsUser(
                     client.Executable,
-                    client.FormatArguments(transport),
+                    client.FormatArguments(transport, this.Parameters),
                     LogonFlags.NetCredentialsOnly,
                     this.NetworkCredential);
             }
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             {
                 return this.processFactory.CreateProcess(
                     client.Executable,
-                    client.FormatArguments(transport));
+                    client.FormatArguments(transport, this.Parameters));
             }
         }
 

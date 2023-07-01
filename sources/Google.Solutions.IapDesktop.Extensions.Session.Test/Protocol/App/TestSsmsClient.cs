@@ -20,6 +20,7 @@
 //
 
 
+using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Moq;
@@ -69,9 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
             var client = new SsmsClient("SSMS", NetworkCredentialType.Default);
 
+            var parameters = new AppProtocolParameters();
+
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -U sa",
-                client.FormatArguments(transport.Object));
+                client.FormatArguments(transport.Object, parameters));
         }
 
         [Test]
@@ -86,9 +89,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
             var client = new SsmsClient("SSMS", type);
 
+            var parameters = new AppProtocolParameters();
+
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -E",
-                client.FormatArguments(transport.Object));
+                client.FormatArguments(transport.Object, parameters));
         }
     }
 }

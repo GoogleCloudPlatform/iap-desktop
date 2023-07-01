@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         private class ConnectWithAppCommand : MenuCommandBase<IProjectModelNode>
         {
             public ConnectWithAppCommand()
-                : base("Connect &with client")
+                : base("Connect client a&pplication")
             {
             }
 
