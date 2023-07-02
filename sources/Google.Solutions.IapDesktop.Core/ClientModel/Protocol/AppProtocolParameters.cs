@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Core.ClientModel
+namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
     public class AppProtocolParameters
     {
