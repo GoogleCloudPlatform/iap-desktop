@@ -164,6 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             // (assuming the PropertyGrid doesn't force alphabetical order).
             //
             this.AppUsername,
+            this.AppNetworkLevelAuthentication
         };
 
         //---------------------------------------------------------------------
@@ -415,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.AppNetworkLevelAuthentication = RegistryEnumSetting<AppNetworkLevelAuthenticationState>.FromKey(
                 "AppNetworkLevelAuthentication",
                 "Windows authentication",
-                "Use Windows authentication.",
+                "Use Windows authentication if the client application supports it.",
                 Categories.AppCredentials,
                 AppNetworkLevelAuthenticationState._Default,
                 key);
