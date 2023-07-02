@@ -33,29 +33,40 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
-    internal class OpenWithAppCommand : MenuCommandBase<IProjectModelNode>
+    internal class OpenWithClientCommand : MenuCommandBase<IProjectModelNode> // TODO: udpate tests
     {
         private readonly IWin32Window ownerWindow;
         private readonly IJobService jobService;
         private readonly ICredentialDialog credentialDialog;
         private readonly AppContextFactory contextFactory;
+        private readonly bool forceCredentialPrompt;
 
-        private static string CreateName(AppProtocol protocol)
+        private static string CreateName(
+            AppProtocol protocol,
+            bool forceCredentialPrompt)
         {
-            return (protocol.Client as IWindowsAppClient)?.Name ?? protocol.Name;
+            var name = (protocol.Client as IWindowsAppClient)?.Name ?? protocol.Name;
+            if (forceCredentialPrompt)
+            {
+                name += " as user...";
+            }
+
+            return name;
         }
 
-        public OpenWithAppCommand(
+        public OpenWithClientCommand(
             IWin32Window ownerWindow,
             IJobService jobService,
             AppContextFactory contextFactory,
-            ICredentialDialog credentialDialog)
-            : base($"&{CreateName(contextFactory.Protocol)}")
+            ICredentialDialog credentialDialog,
+            bool forceCredentialPrompt)
+            : base($"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}")
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
+            this.forceCredentialPrompt = forceCredentialPrompt;
 
             if (contextFactory.Protocol.Client is IWindowsAppClient appClient &&
                 appClient.Icon != null)
@@ -68,50 +79,71 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IProjectModelInstanceNode instance,
             CancellationToken cancellationToken)
         {
-            var requiredCredential = NetworkCredentialType.Default;
-            var client = this.contextFactory.Protocol.Client;
-            if (client is IWindowsAppClient windowsClient)
-            {
-                requiredCredential = windowsClient.RequiredCredential;
-            }
-
             var context = (AppProtocolContext)await this.contextFactory
                 .CreateContextAsync(
                     instance,
-                    requiredCredential == NetworkCredentialType.Rdp
-                        ? (uint)AppProtocolContextFlags.TryUseRdpNetworkCredentials
-                        : (uint)AppProtocolContextFlags.None,
+                    (uint)AppProtocolContextFlags.TryUseRdpNetworkCredentials,
                     cancellationToken)
                 .ConfigureAwait(true);
 
-            //
-            // Check which credential we need to use.
-            //
-            if (requiredCredential == NetworkCredentialType.Prompt ||
-                (requiredCredential == NetworkCredentialType.Rdp && context.NetworkCredential == null))
+            var windowsClient = this.contextFactory.Protocol.Client as IWindowsAppClient;
+            if (windowsClient == null)
             {
                 //
-                // Prompt for network credentials.
+                // Reset network credentials, we're not supposed to
+                // use these.
                 //
-                if (this.credentialDialog.PromptForWindowsCredentials(
-                    this.ownerWindow,
-                    this.contextFactory.Protocol.Name,
-                    $"Enter credentials for {instance.DisplayName}",
-                    AuthenticationPackage.Any,
-                    out var credential) != DialogResult.OK)
+                context.NetworkCredential = null;
+                return context;
+            }
+
+
+            if (!windowsClient.IsNetworkLevelAuthenticationSupported ||
+                context.Parameters.NetworkLevelAuthentication == AppNetworkLevelAuthenticationState.Disabled)
+            {
+                //
+                // Reset network credentials, we're not supposed to
+                // use these.
+                //
+                context.NetworkCredential = null;
+
+                if (windowsClient.IsUsernameRequired &&
+                    string.IsNullOrEmpty(context.Parameters.PreferredUsername))
                 {
                     //
-                    // Cancelled.
+                    // TODO: Prompt for a username.
                     //
-                    throw new TaskCanceledException();
+                    context.Parameters.PreferredUsername = "admin";
+                }
+            }
+            else
+            {
+                //
+                // NLA enabled, make sure we actually have credentials.
+                //
+                if (this.forceCredentialPrompt || context.NetworkCredential == null)
+                {
+                    //
+                    // Prompt for Windows credentials.
+                    //
+                    if (this.credentialDialog.PromptForWindowsCredentials(
+                        this.ownerWindow,
+                        this.contextFactory.Protocol.Name,
+                        $"Enter credentials for {instance.DisplayName}",
+                        AuthenticationPackage.Any,
+                        out var credential) != DialogResult.OK)
+                    {
+                        //
+                        // Cancelled.
+                        //
+                        throw new TaskCanceledException();
+                    }
+
+                    Debug.Assert(credential != null);
+                    context.NetworkCredential = credential;
                 }
 
-                Debug.Assert(credential != null);
-                context.NetworkCredential = credential;
-            }
-            else if (requiredCredential == NetworkCredentialType.Default)
-            {
-                context.NetworkCredential = null;
+                Debug.Assert(context.NetworkCredential != null);
             }
 
             return context;

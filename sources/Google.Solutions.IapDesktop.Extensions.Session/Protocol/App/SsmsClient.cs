@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
@@ -31,18 +32,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 
         internal SsmsClient(
             Ssms ssms, 
-            string name, 
-            NetworkCredentialType requiredCredential)
+            string name)
         {
             this.ssms = ssms;
             this.Name = name;
-            this.RequiredCredential = requiredCredential;
         }
 
-        public SsmsClient(
-            string name,
-            NetworkCredentialType credentialType)
-            : this(TryFindSsms(), name, credentialType)
+        public SsmsClient(string name)
+            : this(TryFindSsms(), name)
         { }
 
         private static Ssms TryFindSsms()
@@ -59,7 +56,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 
         public Image Icon => this.ssms?.Icon;
 
-        public NetworkCredentialType RequiredCredential { get; }
+        public bool IsUsernameRequired
+        {
+            //
+            // SSMS always needs a username, otherwise the -U flag won't work.
+            //
+            get => true;
+        }
+        public bool IsNetworkLevelAuthenticationSupported
+        {
+            get => true;
+        }
 
         public bool IsAvailable
         {
@@ -71,6 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             get => this.ssms?.ExecutablePath;
         }
 
+
         public string FormatArguments(
             ITransport transport,
             AppProtocolParameters parameters)
@@ -79,8 +87,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             // Create command line arguments based on
             // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
             //
+
             string authFlag;
-            if (this.RequiredCredential == NetworkCredentialType.Default)
+            if (parameters.NetworkLevelAuthentication == AppNetworkLevelAuthenticationState.Enabled)
+            {
+                //
+                // Windows authentication.
+                //
+                authFlag = "-E";
+            }
+            else
             {
                 //
                 // SQL Server authentication.
@@ -88,13 +104,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 authFlag = string.IsNullOrWhiteSpace(parameters.PreferredUsername)
                     ? "-U sa"
                     : $"-U {parameters.PreferredUsername}";
-            }
-            else
-            {
-                //
-                // Windows authentication.
-                //
-                authFlag = "-E";
             }
 
             var endpoint = transport.Endpoint;

@@ -40,21 +40,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void WhenSsmsNotAvailable_ThenIconIsNull()
         {
-            var client = new SsmsClient(null, "SSMS", NetworkCredentialType.Default);
+            var client = new SsmsClient(null, "SSMS");
             Assert.IsNull(client.Icon);
         }
 
         [Test]
         public void WhenSsmsNotAvailable_ThenExecutableIsNull()
         {
-            var client = new SsmsClient(null, "SSMS", NetworkCredentialType.Default);
+            var client = new SsmsClient(null, "SSMS");
             Assert.IsNull(client.Executable);
         }
 
         [Test]
         public void WhenSsmsNotAvailable_ThenIsAvailableIsNull()
         {
-            var client = new SsmsClient(null, "SSMS", NetworkCredentialType.Default);
+            var client = new SsmsClient(null, "SSMS");
             Assert.IsFalse(client.IsAvailable);
         }
 
@@ -63,18 +63,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNetworkCredentialTypeIsDefaultAndUsernameEmpty_ThenFormatArgumentsReturnsStringForSqlAuth(
+        public void WhenNlaDisabledAndUsernameEmpty_ThenFormatArgumentsReturnsStringForSqlAuth(
             [Values("", " ", null)] string emptyish)
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient("SSMS", NetworkCredentialType.Default);
+            var client = new SsmsClient("SSMS");
 
             var parameters = new AppProtocolParameters()
             {
-                PreferredUsername = emptyish
+                PreferredUsername = emptyish,
+                NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Disabled
             };
 
             Assert.AreEqual(
@@ -83,17 +84,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenNetworkCredentialTypeIsDefaultAndUsernameSet_ThenFormatArgumentsReturnsStringForSqlAuth()
+        public void WhenNlaDisabledAndUsernameSet_ThenFormatArgumentsReturnsStringForSqlAuth()
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient("SSMS", NetworkCredentialType.Default);
+            var client = new SsmsClient("SSMS");
 
             var parameters = new AppProtocolParameters()
             {
                 PreferredUsername = "username",
+                NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Disabled
             };
 
             Assert.AreEqual(
@@ -102,18 +104,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenNetworkCredentialTypeIsWindows_ThenFormatArgumentsReturnsStringForWindowsAuth(
-            [Values(
-                NetworkCredentialType.Rdp,
-                NetworkCredentialType.Prompt)] NetworkCredentialType type)
+        public void WhenNlaEnabled_ThenFormatArgumentsReturnsStringForWindowsAuth()
         {
             var transport = new Mock<ITransport>();
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient("SSMS", type);
+            var client = new SsmsClient("SSMS");
 
-            var parameters = new AppProtocolParameters();
+            var parameters = new AppProtocolParameters()
+            {
+                NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Enabled
+            };
 
             Assert.AreEqual(
                 "-S 127.0.0.2,11443 -E",
