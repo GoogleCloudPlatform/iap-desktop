@@ -27,6 +27,7 @@ using Google.Solutions.Mvvm.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -95,6 +96,22 @@ namespace Google.Solutions.Mvvm.Theme
                 // it should be safe to make this API call.
                 //
                 return NativeMethods.ShouldAppsUseDarkMode();
+            }
+        }
+        public static Color AccentColor
+        {
+            get
+            {
+                var hr = NativeMethods.DwmGetColorizationColor(
+                    out var colorization,
+                    out var opaqueBlend);
+                if (hr.Failed())
+                {
+                    return SystemColors.ActiveBorder;
+                }
+
+                colorization |= (opaqueBlend ? 0xFF000000 : 0);
+                return Color.FromArgb((int)colorization);
             }
         }
 
@@ -362,9 +379,13 @@ namespace Google.Solutions.Mvvm.Theme
                 string textSubAppName,
                 string textSubIdList);
 
-
             [DllImport("gdi32.dll")]
             public static extern uint SetTextColor(IntPtr hdc, uint color);
+
+            [DllImport("dwmapi.dll")]
+            public static extern HRESULT DwmGetColorizationColor(
+                out uint pcrColorization,
+                [MarshalAs(UnmanagedType.Bool)] out bool pfOpaqueBlend);
         }
     }
 }
