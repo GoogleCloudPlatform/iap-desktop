@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
@@ -38,5 +39,28 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Preferred username.
         /// </summary>
         public string PreferredUsername { get; set; } = null;
+
+        /// <summary>
+        /// Determines whether to use Windows authentication/network level
+        /// authentication. Supported by some client apps such as SSMS,
+        /// other client apps might ignore this setting.
+        /// </summary>
+        public AppNetworkLevelAuthenticationState NetworkLevelAuthentication { get; set; } 
+            = AppNetworkLevelAuthenticationState._Default;
+    }
+
+    //-------------------------------------------------------------------------
+    // Enums.
+    //
+    // NB. Numeric values must be kept unchanged as they are persisted as settings.
+    //-------------------------------------------------------------------------
+
+    public enum AppNetworkLevelAuthenticationState
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Enabled
     }
 }
