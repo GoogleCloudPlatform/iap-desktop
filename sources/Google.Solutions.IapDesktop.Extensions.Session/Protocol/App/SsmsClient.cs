@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System.Drawing;
 
@@ -70,15 +71,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             get => this.ssms?.ExecutablePath;
         }
 
-        public string FormatArguments(ITransport transport)
+        public string FormatArguments(
+            ITransport transport,
+            AppProtocolParameters parameters)
         {
             //
             // Create command line arguments based on
             // https://learn.microsoft.com/en-us/sql/ssms/ssms-utility?view=sql-server-ver16
             //
-            var authFlag = this.RequiredCredential == NetworkCredentialType.Default
-                ? "-U sa"  // SQL Server authentication.
-                : "-E";    // Windows authentication.
+            string authFlag;
+            if (this.RequiredCredential == NetworkCredentialType.Default)
+            {
+                //
+                // SQL Server authentication.
+                //
+                authFlag = string.IsNullOrWhiteSpace(parameters.PreferredUsername)
+                    ? "-U sa"
+                    : $"-U {parameters.PreferredUsername}";
+            }
+            else
+            {
+                //
+                // Windows authentication.
+                //
+                authFlag = "-E";
+            }
 
             var endpoint = transport.Endpoint;
             return $"-S {endpoint.Address},{endpoint.Port} {authFlag}";

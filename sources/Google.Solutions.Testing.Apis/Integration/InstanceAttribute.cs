@@ -74,7 +74,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                 var imageSpecificationRaw = Encoding.UTF8.GetBytes(imageSpecification.ToString());
                 return this.InstanceNamePrefix + BitConverter
                     .ToString(sha.ComputeHash(imageSpecificationRaw))
-                    .Replace("-", String.Empty)
+                    .Replace("-", string.Empty)
                     .Substring(0, 14)
                     .ToLower();
             }

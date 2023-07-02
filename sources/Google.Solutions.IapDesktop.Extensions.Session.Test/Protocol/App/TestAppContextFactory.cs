@@ -65,6 +65,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             return node.Object;
         }
 
+        private static Mock<IConnectionSettingsService> CreateSettingsService(
+            InstanceConnectionSettings settings)
+        {
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            return settingsService;
+        }
+
         //---------------------------------------------------------------------
         // CreateContext - targets.
         //---------------------------------------------------------------------
@@ -101,7 +111,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                     CancellationToken.None).Wait());
         }
 
-
         //---------------------------------------------------------------------
         // CreateContext - flags.
         //---------------------------------------------------------------------
@@ -109,11 +118,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void WhenFlagsUnsupported_ThenCreateContextThrowsException()
         {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settingsService = CreateSettingsService(settings);
+
             var factory = new AppContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
-                new Mock<IConnectionSettingsService>().Object);
+                settingsService.Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(
                 () => factory.CreateContextAsync(
@@ -125,7 +137,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public async Task WhenFlagsClear_ThenCreateContextUsesNoNetworkCredentials()
         {
-            var settingsService = new Mock<IConnectionSettingsService>();
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settingsService = CreateSettingsService(settings);
 
             var factory = new AppContextFactory(
                 CreateProtocol(true),
@@ -141,20 +154,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .ConfigureAwait(false);
 
             Assert.IsNull(context.NetworkCredential);
-
-            settingsService.Verify(
-                s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()),
-                Times.Never);
         }
+
 
         [Test]
         public async Task WhenTryUseRdpNetworkCredentialsIsSetButNoCredentialsFound_ThenCreateContextUsesNoNetworkCredentials()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
-            var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService
-                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            var settingsService = CreateSettingsService(settings);
 
             var factory = new AppContextFactory(
                 CreateProtocol(true),
@@ -184,10 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             settings.RdpPassword.ClearTextValue = "password";
             settings.RdpDomain.StringValue = "domain";
 
-            var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService
-                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            var settingsService = CreateSettingsService(settings);
 
             var factory = new AppContextFactory(
                 CreateProtocol(true),
@@ -205,6 +209,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             Assert.IsNotNull(context.NetworkCredential);
             Assert.AreEqual("password", context.NetworkCredential.Password);
             Assert.AreEqual("domain", context.NetworkCredential.Domain);
+        }
+
+        //---------------------------------------------------------------------
+        // CreateContext - settings.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task CreateContextAppliesSettings()
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppUsername.StringValue = "user";
+
+            var settingsService = CreateSettingsService(settings);
+
+            var factory = new AppContextFactory(
+                CreateProtocol(true),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                settingsService.Object);
+
+            var context = (AppProtocolContext)await factory
+                .CreateContextAsync(
+                    CreateInstanceNode(),
+                    (uint)AppProtocolContextFlags.None,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual("user", context.Parameters.PreferredUsername);
         }
 
         //---------------------------------------------------------------------

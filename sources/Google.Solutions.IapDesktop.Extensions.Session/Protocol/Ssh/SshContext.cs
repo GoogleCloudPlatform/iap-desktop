@@ -44,13 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IKeyAuthorizer keyAuthorizer,
-            IAddressResolver addressResolver,
             InstanceLocator instance,
             ISshKeyPair localKeyPair)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
-                  addressResolver,
                   instance,
                   new SshParameters())
         {

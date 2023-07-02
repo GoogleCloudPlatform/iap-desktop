@@ -93,9 +93,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     vmNode.Instance.ProjectId,
                     vmNode.Instance.Name);
 
-                var supportsRdp = vmNode.IsRdpSupported();
-                var supportsSsh = vmNode.IsSshSupported();
-
                 // Apply overlay to get effective settings.
                 return projectSettings
                     .OverlayBy(zoneSettings)
@@ -104,10 +101,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     // Save back to same repository.
                     .ToPersistentSettingsCollection(s => this.repository.SetVmInstanceSettings(s))
 
-                    // Hide any settings that are not applicable to the operating system.
-                    .ToFilteredSettingsCollection((coll, setting) => supportsRdp
-                        ? coll.IsRdpSetting(setting)
-                        : supportsSsh && coll.IsSshSetting(setting));
+                    // Hide any settings that are not applicable to this instance.
+                    .ToFilteredSettingsCollection((coll, setting) => coll.AppliesTo(setting, vmNode));
             }
             else
             {

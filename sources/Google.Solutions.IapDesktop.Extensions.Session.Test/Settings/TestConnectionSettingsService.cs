@@ -58,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             settingsRepository.SetProjectSettings(projectSettings);
         }
 
-
         private IProjectModelProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectModelProjectNode>();
@@ -278,25 +277,60 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceIsWindows_ThenSettingsOnlyContainRdpSettings()
+        public void WhenInstanceIsWindows_ThenSettingsContainRdpAndAppSettings()
         {
             var vmNode = CreateVmInstanceNode(true);
 
             var settings = this.service.GetConnectionSettings(vmNode);
-            CollectionAssert.AreEquivalent(
-                settings.TypedCollection.RdpSettings,
-                settings.Settings);
+
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.RdpSettings);
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.AppSettings);
+
+            CollectionAssert.IsNotSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.SshSettings);
         }
 
         [Test]
-        public void WhenInstanceIsLinux_ThenSettingsOnlyContainRdpSettings()
+        public void WhenInstanceIsLinux_ThenSettingsContainSshAndAppSettings()
         {
             var vmNode = CreateVmInstanceNode(false);
 
             var settings = this.service.GetConnectionSettings(vmNode);
-            CollectionAssert.AreEquivalent(
-                settings.TypedCollection.SshSettings,
-                settings.Settings);
+
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.SshSettings);
+            CollectionAssert.IsSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.AppSettings);
+
+            CollectionAssert.IsNotSupersetOf(
+                settings.Settings,
+                settings.TypedCollection.RdpSettings);
+        }
+
+        //---------------------------------------------------------------------
+        // AppSettings.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void AppUsername()
+        {
+            var vmNode = CreateVmInstanceNode(false);
+
+            var settings = this.service.GetConnectionSettings(vmNode);
+
+            settings.TypedCollection.AppUsername.Value = "sa";
+            settings.TypedCollection.AppUsername.Value = null;
+            settings.TypedCollection.AppUsername.Value = string.Empty;
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => settings.TypedCollection.AppUsername.Value = "has spaces");
         }
     }
 }

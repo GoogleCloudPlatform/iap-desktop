@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Platform.Dispatch;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Security;
 using System.Threading;
@@ -83,16 +84,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                     this.processFactory,
                     instance.Instance);
 
+                Debug.Assert(context.Parameters != null);
+
+                var settings = this.settingsService
+                    .GetConnectionSettings(instance)
+                    .TypedCollection;
+
+                //
+                // Populate parameters from settings.
+                //
+                context.Parameters.PreferredUsername = settings.AppUsername.StringValue;
+
                 var contextFlags = (AppProtocolContextFlags)flags;
                 if (contextFlags.HasFlag(AppProtocolContextFlags.TryUseRdpNetworkCredentials))
                 {
                     //
                     // See if we have RDP credentials.
                     //
-                    var settings = this.settingsService
-                        .GetConnectionSettings(instance)
-                        .TypedCollection;
-
                     if (!string.IsNullOrEmpty(settings.RdpUsername.StringValue))
                     {
                         context.NetworkCredential = new NetworkCredential(

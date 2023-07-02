@@ -43,7 +43,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Create command line arguments, incorporating the information
         /// from the transport if necessary.
         /// </summary>
-        string FormatArguments(ITransport transport);
+        string FormatArguments(
+            ITransport transport,
+            AppProtocolParameters parameters);
     }
 
     public class AppProtocolClient : IAppProtocolClient
@@ -57,13 +59,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Optional: Arguments to be passed. Arguments can contain the
         /// following placeholders:
         /// 
-        ///   %port% - contains the local port to connect to
-        ///   %host% - contain the locat IP address to connect to
+        ///   %port%:     the local port to connect to
+        ///   %host%:     the locat IP address to connect to
+        ///   %username%: the username to authenticate with (can be empty)
         ///   
         /// </summary>
         internal string ArgumentsTemplate { get; }
 
-        internal protected AppProtocolClient(
+        protected internal AppProtocolClient(
             string executable,
             string argumentsTemplate)
         {
@@ -86,11 +89,20 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             get => true;
         }
 
-        public string FormatArguments(ITransport transport)
+        public string FormatArguments(
+            ITransport transport,
+            AppProtocolParameters parameters)
         {
-            return this.ArgumentsTemplate?
-                .Replace("%port%", transport.Endpoint.Port.ToString())?
-                .Replace("%host%", transport.Endpoint.Address.ToString());
+            string arguments = this.ArgumentsTemplate;
+            if (arguments != null)
+            {
+                arguments = arguments
+                    .Replace("%port%", transport.Endpoint.Port.ToString())
+                    .Replace("%host%", transport.Endpoint.Address.ToString())
+                    .Replace("%username%", parameters.PreferredUsername ?? string.Empty);
+            }
+
+            return arguments;
         }
     }
 }

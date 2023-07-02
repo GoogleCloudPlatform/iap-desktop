@@ -70,7 +70,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
                 keyAuthorizer.Object,
-                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 key);
 
@@ -107,7 +106,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IKeyAuthorizer>().Object,
-                new Mock<IAddressResolver>().Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
@@ -122,14 +120,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
         {
-            var addressResolver = new Mock<IAddressResolver>();
-            addressResolver.Setup(
-                r => r.GetAddressAsync(
-                    SampleInstance,
-                    NetworkInterfaceType.PrimaryInternal,
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(IPAddress.Parse("20.21.22.23"));
-
             var transport = new Mock<ITransport>();
             var factory = new Mock<IDirectTransportFactory>();
             factory
@@ -145,7 +135,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
                 new Mock<IKeyAuthorizer>().Object,
-                addressResolver.Object,
                 SampleInstance,
                 new Mock<ISshKeyPair>().Object);
             context.Parameters.TransportType = SessionTransportType.Vpc;

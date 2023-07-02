@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -106,7 +107,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.Executable).Returns("client.exe");
-            client.Setup(c => c.FormatArguments(It.IsAny<ITransport>())).Returns("args");
+            client
+                .Setup(c => c.FormatArguments(
+                    It.IsAny<ITransport>(),
+                    It.IsAny<AppProtocolParameters>()))
+                .Returns("args");
 
             var processFactory = new Mock<IWin32ProcessFactory>();
             processFactory
@@ -137,7 +142,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.Executable).Returns("client.exe");
-            client.Setup(c => c.FormatArguments(It.IsAny<ITransport>())).Returns("args");
+            client
+                .Setup(c => c.FormatArguments(
+                    It.IsAny<ITransport>(),
+                    It.IsAny<AppProtocolParameters>()))
+                .Returns("args");
 
             var processFactory = new Mock<IWin32ProcessFactory>();
             processFactory
@@ -200,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                         SampleLocator,
                         protocol.RemotePort,
                         protocol.LocalEndpoint,
-                        context.ConnectionTimeout,
+                        context.Parameters.ConnectionTimeout,
                         CancellationToken.None),
                     Times.Once);
             }

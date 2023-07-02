@@ -90,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;
-        private readonly IAddressResolver addressResolver;
         private readonly ISelectCredentialsDialog credentialDialog;
         private readonly IRdpCredentialCallback rdpCredentialCallbackService;
 
@@ -103,7 +102,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             IConnectionSettingsService settingsService,
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IAddressResolver addressResolver,
             ISelectCredentialsDialog credentialDialog,
             IRdpCredentialCallback credentialCallbackService,
             SshSettingsRepository sshSettingsRepository)
@@ -116,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
-            this.addressResolver = addressResolver;
             this.credentialDialog = credentialDialog;
             this.rdpCredentialCallbackService = credentialCallbackService.ExpectNotNull(nameof(credentialCallbackService));
             this.sshSettingsRepository = sshSettingsRepository.ExpectNotNull(nameof(sshSettingsRepository));
@@ -144,7 +141,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             var context = new RdpContext(
                 this.iapTransportFactory,
                 this.directTransportFactory,
-                this.addressResolver,
                 instance,
                 credential,
                 sources);
@@ -331,7 +327,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 this.iapTransportFactory,
                 this.directTransportFactory,
                 this.keyAuthorizer,
-                this.addressResolver,
                 node.Instance,
                 localKeyPair);
 

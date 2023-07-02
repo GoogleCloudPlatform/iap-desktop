@@ -38,14 +38,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         internal RdpContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IAddressResolver addressResolver,
             InstanceLocator instance,
             RdpCredential credential,
             RdpParameters.ParameterSources sources)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
-                  addressResolver,
                   instance,
                   new RdpParameters()
                   {

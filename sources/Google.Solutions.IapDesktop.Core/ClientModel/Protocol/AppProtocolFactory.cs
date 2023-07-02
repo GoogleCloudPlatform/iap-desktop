@@ -272,8 +272,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             /// Arguments can contain the following
             /// placeholders:
             /// 
-            ///   %port% - contains the local port to connect to
-            ///   %host% - contain the locat IP address to connect to
+            ///   %port%:     the local port to connect to
+            ///   %host%:     the locat IP address to connect to
+            ///   %username%: the username to authenticate with (can be empty)
             ///   
             /// </summary>
             [JsonProperty("arguments")]

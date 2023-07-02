@@ -287,6 +287,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .Setup(f => f.CreateProcess(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(process.Object);
 
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(InstanceConnectionSettings
+                    .CreateNew(SampleLocator)
+                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
             var factory = new AppContextFactory(
                 new AppProtocol(
                     "app-1",
@@ -297,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     client.Object),
                 new Mock<IIapTransportFactory>().Object,
                 processFactory.Object,
-                new Mock<IConnectionSettingsService>().Object);
+                settingsService.Object);
 
             var command = new OpenWithAppCommand(
                 new Mock<IWin32Window>().Object,

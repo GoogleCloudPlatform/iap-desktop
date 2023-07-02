@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
@@ -37,14 +38,11 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
-
-
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
-
         private static class Categories
         {
-            private const ushort MaxIndex = 6;
+            private const ushort MaxIndex = 7;
 
             private static string Order(ushort order, string name)
             {
@@ -67,6 +65,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
             public static readonly string SshConnection = Order(5, "SSH Connection");
             public static readonly string SshCredentials = Order(6, "SSH Credentials");
+
+            public static readonly string AppCredentials = Order(7, "Client Application Credentials");
         }
 
         //---------------------------------------------------------------------
@@ -128,8 +128,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpAuthenticationLevel,
         };
 
-        internal bool IsRdpSetting(ISetting setting) => this.RdpSettings.Contains(setting);
-
         //---------------------------------------------------------------------
         // SSH settings.
         //---------------------------------------------------------------------
@@ -151,13 +149,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.SshUsername,
         };
 
-        internal bool IsSshSetting(ISetting setting) => this.SshSettings.Contains(setting);
+        //---------------------------------------------------------------------
+        // App settings.
+        //---------------------------------------------------------------------
+
+        public RegistryStringSetting AppUsername { get; private set; }
+
+        internal IEnumerable<ISetting> AppSettings => new ISetting[]
+        {
+            //
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
+            //
+            this.AppUsername,
+        };
+
+        //---------------------------------------------------------------------
+        // Filtering.
+        //---------------------------------------------------------------------
+
+        internal bool AppliesTo(
+            ISetting setting,
+            IProjectModelInstanceNode node)
+        {
+            if (this.SshSettings.Contains(setting))
+            {
+                return node.IsSshSupported();
+            }
+            else if (this.RdpSettings.Contains(setting))
+            {
+                return node.IsRdpSupported();
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         //---------------------------------------------------------------------
         // IRegistrySettingsCollection.
         //---------------------------------------------------------------------
 
-        public IEnumerable<ISetting> Settings => this.RdpSettings.Concat(this.SshSettings);
+        public IEnumerable<ISetting> Settings
+        {
+            get => this.RdpSettings
+                .Concat(this.SshSettings)
+                .Concat(this.AppSettings);
+        }
 
         protected void InitializeFromKey(RegistryKey key)
         {
@@ -361,6 +399,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 key,
                 0, 300);
 
+            //
+            // App Settings.
+            //
+            this.AppUsername = RegistryStringSetting.FromKey(
+                "AppUsername",
+                "Username",
+                "Preferred username for client applications",
+                Categories.AppCredentials,
+                null,
+                key,
+                username => string.IsNullOrEmpty(username) || !username.Contains(' '));
+
             Debug.Assert(this.Settings.All(s => s != null));
         }
 
@@ -421,6 +471,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 baseSettings.SshUsername.OverlayBy(overlaySettings.SshUsername);
             prototype.SshConnectionTimeout = (RegistryDwordSetting)
                 baseSettings.SshConnectionTimeout.OverlayBy(overlaySettings.SshConnectionTimeout);
+
+            prototype.AppUsername = (RegistryStringSetting)
+                baseSettings.AppUsername.OverlayBy(overlaySettings.AppUsername);
 
             Debug.Assert(prototype.Settings.All(s => s != null));
             Debug.Assert(baseSettings.Settings.All(s => s != null));
