@@ -23,6 +23,8 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using NUnit.Framework;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
@@ -96,6 +98,30 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = (AppProtocolClient)protocol.Client;
             Assert.AreEqual("cmd", client.Executable);
+        }
+
+        //---------------------------------------------------------------------
+        // FromJson.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFileNotFound_ThenFromFileThrowsException()
+        {
+            Assert.Throws<FileNotFoundException>(
+                () => new AppProtocolFactory().FromFile("doesnotexist.json"));
+            Assert.Throws<NotSupportedException>(
+                () => new AppProtocolFactory().FromFile("NUL.json"));
+        }
+
+        [Test]
+        public void WhenFileEmptyOrMalformed_ThenFromFileThrowsException(
+            [Values("", " ", "{,", "{}")] string json)
+        {
+            var filePath = Path.GetTempFileName();
+            File.WriteAllText(filePath, json);
+
+            Assert.Throws<InvalidAppProtocolException>(
+                () => new AppProtocolFactory().FromFile(filePath));
         }
     }
 }

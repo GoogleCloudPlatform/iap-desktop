@@ -24,7 +24,9 @@ using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Host
@@ -58,6 +60,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Base registry key for profiles, etc.
         /// </summary>
         string BaseKeyPath { get; }
+
+        /// <summary>
+        /// Base directory.
+        /// </summary>
+        string BaseDirectory { get; }
     }
 
     public class Install : IInstall
@@ -96,9 +103,13 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public string BaseKeyPath { get; }
 
+        public string BaseDirectory { get; }
+
         public Install(string baseKeyPath)
         {
             this.BaseKeyPath = baseKeyPath.ExpectNotNull(nameof(baseKeyPath));
+            this.BaseDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location)
+                .DirectoryName;
 
             //
             // Create or amend version history.

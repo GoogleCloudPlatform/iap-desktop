@@ -27,67 +27,90 @@ using Google.Solutions.Platform;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
+    /// <summary>
+    /// Factory class for reading a protocol configuration from JSON.
+    /// 
+    /// Example:
+    /// 
+    /// {
+    ///     'version': 1,
+    ///     'name': 'telnet',
+    ///     'condition': 'isLinux()',
+    ///     'accessPolicy': 'AllowAll',
+    ///     'remotePort': 23,
+    ///     'command': {
+    ///         'executable': '%SystemRoot%\system32\telnet.exe'
+    ///         'arguments': '%host% %port%'
+    ///     }
+    /// }
+    /// </summary>
     public class AppProtocolFactory
     {
         //---------------------------------------------------------------------
         // Deserialization.
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Read a protocol configuration from JSON.
-        /// 
-        /// Example:
-        /// 
-        /// {
-        ///     'version': 1,
-        ///     'name': 'telnet',
-        ///     'condition': 'isLinux()',
-        ///     'accessPolicy': 'AllowAll',
-        ///     'remotePort': 23,
-        ///     'command': {
-        ///         'executable': '%SystemRoot%\system32\telnet.exe'
-        ///         'arguments': '%host% %port%'
-        ///     }
-        /// }
-        /// </summary>
+        private AppProtocol FromSection(ConfigurationSection section)
+        {
+            if (section == null)
+            {
+                throw new InvalidAppProtocolException(
+                    "The protocol configuration is empty");
+            }
+            else if (
+                section.SchemaVersion < ConfigurationSection.MinSchemaVersion ||
+                section.SchemaVersion > ConfigurationSection.CurrentSchemaVersion)
+            {
+                throw new InvalidAppProtocolException(
+                    "The protocol configuration uses an unsupported schema version");
+            }
+
+            return new AppProtocol(
+                section.ParseName(),
+                section.ParseCondition(),
+                section.ParseAccessPolicy(),
+                section.ParseRemotePort(),
+                section.ParseLocalEndpoint(),
+                section.ParseCommand());
+        }
+
         public virtual AppProtocol FromJson(string json)
         {
             try
             {
-                var section = NewtonsoftJsonSerializer
+                return FromSection(NewtonsoftJsonSerializer
                     .Instance
-                    .Deserialize<ConfigurationSection>(json);
-
-                if (section == null)
-                {
-                    throw new InvalidAppProtocolException(
-                        "The protocol configuration is empty");
-                }
-                else if (
-                    section.SchemaVersion < ConfigurationSection.MinSchemaVersion ||
-                    section.SchemaVersion > ConfigurationSection.CurrentSchemaVersion)
-                {
-                    throw new InvalidAppProtocolException(
-                        "The protocol configuration uses an unsupported schema version");
-                }
-
-                return new AppProtocol(
-                    section.ParseName(),
-                    section.ParseCondition(),
-                    section.ParseAccessPolicy(),
-                    section.ParseRemotePort(),
-                    section.ParseLocalEndpoint(),
-                    section.ParseCommand());
+                    .Deserialize<ConfigurationSection>(json));
             }
             catch (JsonException e)
             {
                 throw new InvalidAppProtocolException(
                     "The protocol configuration is malformed", e);
+            }
+        }
+
+        public virtual AppProtocol FromFile(string path)
+        {
+            try
+            {
+                using (var stream = File.OpenRead(path))
+                {
+                    return FromSection(NewtonsoftJsonSerializer
+                        .Instance
+                        .Deserialize<ConfigurationSection>(stream));
+                }
+            }
+            catch (JsonException e)
+            {
+                throw new InvalidAppProtocolException(
+                    $"The protocol configuration file {path} " +
+                    "contains malformed data", e);
             }
         }
 

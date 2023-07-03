@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
+using System.IO;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
@@ -70,6 +71,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var install = new Install(TestBaseKeyPath);
             Assert.AreNotEqual(0, install.CurrentVersion.Major);
+        }
+
+        //---------------------------------------------------------------------
+        // BaseKeyPath.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void BaseKeyPath()
+        {
+            var install = new Install(TestBaseKeyPath);
+            Assert.AreEqual(TestBaseKeyPath, install.BaseKeyPath);
+        }
+
+        //---------------------------------------------------------------------
+        // BaseDirectory.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void BaseDirectory()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            Assert.IsNotNull(install.BaseDirectory);
+            Assert.IsTrue(Directory.Exists(install.BaseDirectory));
         }
 
         //---------------------------------------------------------------------

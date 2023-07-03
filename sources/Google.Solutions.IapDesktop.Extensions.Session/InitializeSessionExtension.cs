@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -44,7 +46,9 @@ using Google.Solutions.Platform.Dispatch;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -134,8 +138,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient()));
-
-
 
             //
             // Let this extension handle all URL activations.
