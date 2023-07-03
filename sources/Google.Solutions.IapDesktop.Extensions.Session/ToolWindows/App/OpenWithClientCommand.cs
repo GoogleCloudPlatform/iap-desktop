@@ -26,8 +26,11 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using Google.Solutions.Mvvm.Shell;
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -45,13 +48,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             AppProtocol protocol,
             bool forceCredentialPrompt)
         {
-            var name = (protocol.Client as IWindowsProtocolClient)?.Name ?? protocol.Name;
+            var name = protocol.Name;
             if (forceCredentialPrompt)
             {
                 name += " as user...";
             }
 
             return name;
+        }
+
+        private static Image CreateIcon(AppProtocol protocol)
+        {
+            if (protocol.Client?.Executable is var executable &&
+                executable != null &&
+                File.Exists(executable))
+            {
+                //
+                // Try to extract the icon from the EXE file.
+                //
+                try
+                {
+                    return FileType
+                        .Lookup(executable, FileAttributes.Normal, FileType.IconFlags.None)
+                        .FileIcon;
+                }
+                catch
+                { }
+            }
+
+            return null;
         }
 
         public OpenWithClientCommand(
@@ -62,17 +87,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             bool forceCredentialPrompt = false)
             : base($"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}")
         {
+
+            Debug.Assert(contextFactory.Protocol.Client != null);
+
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
             this.forceCredentialPrompt = forceCredentialPrompt;
 
-            if (contextFactory.Protocol.Client is IWindowsProtocolClient appClient &&
-                appClient.Icon != null)
-            {
-                this.Image = appClient.Icon;
-            }
+            this.Image = CreateIcon(contextFactory.Protocol);
         }
 
         internal async Task<AppProtocolContext> CreateContextAsync(
@@ -86,19 +110,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     cancellationToken)
                 .ConfigureAwait(true);
 
-            var windowsClient = this.contextFactory.Protocol.Client as IWindowsProtocolClient;
-            if (windowsClient == null)
-            {
-                //
-                // Reset network credentials, we're not supposed to
-                // use these.
-                //
-                context.NetworkCredential = null;
-                return context;
-            }
+            var client = this.contextFactory.Protocol.Client;
 
-
-            if (!windowsClient.IsNetworkLevelAuthenticationSupported ||
+            if (!client.IsNetworkLevelAuthenticationSupported ||
                 context.Parameters.NetworkLevelAuthentication == AppNetworkLevelAuthenticationState.Disabled)
             {
                 //
@@ -107,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 //
                 context.NetworkCredential = null;
 
-                if (windowsClient.IsUsernameRequired &&
+                if (client.IsUsernameRequired &&
                     (this.forceCredentialPrompt || string.IsNullOrEmpty(context.Parameters.PreferredUsername)))
                 {
                     //

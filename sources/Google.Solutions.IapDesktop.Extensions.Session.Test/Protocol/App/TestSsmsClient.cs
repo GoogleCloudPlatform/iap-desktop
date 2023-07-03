@@ -20,7 +20,6 @@
 //
 
 
-using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
@@ -38,23 +37,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSsmsNotAvailable_ThenIconIsNull()
-        {
-            var client = new SsmsClient(null, "SSMS");
-            Assert.IsNull(client.Icon);
-        }
-
-        [Test]
         public void WhenSsmsNotAvailable_ThenExecutableIsNull()
         {
-            var client = new SsmsClient(null, "SSMS");
+            var client = new SsmsClient(null);
             Assert.IsNull(client.Executable);
         }
 
         [Test]
         public void WhenSsmsNotAvailable_ThenIsAvailableIsNull()
         {
-            var client = new SsmsClient(null, "SSMS");
+            var client = new SsmsClient(null);
             Assert.IsFalse(client.IsAvailable);
         }
 
@@ -70,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient("SSMS");
+            var client = new SsmsClient();
 
             var parameters = new AppProtocolParameters()
             {
@@ -90,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient("SSMS");
+            var client = new SsmsClient();
 
             var parameters = new AppProtocolParameters()
             {
@@ -110,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient("SSMS");
+            var client = new SsmsClient();
 
             var parameters = new AppProtocolParameters()
             {

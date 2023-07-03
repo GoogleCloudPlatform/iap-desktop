@@ -21,25 +21,20 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System.Diagnostics;
-using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    internal sealed class SsmsClient : IWindowsProtocolClient
+    internal sealed class SsmsClient : IAppProtocolClient
     {
         private readonly Ssms ssms; // null if not found.
 
-        internal SsmsClient(
-            Ssms ssms, 
-            string name)
+        internal SsmsClient(Ssms ssms)
         {
             this.ssms = ssms;
-            this.Name = name;
         }
 
-        public SsmsClient(string name)
-            : this(TryFindSsms(), name)
+        public SsmsClient()
+            : this(TryFindSsms())
         { }
 
         private static Ssms TryFindSsms()
@@ -51,10 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         //---------------------------------------------------------------------
         // IWindowsAppClient.
         //---------------------------------------------------------------------
-
-        public string Name { get; }
-
-        public Image Icon => this.ssms?.Icon;
 
         public bool IsUsernameRequired
         {
