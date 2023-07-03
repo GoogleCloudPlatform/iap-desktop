@@ -58,7 +58,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 return new string('\u200B', MaxIndex - order) + name;
             }
 
-            public static readonly string RdpCredentials = Order(0, "Remote Desktop Credentials");
+            public static readonly string WindowsCredentials = Order(0, "Windows Credentials");
+
             public static readonly string RdpConnection = Order(1, "Remote Desktop Connection");
             public static readonly string RdpDisplay = Order(2, "Remote Desktop Display");
             public static readonly string RdpResources = Order(3, "Remote Desktop Resources");
@@ -209,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Username",
                 "Username",
                 "Username of a local user, SAM account name of a domain user, or UPN (user@domain).",
-                Categories.RdpCredentials,
+                Categories.WindowsCredentials,
                 null,
                 key,
                 _ => true);
@@ -217,14 +218,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Password",
                 "Password",
                 "Windows logon password.",
-                Categories.RdpCredentials,
+                Categories.WindowsCredentials,
                 key,
                 DataProtectionScope.CurrentUser);
             this.RdpDomain = RegistryStringSetting.FromKey(
                 "Domain",
                 "Domain",
                 "NetBIOS domain name or computer name. Leave blank when using UPN as username.",
-                Categories.RdpCredentials,
+                Categories.WindowsCredentials,
                 null,
                 key,
                 _ => true);
