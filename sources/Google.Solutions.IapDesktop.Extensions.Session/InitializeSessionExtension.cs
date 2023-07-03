@@ -120,13 +120,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
-            // Protocols.
+            // Register protocols.
             //
             var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
-
-            //
-            // Only allow connections from our own child processes.
-            //
             var clientAppPolicy = new ChildProcessPolicy(
                 serviceProvider.GetService<IWin32ProcessSet>());
 
@@ -138,6 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient()));
+
+
 
             //
             // Let this extension handle all URL activations.
@@ -151,8 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(
                     new InstanceLocator("project", "zone", "name"),
-                    new NameValueCollection()))
-                == CommandState.Enabled,
+                    new NameValueCollection())) == CommandState.Enabled,
                 "URL command installed");
 
             this.window = mainForm;
