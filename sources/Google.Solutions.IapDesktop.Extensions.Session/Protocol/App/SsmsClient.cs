@@ -21,12 +21,10 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using System.Diagnostics;
-using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    internal sealed class SsmsClient : IWindowsProtocolClient
+    internal sealed class SsmsClient : IAppProtocolClient
     {
         private readonly Ssms ssms; // null if not found.
 

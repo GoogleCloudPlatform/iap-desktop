@@ -87,6 +87,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             bool forceCredentialPrompt = false)
             : base($"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}")
         {
+
+            Debug.Assert(contextFactory.Protocol.Client != null);
+
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
@@ -107,19 +110,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     cancellationToken)
                 .ConfigureAwait(true);
 
-            var windowsClient = this.contextFactory.Protocol.Client as IWindowsProtocolClient;
-            if (windowsClient == null)
-            {
-                //
-                // Reset network credentials, we're not supposed to
-                // use these.
-                //
-                context.NetworkCredential = null;
-                return context;
-            }
+            var client = this.contextFactory.Protocol.Client;
 
-
-            if (!windowsClient.IsNetworkLevelAuthenticationSupported ||
+            if (!client.IsNetworkLevelAuthenticationSupported ||
                 context.Parameters.NetworkLevelAuthentication == AppNetworkLevelAuthenticationState.Disabled)
             {
                 //
@@ -128,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 //
                 context.NetworkCredential = null;
 
-                if (windowsClient.IsUsernameRequired &&
+                if (client.IsUsernameRequired &&
                     (this.forceCredentialPrompt || string.IsNullOrEmpty(context.Parameters.PreferredUsername)))
                 {
                     //

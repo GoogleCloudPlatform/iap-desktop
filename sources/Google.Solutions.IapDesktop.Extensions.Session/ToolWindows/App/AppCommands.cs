@@ -79,7 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             {
                 foreach (var protocol in this.protocolRegistry
                     .Protocols
-                    .OfType<AppProtocol>())
+                    .OfType<AppProtocol>()
+                    .Where(p => p.Client != null))
                 {
                     var factory = new AppContextFactory(
                         protocol,
@@ -94,8 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.credentialDialog,
                         false);
 
-                    if (protocol.Client is IWindowsProtocolClient appClient &&
-                        (appClient.IsNetworkLevelAuthenticationSupported || appClient.IsUsernameRequired))
+                    if (protocol.Client.IsNetworkLevelAuthenticationSupported ||
+                        protocol.Client.IsUsernameRequired)
                     {
                         //
                         // Add anther "as user..." command.

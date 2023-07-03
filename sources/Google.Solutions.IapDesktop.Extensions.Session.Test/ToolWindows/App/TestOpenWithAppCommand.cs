@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenClientUnavailable_ThenQueryStateReturnsDisabled()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
 
             var command = new OpenWithClientCommand(
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenClientDoesNotSupportNla_ThenCreateContextResetsNetworkCredential()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
             client.SetupGet(c => c.IsUsernameRequired).Returns(false);
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenUsernameRequiredAndPresent_ThenCreateContextReturns()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenUsernameRequiredButMissing_ThenCreateContextPromptsForUsername()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenUsernameRequiredAndPromptForced_ThenCreateContextPromptsForUsername()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenUsernamePromptCancelled_ThenCreateContextThrowsException()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
@@ -326,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenNlaEnabledAndCredentialsPresent_ThenCreateContextReturns()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenNlaEnabledButCredentialsMissing_ThenCreateContextPromptsForWindowsCredentials()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
@@ -393,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenNlaEnabledAndPromptForced_ThenCreateContextPromptsForWindowsCredentials()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
@@ -434,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenWindowsCredentialPromptCancelled_ThenCreateContextThrowsException()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
@@ -471,7 +471,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenClientLaunchable_ThenConnectContextLaunchesProcess()
         {
-            var client = new Mock<IWindowsProtocolClient>();
+            var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
 
             var process = new Mock<IWin32Process>();
