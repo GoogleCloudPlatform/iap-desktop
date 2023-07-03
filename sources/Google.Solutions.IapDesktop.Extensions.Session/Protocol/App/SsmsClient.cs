@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
@@ -87,14 +88,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 //
                 authFlag = "-E";
             }
+            else if (!string.IsNullOrWhiteSpace(parameters.PreferredUsername))
+            {
+                if (parameters.PreferredUsername.Contains("\"") ||
+                    parameters.PreferredUsername.Contains("'")) 
+                {
+                    throw new ArgumentException("The username contains invalid characters");
+                }
+
+                authFlag = $"-U \"{parameters.PreferredUsername}\"";
+            }
             else
             {
                 //
                 // SQL Server authentication.
                 //
-                authFlag = string.IsNullOrWhiteSpace(parameters.PreferredUsername)
-                    ? "-U sa"
-                    : $"-U {parameters.PreferredUsername}";
+                authFlag = "-U sa";
             }
 
             var endpoint = transport.Endpoint;
