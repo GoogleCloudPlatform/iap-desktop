@@ -29,7 +29,7 @@ namespace Google.Solutions.Mvvm.Controls
 {
     public static class RichTextBoxExtensions
     {
-        public static void SetPadding(this RichTextBox textBox, int padding)
+        public static void SetPadding(this TextBoxBase textBox, int padding)
         {
             var rect = new UnsafeNativeMethods.RECT();
             UnsafeNativeMethods.SendMessageRect(

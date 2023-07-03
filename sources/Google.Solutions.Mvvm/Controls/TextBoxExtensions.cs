@@ -58,25 +58,53 @@ namespace Google.Solutions.Mvvm.Controls
             textBox.Controls.Add(searchButton);
 
             // Send EM_SETMARGINS to prevent text from disappearing underneath the button
-            UnsafeNativeMethods.SendMessage(
+            NativeMethods.SendMessage(
                 textBox.Handle,
-                UnsafeNativeMethods.EM_SETMARGINS,
+                NativeMethods.EM_SETMARGINS,
                 (IntPtr)2,
                 (IntPtr)(searchButton.Width << 16));
 
             return searchButton;
         }
 
+        public static void SetCueBanner(
+            this TextBox textBox, 
+            string text,
+            bool alsoShowOnFocus)
+        {
+            Debug.Assert(!textBox.Multiline);
+
+            var result = NativeMethods.SendMessage(
+                textBox.Handle, 
+                NativeMethods.EM_SETCUEBANNER,
+                alsoShowOnFocus ? 1 : 0, 
+                text);
+            Debug.Assert(result != IntPtr.Zero);
+        }
+
         //---------------------------------------------------------------------
         // P/Invoke definitions.
         //---------------------------------------------------------------------
 
-        private static class UnsafeNativeMethods
+        private static class NativeMethods
         {
             internal const int EM_SETMARGINS = 0xd3;
+            internal const int EM_SETCUEBANNER = 0x1501;
 
             [DllImport("user32.dll")]
-            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+            internal static extern IntPtr SendMessage(
+                IntPtr 
+                hWnd, 
+                int msg, 
+                IntPtr wp, 
+                IntPtr lp);
+
+            [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+            internal static extern IntPtr SendMessage(
+                IntPtr hWnd, 
+                int msg, 
+                int wParam, 
+                [MarshalAs(UnmanagedType.LPWStr)] string lParam);
         }
     }
 }

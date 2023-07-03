@@ -19,10 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
+using Moq;
 using NUnit.Framework;
+using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 {
@@ -65,6 +71,49 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             {
                 Assert.Throws<Win32Exception>(
                     () => lsa.LookupAuthenticationPackage("Invalid"));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // PromptForWindowsCredentials.
+        //---------------------------------------------------------------------
+
+        [InteractiveTest]
+        [Test]
+        public void PromptForWindowsCredentials()
+        {
+            var dialog = new CredentialDialog(
+                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+
+            if (dialog.PromptForWindowsCredentials(
+                null,
+                "Caption",
+                "Message",
+                AuthenticationPackage.Any,
+                out var credentials) == DialogResult.OK)
+            {
+                Assert.NotNull(credentials);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // PromptForUsername.
+        //---------------------------------------------------------------------
+
+        [InteractiveTest]
+        [Test]
+        public void PromptForUsername()
+        {
+            var dialog = new CredentialDialog(
+                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+
+            if (dialog.PromptForUsername(
+                null,
+                "Caption",
+                "Message",
+                out var username) == DialogResult.OK)
+            {
+                Assert.NotNull(username);
             }
         }
     }

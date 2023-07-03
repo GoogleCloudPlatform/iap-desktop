@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.ComponentModel;
@@ -64,6 +66,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
     public class CredentialDialog : ICredentialDialog
     {
+        private readonly Service<IThemeService> themeService;
+
+        public CredentialDialog(Service<IThemeService> themeService)
+        {
+            this.themeService = themeService.ExpectNotNull(nameof(themeService));
+        }
+
         public DialogResult PromptForWindowsCredentials(
             IWin32Window owner,
             string caption,
@@ -169,17 +178,27 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string message, 
             out string username)
         {
-            // TODO: Use proper dialog.
-            var result = PromptForWindowsCredentials(
-                owner,
-                caption,
-                message,
-                AuthenticationPackage.Any,
-                out var credential);
+            using (var dialog = new UsernameDialog(caption, message))
+            {
+                try
+                {
+                    this.themeService
+                        .GetInstance()?
+                        .SystemDialogTheme
+                        .ApplyTo(dialog);
+                }
+                catch (UnknownServiceException)
+                { }
 
-            username = credential?.UserName; 
-            return result;
+                var result = dialog.ShowDialog(owner);
+                username = dialog.Username;
+                return result;
+            }
         }
+
+        //---------------------------------------------------------------------
+        // P/Invoke.
+        //---------------------------------------------------------------------
 
         private static class NativeMethods
         {
