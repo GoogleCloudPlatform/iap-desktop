@@ -303,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     throw new TransportFailedException(
                         "Connecting to the instance failed. Make sure that you have " +
                         "configured your firewall rules to permit IAP-TCP access " +
-                        $"to {targetInstance.Name}",
+                        $"to port {targetPort} of {targetInstance.Name}",
                         HelpTopics.CreateIapFirewallRule,
                         e);
                 }

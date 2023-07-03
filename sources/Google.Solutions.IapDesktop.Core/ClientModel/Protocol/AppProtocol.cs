@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool IsAvailable(IProtocolTarget target)
         {
-            if (this.Client != null && !this.Client.IsAvailable)
+            if (this.Client != null && !this.Client.IsAvailable) // TODO: Check if executable exists
             {
                 return false;
             }

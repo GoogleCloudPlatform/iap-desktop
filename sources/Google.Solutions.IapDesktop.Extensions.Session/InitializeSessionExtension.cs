@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
@@ -138,6 +140,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient()));
+
+            var protocolsPath = Path.Combine(
+                serviceProvider.GetService<IInstall>().BaseDirectory,
+                "Config",
+                "Protocols");
+            if (Directory.Exists(protocolsPath)) // TODO: Clean this up a bit
+            {
+                var factory = serviceProvider.GetService<AppProtocolFactory>();
+                foreach (var file in new DirectoryInfo(protocolsPath)
+                    .GetFiles("*.iap")
+                    .EnsureNotNull())
+                {
+                    ApplicationTraceSources.Default.TraceInformation(
+                        "Loading protocol configuration {0}...", file.Name);
+
+                    try
+                    {
+                        protocolRegistry.RegisterProtocol(factory.FromFile(file.FullName));
+                    }
+                    catch (Exception e) // TODO: Show error message somehow.
+                    {
+                        ApplicationTraceSources.Default.TraceError(
+                            "Loading protocol configuration from {0} failed", file.Name);
+                        ApplicationTraceSources.Default.TraceError(e);
+                    }
+                }
+            }
 
             //
             // Let this extension handle all URL activations.

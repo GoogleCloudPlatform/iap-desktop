@@ -44,8 +44,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///     'condition': 'isLinux()',
     ///     'accessPolicy': 'AllowAll',
     ///     'remotePort': 23,
-    ///     'command': {
-    ///         'executable': '%SystemRoot%\system32\telnet.exe'
+    ///     'client': {
+    ///         'executable': '%SystemRoot%\system32\telnet.exe',
     ///         'arguments': '%host% %port%'
     ///     }
     /// }
@@ -109,8 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             catch (JsonException e)
             {
                 throw new InvalidAppProtocolException(
-                    $"The protocol configuration file {path} " +
-                    "contains malformed data", e);
+                    $"The protocol configuration file {path} is malformed", e);
             }
         }
 
