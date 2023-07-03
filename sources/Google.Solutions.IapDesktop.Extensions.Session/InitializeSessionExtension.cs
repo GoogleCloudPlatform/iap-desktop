@@ -132,12 +132,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
-                    "SQL Server",
+                    "SQL Server Management Studio",
                     Enumerable.Empty<ITrait>(),
                     clientAppPolicy,
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient("SQL Server Management Studio")));
+                    new SsmsClient()));
 
             //
             // Let this extension handle all URL activations.

@@ -30,11 +30,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     public interface IWindowsProtocolClient : IAppProtocolClient // TODO: Merge into base class
     {
         /// <summary>
-        /// Name of application.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
         /// Application icon, if available
         /// </summary>
         Image Icon { get; }

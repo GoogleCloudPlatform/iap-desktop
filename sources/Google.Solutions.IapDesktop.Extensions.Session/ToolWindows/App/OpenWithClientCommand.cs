@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             AppProtocol protocol,
             bool forceCredentialPrompt)
         {
-            var name = (protocol.Client as IWindowsProtocolClient)?.Name ?? protocol.Name;
+            var name = protocol.Name;
             if (forceCredentialPrompt)
             {
                 name += " as user...";
