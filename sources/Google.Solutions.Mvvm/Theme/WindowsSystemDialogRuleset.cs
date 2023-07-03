@@ -29,7 +29,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Theme
 {
     /// <summary>
-    /// Theming rules for system dialogs.
+    /// Theming rules for CredUI-style system dialogs.
     /// </summary>
     public class WindowsSystemDialogRuleset : ControlTheme.IRuleSet
     {
@@ -71,7 +71,6 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleForm(Form form)
         {
-            form.BackColor = SystemColors.ControlLight; // TODO: Dark mode
             form.FormBorderStyle = FormBorderStyle.None;
             form.Controls.Add(new Label()
             {
@@ -97,19 +96,12 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleButton(Button button)
         {
-            button.BackColor = SystemColors.ControlDark;
             button.Font = this.labelFont;
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderSize = 0;
-
-            //button.Font.Size = 10f;
-            // TODO: Set colors, border
         }
 
         private void StyleTextbox(TextBox text)
         {
             text.Font = this.labelFont;
-            text.SetPadding(2);
         }
 
         private void StyleLabel(Label text)

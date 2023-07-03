@@ -71,6 +71,8 @@ namespace Google.Solutions.Mvvm.Controls
             this TextBox textBox, 
             string text)
         {
+            Debug.Assert(!textBox.Multiline);
+
             NativeMethods.SendMessage(
                 textBox.Handle, 
                 NativeMethods.EM_SETCUEBANNER, 

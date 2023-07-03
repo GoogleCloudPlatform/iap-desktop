@@ -27,7 +27,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 {
-
+    /// <summary>
+    /// CredUI-style dialog for collecting a username.
+    /// </summary>
     internal class UsernameDialog : CompositeForm
     {
         public string Username { get; private set; }
@@ -100,14 +102,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 Size = new Size(296, 30),
                 TabIndex = 0,
                 MaxLength = 64,
-                Multiline = true,
             };
             this.Controls.Add(usernameTextBox);
 
-            this.Shown += (_, __) =>
-            {
-                usernameTextBox.SetCueBanner("User name");
-            };
+            usernameTextBox.SetCueBanner("User name");
             usernameTextBox.TextChanged += (_, __) =>
             {
                 this.Username = usernameTextBox.Text;
