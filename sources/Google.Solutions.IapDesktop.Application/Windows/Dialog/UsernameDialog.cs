@@ -105,7 +105,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             };
             this.Controls.Add(usernameTextBox);
 
-            usernameTextBox.SetCueBanner("User name");
+            usernameTextBox.HandleCreated += (_, __) =>
+            {
+                usernameTextBox.SetCueBanner("User name", true);
+            };
             usernameTextBox.TextChanged += (_, __) =>
             {
                 this.Username = usernameTextBox.Text;

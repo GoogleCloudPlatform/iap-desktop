@@ -69,15 +69,17 @@ namespace Google.Solutions.Mvvm.Controls
 
         public static void SetCueBanner(
             this TextBox textBox, 
-            string text)
+            string text,
+            bool alsoShowOnFocus)
         {
             Debug.Assert(!textBox.Multiline);
 
-            NativeMethods.SendMessage(
+            var result = NativeMethods.SendMessage(
                 textBox.Handle, 
-                NativeMethods.EM_SETCUEBANNER, 
-                1, 
+                NativeMethods.EM_SETCUEBANNER,
+                alsoShowOnFocus ? 1 : 0, 
                 text);
+            Debug.Assert(result != IntPtr.Zero);
         }
 
         //---------------------------------------------------------------------
