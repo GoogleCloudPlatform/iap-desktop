@@ -35,6 +35,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public UsernameDialog(string caption, string message)
         {
             this.FormBorderStyle = FormBorderStyle.None;
+            this.StartPosition = FormStartPosition.CenterParent;
+            this.ShowInTaskbar = false;
+            this.SizeGripStyle = SizeGripStyle.Hide;
 
             this.Size = new Size(450, 225);
 
@@ -67,18 +70,22 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 Location = new Point(24, 168),
                 Size = new Size(200, 30),
                 Text = "OK",
-                Enabled = false
+                Enabled = false,
+                TabIndex = 1
             };
             this.Controls.Add(okButton);
+            this.AcceptButton = okButton;
 
             var cancelButton = new Button()
             {
                 DialogResult = DialogResult.Cancel,
                 Location = new Point(230, 168),
                 Size = new Size(200, 30),
-                Text = "Cancel"
+                Text = "Cancel",
+                TabIndex = 2
             };
             this.Controls.Add(cancelButton);
+            this.CancelButton = cancelButton;
 
             //
             // Username.
@@ -86,7 +93,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             var usernameTextBox = new TextBox()
             {
                 Location = new Point(24, 112),
-                Size = new Size(296, 30)
+                Size = new Size(296, 30),
+                TabIndex = 0,
+                MaxLength = 64
             };
             this.Controls.Add(usernameTextBox);
 

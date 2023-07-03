@@ -74,7 +74,7 @@ namespace Google.Solutions.Mvvm.Controls
             NativeMethods.SendMessage(
                 textBox.Handle, 
                 NativeMethods.EM_SETCUEBANNER, 
-                0, 
+                1, 
                 text);
         }
 
