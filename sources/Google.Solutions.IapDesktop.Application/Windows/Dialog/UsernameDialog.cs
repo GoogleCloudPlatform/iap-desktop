@@ -48,6 +48,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 Text = "Security",
                 Location = new Point(24, 12),
+                AutoSize = false,
+                Size = new Size(60, 20),
             });
             this.Controls.Add(new HeaderLabel()
             {
@@ -58,7 +60,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.Controls.Add(new Label()
             {
                 Text = message,
-                Location = new Point(24, 80)
+                Location = new Point(24, 80),
+                AutoSize = false,
+                Size = new Size(200, 20),
             });
 
             //
@@ -95,11 +99,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 Location = new Point(24, 112),
                 Size = new Size(296, 30),
                 TabIndex = 0,
-                MaxLength = 64
+                MaxLength = 64,
+                Multiline = true,
             };
             this.Controls.Add(usernameTextBox);
 
-            usernameTextBox.HandleCreated += (_, __) =>
+            this.Shown += (_, __) =>
             {
                 usernameTextBox.SetCueBanner("User name");
             };

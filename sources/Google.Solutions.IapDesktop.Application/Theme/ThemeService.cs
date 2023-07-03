@@ -96,7 +96,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             var systemDialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
-                .AddRuleSet(new WindowsSystemDialogRuleset());
+                .AddRuleSet(new WindowsSystemDialogRuleset())
+                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme));
 
             var dialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)

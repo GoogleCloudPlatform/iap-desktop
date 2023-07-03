@@ -90,7 +90,7 @@ namespace Google.Solutions.Mvvm.Theme
                         pen,
                         new Rectangle(
                             Point.Empty,
-                            new Size(form.Width - 2, form.Height - 2)));
+                            new Size(form.Width - 1, form.Height - 1)));
                 }
             };
         }
@@ -108,19 +108,18 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleTextbox(TextBox text)
         {
-            // TODO: Set margins, border
+            text.Font = this.labelFont;
+            text.SetPadding(2);
         }
 
         private void StyleLabel(Label text)
         {
             text.Font = this.labelFont;
-            // TODO: Set font, size
         }
 
         private void StyleHeaderLabel(HeaderLabel text)
         {
             text.Font = this.headerFont;
-            // TODO: Set font, size
         }
 
         //---------------------------------------------------------------------
@@ -136,7 +135,8 @@ namespace Google.Solutions.Mvvm.Theme
 
             controlTheme.AddRule<Form>(c => StyleForm(c));
             controlTheme.AddRule<Button>(c => StyleButton(c));
-            controlTheme.AddRule<TextBox>(c => StyleTextbox(c));
+            controlTheme.AddRule<TextBox>(c => StyleTextbox(c), 
+                ControlTheme.Options.ApplyWhenHandleCreated);
             controlTheme.AddRule<Label>(c => StyleLabel(c));
             controlTheme.AddRule<HeaderLabel>(c => StyleHeaderLabel(c));
         }
