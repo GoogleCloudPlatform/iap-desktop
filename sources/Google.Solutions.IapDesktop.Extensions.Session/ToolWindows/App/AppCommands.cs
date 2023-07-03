@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.credentialDialog,
                         false);
 
-                    if (protocol.Client is IWindowsAppClient appClient &&
+                    if (protocol.Client is IWindowsProtocolClient appClient &&
                         (appClient.IsNetworkLevelAuthenticationSupported || appClient.IsUsernameRequired))
                     {
                         //

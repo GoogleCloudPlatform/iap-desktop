@@ -25,11 +25,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
     internal static class ProjectExplorerNodeExtensions
     {
-        //TODO: Use trait instead
         public static bool IsRdpSupported(this IProjectModelInstanceNode node)
             => node.IsWindowsInstance();
 
-        //TODO: Use trait instead
         public static bool IsSshSupported(this IProjectModelInstanceNode node)
             => !node.IsWindowsInstance();
 

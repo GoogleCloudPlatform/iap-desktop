@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     /// <summary>
     /// A client that can use Windows network authentication.
     /// </summary>
-    public interface IWindowsAppClient : IAppProtocolClient // TODO: Rename to IWindowsProtocolClient
+    public interface IWindowsProtocolClient : IAppProtocolClient // TODO: Merge into base class
     {
         /// <summary>
         /// Name of application.

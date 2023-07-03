@@ -56,7 +56,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
                 return "(empty)";
             }
         }
-
-        // TODO(later): void Apply(IMsRdpClientAdvancedSettings6 client);
     }
 }

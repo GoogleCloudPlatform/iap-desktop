@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
-    internal class OpenWithClientCommand : MenuCommandBase<IProjectModelNode> // TODO: udpate tests
+    internal class OpenWithClientCommand : MenuCommandBase<IProjectModelNode>
     {
         private readonly IWin32Window ownerWindow;
         private readonly IJobService jobService;
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             AppProtocol protocol,
             bool forceCredentialPrompt)
         {
-            var name = (protocol.Client as IWindowsAppClient)?.Name ?? protocol.Name;
+            var name = (protocol.Client as IWindowsProtocolClient)?.Name ?? protocol.Name;
             if (forceCredentialPrompt)
             {
                 name += " as user...";
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IJobService jobService,
             AppContextFactory contextFactory,
             ICredentialDialog credentialDialog,
-            bool forceCredentialPrompt)
+            bool forceCredentialPrompt = false)
             : base($"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}")
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
             this.forceCredentialPrompt = forceCredentialPrompt;
 
-            if (contextFactory.Protocol.Client is IWindowsAppClient appClient &&
+            if (contextFactory.Protocol.Client is IWindowsProtocolClient appClient &&
                 appClient.Icon != null)
             {
                 this.Image = appClient.Icon;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     cancellationToken)
                 .ConfigureAwait(true);
 
-            var windowsClient = this.contextFactory.Protocol.Client as IWindowsAppClient;
+            var windowsClient = this.contextFactory.Protocol.Client as IWindowsProtocolClient;
             if (windowsClient == null)
             {
                 //
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 context.NetworkCredential = null;
 
                 if (windowsClient.IsUsernameRequired &&
-                    string.IsNullOrEmpty(context.Parameters.PreferredUsername))
+                    (this.forceCredentialPrompt || string.IsNullOrEmpty(context.Parameters.PreferredUsername)))
                 {
                     //
                     // TODO: Prompt for a username.

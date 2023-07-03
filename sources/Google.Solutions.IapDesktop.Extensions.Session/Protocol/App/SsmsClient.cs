@@ -26,7 +26,7 @@ using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    internal sealed class SsmsClient : IWindowsAppClient
+    internal sealed class SsmsClient : IWindowsProtocolClient
     {
         private readonly Ssms ssms; // null if not found.
 
