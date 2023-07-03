@@ -44,12 +44,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Example:
         /// 
         /// {
+        ///     'version': 1,
         ///     'name': 'telnet',
         ///     'condition': 'isLinux()',
         ///     'accessPolicy': 'AllowAll',
         ///     'remotePort': 23,
         ///     'command': {
         ///         'executable': '%SystemRoot%\system32\telnet.exe'
+        ///         'arguments': '%host% %port%'
         ///     }
         /// }
         /// </summary>
@@ -65,6 +67,13 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 {
                     throw new InvalidAppProtocolException(
                         "The protocol configuration is empty");
+                }
+                else if (
+                    section.SchemaVersion < ConfigurationSection.MinSchemaVersion ||
+                    section.SchemaVersion > ConfigurationSection.CurrentSchemaVersion)
+                {
+                    throw new InvalidAppProtocolException(
+                        "The protocol configuration uses an unsupported schema version");
                 }
 
                 return new AppProtocol(
@@ -88,6 +97,15 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         internal class ConfigurationSection
         {
+            internal const ushort MinSchemaVersion = 1;
+            internal const ushort CurrentSchemaVersion = 1;
+
+            /// <summary>
+            /// Schema version.
+            /// </summary>
+            [JsonProperty("version")]
+            public ushort SchemaVersion { get; set; }
+
             /// <summary>
             /// Name of the protocol. The name isn't guaranteed to be unique.
             /// </summary>

@@ -43,10 +43,42 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
+        public void WhenJsonContainsNoVersion_ThenFromJsonThrowsException()
+        {
+            var json = @"
+                {
+                    'name': 'protocol-1',
+                    'condition': 'isWindows()',
+                    'accessPolicy': 'AllowAll',
+                    'remotePort': 8080
+                }";
+
+            Assert.Throws<InvalidAppProtocolException>(
+                () => new AppProtocolFactory().FromJson(json));
+        }
+
+        [Test]
+        public void WhenJsonContainsUnsupportedVersion_ThenFromJsonThrowsException()
+        {
+            var json = @"
+                {
+                    'version': 0,
+                    'name': 'protocol-1',
+                    'condition': 'isWindows()',
+                    'accessPolicy': 'AllowAll',
+                    'remotePort': 8080
+                }";
+
+            Assert.Throws<InvalidAppProtocolException>(
+                () => new AppProtocolFactory().FromJson(json));
+        }
+
+        [Test]
         public void WhenJsonIsValid_ThenFromJsonReturnsProtocol()
         {
             var json = @"
                 {
+                    'version': 1,
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
                     'accessPolicy': 'AllowAll',
