@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.ComponentModel;
@@ -42,6 +43,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string message,
             AuthenticationPackage package,
             out NetworkCredential credential);
+
+        /// <summary>
+        /// Prompt for a username. There's no CredUI counterpart to this.
+        /// </summary>
+        DialogResult PromptForUsername(
+            IWin32Window owner,
+            string caption,
+            string message,
+            out string username);
     }
 
     public enum AuthenticationPackage
@@ -151,6 +161,24 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                         throw new ArgumentException(nameof(package));
                 }
             }
+        }
+
+        public DialogResult PromptForUsername(
+            IWin32Window owner, 
+            string caption, 
+            string message, 
+            out string username)
+        {
+            // TODO: Use proper dialog.
+            var result = PromptForWindowsCredentials(
+                owner,
+                caption,
+                message,
+                AuthenticationPackage.Any,
+                out var credential);
+
+            username = credential?.UserName; 
+            return result;
         }
 
         private static class NativeMethods

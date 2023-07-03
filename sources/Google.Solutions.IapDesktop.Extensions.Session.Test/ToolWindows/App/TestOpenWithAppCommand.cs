@@ -177,28 +177,108 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         }
 
         [Test]
-        public void WhenUsernameRequiredButMissing_ThenCreateContextPromptsForUsername()
+        public async Task WhenUsernameRequiredButMissing_ThenCreateContextPromptsForUsername()
         {
             var client = new Mock<IWindowsProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
-            
-            Assert.Fail("NIY");
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+
+            var username = "user";
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    out username))
+                .Returns(DialogResult.OK);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.Parameters.PreferredUsername);
         }
 
         [Test]
-        public void WhenUsernameRequiredAndPromptForced_ThenCreateContextPromptsForUsername()
+        public async Task WhenUsernameRequiredAndPromptForced_ThenCreateContextPromptsForUsername()
         {
-            Assert.Fail("NIY");
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+            settings.AppUsername.StringValue = "ignore";
+
+            var username = "user";
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    out username))
+                .Returns(DialogResult.OK);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object,
+                true);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.Parameters.PreferredUsername);
         }
 
         [Test]
         public void WhenUsernamePromptCancelled_ThenCreateContextThrowsException()
         {
-            Assert.Fail("NIY");
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+
+            string username = null;
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    out username))
+                .Returns(DialogResult.Cancel);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object);
+
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                () => command
+                    .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                    .Wait());
         }
 
         //---------------------------------------------------------------------

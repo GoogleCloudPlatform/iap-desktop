@@ -111,9 +111,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     (this.forceCredentialPrompt || string.IsNullOrEmpty(context.Parameters.PreferredUsername)))
                 {
                     //
-                    // TODO: Prompt for a username.
+                    // Prompt for a username.
                     //
-                    context.Parameters.PreferredUsername = "admin";
+                    if (this.credentialDialog.PromptForUsername(
+                        this.ownerWindow,
+                        this.contextFactory.Protocol.Name,
+                        $"Enter username for {instance.DisplayName}",
+                        out var username) != DialogResult.OK)
+                    {
+                        //
+                        // Cancelled.
+                        //
+                        throw new TaskCanceledException();
+                    }
+
+                    Debug.Assert(username != null);
+                    context.Parameters.PreferredUsername = username;
                 }
             }
             else
