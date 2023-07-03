@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
@@ -29,11 +28,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     /// </summary>
     public interface IWindowsProtocolClient : IAppProtocolClient // TODO: Merge into base class
     {
-        /// <summary>
-        /// Application icon, if available
-        /// </summary>
-        Image Icon { get; }
-
         /// <summary>
         /// Check if the app supports NLA.
         /// </summary>

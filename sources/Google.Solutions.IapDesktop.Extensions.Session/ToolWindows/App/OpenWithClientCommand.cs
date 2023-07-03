@@ -26,8 +26,11 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using Google.Solutions.Mvvm.Shell;
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -54,6 +57,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             return name;
         }
 
+        private static Image CreateIcon(AppProtocol protocol)
+        {
+            if (protocol.Client?.Executable is var executable &&
+                executable != null &&
+                File.Exists(executable))
+            {
+                //
+                // Try to extract the icon from the EXE file.
+                //
+                try
+                {
+                    return FileType
+                        .Lookup(executable, FileAttributes.Normal, FileType.IconFlags.None)
+                        .FileIcon;
+                }
+                catch
+                { }
+            }
+
+            return null;
+        }
+
         public OpenWithClientCommand(
             IWin32Window ownerWindow,
             IJobService jobService,
@@ -68,11 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
             this.forceCredentialPrompt = forceCredentialPrompt;
 
-            if (contextFactory.Protocol.Client is IWindowsProtocolClient appClient &&
-                appClient.Icon != null)
-            {
-                this.Image = appClient.Icon;
-            }
+            this.Image = CreateIcon(contextFactory.Protocol);
         }
 
         internal async Task<AppProtocolContext> CreateContextAsync(

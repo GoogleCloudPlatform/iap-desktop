@@ -49,8 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         // IWindowsAppClient.
         //---------------------------------------------------------------------
 
-        public Image Icon => this.ssms?.Icon;
-
         public bool IsUsernameRequired
         {
             //

@@ -36,6 +36,7 @@ using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -49,6 +50,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
+
+        private static readonly string CmdExe
+            = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
 
         private static IProjectModelInstanceNode CreateInstanceNode()
         {
@@ -118,6 +122,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             Assert.AreEqual(
                 CommandState.Disabled,
                 command.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // Icon.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenClientExecutableNotFound_ThenImageIsNull()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.Executable).Returns("doesnotexist.exe");
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, null),
+                new Mock<ICredentialDialog>().Object);
+
+            Assert.IsNull(command.Image);
+        }
+
+        [Test]
+        public void WhenClientExecutableFound_ThenImageIsAvailable()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.Executable).Returns(CmdExe);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, null),
+                new Mock<ICredentialDialog>().Object);
+
+            Assert.IsNotNull(command.Image);
         }
 
         //---------------------------------------------------------------------

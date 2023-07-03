@@ -38,13 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSsmsNotAvailable_ThenIconIsNull()
-        {
-            var client = new SsmsClient(null);
-            Assert.IsNull(client.Icon);
-        }
-
-        [Test]
         public void WhenSsmsNotAvailable_ThenExecutableIsNull()
         {
             var client = new SsmsClient(null);
