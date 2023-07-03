@@ -587,7 +587,10 @@ namespace Google.Solutions.IapDesktop
                     catch (Exception e)
                     {
 #if DEBUG
-                        ShowFatalError(e);
+                        if (!e.IsCancellation())
+                        {
+                            ShowFatalError(e);
+                        }
 #endif
                     }
                 }
