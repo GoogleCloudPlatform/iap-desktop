@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
@@ -94,6 +95,28 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             Assert.AreEqual(
                 "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%% /user root%",
+                client.FormatArguments(transport.Object, parameters));
+        }
+
+        [Test]
+        public void WhenUsernameInvalid_ThenFormatArgumentsThrowsException(
+            [Values("user\"", "''")] string username)
+        {
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 8080));
+
+            var client = new AppProtocolClient(
+                "doesnotexist.exe",
+                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%% /user %username%%");
+
+            var parameters = new AppProtocolParameters()
+            {
+                PreferredUsername = username,
+            };
+
+            Assert.Throws<ArgumentException>(() =>
                 client.FormatArguments(transport.Object, parameters));
         }
 

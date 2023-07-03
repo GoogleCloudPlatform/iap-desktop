@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using System;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
@@ -107,6 +108,17 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             string arguments = this.ArgumentsTemplate;
             if (arguments != null)
             {
+                //
+                // Don't permit quotes in username as they could interfere
+                // with argument quoting.
+                //
+                if (!string.IsNullOrWhiteSpace(parameters.PreferredUsername) &&
+                    (parameters.PreferredUsername.Contains("\"") ||
+                     parameters.PreferredUsername.Contains("'")))
+                {
+                    throw new ArgumentException("The username contains invalid characters");
+                }
+
                 arguments = arguments
                     .Replace("%port%", transport.Endpoint.Port.ToString())
                     .Replace("%host%", transport.Endpoint.Address.ToString())
