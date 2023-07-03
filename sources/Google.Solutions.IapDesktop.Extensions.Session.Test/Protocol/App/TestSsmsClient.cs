@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
@@ -91,7 +92,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.AreEqual(
-                "-S 127.0.0.2,11443 -U username",
+                "-S 127.0.0.2,11443 -U \"username\"",
+                client.FormatArguments(transport.Object, parameters));
+        }
+
+        [Test]
+        public void WhenNlaDisabledAndUsernameInvalid_ThenFormatArgumentsThrowsException(
+            [Values("user\"", "''")] string username)
+        {
+            var transport = new Mock<ITransport>();
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
+            var client = new SsmsClient();
+
+            var parameters = new AppProtocolParameters()
+            {
+                PreferredUsername = username,
+                NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Disabled
+            };
+
+            Assert.Throws<ArgumentException>(() =>
                 client.FormatArguments(transport.Object, parameters));
         }
 
