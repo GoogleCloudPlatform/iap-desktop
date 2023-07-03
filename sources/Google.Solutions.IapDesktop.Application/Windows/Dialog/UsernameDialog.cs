@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.Controls.Add(new HeaderLabel()
             {
                 Text = caption,
-                Location = new Point(24, 40),
+                Location = new Point(24 - 2, 40),
                 Size = new Size(200, 30),
             });
             this.Controls.Add(new Label()

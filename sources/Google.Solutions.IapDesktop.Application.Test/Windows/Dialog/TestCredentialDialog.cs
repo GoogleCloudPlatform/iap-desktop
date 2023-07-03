@@ -28,6 +28,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 {
@@ -84,12 +85,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             var dialog = new CredentialDialog(
                 new Service<IThemeService>(new Mock<IServiceProvider>().Object));
 
-            dialog.PromptForWindowsCredentials(
+            if (dialog.PromptForWindowsCredentials(
                 null,
                 "Caption",
                 "Message",
                 AuthenticationPackage.Any,
-                out var credentials);
+                out var credentials) == DialogResult.OK)
+            {
+                Assert.NotNull(credentials);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -103,11 +107,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             var dialog = new CredentialDialog(
                 new Service<IThemeService>(new Mock<IServiceProvider>().Object));
 
-            dialog.PromptForUsername(
+            if (dialog.PromptForUsername(
                 null,
                 "Caption",
                 "Message",
-                out var username);
+                out var username) == DialogResult.OK)
+            {
+                Assert.NotNull(username);
+            }
         }
     }
 }

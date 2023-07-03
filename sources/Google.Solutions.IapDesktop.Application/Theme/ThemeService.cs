@@ -31,6 +31,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     public interface IThemeService
     {
         /// <summary>
+        /// Theme for system dialogs and other secondary windows.
+        /// </summary>
+        IControlTheme SystemDialogTheme { get; }
+
+        /// <summary>
         /// Theme for dialogs and other secondary windows.
         /// </summary>
         IControlTheme DialogTheme { get; }
@@ -89,6 +94,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 ? VSTheme.GetDarkTheme()
                 : VSTheme.GetLightTheme();
 
+            var systemDialogTheme = new ControlTheme()
+                .AddRuleSet(windowsTheme)
+                .AddRuleSet(new WindowsSystemDialogRuleset());
+
             var dialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
@@ -103,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             // Apply the resulting theme to the different kinds of windows we have.
             //
             this.DockPanelTheme = vsTheme;
+            this.SystemDialogTheme = systemDialogTheme;
             this.DialogTheme = dialogTheme;
             this.MainWindowTheme = dockWindowTheme;
             this.ToolWindowTheme = dockWindowTheme;
@@ -118,9 +128,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         //---------------------------------------------------------------------
 
         public ThemeBase DockPanelTheme { get; }
+        public IControlTheme SystemDialogTheme { get; }
         public IControlTheme DialogTheme { get; }
         public IControlTheme ToolWindowTheme { get; }
         public IControlTheme MainWindowTheme { get; }
-
     }
 }
