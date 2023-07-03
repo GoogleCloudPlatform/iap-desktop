@@ -28,15 +28,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     /// </summary>
     public interface IWindowsProtocolClient : IAppProtocolClient // TODO: Merge into base class
     {
-        /// <summary>
-        /// Check if the app supports NLA.
-        /// </summary>
-        bool IsNetworkLevelAuthenticationSupported { get; }
-
-        /// <summary>
-        /// Check if a username is required.
-        /// Only applies if NLA is not supported.
-        /// </summary>
-        bool IsUsernameRequired { get; }
     }
 }

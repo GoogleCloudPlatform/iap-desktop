@@ -98,6 +98,23 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
+        // IsUsernameRequired.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenArgumentsDoNotUseUsername_ThenIsUsernameRequiredReturnsFalse(
+            [Values(null, " ", "%U%")] string arguments)
+        {
+            Assert.IsFalse(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired);
+        }
+
+        [Test]
+        public void WhenArgumentsUseUsername_ThenIsUsernameRequiredReturnsTrue()
+        {
+            Assert.IsTrue(new AppProtocolClient("NUL.exe", "/u '%username%'").IsUsernameRequired);
+        }
+
+        //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
 

@@ -46,6 +46,17 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         string FormatArguments(
             ITransport transport,
             AppProtocolParameters parameters);
+
+        /// <summary>
+        /// Check if the app supports NLA.
+        /// </summary>
+        bool IsNetworkLevelAuthenticationSupported { get; }
+
+        /// <summary>
+        /// Check if a the client requires a username in its command line.
+        /// Only applies if NLA is not supported.
+        /// </summary>
+        bool IsUsernameRequired { get; }
     }
 
     public class AppProtocolClient : IAppProtocolClient
@@ -103,6 +114,17 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             }
 
             return arguments;
+        }
+
+        public bool IsNetworkLevelAuthenticationSupported
+        {
+            get => false;
+        }
+
+        public bool IsUsernameRequired
+        {
+            get => this.ArgumentsTemplate != null && 
+                this.ArgumentsTemplate.Contains("%username%");
         }
     }
 }
