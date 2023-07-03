@@ -75,7 +75,7 @@ namespace Google.Solutions.Platform.Dispatch
         /// <returns>Number of processes that were closed gracefully</returns>
         public async Task<int> CloseAsync(
             TimeSpan timeout, 
-            CancellationToken cancellationToken) // TODO: add tests
+            CancellationToken cancellationToken)
         {
             var result = await Task.WhenAll(this.children
                 .Where(c => c.Process.IsRunning)

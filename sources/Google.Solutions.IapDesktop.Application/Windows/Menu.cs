@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             //
             var registrations = serviceProvider
                 .GetServicesByCategory(category)
-                .OfType<MenuCommandBase<TContext>>() // TODO: use IMenuCommand<>
+                .OfType<MenuCommandBase<TContext>>()
                 .Select(command =>
                     new {
                         Command = command,

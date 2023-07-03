@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
     /// <summary>
     /// A client that can use Windows network authentication.
     /// </summary>
-    public interface IWindowsAppClient : IAppProtocolClient
+    public interface IWindowsProtocolClient : IAppProtocolClient // TODO: Merge into base class
     {
         /// <summary>
         /// Name of application.
@@ -40,27 +40,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         Image Icon { get; }
 
         /// <summary>
-        /// Required type of network credential.
+        /// Check if the app supports NLA.
         /// </summary>
-        NetworkCredentialType RequiredCredential { get; }
-    }
-
-    public enum NetworkCredentialType
-    {
-        /// <summary>
-        /// Use default network credentials.
-        /// </summary>
-        Default,
+        bool IsNetworkLevelAuthenticationSupported { get; }
 
         /// <summary>
-        /// Use RDP credentials as network credentials,
-        /// if available.
+        /// Check if a username is required.
+        /// Only applies if NLA is not supported.
         /// </summary>
-        Rdp,
-
-        /// <summary>
-        /// Prompt user for network credentials.
-        /// </summary>
-        Prompt
+        bool IsUsernameRequired { get; }
     }
 }

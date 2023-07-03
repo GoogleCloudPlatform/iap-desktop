@@ -87,11 +87,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.processFactory,
                         this.settingsService);
 
-                    yield return new OpenWithAppCommand(
+                    yield return new OpenWithClientCommand(
                         this.ownerWindow,
                         this.jobService,
                         factory,
-                        this.credentialDialog);
+                        this.credentialDialog,
+                        false);
+
+                    if (protocol.Client is IWindowsProtocolClient appClient &&
+                        (appClient.IsNetworkLevelAuthenticationSupported || appClient.IsUsernameRequired))
+                    {
+                        //
+                        // Add anther "as user..." command.
+                        //
+                        yield return new OpenWithClientCommand(
+                            this.ownerWindow,
+                            this.jobService,
+                            factory,
+                            this.credentialDialog,
+                            true);
+                    }
                 }
             }
         }

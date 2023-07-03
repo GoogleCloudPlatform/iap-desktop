@@ -220,6 +220,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
             settings.AppUsername.StringValue = "user";
+            settings.AppNetworkLevelAuthentication.EnumValue 
+                = AppNetworkLevelAuthenticationState.Disabled;
 
             var settingsService = CreateSettingsService(settings);
 
@@ -237,6 +239,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .ConfigureAwait(false);
 
             Assert.AreEqual("user", context.Parameters.PreferredUsername);
+            Assert.AreEqual(
+                AppNetworkLevelAuthenticationState.Disabled,
+                context.Parameters.NetworkLevelAuthentication);
         }
 
         //---------------------------------------------------------------------

@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -44,7 +45,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 {
     [TestFixture]
-    public class TestOpenWithAppCommand
+    public class TestOpenWithClientCommand
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -58,13 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
         private AppContextFactory CreateFactory(
             IAppProtocolClient client,
-            NetworkCredential savedRdpCredentials)
+            InstanceConnectionSettings settings)
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
-            settings.RdpUsername.StringValue = savedRdpCredentials?.UserName;
-            settings.RdpPassword.ClearTextValue = savedRdpCredentials?.Password;
-            settings.RdpDomain.StringValue = savedRdpCredentials?.Domain;
-
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -90,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenContextOfWrongType_ThenQueryStateReturnsUnavailable()
         {
-            var command = new OpenWithAppCommand(
+            var command = new OpenWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(new Mock<IAppProtocolClient>().Object, null),
@@ -110,10 +106,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenClientUnavailable_ThenQueryStateReturnsDisabled()
         {
-            var client = new Mock<IWindowsAppClient>();
+            var client = new Mock<IWindowsProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
 
-            var command = new OpenWithAppCommand(
+            var command = new OpenWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -125,20 +121,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         }
 
         //---------------------------------------------------------------------
-        // CreateContext.
+        // CreateContext - non-NLA.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenWindowsClientRequiresDefaultCredential_ThenCreateContextUsesNullCredential()
+        public async Task WhenClientDoesNotSupportNla_ThenCreateContextResetsNetworkCredential()
         {
-            var client = new Mock<IWindowsAppClient>();
+            var client = new Mock<IWindowsProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Default);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(false);
 
-            var command = new OpenWithAppCommand(
+            var command = new OpenWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
-                CreateFactory(client.Object, null),
+                CreateFactory(
+                    client.Object,
+                    InstanceConnectionSettings.CreateNew(SampleLocator)),
                 new Mock<ICredentialDialog>().Object);
 
             var context = await command
@@ -148,34 +147,263 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             Assert.IsNull(context.NetworkCredential);
         }
 
-        [Test]
-        public async Task WhenWindowsClientRequiresRdpCredential_ThenCreateContextUsesRdpCredential()
-        {
-            var client = new Mock<IWindowsAppClient>();
-            client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Rdp);
+        //---------------------------------------------------------------------
+        // CreateContext - non-NLA with username required.
+        //---------------------------------------------------------------------
 
-            var rdpCredential = new NetworkCredential("user", "password", "domain");
-            var command = new OpenWithAppCommand(
+        [Test]
+        public async Task WhenUsernameRequiredAndPresent_ThenCreateContextReturns()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppUsername.StringValue = "user";
+
+            var command = new OpenWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
-                CreateFactory(client.Object, rdpCredential),
+                CreateFactory(client.Object, settings),
                 new Mock<ICredentialDialog>().Object);
 
             var context = await command
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(rdpCredential.UserName, context.NetworkCredential.UserName);
-            Assert.AreEqual(rdpCredential.Domain, context.NetworkCredential.Domain);
-            Assert.AreEqual(rdpCredential.Password, context.NetworkCredential.Password);
+            Assert.IsNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.Parameters.PreferredUsername);
         }
 
         [Test]
-        public void WhenWindowsClientRequiresPromptCredentialAndPromptCancelled_ThenCreateContextThrowsException()
+        public async Task WhenUsernameRequiredButMissing_ThenCreateContextPromptsForUsername()
         {
-            NetworkCredential userCredential = null;
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+
+            var username = "user";
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    out username))
+                .Returns(DialogResult.OK);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.Parameters.PreferredUsername);
+        }
+
+        [Test]
+        public async Task WhenUsernameRequiredAndPromptForced_ThenCreateContextPromptsForUsername()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+            settings.AppUsername.StringValue = "ignore";
+
+            var username = "user";
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    out username))
+                .Returns(DialogResult.OK);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object,
+                true);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.Parameters.PreferredUsername);
+        }
+
+        [Test]
+        public void WhenUsernamePromptCancelled_ThenCreateContextThrowsException()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+            client.SetupGet(c => c.IsUsernameRequired).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+
+            string username = null;
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    out username))
+                .Returns(DialogResult.Cancel);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object);
+
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                () => command
+                    .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                    .Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // CreateContext - NLA.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenNlaEnabledAndCredentialsPresent_ThenCreateContextReturns()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+            settings.RdpUsername.StringValue = "user";
+            settings.RdpPassword.ClearTextValue = "password";
+            settings.RdpDomain.StringValue = "domain";
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                new Mock<ICredentialDialog>().Object);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.NetworkCredential.UserName);
+            Assert.AreEqual("domain", context.NetworkCredential.Domain);
+            Assert.AreEqual("password", context.NetworkCredential.Password);
+        }
+
+
+        [Test]
+        public async Task WhenNlaEnabledButCredentialsMissing_ThenCreateContextPromptsForWindowsCredentials()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+
+            var userCredential = new NetworkCredential("user", "password", "domain");
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForWindowsCredentials(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<AuthenticationPackage>(),
+                    out userCredential))
+                .Returns(DialogResult.OK);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.NetworkCredential.UserName);
+            Assert.AreEqual("domain", context.NetworkCredential.Domain);
+            Assert.AreEqual("password", context.NetworkCredential.Password);
+        }
+
+        [Test]
+        public async Task WhenNlaEnabledAndPromptForced_ThenCreateContextPromptsForWindowsCredentials()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+            settings.RdpUsername.StringValue = "ignore";
+            settings.RdpPassword.ClearTextValue = "ignore";
+            settings.RdpDomain.StringValue = "ignore";
+
+            var userCredential = new NetworkCredential("user", "password", "domain");
+            var dialog = new Mock<ICredentialDialog>();
+            dialog
+                .Setup(d => d.PromptForWindowsCredentials(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<AuthenticationPackage>(),
+                    out userCredential))
+                .Returns(DialogResult.OK);
+
+            var command = new OpenWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, settings),
+                dialog.Object,
+                true);
+
+            var context = await command
+                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(context.NetworkCredential);
+            Assert.AreEqual("user", context.NetworkCredential.UserName);
+            Assert.AreEqual("domain", context.NetworkCredential.Domain);
+            Assert.AreEqual("password", context.NetworkCredential.Password);
+        }
+
+        [Test]
+        public void WhenWindowsCredentialPromptCancelled_ThenCreateContextThrowsException()
+        {
+            var client = new Mock<IWindowsProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
+            client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
+
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+
+            NetworkCredential userCredential = null;
             var dialog = new Mock<ICredentialDialog>();
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
@@ -186,88 +414,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out userCredential))
                 .Returns(DialogResult.Cancel);
 
-            var client = new Mock<IWindowsAppClient>();
-            client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Prompt);
-
-            var command = new OpenWithAppCommand(
+            var command = new OpenWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
-                CreateFactory(client.Object, null),
+                CreateFactory(client.Object, settings),
                 dialog.Object);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => command
                     .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                     .Wait());
-        }
-
-        [Test]
-        public async Task WhenWindowsClientRequiresPromptCredential_ThenCreateContextPromptsUserForCredential()
-        {
-            var userCredential = new NetworkCredential("user", "password", "domain");
-
-            var dialog = new Mock<ICredentialDialog>();
-            dialog
-                .Setup(d => d.PromptForWindowsCredentials(
-                    It.IsAny<IWin32Window>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<AuthenticationPackage>(),
-                    out userCredential))
-                .Returns(DialogResult.OK);
-
-            var client = new Mock<IWindowsAppClient>();
-            client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Prompt);
-
-            var command = new OpenWithAppCommand(
-                new Mock<IWin32Window>().Object,
-                new SynchronousJobService(),
-                CreateFactory(client.Object, new NetworkCredential("notused", "notused", "notused")),
-                dialog.Object);
-
-            var context = await command
-                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(userCredential.UserName, context.NetworkCredential.UserName);
-            Assert.AreEqual(userCredential.Domain, context.NetworkCredential.Domain);
-            Assert.AreEqual(userCredential.Password, context.NetworkCredential.Password);
-        }
-
-        [Test]
-        public async Task WhenWindowsClientRequiresRdpCredentialAndNoCredentialFound_ThenCreateContextPromptsUserForCredential()
-        {
-            var userCredential = new NetworkCredential("user", "password", "domain");
-
-            var dialog = new Mock<ICredentialDialog>();
-            dialog
-                .Setup(d => d.PromptForWindowsCredentials(
-                    It.IsAny<IWin32Window>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<AuthenticationPackage>(),
-                    out userCredential))
-                .Returns(DialogResult.OK);
-
-            var client = new Mock<IWindowsAppClient>();
-            client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Rdp);
-
-            var command = new OpenWithAppCommand(
-                new Mock<IWin32Window>().Object,
-                new SynchronousJobService(),
-                CreateFactory(client.Object, null),
-                dialog.Object);
-
-            var context = await command
-                .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(userCredential.UserName, context.NetworkCredential.UserName);
-            Assert.AreEqual(userCredential.Domain, context.NetworkCredential.Domain);
-            Assert.AreEqual(userCredential.Password, context.NetworkCredential.Password);
         }
 
         //---------------------------------------------------------------------
@@ -277,9 +433,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenClientLaunchable_ThenConnectContextLaunchesProcess()
         {
-            var client = new Mock<IWindowsAppClient>();
+            var client = new Mock<IWindowsProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.RequiredCredential).Returns(NetworkCredentialType.Default);
 
             var process = new Mock<IWin32Process>();
             var processFactory = new Mock<IWin32ProcessFactory>();
@@ -306,7 +461,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 processFactory.Object,
                 settingsService.Object);
 
-            var command = new OpenWithAppCommand(
+            var command = new OpenWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 factory,

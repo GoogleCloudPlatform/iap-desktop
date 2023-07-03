@@ -36,10 +36,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         {
             return this.Key.Username;
         }
-
-        // TODO(later):
-        //   AuthMethod : { pwd, pubkey
-        //   Sign( ... )
-        //   Prompt( ... )
     }
 }

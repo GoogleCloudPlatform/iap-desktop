@@ -137,31 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     clientAppPolicy,
                     Ssms.DefaultServerPort,
                     null,
-                    new SsmsClient(
-                         "SQL Server Management Studio",
-                         NetworkCredentialType.Rdp)));
-
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server",
-                    Enumerable.Empty<ITrait>(),
-                    clientAppPolicy,
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(
-                        "SQL Server Management Studio as user...",
-                        NetworkCredentialType.Prompt)));
-
-            protocolRegistry.RegisterProtocol(
-                new AppProtocol(
-                    "SQL Server",
-                    Enumerable.Empty<ITrait>(),
-                    clientAppPolicy,
-                    Ssms.DefaultServerPort,
-                    null,
-                    new SsmsClient(
-                        "SQL Server Management Studio with SQL authentication",
-                        NetworkCredentialType.Default)));
+                    new SsmsClient("SQL Server Management Studio")));
 
             //
             // Let this extension handle all URL activations.

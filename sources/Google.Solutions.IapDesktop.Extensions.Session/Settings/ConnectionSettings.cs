@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
@@ -154,6 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         //---------------------------------------------------------------------
 
         public RegistryStringSetting AppUsername { get; private set; }
+        public RegistryEnumSetting<AppNetworkLevelAuthenticationState> AppNetworkLevelAuthentication { get; private set; }
 
         internal IEnumerable<ISetting> AppSettings => new ISetting[]
         {
@@ -162,6 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             // (assuming the PropertyGrid doesn't force alphabetical order).
             //
             this.AppUsername,
+            this.AppNetworkLevelAuthentication
         };
 
         //---------------------------------------------------------------------
@@ -410,6 +413,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 null,
                 key,
                 username => string.IsNullOrEmpty(username) || !username.Contains(' '));
+            this.AppNetworkLevelAuthentication = RegistryEnumSetting<AppNetworkLevelAuthenticationState>.FromKey(
+                "AppNetworkLevelAuthentication",
+                "Windows authentication",
+                "Use Windows authentication if the client application supports it.",
+                Categories.AppCredentials,
+                AppNetworkLevelAuthenticationState._Default,
+                key);
 
             Debug.Assert(this.Settings.All(s => s != null));
         }
@@ -474,6 +484,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
             prototype.AppUsername = (RegistryStringSetting)
                 baseSettings.AppUsername.OverlayBy(overlaySettings.AppUsername);
+            prototype.AppNetworkLevelAuthentication = (RegistryEnumSetting<AppNetworkLevelAuthenticationState>)
+                baseSettings.AppNetworkLevelAuthentication.OverlayBy(overlaySettings.AppNetworkLevelAuthentication);
 
             Debug.Assert(prototype.Settings.All(s => s != null));
             Debug.Assert(baseSettings.Settings.All(s => s != null));
