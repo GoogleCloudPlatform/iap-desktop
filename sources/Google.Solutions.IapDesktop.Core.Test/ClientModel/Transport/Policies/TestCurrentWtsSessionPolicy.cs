@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.Testing.Apis;
@@ -30,12 +29,12 @@ using System.Net;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
 {
     [TestFixture]
-    public class TestCurrentProcessPolicy
+    public class TestCurrentWtsSessionPolicy
         : EquatableFixtureBase<ProcessPolicyBase, ITransportPolicy>
     {
         protected override ProcessPolicyBase CreateInstance()
         {
-            return new CurrentProcessPolicy();
+            return new CurrentWtsSessionPolicy();
         }
 
         //---------------------------------------------------------------------
@@ -45,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToStringReturnsName()
         {
-            Assert.AreEqual("Current process", new CurrentProcessPolicy().ToString());
+            Assert.AreEqual("Current WTS session", new CurrentWtsSessionPolicy().ToString());
         }
 
         //---------------------------------------------------------------------
@@ -56,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenEndpointNotLoopback_ThenIsClientAllowedReturnsFalse()
         {
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
-            var policy = new CurrentProcessPolicy();
+            var policy = new CurrentWtsSessionPolicy();
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
         }
@@ -65,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenEndpointBelongsToDifferentProcess_ThenIsClientAllowedReturnsFalse()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
-            var policy = new CurrentProcessPolicy();
+            var policy = new CurrentWtsSessionPolicy();
 
             Assert.IsFalse(policy.IsClientAllowed(endpoint));
         }
@@ -78,19 +77,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void WhenProcessIdCurrent_ThenIsClientProcessAllowedReturnsTrue()
         {
             var pid = (uint)Process.GetCurrentProcess().Id;
-            Assert.IsTrue(new CurrentProcessPolicy().IsClientProcessAllowed(pid));
-        }
-
-        [Test]
-        public void WhenProcessIdNotCurrent_ThenIsClientProcessAllowedReturnsFalse()
-        {
-            Assert.IsFalse(new CurrentProcessPolicy().IsClientProcessAllowed(4));
+            Assert.IsTrue(new CurrentWtsSessionPolicy().IsClientProcessAllowed(pid));
         }
 
         [Test]
         public void WhenProcessIdNotFound_ThenIsClientProcessAllowedReturnsFalse()
         {
-            Assert.IsFalse(new CurrentProcessPolicy().IsClientProcessAllowed(uint.MaxValue));
+            Assert.IsFalse(new CurrentWtsSessionPolicy().IsClientProcessAllowed(uint.MaxValue));
         }
     }
 }

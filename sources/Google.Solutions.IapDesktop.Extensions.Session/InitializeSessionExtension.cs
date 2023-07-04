@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 })
                 .ToList();
             
-            //TODO: Set access policy
+            //TODO: Auto-set access policy in AppProtocolContext, remove from config
             
             try
             {

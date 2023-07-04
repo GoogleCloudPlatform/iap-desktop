@@ -22,6 +22,8 @@
 using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Google.Solutions.Platform.Test.Dispatch
 {
@@ -42,6 +44,25 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var session = WtsSession.GetCurrent();
             Assert.IsNotNull(session);
+        }
+
+        //---------------------------------------------------------------------
+        // FromProcessId.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPidIsFromCurrentProcess_ThenFromProcessIdReturnsSession()
+        {
+            var session = WtsSession.FromProcessId((uint)Process.GetCurrentProcess().Id);
+            Assert.IsNotNull(session);
+            Assert.AreEqual(WtsSession.GetCurrent(), session);
+        }
+
+        [Test]
+        public void WhenPidNotFound_ThenFromProcessIdThrowsException()
+        {
+            Assert.Throws<DispatchException>(
+                () => WtsSession.FromProcessId(uint.MaxValue));
         }
     }
 }
