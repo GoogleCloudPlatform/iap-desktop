@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ClientModel;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
@@ -32,14 +31,24 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
     [TestFixture]
     public class TestAppProtocolClient
     {
+        private static readonly string CmdExe
+            = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
+
         //---------------------------------------------------------------------
         // IsAvailable.
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsAvailable()
+        public void WhenExecutableNotFound_ThenIsAvailableReturnsFalse()
         {
-            Assert.IsTrue(new AppProtocolClient("NUL.exe", null).IsAvailable);
+            Assert.IsFalse(new AppProtocolClient("x:\\doesnotexist.exe", null).IsAvailable);
+            Assert.IsFalse(new AppProtocolClient("NUL.exe", null).IsAvailable);
+        }
+
+        [Test]
+        public void WhenExecutableExists_ThenIsAvailableReturnsTrue()
+        {
+            Assert.IsTrue(new AppProtocolClient(CmdExe, null).IsAvailable);
         }
 
         //---------------------------------------------------------------------
@@ -67,12 +76,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = new AppProtocolClient(
                 "doesnotexist.exe",
-                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%% /user %username%%");
+                "/port $port$ /host $host$ /ignore $HOST$Port$$ $foo$$$ /user $username$$");
 
             var parameters = new AppProtocolParameters();
 
             Assert.AreEqual(
-                "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%% /user %",
+                "/port 8080 /host 127.0.0.2 /ignore $HOST$Port$$ $foo$$$ /user $",
                 client.FormatArguments(transport.Object, parameters));
         }
 
@@ -86,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = new AppProtocolClient(
                 "doesnotexist.exe",
-                "/port %port% /host %host% /ignore %HOST%Port%% %foo%%% /user %username%%");
+                "/port $port$ /host $host$ /ignore $HOST$Port$$ $foo$$$ /user $username$$");
 
             var parameters = new AppProtocolParameters()
             {
@@ -94,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             Assert.AreEqual(
-                "/port 8080 /host 127.0.0.2 /ignore %HOST%Port%% %foo%%% /user root%",
+                "/port 8080 /host 127.0.0.2 /ignore $HOST$Port$$ $foo$$$ /user root$",
                 client.FormatArguments(transport.Object, parameters));
         }
 
@@ -126,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void WhenArgumentsDoNotUseUsername_ThenIsUsernameRequiredReturnsFalse(
-            [Values(null, " ", "%U%")] string arguments)
+            [Values(null, " ", "$U$")] string arguments)
         {
             Assert.IsFalse(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired);
         }
@@ -134,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenArgumentsUseUsername_ThenIsUsernameRequiredReturnsTrue()
         {
-            Assert.IsTrue(new AppProtocolClient("NUL.exe", "/u '%username%'").IsUsernameRequired);
+            Assert.IsTrue(new AppProtocolClient("NUL.exe", "/u '$username$'").IsUsernameRequired);
         }
 
         //---------------------------------------------------------------------

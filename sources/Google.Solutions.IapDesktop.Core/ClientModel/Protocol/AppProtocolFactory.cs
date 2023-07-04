@@ -27,68 +27,104 @@ using Google.Solutions.Platform;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
+    /// <summary>
+    /// Factory class for reading a protocol configuration from JSON.
+    /// 
+    /// Example:
+    /// 
+    /// {
+    ///     'version': 1,
+    ///     'name': 'telnet',
+    ///     'condition': 'isLinux()',
+    ///     'remotePort': 23,
+    ///     'client': {
+    ///         'executable': '%SystemRoot%\system32\telnet.exe',
+    ///         'arguments': '$host$ $port$'
+    ///     }
+    /// }
+    /// 
+    /// The executable and argument can contain environment variables, 
+    /// for example:
+    /// 
+    ///   %AppData%\.myprofile
+    /// 
+    /// Arguments can contain the following placeholders:
+    /// 
+    ///   $port$:     the local port to connect to
+    ///   $host$:     the locat IP address to connect to
+    ///   $username$: the username to authenticate with (can be empty)
+    ///   
+    /// </summary>
     public class AppProtocolFactory
     {
         //---------------------------------------------------------------------
         // Deserialization.
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Read a protocol configuration from JSON.
-        /// 
-        /// Example:
-        /// 
-        /// {
-        ///     'version': 1,
-        ///     'name': 'telnet',
-        ///     'condition': 'isLinux()',
-        ///     'accessPolicy': 'AllowAll',
-        ///     'remotePort': 23,
-        ///     'command': {
-        ///         'executable': '%SystemRoot%\system32\telnet.exe'
-        ///         'arguments': '%host% %port%'
-        ///     }
-        /// }
-        /// </summary>
+        private AppProtocol FromSection(ConfigurationSection section)
+        {
+            if (section == null)
+            {
+                throw new InvalidAppProtocolException(
+                    "The protocol configuration is empty");
+            }
+            else if (
+                section.SchemaVersion < ConfigurationSection.MinSchemaVersion ||
+                section.SchemaVersion > ConfigurationSection.CurrentSchemaVersion)
+            {
+                throw new InvalidAppProtocolException(
+                    "The protocol configuration uses an unsupported schema version");
+            }
+
+            return new AppProtocol(
+                section.ParseName(),
+                section.ParseCondition(),
+                section.ParseRemotePort(),
+                section.ParseLocalEndpoint(),
+                section.ParseCommand());
+        }
+
         public virtual AppProtocol FromJson(string json)
         {
             try
             {
-                var section = NewtonsoftJsonSerializer
+                return FromSection(NewtonsoftJsonSerializer
                     .Instance
-                    .Deserialize<ConfigurationSection>(json);
-
-                if (section == null)
-                {
-                    throw new InvalidAppProtocolException(
-                        "The protocol configuration is empty");
-                }
-                else if (
-                    section.SchemaVersion < ConfigurationSection.MinSchemaVersion ||
-                    section.SchemaVersion > ConfigurationSection.CurrentSchemaVersion)
-                {
-                    throw new InvalidAppProtocolException(
-                        "The protocol configuration uses an unsupported schema version");
-                }
-
-                return new AppProtocol(
-                    section.ParseName(),
-                    section.ParseCondition(),
-                    section.ParseAccessPolicy(),
-                    section.ParseRemotePort(),
-                    section.ParseLocalEndpoint(),
-                    section.ParseCommand());
+                    .Deserialize<ConfigurationSection>(json));
             }
             catch (JsonException e)
             {
                 throw new InvalidAppProtocolException(
                     "The protocol configuration is malformed", e);
             }
+        }
+
+        public virtual Task<AppProtocol> FromFileAsync(string path)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    using (var stream = File.OpenRead(path))
+                    {
+                        return FromSection(NewtonsoftJsonSerializer
+                            .Instance
+                            .Deserialize<ConfigurationSection>(stream));
+                    }
+                }
+                catch (JsonException e)
+                {
+                    throw new InvalidAppProtocolException(
+                        $"The protocol configuration file {path} is malformed", e);
+                }
+            });
         }
 
         //---------------------------------------------------------------------
@@ -122,12 +158,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             /// </summary>
             [JsonProperty("condition")]
             public string Condition { get; set; }
-
-            /// <summary>
-            /// Policy for determining whether access should be allowed.
-            /// </summary>
-            [JsonProperty("accessPolicy")]
-            public string AccessPolicy { get; set; }
 
             /// <summary>
             /// Remote port to connect to.
@@ -190,20 +220,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                         throw new InvalidAppProtocolException(
                             "The condition contains an unrecognized clause: " + clause);
                     }
-                }
-            }
-
-            internal ITransportPolicy ParseAccessPolicy()
-            {
-                if ("AllowAll".Equals(this.AccessPolicy?.Trim(), StringComparison.OrdinalIgnoreCase))
-                {
-                    return new AllowAllPolicy();
-                }
-                else
-                {
-                    throw new InvalidAppProtocolException(
-                        $"The access policy {this.AccessPolicy} is invalid");
-
                 }
             }
 
@@ -290,9 +306,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             /// Arguments can contain the following
             /// placeholders:
             /// 
-            ///   %port%:     the local port to connect to
-            ///   %host%:     the locat IP address to connect to
-            ///   %username%: the username to authenticate with (can be empty)
+            ///   $port$:     the local port to connect to
+            ///   $host$:     the locat IP address to connect to
+            ///   $username$: the username to authenticate with (can be empty)
             ///   
             /// </summary>
             [JsonProperty("arguments")]

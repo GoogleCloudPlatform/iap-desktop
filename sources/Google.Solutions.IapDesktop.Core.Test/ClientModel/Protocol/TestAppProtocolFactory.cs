@@ -22,7 +22,10 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
@@ -49,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 {
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
-                    'accessPolicy': 'AllowAll',
                     'remotePort': 8080
                 }";
 
@@ -65,7 +67,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     'version': 0,
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
-                    'accessPolicy': 'AllowAll',
                     'remotePort': 8080
                 }";
 
@@ -81,7 +82,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     'version': 1,
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
-                    'accessPolicy': 'AllowAll',
                     'remotePort': 8080,
                     'client': {
                         'executable': 'cmd'
@@ -91,11 +91,34 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol = new AppProtocolFactory().FromJson(json);
             Assert.AreEqual("protocol-1", protocol.Name);
             Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
-            Assert.IsInstanceOf<AllowAllPolicy>(protocol.Policy);
             Assert.AreEqual(8080, protocol.RemotePort);
 
             var client = (AppProtocolClient)protocol.Client;
             Assert.AreEqual("cmd", client.Executable);
+        }
+
+        //---------------------------------------------------------------------
+        // FromJson.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFileNotFound_ThenFromFileThrowsException()
+        {
+            ExceptionAssert.ThrowsAggregateException<FileNotFoundException>(
+                () => new AppProtocolFactory().FromFileAsync("doesnotexist.json").Wait());
+            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
+                () => new AppProtocolFactory().FromFileAsync("NUL.json").Wait());
+        }
+
+        [Test]
+        public void WhenFileEmptyOrMalformed_ThenFromFileThrowsException(
+            [Values("", " ", "{,", "{}")] string json)
+        {
+            var filePath = Path.GetTempFileName();
+            File.WriteAllText(filePath, json);
+
+            ExceptionAssert.ThrowsAggregateException<InvalidAppProtocolException>(
+                () => new AppProtocolFactory().FromFileAsync(filePath).Wait());
         }
     }
 }

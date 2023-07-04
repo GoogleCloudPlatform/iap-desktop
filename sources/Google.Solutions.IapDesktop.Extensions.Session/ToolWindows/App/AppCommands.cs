@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     .OfType<AppProtocol>()
                     .Where(p => p.Client != null))
                 {
-                    var factory = new AppContextFactory(
+                    var factory = new AppProtocolContextFactory(
                         protocol,
                         this.transportFactory,
                         this.processFactory,
@@ -95,8 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.credentialDialog,
                         false);
 
-                    if (protocol.Client.IsNetworkLevelAuthenticationSupported ||
-                        protocol.Client.IsUsernameRequired)
+                    if (protocol.Client.IsNetworkLevelAuthenticationSupported)
                     {
                         //
                         // Add anther "as user..." command.

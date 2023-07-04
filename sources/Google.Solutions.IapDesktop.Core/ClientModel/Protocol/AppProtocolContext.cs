@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.Platform.Dispatch;
 using System;
 using System.Net;
@@ -55,6 +56,32 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
             this.target = target.ExpectNotNull(nameof(target));
             this.Parameters = new AppProtocolParameters();
+        }
+
+        internal ITransportPolicy CreateTransportPolicy()
+        {
+            if (this.processFactory is IWin32ProcessSet set && 
+                this.protocol.Client != null)
+            {
+                //
+                // We're about to launch a client application, and we're using
+                // a process factory that can track child processes.
+                //
+                // Restrict access so that only the client application's process
+                // (which we're about to launch) and its descendents can use the
+                // transport.
+                //
+                return new ChildProcessPolicy(set);
+            }
+            else
+            {
+                //
+                // Restrict access to the same WTS session. That's pretty lax,
+                // but at least it prevents users from other RDP sessions to
+                // access the transport.
+                //
+                return new CurrentWtsSessionPolicy();
+            }
         }
 
         //---------------------------------------------------------------------
@@ -95,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             return this.transportFactory.CreateTransportAsync(
                 this.protocol,
-                this.protocol.Policy,
+                CreateTransportPolicy(),
                 this.target,
                 this.protocol.RemotePort,
                 this.protocol.LocalEndpoint,

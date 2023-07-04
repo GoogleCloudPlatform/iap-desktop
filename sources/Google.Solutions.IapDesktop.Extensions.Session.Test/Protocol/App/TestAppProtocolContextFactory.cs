@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
     [TestFixture]
-    public class TestAppContextFactory
+    public class TestAppProtocolContextFactory
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             return new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new Mock<ITransportPolicy>().Object,
                 80,
                 null,
                 client.Object);
@@ -82,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void WhenTargetUnsupported_ThenCreateContextThrowsException()
         {
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -98,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void WhenClientUnavailable_ThenCreateContextThrowsException()
         {
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(false),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -121,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
             var settingsService = CreateSettingsService(settings);
 
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -140,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
             var settingsService = CreateSettingsService(settings);
 
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -163,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
             var settingsService = CreateSettingsService(settings);
 
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -193,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 
             var settingsService = CreateSettingsService(settings);
 
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -225,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 
             var settingsService = CreateSettingsService(settings);
 
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,
@@ -251,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void TryParse()
         {
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IWin32ProcessFactory>().Object,

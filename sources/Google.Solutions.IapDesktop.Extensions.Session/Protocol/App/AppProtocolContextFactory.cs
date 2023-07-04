@@ -35,13 +35,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
-    internal class AppContextFactory : IProtocolContextFactory
+    internal class AppProtocolContextFactory : IProtocolContextFactory
     {
         private readonly IConnectionSettingsService settingsService;
         private readonly IIapTransportFactory transportFactory;
         private readonly IWin32ProcessFactory processFactory;
 
-        internal AppContextFactory(
+        internal AppProtocolContextFactory(
             AppProtocol protocol,
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory,

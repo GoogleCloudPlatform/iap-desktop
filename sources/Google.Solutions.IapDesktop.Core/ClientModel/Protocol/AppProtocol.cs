@@ -36,14 +36,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         public AppProtocol(
             string name,
             IEnumerable<ITrait> requiredTraits,
-            ITransportPolicy policy,
             ushort remotePort,
             IPEndPoint localEndpoint,
             IAppProtocolClient client)
         {
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
-            this.Policy = policy.ExpectNotNull(nameof(policy));
             this.RemotePort = remotePort.ExpectNotNull(nameof(remotePort));
             this.LocalEndpoint = localEndpoint;
             this.Client = client;
@@ -57,11 +55,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Traits that a target has to have to use this protocol.
         /// </summary>
         public IEnumerable<ITrait> RequiredTraits { get; }
-
-        /// <summary>
-        /// Relay policy that defines who can connect to the local port.
-        /// </summary>
-        public ITransportPolicy Policy { get; }
 
         /// <summary>
         /// Port to connect transport to.
@@ -108,7 +101,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return
                 this.Name.GetHashCode() ^
                 this.RemotePort ^
-                this.Policy.GetHashCode() ^
                 (this.LocalEndpoint?.GetHashCode() ?? 0);
         }
 
@@ -128,7 +120,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return other is AppProtocol protocol &&
                 Equals(protocol.Name, this.Name) &&
                 Enumerable.SequenceEqual(protocol.RequiredTraits, this.RequiredTraits) &&
-                Equals(protocol.Policy, this.Policy) &&
                 Equals(protocol.RemotePort, this.RemotePort) &&
                 Equals(protocol.LocalEndpoint, this.LocalEndpoint);
         }

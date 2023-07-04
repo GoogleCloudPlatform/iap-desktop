@@ -20,9 +20,14 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
@@ -44,7 +49,9 @@ using Google.Solutions.Platform.Dispatch;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -109,6 +116,68 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             }
         }
 
+        private async Task LoadAndRegisterAppProtocolsAsync( // TODO: Test
+            IWin32Window window,
+            ProtocolRegistry protocolRegistry)
+        {
+            var protocolsPath = Path.Combine(
+                this.serviceProvider.GetService<IInstall>().BaseDirectory,
+                "Config",
+                "Protocols");
+            if (!Directory.Exists(protocolsPath))
+            {
+                return;
+            }
+
+            var factory = this.serviceProvider.GetService<AppProtocolFactory>();
+
+            //
+            // Load and register custom app protocols in parallel.
+            //
+            var loadTasks = new DirectoryInfo(protocolsPath)
+                .GetFiles("*.iap")
+                .EnsureNotNull()
+                .Select(async file =>
+                {
+                    try
+                    {
+                        ApplicationTraceSources.Default.TraceInformation(
+                            "Loading protocol configuration from {0}...", file.Name);
+
+                        var protocol = await factory
+                            .FromFileAsync(file.FullName)
+                            .ConfigureAwait(false);
+
+                        protocolRegistry.RegisterProtocol(protocol);
+                    }
+                    catch (Exception e)
+                    {
+                        ApplicationTraceSources.Default.TraceError(
+                            "Loading protocol configuration from {0} failed", file.Name);
+                        ApplicationTraceSources.Default.TraceError(e);
+
+                        throw;
+                    }
+                })
+                .ToList();
+            
+            try
+            {
+                await Task
+                    .WhenAll(loadTasks)
+                    .ConfigureAwait(true); // Back to UI thread (for exception dialog).
+            }
+            catch (Exception e)
+            {
+                //
+                // Show error message, but resume startup.
+                //
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(window, "Invalid protocol configuration", e);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Setup
         //---------------------------------------------------------------------
@@ -120,24 +189,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
-            // Protocols.
+            // Register protocols.
             //
             var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
-
-            //
-            // Only allow connections from our own child processes.
-            //
-            var clientAppPolicy = new ChildProcessPolicy(
-                serviceProvider.GetService<IWin32ProcessSet>());
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
                     "SQL Server Management Studio",
                     Enumerable.Empty<ITrait>(),
-                    clientAppPolicy,
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient()));
+
+            _ = LoadAndRegisterAppProtocolsAsync(mainForm, protocolRegistry);
 
             //
             // Let this extension handle all URL activations.
@@ -151,8 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(
                     new InstanceLocator("project", "zone", "name"),
-                    new NameValueCollection()))
-                == CommandState.Enabled,
+                    new NameValueCollection())) == CommandState.Enabled,
                 "URL command installed");
 
             this.window = mainForm;

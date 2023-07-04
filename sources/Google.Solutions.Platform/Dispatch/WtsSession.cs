@@ -100,7 +100,7 @@ namespace Google.Solutions.Platform.Dispatch
         public static WtsSession FromProcessId(uint processId)
         {
             if (!NativeMethods.ProcessIdToSessionId(
-                NativeMethods.GetCurrentProcessId(),
+                processId,
                 out var sessionId))
             {
                 throw DispatchException.FromLastWin32Error(
@@ -117,10 +117,10 @@ namespace Google.Solutions.Platform.Dispatch
 
         private static class NativeMethods
         {
-            [DllImport("kernel32.dll")]
+            [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern uint GetCurrentProcessId();
 
-            [DllImport("kernel32.dll")]
+            [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool ProcessIdToSessionId(
                 uint dwProcessId,

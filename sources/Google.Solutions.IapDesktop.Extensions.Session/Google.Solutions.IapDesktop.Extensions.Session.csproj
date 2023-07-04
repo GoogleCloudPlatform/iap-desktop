@@ -15,6 +15,7 @@
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
+      xcopy /S /Y /I $(MSBuildProjectDirectory)\Properties\Config $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\Config
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
@@ -225,5 +226,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\Config\" />
   </ItemGroup>
 </Project>
