@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -107,10 +108,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenFileNotFound_ThenFromFileThrowsException()
         {
-            Assert.Throws<FileNotFoundException>(
-                () => new AppProtocolFactory().FromFile("doesnotexist.json"));
-            Assert.Throws<NotSupportedException>(
-                () => new AppProtocolFactory().FromFile("NUL.json"));
+            ExceptionAssert.ThrowsAggregateException<FileNotFoundException>(
+                () => new AppProtocolFactory().FromFileAsync("doesnotexist.json").Wait());
+            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
+                () => new AppProtocolFactory().FromFileAsync("NUL.json").Wait());
         }
 
         [Test]
@@ -120,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, json);
 
-            Assert.Throws<InvalidAppProtocolException>(
-                () => new AppProtocolFactory().FromFile(filePath));
+            ExceptionAssert.ThrowsAggregateException<InvalidAppProtocolException>(
+                () => new AppProtocolFactory().FromFileAsync(filePath).Wait());
         }
     }
 }

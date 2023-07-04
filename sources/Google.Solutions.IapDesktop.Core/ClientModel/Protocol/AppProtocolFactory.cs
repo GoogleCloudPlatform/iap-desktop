@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
@@ -95,22 +96,25 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             }
         }
 
-        public virtual AppProtocol FromFile(string path)
+        public virtual Task<AppProtocol> FromFileAsync(string path)
         {
-            try
+            return Task.Run(() =>
             {
-                using (var stream = File.OpenRead(path))
+                try
                 {
-                    return FromSection(NewtonsoftJsonSerializer
-                        .Instance
-                        .Deserialize<ConfigurationSection>(stream));
+                    using (var stream = File.OpenRead(path))
+                    {
+                        return FromSection(NewtonsoftJsonSerializer
+                            .Instance
+                            .Deserialize<ConfigurationSection>(stream));
+                    }
                 }
-            }
-            catch (JsonException e)
-            {
-                throw new InvalidAppProtocolException(
-                    $"The protocol configuration file {path} is malformed", e);
-            }
+                catch (JsonException e)
+                {
+                    throw new InvalidAppProtocolException(
+                        $"The protocol configuration file {path} is malformed", e);
+                }
+            });
         }
 
         //---------------------------------------------------------------------

@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
@@ -115,6 +116,70 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             }
         }
 
+        private async Task LoadAndRegisterAppProtocolsAsync( // TODO: Test
+            IWin32Window window,
+            ProtocolRegistry protocolRegistry)
+        {
+            var protocolsPath = Path.Combine(
+                this.serviceProvider.GetService<IInstall>().BaseDirectory,
+                "Config",
+                "Protocols");
+            if (!Directory.Exists(protocolsPath))
+            {
+                return;
+            }
+
+            var factory = this.serviceProvider.GetService<AppProtocolFactory>();
+
+            //
+            // Load and register custom app protocols in parallel.
+            //
+            var loadTasks = new DirectoryInfo(protocolsPath)
+                .GetFiles("*.iap")
+                .EnsureNotNull()
+                .Select(async file =>
+                {
+                    try
+                    {
+                        ApplicationTraceSources.Default.TraceInformation(
+                            "Loading protocol configuration from {0}...", file.Name);
+
+                        var protocol = await factory
+                            .FromFileAsync(file.FullName)
+                            .ConfigureAwait(false);
+
+                        protocolRegistry.RegisterProtocol(protocol);
+                    }
+                    catch (Exception e)
+                    {
+                        ApplicationTraceSources.Default.TraceError(
+                            "Loading protocol configuration from {0} failed", file.Name);
+                        ApplicationTraceSources.Default.TraceError(e);
+
+                        throw;
+                    }
+                })
+                .ToList();
+            
+            //TODO: Set access policy
+            
+            try
+            {
+                await Task
+                    .WhenAll(loadTasks)
+                    .ConfigureAwait(true); // Back to UI thread (for exception dialog).
+            }
+            catch (Exception e)
+            {
+                //
+                // Show error message, but resume startup.
+                //
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(window, "Invalid protocol configuration", e);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Setup
         //---------------------------------------------------------------------
@@ -129,46 +194,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             // Register protocols.
             //
             var protocolRegistry = serviceProvider.GetService<ProtocolRegistry>();
-            var clientAppPolicy = new ChildProcessPolicy(
-                serviceProvider.GetService<IWin32ProcessSet>());
 
             protocolRegistry.RegisterProtocol(
                 new AppProtocol(
                     "SQL Server Management Studio",
                     Enumerable.Empty<ITrait>(),
-                    clientAppPolicy,
+                    new ChildProcessPolicy(serviceProvider.GetService<IWin32ProcessSet>()),
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient()));
 
-            var protocolsPath = Path.Combine(
-                serviceProvider.GetService<IInstall>().BaseDirectory,
-                "Config",
-                "Protocols");
-            if (Directory.Exists(protocolsPath)) // TODO: Clean this up a bit
-            {
-                var factory = serviceProvider.GetService<AppProtocolFactory>();
-                foreach (var file in new DirectoryInfo(protocolsPath)
-                    .GetFiles("*.iap")
-                    .EnsureNotNull())
-                {
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Loading protocol configuration {0}...", file.Name);
-
-                    try
-                    {
-                        //TODO: Set access policy
-                        //TODO: Verify thay condition, accesspolicy can be empty
-                        protocolRegistry.RegisterProtocol(factory.FromFile(file.FullName));
-                    }
-                    catch (Exception e) // TODO: Show error message somehow.
-                    {
-                        ApplicationTraceSources.Default.TraceError(
-                            "Loading protocol configuration from {0} failed", file.Name);
-                        ApplicationTraceSources.Default.TraceError(e);
-                    }
-                }
-            }
+            _ = LoadAndRegisterAppProtocolsAsync(mainForm, protocolRegistry);
 
             //
             // Let this extension handle all URL activations.
