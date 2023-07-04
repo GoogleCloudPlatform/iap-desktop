@@ -95,8 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.credentialDialog,
                         false);
 
-                    if (protocol.Client.IsNetworkLevelAuthenticationSupported ||
-                        protocol.Client.IsUsernameRequired)
+                    if (protocol.Client.IsNetworkLevelAuthenticationSupported)
                     {
                         //
                         // Add anther "as user..." command.
