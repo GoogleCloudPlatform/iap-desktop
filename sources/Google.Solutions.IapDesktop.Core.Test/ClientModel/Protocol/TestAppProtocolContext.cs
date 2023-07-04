@@ -52,6 +52,50 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
+        // CreateTransportPolicy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProtocolHasNoClient_ThenCreateTransportPolicyReturnsWtsPolicy()
+        {
+            var context = new AppProtocolContext(
+                CreateProtocol(null),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                SampleLocator);
+
+            Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
+        }
+
+        [Test]
+        public void WhenFactoryCannotTrackChildren_ThenCreateTransportPolicyReturnsWtsPolicy()
+        {
+            var context = new AppProtocolContext(
+                CreateProtocol(new Mock<IAppProtocolClient>().Object),
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                SampleLocator);
+
+            Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
+        }
+
+        [Test]
+        public void WhenFactoryCanTrackChildren_ThenCreateTransportPolicyReturnsChildProcessPolicy()
+        {
+            var factory = (IWin32ProcessFactory)new Mock<IWin32ProcessFactory>()
+                .As<IWin32ProcessSet>()
+                .Object;
+
+            var context = new AppProtocolContext(
+                CreateProtocol(new Mock<IAppProtocolClient>().Object),
+                new Mock<IIapTransportFactory>().Object,
+                factory,
+                SampleLocator);
+
+            Assert.IsInstanceOf<ChildProcessPolicy>(context.CreateTransportPolicy());
+        }
+
+        //---------------------------------------------------------------------
         // CanLaunchClient.
         //---------------------------------------------------------------------
 

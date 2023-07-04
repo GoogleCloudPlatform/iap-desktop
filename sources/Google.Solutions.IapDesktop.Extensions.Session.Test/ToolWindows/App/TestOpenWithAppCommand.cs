@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             return node.Object;
         }
 
-        private AppContextFactory CreateFactory(
+        private AppProtocolContextFactory CreateFactory(
             IAppProtocolClient client,
             InstanceConnectionSettings settings)
         {
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            return new AppContextFactory(
+            return new AppProtocolContextFactory(
                 new AppProtocol(
                     "app-1",
                     Enumerable.Empty<ITrait>(),
@@ -487,7 +487,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     .CreateNew(SampleLocator)
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var factory = new AppContextFactory(
+            var factory = new AppProtocolContextFactory(
                 new AppProtocol(
                     "app-1",
                     Enumerable.Empty<ITrait>(),

@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         private readonly IWin32Window ownerWindow;
         private readonly IJobService jobService;
         private readonly ICredentialDialog credentialDialog;
-        private readonly AppContextFactory contextFactory;
+        private readonly AppProtocolContextFactory contextFactory;
         private readonly bool forceCredentialPrompt;
 
         private static string CreateName(
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         public OpenWithClientCommand(
             IWin32Window ownerWindow,
             IJobService jobService,
-            AppContextFactory contextFactory,
+            AppProtocolContextFactory contextFactory,
             ICredentialDialog credentialDialog,
             bool forceCredentialPrompt = false)
             : base($"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}")
