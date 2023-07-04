@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///     'remotePort': 23,
     ///     'client': {
     ///         'executable': '%SystemRoot%\system32\telnet.exe',
-    ///         'arguments': '$host$ $port$'
+    ///         'arguments': '{host} {port}'
     ///     }
     /// }
     /// 
@@ -57,9 +57,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     /// 
     /// Arguments can contain the following placeholders:
     /// 
-    ///   $port$:     the local port to connect to
-    ///   $host$:     the locat IP address to connect to
-    ///   $username$: the username to authenticate with (can be empty)
+    ///   {port}:     the local port to connect to
+    ///   {host}:     the locat IP address to connect to
+    ///   {username}: the username to authenticate with (can be empty)
     ///   
     /// </summary>
     public class AppProtocolFactory
@@ -298,18 +298,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             public string Executable { get; set; }
 
             /// <summary>
-            /// Optional: Arguments to pass to executable. They can contain
-            /// environment variables, for example:
-            /// 
-            ///   %AppData%\.myprofile
-            /// 
-            /// Arguments can contain the following
-            /// placeholders:
-            /// 
-            ///   $port$:     the local port to connect to
-            ///   $host$:     the locat IP address to connect to
-            ///   $username$: the username to authenticate with (can be empty)
-            ///   
+            /// Optional: Arguments to pass to executable.
             /// </summary>
             [JsonProperty("arguments")]
             public string Arguments { get; set; }
