@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             public static readonly string SshConnection = Order(5, "SSH Connection");
             public static readonly string SshCredentials = Order(6, "SSH Credentials");
 
-            public static readonly string AppCredentials = Order(7, "Client Application Credentials");
+            public static readonly string AppCredentials = Order(7, "SQL Server");
         }
 
         //---------------------------------------------------------------------
@@ -408,9 +408,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             this.AppUsername = RegistryStringSetting.FromKey(
                 "AppUsername",
-                "Username",
-                "Preferred username for client applications",
-                Categories.AppCredentials,
+                null, // Hidden.
+                null, // Hidden.
+                null, // Hidden.
                 null,
                 key,
                 username => string.IsNullOrEmpty(username) || !username.Contains(' '));
