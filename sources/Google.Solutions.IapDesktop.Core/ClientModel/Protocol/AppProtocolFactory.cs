@@ -43,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///     'version': 1,
     ///     'name': 'telnet',
     ///     'condition': 'isLinux()',
-    ///     'accessPolicy': 'AllowAll',
     ///     'remotePort': 23,
     ///     'client': {
     ///         'executable': '%SystemRoot%\system32\telnet.exe',
@@ -75,7 +74,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return new AppProtocol(
                 section.ParseName(),
                 section.ParseCondition(),
-                section.ParseAccessPolicy(),
                 section.ParseRemotePort(),
                 section.ParseLocalEndpoint(),
                 section.ParseCommand());
@@ -150,12 +148,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             public string Condition { get; set; }
 
             /// <summary>
-            /// Policy for determining whether access should be allowed.
-            /// </summary>
-            [JsonProperty("accessPolicy")]
-            public string AccessPolicy { get; set; }
-
-            /// <summary>
             /// Remote port to connect to.
             /// </summary>
             [JsonProperty("remotePort")]
@@ -216,20 +208,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                         throw new InvalidAppProtocolException(
                             "The condition contains an unrecognized clause: " + clause);
                     }
-                }
-            }
-
-            internal ITransportPolicy ParseAccessPolicy()
-            {
-                if ("AllowAll".Equals(this.AccessPolicy?.Trim(), StringComparison.OrdinalIgnoreCase))
-                {
-                    return new AllowAllPolicy();
-                }
-                else
-                {
-                    throw new InvalidAppProtocolException(
-                        $"The access policy {this.AccessPolicy} is invalid");
-
                 }
             }
 

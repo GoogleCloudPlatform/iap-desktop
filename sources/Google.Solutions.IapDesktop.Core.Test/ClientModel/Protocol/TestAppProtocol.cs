@@ -43,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             return new AppProtocol(
                 name,
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
@@ -63,7 +62,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol = new AppProtocol(
                 "test",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 client.Object);
@@ -81,7 +79,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol = new AppProtocol(
                 "test",
                 new[] { new Mock<ITrait>().Object },
-                new AllowAllPolicy(),
                 8080,
                 null,
                 client.Object);
@@ -103,7 +100,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol = new AppProtocol(
                 "test",
                 new[] { trait },
-                new AllowAllPolicy(),
                 8080,
                 null,
                 client.Object);
@@ -134,14 +130,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol1 = new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-2",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
@@ -157,43 +151,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol1 = new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
                 new[] { InstanceTrait.Instance },
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
 
             Assert.IsFalse(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 != protocol2);
-        }
-
-        [Test]
-        public void WhenOtherHasDifferentPolicy_ThenEqualsReturnsFalse()
-        {
-            var protocol1 = new AppProtocol(
-                "app-1",
-                Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
-                8080,
-                null,
-                null);
-            var protocol2 = new AppProtocol(
-                "app-1",
-                Enumerable.Empty<ITrait>(),
-                new Mock<ITransportPolicy>().Object,
-                8080,
-                null,
-                null);
-
-            Assert.IsFalse(protocol1.Equals(protocol2));
-            Assert.IsTrue(protocol1 != protocol2);
-            Assert.AreNotEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
         }
 
         [Test]
@@ -202,14 +171,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol1 = new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 80,
                 null,
                 null);
@@ -225,14 +192,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol1 = new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 null);
             var protocol2 = new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 new AppProtocolClient("cmd.exe", null));

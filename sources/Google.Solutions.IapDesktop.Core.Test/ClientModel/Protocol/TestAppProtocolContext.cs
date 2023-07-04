@@ -45,7 +45,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             return new AppProtocol(
                 "Test",
                 Enumerable.Empty<ITrait>(),
-                new AllowAllPolicy(),
                 8080,
                 null,
                 client);
@@ -248,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 transportFactory.Verify(
                     t => t.CreateTransportAsync(
                         protocol,
-                        protocol.Policy,
+                        It.IsAny<ITransportPolicy>(),
                         SampleLocator,
                         protocol.RemotePort,
                         protocol.LocalEndpoint,

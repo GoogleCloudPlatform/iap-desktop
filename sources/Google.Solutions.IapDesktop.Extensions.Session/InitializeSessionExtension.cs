@@ -161,8 +161,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 })
                 .ToList();
             
-            //TODO: Auto-set access policy in AppProtocolContext, remove from config
-            
             try
             {
                 await Task
@@ -199,7 +197,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 new AppProtocol(
                     "SQL Server Management Studio",
                     Enumerable.Empty<ITrait>(),
-                    new ChildProcessPolicy(serviceProvider.GetService<IWin32ProcessSet>()),
                     Ssms.DefaultServerPort,
                     null,
                     new SsmsClient()));

@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 {
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
-                    'accessPolicy': 'AllowAll',
                     'remotePort': 8080
                 }";
 
@@ -68,7 +67,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     'version': 0,
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
-                    'accessPolicy': 'AllowAll',
                     'remotePort': 8080
                 }";
 
@@ -84,7 +82,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     'version': 1,
                     'name': 'protocol-1',
                     'condition': 'isWindows()',
-                    'accessPolicy': 'AllowAll',
                     'remotePort': 8080,
                     'client': {
                         'executable': 'cmd'
@@ -94,7 +91,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocol = new AppProtocolFactory().FromJson(json);
             Assert.AreEqual("protocol-1", protocol.Name);
             Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
-            Assert.IsInstanceOf<AllowAllPolicy>(protocol.Policy);
             Assert.AreEqual(8080, protocol.RemotePort);
 
             var client = (AppProtocolClient)protocol.Client;

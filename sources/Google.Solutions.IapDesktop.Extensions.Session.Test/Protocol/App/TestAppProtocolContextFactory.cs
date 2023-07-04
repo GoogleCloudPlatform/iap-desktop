@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             return new AppProtocol(
                 "app-1",
                 Enumerable.Empty<ITrait>(),
-                new Mock<ITransportPolicy>().Object,
                 80,
                 null,
                 client.Object);

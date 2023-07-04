@@ -109,35 +109,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
-        // ParseAccessPolicy.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueIsNullOrEmptyOrUnrecognized_ThenParseAccessPolicyThrowsException(
-            [Values(" ", "", null, "allowall()", "DenyAll")] string policy)
-        {
-            var section = new AppProtocolFactory.ConfigurationSection()
-            {
-                AccessPolicy = policy
-            };
-
-            Assert.Throws<InvalidAppProtocolException>(() => section.ParseAccessPolicy());
-        }
-
-        [Test]
-        public void WhenValueIsValid_ThenParseAccessPolicyreturnsPolicy(
-            [Values(" allowAll\t")] string policy)
-        {
-            var section = new AppProtocolFactory.ConfigurationSection()
-            {
-                AccessPolicy = policy
-            };
-
-            Assert.IsNotNull(section.ParseAccessPolicy());
-            Assert.IsInstanceOf<AllowAllPolicy>(section.ParseAccessPolicy());
-        }
-
-        //---------------------------------------------------------------------
         // ParseRemotePort.
         //---------------------------------------------------------------------
 

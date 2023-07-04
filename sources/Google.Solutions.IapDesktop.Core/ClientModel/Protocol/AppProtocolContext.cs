@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             return this.transportFactory.CreateTransportAsync(
                 this.protocol,
-                this.protocol.Policy,
+                CreateTransportPolicy(),
                 this.target,
                 this.protocol.RemotePort,
                 this.protocol.LocalEndpoint,
