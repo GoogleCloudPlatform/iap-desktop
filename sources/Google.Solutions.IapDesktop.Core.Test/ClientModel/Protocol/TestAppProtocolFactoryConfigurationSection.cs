@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 Client = new AppProtocolFactory.ClientSection()
                 {
                     Executable = "%ProgramFiles(x86)%\\foo.exe",
-                    Arguments = "%ProgramFiles(x86)%\\foo.txt %host%",
+                    Arguments = "%ProgramFiles(x86)%\\foo.txt $host$",
                 }
             };
 
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             StringAssert.Contains(programsFolder, client.Executable);
             StringAssert.Contains(programsFolder, client.ArgumentsTemplate);
-            StringAssert.Contains("%host%", client.ArgumentsTemplate);
+            StringAssert.Contains("$host$", client.ArgumentsTemplate);
         }
     }
 }

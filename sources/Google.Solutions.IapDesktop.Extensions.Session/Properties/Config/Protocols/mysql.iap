@@ -5,6 +5,6 @@
   "remotePort": "3306",
   "client": {
     "executable": "%ProgramW6432%\\MySQL\\MySQL Shell 8.0\\bin\\mysqlsh.exe",
-    "arguments": "-h %host% -P %port% -u \"%username%\""
+    "arguments": "-h $host$ -P $port$ -u \"$username$\""
   }
 }

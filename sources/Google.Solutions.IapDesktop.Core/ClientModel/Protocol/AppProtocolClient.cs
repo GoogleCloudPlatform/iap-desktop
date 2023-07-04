@@ -72,9 +72,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Optional: Arguments to be passed. Arguments can contain the
         /// following placeholders:
         /// 
-        ///   %port%:     the local port to connect to
-        ///   %host%:     the locat IP address to connect to
-        ///   %username%: the username to authenticate with (can be empty)
+        ///   $port$:     the local port to connect to
+        ///   $host$:     the locat IP address to connect to
+        ///   $username$: the username to authenticate with (can be empty)
         ///   
         /// </summary>
         internal string ArgumentsTemplate { get; }
@@ -120,10 +120,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     throw new ArgumentException("The username contains invalid characters");
                 }
 
+                //
+                // NB. We use $ instead of % here to prevent
+                // clashes with envirnment variables.
+                //
                 arguments = arguments
-                    .Replace("%port%", transport.Endpoint.Port.ToString())
-                    .Replace("%host%", transport.Endpoint.Address.ToString())
-                    .Replace("%username%", parameters.PreferredUsername ?? string.Empty);
+                    .Replace("$port$", transport.Endpoint.Port.ToString())
+                    .Replace("$host$", transport.Endpoint.Address.ToString())
+                    .Replace("$username$", parameters.PreferredUsername ?? string.Empty);
             }
 
             return arguments;
@@ -137,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         public bool IsUsernameRequired
         {
             get => this.ArgumentsTemplate != null && 
-                this.ArgumentsTemplate.Contains("%username%");
+                this.ArgumentsTemplate.Contains("$username$");
         }
     }
 }
