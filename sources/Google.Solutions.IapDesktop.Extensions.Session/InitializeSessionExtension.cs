@@ -157,6 +157,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
 
                     try
                     {
+                        //TODO: Set access policy
+                        //TODO: Verify thay condition, accesspolicy can be empty
                         protocolRegistry.RegisterProtocol(factory.FromFile(file.FullName));
                     }
                     catch (Exception e) // TODO: Show error message somehow.

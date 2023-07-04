@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System;
+using System.IO;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool IsAvailable
         {
-            get => true;
+            get => File.Exists(this.Executable);
         }
 
         public string FormatArguments(

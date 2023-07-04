@@ -5,7 +5,7 @@
   "accessPolicy": "AllowAll",
   "remotePort": "3306",
   "client": {
-    "executable": "%ProgramW6432%\\MySQL\\MySQL Shell 8.0\\bin\\mysqlsh.exe",
+    "executable": "%ProgramW6432%\\MySQL\\MySQL Shell 8.0\\bin\\mysqlsh.exe_",
     "arguments": "-h %host% -P %port% -u \"%username%\""
   }
 }
