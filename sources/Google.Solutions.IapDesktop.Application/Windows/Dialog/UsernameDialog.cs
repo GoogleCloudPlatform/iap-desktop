@@ -57,14 +57,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 Text = caption,
                 Location = new Point(24 - 2, 40),
-                Size = new Size(200, 30),
+                AutoSize = false,
+                Size = new Size(this.Width - 50, 30),
             });
             this.Controls.Add(new Label()
             {
                 Text = message,
                 Location = new Point(24, 80),
                 AutoSize = false,
-                Size = new Size(200, 20),
+                Size = new Size(this.Width - 50, 20),
             });
 
             //

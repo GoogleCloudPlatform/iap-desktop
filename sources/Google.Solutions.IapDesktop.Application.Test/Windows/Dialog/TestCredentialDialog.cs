@@ -109,8 +109,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
             if (dialog.PromptForUsername(
                 null,
-                "Caption",
-                "Message",
+                "A very, very, very, very, very long caption",
+                "A very, very, very, very, very long message ",
                 out var username) == DialogResult.OK)
             {
                 Assert.NotNull(username);
