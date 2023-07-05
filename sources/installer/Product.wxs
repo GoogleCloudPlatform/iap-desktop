@@ -364,6 +364,8 @@
                   DiskId="1"
                   Source="$(var.BASEDIR)\LogsReadme.txt"
                   Vital="yes"/>
+                
+                <RemoveFolder Id="DirLogs" On="uninstall"/>
               </Component>
             </Directory>
           </Directory>
