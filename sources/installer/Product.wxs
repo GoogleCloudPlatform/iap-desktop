@@ -87,8 +87,9 @@
     </Condition>
     
 		<Feature Id="ProductFeature" Title="IAP Desktop" Level="1">
-			<ComponentGroupRef Id="ProgramFiles" />
-      <ComponentGroupRef Id="StartMenuShortcuts" />
+			<ComponentRef Id="CompProgramFiles" />
+      <ComponentRef Id="CompLogs" />
+      <ComponentRef Id="CompStartMenu" />
 		</Feature>
 
     <WixVariable Id="WixUILicenseRtf" Value="$(var.BASEDIR)\License.rtf" />
@@ -131,23 +132,9 @@
         ExeCommand="/postinstall"
         Impersonate="yes"
         Return="asyncNoWait"/>
-	</Product>
 
-	<Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramMenuFolder">
-      </Directory>
-      <Directory Id="AppDataFolder">
-        <Directory Id="DirGoogle" Name="Google">
-          <Directory Id="DirIapDesktop" Name="IAP Desktop">
-          </Directory>
-        </Directory>
-      </Directory>
-    </Directory>
-	</Fragment>
-
-	<Fragment>
-    <ComponentGroup Id="StartMenuShortcuts" Directory="ProgramMenuFolder">
       <Component Id="CompStartMenu" Guid="80774ea2-6b47-11ea-bc55-0242ac130003">
         <RegistryValue
           Id="RegStartMenuShortcuts"
@@ -164,206 +151,232 @@
           Target="[#FileIapDesktopExe]"
           WorkingDirectory="DirIapDesktop"/>
       </Component>
-    </ComponentGroup>
-    
-		<ComponentGroup Id="ProgramFiles" Directory="DirIapDesktop">
-      <Component Id="CompProgramFiles" Guid="80773b6a-6b47-11ea-bc55-0242ac130003">
-        <RegistryValue
-          Id="RegProgramFiles"
-          Root="HKCU"
-          Key="Software\Google\IapDesktop\Installer"
-          Name="ProgramFiles"
-          Type="integer"
-          KeyPath="yes"
-          Value="1" />
+      </Directory>
+      <Directory Id="AppDataFolder">
+        <Directory Id="DirGoogle" Name="Google">
+          <Directory Id="DirIapDesktop" Name="IAP Desktop">
+            <Component Id="CompProgramFiles" Guid="80773b6a-6b47-11ea-bc55-0242ac130003">
+              <RegistryValue
+                Id="RegProgramFiles"
+                Root="HKCU"
+                Key="Software\Google\IapDesktop\Installer"
+                Name="ProgramFiles"
+                Type="integer"
+                KeyPath="yes"
+                Value="1" />
 
-        <RemoveFolder Id="DirGoogle" Directory="DirGoogle" On="uninstall"/>
-        <RemoveFolder Id="DirIapDesktop" Directory="DirIapDesktop" On="uninstall"/>
+              <RemoveFolder Id="DirGoogle" Directory="DirGoogle" On="uninstall"/>
+              <RemoveFolder Id="DirIapDesktop" Directory="DirIapDesktop" On="uninstall"/>
 
-        <File
-          Id="FileIapDesktopExe"
-          Name="IapDesktop.exe"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\IapDesktop.exe"
-          Vital="yes"/>
-        <File
-          Id="FileIapDesktopExeConfig"
-          Name="IapDesktop.exe.config"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\IapDesktop.exe.config"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsIapDesktopApplicationDll"
-          Name="Google.Solutions.IapDesktop.Application.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsIapDesktopCoreDll"
-          Name="Google.Solutions.IapDesktop.Core.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Core.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsIapDll"
-          Name="Google.Solutions.Iap.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Iap.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsApisDll"
-          Name="Google.Solutions.Apis.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Apis.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsPlatformDll"
-          Name="Google.Solutions.Platform.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Platform.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsCommonDll"
-          Name="Google.Solutions.Common.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Common.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsSshDll"
-          Name="Google.Solutions.Ssh.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Ssh.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsMvvmDll"
-          Name="Google.Solutions.Mvvm.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Mvvm.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsTscDll"
-          Name="Google.Solutions.Tsc.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Tsc.dll"
-          Vital="yes"/>
-        <File
-          Id="FileLibssh2Dll"
-          Name="Libssh2.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Libssh2.dll"
-          Vital="yes"/>
-        <File
-          Id="FileVtnetcoreDll"
-          Name="Vtnetcore.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Vtnetcore.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsManagementDll"
-          Name="Google.Solutions.IapDesktop.Extensions.Management.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Management.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsRdpDll"
-          Name="Google.Solutions.IapDesktop.Extensions.Session.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Session.dll"
-          Vital="yes"/>
-        
-        <!-- SDK and dependencies -->
-        <File
-          Id="FileWeifenLuoWinFormsUIDockingDll"
-          Name="WeifenLuo.WinFormsUI.Docking.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.dll"
-          Vital="yes"/>
-        <File
-          Id="FileWeifenLuoWinFormsUIDockingThemeVS2015Dll"
-          Name="WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
-          Vital="yes"/>
-        <File
-          Id="FileAxInteropMSTSCLibDll"
-          Name="AxInterop.MSTSCLib.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\AxInterop.MSTSCLib.dll"
-          Vital="yes"/>
-        <File
-          Id="FileInteropMSTSCLibDll"
-          Name="Interop.MSTSCLib.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Interop.MSTSCLib.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisAuthDll"
-          Name="Google.Apis.Auth.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisAuthPlatformServicesDll"
-          Name="Google.Apis.Auth.PlatformServices.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisComputeV1Dll"
-          Name="Google.Apis.Compute.v1.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisCloudResourceManagerV1Dll"
-          Name="Google.Apis.CloudResourceManager.v1.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisLoggingV2Dll"
-          Name="Google.Apis.Logging.v2.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Logging.v2.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisCoreDll"
-          Name="Google.Apis.Core.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Core.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisDll"
-          Name="Google.Apis.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisPlatformServicesDll"
-          Name="Google.Apis.PlatformServices.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleApisCloudOSLoginV1Dll"
-          Name="Google.Apis.CloudOSLogin.v1.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.CloudOSLogin.v1.dll"
-          Vital="yes"/>
-        <File
-          Id="FileNewtonsoftJsonDll"
-          Name="Newtonsoft.Json.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
-          Vital="yes"/>
-      </Component>
-		</ComponentGroup>
-	</Fragment>
+              <File
+                Id="FileIapDesktopExe"
+                Name="IapDesktop.exe"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\IapDesktop.exe"
+                Vital="yes"/>
+              <File
+                Id="FileIapDesktopExeConfig"
+                Name="IapDesktop.exe.config"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\IapDesktop.exe.config"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsIapDesktopApplicationDll"
+                Name="Google.Solutions.IapDesktop.Application.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsIapDesktopCoreDll"
+                Name="Google.Solutions.IapDesktop.Core.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Core.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsIapDll"
+                Name="Google.Solutions.Iap.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Iap.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsApisDll"
+                Name="Google.Solutions.Apis.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Apis.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsPlatformDll"
+                Name="Google.Solutions.Platform.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Platform.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsCommonDll"
+                Name="Google.Solutions.Common.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Common.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsSshDll"
+                Name="Google.Solutions.Ssh.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Ssh.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsMvvmDll"
+                Name="Google.Solutions.Mvvm.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Mvvm.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsTscDll"
+                Name="Google.Solutions.Tsc.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Tsc.dll"
+                Vital="yes"/>
+              <File
+                Id="FileLibssh2Dll"
+                Name="Libssh2.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Libssh2.dll"
+                Vital="yes"/>
+              <File
+                Id="FileVtnetcoreDll"
+                Name="Vtnetcore.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Vtnetcore.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsManagementDll"
+                Name="Google.Solutions.IapDesktop.Extensions.Management.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Management.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsRdpDll"
+                Name="Google.Solutions.IapDesktop.Extensions.Session.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Session.dll"
+                Vital="yes"/>
+
+              <!-- SDK and dependencies -->
+              <File
+                Id="FileWeifenLuoWinFormsUIDockingDll"
+                Name="WeifenLuo.WinFormsUI.Docking.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.dll"
+                Vital="yes"/>
+              <File
+                Id="FileWeifenLuoWinFormsUIDockingThemeVS2015Dll"
+                Name="WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
+                Vital="yes"/>
+              <File
+                Id="FileAxInteropMSTSCLibDll"
+                Name="AxInterop.MSTSCLib.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\AxInterop.MSTSCLib.dll"
+                Vital="yes"/>
+              <File
+                Id="FileInteropMSTSCLibDll"
+                Name="Interop.MSTSCLib.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Interop.MSTSCLib.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisAuthDll"
+                Name="Google.Apis.Auth.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisAuthPlatformServicesDll"
+                Name="Google.Apis.Auth.PlatformServices.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisComputeV1Dll"
+                Name="Google.Apis.Compute.v1.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisCloudResourceManagerV1Dll"
+                Name="Google.Apis.CloudResourceManager.v1.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisLoggingV2Dll"
+                Name="Google.Apis.Logging.v2.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Logging.v2.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisCoreDll"
+                Name="Google.Apis.Core.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Core.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisDll"
+                Name="Google.Apis.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisPlatformServicesDll"
+                Name="Google.Apis.PlatformServices.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleApisCloudOSLoginV1Dll"
+                Name="Google.Apis.CloudOSLogin.v1.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.CloudOSLogin.v1.dll"
+                Vital="yes"/>
+              <File
+                Id="FileNewtonsoftJsonDll"
+                Name="Newtonsoft.Json.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
+                Vital="yes"/>
+            </Component>
+
+            <Directory Id="DirLogs" Name="Logs">
+              <Component Id="CompLogs" Guid="80774f6a-6b47-11ea-bc55-0242ac130003">
+                <RegistryValue
+                  Id="RegLogs"
+                  Root="HKCU"
+                  Key="Software\Google\IapDesktop\Installer"
+                  Name="Logs"
+                  Type="integer"
+                  KeyPath="yes"
+                  Value="1" />
+
+                <!-- Place a readme.txt in the folder so that it's not empty -->
+                <File
+                  Id="FileLogsReadme"
+                  Name="Readme.txt"
+                  DiskId="1"
+                  Source="$(var.BASEDIR)\LogsReadme.txt"
+                  Vital="yes"/>
+                
+                <RemoveFolder Id="DirLogs" On="uninstall"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Product>
   
   <!--
     Spare sequential GUIDs:
     
-    80774f6a-6b47-11ea-bc55-0242ac130003
     80775028-6b47-11ea-bc55-0242ac130003
     807750dc-6b47-11ea-bc55-0242ac130003
     807751a4-6b47-11ea-bc55-0242ac130003
