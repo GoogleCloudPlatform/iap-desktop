@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "name": "Chrome (port 8080)",
+  "condition": "isInstance()",
+  "remotePort": "8080",
+  "client": {
+    //
+    // Force Chrome to launch a new process (as opposed to passing the URL
+    // to one of its existing processes) so that IAP Desktop knows when to
+    // close the tunnel again.
+    //
+    // Use guest mode to prevent any browsing history or cookies from bleeding
+    // to or from the IAP-protected resource.
+    //
+    "executable": "%ProgramW6432%\\Google\\Chrome\\Application\\chrome.exe",
+    "arguments": "--user-data-dir=%temp%\\chrome-guest --guest \"http://{host}:{port}/"
+  }
+}
