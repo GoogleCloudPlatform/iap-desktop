@@ -1,0 +1,1 @@
+IAP Desktop uses this folder for optional configuration files.

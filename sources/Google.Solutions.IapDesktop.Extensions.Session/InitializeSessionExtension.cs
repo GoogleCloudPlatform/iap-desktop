@@ -122,20 +122,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
         {
             var protocolsPath = Path.Combine(
                 this.serviceProvider.GetService<IInstall>().BaseDirectory,
-                "Config",
-                "Protocols");
+                "Config");
             if (!Directory.Exists(protocolsPath))
             {
                 return;
             }
 
-            var factory = this.serviceProvider.GetService<AppProtocolFactory>();
-
             //
             // Load and register custom app protocols in parallel.
             //
             var loadTasks = new DirectoryInfo(protocolsPath)
-                .GetFiles("*.iap")
+                .GetFiles($"*{AppProtocolConfigurationFile.FileExtension}")
                 .EnsureNotNull()
                 .Select(async file =>
                 {
@@ -144,8 +141,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                         ApplicationTraceSources.Default.TraceInformation(
                             "Loading protocol configuration from {0}...", file.Name);
 
-                        var protocol = await factory
-                            .FromFileAsync(file.FullName)
+                        var protocol = await AppProtocolConfigurationFile
+                            .ReadFileAsync(file.FullName)
                             .ConfigureAwait(false);
 
                         protocolRegistry.RegisterProtocol(protocol);

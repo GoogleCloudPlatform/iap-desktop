@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 {
     /// <summary>
-    /// Factory class for reading a protocol configuration from JSON.
+    /// Parser for protocol configuration files.
     /// 
     /// Example:
     /// 
@@ -62,13 +62,19 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///   {username}: the username to authenticate with (can be empty)
     ///   
     /// </summary>
-    public class AppProtocolFactory
+    public static class AppProtocolConfigurationFile
     {
+        /// <summary>
+        /// File extension for protocol configuration files
+        /// (IAPC = IAP App Protocol Configuration).
+        /// </summary>
+        public const string FileExtension = ".iapc";
+
         //---------------------------------------------------------------------
         // Deserialization.
         //---------------------------------------------------------------------
 
-        private AppProtocol FromSection(ConfigurationSection section)
+        private static AppProtocol FromSection(MainSection section)
         {
             if (section == null)
             {
@@ -76,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     "The protocol configuration is empty");
             }
             else if (
-                section.SchemaVersion < ConfigurationSection.MinSchemaVersion ||
-                section.SchemaVersion > ConfigurationSection.CurrentSchemaVersion)
+                section.SchemaVersion < MainSection.MinSchemaVersion ||
+                section.SchemaVersion > MainSection.CurrentSchemaVersion)
             {
                 throw new InvalidAppProtocolException(
                     "The protocol configuration uses an unsupported schema version");
@@ -91,13 +97,13 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 section.ParseCommand());
         }
 
-        public virtual AppProtocol FromJson(string json)
+        public static AppProtocol ReadJson(string json)
         {
             try
             {
                 return FromSection(NewtonsoftJsonSerializer
                     .Instance
-                    .Deserialize<ConfigurationSection>(json));
+                    .Deserialize<MainSection>(json));
             }
             catch (JsonException e)
             {
@@ -106,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             }
         }
 
-        public virtual Task<AppProtocol> FromFileAsync(string path)
+        public static Task<AppProtocol> ReadFileAsync(string path)
         {
             return Task.Run(() =>
             {
@@ -116,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     {
                         return FromSection(NewtonsoftJsonSerializer
                             .Instance
-                            .Deserialize<ConfigurationSection>(stream));
+                            .Deserialize<MainSection>(stream));
                     }
                 }
                 catch (JsonException e)
@@ -131,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // De/Serialization classes.
         //---------------------------------------------------------------------
 
-        internal class ConfigurationSection
+        internal class MainSection
         {
             internal const ushort MinSchemaVersion = 1;
             internal const ushort CurrentSchemaVersion = 1;
