@@ -80,12 +80,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             // Basic information
             //
             this.InstanceName = this.instanceDetails.Name;
-            this.InstanceId = this.instanceDetails.Id.Value;
+            this.InstanceId = this.instanceDetails.Id ?? 0;
             this.Status = this.instanceDetails.Status;
             this.Hostname = this.instanceDetails.Hostname;
-            this.MachineType = MachineTypeLocator
-                .FromString(this.instanceDetails.MachineType)
-                .Name;
+            this.MachineType = this.instanceDetails.MachineType != null
+                ? MachineTypeLocator.FromString(this.instanceDetails.MachineType).Name
+                : null;
             this.Licenses = this.instanceDetails.Disks != null
                 ? string.Join(", ", this.instanceDetails.Disks
                     .EnsureNotNull()
