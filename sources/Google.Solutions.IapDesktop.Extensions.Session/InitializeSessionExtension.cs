@@ -128,8 +128,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 return;
             }
 
-            var parser = new AppProtocolConfigurationFile();
-
             //
             // Load and register custom app protocols in parallel.
             //
@@ -143,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                         ApplicationTraceSources.Default.TraceInformation(
                             "Loading protocol configuration from {0}...", file.Name);
 
-                        var protocol = await parser
+                        var protocol = await AppProtocolConfigurationFile
                             .ReadFileAsync(file.FullName)
                             .ConfigureAwait(false);
 

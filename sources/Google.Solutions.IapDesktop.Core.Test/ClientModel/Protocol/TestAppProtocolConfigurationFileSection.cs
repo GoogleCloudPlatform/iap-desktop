@@ -29,7 +29,7 @@ using System.Net;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class AppProtocolConfigurationFileSection
+    public class TestAppProtocolConfigurationFileSection
     {
         //---------------------------------------------------------------------
         // ParseName.

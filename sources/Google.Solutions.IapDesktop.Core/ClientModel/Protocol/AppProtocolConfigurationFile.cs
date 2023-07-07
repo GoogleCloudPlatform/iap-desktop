@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///   {username}: the username to authenticate with (can be empty)
     ///   
     /// </summary>
-    public class AppProtocolConfigurationFile
+    public static class AppProtocolConfigurationFile
     {
         /// <summary>
         /// File extension for protocol configuration files
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 section.ParseCommand());
         }
 
-        public virtual AppProtocol ReadJson(string json)
+        public static AppProtocol ReadJson(string json)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             }
         }
 
-        public virtual Task<AppProtocol> ReadFileAsync(string path)
+        public static Task<AppProtocol> ReadFileAsync(string path)
         {
             return Task.Run(() =>
             {

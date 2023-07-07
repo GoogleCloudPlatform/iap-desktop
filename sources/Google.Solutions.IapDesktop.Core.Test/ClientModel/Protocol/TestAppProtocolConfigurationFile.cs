@@ -30,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class AppProtocolConfigurationFile
+    public class TestAppProtocolConfigurationFile
     {
         //---------------------------------------------------------------------
         // FromJson.
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             [Values(null, " ", "{,", "{}")] string json)
         {
             Assert.Throws<InvalidAppProtocolException>(
-                () => new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadJson(json));
+                () => AppProtocolConfigurationFile.ReadJson(json));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }";
 
             Assert.Throws<InvalidAppProtocolException>(
-                () => new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadJson(json));
+                () => AppProtocolConfigurationFile.ReadJson(json));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }";
 
             Assert.Throws<InvalidAppProtocolException>(
-                () => new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadJson(json));
+                () => AppProtocolConfigurationFile.ReadJson(json));
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     }
                 }";
 
-            var protocol = new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadJson(json);
+            var protocol = AppProtocolConfigurationFile.ReadJson(json);
             Assert.AreEqual("protocol-1", protocol.Name);
             Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
             Assert.AreEqual(8080, protocol.RemotePort);
@@ -104,9 +104,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenFileNotFound_ThenFromFileThrowsException()
         {
             ExceptionAssert.ThrowsAggregateException<FileNotFoundException>(
-                () => new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadFileAsync("doesnotexist.json").Wait());
+                () => AppProtocolConfigurationFile.ReadFileAsync("doesnotexist.json").Wait());
             ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
-                () => new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadFileAsync("NUL.json").Wait());
+                () => AppProtocolConfigurationFile.ReadFileAsync("NUL.json").Wait());
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             File.WriteAllText(filePath, json);
 
             ExceptionAssert.ThrowsAggregateException<InvalidAppProtocolException>(
-                () => new Core.ClientModel.Protocol.AppProtocolConfigurationFile().ReadFileAsync(filePath).Wait());
+                () => AppProtocolConfigurationFile.ReadFileAsync(filePath).Wait());
         }
     }
 }
