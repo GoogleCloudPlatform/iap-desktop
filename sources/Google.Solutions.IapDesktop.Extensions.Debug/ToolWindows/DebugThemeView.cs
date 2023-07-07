@@ -32,7 +32,7 @@ using System.Linq;
 using System.Reflection;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public partial class DebugThemeView : ToolWindowViewBase, IView<DebugThemeViewModel>

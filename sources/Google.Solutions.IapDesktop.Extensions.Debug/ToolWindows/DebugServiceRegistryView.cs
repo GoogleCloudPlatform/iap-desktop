@@ -25,7 +25,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public partial class DebugServiceRegistryView : DocumentWindow, IView<DebugServiceRegistryViewModel>

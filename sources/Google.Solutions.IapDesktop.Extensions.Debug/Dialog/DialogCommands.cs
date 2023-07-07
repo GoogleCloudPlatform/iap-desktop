@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.Dialog
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
 {
     [MenuCommand(typeof(DebugMenu), Rank = 0x400)]
     [Service]

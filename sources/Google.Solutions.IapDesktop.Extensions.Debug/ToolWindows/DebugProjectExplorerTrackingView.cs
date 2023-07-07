@@ -26,7 +26,7 @@ using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service(ServiceLifetime.Singleton)]
     public partial class DebugProjectExplorerTrackingView

@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [MenuCommand(typeof(DebugMenu), Rank = 0x100)]
     [Service]

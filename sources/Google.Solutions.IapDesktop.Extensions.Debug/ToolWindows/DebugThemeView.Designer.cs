@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     partial class DebugThemeView
     {

@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public class DebugCommonControlsViewModel : ViewModelBase

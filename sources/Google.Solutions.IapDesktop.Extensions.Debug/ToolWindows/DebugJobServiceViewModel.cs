@@ -27,7 +27,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public class DebugJobServiceViewModel : ViewModelBase

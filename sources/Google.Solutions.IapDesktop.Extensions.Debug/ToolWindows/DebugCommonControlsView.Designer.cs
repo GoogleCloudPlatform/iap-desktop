@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     partial class DebugCommonControlsView
     {

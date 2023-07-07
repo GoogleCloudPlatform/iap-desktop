@@ -25,7 +25,7 @@ using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public partial class DebugCommonControlsView : ToolWindowViewBase, IView<DebugCommonControlsViewModel>

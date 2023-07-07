@@ -26,7 +26,7 @@ using System;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public partial class DebugFullScreenView : DocumentWindow, IView<DebugFullScreenViewModel>

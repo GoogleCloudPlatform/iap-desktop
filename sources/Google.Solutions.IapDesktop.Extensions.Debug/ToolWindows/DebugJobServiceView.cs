@@ -27,7 +27,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Extensions.Debug.ToolWindows
+namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public partial class DebugJobServiceView : ToolWindowViewBase, IView<DebugJobServiceViewModel>
