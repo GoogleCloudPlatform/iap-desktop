@@ -117,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             File.WriteAllText(filePath, json);
 
             ExceptionAssert.ThrowsAggregateException<InvalidAppProtocolException>(
+                $"file {filePath}",
                 () => AppProtocolConfigurationFile.ReadFileAsync(filePath).Wait());
         }
     }

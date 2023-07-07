@@ -71,6 +71,29 @@ namespace Google.Solutions.Testing.Apis
                 }
             });
         }
+
+        public static TActual ThrowsAggregateException<TActual>(
+                string expectedStringInMessage,
+                TestDelegate code)
+            where TActual : Exception
+        {
+            return Assert.Throws<TActual>(() =>
+            {
+                try
+                {
+                    code();
+                }
+                catch (AggregateException e)
+                {
+                    StringAssert.Contains(
+                        expectedStringInMessage, 
+                        e.FullMessage(),
+                        "Expected different exception message");
+
+                    throw e.Unwrap();
+                }
+            });
+        }
     }
 
     public static class PropertyAssert
