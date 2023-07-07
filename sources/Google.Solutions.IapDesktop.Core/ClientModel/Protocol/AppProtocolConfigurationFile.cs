@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             catch (JsonException e)
             {
                 throw new InvalidAppProtocolException(
-                    "The protocol configuration is malformed", e);
+                    "The protocol configuration contains format errors", e);
             }
         }
 
@@ -125,10 +125,15 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                             .Deserialize<MainSection>(stream));
                     }
                 }
+                catch (InvalidAppProtocolException e)
+                {
+                    throw new InvalidAppProtocolException(
+                        $"The protocol configuration file {path} contains format errors", e);
+                }
                 catch (JsonException e)
                 {
                     throw new InvalidAppProtocolException(
-                        $"The protocol configuration file {path} is malformed", e);
+                        $"The protocol configuration file {path} contains format errors", e);
                 }
             });
         }
