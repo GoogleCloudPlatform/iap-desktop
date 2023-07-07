@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -30,7 +29,7 @@ using System.Net;
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
     [TestFixture]
-    public class TestAppProtocolFactoryConfigurationSection
+    public class AppProtocolConfigurationFileSection
     {
         //---------------------------------------------------------------------
         // ParseName.
@@ -40,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsNullOrEmpty_ThenParseNameThrowsException(
             [Values(" ", "", null)] string value)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 Name = value
             };
@@ -56,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenConditionIsNullOrEmpty_ThenParseConditionReturnsEmpty(
             [Values(" ", "", null)] string condition)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
@@ -68,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenConditionContainsSingleClause_ThenParseConditionReturnsTraits(
             [Values("isInstance()", " \nisInstance( )\r\n")] string condition)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
@@ -82,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenConditionContainsMultipleClauses_ThenParseConditionReturnsTraits()
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 Condition = "isInstance() && isWindows() &&isLinux() "
             };
@@ -100,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenConditionContainsUnknownClause_ThenParseConditionThrowsException(
             [Values("isFoo()", " \nisInstance( ) && isBar\r\n")] string condition)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
@@ -116,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsNullOrEmpty_ThenParseRemotePortThrowsException(
             [Values(null, "", " \n")] string value)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 RemotePort = value
             };
@@ -129,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsMalformed_ThenParseRemotePortThrowsException(
             [Values("test", "-1", "100000")] string value)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 RemotePort = value
             };
@@ -140,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenValueIsValid_ThenParseRemotePortReturnsPort()
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 RemotePort = "80"
             };
@@ -156,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsNullOrEmpty_ThenParseLocalEndpointReturnsNull(
             [Values(null, "", " \n")] string value)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 LocalPort = value
             };
@@ -168,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsMalformed_ThenParseLocalEndpointThrowsException(
             [Values("::", "test:0", "127.0.0.1:test", ":")] string value)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
                 LocalPort = value
             };
@@ -181,19 +180,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Loopback, 80),
-                new AppProtocolFactory.ConfigurationSection()
+                new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "80"
                 }.ParseLocalEndpoint());
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Loopback, 80),
-                new AppProtocolFactory.ConfigurationSection()
+                new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.1:80"
                 }.ParseLocalEndpoint());
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80),
-                new AppProtocolFactory.ConfigurationSection()
+                new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.2:80"
                 }.ParseLocalEndpoint());
@@ -206,16 +205,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenCommandIsNull_ThenParseCommandReturnsEmpty()
         {
-            Assert.IsNull(new AppProtocolFactory.ConfigurationSection().ParseCommand());
+            Assert.IsNull(new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection().ParseCommand());
         }
 
         [Test]
         public void WhenCommandExecutableIsNullOrEmpty_ThenParseCommandReturnsEmpty(
             [Values(null, "", " \n")] string value)
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
-                Client = new AppProtocolFactory.ClientSection()
+                Client = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.ClientSection()
                 {
                     Executable = value
                 }
@@ -227,9 +226,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenCommandContainsVariables_ThenParseCommandExpandsVariables()
         {
-            var section = new AppProtocolFactory.ConfigurationSection()
+            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
             {
-                Client = new AppProtocolFactory.ClientSection()
+                Client = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.ClientSection()
                 {
                     Executable = "%ProgramFiles(x86)%\\foo.exe",
                     Arguments = "%ProgramFiles(x86)%\\foo.txt {host}",
