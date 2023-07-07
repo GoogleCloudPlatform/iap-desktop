@@ -82,13 +82,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.Platform",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.Platform.Test", "Google.Solutions.Platform.Test\Google.Solutions.Platform.Test.csproj", "{6ECE0E83-D309-4A6D-9CB9-9A0B21DE52E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.IapDesktop.Extensions.Debug", "Google.Solutions.IapDesktop.Extensions.Debug\Google.Solutions.IapDesktop.Extensions.Debug.csproj", "{010F4F95-3623-45E1-85A6-67958A1256DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.IapDesktop.Extensions.Diagnostics", "Google.Solutions.IapDesktop.Extensions.Diagnostics\Google.Solutions.IapDesktop.Extensions.Diagnostics.csproj", "{010F4F95-3623-45E1-85A6-67958A1256DB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.IapDesktop.Core", "Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj", "{FF0BB781-E398-4E13-8182-83450082A818}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.IapDesktop.Core.Test", "Google.Solutions.IapDesktop.Core.Test\Google.Solutions.IapDesktop.Core.Test.csproj", "{C34911A5-2B0D-44DB-98C4-97599B7C69F6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Debug", "IapDesktop.Extensions.Debug", "{BAB4E69D-7A68-4E7A-89B6-C6C24A15F2E6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Diagnostics", "IapDesktop.Extensions.Diagnostics", "{BAB4E69D-7A68-4E7A-89B6-C6C24A15F2E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
