@@ -13,6 +13,6 @@
     // to or from the IAP-protected resource.
     //
     "executable": "%ProgramW6432%\\Google\\Chrome\\Application\\chrome.exe",
-    "arguments": "--user-data-dir=%temp%\\chrome-guest --guest \"http://{host}:{port}/"
+    "arguments": "--user-data-dir=%temp%\\chrome-guest-{port} --guest \"http://{host}:{port}/"
   }
 }
