@@ -417,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.AppNetworkLevelAuthentication = RegistryEnumSetting<AppNetworkLevelAuthenticationState>.FromKey(
                 "AppNetworkLevelAuthentication",
                 "Windows authentication",
-                "Use Windows authentication if the client application supports it.",
+                "Use Windows authentication for SQL Server connections.",
                 Categories.AppCredentials,
                 AppNetworkLevelAuthenticationState._Default,
                 key);
