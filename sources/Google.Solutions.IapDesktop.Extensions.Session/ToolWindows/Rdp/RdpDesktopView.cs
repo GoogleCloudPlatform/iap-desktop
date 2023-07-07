@@ -880,7 +880,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost);
+            Debug.Assert(
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {

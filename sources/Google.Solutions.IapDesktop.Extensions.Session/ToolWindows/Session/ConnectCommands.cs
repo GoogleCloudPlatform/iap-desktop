@@ -79,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             {
                 AvailableForSsh = false,
                 AvailableForRdp = true,                  // Windows/RDP only.
+                ForceNewConnection = true,               // Force new.
                 Flags = RdpCreateSessionFlags.ForcePasswordPrompt,
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"

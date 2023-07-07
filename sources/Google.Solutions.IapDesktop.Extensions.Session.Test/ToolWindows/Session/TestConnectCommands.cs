@@ -464,7 +464,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task ContextMenuConnectAsUserDisallowsPersistentCredentials()
+        public async Task ContextMenuConnectAsUserDisallowsPersistentCredentialsAndForcesNewConnection()
         {
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -493,6 +493,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             await commands.ContextMenuConnectRdpAsUser
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
+
+            ISession session;
+            sessionBroker.Verify(
+                s => s.TryActivate(It.IsAny<InstanceLocator>(), out session), 
+                Times.Never);
 
             contextFactory.Verify(
                 s => s.CreateRdpSessionContextAsync(
