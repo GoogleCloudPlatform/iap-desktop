@@ -43,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         private static class Categories
         {
             public const string Instance = "Instance details";
+            public const string Security = "Security";
             public const string Network = "Instance network";
             public const string Scheduling = "Scheduling";
             public const string Os = "Operating system";
@@ -91,6 +92,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                     .Where(d => d.Licenses != null && d.Licenses.Any())
                     .SelectMany(d => d.Licenses)
                     .Select(l => LicenseLocator.FromString(l).Name))
+                : null;
+
+            //
+            // Security.
+            //
+            var serviceAccount = this.instanceDetails.ServiceAccounts?.FirstOrDefault();
+            this.ServiceAccount = serviceAccount?.Email;
+            this.ServiceAccountScopes = serviceAccount?.Scopes != null
+                ? string.Join(", ", serviceAccount.Scopes)
                 : null;
 
             //
@@ -147,36 +157,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.Instance)]
         [DisplayName("ID")]
-        [Description("Unique ID of the VM instance")]
+        [Description("The unique ID of the VM instance")]
         public ulong InstanceId { get; } 
 
         [Browsable(true)]
         [Category(Categories.Instance)]
         [DisplayName("Status")]
-        [Description("Status of VM, see " +
+        [Description("The current status of the VM, see " +
                      "https://cloud.google.com/compute/docs/instances/instance-life-cycle")]
         public string Status { get; }
 
         [Browsable(true)]
         [Category(Categories.Instance)]
         [DisplayName("Hostname")]
-        [Description("Custom hostname, see " +
+        [Description("The custom hostname, see " +
                      "https://cloud.google.com/compute/docs/instances/custom-hostname-vm")]
         public string Hostname { get; }
 
         [Browsable(true)]
         [Category(Categories.Instance)]
         [DisplayName("Machine type")]
-        [Description("Type and size of VM, see " +
+        [Description("The type and size of VM, see " +
                      "https://cloud.google.com/compute/docs/machine-types")]
         public string MachineType { get; }
 
         [Browsable(true)]
         [Category(Categories.Instance)]
         [DisplayName("Licenses")]
-        [Description("Operating system, see " +
+        [Description("The licenses applied to the VM, see " +
                      "https://cloud.google.com/sdk/gcloud/reference/compute/images/import#--os")]
         public string Licenses { get; }
+
+        //---------------------------------------------------------------------
+        // Security.
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category(Categories.Security)]
+        [DisplayName("Service account")]
+        [Description("The service account that is attached to this instance")]
+        public string ServiceAccount { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Security)]
+        [DisplayName("Service account scope")]
+        [Description("OAuth scopes for which this VM can obtain credentials")]
+        public string ServiceAccountScopes { get; }
 
         //---------------------------------------------------------------------
         // Network.
@@ -192,14 +218,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.Network)]
         [DisplayName("IP address (internal)")]
-        [Description("Primary internal IP addresses, see " +
+        [Description("The VM's primary internal IP address, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#networkaddresses")]
         public string InternalIp { get; }
 
         [Browsable(true)]
         [Category(Categories.Network)]
         [DisplayName("IP address (external)")]
-        [Description("External IP addresses, see " +
+        [Description("The VM's external IP address, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#externaladdresses")]
         public string ExternalIp { get; }
 
@@ -224,25 +250,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Architecture")]
-        [Description("CPU architecture")]
+        [Description("The VM's CPU architecture")]
         public string Architecture { get; } 
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Kernel")]
-        [Description("Kernel version of guest operating system")]
+        [Description("The guest operating system's kernel version")]
         public string KernelVersion { get; } 
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Name")]
-        [Description("Name of guest operating system")]
+        [Description("The name of the guest operating system")]
         public string OperatingSystemFullName { get; } 
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Version")]
-        [Description("Version of guest operating system")]
+        [Description("The version of the guest operating system")]
         public string OperatingSystemVersion { get; } 
 
         //---------------------------------------------------------------------
@@ -252,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.GuestAgentConfiguration)]
         [DisplayName("OS Inventory")]
-        [Description("Enable OS inventory management, " +
+        [Description("Indicates whether OS inventory management is enabled, " +
                      "see https://cloud.google.com/compute/docs/instances/" +
                      "view-os-details#enable-guest-attributes")]
         public FeatureFlag OsInventory { get; }
@@ -260,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.GuestAgentConfiguration)]
         [DisplayName("Diagnostics")]
-        [Description("Enable collection of diagnostic information, " +
+        [Description("Indicates whether the collection of diagnostic information is enabled, " +
                      "see https://cloud.google.com/compute/docs/instances/" +
                      "collecting-diagnostic-information#collecting_diagnostic_information_from_a_vm")]
         public FeatureFlag Diagnostics { get; }
@@ -272,20 +298,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.SshConfiguration)]
         [DisplayName("OS Login")]
-        [Description("Use OS Login for SSH key management, " +
+        [Description("Indicates whether OS Login is enabled, " +
                      "see https://cloud.google.com/compute/docs/instances/managing-instance-access.")]
         public FeatureFlag OsLogin { get; }
 
         [Browsable(true)]
         [Category(Categories.SshConfiguration)]
-        [Description("Require multi-factor authentication for SSH login, " +
+        [Description("Indicates whether the instance requires multi-factor authentication for SSH " +
                      "see https://cloud.google.com/compute/docs/oslogin/setup-two-factor-authentication.")]
         [DisplayName("OS Login 2FA")]
         public FeatureFlag OsLogin2FA { get; }
 
         [Browsable(true)]
         [Category(Categories.SshConfiguration)]
-        [Description("Require security key for SSH authentication, " +
+        [Description("Indicates whether the instance requires a security key for SSH, " +
                      "see https://cloud.google.com/compute/docs/oslogin/security-keys.")]
         [DisplayName("OS Login Security Key")]
         public FeatureFlag OsLoginWithSecurityKey { get; } 
@@ -293,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.SshConfiguration)]
         [DisplayName("Block project-wide SSH keys")]
-        [Description("Disallow project-side SSH keys, " +
+        [Description("Indicates whether project-side SSH keys are disabled for this VM, " +
                      "see https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#block-project-keys.")]
         public FeatureFlag BlockProjectSshKeys { get; }
 
@@ -304,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.InstanceConfiguration)]
         [DisplayName("Serial port access")]
-        [Description("Enable access to special administrative console, " +
+        [Description("Indicates whether the special administrative console can be used, " +
                      "see https://cloud.google.com/compute/docs/instances/" +
                      "interacting-with-serial-console#enable_project_access")]
         public FeatureFlag SerialPortAccess { get; }
@@ -312,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.InstanceConfiguration)]
         [DisplayName("Guest attributes")]
-        [Description("Enable guest attributes, " +
+        [Description("Indicates whether guest attributes are enabled, " +
                      "see https://cloud.google.com/compute/docs/storing-retrieving-metadata#enable_attributes")]
         public FeatureFlag GuestAttributes { get; }
 
