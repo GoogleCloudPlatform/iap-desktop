@@ -40,13 +40,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
     [Service]
     public class InstancePropertiesInspectorModel
     {
-        private const string InstanceCategory = "Instance details";
-        private const string NetworkCategory = "Instance network";
-        private const string SchedulingCategory = "Scheduling";
-        private const string OsCategory = "Operating system";
-        private const string GuestAgentConfigurationCategory = "Guest agent configuration";
-        private const string InstanceConfigurationCategory = "Instance configuration";
-        private const string SshConfigurationCategory = "SSH configuration";
+        private static class Categories
+        {
+            public const string Instance = "Instance details";
+            public const string Network = "Instance network";
+            public const string Scheduling = "Scheduling";
+            public const string Os = "Operating system";
+            public const string GuestAgentConfiguration = "Guest agent configuration";
+            public const string InstanceConfiguration= "Instance configuration";
+            public const string SshConfiguration = "SSH configuration";
+        }
 
         private readonly Project projectDetails;
         private readonly Instance instanceDetails;
@@ -71,199 +74,247 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             this.projectDetails = projectDetails;
             this.instanceDetails = instanceDetails;
             this.guestOsInfo = guestOsInfo;
-        }
 
-        //---------------------------------------------------------------------
-        // Browsable properties.
-        //---------------------------------------------------------------------
-
-        [Browsable(true)]
-        [Category(InstanceCategory)]
-        [DisplayName("Name")]
-        [Description("Name of the VM instance")]
-        public string InstanceName => this.instanceDetails.Name;
-
-        [Browsable(true)]
-        [Category(InstanceCategory)]
-        [DisplayName("ID")]
-        [Description("Unique ID of the VM instance")]
-        public ulong InstanceId => this.instanceDetails.Id.Value;
-
-        [Browsable(true)]
-        [Category(InstanceCategory)]
-        [DisplayName("Status")]
-        [Description("Status of VM, see " +
-                     "https://cloud.google.com/compute/docs/instances/instance-life-cycle")]
-        public string Status => this.instanceDetails.Status;
-
-        [Browsable(true)]
-        [Category(InstanceCategory)]
-        [DisplayName("Hostname")]
-        [Description("Custom hostname, see " +
-                     "https://cloud.google.com/compute/docs/instances/custom-hostname-vm")]
-        public string Hostname => this.instanceDetails.Hostname;
-
-        [Browsable(true)]
-        [Category(InstanceCategory)]
-        [DisplayName("Machine type")]
-        [Description("Type and size of VM, see " +
-                     "https://cloud.google.com/compute/docs/machine-types")]
-        public string MachineType
-            => MachineTypeLocator
+            //
+            // Basic information
+            //
+            this.InstanceName = this.instanceDetails.Name;
+            this.InstanceId = this.instanceDetails.Id.Value;
+            this.Status = this.instanceDetails.Status;
+            this.Hostname = this.instanceDetails.Hostname;
+            this.MachineType = MachineTypeLocator
                 .FromString(this.instanceDetails.MachineType)
                 .Name;
-
-        [Browsable(true)]
-        [Category(InstanceCategory)]
-        [DisplayName("Licenses")]
-        [Description("Operating system, see " +
-                     "https://cloud.google.com/sdk/gcloud/reference/compute/images/import#--os")]
-        public string Licenses
-             => this.instanceDetails.Disks != null
+            this.Licenses = this.instanceDetails.Disks != null
                 ? string.Join(", ", this.instanceDetails.Disks
                     .EnsureNotNull()
                     .Where(d => d.Licenses != null && d.Licenses.Any())
                     .SelectMany(d => d.Licenses)
                     .Select(l => LicenseLocator.FromString(l).Name))
                 : null;
+
+            //
+            // Network.
+            //
+            this.Tags = this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
+                ? string.Join(", ", this.instanceDetails.Tags.Items)
+                : null;
+            this.InternalIp = this.instanceDetails.PrimaryInternalAddress()?.ToString();
+            this.ExternalIp = this.instanceDetails.PublicAddress()?.ToString();
+
+            //
+            // Scheduling.
+            //
+            this.IsSoleTenant = this.instanceDetails.Scheduling?.NodeAffinities != null &&
+               this.instanceDetails.Scheduling.NodeAffinities.Any();
+
+            //
+            // OS Inventory data.
+            //
+            this.IsOsInventoryInformationPopulated = this.guestOsInfo != null;
+            this.Architecture = this.guestOsInfo?.Architecture;
+            this.KernelVersion = this.guestOsInfo?.KernelVersion;
+            this.OperatingSystemFullName = this.guestOsInfo?.OperatingSystemFullName;
+            this.OperatingSystemVersion = this.guestOsInfo?.OperatingSystemVersion.ToString();
+
+            //
+            // Guest agent configuration.
+            //
+            this.OsInventory = GetMetadataFeatureFlag("enable-os-inventory", true);
+            this.Diagnostics = GetMetadataFeatureFlag("enable-diagnostics", true);
+            this.OsLogin = GetMetadataFeatureFlag("enable-oslogin", true);
+            this.OsLogin2FA = GetMetadataFeatureFlag("enable-oslogin-2fa", true);
+            this.OsLoginWithSecurityKey = GetMetadataFeatureFlag("enable-oslogin-sk", true);
+            this.BlockProjectSshKeys = GetMetadataFeatureFlag("block-project-ssh-keys", true);
+
+            //
+            // Instance configuration.
+            //
+            this.SerialPortAccess = GetMetadataFeatureFlag("serial-port-enable", true);
+            this.GuestAttributes = GetMetadataFeatureFlag("enable-guest-attributes", true);
+        }
+
+        //---------------------------------------------------------------------
+        // Basic information.
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("Name")]
+        [Description("Name of the VM instance")]
+        public string InstanceName { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("ID")]
+        [Description("Unique ID of the VM instance")]
+        public ulong InstanceId { get; } 
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("Status")]
+        [Description("Status of VM, see " +
+                     "https://cloud.google.com/compute/docs/instances/instance-life-cycle")]
+        public string Status { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("Hostname")]
+        [Description("Custom hostname, see " +
+                     "https://cloud.google.com/compute/docs/instances/custom-hostname-vm")]
+        public string Hostname { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("Machine type")]
+        [Description("Type and size of VM, see " +
+                     "https://cloud.google.com/compute/docs/machine-types")]
+        public string MachineType { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("Licenses")]
+        [Description("Operating system, see " +
+                     "https://cloud.google.com/sdk/gcloud/reference/compute/images/import#--os")]
+        public string Licenses { get; }
+
         //---------------------------------------------------------------------
         // Network.
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [Category(NetworkCategory)]
+        [Category(Categories.Network)]
         [DisplayName("Network tags")]
         [Description("Network tags, see " +
                      "https://cloud.google.com/vpc/docs/add-remove-network-tags")]
-        public string Tags
-             => this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
-                ? string.Join(", ", this.instanceDetails.Tags.Items)
-                : null;
+        public string Tags { get; }
 
         [Browsable(true)]
-        [Category(NetworkCategory)]
+        [Category(Categories.Network)]
         [DisplayName("IP address (internal)")]
         [Description("Primary internal IP addresses, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#networkaddresses")]
-        public string InternalIp => this.instanceDetails.PrimaryInternalAddress()?.ToString();
+        public string InternalIp { get; }
 
         [Browsable(true)]
-        [Category(NetworkCategory)]
+        [Category(Categories.Network)]
         [DisplayName("IP address (external)")]
         [Description("External IP addresses, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#externaladdresses")]
-        public string ExternalIp => this.instanceDetails.PublicAddress()?.ToString();
+        public string ExternalIp { get; }
+
+        //---------------------------------------------------------------------
+        // Scheduling.
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [Category(SchedulingCategory)]
+        [Category(Categories.Scheduling)]
         [DisplayName("Sole tenant VM")]
         [Description("Indicates if this VM is scheduled to run on a sole-tenant node, see " +
                      "https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes")]
-        public bool IsSoleTenant
-            => this.instanceDetails.Scheduling?.NodeAffinities != null &&
-               this.instanceDetails.Scheduling.NodeAffinities.Any();
+        public bool IsSoleTenant { get; }
 
         //---------------------------------------------------------------------
         // OS Inventory data.
         //---------------------------------------------------------------------
 
         [Browsable(false)]
-        public bool IsOsInventoryInformationPopulated => this.guestOsInfo != null;
+        public bool IsOsInventoryInformationPopulated { get; } 
 
         [Browsable(true)]
-        [Category(OsCategory)]
+        [Category(Categories.Os)]
         [DisplayName("Architecture")]
         [Description("CPU architecture")]
-        public string Architecture => this.guestOsInfo?.Architecture;
+        public string Architecture { get; } 
 
         [Browsable(true)]
-        [Category(OsCategory)]
+        [Category(Categories.Os)]
         [DisplayName("Kernel")]
         [Description("Kernel version of guest operating system")]
-        public string KernelVersion => this.guestOsInfo?.KernelVersion;
+        public string KernelVersion { get; } 
 
         [Browsable(true)]
-        [Category(OsCategory)]
+        [Category(Categories.Os)]
         [DisplayName("Name")]
         [Description("Name of guest operating system")]
-        public string OperatingSystemFullName => this.guestOsInfo?.OperatingSystemFullName;
+        public string OperatingSystemFullName { get; } 
 
         [Browsable(true)]
-        [Category(OsCategory)]
+        [Category(Categories.Os)]
         [DisplayName("Version")]
         [Description("Version of guest operating system")]
-        public string OperatingSystemVersion => this.guestOsInfo?.OperatingSystemVersion.ToString();
+        public string OperatingSystemVersion { get; } 
 
         //---------------------------------------------------------------------
         // Guest agent configuration.
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [Category(GuestAgentConfigurationCategory)]
+        [Category(Categories.GuestAgentConfiguration)]
         [DisplayName("OS Inventory")]
         [Description("Enable OS inventory management, " +
                      "see https://cloud.google.com/compute/docs/instances/" +
                      "view-os-details#enable-guest-attributes")]
-        public FeatureFlag OsInventory => GetMetadataFeatureFlag("enable-os-inventory", true);
+        public FeatureFlag OsInventory { get; }
 
         [Browsable(true)]
-        [Category(GuestAgentConfigurationCategory)]
+        [Category(Categories.GuestAgentConfiguration)]
         [DisplayName("Diagnostics")]
         [Description("Enable collection of diagnostic information, " +
                      "see https://cloud.google.com/compute/docs/instances/" +
                      "collecting-diagnostic-information#collecting_diagnostic_information_from_a_vm")]
-        public FeatureFlag Diagnostics => GetMetadataFeatureFlag("enable-diagnostics", true);
+        public FeatureFlag Diagnostics { get; }
 
         //---------------------------------------------------------------------
         // SSH configuration.
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [Category(SshConfigurationCategory)]
+        [Category(Categories.SshConfiguration)]
         [DisplayName("OS Login")]
         [Description("Use OS Login for SSH key management, " +
                      "see https://cloud.google.com/compute/docs/instances/managing-instance-access.")]
-        public FeatureFlag OsLogin => GetMetadataFeatureFlag("enable-oslogin", true);
+        public FeatureFlag OsLogin { get; }
 
         [Browsable(true)]
-        [Category(SshConfigurationCategory)]
+        [Category(Categories.SshConfiguration)]
         [Description("Require multi-factor authentication for SSH login, " +
                      "see https://cloud.google.com/compute/docs/oslogin/setup-two-factor-authentication.")]
         [DisplayName("OS Login 2FA")]
-        public FeatureFlag OsLogin2FA => GetMetadataFeatureFlag("enable-oslogin-2fa", true);
+        public FeatureFlag OsLogin2FA { get; }
 
         [Browsable(true)]
-        [Category(SshConfigurationCategory)]
+        [Category(Categories.SshConfiguration)]
         [Description("Require security key for SSH authentication, " +
                      "see https://cloud.google.com/compute/docs/oslogin/security-keys.")]
         [DisplayName("OS Login Security Key")]
-        public FeatureFlag OsLoginWithSecurityKey => GetMetadataFeatureFlag("enable-oslogin-sk", true);
+        public FeatureFlag OsLoginWithSecurityKey { get; } 
 
         [Browsable(true)]
-        [Category(SshConfigurationCategory)]
+        [Category(Categories.SshConfiguration)]
         [DisplayName("Block project-wide SSH keys")]
         [Description("Disallow project-side SSH keys, " +
                      "see https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#block-project-keys.")]
-        public FeatureFlag BlockProjectSshKeys => GetMetadataFeatureFlag("block-project-ssh-keys", true);
+        public FeatureFlag BlockProjectSshKeys { get; }
 
         //---------------------------------------------------------------------
         // Instance configuration.
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [Category(InstanceConfigurationCategory)]
+        [Category(Categories.InstanceConfiguration)]
         [DisplayName("Serial port access")]
         [Description("Enable access to special administrative console, " +
                      "see https://cloud.google.com/compute/docs/instances/" +
                      "interacting-with-serial-console#enable_project_access")]
-        public FeatureFlag SerialPortAccess => GetMetadataFeatureFlag("serial-port-enable", true);
+        public FeatureFlag SerialPortAccess { get; }
 
         [Browsable(true)]
-        [Category(InstanceConfigurationCategory)]
+        [Category(Categories.InstanceConfiguration)]
         [DisplayName("Guest attributes")]
         [Description("Enable guest attributes, " +
                      "see https://cloud.google.com/compute/docs/storing-retrieving-metadata#enable_attributes")]
-        public FeatureFlag GuestAttributes => GetMetadataFeatureFlag("enable-guest-attributes", true);
+        public FeatureFlag GuestAttributes { get; }
 
         //---------------------------------------------------------------------
         // Loading.
