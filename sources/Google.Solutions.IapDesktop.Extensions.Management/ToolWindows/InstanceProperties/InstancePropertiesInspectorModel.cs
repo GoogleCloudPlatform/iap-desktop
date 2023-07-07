@@ -102,6 +102,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             this.ServiceAccountScopes = serviceAccount?.Scopes != null
                 ? string.Join(", ", serviceAccount.Scopes)
                 : null;
+            this.VtpmEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableVtpm == true
+                ? FeatureFlag.Enabled 
+                : FeatureFlag.Disabled;
+            this.SecureBootEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableSecureBoot == true
+                ? FeatureFlag.Enabled
+                : FeatureFlag.Disabled;
+            this.IntegrityMonitoringEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableIntegrityMonitoring == true
+                ? FeatureFlag.Enabled
+                : FeatureFlag.Disabled;
 
             //
             // Network.
@@ -204,6 +213,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Description("OAuth scopes for which this VM can obtain credentials")]
         public string ServiceAccountScopes { get; }
 
+        [Browsable(true)]
+        [Category(Categories.Security)]
+        [DisplayName("vTPM")]
+        [Description("Indicates whether this VM has a virtual TPM device")]
+        public FeatureFlag VtpmEnabled { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Security)]
+        [DisplayName("Secure boot")]
+        [Description("Indicates whether this VM uses secure boot")]
+        public FeatureFlag SecureBootEnabled { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Security)]
+        [DisplayName("Integrity monitoring")]
+        [Description("Indicates whether this uses integrity monitoring")]
+        public FeatureFlag IntegrityMonitoringEnabled { get; }
+
         //---------------------------------------------------------------------
         // Network.
         //---------------------------------------------------------------------
@@ -236,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Browsable(true)]
         [Category(Categories.Scheduling)]
         [DisplayName("Sole tenant VM")]
-        [Description("Indicates if this VM is scheduled to run on a sole-tenant node, see " +
+        [Description("Indicates whether this VM is scheduled to run on a sole-tenant node, see " +
                      "https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes")]
         public bool IsSoleTenant { get; }
 
