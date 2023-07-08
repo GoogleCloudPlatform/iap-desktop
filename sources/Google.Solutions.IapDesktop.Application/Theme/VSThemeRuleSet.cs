@@ -503,7 +503,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         private void StyleFlyoutWindow(FlyoutWindow flyout)
         {
             flyout.BackColor = this.theme.Palette.ToolWindowInnerTabInactive.Background;
-            flyout.BorderColor = AccentColor;
+            flyout.BorderColor = SystemTheme.AccentColor;
         }
 
         private void StyleDockPanel(DockPanel dockPanel)
