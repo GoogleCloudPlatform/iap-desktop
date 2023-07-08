@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using NUnit.Framework;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 
@@ -39,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsNullOrEmpty_ThenParseNameThrowsException(
             [Values(" ", "", null)] string value)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 Name = value
             };
@@ -55,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenConditionIsNullOrEmpty_ThenParseConditionReturnsEmpty(
             [Values(" ", "", null)] string condition)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
@@ -67,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenConditionContainsSingleClause_ThenParseConditionReturnsTraits(
             [Values("isInstance()", " \nisInstance( )\r\n")] string condition)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
@@ -81,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenConditionContainsMultipleClauses_ThenParseConditionReturnsTraits()
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 Condition = "isInstance() && isWindows() &&isLinux() "
             };
@@ -99,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenConditionContainsUnknownClause_ThenParseConditionThrowsException(
             [Values("isFoo()", " \nisInstance( ) && isBar\r\n")] string condition)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsNullOrEmpty_ThenParseRemotePortThrowsException(
             [Values(null, "", " \n")] string value)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 RemotePort = value
             };
@@ -128,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsMalformed_ThenParseRemotePortThrowsException(
             [Values("test", "-1", "100000")] string value)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 RemotePort = value
             };
@@ -139,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void WhenValueIsValid_ThenParseRemotePortReturnsPort()
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 RemotePort = "80"
             };
@@ -155,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsNullOrEmpty_ThenParseLocalEndpointReturnsNull(
             [Values(null, "", " \n")] string value)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 LocalPort = value
             };
@@ -167,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void WhenValueIsMalformed_ThenParseLocalEndpointThrowsException(
             [Values("::", "test:0", "127.0.0.1:test", ":")] string value)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
                 LocalPort = value
             };
@@ -180,62 +181,62 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Loopback, 80),
-                new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+                new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "80"
                 }.ParseLocalEndpoint());
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Loopback, 80),
-                new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+                new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.1:80"
                 }.ParseLocalEndpoint());
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80),
-                new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+                new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.2:80"
                 }.ParseLocalEndpoint());
         }
 
         //---------------------------------------------------------------------
-        // ParseCommand.
+        // ParseClientSection.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCommandIsNull_ThenParseCommandReturnsEmpty()
+        public void WhenClientIsNull_ThenParseClientSectionReturnsEmpty()
         {
-            Assert.IsNull(new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection().ParseCommand());
+            Assert.IsNull(new AppProtocolConfigurationFile.MainSection().ParseClientSection());
         }
 
         [Test]
-        public void WhenCommandExecutableIsNullOrEmpty_ThenParseCommandReturnsEmpty(
+        public void WhenClientExecutableIsNullOrEmpty_ThenParseClientSectionReturnsEmpty(
             [Values(null, "", " \n")] string value)
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
-                Client = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.ClientSection()
+                Client = new AppProtocolConfigurationFile.ClientSection()
                 {
                     Executable = value
                 }
             };
 
-            Assert.IsNull(section.ParseCommand());
+            Assert.IsNull(section.ParseClientSection());
         }
 
         [Test]
-        public void WhenCommandContainsVariables_ThenParseCommandExpandsVariables()
+        public void WhenClientExecutableContainsVariables_ThenParseClientSectionExpandsVariables()
         {
-            var section = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.MainSection()
+            var section = new AppProtocolConfigurationFile.MainSection()
             {
-                Client = new Core.ClientModel.Protocol.AppProtocolConfigurationFile.ClientSection()
+                Client = new AppProtocolConfigurationFile.ClientSection()
                 {
                     Executable = "%ProgramFiles(x86)%\\foo.exe",
                     Arguments = "%ProgramFiles(x86)%\\foo.txt {host}",
                 }
             };
 
-            var client = (AppProtocolClient)section.ParseCommand();
+            var client = (AppProtocolClient)section.ParseClientSection();
             Assert.IsNotNull(client);
 
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
@@ -243,6 +244,39 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             StringAssert.Contains(programsFolder, client.Executable);
             StringAssert.Contains(programsFolder, client.ArgumentsTemplate);
             StringAssert.Contains("{host}", client.ArgumentsTemplate);
+        }
+
+        [Test]
+        public void WhenClientExecutableContainsFilenameOfRegisteredApp_ThenParseClientSectionResolvesAppPath()
+        {
+            var section = new AppProtocolConfigurationFile.MainSection()
+            {
+                Client = new AppProtocolConfigurationFile.ClientSection()
+                {
+                    Executable = "powershell.exe"
+                }
+            };
+
+            var client = (AppProtocolClient)section.ParseClientSection();
+            Assert.IsNotNull(client);
+            Assert.IsTrue(File.Exists(client.Executable));
+        }
+
+        [Test]
+        public void WhenClientExecutableContainsFilename_ThenParseClientSectionReturnsFilename(
+            [Values("notaregisteredapp.exe", "notanapp.txt")] string fileName)
+        {
+            var section = new AppProtocolConfigurationFile.MainSection()
+            {
+                Client = new AppProtocolConfigurationFile.ClientSection()
+                {
+                    Executable = fileName
+                }
+            };
+
+            var client = (AppProtocolClient)section.ParseClientSection();
+            Assert.IsNotNull(client);
+            Assert.AreEqual("doesnotexist.exe", client.Executable);
         }
     }
 }

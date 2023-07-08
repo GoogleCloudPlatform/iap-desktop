@@ -21,7 +21,9 @@
 
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -65,7 +67,23 @@ namespace Google.Solutions.Platform
         public static bool TryResolveAppPath(string exeName, out string path)
         {
             Precondition.ExpectNotEmpty(exeName,nameof(exeName));
-            Debug.Assert(exeName.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase));
+
+            if (exeName.Contains('\\') || exeName.Contains('/'))
+            {
+                //
+                // This looks like a path, not an app name.
+                //
+                path = null;
+                return false;
+            }
+            else if (!exeName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                //
+                // Not an app.
+                //
+                path = null;
+                return false;
+            }
 
             var hives = new[] { RegistryHive.CurrentUser, RegistryHive.LocalMachine };
             foreach (var hive in hives )

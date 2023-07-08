@@ -12,7 +12,7 @@
     // Use guest mode to prevent any browsing history or cookies from bleeding
     // to or from the IAP-protected resource.
     //
-    "executable": "%ProgramW6432%\\Google\\Chrome\\Application\\chrome.exe",
+    "executable": "chrome.exe",
     "arguments": "--user-data-dir=%temp%\\chrome-guest-{port} --guest \"http://{host}:{port}/"
   }
 }
