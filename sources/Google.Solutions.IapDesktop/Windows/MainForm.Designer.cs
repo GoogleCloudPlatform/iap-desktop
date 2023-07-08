@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Windows
 {
     partial class MainForm
@@ -76,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.reportIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportInternalIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.statusStrip = new ActiveStatusStrip();
             this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -411,7 +413,7 @@ namespace Google.Solutions.IapDesktop.Windows
         #endregion
         private System.Windows.Forms.MenuStrip mainMenu;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip;
+        private ActiveStatusStrip statusStrip;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

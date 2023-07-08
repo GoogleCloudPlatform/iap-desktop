@@ -203,10 +203,10 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Status bar.
             //
-            this.statusStrip.BindProperty(
-                c => c.BackColor,
+            this.statusStrip.BindReadonlyProperty(
+                c => c.Active,
                 this.viewModel,
-                m => m.StatusBarBackColor,
+                m => m.IsLoggingEnabled,
                 this.bindingContext);
             this.toolStripStatus.BindProperty(
                 c => c.Text,

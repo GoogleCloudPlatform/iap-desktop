@@ -32,17 +32,25 @@ namespace Google.Solutions.Mvvm.Controls
     public class ActiveStatusStrip : StatusStrip
     {
         private bool active = false;
-        private Color activeBackColor = Control.DefaultBackColor;
-        private Color activeForeColor = Control.DefaultForeColor;
+        private Color activeBackColor = SystemColors.Highlight;
+        private Color activeForeColor = SystemColors.HighlightText;
         private Color inactiveBackColor = Control.DefaultBackColor;
         private Color inactiveForeColor = Control.DefaultForeColor;
 
         public EventHandler ActiveChanged;
 
-        private void ApplyColors()
+        private void UpdateForeColor()
         {
-            this.ForeColor = this.active ? this.ActiveForeColor : this.InactiveForeColor;
-            this.BackColor = this.active ? this.InactiveBackColor : this.ActiveBackColor;
+            this.ForeColor = this.active 
+                ? this.ActiveForeColor 
+                : this.InactiveForeColor;
+        }
+
+        private void UpdateBackColor()
+        {
+            this.BackColor = this.active 
+                ? this.ActiveBackColor 
+                : this.InactiveBackColor;
         }
 
         //---------------------------------------------------------------------
@@ -58,7 +66,7 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 this.activeBackColor = value;
-                ApplyColors();
+                UpdateBackColor();
             }
         }
 
@@ -71,7 +79,7 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 this.activeForeColor = value;
-                ApplyColors();
+                UpdateForeColor();
             }
         }
 
@@ -84,7 +92,7 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 this.inactiveBackColor = value;
-                ApplyColors();
+                UpdateBackColor();
             }
         }
 
@@ -97,7 +105,7 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 this.inactiveForeColor = value;
-                ApplyColors();
+                UpdateForeColor();
             }
         }
 
@@ -107,7 +115,9 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 this.active = value;
-                ApplyColors();
+                UpdateBackColor();
+                UpdateForeColor();
+
                 this.ActiveChanged?.Invoke(this, EventArgs.Empty);
             }
         }

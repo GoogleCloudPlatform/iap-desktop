@@ -197,8 +197,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     = GetColor(xml, "Environment", "CommandBarMenuItemMouseOverBorder", "Background");
                 this.StatusBar = new StatusBarPallette()
                 {
-                    Background = GetColor(xml, "Environment", "StatusBarDefault", "Background"),
-                    Text = GetColor(xml, "Environment", "StatusBarDefault", "Foreground"),
+                    InactiveBackground = GetColor(xml, "Environment", "StatusBarDefault", "Background"),
+                    InactiveText = GetColor(xml, "Environment", "StatusBarDefault", "Foreground"),
+                    ActiveBackground = GetColor(xml, "Environment", "StatusBarDebugging", "Background"),
+                    ActiveText = GetColor(xml, "Environment", "StatusBarDebugging", "Foreground"),
                 };
             }
 
@@ -235,8 +237,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         internal struct StatusBarPallette
         {
-            public Color Background { get; set; }
-            public Color Text { get; set; }
+            public Color InactiveBackground { get; set; }
+            public Color InactiveText { get; set; }
+            public Color ActiveBackground { get; set; }
+            public Color ActiveText { get; set; }
         }
 
         internal struct WindowPallette
