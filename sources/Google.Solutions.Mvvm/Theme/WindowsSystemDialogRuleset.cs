@@ -45,27 +45,6 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
         //---------------------------------------------------------------------
-        // Statics.
-        //---------------------------------------------------------------------
-
-        public static Color AccentColor
-        {
-            get
-            {
-                var hr = NativeMethods.DwmGetColorizationColor(
-                    out var colorization,
-                    out var opaqueBlend);
-                if (hr.Failed())
-                {
-                    return SystemColors.ActiveBorder;
-                }
-
-                colorization |= (opaqueBlend ? 0xFF000000 : 0);
-                return Color.FromArgb((int)colorization);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // Theming rules.
         //---------------------------------------------------------------------
 
@@ -83,7 +62,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 // Draw a border in the Windows accent color.
                 //
-                using (var pen = new Pen(new SolidBrush(AccentColor), 1f))
+                using (var pen = new Pen(new SolidBrush(SystemTheme.AccentColor), 1f))
                 {
                     e.Graphics.DrawRectangle(
                         pen,
@@ -131,18 +110,6 @@ namespace Google.Solutions.Mvvm.Theme
                 ControlTheme.Options.ApplyWhenHandleCreated);
             controlTheme.AddRule<Label>(c => StyleLabel(c));
             controlTheme.AddRule<HeaderLabel>(c => StyleHeaderLabel(c));
-        }
-
-        //---------------------------------------------------------------------
-        // P/Invoke.
-        //---------------------------------------------------------------------
-
-        private static class NativeMethods
-        {
-            [DllImport("dwmapi.dll")]
-            public static extern HRESULT DwmGetColorizationColor(
-                out uint pcrColorization,
-                [MarshalAs(UnmanagedType.Bool)] out bool pfOpaqueBlend);
         }
     }
 }

@@ -97,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public ButtonPallette Button { get; }
             public LabelPalette Label { get; }
             public LabelPalette LinkLabel { get; }
+            public LabelPalette HeaderLabel { get; }
             public TextBoxPalette TextBox { get; }
             public ComboBoxPalette ComboBox { get; }
             public ProgressBarPalette ProgressBar { get; }
@@ -140,6 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 this.LinkLabel = new LabelPalette()
                 {
                     Text = GetColor(xml, "Environment", "ControlLinkText", "Background"),
+                };
+                this.HeaderLabel = new LabelPalette()
+                {
+                    Text = GetColor(xml, "Environment", "BrandedUITitle", "Background"),
                 };
                 this.TextBox = new TextBoxPalette()
                 {

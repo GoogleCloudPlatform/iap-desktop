@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Theme
 
         public WindowsRuleSet(bool darkMode)
         {
-            Debug.Assert(!darkMode || IsDarkModeSupported);
+            Debug.Assert(!darkMode || SystemTheme.IsDarkModeSupported);
 
             this.IsDarkModeEnabled = darkMode;
             if (darkMode)
@@ -53,48 +53,6 @@ namespace Google.Solutions.Mvvm.Theme
                 // Force Win32 controls to use dark mode.
                 //
                 NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Statics.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Check if the Windows version supports dark mode.
-        /// </summary>
-        public static bool IsDarkModeSupported
-        {
-            get
-            {
-                //
-                // We're using UxTheme.dll, which is undocumented. The
-                // export ordinals should be constant since this build, but
-                // were different or missing before.
-                //
-                var osVersion = Environment.OSVersion.Version;
-                return osVersion.Major > 10 ||
-                       (osVersion.Major == 10 && osVersion.Build >= 18985);
-            }
-        }
-
-        /// <summary>
-        /// Check if Windows apps should use dark mode.
-        /// </summary>
-        public static bool ShouldAppsUseDarkMode
-        {
-            get
-            {
-                if (!IsDarkModeSupported)
-                {
-                    return false;
-                }
-
-                //
-                // Running on an OS version that supports dark mode, so
-                // it should be safe to make this API call.
-                //
-                return NativeMethods.ShouldAppsUseDarkMode();
             }
         }
 
@@ -339,9 +297,6 @@ namespace Google.Solutions.Mvvm.Theme
                 FORCELIGHT = 3,
                 MAX = 4
             }
-
-            [DllImport("uxtheme.dll", SetLastError = true, EntryPoint = "#132")]
-            public static extern bool ShouldAppsUseDarkMode();
 
             [DllImport("uxtheme.dll", EntryPoint = "#133")]
             public static extern bool AllowDarkModeForWindow(IntPtr hWnd, bool allow);

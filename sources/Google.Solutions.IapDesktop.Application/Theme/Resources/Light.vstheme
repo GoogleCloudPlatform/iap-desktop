@@ -1924,7 +1924,7 @@
         <Background Type="CT_RAW" Source="FF1E1E1E" />
       </Color>
       <Color Name="BrandedUITitle">
-        <Background Type="CT_RAW" Source="FF1E1E1E" />
+        <Background Type="CT_RAW" Source="FF6288F2" />
       </Color>
       <Color Name="ButtonFace">
         <Background Type="CT_RAW" Source="FFCCCEDB" />

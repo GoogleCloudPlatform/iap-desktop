@@ -70,14 +70,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     //
                     // Use same mode as Windows.
                     //
-                    windowsTheme = new WindowsRuleSet(WindowsRuleSet.ShouldAppsUseDarkMode);
+                    windowsTheme = new WindowsRuleSet(SystemTheme.ShouldAppsUseDarkMode);
                     break;
 
                 case ThemeSettings.ApplicationTheme.Dark:
                     //
                     // Use dark mode if possible.
                     //
-                    windowsTheme = new WindowsRuleSet(WindowsRuleSet.IsDarkModeSupported);
+                    windowsTheme = new WindowsRuleSet(SystemTheme.IsDarkModeSupported);
                     break;
 
                 default:
@@ -88,7 +88,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     windowsTheme = new WindowsRuleSet(false);
                     break;
             }
-
 
             var vsTheme = windowsTheme.IsDarkModeEnabled
                 ? VSTheme.GetDarkTheme()
