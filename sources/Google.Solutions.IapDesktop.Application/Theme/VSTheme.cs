@@ -101,6 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public ComboBoxPalette ComboBox { get; }
             public ProgressBarPalette ProgressBar { get; }
             public TabControlPalette TabControl { get; }
+            public StatusBarPallette StatusBar { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -194,6 +195,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 };
                 this.CommandBarMenuTopLevelHeaderHovered.Border
                     = GetColor(xml, "Environment", "CommandBarMenuItemMouseOverBorder", "Background");
+                this.StatusBar = new StatusBarPallette()
+                {
+                    InactiveBackground = GetColor(xml, "Environment", "StatusBarDefault", "Background"),
+                    InactiveText = GetColor(xml, "Environment", "StatusBarDefault", "Foreground"),
+                    ActiveBackground = GetColor(xml, "Environment", "StatusBarDebugging", "Background"),
+                    ActiveText = GetColor(xml, "Environment", "StatusBarDebugging", "Foreground"),
+                };
             }
 
             protected static Color GetColor(
@@ -225,6 +233,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             public Color Background { get; set; }
             public Color Text { get; set; }
+        }
+
+        internal struct StatusBarPallette
+        {
+            public Color InactiveBackground { get; set; }
+            public Color InactiveText { get; set; }
+            public Color ActiveBackground { get; set; }
+            public Color ActiveText { get; set; }
         }
 
         internal struct WindowPallette

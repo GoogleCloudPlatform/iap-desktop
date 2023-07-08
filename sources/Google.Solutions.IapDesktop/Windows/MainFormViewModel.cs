@@ -105,16 +105,8 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 Program.IsLoggingEnabled = value;
                 RaisePropertyChange();
-                RaisePropertyChange((MainFormViewModel m) => m.StatusBarBackColor);
                 RaisePropertyChange((MainFormViewModel m) => m.StatusText);
             }
-        }
-
-        public Color StatusBarBackColor
-        {
-            get => this.IsLoggingEnabled
-                ? Color.Red
-                : this.themeService.DockPanelTheme.ColorPalette.ToolWindowCaptionActive.Background;
         }
 
         public string StatusText

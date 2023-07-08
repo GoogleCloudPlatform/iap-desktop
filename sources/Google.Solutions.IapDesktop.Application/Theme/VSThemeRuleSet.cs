@@ -221,6 +221,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
+        private void StyleActiveStatusStrip(ActiveStatusStrip strip)
+        {
+            strip.ActiveForeColor = this.theme.Palette.StatusBar.ActiveText;
+            strip.ActiveBackColor = this.theme.Palette.StatusBar.ActiveBackground;
+            strip.InactiveForeColor = this.theme.Palette.StatusBar.InactiveText;
+            strip.InactiveBackColor = this.theme.Palette.StatusBar.InactiveBackground;
+        }
+
         private void StyleButton(Button button)
         {
             button.FlatStyle = FlatStyle.Flat;
@@ -448,6 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<VerticalTabControl>(c => StyleTabControl(c));
             controlTheme.AddRule<ProgressBarBase>(c => StyleProgressBar(c));
             controlTheme.AddRule<MarkdownViewer>(c => StyleMarkdownViewer(c));
+            controlTheme.AddRule<ActiveStatusStrip>(c => StyleActiveStatusStrip(c));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i));
