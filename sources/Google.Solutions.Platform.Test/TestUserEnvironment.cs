@@ -21,6 +21,7 @@
 
 using NUnit.Framework;
 using System;
+using System.IO;
 
 namespace Google.Solutions.Platform.Test
 {
@@ -60,6 +61,24 @@ namespace Google.Solutions.Platform.Test
             Assert.AreEqual(
                 source,
                 UserEnvironment.ExpandEnvironmentStrings(source));
+        }
+
+        //---------------------------------------------------------------------
+        // TryResolveAppPath.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenAppUnknown_ThenTryResolveAppPathReturnsFalse()
+        {
+            Assert.IsFalse(UserEnvironment.TryResolveAppPath("doesnotexist.exe", out var _));
+        }
+
+        [Test]
+        public void WhenAppRegistered_ThenTryResolveAppPathReturnsPath()
+        {
+            Assert.IsTrue(UserEnvironment.TryResolveAppPath("IExPlOrE.EXE", out var iexplore));
+            Assert.IsNotNull(iexplore);
+            Assert.IsTrue(File.Exists(iexplore));
         }
     }
 }

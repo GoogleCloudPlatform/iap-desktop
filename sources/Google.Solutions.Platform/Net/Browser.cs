@@ -105,17 +105,15 @@ namespace Google.Solutions.Platform.Net
 
     public class ChromeBrowser : Browser
     {
-        private const string AppPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
-        private static string ChromeExecutablePath { get; }
+        private static string ChromeExecutablePath { get; } = null;
 
         private readonly string arguments;
 
         static ChromeBrowser()
         {
-            using (var hive = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
-            using (var chromeAppPath = hive.OpenSubKey($@"{AppPath}\chrome.exe", false))
+            if (UserEnvironment.TryResolveAppPath("chrome.exe", out var chromePath))
             {
-                ChromeExecutablePath = (string)chromeAppPath?.GetValue(null);
+                ChromeExecutablePath = chromePath;
             }
         }
 
