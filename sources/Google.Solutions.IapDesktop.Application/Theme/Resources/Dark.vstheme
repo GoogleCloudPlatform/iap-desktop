@@ -1924,7 +1924,7 @@
         <Background Type="CT_RAW" Source="FFF1F1F1" />
       </Color>
       <Color Name="BrandedUITitle">
-        <Background Type="CT_RAW" Source="FFF1F1F1" />
+        <Background Type="CT_RAW" Source="FF86B0EF" />
       </Color>
       <Color Name="ButtonFace">
         <Background Type="CT_RAW" Source="FF3F3F46" />
@@ -2441,7 +2441,7 @@
         <Background Type="CT_RAW" Source="FFF1CA5D" />
       </Color>
       <Color Name="ControlLinkText">
-        <Background Type="CT_RAW" Source="FF55AAFF" />
+        <Background Type="CT_RAW" Source="FF86B0EF" />
       </Color>
       <Color Name="ControlLinkTextHover">
         <Background Type="CT_RAW" Source="FF007ACC" />

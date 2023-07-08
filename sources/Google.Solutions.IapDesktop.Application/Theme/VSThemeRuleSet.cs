@@ -43,8 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private readonly IconInverter darkModeIconInverter;
 
-        protected static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242);
-
         protected readonly VSTheme theme;
 
         protected VSThemeRuleSetBase(VSTheme theme)
@@ -138,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private void StyleHeaderLabel(HeaderLabel headerLabel)
         {
-            headerLabel.ForeColor = AccentColor;
+            headerLabel.ForeColor = this.theme.Palette.HeaderLabel.Text;
         }
 
         private void StyleTreeView(TreeView treeView)
