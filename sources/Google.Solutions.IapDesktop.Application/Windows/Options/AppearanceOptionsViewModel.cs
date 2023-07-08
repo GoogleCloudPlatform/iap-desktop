@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // If Windows doesn't support dark mode, none other than
             // the default scheme are guaranteed to work.
             //
-            this.IsThemeEditable = WindowsRuleSet.IsDarkModeSupported;
+            this.IsThemeEditable = SystemTheme.IsDarkModeSupported;
             this.ThemeInfoText = this.IsThemeEditable
                 ? "Changes take effect after relaunch"
                 : "Themes are not supported on this version\nof Windows";
