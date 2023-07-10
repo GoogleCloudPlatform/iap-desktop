@@ -75,7 +75,6 @@ namespace Google.Solutions.Apis.Client
             Precondition.ExpectNotNull(endpointTemplate, nameof(endpointTemplate));
             Precondition.ExpectNotNull(authorization, nameof(authorization));
             Precondition.ExpectNotNull(userAgent, nameof(userAgent));
-
             
             var endpoint = endpointResolver.ResolveEndpoint(
                 endpointTemplate,

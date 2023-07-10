@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
@@ -33,7 +32,7 @@ namespace Google.Solutions.Apis.Test.Client
     [TestFixture]
     public class TestAuthorizedClientInitializer
     {
-        private const string SampleMtlsUri = "https://cloudresourcemanager.mtls.googleapis.com/";
+        private const string CrmEndpoint = "https://cloudresourcemanager.googleapis.com/";
 
         [Test]
         public void WhenNotEnrolled_ThenDeviceCertificateAuthenticationIsDisabled(
@@ -44,26 +43,57 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
 
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+
             var initializer = new AuthorizedClientInitializer(
-                new Mock<ICredential>().Object,
-                enrollment.Object,
-                TestProject.UserAgent,
-                SampleMtlsUri);
+                new ServiceEndpointResolver(),
+                new CanonicalServiceEndpoint(CrmEndpoint),
+                authorization.Object,
+                TestProject.UserAgent);
+
+            Assert.AreEqual(CrmEndpoint, initializer.BaseUri);
 
             var client = new ComputeService(initializer);
             Assert.IsFalse(client.IsDeviceCertificateAuthenticationEnabled());
         }
 
         [Test]
-        public void WhenNotEnrolled_ThenDeviceCertificateAuthenticationIsDisabled()
+        public void WhenEnrolled_ThenDeviceCertificateAuthenticationIsDisabled()
         {
             var initializer = new AuthorizedClientInitializer(
+                new ServiceEndpointResolver(),
+                new CanonicalServiceEndpoint(CrmEndpoint),
                 AuthorizationMocks.ForSecureConnectUser(),
-                TestProject.UserAgent,
-                SampleMtlsUri);
+                TestProject.UserAgent);
+
+            Assert.AreEqual("https://cloudresourcemanager.mtls.googleapis.com/", initializer.BaseUri);
 
             var client = new ComputeService(initializer);
             Assert.IsTrue(client.IsDeviceCertificateAuthenticationEnabled());
+        }
+
+        [Test]
+        public void WhenPscOverrideFound_ThenInitializerUsesPscEndpoint()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+
+            var resolver = new ServiceEndpointResolver();
+            resolver.AddPrivateServiceEndpoint(
+                "cloudresourcemanager.googleapis.com",
+                "crm.example.com");
+
+            var initializer = new AuthorizedClientInitializer(
+                resolver,
+                new CanonicalServiceEndpoint(CrmEndpoint),
+                authorization.Object,
+                TestProject.UserAgent);
+
+            Assert.AreEqual("https://crm.example.com/", initializer.BaseUri);
         }
     }
 }
