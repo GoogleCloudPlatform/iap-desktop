@@ -72,21 +72,21 @@ namespace Google.Solutions.Apis.Client
                     {
                         Host = newHost
                     }.Uri,
-                    EndpointType.PrivateServiceConnect);
+                    ServiceEndpointType.PrivateServiceConnect);
             }
             else if (enrollment == DeviceEnrollmentState.Enrolled)
             {
                 //
                 // Device is enrolled and we have a device certificate -> use mTLS.
                 //
-                return new ServiceEndpoint(canonicalEndpoint.MtlsUri, EndpointType.MutualTls);
+                return new ServiceEndpoint(canonicalEndpoint.MtlsUri, ServiceEndpointType.MutualTls);
             }
             else
             {
                 //
                 // Use the regular endpoint.
                 //
-                return new ServiceEndpoint(canonicalEndpoint.Uri, EndpointType.Tls);
+                return new ServiceEndpoint(canonicalEndpoint.Uri, ServiceEndpointType.Tls);
             }
         }
     }

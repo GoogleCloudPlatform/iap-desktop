@@ -39,16 +39,16 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Type of endpoint.
         /// </summary>
-        public EndpointType Type { get; }
+        public ServiceEndpointType Type { get; }
 
         internal ServiceEndpoint(
             Uri uri,
-            EndpointType type)
+            ServiceEndpointType type)
         {
             this.Uri = uri.ExpectNotNull(nameof(uri));
             this.Type = type;
 
-            Debug.Assert(type != EndpointType.MutualTls || uri.Host.Contains("mtls."));
+            Debug.Assert(type != ServiceEndpointType.MutualTls || uri.Host.Contains("mtls."));
         }
 
         public override string ToString()
@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Client
         }
     }
 
-    public enum EndpointType
+    public enum ServiceEndpointType
     {
         Tls,
         MutualTls,

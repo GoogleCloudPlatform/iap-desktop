@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Client
             this.HttpClientInitializer = authorization.Credential;
             this.ApplicationName = userAgent.ToApplicationName();
 
-            if (endpoint.Type == EndpointType.MutualTls &&
+            if (endpoint.Type == ServiceEndpointType.MutualTls &&
                 authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
                 authorization.DeviceEnrollment.Certificate != null)
             {

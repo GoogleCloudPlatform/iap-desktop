@@ -37,7 +37,7 @@ namespace Google.Solutions.Apis.Test.Client
         {
             var endpoint = new ServiceEndpoint(
                 new Uri("https://compute.googleapis.com/compute"),
-                EndpointType.Tls);
+                ServiceEndpointType.Tls);
 
             Assert.AreEqual("https://compute.googleapis.com/compute", endpoint.ToString());
         }

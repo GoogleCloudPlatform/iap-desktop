@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Test.Client
             var endpoint = resovler.ResolveEndpoint(template, state);
 
             Assert.AreEqual(new Uri("https://compute.googleapis.com/compute"), endpoint.Uri);
-            Assert.AreEqual(EndpointType.Tls, endpoint.Type);
+            Assert.AreEqual(ServiceEndpointType.Tls, endpoint.Type);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Google.Solutions.Apis.Test.Client
             var endpoint = resovler.ResolveEndpoint(template, DeviceEnrollmentState.Enrolled);
 
             Assert.AreEqual(new Uri("https://compute.mtls.googleapis.com/compute"), endpoint.Uri);
-            Assert.AreEqual(EndpointType.MutualTls, endpoint.Type);
+            Assert.AreEqual(ServiceEndpointType.MutualTls, endpoint.Type);
         }
 
         //---------------------------------------------------------------------
@@ -78,7 +78,7 @@ namespace Google.Solutions.Apis.Test.Client
             var endpoint = resovler.ResolveEndpoint(template, state);
 
             Assert.AreEqual(new Uri("https://Compute.p.Googleapis.COM/compute"), endpoint.Uri);
-            Assert.AreEqual(EndpointType.PrivateServiceConnect, endpoint.Type);
+            Assert.AreEqual(ServiceEndpointType.PrivateServiceConnect, endpoint.Type);
         }
     }
 }
