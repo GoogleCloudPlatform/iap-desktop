@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public interface IOsLoginAdapter
+    public interface IOsLoginAdapter : IEndpointAdapter
     {
         /// <summary>
         /// Import user's public key to OS Login.
@@ -65,33 +65,27 @@ namespace Google.Solutions.Apis.Compute
 
     public class OsLoginAdapter : IOsLoginAdapter
     {
-        private static readonly CanonicalServiceEndpoint canonicalEndpoint 
-            = new CanonicalServiceEndpoint("https://oslogin.googleapis.com/");
-
         private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
 
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
         public OsLoginAdapter(
-            ServiceEndpointResolver endpointResolver,
+            ServiceEndpoint<OsLoginAdapter> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
-            endpointResolver.ExpectNotNull(nameof(endpointResolver));
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
 
             this.service = new CloudOSLoginService(
                 new AuthorizedClientInitializer(
-                    endpointResolver,
-                    canonicalEndpoint, 
+                    endpoint, 
                     authorization,
                     userAgent));
         }
+
+        public IServiceEndpoint Endpoint { get; }
 
         //---------------------------------------------------------------------
         // IOsLoginAdapter.

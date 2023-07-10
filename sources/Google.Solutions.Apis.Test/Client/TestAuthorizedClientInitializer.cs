@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
@@ -32,7 +33,17 @@ namespace Google.Solutions.Apis.Test.Client
     [TestFixture]
     public class TestAuthorizedClientInitializer
     {
-        private const string CrmEndpoint = "https://cloudresourcemanager.googleapis.com/";
+        private class SampleAdapter : IEndpointAdapter
+        {
+            public SampleAdapter(IServiceEndpoint endpoint)
+            {
+                this.Endpoint = endpoint;
+            }
+
+            public IServiceEndpoint Endpoint { get; }
+        }
+
+        private const string SampleEndpoint = "https://sample.googleapis.com/";
 
         [Test]
         public void WhenNotEnrolled_ThenDeviceCertificateAuthenticationIsDisabled(
@@ -46,13 +57,14 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
+            var endpoint = new ServiceEndpoint<SampleAdapter>(SampleEndpoint);
+
             var initializer = new AuthorizedClientInitializer(
-                new ServiceEndpointResolver(),
-                new CanonicalServiceEndpoint(CrmEndpoint),
+                endpoint,
                 authorization.Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual(CrmEndpoint, initializer.BaseUri);
+            Assert.AreEqual(SampleEndpoint, initializer.BaseUri);
 
             var client = new ComputeService(initializer);
             Assert.IsFalse(client.IsDeviceCertificateAuthenticationEnabled());
@@ -61,9 +73,10 @@ namespace Google.Solutions.Apis.Test.Client
         [Test]
         public void WhenEnrolled_ThenDeviceCertificateAuthenticationIsDisabled()
         {
+            var endpoint = new ServiceEndpoint<SampleAdapter>(SampleEndpoint);
+
             var initializer = new AuthorizedClientInitializer(
-                new ServiceEndpointResolver(),
-                new CanonicalServiceEndpoint(CrmEndpoint),
+                endpoint,
                 AuthorizationMocks.ForSecureConnectUser(),
                 TestProject.UserAgent);
 
@@ -82,14 +95,14 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
-            var resolver = new ServiceEndpointResolver();
-            resolver.AddPrivateServiceEndpoint(
-                "cloudresourcemanager.googleapis.com",
-                "crm.example.com");
+
+            var endpoint = new ServiceEndpoint<SampleAdapter>(SampleEndpoint)
+            {
+                PscEndpointOverride = "crm.example.com"
+            };
 
             var initializer = new AuthorizedClientInitializer(
-                resolver,
-                new CanonicalServiceEndpoint(CrmEndpoint),
+                endpoint,
                 authorization.Object,
                 TestProject.UserAgent);
 

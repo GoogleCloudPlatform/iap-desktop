@@ -19,7 +19,7 @@
 // under the License.
 //
 
-
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
@@ -29,32 +29,14 @@ namespace Google.Solutions.Apis.Client
     /// <summary>
     /// An endpoint for a Google API.
     /// </summary>
-    public class ServiceEndpoint
+    public interface IServiceEndpoint
     {
         /// <summary>
-        /// Base URI to initialze the client library with.
+        /// Determine the effective base URI to use.
         /// </summary>
-        public Uri Uri { get; }
-
-        /// <summary>
-        /// Type of endpoint.
-        /// </summary>
-        public ServiceEndpointType Type { get; }
-
-        internal ServiceEndpoint(
-            Uri uri,
-            ServiceEndpointType type)
-        {
-            this.Uri = uri.ExpectNotNull(nameof(uri));
-            this.Type = type;
-
-            Debug.Assert(type != ServiceEndpointType.MutualTls || uri.Host.Contains("mtls."));
-        }
-
-        public override string ToString()
-        {
-            return this.Uri.ToString();
-        }
+        Uri GetEffectiveUri(
+            DeviceEnrollmentState enrollment,
+            out ServiceEndpointType endpointType);
     }
 
     public enum ServiceEndpointType
@@ -62,5 +44,100 @@ namespace Google.Solutions.Apis.Client
         Tls,
         MutualTls,
         PrivateServiceConnect
+    }
+
+    public interface IEndpointAdapter // TODO: separate class
+    {
+        IServiceEndpoint Endpoint { get; }
+    }
+
+    public class ServiceEndpoint<T> : IServiceEndpoint
+        where T : IEndpointAdapter
+    {
+        public ServiceEndpoint(Uri tlsUri, Uri mtlsUri)
+        {
+            this.CanonicalUri = tlsUri.ExpectNotNull(nameof(tlsUri));
+            this.MtlsUri = mtlsUri.ExpectNotNull(nameof(mtlsUri));
+
+            Debug.Assert(!tlsUri.Host.Contains("mtls."));
+            Debug.Assert(mtlsUri.Host.Contains("mtls."));
+        }
+
+        public ServiceEndpoint(Uri tlsUri)
+            : this(
+                  tlsUri,
+                  new UriBuilder(tlsUri)
+                  {
+                      Host = tlsUri.Host.ToLower().Replace(".googleapis.com", ".mtls.googleapis.com"),
+                  }.Uri)
+        {
+        }
+
+        public ServiceEndpoint(string tlsUri)
+            : this(new Uri(tlsUri))
+        { }
+
+        /// <summary>
+        /// Alternate hostname to use for Private Service Connect (PSC).
+        /// </summary>
+        public string PscEndpointOverride { get; set; }
+
+        /// <summary>
+        /// Default URI to use, if neither mTLS or PSC is required.
+        /// </summary>
+        public Uri CanonicalUri { get; }
+
+        /// <summary>
+        /// MTLS variant of the same endpoint.
+        /// </summary>
+        public Uri MtlsUri { get; }
+
+        //---------------------------------------------------------------------
+        // IServiceEndpoint.
+        //---------------------------------------------------------------------
+
+        public Uri GetEffectiveUri(
+            DeviceEnrollmentState enrollment,
+            out ServiceEndpointType endpointType)
+        {
+            if (!string.IsNullOrEmpty(this.PscEndpointOverride)) 
+            {
+                //
+                // Use an alternate PSC endpoint.
+                //
+                // NB. PSC trumps mTLS.
+                //
+                endpointType = ServiceEndpointType.PrivateServiceConnect;
+                return new UriBuilder(this.CanonicalUri)
+                {
+                    Host = this.PscEndpointOverride
+                }.Uri;
+            }
+            else if (enrollment == DeviceEnrollmentState.Enrolled)
+            {
+                //
+                // Device is enrolled and we have a device certificate -> use mTLS.
+                //
+                endpointType = ServiceEndpointType.MutualTls;
+                return this.MtlsUri;
+            }
+            else
+            {
+                //
+                // Use the regular endpoint.
+                //
+                endpointType = ServiceEndpointType.Tls;
+                return this.CanonicalUri;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        public override string ToString()
+        {
+            return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {this.PscEndpointOverride})";
+        }
     }
 }

@@ -66,25 +66,23 @@ namespace Google.Solutions.Apis.Client
         }
 
         public AuthorizedClientInitializer( //TODO: Test
-            ServiceEndpointResolver endpointResolver,
-            CanonicalServiceEndpoint endpointTemplate,
+            IServiceEndpoint endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
-            Precondition.ExpectNotNull(endpointResolver, nameof(endpointResolver));
-            Precondition.ExpectNotNull(endpointTemplate, nameof(endpointTemplate));
+            Precondition.ExpectNotNull(endpoint, nameof(endpoint));
             Precondition.ExpectNotNull(authorization, nameof(authorization));
             Precondition.ExpectNotNull(userAgent, nameof(userAgent));
-            
-            var endpoint = endpointResolver.ResolveEndpoint(
-                endpointTemplate,
-                authorization.DeviceEnrollment.State);
 
-            this.BaseUri = endpoint.Uri.ToString();
+            var effectiveUri = endpoint.GetEffectiveUri(
+                authorization.DeviceEnrollment.State,
+                out var endpointType);
+
+            this.BaseUri = effectiveUri.ToString();
             this.HttpClientInitializer = authorization.Credential;
             this.ApplicationName = userAgent.ToApplicationName();
 
-            if (endpoint.Type == ServiceEndpointType.MutualTls &&
+            if (endpointType == ServiceEndpointType.MutualTls &&
                 authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
                 authorization.DeviceEnrollment.Certificate != null)
             {
