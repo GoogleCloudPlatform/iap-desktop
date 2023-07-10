@@ -61,8 +61,7 @@ namespace Google.Solutions.Apis.Test.Client
             var template = new ServiceDescription(
                 new Uri("https://Compute.Googleapis.COM/compute"));
 
-            var authorization = CreateAuthorization(state);
-            var endpoint = resovler.ResolveEndpoint(authorization.Object, template);
+            var endpoint = resovler.ResolveEndpoint(template, state);
 
             Assert.AreEqual(new Uri("https://compute.googleapis.com/compute"), endpoint.Uri);
             Assert.AreEqual(EndpointType.Tls, endpoint.Type);
@@ -75,8 +74,7 @@ namespace Google.Solutions.Apis.Test.Client
             var template = new ServiceDescription(
                 new Uri("https://Compute.Googleapis.COM/compute"));
 
-            var authorization = CreateAuthorization(DeviceEnrollmentState.Enrolled);
-            var endpoint = resovler.ResolveEndpoint(authorization.Object, template);
+            var endpoint = resovler.ResolveEndpoint(template, DeviceEnrollmentState.Enrolled);
 
             Assert.AreEqual(new Uri("https://compute.mtls.googleapis.com/compute"), endpoint.Uri);
             Assert.AreEqual(EndpointType.MutualTls, endpoint.Type);
@@ -99,8 +97,7 @@ namespace Google.Solutions.Apis.Test.Client
             var template = new ServiceDescription(
                 new Uri("https://Compute.Googleapis.COM/compute"));
 
-            var authorization = CreateAuthorization(state);
-            var endpoint = resovler.ResolveEndpoint(authorization.Object, template);
+            var endpoint = resovler.ResolveEndpoint(template, state);
 
             Assert.AreEqual(new Uri("https://Compute.p.Googleapis.COM/compute"), endpoint.Uri);
             Assert.AreEqual(EndpointType.PrivateServiceConnect, endpoint.Type);

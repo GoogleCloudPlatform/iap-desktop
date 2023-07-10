@@ -54,13 +54,11 @@ namespace Google.Solutions.Apis.Client
         /// Select the right endpoint to use, considering mTLS and PSC.
         /// </summary>
         public ServiceEndpoint ResolveEndpoint(
-            IAuthorization authorization,
-            ServiceDescription template)
+            ServiceDescription template,
+            DeviceEnrollmentState enrollment)
         {
-            authorization.ExpectNotNull(nameof(authorization));
             template.ExpectNotNull(nameof(template));
 
-            var deviceEnrollment = authorization.DeviceEnrollment;
             if (this.pscEndpoints.TryGetValue(
                 template.TlsUri.Host.ToLower(),
                 out var newHost))
@@ -77,8 +75,7 @@ namespace Google.Solutions.Apis.Client
                     }.Uri,
                     EndpointType.PrivateServiceConnect);
             }
-            else if (deviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
-                deviceEnrollment.Certificate != null)
+            else if (enrollment == DeviceEnrollmentState.Enrolled)
             {
                 //
                 // Device is enrolled and we have a device certificate -> use mTLS.
