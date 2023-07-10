@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using System;
@@ -54,7 +53,7 @@ namespace Google.Solutions.Apis.Client
         /// Select the right endpoint to use, considering mTLS and PSC.
         /// </summary>
         public ServiceEndpoint ResolveEndpoint(
-            ServiceDescription template,
+            ServiceEndpointTemplate template,
             DeviceEnrollmentState enrollment)
         {
             template.ExpectNotNull(nameof(template));
@@ -92,12 +91,12 @@ namespace Google.Solutions.Apis.Client
         }
     }
 
-    public class ServiceDescription
+    public class ServiceEndpointTemplate
     {
         public Uri TlsUri { get; }
         public Uri MtlsUri { get; }
 
-        public ServiceDescription(Uri tlsUri, Uri mtlsUri)
+        public ServiceEndpointTemplate(Uri tlsUri, Uri mtlsUri)
         {
             this.TlsUri = tlsUri.ExpectNotNull(nameof(tlsUri));
             this.MtlsUri = mtlsUri.ExpectNotNull(nameof(mtlsUri));
@@ -105,7 +104,7 @@ namespace Google.Solutions.Apis.Client
             Debug.Assert(mtlsUri.Host.Contains("mtls."));
         }
 
-        public ServiceDescription(Uri tlsUri)
+        public ServiceEndpointTemplate(Uri tlsUri)
             : this(
                   tlsUri,
                   new UriBuilder(tlsUri)
@@ -114,28 +113,9 @@ namespace Google.Solutions.Apis.Client
                   }.Uri)
         {
         }
-    }
 
-    public class ServiceEndpoint
-    {
-        public Uri Uri { get; }
-        public EndpointType Type { get; }
-
-        internal ServiceEndpoint(
-            Uri uri,
-            EndpointType type)
-        {
-            this.Uri = uri.ExpectNotNull(nameof(uri));
-            this.Type = type;
-
-            Debug.Assert(type != EndpointType.MutualTls || uri.Host.Contains("mtls."));
-        }
-    }
-
-    public enum EndpointType
-    {
-        Tls,
-        MutualTls,
-        PrivateServiceConnect
+        public ServiceEndpointTemplate(string tlsUri)
+            : this(new Uri(tlsUri))
+        { }
     }
 }

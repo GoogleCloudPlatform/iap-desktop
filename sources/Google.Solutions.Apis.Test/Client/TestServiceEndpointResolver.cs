@@ -21,33 +21,14 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
-using Moq;
 using NUnit.Framework;
 using System;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
     public class TestServiceEndpointResolver
     {
-        private static Mock<IAuthorization> CreateAuthorization(
-            DeviceEnrollmentState state)
-        {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(state);
-
-            if (state == DeviceEnrollmentState.Enrolled)
-            {
-                enrollment.SetupGet(e => e.Certificate).Returns(new X509Certificate2());
-            }
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
-
-            return authorization;
-        }
-
         //---------------------------------------------------------------------
         // ResolveEndpoint - mTLS.
         //---------------------------------------------------------------------
@@ -58,8 +39,7 @@ namespace Google.Solutions.Apis.Test.Client
             DeviceEnrollmentState state)
         {
             var resovler = new ServiceEndpointResolver();
-            var template = new ServiceDescription(
-                new Uri("https://Compute.Googleapis.COM/compute"));
+            var template = new ServiceEndpointTemplate("https://Compute.Googleapis.COM/compute");
 
             var endpoint = resovler.ResolveEndpoint(template, state);
 
@@ -71,8 +51,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenMtlsEnabled_ThenSelectEndpointReturnsMlsEndpoint()
         {
             var resovler = new ServiceEndpointResolver();
-            var template = new ServiceDescription(
-                new Uri("https://Compute.Googleapis.COM/compute"));
+            var template = new ServiceEndpointTemplate("https://Compute.Googleapis.COM/compute");
 
             var endpoint = resovler.ResolveEndpoint(template, DeviceEnrollmentState.Enrolled);
 
@@ -94,8 +73,7 @@ namespace Google.Solutions.Apis.Test.Client
                 "Compute.Googleapis.COM",
                 "Compute.p.Googleapis.COM");
 
-            var template = new ServiceDescription(
-                new Uri("https://Compute.Googleapis.COM/compute"));
+            var template = new ServiceEndpointTemplate("https://Compute.Googleapis.COM/compute");
 
             var endpoint = resovler.ResolveEndpoint(template, state);
 
