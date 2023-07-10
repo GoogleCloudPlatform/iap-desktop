@@ -39,7 +39,7 @@ namespace Google.Solutions.Apis.Test.Client
             DeviceEnrollmentState state)
         {
             var resovler = new ServiceEndpointResolver();
-            var template = new ServiceEndpointTemplate("https://Compute.Googleapis.COM/compute");
+            var template = new CanonicalServiceEndpoint("https://Compute.Googleapis.COM/compute");
 
             var endpoint = resovler.ResolveEndpoint(template, state);
 
@@ -51,7 +51,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenMtlsEnabled_ThenSelectEndpointReturnsMlsEndpoint()
         {
             var resovler = new ServiceEndpointResolver();
-            var template = new ServiceEndpointTemplate("https://Compute.Googleapis.COM/compute");
+            var template = new CanonicalServiceEndpoint("https://Compute.Googleapis.COM/compute");
 
             var endpoint = resovler.ResolveEndpoint(template, DeviceEnrollmentState.Enrolled);
 
@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Test.Client
                 "Compute.Googleapis.COM",
                 "Compute.p.Googleapis.COM");
 
-            var template = new ServiceEndpointTemplate("https://Compute.Googleapis.COM/compute");
+            var template = new CanonicalServiceEndpoint("https://Compute.Googleapis.COM/compute");
 
             var endpoint = resovler.ResolveEndpoint(template, state);
 

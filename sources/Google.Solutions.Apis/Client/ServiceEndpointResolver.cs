@@ -53,13 +53,13 @@ namespace Google.Solutions.Apis.Client
         /// Select the right endpoint to use, considering mTLS and PSC.
         /// </summary>
         public ServiceEndpoint ResolveEndpoint(
-            ServiceEndpointTemplate template,
+            CanonicalServiceEndpoint canonicalEndpoint,
             DeviceEnrollmentState enrollment)
         {
-            template.ExpectNotNull(nameof(template));
+            canonicalEndpoint.ExpectNotNull(nameof(canonicalEndpoint));
 
             if (this.pscEndpoints.TryGetValue(
-                template.TlsUri.Host.ToLower(),
+                canonicalEndpoint.Uri.Host.ToLower(),
                 out var newHost))
             {
                 //
@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Client
                 // NB. PSC trumps mTLS.
                 //
                 return new ServiceEndpoint(
-                    new UriBuilder(template.TlsUri)
+                    new UriBuilder(canonicalEndpoint.Uri)
                     {
                         Host = newHost
                     }.Uri,
@@ -79,32 +79,40 @@ namespace Google.Solutions.Apis.Client
                 //
                 // Device is enrolled and we have a device certificate -> use mTLS.
                 //
-                return new ServiceEndpoint(template.MtlsUri, EndpointType.MutualTls);
+                return new ServiceEndpoint(canonicalEndpoint.MtlsUri, EndpointType.MutualTls);
             }
             else
             {
                 //
                 // Use the regular endpoint.
                 //
-                return new ServiceEndpoint(template.TlsUri, EndpointType.Tls);
+                return new ServiceEndpoint(canonicalEndpoint.Uri, EndpointType.Tls);
             }
         }
     }
 
-    public class ServiceEndpointTemplate
+    public class CanonicalServiceEndpoint
     {
-        public Uri TlsUri { get; }
+        /// <summary>
+        /// Canonical URI that is used by default.
+        /// </summary>
+        public Uri Uri { get; }
+
+        /// <summary>
+        /// MTLS variant of the same endpoint.
+        /// </summary>
         public Uri MtlsUri { get; }
 
-        public ServiceEndpointTemplate(Uri tlsUri, Uri mtlsUri)
+        public CanonicalServiceEndpoint(Uri tlsUri, Uri mtlsUri)
         {
-            this.TlsUri = tlsUri.ExpectNotNull(nameof(tlsUri));
+            this.Uri = tlsUri.ExpectNotNull(nameof(tlsUri));
             this.MtlsUri = mtlsUri.ExpectNotNull(nameof(mtlsUri));
 
+            Debug.Assert(!tlsUri.Host.Contains("mtls."));
             Debug.Assert(mtlsUri.Host.Contains("mtls."));
         }
 
-        public ServiceEndpointTemplate(Uri tlsUri)
+        public CanonicalServiceEndpoint(Uri tlsUri)
             : this(
                   tlsUri,
                   new UriBuilder(tlsUri)
@@ -114,7 +122,7 @@ namespace Google.Solutions.Apis.Client
         {
         }
 
-        public ServiceEndpointTemplate(string tlsUri)
+        public CanonicalServiceEndpoint(string tlsUri)
             : this(new Uri(tlsUri))
         { }
     }

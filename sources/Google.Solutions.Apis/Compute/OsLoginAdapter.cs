@@ -65,7 +65,8 @@ namespace Google.Solutions.Apis.Compute
 
     public class OsLoginAdapter : IOsLoginAdapter
     {
-        private const string MtlsBaseUri = "https://oslogin.mtls.googleapis.com/";
+        private static readonly CanonicalServiceEndpoint canonicalEndpoint 
+            = new CanonicalServiceEndpoint("https://oslogin.googleapis.com/");
 
         private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
@@ -75,17 +76,21 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
 
         public OsLoginAdapter(
+            ServiceEndpointResolver endpointResolver,
             IAuthorization authorization,
             UserAgent userAgent)
         {
-            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            endpointResolver.ExpectNotNull(nameof(endpointResolver));
             userAgent.ExpectNotNull(nameof(userAgent));
+
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
 
             this.service = new CloudOSLoginService(
                 new AuthorizedClientInitializer(
+                    endpointResolver,
+                    canonicalEndpoint, 
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
 
         //---------------------------------------------------------------------

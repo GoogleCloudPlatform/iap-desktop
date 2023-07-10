@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
@@ -45,7 +46,10 @@ namespace Google.Solutions.Apis.Test.Compute
             authz.SetupGet(a => a.Email).Returns(email);
             authz.SetupGet(a => a.Credential).Returns(TestProject.GetAdminCredential());
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
-            return new OsLoginAdapter(authz.Object, TestProject.UserAgent);
+            return new OsLoginAdapter(
+                new ServiceEndpointResolver(),
+                authz.Object, 
+                TestProject.UserAgent);
         }
 
         private OsLoginAdapter CreateAdapter(TemporaryServiceCredential credential)
@@ -55,7 +59,10 @@ namespace Google.Solutions.Apis.Test.Compute
             authz.SetupGet(a => a.Credential).Returns(credential);
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
 
-            return new OsLoginAdapter(authz.Object, TestProject.UserAgent);
+            return new OsLoginAdapter(
+                new ServiceEndpointResolver(), 
+                authz.Object, 
+                TestProject.UserAgent);
         }
 
         //---------------------------------------------------------------------

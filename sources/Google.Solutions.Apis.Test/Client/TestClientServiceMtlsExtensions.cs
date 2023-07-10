@@ -71,7 +71,6 @@ namespace Google.Solutions.Apis.Test.Client
 
             var initializer = new Google.Apis.Services.BaseClientService.Initializer();
             initializer.EnableDeviceCertificateAuthentication(
-                "https://compute.mtls.googleapis.com/compute/",
                 new X509Certificate2(deviceCertificatePem));
 
             var client = new ComputeService(initializer);

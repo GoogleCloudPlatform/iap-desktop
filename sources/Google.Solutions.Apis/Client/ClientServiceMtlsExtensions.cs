@@ -37,24 +37,16 @@ namespace Google.Solutions.Apis.Client
         /// </summary>
         public static void EnableDeviceCertificateAuthentication(
             this BaseClientService.Initializer initializer,
-            string mtlsBaseUrl,
             X509Certificate2 deviceCertificate)
         {
             Precondition.ExpectNotNull(initializer, nameof(initializer));
-            Precondition.ExpectNotEmpty(mtlsBaseUrl, nameof(mtlsBaseUrl));
             Precondition.ExpectNotNull(deviceCertificate, nameof(deviceCertificate));
-            Debug.Assert(mtlsBaseUrl.Contains(".mtls."));
 
             if (HttpClientHandlerExtensions.CanUseClientCertificates)
             {
                 ApiTraceSources.Default.TraceInformation(
                     "Enabling MTLS for {0}",
-                    mtlsBaseUrl);
-
-                //
-                // Switch to mTLS endpoint.
-                //
-                initializer.BaseUri = mtlsBaseUrl;
+                    initializer.BaseUri);
 
                 //
                 // Add client certificate.

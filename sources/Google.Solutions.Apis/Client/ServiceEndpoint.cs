@@ -31,7 +31,14 @@ namespace Google.Solutions.Apis.Client
     /// </summary>
     public class ServiceEndpoint
     {
+        /// <summary>
+        /// Base URI to initialze the client library with.
+        /// </summary>
         public Uri Uri { get; }
+
+        /// <summary>
+        /// Type of endpoint.
+        /// </summary>
         public EndpointType Type { get; }
 
         internal ServiceEndpoint(

@@ -23,12 +23,13 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
+using System.Diagnostics;
 
 namespace Google.Solutions.Apis.Client
 {
     public class AuthorizedClientInitializer : BaseClientService.Initializer
     {
-        public AuthorizedClientInitializer(
+        public AuthorizedClientInitializer( //TODO: Delete
             IAuthorization authorization,
             UserAgent userAgent,
             string mtlsBaseUrl)
@@ -38,7 +39,7 @@ namespace Google.Solutions.Apis.Client
                   mtlsBaseUrl)
         { }
 
-        public AuthorizedClientInitializer(
+        public AuthorizedClientInitializer( //TODO: Delete
             ICredential credential,
             IDeviceEnrollment deviceEnrollment,
             UserAgent userAgent,
@@ -59,8 +60,41 @@ namespace Google.Solutions.Apis.Client
                 //
                 ClientServiceMtlsExtensions.EnableDeviceCertificateAuthentication(
                     this,
-                    mtlsBaseUrl,
+                    //mtlsBaseUrl,
                     deviceEnrollment.Certificate);
+            }
+        }
+
+        public AuthorizedClientInitializer( //TODO: Test
+            ServiceEndpointResolver endpointResolver,
+            CanonicalServiceEndpoint endpointTemplate,
+            IAuthorization authorization,
+            UserAgent userAgent)
+        {
+            Precondition.ExpectNotNull(endpointResolver, nameof(endpointResolver));
+            Precondition.ExpectNotNull(endpointTemplate, nameof(endpointTemplate));
+            Precondition.ExpectNotNull(authorization, nameof(authorization));
+            Precondition.ExpectNotNull(userAgent, nameof(userAgent));
+
+            
+            var endpoint = endpointResolver.ResolveEndpoint(
+                endpointTemplate,
+                authorization.DeviceEnrollment.State);
+
+            this.BaseUri = endpoint.Uri.ToString();
+            this.HttpClientInitializer = authorization.Credential;
+            this.ApplicationName = userAgent.ToApplicationName();
+
+            if (endpoint.Type == EndpointType.MutualTls &&
+                authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
+                authorization.DeviceEnrollment.Certificate != null)
+            {
+                //
+                // Device is enrolled and we have a device certificate -> enable DCA.
+                //
+                ClientServiceMtlsExtensions.EnableDeviceCertificateAuthentication(
+                    this,
+                    authorization.DeviceEnrollment.Certificate);
             }
         }
     }
