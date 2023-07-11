@@ -804,7 +804,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting ||
-                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected);
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
+                this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
