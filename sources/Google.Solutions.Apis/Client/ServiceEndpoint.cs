@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Client
         PrivateServiceConnect
     }
 
-    public interface IEndpointAdapter // TODO: separate class
+    public interface IEndpointAdapter // TODO: separate file
     {
         IServiceEndpoint Endpoint { get; }
     }
