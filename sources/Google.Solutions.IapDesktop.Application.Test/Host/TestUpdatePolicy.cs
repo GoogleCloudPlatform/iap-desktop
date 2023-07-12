@@ -23,12 +23,9 @@ using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
-using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Moq;
 using NUnit.Framework;
 using System;
-using static Google.Solutions.IapDesktop.Application.Host.Adapters.GithubAdapter;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {

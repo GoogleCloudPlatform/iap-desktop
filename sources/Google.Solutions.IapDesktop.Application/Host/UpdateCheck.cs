@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             {
                 //
                 // Check for updates. This check must be performed synchronously,
-                // otherwise this methis returns and the application exits.
+                // otherwise this method returns and the application exits.
                 // In order not to block everything for too long in case of a network
                 // problem, use a timeout.
                 //
