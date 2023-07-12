@@ -17,16 +17,19 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Determines how often update checks are performed. 
         /// A higher number implies a slower pace of updates.
         /// </summary>
-        public const int DaysBetweenUpdateChecks = 10;
+        internal const int DaysBetweenUpdateChecks = 10;
 
+        private readonly IInstall install;
         private readonly IClock clock;
 
         public UpdatePolicy(
             IAuthorization authorization,
+            IInstall install,
             IClock clock)
         {
             authorization.ExpectNotNull(nameof(authorization));
 
+            this.install = install.ExpectNotNull(nameof(install));
             this.clock = clock.ExpectNotNull(nameof(clock));
 
             //
@@ -88,7 +91,18 @@ namespace Google.Solutions.IapDesktop.Application.Host
         {
             Precondition.ExpectNotNull(release, nameof(release));
 
-            return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
+            if (release.TagVersion == null ||
+                release.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
+            {
+                //
+                // Installed version is up to date.
+                //
+                return false;
+            }
+            else
+            {
+                return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
+            }
         }
 
         /// <summary>
@@ -104,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// Available release tracks.
     /// </summary>
     [Flags]
-    internal enum ReleaseTrack : uint //TODO: Move to separate file.
+    internal enum ReleaseTrack : uint
     {
         /// <summary>
         /// Critical security updates.
