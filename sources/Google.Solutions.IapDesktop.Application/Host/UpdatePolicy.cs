@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
@@ -43,41 +44,17 @@ namespace Google.Solutions.IapDesktop.Application.Host
         private readonly IClock clock;
 
         public UpdatePolicy(
-            IAuthorization authorization,
             IInstall install,
             IClock clock)
         {
-            authorization.ExpectNotNull(nameof(authorization));
-
             this.install = install.ExpectNotNull(nameof(install));
             this.clock = clock.ExpectNotNull(nameof(clock));
-
-            //
-            // Only install critical and normal updates by default.
-            //
-            this.FollowedTracks = ReleaseTrack.Critical | ReleaseTrack.Normal;
-
-            //
-            // Let internal/consumer domains follow the rapid track too.
-            //
-            if (authorization.Email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase) ||
-                authorization.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
-                authorization.Email.EndsWith(".joonix.net", StringComparison.OrdinalIgnoreCase) ||
-                authorization.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase))
-            {
-                this.FollowedTracks |= ReleaseTrack.Rapid;
-            }
         }
-
-        /// <summary>
-        /// Release track followed by this user/machine.
-        /// </summary>
-        public ReleaseTrack FollowedTracks { get; }
 
         /// <summary>
         /// Determine which release track a release belongs to.
         /// </summary>
-        public ReleaseTrack GetReleaseTrack(IGitHubRelease release)
+        internal ReleaseTrack GetReleaseTrack(IGitHubRelease release)
         {
             //
             // GitHub doesn't let us "tag" releases in a good way,
@@ -106,9 +83,25 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Determine if the user should be advised to install an update.
         /// </summary>
-        public bool IsUpdateAdvised(IGitHubRelease release) //TODO: Rename to IRelease
+        public bool IsUpdateAdvised(
+            IAuthorization authorization,
+            ReleaseTrack followedTracks,
+            IGitHubRelease release) //TODO: Rename to IRelease
         {
             Precondition.ExpectNotNull(release, nameof(release));
+            Precondition.ExpectNotNull(authorization, nameof(authorization));
+
+            Debug.Assert(followedTracks.HasFlag(ReleaseTrack.Critical));
+
+            //
+            // Force-opt in internal domains to the rapid track.
+            //
+            if (authorization.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
+                authorization.Email.EndsWith(".joonix.net", StringComparison.OrdinalIgnoreCase) ||
+                authorization.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase))
+            {
+                followedTracks |= (ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
+            }
 
             if (release.TagVersion == null ||
                 release.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
@@ -120,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             else
             {
-                return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
+                return followedTracks.HasFlag(GetReleaseTrack(release));
             }
         }
 
@@ -158,5 +151,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Optional feature updates that might only be relevant to few.
         /// </summary>
         Optional = 8,
+
+        _Default = Critical | Normal,
+        _All = Critical | Normal | Rapid | Optional
     }
 }
