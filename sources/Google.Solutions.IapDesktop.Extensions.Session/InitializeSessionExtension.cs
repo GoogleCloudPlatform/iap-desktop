@@ -116,8 +116,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             }
         }
 
-        private async Task LoadAndRegisterAppProtocolsAsync( // TODO: Test
-            IWin32Window window,
+        /// <summary>
+        /// Load the default app protocols embedded into the assembly.
+        /// </summary>
+        private async Task LoadAndRegisterDefaultAppProtocolsAsync(
+            ProtocolRegistry protocolRegistry)
+        {
+            var assembly = GetType().Assembly;
+            var loadTasks = assembly
+                .GetManifestResourceNames()
+                .Where(s => s.EndsWith(AppProtocolConfigurationFile.FileExtension))
+                .Select(async resourceName =>
+                {
+                    using (var stream = assembly.GetManifestResourceStream(resourceName))
+                    {
+                        var protocol = await AppProtocolConfigurationFile
+                            .ReadStreamAsync(stream)
+                            .ConfigureAwait(false);
+
+                        protocolRegistry.RegisterProtocol(protocol);
+                    }
+                })
+                .ToList();
+
+            await Task
+                .WhenAll(loadTasks)
+                .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Load user-defined app protocols from the file system.
+        /// </summary>
+        private async Task LoadAndRegisterCustomAppProtocolsAsync( // TODO: Test
             ProtocolRegistry protocolRegistry)
         {
             var protocolsPath = Path.Combine(
@@ -157,11 +187,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     }
                 })
                 .ToList();
-            
+
+            await Task
+                .WhenAll(loadTasks)
+                .ConfigureAwait(false);
+        }
+
+        private async Task LoadAndRegisterAppProtocolsAsync( // TODO: Test
+            IWin32Window window,
+            ProtocolRegistry protocolRegistry)
+        {
             try
             {
                 await Task
-                    .WhenAll(loadTasks)
+                    .WhenAll(
+                        LoadAndRegisterDefaultAppProtocolsAsync(protocolRegistry),
+                        LoadAndRegisterCustomAppProtocolsAsync(protocolRegistry))
                     .ConfigureAwait(true); // Back to UI thread (for exception dialog).
             }
             catch (Exception e)
