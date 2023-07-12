@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
         /// <summary>
         /// Load user-defined app protocols from the file system.
         /// </summary>
-        internal static async Task LoadAndRegisterCustomAppProtocolsAsync( // TODO: Test
+        internal static async Task LoadAndRegisterCustomAppProtocolsAsync(
             string protocolsPath,
             ProtocolRegistry protocolRegistry)
         {
