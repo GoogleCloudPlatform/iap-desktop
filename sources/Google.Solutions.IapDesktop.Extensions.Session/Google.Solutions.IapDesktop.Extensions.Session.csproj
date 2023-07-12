@@ -227,4 +227,17 @@
   <ItemGroup>
     <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Properties\DefaultAppProtocols\chrome-80.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\chrome-8080.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\mysql.iapc" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-80.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-8080.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql.iapc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\Config\" />
+  </ItemGroup>
 </Project>
