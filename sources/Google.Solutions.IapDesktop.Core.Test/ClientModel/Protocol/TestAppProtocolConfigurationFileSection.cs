@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = (AppProtocolClient)section.ParseClientSection();
             Assert.IsNotNull(client);
-            Assert.AreEqual("doesnotexist.exe", client.Executable);
+            Assert.AreEqual(fileName, client.Executable);
         }
     }
 }
