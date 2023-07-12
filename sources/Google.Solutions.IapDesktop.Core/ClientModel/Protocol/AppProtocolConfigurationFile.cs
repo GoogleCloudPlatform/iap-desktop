@@ -50,7 +50,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///     }
     /// }
     /// 
-    /// The executable and argument can contain environment variables, 
+    /// The executable can be either the name of a registered app 
+    /// (for ex, "chrome.exe"), or a path to an executable file.
+    /// 
+    /// paths Executable and arguments can contain environment variables, 
     /// for example:
     /// 
     ///   %AppData%\.myprofile
@@ -62,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
     ///   {username}: the username to authenticate with (can be empty)
     ///   
     /// </summary>
+    /// <see cref="https://learn.microsoft.com/en-us/windows/win32/shell/app-registration"/>
     public static class AppProtocolConfigurationFile
     {
         /// <summary>
@@ -94,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 section.ParseCondition(),
                 section.ParseRemotePort(),
                 section.ParseLocalEndpoint(),
-                section.ParseCommand());
+                section.ParseClientSection());
         }
 
         public static AppProtocol ReadJson(string json)
@@ -282,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     "format <ip>:<port>.");
             }
 
-            internal IAppProtocolClient ParseCommand()
+            internal IAppProtocolClient ParseClientSection()
             {
                 if (this.Client == null ||
                     string.IsNullOrWhiteSpace(this.Client.Executable))
@@ -290,8 +294,16 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     return null;
                 }
 
+                if (!UserEnvironment.TryResolveAppPath(
+                    this.Client.Executable, 
+                    out var executablePath))
+                {
+                    executablePath = UserEnvironment.ExpandEnvironmentStrings(
+                        this.Client.Executable);
+                }
+
                 return new AppProtocolClient(
-                    UserEnvironment.ExpandEnvironmentStrings(this.Client.Executable),
+                    executablePath,
                     UserEnvironment.ExpandEnvironmentStrings(this.Client.Arguments));
             }
         }

@@ -19,13 +19,20 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using Microsoft.Win32;
+using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Google.Solutions.Platform
 {
-    public class UserEnvironment
+    public static class UserEnvironment
     {
+        private const string AppPathRegistryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
+
         /// <summary>
         /// Expands environment-variable strings and replaces them with 
         /// the values defined for the current user.
@@ -50,6 +57,54 @@ namespace Google.Solutions.Platform
                 buffer.Capacity);
 
             return buffer.ToString();
+        }
+
+        /// <summary>
+        /// Try to resolve the full path of a registered application,
+        /// considering both per-user and per-machine apps.
+        /// </summary>
+        /// <see cref="https://learn.microsoft.com/en-us/windows/win32/shell/app-registration"/>
+        public static bool TryResolveAppPath(string exeName, out string path)
+        {
+            Precondition.ExpectNotEmpty(exeName,nameof(exeName));
+
+            if (exeName.Contains('\\') || exeName.Contains('/'))
+            {
+                //
+                // This looks like a path, not an app name.
+                //
+                path = null;
+                return false;
+            }
+            else if (!exeName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                //
+                // Not an app.
+                //
+                path = null;
+                return false;
+            }
+
+            var hives = new[] { RegistryHive.CurrentUser, RegistryHive.LocalMachine };
+            foreach (var hive in hives )
+            {
+                using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
+                using (var appKey = hiveKey.OpenSubKey($@"{AppPathRegistryKey}\{exeName}", false))
+                {
+                    //
+                    // NB. If the value is of kind REG_EXPAND_SZ, GetValue()
+                    // automatically resolves environment variables.
+                    //
+                    path = (string)appKey?.GetValue(null);
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            path = null;
+            return false;
         }
 
         private static class NativeMethods
