@@ -15,7 +15,6 @@
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
-      xcopy /S /Y /I $(MSBuildProjectDirectory)\Properties\Config $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\Config
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
@@ -236,8 +235,5 @@
     <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-80.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-8080.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql.iapc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\Config\" />
   </ItemGroup>
 </Project>
