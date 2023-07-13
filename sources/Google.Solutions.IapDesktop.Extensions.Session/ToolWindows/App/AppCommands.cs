@@ -80,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 foreach (var protocol in this.protocolRegistry
                     .Protocols
                     .OfType<AppProtocol>()
-                    .Where(p => p.Client != null))
+                    .Where(p => p.Client != null)
+                    .OrderBy(p => p.Name))
                 {
                     var factory = new AppProtocolContextFactory(
                         protocol,

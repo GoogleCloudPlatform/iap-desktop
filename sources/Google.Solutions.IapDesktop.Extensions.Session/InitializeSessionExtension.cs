@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
@@ -45,13 +44,11 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Platform.Dispatch;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -116,13 +113,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             }
         }
 
-        private async Task LoadAndRegisterAppProtocolsAsync( // TODO: Test
-            IWin32Window window,
+        /// <summary>
+        /// Load the default app protocols embedded into the assembly.
+        /// </summary>
+        internal static async Task LoadAndRegisterDefaultAppProtocolsAsync(
             ProtocolRegistry protocolRegistry)
         {
-            var protocolsPath = Path.Combine(
-                this.serviceProvider.GetService<IInstall>().BaseDirectory,
-                "Config");
+            var assembly = typeof(InitializeSessionExtension).Assembly;
+            var loadTasks = assembly
+                .GetManifestResourceNames()
+                .Where(s => s.EndsWith(AppProtocolConfigurationFile.FileExtension))
+                .Select(async resourceName =>
+                {
+                    using (var stream = assembly.GetManifestResourceStream(resourceName))
+                    {
+                        var protocol = await AppProtocolConfigurationFile
+                            .ReadStreamAsync(stream)
+                            .ConfigureAwait(false);
+
+                        protocolRegistry.RegisterProtocol(protocol);
+                    }
+                })
+                .ToList();
+
+            await Task
+                .WhenAll(loadTasks)
+                .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Load user-defined app protocols from the file system.
+        /// </summary>
+        internal static async Task LoadAndRegisterCustomAppProtocolsAsync(
+            string protocolsPath,
+            ProtocolRegistry protocolRegistry)
+        {
             if (!Directory.Exists(protocolsPath))
             {
                 return;
@@ -157,11 +182,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     }
                 })
                 .ToList();
-            
+
+            await Task
+                .WhenAll(loadTasks)
+                .ConfigureAwait(false);
+        }
+
+        private async Task LoadAndRegisterAppProtocolsAsync(
+            IWin32Window window,
+            ProtocolRegistry protocolRegistry)
+        {
             try
             {
+                var protocolsPath = Path.Combine(
+                    this.serviceProvider.GetService<IInstall>().BaseDirectory,
+                    "Config");
+
                 await Task
-                    .WhenAll(loadTasks)
+                    .WhenAll(
+                        LoadAndRegisterDefaultAppProtocolsAsync(protocolRegistry),
+                        LoadAndRegisterCustomAppProtocolsAsync(
+                            protocolsPath,
+                            protocolRegistry))
                     .ConfigureAwait(true); // Back to UI thread (for exception dialog).
             }
             catch (Exception e)

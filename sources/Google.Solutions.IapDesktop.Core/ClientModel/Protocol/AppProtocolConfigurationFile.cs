@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         // Deserialization.
         //---------------------------------------------------------------------
 
-        private static AppProtocol FromSection(MainSection section)
+        private static AppProtocol ReadSection(MainSection section)
         {
             if (section == null)
             {
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             try
             {
-                return FromSection(NewtonsoftJsonSerializer
+                return ReadSection(NewtonsoftJsonSerializer
                     .Instance
                     .Deserialize<MainSection>(json));
             }
@@ -116,6 +116,29 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             }
         }
 
+        public static Task<AppProtocol> ReadStreamAsync(Stream stream)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    return ReadSection(NewtonsoftJsonSerializer
+                        .Instance
+                        .Deserialize<MainSection>(stream));
+                }
+                catch (InvalidAppProtocolException e)
+                {
+                    throw new InvalidAppProtocolException(
+                        $"The protocol configuration contains format errors", e);
+                }
+                catch (JsonException e)
+                {
+                    throw new InvalidAppProtocolException(
+                        $"The protocol configuration contains format errors", e);
+                }
+            });
+        }
+
         public static Task<AppProtocol> ReadFileAsync(string path)
         {
             return Task.Run(() =>
@@ -124,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 {
                     using (var stream = File.OpenRead(path))
                     {
-                        return FromSection(NewtonsoftJsonSerializer
+                        return ReadSection(NewtonsoftJsonSerializer
                             .Instance
                             .Deserialize<MainSection>(stream));
                     }

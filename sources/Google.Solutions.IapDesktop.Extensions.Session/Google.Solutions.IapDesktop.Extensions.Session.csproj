@@ -15,7 +15,6 @@
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*oslogin* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\vtnetcore.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\*tsc* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
-      xcopy /S /Y /I $(MSBuildProjectDirectory)\Properties\Config $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\Config
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
@@ -226,5 +225,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Properties\DefaultAppProtocols\chrome-80.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\chrome-8080.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\mysql.iapc" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-80.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-8080.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql.iapc" />
   </ItemGroup>
 </Project>
