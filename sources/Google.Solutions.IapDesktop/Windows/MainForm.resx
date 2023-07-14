@@ -127,12 +127,12 @@
   <data name="cancelBackgroundJobsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEOSURBVDhPtZKtDsJAEIQXR0JoEx4BgUHwbE0qm6DQOH6C
-        AlHXF8Hh6nA8BTAwubmwLRQFn6Hs3kz3tmN/YTIB8hxYr4HVCsgyYDwG1O4mSYDDAbjd8Mb1Cux2wGDQ
-        YZSmwOmk0184HjtMylInnlwuenD4GieRLDCdAvd7aJ7P4Q3bbfhPlktgOHyZ8DqNnRRFaEQWC6DXCyYU
-        85m/Hi5WcrP9XlVHNPkkJvw6kptx823im+MkbTYbZzCfqyr82P46HuZEcrPZTNUnXGK/3xybJlxsXCJz
-        wrBJHqiq0CQ0aeNrvLJkL0YjoK514gsMGxMrWROa+Ek8zAnDxsTqeDfcCRfLUfmJmROGTe1fYvYAEFoz
-        /zsJ6PMAAAAASUVORK5CYII=
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEESURBVDhPtZIhEoJQGIQ5gIHgEQwGgsFg8FAGAoHgDQge
+        wGD0QAaiwQMYCMyA3z4XFdCk7szO+/ff/Zn3Hi/6C5qmSeAGHsxN27YL259BaEJ4xxpAXYqW0nuW2PE+
+        MDR8gjXMX4Oq4dbemXpq6wmMnQMrOHP7AfXgElbw6PYdNBK+qi3mUMErLGzLL9ybEcuUBWvbIaBLEsK2
+        NSDhwUctTxnrVDoAoZsuLQO6QaEb7qAsfB4D8fUHvjsCetE1VbPqbwwvsXZufIkCgT2sMBQavTr358rA
+        /m8UMGOMswPayfAhZfYu1OOHJMggcGQNoB4+ZXnvh19BaE041YCpHfXP/BtE0Q38BdbYrqAEfAAAAABJ
+        RU5ErkJggg==
 </value>
   </data>
   <data name="addProfileToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
