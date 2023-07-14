@@ -109,7 +109,16 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
   </packageSources>
   <packageSourceMapping>
     <packageSource key="nuget.org">
-      <package pattern="*" />
+      <package pattern="Castle*" />
+      <package pattern="Google*" />
+      <package pattern="Microsoft*" />
+      <package pattern="Moq*" />
+      <package pattern="Newtonsoft*" />
+      <package pattern="Nunit*" />
+      <package pattern="OpenCover*" />
+      <package pattern="ReportGenerator*" />
+      <package pattern="System*" />
+      <package pattern="WiX*" />
     </packageSource>
     <packageSource key="dependencies">
     {1}
