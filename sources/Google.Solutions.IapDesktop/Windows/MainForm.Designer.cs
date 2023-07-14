@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.reportIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportInternalIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip = new ActiveStatusStrip();
+            this.statusStrip = new Google.Solutions.Mvvm.Controls.ActiveStatusStrip();
             this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -327,7 +327,6 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.cancelBackgroundJobsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.cancelBackgroundJobsButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelBackgroundJobsButton.Image")));
-            this.cancelBackgroundJobsButton.ImageTransparentColor = System.Drawing.Color.Blue;
             this.cancelBackgroundJobsButton.Name = "cancelBackgroundJobsButton";
             this.cancelBackgroundJobsButton.ShowDropDownArrow = false;
             this.cancelBackgroundJobsButton.Size = new System.Drawing.Size(20, 20);
