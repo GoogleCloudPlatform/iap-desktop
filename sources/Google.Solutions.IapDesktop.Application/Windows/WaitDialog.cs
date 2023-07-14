@@ -21,7 +21,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,7 +49,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            this.cancellationSource.Cancel();
+            try
+            {
+                this.cancellationSource.Cancel();
+            }
+            catch 
+            {
+                //
+                // Canceallation may fail if the task has been completed
+                // or cancelled already.
+                //
+            }
+
             Close();
         }
 
