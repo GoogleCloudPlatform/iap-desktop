@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 31
+TAG = 32
 
 #
 # NB. We're using custom ports for libssh2 and openssl:
@@ -36,9 +36,9 @@ TAG = 31
 #  portfile.cmake: Update version/tag, file hash
 #
 #
-VCPKG_TAG = 2023.02.24
+VCPKG_TAG = 2023.06.20
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
-LIBSSH2_VERSION = 1.10.0.$(TAG)
+LIBSSH2_VERSION = 1.11.0.$(TAG)
 
 default: package
 
