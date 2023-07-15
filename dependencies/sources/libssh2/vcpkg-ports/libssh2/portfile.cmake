@@ -22,29 +22,23 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libssh2/libssh2
-    REF libssh2-1.10.0
-    SHA512 615E28880695911F5700CC7AC3DDA6B894384C0B1D8B02B53C2EB58F1839F47211934A292F490AD7DDEF7E63F332E0EBF44F8E6334F64BE8D143C72032356C1F
+    REF libssh2-1.11.0
+    SHA512 8ae38d76e7fae82843c7c6990760ad5827cb55e2aba096f684b832016614d76983d1871ae0857ba28efcb9fd65018ae0b34420f6841da6bb6c6ccebd9689ec0f
     HEAD_REF master
-    PATCHES
-        0001-Fix-UWP.patch
-        0002-fix-macros.patch
 )
-
-# Strip the _DEV suffix from the version
-vcpkg_replace_string(${SOURCE_PATH}/include/libssh2.h "_DEV" "")
 
 # Read build number defined by makefile
 file(READ "${CMAKE_CURRENT_LIST_DIR}/build.tmp" LIBSSH2_BUILD)
 file(READ "${CMAKE_CURRENT_LIST_DIR}/build-comma.tmp" LIBSSH2_BUILD_COMMA)
 
 # Patch resource file to use custom build numbers
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "#define RC_VERSION" "//#define UNUSED_VERSION")
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "RC_VERSION" "${LIBSSH2_BUILD_COMMA}")
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "LIBSSH2_VERSION" "\"${LIBSSH2_BUILD}\"")
+vcpkg_replace_string(${SOURCE_PATH}/src/libssh2.rc "#define RC_VERSION" "//#define UNUSED_VERSION")
+vcpkg_replace_string(${SOURCE_PATH}/src/libssh2.rc "RC_VERSION" "${LIBSSH2_BUILD_COMMA}")
+vcpkg_replace_string(${SOURCE_PATH}/src/libssh2.rc "LIBSSH2_VERSION" "\"${LIBSSH2_BUILD}\"")
 
 # Patch resource file to embed OpenSSL version number
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "#include <winver.h>" "#include <winver.h>\n#include <openssl/opensslv.h>")
-vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "libssh2 Shared Library" "libssh2 with \" OPENSSL_VERSION_TEXT \"")
+vcpkg_replace_string(${SOURCE_PATH}/src/libssh2.rc "#include <winver.h>" "#include <winver.h>\n#include <openssl/opensslv.h>")
+vcpkg_replace_string(${SOURCE_PATH}/src/libssh2.rc "libssh2 Shared Library" "libssh2 with \" OPENSSL_VERSION_TEXT \"")
 
 vcpkg_cmake_configure(
     SOURCE_PATH ${SOURCE_PATH}
