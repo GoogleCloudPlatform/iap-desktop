@@ -12,7 +12,7 @@
     <PostBuildEvent />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Core" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
     <PackageReference Include="libssh2" Version="1.10.0.31" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
