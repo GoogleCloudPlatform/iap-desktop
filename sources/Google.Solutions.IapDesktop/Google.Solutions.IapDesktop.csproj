@@ -30,7 +30,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenCover" Version="4.7.1221" />
+    <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="5.1.23" />
     <PackageReference Include="WiX" Version="3.11.2" />
   </ItemGroup>
