@@ -83,7 +83,8 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 *   Connect to VMs across multiple projects and Google Cloud organizations
 *   [View diagnostics information](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-activity)
     such as logs and serial port output
-*   Perform common operations such as starting or stopping VMs
+*   Remotely join a VM to Active Directory 
+*   Perform other common operations such as starting or stopping VMs
 
 
 :arrow_forward: [Show screencast](doc/images/Manage_1400.gif?raw=true)
@@ -99,7 +100,9 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 
 You can use IAP Desktop to let client applications connect to your Google Cloud VMs through IAP:
 Right-click a VM, select the application to launch, and IAP Desktop automatically connects the
-application through an IAP TCP forwarding tunnel. Supported client applications include:
+application through an IAP TCP forwarding tunnel. 
+
+Supported client applications include:
 
 *   SQL Server Management Studio (supporting Windows authentication and SQL Server authentication)
 *   MySQL Shell
