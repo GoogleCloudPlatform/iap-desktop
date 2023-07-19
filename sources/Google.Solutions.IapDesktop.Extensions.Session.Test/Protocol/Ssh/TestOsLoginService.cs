@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
-            var service = new OsLoginProfile(new Mock<IOsLoginAdapter>().Object);
+            var service = new OsLoginProfile(new Mock<IOsLoginClient>().Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyPairAsync(
                 null,
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenValidityIsZeroOrNegative_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
-            var service = new OsLoginProfile(new Mock<IOsLoginAdapter>().Object);
+            var service = new OsLoginProfile(new Mock<IOsLoginClient>().Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
                 new ProjectLocator("project-1"),
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenAdapterReturnsMultipleAccounts_ThenAuthorizeKeyAsyncSelectsPrimary()
         {
-            var adapter = new Mock<IOsLoginAdapter>();
+            var adapter = new Mock<IOsLoginClient>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenAdapterReturnsNoAccount_ThenAuthorizeKeyAsyncThrowsOsLoginSshKeyImportFailedException()
         {
-            var adapter = new Mock<IOsLoginAdapter>();
+            var adapter = new Mock<IOsLoginClient>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenProfileIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var adapter = new Mock<IOsLoginAdapter>();
+            var adapter = new Mock<IOsLoginClient>();
             adapter.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenProfileContainsInvalidKeys_ThenListAuthorizedKeysIgnoresThem()
         {
-            var adapter = new Mock<IOsLoginAdapter>();
+            var adapter = new Mock<IOsLoginClient>();
             adapter.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-            var adapter = new Mock<IOsLoginAdapter>();
+            var adapter = new Mock<IOsLoginClient>();
             adapter.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
         {
-            var adapter = new Mock<IOsLoginAdapter>();
+            var adapter = new Mock<IOsLoginClient>();
             adapter.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))

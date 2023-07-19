@@ -63,7 +63,9 @@ namespace Google.Solutions.Apis.Client
                   tlsUri,
                   new UriBuilder(tlsUri)
                   {
-                      Host = tlsUri.Host.ToLower().Replace(".googleapis.com", ".mtls.googleapis.com"),
+                      Host = tlsUri.Host
+                          .ToLower()
+                          .Replace(".googleapis.com", ".mtls.googleapis.com"),
                   }.Uri)
         {
         }

@@ -34,7 +34,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public interface IOsLoginAdapter : IServiceClient
+    /// <summary>
+    /// Client for OS Login API.
+    /// </summary>
+    public interface IOsLoginClient : IServiceClient
     {
         /// <summary>
         /// Import user's public key to OS Login.
@@ -63,13 +66,13 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken cancellationToken);
     }
 
-    public class OsLoginAdapter : IOsLoginAdapter
+    public class OsLoginClient : IOsLoginClient
     {
         private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
 
-        public OsLoginAdapter(
-            ServiceEndpoint<OsLoginAdapter> endpoint,
+        public OsLoginClient(
+            ServiceEndpoint<OsLoginClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {

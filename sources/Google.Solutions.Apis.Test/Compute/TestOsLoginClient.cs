@@ -38,29 +38,29 @@ namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestOsLoginAdapter
+    public class TestOsLoginClient
     {
-        private OsLoginAdapter CreateAdapter(string email)
+        private OsLoginClient CreateClient(string email)
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Email).Returns(email);
             authz.SetupGet(a => a.Credential).Returns(TestProject.GetAdminCredential());
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
-            return new OsLoginAdapter(
-                new ServiceEndpoint<OsLoginAdapter>("https://oslogin.googleapis.com/"),
+            return new OsLoginClient(
+                new ServiceEndpoint<OsLoginClient>("https://oslogin.googleapis.com/"),
                 authz.Object, 
                 TestProject.UserAgent);
         }
 
-        private OsLoginAdapter CreateAdapter(TemporaryServiceCredential credential)
+        private OsLoginClient CreateClient(TemporaryServiceCredential credential)
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Email).Returns(credential.Email);
             authz.SetupGet(a => a.Credential).Returns(credential);
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
 
-            return new OsLoginAdapter(
-                new ServiceEndpoint<OsLoginAdapter>("https://oslogin.googleapis.com/"),
+            return new OsLoginClient(
+                new ServiceEndpoint<OsLoginClient>("https://oslogin.googleapis.com/"),
                 authz.Object, 
                 TestProject.UserAgent);
         }
@@ -72,10 +72,10 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenEmailInvalid_ThenImportSshPublicKeyThrowsException()
         {
-            var adapter = CreateAdapter("x@gmail.com");
+            var client = CreateClient("x@gmail.com");
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ImportSshPublicKeyAsync(
+                () => client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     "ssh-rsa",
                     "blob",
@@ -88,12 +88,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
         {
             var credential = (TemporaryServiceCredential)(await credentialTask);
-            var adapter = CreateAdapter(credential);
+            var client = CreateClient(credential);
 
             var keyType = "ssh-rsa";
             var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
 
-            var profile = await adapter.ImportSshPublicKeyAsync(
+            var profile = await client.ImportSshPublicKeyAsync(
                 new ProjectLocator(TestProject.ProjectId),
                 keyType,
                 keyBlob,
@@ -115,10 +115,10 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenEmailInvalid_ThenGetLoginProfileThrowsException()
         {
-            var adapter = CreateAdapter("x@gmail.com");
+            var client = CreateClient("x@gmail.com");
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetLoginProfileAsync(
+                () => client.GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
         }
@@ -128,9 +128,9 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
         {
             var credential = (TemporaryServiceCredential)(await credentialTask);
-            var adapter = CreateAdapter(credential);
+            var client = CreateClient(credential);
 
-            var profile = await adapter.GetLoginProfileAsync(
+            var profile = await client.GetLoginProfileAsync(
                         new ProjectLocator(TestProject.ProjectId),
                         CancellationToken.None)
                     .ConfigureAwait(false);
@@ -147,7 +147,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
         {
             var credential = (TemporaryServiceCredential)(await credentialTask);
-            var adapter = CreateAdapter(credential);
+            var client = CreateClient(credential);
 
             var keyType = "ssh-rsa";
             var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
@@ -155,7 +155,7 @@ namespace Google.Solutions.Apis.Test.Compute
             //
             // Import a key.
             //
-            var profile = await adapter.ImportSshPublicKeyAsync(
+            var profile = await client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     keyType,
                     keyBlob,
@@ -172,11 +172,11 @@ namespace Google.Solutions.Apis.Test.Compute
             //
             // Delete key twice.
             //
-            await adapter.DeleteSshPublicKeyAsync(
+            await client.DeleteSshPublicKeyAsync(
                     key.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            await adapter.DeleteSshPublicKeyAsync(
+            await client.DeleteSshPublicKeyAsync(
                     key.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -184,7 +184,7 @@ namespace Google.Solutions.Apis.Test.Compute
             //
             // Check that it's gone.
             //
-            profile = await adapter.GetLoginProfileAsync(
+            profile = await client.GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -199,9 +199,9 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
         {
             var credential = (TemporaryServiceCredential)(await credentialTask);
-            var adapter = CreateAdapter(credential);
+            var client = CreateClient(credential);
 
-            await adapter.DeleteSshPublicKeyAsync(
+            await client.DeleteSshPublicKeyAsync(
                     "nonexisting",
                     CancellationToken.None)
                 .ConfigureAwait(false);
