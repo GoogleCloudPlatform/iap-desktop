@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
-            registry.AddMock<IResourceManagerAdapter>();
+            registry.AddMock<IResourceManagerClient>();
             registry.AddMock<IConfirmationDialog>();
 
             if (confirmationDialog != null)

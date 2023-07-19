@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public static async Task<InstanceMetadataAuthorizedPublicKeyProcessor> ForInstance(
             IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
             CancellationToken token)
         {
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IResourceManagerAdapter resourceManagerAdapter;
+        private readonly IResourceManagerClient resourceManagerAdapter;
 
         private readonly InstanceLocator instance;
         private readonly Instance instanceDetails;
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         internal InstanceMetadataAuthorizedPublicKeyProcessor(
             IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
             Instance instanceDetails,
             Project projectDetails)

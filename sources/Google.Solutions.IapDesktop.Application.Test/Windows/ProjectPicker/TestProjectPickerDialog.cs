@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         [Test]
         public async Task WhenCloudModelFilterIsNull_ThenProjectFilterIsNull()
         {
-            var resourceManager = new Mock<IResourceManagerAdapter>();
+            var resourceManager = new Mock<IResourceManagerClient>();
             var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.CloudModel(resourceManager.Object);
 
             await model
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         [Test]
         public async Task WhenCloudModelFilterIsNotNull_ThenProjectFilterIsSet()
         {
-            var resourceManager = new Mock<IResourceManagerAdapter>();
+            var resourceManager = new Mock<IResourceManagerClient>();
             var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.CloudModel(resourceManager.Object);
 
             await model

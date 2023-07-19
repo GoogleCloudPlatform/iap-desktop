@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         private readonly IJobService jobService;
         private readonly Service<IOsLoginProfile> osLoginService;
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
-        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
+        private readonly Service<IResourceManagerClient> resourceManagerAdapter;
 
         private string filter;
         private AuthorizedPublicKeysModel.Item selectedItem;
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.jobService = serviceProvider.GetService<IJobService>();
             this.osLoginService = serviceProvider.GetService<Service<IOsLoginProfile>>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
-            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerClient>>();
 
             this.IsListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);

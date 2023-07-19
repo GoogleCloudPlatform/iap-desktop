@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     {
         private readonly IAuthorization authorization;
         private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IResourceManagerAdapter resourceManagerAdapter;
+        private readonly IResourceManagerClient resourceManagerAdapter;
         private readonly IOsLoginProfile osLoginProfile;
 
         //---------------------------------------------------------------------
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public KeyAuthorizer(
             IAuthorization authorization,
             IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IResourceManagerClient resourceManagerAdapter,
             IOsLoginProfile osLoginProfile)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));

@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         {
             return new ProjectWorkspace(
                 new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 new Mock<IEventQueue>().Object);
         }
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventQueue = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 eventQueue.Object);
 
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventQueue = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 eventQueue.Object);
 
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventQueue = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 eventQueue.Object);
 

@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     public class ProjectWorkspace : IProjectWorkspace
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IResourceManagerAdapter resourceManagerAdapter;
+        private readonly IResourceManagerClient resourceManagerAdapter;
         private readonly IProjectRepository projectRepository;
         private readonly IEventQueue eventQueue;
 
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
         public ProjectWorkspace(
             IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IResourceManagerClient resourceManagerAdapter,
             IProjectRepository projectRepository,
             IEventQueue eventQueue)
         {

@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Crm
 {
-    public interface IResourceManagerAdapter
+    public interface IResourceManagerClient
     {
         Task<Project> GetProjectAsync(
             string projectId,
@@ -51,13 +51,13 @@ namespace Google.Solutions.Apis.Crm
             CancellationToken cancellationToken);
     }
 
-    public class ResourceManagerAdapter : IResourceManagerAdapter
+    public class ResourceManagerClient : IResourceManagerClient
     {
         private const string MtlsBaseUri = "https://cloudresourcemanager.mtls.googleapis.com/";
 
         private readonly CloudResourceManagerService service;
 
-        public ResourceManagerAdapter(
+        public ResourceManagerClient(
             IAuthorization authorization,
             UserAgent userAgent)
         {

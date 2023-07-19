@@ -121,10 +121,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return CreateComputeEngineAdapterMock(projectMetadata, instanceMetadata);
         }
 
-        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock(
+        private static Mock<IResourceManagerClient> CreateResourceManagerAdapterMock(
             bool allowSetCommonInstanceMetadata)
         {
-            var adapter = new Mock<IResourceManagerAdapter>();
+            var adapter = new Mock<IResourceManagerClient>();
             adapter
                 .Setup(a => a.IsGrantedPermissionAsync(
                         It.IsAny<string>(),

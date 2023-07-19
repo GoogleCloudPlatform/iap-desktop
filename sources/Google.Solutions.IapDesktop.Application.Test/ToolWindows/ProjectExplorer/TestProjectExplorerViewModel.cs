@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private ProjectRepository projectRepository;
 
         private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
-        private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
+        private Mock<IResourceManagerClient> resourceManagerAdapterMock;
         private Mock<ICloudConsoleAdapter> cloudConsoleServiceMock;
         private Mock<IEventQueue> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             this.projectExplorerSettings = new ProjectExplorerSettings(
                 this.settingsRepository, false);
 
-            this.resourceManagerAdapterMock = new Mock<IResourceManagerAdapter>();
+            this.resourceManagerAdapterMock = new Mock<IResourceManagerClient>();
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))

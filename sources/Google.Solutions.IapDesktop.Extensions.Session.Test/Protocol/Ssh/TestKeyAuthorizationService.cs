@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
                 computeEngineAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: true).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<NotImplementedException>(

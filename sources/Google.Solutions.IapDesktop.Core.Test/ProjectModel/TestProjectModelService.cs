@@ -113,9 +113,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
         private const string SampleProjectId = "project-1";
 
-        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock()
+        private static Mock<IResourceManagerClient> CreateResourceManagerAdapterMock()
         {
-            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()))
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             var workspace = new ProjectWorkspace(
                 new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             var workspace = new ProjectWorkspace(
                 new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("test", new Exception()));
 
-            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "accessible-project"),
                     It.IsAny<CancellationToken>()))
@@ -384,7 +384,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public void WhenLoadingDataCausesReauthError_ThenGetRootNodeAsyncPropagatesException()
         {
-            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))

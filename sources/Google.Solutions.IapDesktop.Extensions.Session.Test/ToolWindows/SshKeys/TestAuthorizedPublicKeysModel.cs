@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     new Mock<IComputeEngineAdapter>().Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     new Mock<IOsLoginProfile>().Object,
                     new Mock<IProjectModelCloudNode>().Object,
                     CancellationToken.None)
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     computeEngineAdapterMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
                     CreateProjectNodeMock("project-1", "Project 1").Object,
                     CancellationToken.None)
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     computeEngineAdapterMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
                     CreateProjectNodeMock("project-1", "Project 1").Object,
                     CancellationToken.None)
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     computeEngineAdapterMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
                     CreateProjectNodeMock("project-1", "Project 1").Object,
                     CancellationToken.None)
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     new Mock<IComputeEngineAdapter>().Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     new Mock<IOsLoginProfile>().Object,
                     new Mock<IProjectModelZoneNode>().Object,
                     CancellationToken.None)
@@ -306,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     computeEngineAdapterMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
                     CreateInstanceNodeMock("instance-1").Object,
                     CancellationToken.None)
@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     computeEngineAdapterMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
                     CreateInstanceNodeMock("instance-1").Object,
                     CancellationToken.None)
@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     computeEngineAdapterMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
                     CreateInstanceNodeMock("instance-1").Object,
                     CancellationToken.None)
@@ -445,7 +445,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     new Mock<IProjectModelInstanceNode>().Object,
                     new AuthorizedPublicKeysModel.Item(
                         MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
@@ -476,7 +476,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     instance.Object,
                     new AuthorizedPublicKeysModel.Item(
                         MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
@@ -511,7 +511,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     instance.Object,
                     new AuthorizedPublicKeysModel.Item(
                         MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
@@ -546,7 +546,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
-                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IResourceManagerClient>().Object,
                     project.Object,
                     new AuthorizedPublicKeysModel.Item(
                         MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
