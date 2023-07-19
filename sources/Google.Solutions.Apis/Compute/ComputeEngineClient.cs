@@ -38,8 +38,6 @@ namespace Google.Solutions.Apis.Compute
 {
     public sealed class ComputeEngineClient : IComputeEngineClient
     {
-        internal const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
-
         private readonly ComputeService service;
 
         //---------------------------------------------------------------------
@@ -64,7 +62,7 @@ namespace Google.Solutions.Apis.Compute
         public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint()
         {
             return new ServiceEndpoint<ComputeEngineClient>(
-                "https://compute.googleapis.com/");
+                "https://compute.googleapis.com/compute/v1/");
         }
 
         //---------------------------------------------------------------------

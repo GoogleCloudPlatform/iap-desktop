@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop
                 // Load main layer, containing everything else (except for
                 // extensions).
                 //
-                var mainLayer = new ServiceRegistry(preAuthLayer);
+                var mainLayer = new ServiceRegistry(preAuthLayer); 
                 mainLayer.AddSingleton<IAuthorization>(authorization);
                 mainLayer.AddTransient<IToolWindowHost, ToolWindowHost>();
 
@@ -468,7 +468,14 @@ namespace Google.Solutions.IapDesktop
                 var eventService = new EventQueue(mainForm);
 
                 //
-                // Register adapters as singletons to ensure connection reuse.
+                // Register and configure API client endpoints.
+                //
+                mainLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
+                mainLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
+                mainLayer.AddSingleton(OsLoginClient.CreateEndpoint());
+
+                //
+                // Register API clients as singletons to ensure connection reuse.
                 //
                 mainLayer.AddSingleton<IResourceManagerClient, ResourceManagerClient>();
                 mainLayer.AddSingleton<IComputeEngineClient, ComputeEngineClient>();
@@ -476,6 +483,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<ILoggingAdapter, LoggingAdapter>();
                 mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();
 
+                mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
