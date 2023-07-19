@@ -124,7 +124,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var keyAdapter = new KeyAuthorizer(
                 authorization.Object,
                 new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
-                new ResourceManagerClient(credential.ToAuthorization(), TestProject.UserAgent),
+                new ResourceManagerClient(
+                    ResourceManagerClient.CreateEndpoint(), 
+                    credential.ToAuthorization(), 
+                    TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);
 
             var authorizedKey = await keyAdapter

@@ -90,7 +90,8 @@ namespace Google.Solutions.Apis.Compute
 
         public static ServiceEndpoint<OsLoginClient> CreateEndpoint()
         {
-            return new ServiceEndpoint<OsLoginClient>("https://oslogin.googleapis.com/");
+            return new ServiceEndpoint<OsLoginClient>(
+                "https://oslogin.googleapis.com/");
         }
 
         //---------------------------------------------------------------------

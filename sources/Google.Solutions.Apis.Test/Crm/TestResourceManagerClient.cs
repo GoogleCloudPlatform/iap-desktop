@@ -40,6 +40,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var result = await client.IsGrantedPermissionAsync(
@@ -60,6 +61,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var result = await client.IsGrantedPermissionAsync(
@@ -80,6 +82,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var project = await client.GetProjectAsync(
@@ -96,6 +99,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -109,6 +113,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -126,6 +131,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var result = await client.ListProjectsAsync(
@@ -145,6 +151,7 @@ namespace Google.Solutions.Apis.Test.Crm
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 

@@ -24,6 +24,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
@@ -34,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Crm
 {
-    public interface IResourceManagerClient
+    public interface IResourceManagerClient : IServiceClient
     {
         Task<Project> GetProjectAsync(
             string projectId,
@@ -53,11 +54,10 @@ namespace Google.Solutions.Apis.Crm
 
     public class ResourceManagerClient : IResourceManagerClient
     {
-        private const string MtlsBaseUri = "https://cloudresourcemanager.mtls.googleapis.com/";
-
         private readonly CloudResourceManagerService service;
 
         public ResourceManagerClient(
+            ServiceEndpoint<ResourceManagerClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
@@ -66,10 +66,27 @@ namespace Google.Solutions.Apis.Crm
 
             this.service = new CloudResourceManagerService(
                 new AuthorizedClientInitializer(
+                    endpoint,
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+
+        public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint()
+        {
+            return new ServiceEndpoint<ResourceManagerClient>(
+                "https://cloudresourcemanager.googleapis.com/");
+        }
+
+        //---------------------------------------------------------------------
+        // IServiceClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
+
+        //---------------------------------------------------------------------
+        // IResourceManagerClient.
+        //---------------------------------------------------------------------
 
         public async Task<Project> GetProjectAsync(
             string projectId,
