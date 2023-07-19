@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     MessageType = "test-message"
                 }) + "\nmorejunk\n");
 
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetSerialPortOutput(
                     It.IsAny<InstanceLocator>(),
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             operation.SetupGet(o => o.Instance).Returns(instance);
 
             var joinAdapter = new DomainJoinService(
-                new Mock<IComputeEngineAdapter>().AsService());
+                new Mock<IComputeEngineClient>().AsService());
 
             var message = await joinAdapter.AwaitMessageAsync<TestMessage>(
                     operation.Object,
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         [Test]
         public void WhenResetCancelled_ThenJoinDomainRestoresStartupScripts()
         {
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.ControlInstanceAsync(
                     It.IsAny<InstanceLocator>(),
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             operation.SetupGet(o => o.Instance).Returns(instance);
 
             var joinAdapter = new DomainJoinService(
-                new Mock<IComputeEngineAdapter>().AsService());
+                new Mock<IComputeEngineClient>().AsService());
 
             using (var cts = new CancellationTokenSource())
             {
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                             ErrorDetails = "test"
                         }));
 
-                var adapter = new Mock<IComputeEngineAdapter>();
+                var adapter = new Mock<IComputeEngineClient>();
                 adapter
                     .Setup(a => a.GetSerialPortOutput(
                         It.IsAny<InstanceLocator>(),
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 operation.SetupGet(o => o.Instance).Returns(instance);
 
                 var joinAdapter = new DomainJoinService(
-                    new Mock<IComputeEngineAdapter>().AsService());
+                    new Mock<IComputeEngineClient>().AsService());
                 ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
                     () => joinAdapter.JoinDomainAsync(
                         operation.Object,

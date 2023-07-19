@@ -55,9 +55,9 @@ namespace Google.Solutions.Apis.Compute
 
     public class AddressResolver : IAddressResolver
     {
-        private readonly IComputeEngineAdapter computeEngine;
+        private readonly IComputeEngineClient computeEngine;
 
-        public AddressResolver(IComputeEngineAdapter computeEngine)
+        public AddressResolver(IComputeEngineClient computeEngine)
         {
             this.computeEngine = computeEngine.ExpectNotNull(nameof(computeEngine));
         }

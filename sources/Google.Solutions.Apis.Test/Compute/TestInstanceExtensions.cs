@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var adapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var instance = await adapter
@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var adapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var instance = await adapter.GetInstanceAsync(
@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance(PublicIp = false)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var adapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var instance = await adapter.GetInstanceAsync(
@@ -97,7 +97,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var adapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var instance = await adapter.GetInstanceAsync(

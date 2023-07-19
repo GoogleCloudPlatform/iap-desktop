@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineAdapter(
+            var gceAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineAdapter(
+            var gceAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var packageInventory = new Mock<IGuestOsInventory>();

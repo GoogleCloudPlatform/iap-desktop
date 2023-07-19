@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenInstanceDoesNotExist_ThenGetInstanceInventoryAsyncReturnsNull(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 

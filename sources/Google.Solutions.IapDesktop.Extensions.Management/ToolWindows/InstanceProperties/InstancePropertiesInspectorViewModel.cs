@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         private readonly IJobService jobService;
         private readonly Service<IGuestOsInventory> packageInventory;
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IComputeEngineClient> computeEngineAdapter;
 
 
         public InstancePropertiesInspectorViewModel(IServiceProvider serviceProvider)
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.packageInventory = serviceProvider.GetService<Service<IGuestOsInventory>>();
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineClient>>();
 
             this.informationText = ObservableProperty.Build<string>(null);
             this.inspectedObject = ObservableProperty.Build<object>(null);

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return authorization;
         }
 
-        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
             bool? osLoginEnabledForProject,
             bool? osLoginEnabledForInstance,
             bool osLogin2fa,
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 instanceMetadata.Add("enable-oslogin-sk", "true");
             }
 
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),

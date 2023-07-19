@@ -89,14 +89,14 @@ namespace Google.Solutions.Apis.Compute
         private const int SerialPort = 4;
         private const string MetadataKey = "windows-keys";
 
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeEngineAdapter;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         public WindowsCredentialGenerator(
-            IComputeEngineAdapter computeEngineAdapter)
+            IComputeEngineClient computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter;
         }

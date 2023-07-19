@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             ushort port)
         {
             var authorization = TestProject.GetAdminCredential().ToAuthorization();
-            var addressResolver = new AddressResolver(new ComputeEngineAdapter(
+            var addressResolver = new AddressResolver(new ComputeEngineClient(
                 authorization,
                 TestProject.UserAgent));
 
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             var keyAdapter = new KeyAuthorizer(
                 authorization.Object,
-                new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
+                new ComputeEngineClient(credential.ToAuthorization(), TestProject.UserAgent),
                 new ResourceManagerClient(
                     ResourceManagerClient.CreateEndpoint(), 
                     credential.ToAuthorization(), 

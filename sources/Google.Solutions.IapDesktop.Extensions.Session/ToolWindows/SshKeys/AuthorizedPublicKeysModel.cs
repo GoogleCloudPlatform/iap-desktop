@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         }
 
         public static async Task DeleteFromMetadataAsync(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             IResourceManagerClient resourceManagerAdapter,
             IProjectModelNode node,
             Item item,
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         }
 
         internal static async Task<AuthorizedPublicKeysModel> LoadAsync(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             IResourceManagerClient resourceManagerAdapter,
             IOsLoginProfile osLoginService,
             IProjectModelNode node,

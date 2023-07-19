@@ -64,9 +64,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
     [Service(typeof(IGuestOsInventory))]
     public sealed class GuestOsInventory : IGuestOsInventory
     {
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeEngineAdapter;
 
-        public GuestOsInventory(IComputeEngineAdapter computeEngineAdapter)
+        public GuestOsInventory(IComputeEngineClient computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
         }

@@ -471,7 +471,7 @@ namespace Google.Solutions.IapDesktop
                 // Register adapters as singletons to ensure connection reuse.
                 //
                 mainLayer.AddSingleton<IResourceManagerClient, ResourceManagerClient>();
-                mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
+                mainLayer.AddSingleton<IComputeEngineClient, ComputeEngineClient>();
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddSingleton<ILoggingAdapter, LoggingAdapter>();
                 mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();

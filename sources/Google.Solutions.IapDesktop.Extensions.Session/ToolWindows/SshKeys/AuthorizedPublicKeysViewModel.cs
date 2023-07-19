@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         private readonly IConfirmationDialog confirmationDialog;
         private readonly IJobService jobService;
         private readonly Service<IOsLoginProfile> osLoginService;
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IComputeEngineClient> computeEngineAdapter;
         private readonly Service<IResourceManagerClient> resourceManagerAdapter;
 
         private string filter;
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.confirmationDialog = serviceProvider.GetService<IConfirmationDialog>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.osLoginService = serviceProvider.GetService<Service<IOsLoginProfile>>();
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineClient>>();
             this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerClient>>();
 
             this.IsListEnabled = ObservableProperty.Build(false);

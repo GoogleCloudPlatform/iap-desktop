@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     public class KeyAuthorizer : IKeyAuthorizer
     {
         private readonly IAuthorization authorization;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeEngineAdapter;
         private readonly IResourceManagerClient resourceManagerAdapter;
         private readonly IOsLoginProfile osLoginProfile;
 
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public KeyAuthorizer(
             IAuthorization authorization,
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             IResourceManagerClient resourceManagerAdapter,
             IOsLoginProfile osLoginProfile)
         {

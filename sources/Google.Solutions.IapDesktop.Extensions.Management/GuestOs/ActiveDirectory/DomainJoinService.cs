@@ -55,10 +55,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
     [Service(typeof(IDomainJoinService))]
     public sealed class DomainJoinService : IDomainJoinService
     {
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IComputeEngineClient> computeEngineAdapter;
         private const int SerialPort = 4;
 
-        public DomainJoinService(Service<IComputeEngineAdapter> computeEngineAdapter)
+        public DomainJoinService(Service<IComputeEngineClient> computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
         }

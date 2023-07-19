@@ -38,10 +38,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         private static readonly ProjectLocator SampleLocator
             = new ProjectLocator("project-1");
 
-        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
             Metadata projectMetadata)
         {
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),

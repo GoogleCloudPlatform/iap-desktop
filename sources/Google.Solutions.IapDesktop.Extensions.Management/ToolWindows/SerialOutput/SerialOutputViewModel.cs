@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         internal CancellationTokenSource TailCancellationTokenSource = null;
 
         private readonly IJobService jobService;
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IComputeEngineClient> computeEngineAdapter;
 
         private bool isOutputBoxEnabled = false;
         private bool isEnableTailingButtonEnabled = false;
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
             : base(ModelCacheCapacity)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineClient>>();
         }
 
         internal ushort SerialPortNumber { get; set; }

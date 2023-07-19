@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
 
-            var gceAdapter = new Mock<IComputeEngineAdapter>();
+            var gceAdapter = new Mock<IComputeEngineClient>();
 
             gceAdapter.Setup(a => a.GetInstanceAsync(
                 It.Is((InstanceLocator loc) => loc.Name == "denied-1"),
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                     Name = "project-1"
                 });
 
-            registry.AddSingleton<IComputeEngineAdapter>(gceAdapter.Object);
+            registry.AddSingleton<IComputeEngineClient>(gceAdapter.Object);
             registry.AddSingleton<IGuestOsInventory>(new Management.GuestOs.Inventory.GuestOsInventory(gceAdapter.Object));
 
             return new InstancePropertiesInspectorViewModel(registry);

@@ -54,11 +54,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return authorization;
         }
 
-        private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
             Metadata projectMetadata,
             Metadata instanceMetadata)
         {
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return adapter;
         }
 
-        private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
            bool legacySshKeyPresent,
            bool projectWideKeysBlockedForProject,
            bool projectWideKeysBlockedForInstance,

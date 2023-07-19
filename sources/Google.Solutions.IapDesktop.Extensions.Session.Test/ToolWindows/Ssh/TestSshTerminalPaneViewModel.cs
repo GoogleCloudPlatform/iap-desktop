@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             var keyAdapter = new KeyAuthorizer(
                 authorizationSource.Object,
-                new ComputeEngineAdapter(credential.ToAuthorization(), TestProject.UserAgent),
+                new ComputeEngineClient(credential.ToAuthorization(), TestProject.UserAgent),
                 new ResourceManagerClient(
                     ResourceManagerClient.CreateEndpoint(), 
                     credential.ToAuthorization(), 

@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -124,7 +124,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -154,7 +154,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -184,7 +184,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -209,7 +209,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -238,7 +238,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -257,7 +257,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -276,7 +276,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -296,7 +296,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -318,7 +318,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -341,7 +341,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 PredefinedRole.ServiceAccountUser
             })] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineAdapter(
+            var computeAdapter = new ComputeEngineClient(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 

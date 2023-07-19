@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private ApplicationSettingsRepository settingsRepository;
         private ProjectRepository projectRepository;
 
-        private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
+        private Mock<IComputeEngineClient> computeEngineAdapterMock;
         private Mock<IResourceManagerClient> resourceManagerAdapterMock;
         private Mock<ICloudConsoleAdapter> cloudConsoleServiceMock;
         private Mock<IEventQueue> eventServiceMock;
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     Name = $"[{SampleProjectId}]"
                 });
 
-            this.computeEngineAdapterMock = new Mock<IComputeEngineAdapter>();
+            this.computeEngineAdapterMock = new Mock<IComputeEngineClient>();
             this.computeEngineAdapterMock.Setup(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))

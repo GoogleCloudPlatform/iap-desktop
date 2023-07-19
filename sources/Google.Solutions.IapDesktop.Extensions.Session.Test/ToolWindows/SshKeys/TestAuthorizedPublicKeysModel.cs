@@ -64,11 +64,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             return nodeMock;
         }
 
-        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
             IDictionary<string, string> projectMetadata,
             IDictionary<string, string> instanceMetadata)
         {
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         public async Task WhenScopeIsCloud_ThenLoadReturnsNull()
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                    new Mock<IComputeEngineAdapter>().Object,
+                    new Mock<IComputeEngineClient>().Object,
                     new Mock<IResourceManagerClient>().Object,
                     new Mock<IOsLoginProfile>().Object,
                     new Mock<IProjectModelCloudNode>().Object,
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         public async Task WhenScopeIsZone_ThenLoadReturnsNull()
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                    new Mock<IComputeEngineAdapter>().Object,
+                    new Mock<IComputeEngineClient>().Object,
                     new Mock<IResourceManagerClient>().Object,
                     new Mock<IOsLoginProfile>().Object,
                     new Mock<IProjectModelZoneNode>().Object,
@@ -441,7 +441,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public async Task WhenAuthorizationMethodIsOslogin_ThenDeleteFromMetadataDoesNothing()
         {
-            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+            var computeEngineMock = new Mock<IComputeEngineClient>();
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
@@ -467,7 +467,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public async Task WhenAuthorizationMethodIsInstanceMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesInstanceMetadata()
         {
-            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+            var computeEngineMock = new Mock<IComputeEngineClient>();
 
             var instance = new Mock<IProjectModelInstanceNode>();
             instance
@@ -498,7 +498,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public async Task WhenAuthorizationMethodIsProjectMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
         {
-            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+            var computeEngineMock = new Mock<IComputeEngineClient>();
             computeEngineMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -533,7 +533,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public async Task WhenAuthorizationMethodIsProjectMetadataAndNodeIsProject_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
         {
-            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+            var computeEngineMock = new Mock<IComputeEngineClient>();
             computeEngineMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))

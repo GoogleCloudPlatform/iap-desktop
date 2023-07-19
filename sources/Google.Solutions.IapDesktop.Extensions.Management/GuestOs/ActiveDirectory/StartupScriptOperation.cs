@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         /// </summary>
         InstanceLocator Instance { get; }
 
-        IComputeEngineAdapter ComputeEngineAdapter { get; }
+        IComputeEngineClient ComputeEngineAdapter { get; }
 
         /// <summary>
         /// Replace existing startup scripts.
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
 
         public Guid OperationId { get; }
         public InstanceLocator Instance { get; }
-        public IComputeEngineAdapter ComputeEngineAdapter { get; }
+        public IComputeEngineClient ComputeEngineAdapter { get; }
 
         private async Task<List<Metadata.ItemsData>> ReplaceMetadataItemsAsync(
             ICollection<string> keysToReplace,
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             Guid operationId,
             InstanceLocator instance,
             string guardKeyName,
-            IComputeEngineAdapter computeEngineAdapter)
+            IComputeEngineClient computeEngineAdapter)
         {
             this.OperationId = operationId;
             this.Instance = instance;
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         public StartupScriptOperation(
             InstanceLocator instance,
             string guardKeyName,
-            IComputeEngineAdapter computeEngineAdapter)
+            IComputeEngineClient computeEngineAdapter)
             : this(Guid.NewGuid(), instance, guardKeyName, computeEngineAdapter)
         {
         }

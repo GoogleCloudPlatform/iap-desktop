@@ -36,11 +36,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-
-    /// <summary>
-    /// Adapter class for the Compute Engine API.
-    /// </summary>
-    public sealed class ComputeEngineAdapter : IComputeEngineAdapter
+    public sealed class ComputeEngineClient : IComputeEngineClient
     {
         internal const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
 
@@ -50,7 +46,7 @@ namespace Google.Solutions.Apis.Compute
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ComputeEngineAdapter(
+        public ComputeEngineClient(
             IAuthorization authorization,
             UserAgent userAgent)
         {

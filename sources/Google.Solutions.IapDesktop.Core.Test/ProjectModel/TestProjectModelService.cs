@@ -131,11 +131,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             return resourceManagerAdapter;
         }
 
-        private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
             string projectId,
             params Instance[] instances)
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     It.Is<string>(id => id == projectId),
                     It.IsAny<CancellationToken>()))
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventService = new Mock<IEventQueue>();
 
             var workspace = new ProjectWorkspace(
-                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IComputeEngineClient>().Object,
                 new Mock<IResourceManagerClient>().Object,
                 projectRepository.Object,
                 eventService.Object);
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventService = new Mock<IEventQueue>();
 
             var workspace = new ProjectWorkspace(
-                new Mock<IComputeEngineAdapter>().Object,
+                new Mock<IComputeEngineClient>().Object,
                 new Mock<IResourceManagerClient>().Object,
                 projectRepository.Object,
                 eventService.Object);
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenSomeProjectsInaccessible_ThenGetRootNodeLoadsOtherProjects()
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     It.Is<string>(id => id == "accessible-project"),
                     It.IsAny<CancellationToken>()))

@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             var metadata = new Metadata();
 
             var guardKeyName = "guard";
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             };
 
             var guardKeyName = "guard";
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             };
 
             var guardKeyName = "guard";
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),

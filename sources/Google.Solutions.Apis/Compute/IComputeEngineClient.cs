@@ -29,7 +29,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public interface IComputeEngineAdapter
+    /// <summary>
+    /// Client for Compute Engine (GCE) API.
+    /// </summary>
+    public interface IComputeEngineClient
     {
         //---------------------------------------------------------------------
         // Projects.

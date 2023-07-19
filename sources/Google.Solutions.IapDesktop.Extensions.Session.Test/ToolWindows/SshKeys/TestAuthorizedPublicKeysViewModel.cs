@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 registry.AddSingleton(confirmationDialog);
             }
 
-            var gceAdapter = registry.AddMock<IComputeEngineAdapter>();
+            var gceAdapter = registry.AddMock<IComputeEngineClient>();
             gceAdapter.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))

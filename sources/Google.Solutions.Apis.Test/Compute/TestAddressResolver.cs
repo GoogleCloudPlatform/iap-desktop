@@ -43,7 +43,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenInstanceLookupFails_ThenGetPrimaryInternalAddressThrowsException()
         {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceNotFoundException("mock", null));
@@ -64,7 +64,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenInstanceLacksInternalIp_ThenGetPrimaryInternalAddressThrowsException()
         {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance());
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
@@ -143,7 +143,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
@@ -179,7 +179,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
@@ -220,7 +220,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            var computeEngineAdapter = new Mock<IComputeEngineClient>();
             computeEngineAdapter
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);

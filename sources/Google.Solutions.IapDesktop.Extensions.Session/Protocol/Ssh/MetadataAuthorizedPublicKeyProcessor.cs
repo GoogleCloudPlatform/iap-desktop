@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         //---------------------------------------------------------------------
 
         public static async Task<InstanceMetadataAuthorizedPublicKeyProcessor> ForInstance(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
             CancellationToken token)
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public static async Task<ProjectMetadataAuthorizedPublicKeyProcessor> ForProject(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             ProjectLocator project,
             CancellationToken token)
         {
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
     public class ProjectMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
     {
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeEngineAdapter;
         private readonly Project projectDetails;
 
         public override bool IsOsLoginEnabled
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             => this.projectDetails.GetFlag(BlockProjectSshKeysFlag) == true;
 
         internal ProjectMetadataAuthorizedPublicKeyProcessor(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             Project projectDetails)
         {
             this.computeEngineAdapter = computeEngineAdapter;
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
     public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
     {
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeEngineAdapter;
         private readonly IResourceManagerClient resourceManagerAdapter;
 
         private readonly InstanceLocator instance;
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private readonly Project projectDetails;
 
         internal InstanceMetadataAuthorizedPublicKeyProcessor(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
             Instance instanceDetails,

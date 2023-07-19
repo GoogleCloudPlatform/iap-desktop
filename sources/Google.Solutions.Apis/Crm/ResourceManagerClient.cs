@@ -35,6 +35,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Crm
 {
+    /// <summary>
+    /// Client for Resource Manager (CRM) API.
+    /// </summary>
     public interface IResourceManagerClient : IServiceClient
     {
         Task<Project> GetProjectAsync(

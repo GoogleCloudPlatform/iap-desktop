@@ -377,7 +377,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         public static async Task<InstancePropertiesInspectorModel> LoadAsync(
             InstanceLocator instanceLocator,
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeEngineAdapter,
             IGuestOsInventory packageInventory,
             CancellationToken token)
         {
