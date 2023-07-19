@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()))
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             using (var operation = new StartupScriptOperation(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 guardKeyName,
-                computeEngineAdapter.Object))
+                computeClient.Object))
             {
                 ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                     () => operation.ReplaceStartupScriptAsync(
@@ -84,8 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             var metadata = new Metadata();
 
             var guardKeyName = "guard";
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()))
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             var operation = new StartupScriptOperation(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 guardKeyName,
-                computeEngineAdapter.Object);
+                computeClient.Object);
 
             await operation.ReplaceStartupScriptAsync(
                     "script",
@@ -132,8 +132,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             };
 
             var guardKeyName = "guard";
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()))
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             var operation = new StartupScriptOperation(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 guardKeyName,
-                computeEngineAdapter.Object);
+                computeClient.Object);
 
             await operation.ReplaceStartupScriptAsync(
                     "script",
@@ -176,8 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()))
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             var operation = new StartupScriptOperation(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 guardKeyName,
-                computeEngineAdapter.Object);
+                computeClient.Object);
 
             await operation
                 .SetMetadataAsync(
@@ -221,8 +221,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             };
 
             var guardKeyName = "guard";
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient.Setup(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()))
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             using (var operation = new StartupScriptOperation(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 guardKeyName,
-                computeEngineAdapter.Object))
+                computeClient.Object))
             {
                 await operation
                     .ReplaceStartupScriptAsync(

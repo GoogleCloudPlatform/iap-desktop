@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.Apis
 {
-    public abstract class AdapterException : Exception
+    public abstract class AdapterException : Exception // TODO: Rename to ClientException, move to Client ns.
     {
         protected AdapterException(string message) : base(message)
         {

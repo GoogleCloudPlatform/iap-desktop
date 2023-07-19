@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     public class KeyAuthorizer : IKeyAuthorizer
     {
         private readonly IAuthorization authorization;
-        private readonly IComputeEngineClient computeEngineAdapter;
+        private readonly IComputeEngineClient computeClient;
         private readonly IResourceManagerClient resourceManagerAdapter;
         private readonly IOsLoginProfile osLoginProfile;
 
@@ -72,12 +72,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public KeyAuthorizer(
             IAuthorization authorization,
-            IComputeEngineClient computeEngineAdapter,
+            IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             IOsLoginProfile osLoginProfile)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
-            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            this.computeClient = computeClient.ExpectNotNull(nameof(computeClient));
             this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
             this.osLoginProfile = osLoginProfile.ExpectNotNull(nameof(osLoginProfile));
         }
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 var metdataKeyProcessor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                        this.computeEngineAdapter,
+                        this.computeClient,
                         this.resourceManagerAdapter,
                         instance,
                         token)

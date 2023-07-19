@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         /// </summary>
         InstanceLocator Instance { get; }
 
-        IComputeEngineClient ComputeEngineAdapter { get; }
+        IComputeEngineClient ComputeClient { get; }
 
         /// <summary>
         /// Replace existing startup scripts.
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
 
         public Guid OperationId { get; }
         public InstanceLocator Instance { get; }
-        public IComputeEngineClient ComputeEngineAdapter { get; }
+        public IComputeEngineClient ComputeClient { get; }
 
         private async Task<List<Metadata.ItemsData>> ReplaceMetadataItemsAsync(
             ICollection<string> keysToReplace,
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                 .WithParameters(string.Join(", ", keysToReplace)))
             {
                 List<Metadata.ItemsData> oldItems = null;
-                await this.ComputeEngineAdapter.UpdateMetadataAsync(
+                await this.ComputeClient.UpdateMetadataAsync(
                         this.Instance,
                         metadata =>
                         {
@@ -173,20 +173,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             Guid operationId,
             InstanceLocator instance,
             string guardKeyName,
-            IComputeEngineClient computeEngineAdapter)
+            IComputeEngineClient computeClient)
         {
             this.OperationId = operationId;
             this.Instance = instance;
             this.guardKeyName = guardKeyName;
-            this.ComputeEngineAdapter = computeEngineAdapter;
+            this.ComputeClient = computeClient;
         }
 
 
         public StartupScriptOperation(
             InstanceLocator instance,
             string guardKeyName,
-            IComputeEngineClient computeEngineAdapter)
-            : this(Guid.NewGuid(), instance, guardKeyName, computeEngineAdapter)
+            IComputeEngineClient computeClient)
+            : this(Guid.NewGuid(), instance, guardKeyName, computeClient)
         {
         }
 

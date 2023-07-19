@@ -43,12 +43,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenInstanceLookupFails_ThenGetPrimaryInternalAddressThrowsException()
         {
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceNotFoundException("mock", null));
 
-            var resolver = new AddressResolver(computeEngineAdapter.Object);
+            var resolver = new AddressResolver(computeClient.Object);
 
             ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
                 () => resolver.GetAddressAsync(
@@ -64,12 +64,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenInstanceLacksInternalIp_ThenGetPrimaryInternalAddressThrowsException()
         {
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance());
 
-            var resolver = new AddressResolver(computeEngineAdapter.Object);
+            var resolver = new AddressResolver(computeClient.Object);
 
             ExceptionAssert.ThrowsAggregateException<AddressNotFoundException>(
                 () => resolver.GetAddressAsync(
@@ -100,12 +100,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
 
-            var resolver = new AddressResolver(computeEngineAdapter.Object);
+            var resolver = new AddressResolver(computeClient.Object);
             var address = await resolver
                 .GetAddressAsync(
                     SampleInstance,
@@ -143,12 +143,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
 
-            var resolver = new AddressResolver(computeEngineAdapter.Object);
+            var resolver = new AddressResolver(computeClient.Object);
             var address = await resolver
                 .GetAddressAsync(
                     SampleInstance,
@@ -179,12 +179,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
 
-            var resolver = new AddressResolver(computeEngineAdapter.Object);
+            var resolver = new AddressResolver(computeClient.Object);
 
             ExceptionAssert.ThrowsAggregateException<AddressNotFoundException>(
                 () => resolver.GetAddressAsync(
@@ -220,12 +220,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            var computeEngineAdapter = new Mock<IComputeEngineClient>();
-            computeEngineAdapter
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instance);
 
-            var resolver = new AddressResolver(computeEngineAdapter.Object);
+            var resolver = new AddressResolver(computeClient.Object);
             var address = await resolver
                 .GetAddressAsync(
                     SampleInstance,

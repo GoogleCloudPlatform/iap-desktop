@@ -64,11 +64,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
     [Service(typeof(IGuestOsInventory))]
     public sealed class GuestOsInventory : IGuestOsInventory
     {
-        private readonly IComputeEngineClient computeEngineAdapter;
+        private readonly IComputeEngineClient computeClient;
 
-        public GuestOsInventory(IComputeEngineClient computeEngineAdapter)
+        public GuestOsInventory(IComputeEngineClient computeClient)
         {
-            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            this.computeClient = computeClient.ExpectNotNull(nameof(computeClient));
         }
 
         private async Task<IEnumerable<GuestOsInfo>> ListInventoryAsync(
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             InstanceLocator instanceLocator,
             CancellationToken token)
         {
-            var guestAttributes = await this.computeEngineAdapter
+            var guestAttributes = await this.computeClient
                 .GetGuestAttributesAsync(
                     instanceLocator,
                     GuestOsInfo.GuestAttributePath,
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             OperatingSystems operatingSystems,
             CancellationToken token)
         {
-            var instances = await this.computeEngineAdapter
+            var instances = await this.computeClient
                 .ListInstancesAsync(projectId, token)
                 .ConfigureAwait(false);
 
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             OperatingSystems operatingSystems,
             CancellationToken token)
         {
-            var instances = await this.computeEngineAdapter
+            var instances = await this.computeClient
                 .ListInstancesAsync(locator, token)
                 .ConfigureAwait(false);
 

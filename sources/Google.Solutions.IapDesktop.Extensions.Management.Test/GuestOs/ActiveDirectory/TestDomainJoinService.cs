@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
             var operation = new Mock<IStartupScriptOperation>();
             operation.SetupGet(o => o.OperationId).Returns(Guid.Empty);
-            operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
+            operation.SetupGet(o => o.ComputeClient).Returns(adapter.Object);
             operation.SetupGet(o => o.Instance).Returns(instance);
 
             var joinAdapter = new DomainJoinService(
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
             var operation = new Mock<IStartupScriptOperation>();
             operation.SetupGet(o => o.OperationId).Returns(Guid.Empty);
-            operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
+            operation.SetupGet(o => o.ComputeClient).Returns(adapter.Object);
             operation.SetupGet(o => o.Instance).Returns(instance);
 
             var joinAdapter = new DomainJoinService(
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 var operation = new Mock<IStartupScriptOperation>();
                 operation.SetupGet(o => o.OperationId).Returns(operationId);
-                operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
+                operation.SetupGet(o => o.ComputeClient).Returns(adapter.Object);
                 operation.SetupGet(o => o.Instance).Returns(instance);
 
                 var joinAdapter = new DomainJoinService(

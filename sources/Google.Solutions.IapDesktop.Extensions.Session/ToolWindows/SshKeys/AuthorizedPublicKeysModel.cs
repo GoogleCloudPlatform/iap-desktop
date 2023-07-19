@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         }
 
         public static async Task DeleteFromMetadataAsync(
-            IComputeEngineClient computeEngineAdapter,
+            IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             IProjectModelNode node,
             Item item,
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 }
 
                 var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                        computeEngineAdapter,
+                        computeClient,
                         project,
                         cancellationToken)
                     .ConfigureAwait(false);
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 item.Key is MetadataAuthorizedPublicKey instanceMetadataKey)
             {
                 var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                        computeEngineAdapter,
+                        computeClient,
                         resourceManagerAdapter,
                         instanceNode.Instance,
                         cancellationToken)
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         }
 
         internal static async Task<AuthorizedPublicKeysModel> LoadAsync(
-            IComputeEngineClient computeEngineAdapter,
+            IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             IOsLoginProfile osLoginService,
             IProjectModelNode node,
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             else if (node is IProjectModelProjectNode projectNode)
             {
                 metadataTask = MetadataAuthorizedPublicKeyProcessor.ForProject(
-                        computeEngineAdapter,
+                        computeClient,
                         projectNode.Project,
                         cancellationToken)
                     .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result);
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             else if (node is IProjectModelInstanceNode instanceNode)
             {
                 metadataTask = MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                        computeEngineAdapter,
+                        computeClient,
                         resourceManagerAdapter,
                         instanceNode.Instance,
                         cancellationToken)

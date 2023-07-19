@@ -55,12 +55,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
     [Service(typeof(IDomainJoinService))]
     public sealed class DomainJoinService : IDomainJoinService
     {
-        private readonly Service<IComputeEngineClient> computeEngineAdapter;
+        private readonly Service<IComputeEngineClient> computeClient;
         private const int SerialPort = 4;
 
-        public DomainJoinService(Service<IComputeEngineClient> computeEngineAdapter)
+        public DomainJoinService(Service<IComputeEngineClient> computeClient)
         {
-            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            this.computeClient = computeClient.ExpectNotNull(nameof(computeClient));
         }
 
         //---------------------------------------------------------------------
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             using (ApplicationTraceSources.Default.TraceMethod()
                 .WithParameters(messageType))
             using (var serialPortStream = operation
-                .ComputeEngineAdapter
+                .ComputeClient
                 .GetSerialPortOutput(operation.Instance, SerialPort))
             {
                 //
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                 //
                 // Reset the VM to trigger the domain-join script.
                 //
-                await operation.ComputeEngineAdapter.ControlInstanceAsync(
+                await operation.ComputeClient.ControlInstanceAsync(
                         operation.Instance,
                         InstanceControlCommand.Reset,
                         cancellationToken)
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                 using (var operation = new StartupScriptOperation(
                     instance,
                     MetadataKeys.JoinDomainGuard,
-                    this.computeEngineAdapter.GetInstance()))
+                    this.computeClient.GetInstance()))
                 {
                     await JoinDomainAsync(
                             operation,
