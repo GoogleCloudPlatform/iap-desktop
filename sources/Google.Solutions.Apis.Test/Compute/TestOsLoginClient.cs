@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Compute
             authz.SetupGet(a => a.Credential).Returns(TestProject.GetAdminCredential());
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
             return new OsLoginClient(
-                new ServiceEndpoint<OsLoginClient>("https://oslogin.googleapis.com/"),
+                OsLoginClient.CreateEndpoint(),
                 authz.Object, 
                 TestProject.UserAgent);
         }
@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Test.Compute
             authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
 
             return new OsLoginClient(
-                new ServiceEndpoint<OsLoginClient>("https://oslogin.googleapis.com/"),
+                OsLoginClient.CreateEndpoint(),
                 authz.Object, 
                 TestProject.UserAgent);
         }
