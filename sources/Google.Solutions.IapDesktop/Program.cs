@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop
                     new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                dialog.ViewModel.Scopes = new[] { IapClient.RequiredScope };
+                dialog.ViewModel.Scopes = new[] { IapInstanceEndpoint.RequiredScope };
                 dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();
 
                 //
@@ -473,6 +473,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
                 mainLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
                 mainLayer.AddSingleton(OsLoginClient.CreateEndpoint());
+                mainLayer.AddSingleton(IapClient.CreateEndpoint());
 
                 //
                 // Register API clients as singletons to ensure connection reuse.
@@ -482,6 +483,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddSingleton<ILoggingAdapter, LoggingAdapter>();
                 mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();
+                mainLayer.AddSingleton<IIapClient, IapClient>();
 
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();

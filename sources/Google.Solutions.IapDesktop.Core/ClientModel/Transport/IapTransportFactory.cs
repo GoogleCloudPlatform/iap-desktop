@@ -19,12 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -98,9 +97,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         private readonly object tunnelPoolLock;
         private readonly IDictionary<IapTunnel.Profile, Task<IapTunnel>> tunnelPool;
 
-        private readonly IAuthorization authorization;
         private readonly IEventQueue eventQueue;
-        private readonly UserAgent userAgent;
         private readonly IapTunnel.Factory tunnelFactory;
 
         private Task<IapTunnel> GetPooledTunnelAsync(
@@ -135,8 +132,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         "Creating new tunnel for {0}", profile);
 
                     tunnelTask = this.tunnelFactory.CreateTunnelAsync(
-                        this.authorization,
-                        this.userAgent,
                         profile,
                         probeTimeout,
                         cancellationToken);
@@ -195,14 +190,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         //---------------------------------------------------------------------
 
         internal IapTransportFactory(
-            IAuthorization authorization,
             IEventQueue eventQueue,
-            UserAgent userAgent,
             IapTunnel.Factory tunnelFactory)
         {
-            this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.eventQueue = eventQueue.ExpectNotNull(nameof(eventQueue));
-            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
             this.tunnelFactory = tunnelFactory.ExpectNotNull(nameof(tunnelFactory));
 
             this.tunnelPoolLock = new object();
@@ -210,14 +201,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         }
 
         public IapTransportFactory(
-            IAuthorization authorization,
-            IEventQueue eventQueue,
-            UserAgent userAgent)
+            IIapClient iapClient,
+            IEventQueue eventQueue)
             : this(
-                  authorization,
                   eventQueue,
-                  userAgent,
-                  new IapTunnel.Factory())
+                  new IapTunnel.Factory(iapClient))
         { }
 
         protected virtual void OnTunnelCreated(IapTunnel tunnel)

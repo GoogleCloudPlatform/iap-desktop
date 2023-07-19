@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap;
 using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -76,10 +77,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 22,
                 new IPEndPoint(IPAddress.Parse("10.0.0.1"), 22));
 
+            var iapClient = new IapClient(
+                IapClient.CreateEndpoint(),
+                CreateAuthorizationWithInvalidToken().Object,
+                SampleUserAgent);
+
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(
-                () => new IapTunnel.Factory().CreateTunnelAsync(
-                    CreateAuthorizationWithInvalidToken().Object,
-                    SampleUserAgent,
+                () => new IapTunnel.Factory(iapClient).CreateTunnelAsync(
                     profile,
                     TimeSpan.MaxValue,
                     CancellationToken.None).Wait());
@@ -91,6 +95,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             var protocol = new Mock<IProtocol>();
             var policy = new Mock<ITransportPolicy>();
 
+            var iapClient = new IapClient(
+                IapClient.CreateEndpoint(),
+                CreateAuthorizationWithInvalidToken().Object,
+                SampleUserAgent);
+
             var profile = new IapTunnel.Profile(
                 protocol.Object,
                 policy.Object,
@@ -98,9 +107,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 22);
 
             ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
-                () => new IapTunnel.Factory().CreateTunnelAsync(
-                    CreateAuthorizationWithInvalidToken().Object,
-                    SampleUserAgent,
+                () => new IapTunnel.Factory(iapClient).CreateTunnelAsync(
                     profile,
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());

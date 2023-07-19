@@ -278,9 +278,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// </summary>
         public class Factory
         {
-            public async virtual Task<IapTunnel> CreateTunnelAsync(
-                IAuthorization authorization,
-                UserAgent userAgent,
+            private readonly IIapClient client;
+
+            public Factory(IIapClient client)
+            {
+                this.client = client.ExpectNotNull(nameof(client));
+            }
+
+            public virtual async Task<IapTunnel> CreateTunnelAsync(
                 Profile profile,
                 TimeSpan probeTimeout,
                 CancellationToken cancellationToken)
@@ -294,31 +299,16 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                             "This implementation only supports loopback tunnels");
                     }
 
-                    var clientCertificate =
-                            (authorization.DeviceEnrollment != null &&
-                            authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
-                        ? authorization.DeviceEnrollment.Certificate
-                        : null;
-
-                    if (clientCertificate != null)
-                    {
-                        CoreTraceSources.Default.TraceInformation(
-                            "Using client certificate (valid till {0})", clientCertificate.NotAfter);
-                    }
-
-                    var client = new IapClient(
-                        authorization.Credential,
+                    var target = this.client.GetTarget(
                         profile.TargetInstance,
                         profile.TargetPort,
-                        IapClient.DefaultNetworkInterface,
-                        userAgent,
-                        clientCertificate);
+                        IapInstanceEndpoint.DefaultNetworkInterface);
 
                     //
                     // Check if we can actually connect to this instance before we
                     // start a local listener.
                     //
-                    await client
+                    await target
                         .ProbeAsync(probeTimeout)
                         .ConfigureAwait(false);
 
@@ -342,14 +332,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     }
 
                     var listener = new IapListener(
-                        client,
+                        target,
                         profile.Policy,
                         localEndpoint);
 
                     var tunnel = new IapTunnel(
                         listener,
                         profile,
-                        clientCertificate != null ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
+                        target.IsMutualTlsEnabled ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
 
                     return tunnel;
                 }

@@ -37,13 +37,16 @@ namespace Google.Solutions.Iap.Test.Protocol
             InstanceLocator vmRef,
             ICredential credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             return new SshRelayStream(
-                new IapClient(
-                    credential,
+                client.GetTarget(
                     vmRef,
                     7,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent));
+                    IapInstanceEndpoint.DefaultNetworkInterface));
         }
 
         [Test]
