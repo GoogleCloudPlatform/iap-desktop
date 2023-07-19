@@ -82,7 +82,7 @@ namespace Google.Solutions.Iap
             instance.ExpectNotNull(nameof(instance));
 
             var baseUri = this.Endpoint.GetEffectiveUri(
-                this.authorization.DeviceEnrollment.State,
+                this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled,
                 out var endpointType);
 
             X509Certificate2 clientCertificate = null;

@@ -77,6 +77,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 IapTunnelFlags.None);
         }
 
+        private static Mock<IapTunnel.Factory> CreateTunnelFactory()
+        {
+            return new Mock<IapTunnel.Factory>(new Mock<IIapClient>().Object);
+        }
+
         //---------------------------------------------------------------------
         // Pool.
         //---------------------------------------------------------------------
@@ -84,10 +89,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void WhenNoTransportsCreated_ThenPoolIsEmpty()
         {
-            var tunnelFactory = new Mock<IapTunnel.Factory>(new Mock<IIapClient>().Object);
             var factory = new IapTransportFactory(
                 new Mock<IEventQueue>().Object,
-                tunnelFactory.Object);
+                CreateTunnelFactory().Object);
 
             CollectionAssert.IsEmpty(factory.Pool);
         }
@@ -97,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var faultingProfile = CreateTunnelProfile(SampleInstance, 23);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -146,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -178,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenMatchFoundInPoolButTunnelFaulted_ThenCreateTransportCreatesNewTunnel()
         {
             var faultingProfile = CreateTunnelProfile(SampleInstance, 23);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     It.IsAny<IapTunnel.Profile>(),
@@ -229,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -272,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -327,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             var eventQueue = new Mock<IEventQueue>();
 
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -371,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             var eventQueue = new EventQueue(invoker);
 
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -424,7 +428,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenSshRelayDenied_ThenCreateTransportThrowsException()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -452,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenNetworkStreamClosed_ThenCreateTransportThrowsException()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,
@@ -480,7 +484,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void WhenWebSocketConnectionDenied_ThenCreateTransportThrowsException()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
-            var tunnelFactory = new Mock<IapTunnel.Factory>();
+            var tunnelFactory = CreateTunnelFactory();
             tunnelFactory
                 .Setup(f => f.CreateTunnelAsync(
                     validProfile,

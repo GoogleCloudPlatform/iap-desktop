@@ -75,7 +75,7 @@ namespace Google.Solutions.Apis.Client
             Precondition.ExpectNotNull(userAgent, nameof(userAgent));
 
             var effectiveUri = endpoint.GetEffectiveUri(
-                authorization.DeviceEnrollment.State,
+                authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled,
                 out var endpointType);
 
             this.BaseUri = effectiveUri.ToString();
