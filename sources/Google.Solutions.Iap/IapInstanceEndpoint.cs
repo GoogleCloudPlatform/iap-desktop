@@ -116,6 +116,8 @@ namespace Google.Solutions.Iap
             websocket.Options.SetRequestHeader("Origin", Origin);
             websocket.Options.KeepAliveInterval = TimeSpan.FromMinutes(1);
 
+            // TODO: Inject Host header
+
             try
             {
                 // NB. User-Agent is a restricted header, so this call will fail

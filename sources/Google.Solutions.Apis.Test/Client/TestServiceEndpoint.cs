@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Iam.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using NUnit.Framework;
@@ -40,7 +41,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         //---------------------------------------------------------------------
-        // GetEffectiveUri - mTLS.
+        // GetDetails - TLS.
         //---------------------------------------------------------------------
 
         [Test]
@@ -51,13 +52,17 @@ namespace Google.Solutions.Apis.Test.Client
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 new Uri("https://sample.Googleapis.COM/compute"));
 
-            var effectiveUri = endpoint.GetEffectiveUri(
-                state, 
-                out var endpointType);
+            var details = endpoint.GetDetails(state);
 
-            Assert.AreEqual(new Uri("https://sample.googleapis.com/compute"), effectiveUri);
-            Assert.AreEqual(ServiceEndpointType.Tls, endpointType);
+            Assert.AreEqual(new Uri("https://sample.googleapis.com/compute"), details.BaseUri);
+            Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
+            Assert.AreEqual("sample.googleapis.com", details.Host);
+            Assert.IsFalse(details.UseClientCertificate);
         }
+
+        //---------------------------------------------------------------------
+        // GetDetails - mTLS.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenMtlsEnabled_ThenSelectEndpointReturnsMlsEndpoint()
@@ -65,16 +70,16 @@ namespace Google.Solutions.Apis.Test.Client
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 new Uri("https://sample.Googleapis.COM/compute"));
 
-            var effectiveUri = endpoint.GetEffectiveUri(
-                DeviceEnrollmentState.Enrolled, 
-                out var endpointType);
+            var details = endpoint.GetDetails(DeviceEnrollmentState.Enrolled);
 
-            Assert.AreEqual(new Uri("https://sample.mtls.googleapis.com/compute"), effectiveUri);
-            Assert.AreEqual(ServiceEndpointType.MutualTls, endpointType);
+            Assert.AreEqual(new Uri("https://sample.mtls.googleapis.com/compute"), details.BaseUri);
+            Assert.AreEqual(ServiceEndpointType.MutualTls, details.Type);
+            Assert.AreEqual("sample.mtls.googleapis.com", details.Host);
+            Assert.IsTrue(details.UseClientCertificate);
         }
 
         //---------------------------------------------------------------------
-        // GetEffectiveUri - PSC.
+        // GetDetails - PSC.
         //---------------------------------------------------------------------
 
         [Test]
@@ -85,15 +90,15 @@ namespace Google.Solutions.Apis.Test.Client
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 new Uri("https://sample.Googleapis.COM/compute"))
             {
-                PscEndpointOverride = "sample.p.Googleapis.COM"
+                PscHostOverride = "sample.p.Googleapis.COM"
             };
 
-            var effectiveUri = endpoint.GetEffectiveUri(
-                state,
-                out var endpointType);
+            var details = endpoint.GetDetails(state);
 
-            Assert.AreEqual(new Uri("https://sample.p.Googleapis.COM/compute"), effectiveUri);
-            Assert.AreEqual(ServiceEndpointType.PrivateServiceConnect, endpointType);
+            Assert.AreEqual(new Uri("https://sample.p.Googleapis.COM/compute"), details.BaseUri);
+            Assert.AreEqual(ServiceEndpointType.PrivateServiceConnect, details.Type);
+            Assert.AreEqual("sample.Googleapis.COM", details.Host);
+            Assert.IsFalse(details.UseClientCertificate);
         }
 
         //---------------------------------------------------------------------

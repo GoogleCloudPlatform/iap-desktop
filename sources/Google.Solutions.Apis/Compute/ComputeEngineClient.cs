@@ -87,8 +87,8 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
-                    return await this.service.Projects.Get(
-                        projectId).ExecuteAsync(cancellationToken)
+                    return await this.service.Projects
+                        .Get(projectId).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())

@@ -32,11 +32,43 @@ namespace Google.Solutions.Apis.Client
     public interface IServiceEndpoint
     {
         /// <summary>
-        /// Determine the effective base URI to use.
+        /// Determine the effective endpoint to use, given
+        /// the device enrollment state.
         /// </summary>
-        Uri GetEffectiveUri(
-            DeviceEnrollmentState enrollment,
-            out ServiceEndpointType endpointType);
+        ServiceEndpointDetails GetDetails(DeviceEnrollmentState enrollment);
+    }
+
+    /// <summary>
+    /// Effective endpoi nt data to use for a Google API.
+    /// </summary>
+    public struct ServiceEndpointDetails
+    {
+        /// <summary>
+        /// Type of endpoint.
+        /// </summary>
+        public ServiceEndpointType Type { get; }
+
+        /// <summary>
+        /// Base URI to use for sending requests.
+        /// </summary>
+        public Uri BaseUri { get; }
+
+        /// <summary>
+        /// Host header to inject.
+        /// </summary>
+        public string Host { get; }
+
+        /// <summary>
+        /// Determines whether a client certificate must be used.
+        /// </summary>
+        public bool UseClientCertificate => this.Type == ServiceEndpointType.MutualTls;
+
+        internal ServiceEndpointDetails(ServiceEndpointType type, Uri baseUri, string host)
+        {
+            this.Type = type;
+            this.BaseUri = baseUri;
+            this.Host = host;
+        }
     }
 
     public enum ServiceEndpointType
@@ -77,7 +109,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Alternate hostname to use for Private Service Connect (PSC).
         /// </summary>
-        public string PscEndpointOverride { get; set; }
+        public string PscHostOverride { get; set; }
 
         /// <summary>
         /// Default URI to use, if neither mTLS or PSC is required.
@@ -93,38 +125,42 @@ namespace Google.Solutions.Apis.Client
         // IServiceEndpoint.
         //---------------------------------------------------------------------
 
-        public Uri GetEffectiveUri(
-            DeviceEnrollmentState enrollment,
-            out ServiceEndpointType endpointType)
+        public ServiceEndpointDetails GetDetails(DeviceEnrollmentState enrollment)
         {
-            if (!string.IsNullOrEmpty(this.PscEndpointOverride)) 
+            if (!string.IsNullOrEmpty(this.PscHostOverride)) 
             {
                 //
                 // Use an alternate PSC endpoint.
                 //
                 // NB. PSC trumps mTLS.
                 //
-                endpointType = ServiceEndpointType.PrivateServiceConnect;
-                return new UriBuilder(this.CanonicalUri)
-                {
-                    Host = this.PscEndpointOverride
-                }.Uri;
+                return new ServiceEndpointDetails(
+                    ServiceEndpointType.PrivateServiceConnect,
+                    new UriBuilder(this.CanonicalUri)
+                    {
+                        Host = this.PscHostOverride
+                    }.Uri,
+                    this.CanonicalUri.Host);
             }
             else if (enrollment == DeviceEnrollmentState.Enrolled)
             {
                 //
                 // Device is enrolled and we have a device certificate -> use mTLS.
                 //
-                endpointType = ServiceEndpointType.MutualTls;
-                return this.MtlsUri;
+                return new ServiceEndpointDetails(
+                    ServiceEndpointType.MutualTls,
+                    this.MtlsUri,
+                    this.MtlsUri.Host);
             }
             else
             {
                 //
                 // Use the regular endpoint.
                 //
-                endpointType = ServiceEndpointType.Tls;
-                return this.CanonicalUri;
+                return new ServiceEndpointDetails(
+                    ServiceEndpointType.Tls,
+                    this.CanonicalUri,
+                    this.CanonicalUri.Host);
             }
         }
 
@@ -134,7 +170,7 @@ namespace Google.Solutions.Apis.Client
 
         public override string ToString()
         {
-            return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {this.PscEndpointOverride})";
+            return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {this.PscHostOverride})";
         }
     }
 }

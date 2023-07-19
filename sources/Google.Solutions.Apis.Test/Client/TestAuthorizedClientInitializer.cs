@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
@@ -80,7 +79,7 @@ namespace Google.Solutions.Apis.Test.Client
                 AuthorizationMocks.ForSecureConnectUser(),
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://cloudresourcemanager.mtls.googleapis.com/", initializer.BaseUri);
+            Assert.AreEqual("https://sample.mtls.googleapis.com/", initializer.BaseUri);
 
             var client = new ComputeService(initializer);
             Assert.IsTrue(client.IsDeviceCertificateAuthenticationEnabled());
@@ -95,10 +94,9 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
-
             var endpoint = new ServiceEndpoint<SampleAdapter>(SampleEndpoint)
             {
-                PscEndpointOverride = "crm.example.com"
+                PscHostOverride = "crm.example.com"
             };
 
             var initializer = new AuthorizedClientInitializer(

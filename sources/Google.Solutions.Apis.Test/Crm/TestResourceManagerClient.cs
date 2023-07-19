@@ -26,6 +26,7 @@ using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,38 @@ namespace Google.Solutions.Apis.Test.Crm
     [UsesCloudResources]
     public class TestResourceManagerClient
     {
+        //---------------------------------------------------------------------
+        // PSC.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenPscEnabled_ThenRequestSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var endpoint = ResourceManagerClient.CreateEndpoint();
+            var address = await Dns
+                .GetHostAddressesAsync(endpoint.CanonicalUri.Host)
+                .ConfigureAwait(false);
+
+            //
+            // Use IP address as pseudo-PSC endpoint.
+            //
+            endpoint.PscHostOverride = address.FirstOrDefault().ToString();
+
+            var client = new ResourceManagerClient(
+                endpoint,
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var project = await client.GetProjectAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(project);
+            Assert.AreEqual(TestProject.ProjectId, project.Name);
+        }
+
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)

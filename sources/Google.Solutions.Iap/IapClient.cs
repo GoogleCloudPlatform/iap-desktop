@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Iap
@@ -74,36 +75,32 @@ namespace Google.Solutions.Iap
         // IIapClient.
         //---------------------------------------------------------------------
 
-        public IapInstanceEndpoint GetTarget(
+        public IapInstanceEndpoint GetTarget( // TODO: Add test
             InstanceLocator instance, 
             ushort port, 
             string nic)
         {
             instance.ExpectNotNull(nameof(instance));
 
-            var baseUri = this.Endpoint.GetEffectiveUri(
-                this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled,
-                out var endpointType);
+            var endpointDetails = this.Endpoint.GetDetails(
+                this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
             X509Certificate2 clientCertificate = null;
-            if (endpointType == ServiceEndpointType.MutualTls &&
-                this.authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
-                this.authorization.DeviceEnrollment.Certificate != null)
+            if (endpointDetails.UseClientCertificate)
             {
+                Debug.Assert(authorization.DeviceEnrollment.Certificate != null);
+
                 //
                 // Device is enrolled and we have a device certificate -> enable DCA.
                 //
+                IapTraceSources.Default.TraceInformation(
+                    "Using client certificate (valid till {0})", clientCertificate.NotAfter);
+
                 clientCertificate = this.authorization.DeviceEnrollment.Certificate;
             }
 
-            if (clientCertificate != null)
-            {
-                IapTraceSources.Default.TraceInformation(
-                    "Using client certificate (valid till {0})", clientCertificate.NotAfter);
-            }
-
             return new IapInstanceEndpoint(
-                baseUri,
+                endpointDetails.BaseUri,
                 this.authorization.Credential,
                 instance,
                 port,
