@@ -104,7 +104,7 @@ application through an IAP TCP forwarding tunnel.
 
 Supported client applications include:
 
-*   SQL Server Management Studio (supporting Windows authentication and SQL Server authentication)
+*   [SQL Server Management Studio](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-SQL-Server) (supporting Windows authentication and SQL Server authentication)
 *   MySQL Shell
 *   Chrome (to connect to management portals and other internal websites)
 *   [Custom applications](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Client-application-configuration)
