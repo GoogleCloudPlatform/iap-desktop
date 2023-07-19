@@ -29,7 +29,7 @@ namespace Google.Solutions.Apis.Test.Client
     [TestFixture]
     public class TestServiceEndpoint
     {
-        private class SampleAdapter : IEndpointAdapter
+        private class SampleAdapter : IServiceClient
         {
             public SampleAdapter(IServiceEndpoint endpoint)
             {

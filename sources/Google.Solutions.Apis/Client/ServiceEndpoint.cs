@@ -46,13 +46,8 @@ namespace Google.Solutions.Apis.Client
         PrivateServiceConnect
     }
 
-    public interface IEndpointAdapter // TODO: separate file
-    {
-        IServiceEndpoint Endpoint { get; }
-    }
-
     public class ServiceEndpoint<T> : IServiceEndpoint
-        where T : IEndpointAdapter
+        where T : IServiceClient
     {
         public ServiceEndpoint(Uri tlsUri, Uri mtlsUri)
         {

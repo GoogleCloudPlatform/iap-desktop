@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public interface IOsLoginAdapter : IEndpointAdapter
+    public interface IOsLoginAdapter : IServiceClient
     {
         /// <summary>
         /// Import user's public key to OS Login.
