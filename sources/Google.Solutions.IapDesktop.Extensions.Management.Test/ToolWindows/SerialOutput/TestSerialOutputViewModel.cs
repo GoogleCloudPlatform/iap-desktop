@@ -77,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             serviceProvider.AddSingleton<IJobService, MockJobService>();
             serviceProvider.AddSingleton<IComputeEngineClient>(
                 new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
                     credential.ToAuthorization(),
                     TestProject.UserAgent));
 

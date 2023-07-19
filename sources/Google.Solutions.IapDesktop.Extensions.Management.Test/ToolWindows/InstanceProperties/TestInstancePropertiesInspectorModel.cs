@@ -45,15 +45,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             var model = await InstancePropertiesInspectorModel
                 .LoadAsync(
                     await testInstance,
-                    gceAdapter,
-                    new Management.GuestOs.Inventory.GuestOsInventory(gceAdapter),
+                    computeClient,
+                    new Management.GuestOs.Inventory.GuestOsInventory(computeClient),
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -79,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         {
             var locator = await testInstance;
 
-            var gceAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             var packageInventory = new Mock<IGuestOsInventory>();
@@ -97,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var model = await InstancePropertiesInspectorModel
                 .LoadAsync(
                     await testInstance,
-                    gceAdapter,
+                    computeClient,
                     packageInventory.Object,
                     CancellationToken.None)
                 .ConfigureAwait(true);

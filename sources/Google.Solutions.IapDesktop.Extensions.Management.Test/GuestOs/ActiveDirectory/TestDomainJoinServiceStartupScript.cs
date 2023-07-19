@@ -57,14 +57,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineClient(
+                var computeClient = new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
                     await credentialTask.ToAuthorization(),
                     TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
-                    computeEngineAdapter))
+                    computeClient))
                 {
                     var hello = await new DomainJoinService(new Mock<IComputeEngineClient>().AsService())
                         .AwaitMessageAsync<DomainJoinService.HelloMessage>(
@@ -97,14 +98,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineClient(
+                var computeClient = new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
                     await credentialTask.ToAuthorization(),
                     TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
-                    computeEngineAdapter))
+                    computeClient))
                 {
                     var response = await new DomainJoinService(new Mock<IComputeEngineClient>().AsService())
                         .AwaitMessageAsync<DomainJoinService.JoinResponse>(

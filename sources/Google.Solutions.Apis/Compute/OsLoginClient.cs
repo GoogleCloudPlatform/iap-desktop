@@ -37,7 +37,7 @@ namespace Google.Solutions.Apis.Compute
     /// <summary>
     /// Client for OS Login API.
     /// </summary>
-    public interface IOsLoginClient : IServiceClient
+    public interface IOsLoginClient : IClient
     {
         /// <summary>
         /// Import user's public key to OS Login.
@@ -95,7 +95,7 @@ namespace Google.Solutions.Apis.Compute
         }
 
         //---------------------------------------------------------------------
-        // IServiceClient.
+        // IClient.
         //---------------------------------------------------------------------
 
         public IServiceEndpoint Endpoint { get; }

@@ -56,11 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenInstanceDoesNotExist_ThenGetInstanceInventoryAsyncReturnsNull(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             var result = await service
                 .GetInstanceInventoryAsync(
@@ -78,11 +79,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             var info = await service
                 .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
@@ -100,11 +102,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.GetInstanceInventoryAsync(
@@ -124,11 +127,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -148,11 +152,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -171,11 +176,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
@@ -196,11 +202,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -220,11 +227,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -243,11 +251,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var instanceRef = await testInstance;
-            var computeAdapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var service = new GuestOsInventory(computeAdapter);
+            var service = new GuestOsInventory(computeClient);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(

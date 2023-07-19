@@ -45,6 +45,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -62,6 +63,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -76,6 +78,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -99,6 +102,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var instanceRef = await testInstance;
 
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -121,6 +125,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var instanceRef = await testInstance;
 
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -138,6 +143,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -152,6 +158,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -168,6 +175,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -188,6 +196,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -208,6 +217,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -240,6 +250,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -256,6 +267,7 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -278,6 +290,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var instance = await testInstance;
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -299,6 +312,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -317,6 +331,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -335,6 +350,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 

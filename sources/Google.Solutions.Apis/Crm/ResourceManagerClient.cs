@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Crm
     /// <summary>
     /// Client for Resource Manager (CRM) API.
     /// </summary>
-    public interface IResourceManagerClient : IServiceClient
+    public interface IResourceManagerClient : IClient
     {
         Task<Project> GetProjectAsync(
             string projectId,
@@ -82,7 +82,7 @@ namespace Google.Solutions.Apis.Crm
         }
 
         //---------------------------------------------------------------------
-        // IServiceClient.
+        // IClient.
         //---------------------------------------------------------------------
 
         public IServiceEndpoint Endpoint { get; }

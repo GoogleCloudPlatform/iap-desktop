@@ -33,7 +33,7 @@ namespace Google.Solutions.Apis.Test.Client
     [TestFixture]
     public class TestAuthorizedClientInitializer
     {
-        private class SampleAdapter : IServiceClient
+        private class SampleAdapter : IClient
         {
             public SampleAdapter(IServiceEndpoint endpoint)
             {

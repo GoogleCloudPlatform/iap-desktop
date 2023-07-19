@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Client
     }
 
     public class ServiceEndpoint<T> : IServiceEndpoint
-        where T : IServiceClient
+        where T : IClient
     {
         public ServiceEndpoint(Uri tlsUri, Uri mtlsUri)
         {

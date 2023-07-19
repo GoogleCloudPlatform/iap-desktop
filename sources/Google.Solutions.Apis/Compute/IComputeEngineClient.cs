@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using System;
@@ -32,7 +33,7 @@ namespace Google.Solutions.Apis.Compute
     /// <summary>
     /// Client for Compute Engine (GCE) API.
     /// </summary>
-    public interface IComputeEngineClient
+    public interface IComputeEngineClient : IClient
     {
         //---------------------------------------------------------------------
         // Projects.

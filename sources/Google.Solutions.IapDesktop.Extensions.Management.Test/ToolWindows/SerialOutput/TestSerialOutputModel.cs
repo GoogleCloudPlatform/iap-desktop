@@ -48,14 +48,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         {
             await testInstance;
 
-            var adapter = new ComputeEngineClient(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             var model = await SerialOutputModel
                 .LoadAsync(
                     "display-name",
-                    adapter,
+                    computeClient,
                     await testInstance,
                     ConsolePort,
                     CancellationToken.None)

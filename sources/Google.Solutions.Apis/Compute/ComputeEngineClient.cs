@@ -47,6 +47,7 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
 
         public ComputeEngineClient(
+            ServiceEndpoint<ComputeEngineClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
@@ -55,10 +56,26 @@ namespace Google.Solutions.Apis.Compute
 
             this.service = new ComputeService(
                 new AuthorizedClientInitializer(
+                    endpoint,
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+        public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint()
+        {
+            return new ServiceEndpoint<ComputeEngineClient>(
+                "https://compute.googleapis.com/");
+        }
+
+        //---------------------------------------------------------------------
+        // IClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
+
+        //---------------------------------------------------------------------
+        // IComputeEngineClient.
+        //---------------------------------------------------------------------
 
         //---------------------------------------------------------------------
         // Projects.

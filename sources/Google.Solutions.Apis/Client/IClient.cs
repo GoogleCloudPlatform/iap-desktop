@@ -24,7 +24,7 @@ namespace Google.Solutions.Apis.Client
     /// <summary>
     /// A Google API client.
     /// </summary>
-    public interface IServiceClient
+    public interface IClient
     {
         /// <summary>
         /// Endpoint used by this client.
