@@ -19,52 +19,14 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
-using System.Diagnostics;
 
 namespace Google.Solutions.Apis.Client
 {
-    public class AuthorizedClientInitializer : BaseClientService.Initializer // TODO: Make internal
+    internal class AuthorizedClientInitializer : BaseClientService.Initializer
     {
-        public AuthorizedClientInitializer( //TODO: Delete
-            IAuthorization authorization,
-            UserAgent userAgent,
-            string mtlsBaseUrl)
-            : this(authorization.Credential,
-                  authorization.DeviceEnrollment,
-                  userAgent,
-                  mtlsBaseUrl)
-        { }
-
-        public AuthorizedClientInitializer( //TODO: Delete
-            ICredential credential,
-            IDeviceEnrollment deviceEnrollment,
-            UserAgent userAgent,
-            string mtlsBaseUrl)
-        {
-            Precondition.ExpectNotNull(credential, nameof(credential));
-            Precondition.ExpectNotNull(deviceEnrollment, nameof(deviceEnrollment));
-            Precondition.ExpectNotNull(mtlsBaseUrl, nameof(mtlsBaseUrl));
-
-            this.HttpClientInitializer = credential;
-            this.ApplicationName = userAgent.ToApplicationName();
-
-            if (deviceEnrollment.State == DeviceEnrollmentState.Enrolled &&
-                deviceEnrollment.Certificate != null)
-            {
-                //
-                // Device is enrolled and we have a device certificate -> enable DCA.
-                //
-                ClientServiceMtlsExtensions.EnableDeviceCertificateAuthentication(
-                    this,
-                    //mtlsBaseUrl,
-                    deviceEnrollment.Certificate);
-            }
-        }
-
         public AuthorizedClientInitializer( //TODO: Test
             IServiceEndpoint endpoint,
             IAuthorization authorization,
