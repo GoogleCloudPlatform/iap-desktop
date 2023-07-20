@@ -89,8 +89,8 @@ namespace Google.Solutions.Apis.Test.Client
 
             Assert.AreEqual(new Uri("https://sample.Googleapis.COM/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
-            Assert.AreEqual("sample.mtls.googleapis.com", details.Host);
-            Assert.IsTrue(details.UseClientCertificate);
+            Assert.AreEqual("sample.googleapis.com", details.Host);
+            Assert.IsFalse(details.UseClientCertificate);
         }
 
         //---------------------------------------------------------------------
