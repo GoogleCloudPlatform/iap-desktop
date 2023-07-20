@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters
     }
 
     [Service(typeof(IAuditLogAdapter), ServiceLifetime.Singleton)]
-    public class AuditLogAdapter : IAuditLogAdapter
+    public class AuditLogAdapter : IAuditLogAdapter // TODO: Rename
     {
         private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
 
