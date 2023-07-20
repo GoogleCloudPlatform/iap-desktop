@@ -129,23 +129,15 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
 
-            var accountsEndpoint = new ServiceEndpoint<SignInClient.AuthorizationClient>(
-                new Uri("https://accounts.google.com"),
-                new Uri("https://accounts.mtls.google.com"));
-            var oauthEndpoint = new ServiceEndpoint<SignInClient.OAuthClient>(
-                "https://oauth.googleapis.com");
-            var oidcEndpoint = new ServiceEndpoint<SignInClient.OpenIdClient>(
-                "https://openidconnect.googleapis.com");
-
             var initializer = Initializers.CreateOpenIdInitializer(
-                accountsEndpoint,
-                oauthEndpoint,
-                oidcEndpoint,
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 enrollment.Object);
 
             Assert.AreEqual("https://accounts.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
-            Assert.AreEqual("https://oauth.googleapis.com/token", initializer.TokenServerUrl);
-            Assert.AreEqual("https://oauth.googleapis.com/revoke", initializer.RevokeTokenUrl);
+            Assert.AreEqual("https://oauth2.googleapis.com/token", initializer.TokenServerUrl);
+            Assert.AreEqual("https://oauth2.googleapis.com/revoke", initializer.RevokeTokenUrl);
             Assert.AreEqual("https://openidconnect.googleapis.com/v1/userinfo", initializer.UserInfoUrl.ToString());
         }
 
@@ -155,23 +147,15 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
-            var accountsEndpoint = new ServiceEndpoint<SignInClient.AuthorizationClient>(
-                new Uri("https://accounts.google.com"),
-                new Uri("https://accounts.mtls.google.com"));
-            var oauthEndpoint = new ServiceEndpoint<SignInClient.OAuthClient>(
-                "https://oauth.googleapis.com");
-            var oidcEndpoint = new ServiceEndpoint<SignInClient.OpenIdClient>(
-                "https://openidconnect.googleapis.com");
-
             var initializer = Initializers.CreateOpenIdInitializer(
-                accountsEndpoint,
-                oauthEndpoint,
-                oidcEndpoint,
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 enrollment.Object);
 
-            Assert.AreEqual("https://accounts.mtls.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
-            Assert.AreEqual("https://oauth.mtls.googleapis.com/token", initializer.TokenServerUrl);
-            Assert.AreEqual("https://oauth.mtls.googleapis.com/revoke", initializer.RevokeTokenUrl);
+            Assert.AreEqual("https://accounts.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
+            Assert.AreEqual("https://oauth2.mtls.googleapis.com/token", initializer.TokenServerUrl);
+            Assert.AreEqual("https://oauth2.mtls.googleapis.com/revoke", initializer.RevokeTokenUrl);
             Assert.AreEqual("https://openidconnect.mtls.googleapis.com/v1/userinfo", initializer.UserInfoUrl.ToString());
         }
 
@@ -181,22 +165,14 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var accountsEndpoint = new ServiceEndpoint<SignInClient.AuthorizationClient>(
-                new Uri("https://accounts.google.com"),
-                new Uri("https://accounts.mtls.google.com"))
-            {
-                PscHostOverride = "accounts.example.com"
-            };
-            var oauthEndpoint = new ServiceEndpoint<SignInClient.OAuthClient>(
-                "https://oauth.googleapis.com")
-            {
-                PscHostOverride = "oauth.example.com"
-            };
-            var oidcEndpoint = new ServiceEndpoint<SignInClient.OpenIdClient>(
-                "https://openidconnect.googleapis.com")
-            {
-                PscHostOverride = "openidconnect.example.com"
-            };
+            var accountsEndpoint = SignInClient.AuthorizationClient.CreateEndpoint();
+            accountsEndpoint.PscHostOverride = "accounts.example.com";
+
+            var oauthEndpoint = SignInClient.OAuthClient.CreateEndpoint();
+            oauthEndpoint.PscHostOverride = "oauth2.example.com";
+
+            var oidcEndpoint = SignInClient.OpenIdClient.CreateEndpoint();
+            oidcEndpoint.PscHostOverride = "openidconnect.example.com";
 
             var initializer = Initializers.CreateOpenIdInitializer(
                 accountsEndpoint,
@@ -205,8 +181,8 @@ namespace Google.Solutions.Apis.Test.Client
                 enrollment.Object);
 
             Assert.AreEqual("https://accounts.example.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
-            Assert.AreEqual("https://oauth.example.com/token", initializer.TokenServerUrl);
-            Assert.AreEqual("https://oauth.example.com/revoke", initializer.RevokeTokenUrl);
+            Assert.AreEqual("https://oauth2.example.com/token", initializer.TokenServerUrl);
+            Assert.AreEqual("https://oauth2.example.com/revoke", initializer.RevokeTokenUrl);
             Assert.AreEqual("https://openidconnect.example.com/v1/userinfo", initializer.UserInfoUrl.ToString());
         }
     }

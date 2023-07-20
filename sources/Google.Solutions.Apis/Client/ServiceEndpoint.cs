@@ -84,10 +84,10 @@ namespace Google.Solutions.Apis.Client
         public ServiceEndpoint(Uri tlsUri, Uri mtlsUri)
         {
             this.CanonicalUri = tlsUri.ExpectNotNull(nameof(tlsUri));
-            this.MtlsUri = mtlsUri.ExpectNotNull(nameof(mtlsUri));
+            this.MtlsUri = mtlsUri; // Optional.
 
             Debug.Assert(!tlsUri.Host.Contains("mtls."));
-            Debug.Assert(mtlsUri.Host.Contains("mtls."));
+            Debug.Assert(mtlsUri == null || mtlsUri.Host.Contains("mtls."));
         }
 
         public ServiceEndpoint(Uri tlsUri)
@@ -142,7 +142,7 @@ namespace Google.Solutions.Apis.Client
                     }.Uri,
                     this.CanonicalUri.Host);
             }
-            else if (enrollment == DeviceEnrollmentState.Enrolled)
+            else if (enrollment == DeviceEnrollmentState.Enrolled && this.MtlsUri != null)
             {
                 //
                 // Device is enrolled and we have a device certificate -> use mTLS.

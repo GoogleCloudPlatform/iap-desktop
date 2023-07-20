@@ -291,8 +291,12 @@ namespace Google.Solutions.Apis.Auth
         {
             public static ServiceEndpoint<AuthorizationClient> CreateEndpoint()
             {
+                //
+                // NB. There's no mTLS counterpart to accounts.google.com.
+                //
                 return new ServiceEndpoint<AuthorizationClient>(
-                    "https://accounts.google.com/"); // TODO: Disable mTLS for this
+                    new Uri("https://accounts.google.com"),
+                    null);
             }
 
             public IServiceEndpoint Endpoint { get; }

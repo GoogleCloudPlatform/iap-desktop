@@ -65,15 +65,30 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMtlsEnabled_ThenSelectEndpointReturnsMlsEndpoint()
+        public void WhenMtlsEnabled_ThenSelectEndpointReturnsMtlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                new Uri("https://sample.Googleapis.COM/compute"));
+                "https://sample.Googleapis.COM/compute");
 
             var details = endpoint.GetDetails(DeviceEnrollmentState.Enrolled);
 
             Assert.AreEqual(new Uri("https://sample.mtls.googleapis.com/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.MutualTls, details.Type);
+            Assert.AreEqual("sample.mtls.googleapis.com", details.Host);
+            Assert.IsTrue(details.UseClientCertificate);
+        }
+
+        [Test]
+        public void WhenMtlsEnabledButMtlsEndpointisNull_ThenSelectEndpointReturnsTlsEndpoint()
+        {
+            var endpoint = new ServiceEndpoint<SampleAdapter>(
+                new Uri("https://sample.Googleapis.COM/compute"),
+                null);
+
+            var details = endpoint.GetDetails(DeviceEnrollmentState.Enrolled);
+
+            Assert.AreEqual(new Uri("https://sample.Googleapis.COM/compute"), details.BaseUri);
+            Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
             Assert.AreEqual("sample.mtls.googleapis.com", details.Host);
             Assert.IsTrue(details.UseClientCertificate);
         }
