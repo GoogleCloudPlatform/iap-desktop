@@ -28,13 +28,16 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
+using Google.Apis.Auth.OAuth2.Flows;
+using System;
 
 namespace Google.Solutions.Apis.Client
 {
-    internal static class Initializers
+    internal static class Initializers 
     {
         /// <summary>
-        /// Create an initializer for API services.
+        /// Create an initializer for API services that configures PSC
+        /// and mTLS.
         /// </summary>
         public static BaseClientService.Initializer CreateServiceInitializer(
             IServiceEndpoint endpoint,
@@ -61,9 +64,57 @@ namespace Google.Solutions.Apis.Client
             };
         }
 
+        /// <summary>
+        /// Create an initializer for OAuth that configures PSC and mTLS.
+        /// </summary>
+        public static OpenIdInitializer CreateOpenIdInitializer(
+            IServiceEndpoint accountsEndpoint,
+            IServiceEndpoint oauthEndpoint,
+            IServiceEndpoint openIdEndpoint,
+            IDeviceEnrollment enrollment)
+        {
+            var accountEndpointDetails = accountsEndpoint.GetDetails(
+                enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
+
+            var oauthEndpointDetails = oauthEndpoint.GetDetails(
+                enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
+
+            var openIdEndpointDetails = openIdEndpoint.GetDetails(
+                enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
+
+            return new OpenIdInitializer(
+                new Uri(accountEndpointDetails.BaseUri, "/o/oauth2/v2/auth"),
+                new Uri(oauthEndpointDetails.BaseUri, "/token"),
+                new Uri(oauthEndpointDetails.BaseUri, "/revoke"),
+                new Uri(openIdEndpointDetails.BaseUri, "/v1/userinfo"))
+            {
+                HttpClientFactory = new MtlsAwareHttpClientFactory(
+                    accountEndpointDetails,
+                    enrollment)
+            };
+        }
+
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
+
+        public class OpenIdInitializer : GoogleAuthorizationCodeFlow.Initializer
+        {
+            public Uri UserInfoUrl { get; }
+
+            public OpenIdInitializer(
+                Uri authorizationServerUrl, 
+                Uri tokenServerUrl,
+                Uri revokeTokenUrl,
+                Uri userInfoUrl) 
+                : base(
+                      authorizationServerUrl.ToString(),
+                      tokenServerUrl.ToString(), 
+                      revokeTokenUrl.ToString())
+            {
+                this.UserInfoUrl = userInfoUrl;
+            }
+        }
 
         /// <summary>
         /// Client factory that enables client certificate authenticateion
