@@ -13,7 +13,6 @@
   <PropertyGroup>
     <PostBuildEvent>
       copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\$(AssemblyName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
-      copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
@@ -22,7 +21,6 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
     <PackageReference Include="Google.Apis.Compute.v1" Version="1.61.0.3103" />
     <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
-    <PackageReference Include="Google.Apis.Logging.v2" Version="1.61.0.3108" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
@@ -60,9 +58,7 @@
     <Compile Update="ToolWindows\PackageInventory\PackageInventoryViewBase.Designer.cs">
       <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\PackageInventory\PackageList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\PackageInventory\PackageList.cs" />
     <Compile Update="ToolWindows\SerialOutput\SerialOutputWindowComX.cs" />
     <Compile Update="ToolWindows\SerialOutput\SerialOutputViewBase.cs" />
     <Compile Update="ToolWindows\SerialOutput\SerialOutputViewBase.Designer.cs">
