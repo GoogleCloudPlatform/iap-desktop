@@ -24,7 +24,8 @@ using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters;
+using Google.Solutions.Apis.Logging;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
@@ -39,85 +40,31 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestAuditLogAdapter : ApplicationFixtureBase
+    public class TestAuditLogClient : ApplicationFixtureBase
     {
-        //---------------------------------------------------------------------
-        // ListEventsAsync
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
-        {
-            await testInstance;
-            var instanceRef = await testInstance;
-
-            var startDate = DateTime.UtcNow.AddDays(-30);
-            var endDate = DateTime.UtcNow;
-
-            var adapter = new AuditLogAdapter(
-                await credential.ToAuthorization(),
-                TestProject.UserAgent);
-
-            var request = new ListLogEntriesRequest()
-            {
-                ResourceNames = new[]
-                {
-                    "projects/" + TestProject.ProjectId
-                },
-                Filter = $"resource.type=\"gce_instance\" " +
-                    $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
-                    $"AND timestamp > {startDate:yyyy-MM-dd}",
-                PageSize = 1000,
-                OrderBy = "timestamp desc"
-            };
-
-            var events = new List<EventBase>();
-
-            // Creating the VM might be quicker than the logs become available.
-            for (var retry = 0; retry < 4 && !events.Any(); retry++)
-            {
-                await adapter.ListEventsAsync(
-                        request,
-                        events.Add,
-                        new ExponentialBackOff(),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                if (!events.Any())
-                {
-                    await Task.Delay(20 * 1000).ConfigureAwait(false);
-                }
-            }
-
-            var insertEvent = events.OfType<InsertInstanceEvent>()
-                .First(e => e.InstanceReference == instanceRef);
-            Assert.IsNotNull(insertEvent);
-        }
-
         //---------------------------------------------------------------------
         // ProcessInstanceEventsAsync
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserNotInRole_ThenProcessInstanceEventsAsyncThrowsResourceAccessDeniedException(
+        public async Task WhenUserNotInRole_ThenProcessInstanceEventsThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             await testInstance;
             var instanceRef = await testInstance;
 
-            var adapter = new AuditLogAdapter(
-                await credential.ToAuthorization(),
-                TestProject.UserAgent);
+            var client = new AuditLogClient(
+                new LoggingAdapter(
+                    await credential.ToAuthorization(),
+                    TestProject.UserAgent));
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ProcessInstanceEventsAsync(
+                () => client.ProcessInstanceEventsAsync(
                     new[] { TestProject.ProjectId },
                     null,  // all zones.
                     null,  // all instances.
@@ -126,44 +73,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapte
                     CancellationToken.None).Wait());
         }
 
+        [Test]
+        public async Task WhenUserInViewerRole_ThenProcessInstanceEventsInvokesProcessor(
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
+        {
+            var startDate = DateTime.UtcNow.AddDays(-3);
+            var endDate = DateTime.UtcNow;
+
+            var client = new AuditLogClient(
+                new LoggingAdapter(
+                    await credential.ToAuthorization(),
+                    TestProject.UserAgent));
+
+            var processor = new Mock<IEventProcessor>();
+
+            await client
+                .ProcessInstanceEventsAsync(
+                    new[] { TestProject.ProjectId },
+                    null,
+                    null,
+                    startDate,
+                    processor.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            processor.Verify(p => p.Process(It.IsAny<EventBase>()), Times.AtLeastOnce());
+        }
+
         //---------------------------------------------------------------------
         // Filter string.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException(
-            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
-        {
-            var startDate = DateTime.UtcNow.AddDays(-30);
-            var request = new ListLogEntriesRequest()
-            {
-                ResourceNames = new[]
-                {
-                    $"projects/{TestProject.InvalidProjectId}"
-                },
-                Filter = $"resource.type=\"gce_instance\" " +
-                    $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
-                    $"AND timestamp > {startDate:yyyy-MM-dd}",
-                PageSize = 1000,
-                OrderBy = "timestamp desc"
-            };
-
-            var adapter = new AuditLogAdapter(
-                await credential.ToAuthorization(),
-                TestProject.UserAgent);
-
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => adapter.ListEventsAsync(
-                    request,
-                    _ => { },
-                    new ExponentialBackOff(),
-                    CancellationToken.None).Wait());
-        }
-
-        [Test]
         public void WhenMethodAndSeveritiesSpecified_ThenCreateFilterStringAddsCriteria()
         {
-            var filter = AuditLogAdapter.CreateFilterString(
+            var filter = AuditLogClient.CreateFilterString(
                 null,
                 null,
                 new[] { "method-1", "method-2" },
@@ -181,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapte
         [Test]
         public void WhenMethodAndSeveritiesNotSpecified_ThenCreateFilterStringSkipsCriteria()
         {
-            var filter = AuditLogAdapter.CreateFilterString(
+            var filter = AuditLogClient.CreateFilterString(
                 null,
                 Enumerable.Empty<ulong>(),
                 null,
@@ -197,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapte
         [Test]
         public void WhenMethodAndSeveritiesEmpty_ThenCreateFilterStringSkipsCriteria()
         {
-            var filter = AuditLogAdapter.CreateFilterString(
+            var filter = AuditLogClient.CreateFilterString(
                 null,
                 Enumerable.Empty<ulong>(),
                 Enumerable.Empty<string>(),
@@ -213,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapte
         [Test]
         public void WhenInstanceIdSpecified_ThenCreateFilterStringAddsCriteria()
         {
-            var filter = AuditLogAdapter.CreateFilterString(
+            var filter = AuditLogClient.CreateFilterString(
                 null,
                 new[] { 123454321234ul },
                 Enumerable.Empty<string>(),
@@ -230,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Adapte
         [Test]
         public void WhenZonesSpecified_ThenCreateFilterStringAddsCriteria()
         {
-            var filter = AuditLogAdapter.CreateFilterString(
+            var filter = AuditLogClient.CreateFilterString(
                 new[] { "us-central1-a" },
                 null,
                 Enumerable.Empty<string>(),

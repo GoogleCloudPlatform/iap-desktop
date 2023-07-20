@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Cache;
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
 
         private readonly ICloudConsoleAdapter cloudConsoleAdapter;
         private readonly IJobService jobService;
-        private readonly Service<IAuditLogAdapter> auditLogAdapter;
+        private readonly Service<IAuditLogClient> auditLogAdapter;
 
         private EventBase selectedEvent;
         private int selectedTimeframeIndex = 0;
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         {
             this.cloudConsoleAdapter = serviceProvider.GetService<ICloudConsoleAdapter>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.auditLogAdapter = serviceProvider.GetService<Service<IAuditLogAdapter>>();
+            this.auditLogAdapter = serviceProvider.GetService<Service<IAuditLogClient>>();
 
             this.Events = new RangeObservableCollection<EventBase>();
         }

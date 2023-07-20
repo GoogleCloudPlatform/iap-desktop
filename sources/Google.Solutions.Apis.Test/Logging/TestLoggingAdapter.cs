@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis.Locator;
 using Google.Solutions.Apis.Logging;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -40,12 +39,8 @@ namespace Google.Solutions.Apis.Test.Logging
 
         [Test]
         public async Task WhenUserNotInRole_ThenReadLogsThrowsException(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance;
-            var instanceRef = await testInstance;
-
             var adapter = new LoggingAdapter(
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
@@ -53,6 +48,22 @@ namespace Google.Solutions.Apis.Test.Logging
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ReadLogsAsync(
                     new[] { $"projects/{TestProject.ProjectId}" },
+                    string.Empty,
+                    _ => null,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenProjectIdInvalid_ThenReadLogsThrowsException(
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new LoggingAdapter(
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
+                () => adapter.ReadLogsAsync(
+                    new[] { $"projects/{TestProject.InvalidProjectId}" },
                     string.Empty,
                     _ => null,
                     CancellationToken.None).Wait());

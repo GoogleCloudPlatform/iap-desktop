@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             }
         }
 
-        private class AuditLogAdapterMock : IAuditLogAdapter
+        private class AuditLogAdapterMock : IAuditLogClient
         {
             public int CallCount = 0;
 
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             registry.AddSingleton<IJobService>(this.jobServiceMock);
 
             this.auditLogAdapter = new AuditLogAdapterMock();
-            registry.AddSingleton<IAuditLogAdapter>(this.auditLogAdapter);
+            registry.AddSingleton<IAuditLogClient>(this.auditLogAdapter);
 
             this.viewModel = new EventLogViewModel(registry);
         }
