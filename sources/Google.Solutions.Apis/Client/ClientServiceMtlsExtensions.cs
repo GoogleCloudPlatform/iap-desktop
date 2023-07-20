@@ -19,63 +19,16 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Common.Util;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Client
 {
     internal static class ClientServiceMtlsExtensions
     {
-        /// <summary>
-        /// Enable mTLS/device certificate authentication.
-        /// </summary>
-        public static void EnableDeviceCertificateAuthentication(// TODO: Remove
-            this BaseClientService.Initializer initializer,
-            X509Certificate2 deviceCertificate)
-        {
-            Precondition.ExpectNotNull(initializer, nameof(initializer));
-            Precondition.ExpectNotNull(deviceCertificate, nameof(deviceCertificate));
-
-            if (HttpClientHandlerExtensions.CanUseClientCertificates)
-            {
-                ApiTraceSources.Default.TraceInformation(
-                    "Enabling MTLS for {0}",
-                    initializer.BaseUri);
-
-                //
-                // Add client certificate.
-                //
-                initializer.HttpClientFactory = new MtlsHttpClientFactory(deviceCertificate);
-            }
-        }
-
-        /// <summary>
-        /// Enable mTLS/device certificate authentication.
-        /// </summary>
-        public static void EnableDeviceCertificateAuthentication(// TODO: Remove
-            this AuthorizationCodeFlow.Initializer initializer,
-            X509Certificate2 deviceCertificate)
-        {
-            Precondition.ExpectNotNull(initializer, nameof(initializer));
-            Precondition.ExpectNotNull(deviceCertificate, nameof(deviceCertificate));
-
-            if (HttpClientHandlerExtensions.CanUseClientCertificates)
-            {
-                ApiTraceSources.Default.TraceInformation("Enabling MTLS for OAuth");
-
-                //
-                // Add client certificate.
-                //
-                initializer.HttpClientFactory = new MtlsHttpClientFactory(deviceCertificate);
-            }
-        }
-
         /// <summary>
         /// Check if device certificate authentication is enabled.
         /// </summary>
@@ -112,28 +65,6 @@ namespace Google.Solutions.Apis.Client
         public static bool CanEnableDeviceCertificateAuthentication
         {
             get => HttpClientHandlerExtensions.CanUseClientCertificates;
-        }
-
-        //---------------------------------------------------------------------
-        // Helper classes.
-        //---------------------------------------------------------------------
-
-        internal class MtlsHttpClientFactory : HttpClientFactory // TODO: Remove
-        {
-            private readonly X509Certificate2 clientCertificate;
-
-            public MtlsHttpClientFactory(X509Certificate2 clientCertificate)
-            {
-                this.clientCertificate = clientCertificate;
-            }
-
-            protected override HttpClientHandler CreateClientHandler()
-            {
-                var handler = base.CreateClientHandler();
-                var added = handler.TryAddClientCertificate(this.clientCertificate);
-                Debug.Assert(added);
-                return handler;
-            }
         }
     }
 }
