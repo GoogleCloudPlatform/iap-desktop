@@ -18,11 +18,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
-    <PackageReference Include="Google.Apis" Version="1.60.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.60.0.2950" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.60.0.3050" />
-    <PackageReference Include="Google.Apis.Core" Version="1.60.0" />
+    <PackageReference Include="Google.Apis" Version="1.61.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.61.0.2950" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.61.0.3103" />
+    <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -31,7 +31,7 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="5.1.21" />
+    <PackageReference Include="ReportGenerator" Version="5.1.23" />
     <PackageReference Include="WiX" Version="3.11.2" />
   </ItemGroup>
   <ItemGroup>
