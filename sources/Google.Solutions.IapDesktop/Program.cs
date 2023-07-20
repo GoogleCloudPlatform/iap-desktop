@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
+using Google.Solutions.Apis.Logging;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -473,6 +474,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddSingleton<IOsLoginAdapter, OsLoginAdapter>();
+                mainLayer.AddSingleton<ILoggingAdapter, LoggingAdapter>();
 
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();
                 mainLayer.AddSingleton<IJobService, JobService>();

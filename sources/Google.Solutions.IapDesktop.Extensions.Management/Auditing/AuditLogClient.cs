@@ -19,17 +19,11 @@
 // under the License.
 //
 
-using Google.Apis.Logging.v2;
-using Google.Apis.Logging.v2.Data;
-using Google.Apis.Util;
-using Google.Solutions.Apis;
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Logging;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Newtonsoft.Json;
@@ -41,9 +35,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Management
 {
-    public interface IAuditLogAdapter
+    public interface IAuditLogClient
     {
         Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
@@ -54,66 +48,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters
             CancellationToken cancellationToken);
     }
 
-    [Service(typeof(IAuditLogAdapter), ServiceLifetime.Singleton)]
-    public class AuditLogAdapter : IAuditLogAdapter
+    [Service(typeof(IAuditLogClient), ServiceLifetime.Singleton)]
+    public class AuditLogClient : IAuditLogClient
     {
-        private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
+        private readonly ILoggingAdapter client;
 
-        private const int MaxPageSize = 1000;
-        private const int MaxRetries = 10;
-        private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
-
-        private readonly LoggingService service;
-
-        public AuditLogAdapter(
-            IAuthorization authorization,
-            UserAgent userAgent)
+        public AuditLogClient(ILoggingAdapter client)
         {
-            authorization.ExpectNotNull(nameof(authorization));
-            userAgent.ExpectNotNull(nameof(userAgent));
-
-            this.service = new LoggingService(
-                new AuthorizedClientInitializer(
-                    authorization,
-                    userAgent,
-                    MtlsBaseUri));
-        }
-
-        internal async Task ListEventsAsync(
-            ListLogEntriesRequest request,
-            Action<EventBase> callback,
-            ExponentialBackOff backOff,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(request.Filter))
-            {
-                try
-                {
-                    string nextPageToken = null;
-                    do
-                    {
-                        request.PageToken = nextPageToken;
-
-                        using (var stream = await this.service.Entries
-                            .List(request)
-                            .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken)
-                            .ConfigureAwait(false))
-                        using (var reader = new JsonTextReader(new StreamReader(stream)))
-                        {
-                            nextPageToken = ListLogEntriesParser.Read(reader, callback);
-                        }
-                    }
-                    while (nextPageToken != null);
-                }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
-                {
-                    throw new ResourceAccessDeniedException(
-                        "You do not have sufficient permissions to view logs. " +
-                        "You need the 'Logs Viewer' role (or an equivalent custom role) " +
-                        "to perform this action.",
-                        e);
-                }
-            }
+            this.client = client.ExpectNotNull(nameof(client));
         }
 
         internal static string CreateFilterString(
@@ -180,30 +122,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Adapters
             IEventProcessor processor,
             CancellationToken cancellationToken)
         {
-            Precondition.ExpectNotNull(projectIds, nameof(projectIds));
+            projectIds.ExpectNotNull(nameof(projectIds));
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 string.Join(", ", projectIds),
                 startTime))
             {
-                var request = new ListLogEntriesRequest()
-                {
-                    ResourceNames = projectIds.Select(p => "projects/" + p).ToList(),
-                    Filter = CreateFilterString(
-                        zones,
-                        instanceIds,
-                        processor.SupportedMethods,
-                        processor.SupportedSeverities,
-                        startTime),
-                    PageSize = MaxPageSize,
-                    OrderBy = "timestamp desc"
-                };
-
-                await ListEventsAsync(
-                    request,
-                    processor.Process,
-                    new ExponentialBackOff(initialBackOff, MaxRetries),
-                    cancellationToken).ConfigureAwait(false);
+                await this.client
+                    .ReadLogsAsync(
+                        projectIds.Select(p => "projects/" + p).ToList(),
+                        CreateFilterString(
+                            zones,
+                            instanceIds,
+                            processor.SupportedMethods,
+                            processor.SupportedSeverities,
+                            startTime),
+                        stream => {
+                            using (var reader = new JsonTextReader(new StreamReader(stream)))
+                            {
+                                return ListLogEntriesParser.Read(reader, processor.Process);
+                            }
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(false);
             }
         }
     }
