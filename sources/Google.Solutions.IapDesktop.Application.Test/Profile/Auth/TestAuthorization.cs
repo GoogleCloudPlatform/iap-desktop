@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task RevokeAsyncDeletesRefreshToken()
         {
-            var adapter = new Mock<ISignInAdapter>();
+            var adapter = new Mock<ISignInClient>();
             adapter.
                 Setup(a => a.SignInWithBrowserAsync(
                     It.IsAny<string>(),
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task WhenRefreshTokenValid_ThenTryLoadExistingAuthorizationAsyncReturnsObject()
         {
-            var adapter = new Mock<ISignInAdapter>();
+            var adapter = new Mock<ISignInClient>();
             adapter
                 .Setup(a => a.TrySignInWithRefreshTokenAsync(
                     It.IsAny<CancellationToken>()))
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task WhenUsingRefreshTokenFails_ThenTryLoadExistingAuthorizationReturnsNull()
         {
-            var adapter = new Mock<ISignInAdapter>();
+            var adapter = new Mock<ISignInClient>();
             adapter
                 .Setup(a => a.TrySignInWithRefreshTokenAsync(
                     It.IsAny<CancellationToken>()))
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task CreateAuthorizationAsyncReturnsObject()
         {
-            var adapter = new Mock<ISignInAdapter>();
+            var adapter = new Mock<ISignInClient>();
             adapter
                 .Setup(a => a.SignInWithBrowserAsync(
                     It.Is<string>(loginHint => loginHint == null),
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             var userCredential = CreateUserCredentialMock("original");
 
-            var adapter = new Mock<ISignInAdapter>();
+            var adapter = new Mock<ISignInClient>();
             adapter
                 .Setup(a => a.SignInWithBrowserAsync(
                     It.IsAny<string>(),
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task WhenExistingEmailKnown_ThenReauthorizeAsyncSetsLoginHint()
         {
-            var adapter = new Mock<ISignInAdapter>();
+            var adapter = new Mock<ISignInClient>();
             adapter
                 .Setup(a => a.SignInWithBrowserAsync(
                     It.IsAny<string>(),

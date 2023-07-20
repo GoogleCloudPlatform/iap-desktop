@@ -35,7 +35,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.Apis.Auth.SignInAdapter;
+using static Google.Solutions.Apis.Auth.SignInClient;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
@@ -88,14 +88,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        protected virtual ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
+        protected virtual ISignInClient CreateSignInAdapter(BrowserPreference preference)
         {
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
             Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
             Precondition.ExpectNotNull(this.Scopes, nameof(this.Scopes));
             Precondition.ExpectNotNull(this.TokenStore, nameof(this.TokenStore));
 
-            return new SignInAdapter(
+            return new SignInClient(
                 this.accountsEndpoint,
                 this.oauthEndpoint,
                 this.openIdEndpoint,

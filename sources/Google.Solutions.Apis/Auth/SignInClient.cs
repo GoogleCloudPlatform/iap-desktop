@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth
 {
-    public interface ISignInAdapter
+    public interface ISignInClient
     {
         Task DeleteRefreshTokenAsync();
 
@@ -55,7 +55,7 @@ namespace Google.Solutions.Apis.Auth
             CancellationToken token);
     }
 
-    public class SignInAdapter : ISignInAdapter // TODO: Rename to Client
+    public class SignInClient : ISignInClient 
     {
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Auth
         private readonly IDataStore dataStore;
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
-        public SignInAdapter(
+        public SignInClient(
             ServiceEndpoint<AuthorizationClient> accountsEndpoint,
             ServiceEndpoint<OAuthClient> oauthEndpoint,
             ServiceEndpoint<OpenIdClient> openIdEndpoint,
@@ -110,7 +110,7 @@ namespace Google.Solutions.Apis.Auth
             // user info.
             //
             initializer.ClientSecrets = this.clientSecrets;
-            initializer.Scopes = this.scopes.Concat(new[] { SignInAdapter.EmailScope });
+            initializer.Scopes = this.scopes.Concat(new[] { SignInClient.EmailScope });
             initializer.DataStore = this.dataStore;
 
             return initializer;

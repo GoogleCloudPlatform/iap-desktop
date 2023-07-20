@@ -129,12 +129,12 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
 
-            var accountsEndpoint = new ServiceEndpoint<SignInAdapter.AuthorizationClient>(
+            var accountsEndpoint = new ServiceEndpoint<SignInClient.AuthorizationClient>(
                 new Uri("https://accounts.google.com"),
                 new Uri("https://accounts.mtls.google.com"));
-            var oauthEndpoint = new ServiceEndpoint<SignInAdapter.OAuthClient>(
+            var oauthEndpoint = new ServiceEndpoint<SignInClient.OAuthClient>(
                 "https://oauth.googleapis.com");
-            var oidcEndpoint = new ServiceEndpoint<SignInAdapter.OpenIdClient>(
+            var oidcEndpoint = new ServiceEndpoint<SignInClient.OpenIdClient>(
                 "https://openidconnect.googleapis.com");
 
             var initializer = Initializers.CreateOpenIdInitializer(
@@ -155,12 +155,12 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
-            var accountsEndpoint = new ServiceEndpoint<SignInAdapter.AuthorizationClient>(
+            var accountsEndpoint = new ServiceEndpoint<SignInClient.AuthorizationClient>(
                 new Uri("https://accounts.google.com"),
                 new Uri("https://accounts.mtls.google.com"));
-            var oauthEndpoint = new ServiceEndpoint<SignInAdapter.OAuthClient>(
+            var oauthEndpoint = new ServiceEndpoint<SignInClient.OAuthClient>(
                 "https://oauth.googleapis.com");
-            var oidcEndpoint = new ServiceEndpoint<SignInAdapter.OpenIdClient>(
+            var oidcEndpoint = new ServiceEndpoint<SignInClient.OpenIdClient>(
                 "https://openidconnect.googleapis.com");
 
             var initializer = Initializers.CreateOpenIdInitializer(
@@ -181,18 +181,18 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var accountsEndpoint = new ServiceEndpoint<SignInAdapter.AuthorizationClient>(
+            var accountsEndpoint = new ServiceEndpoint<SignInClient.AuthorizationClient>(
                 new Uri("https://accounts.google.com"),
                 new Uri("https://accounts.mtls.google.com"))
             {
                 PscHostOverride = "accounts.example.com"
             };
-            var oauthEndpoint = new ServiceEndpoint<SignInAdapter.OAuthClient>(
+            var oauthEndpoint = new ServiceEndpoint<SignInClient.OAuthClient>(
                 "https://oauth.googleapis.com")
             {
                 PscHostOverride = "oauth.example.com"
             };
-            var oidcEndpoint = new ServiceEndpoint<SignInAdapter.OpenIdClient>(
+            var oidcEndpoint = new ServiceEndpoint<SignInClient.OpenIdClient>(
                 "https://openidconnect.googleapis.com")
             {
                 PscHostOverride = "openidconnect.example.com"

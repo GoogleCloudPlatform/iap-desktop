@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Auth.OAuth2.Flows;
 using System;
-using static Google.Solutions.Apis.Auth.SignInAdapter;
+using static Google.Solutions.Apis.Auth.SignInClient;
 
 namespace Google.Solutions.Apis.Client
 {

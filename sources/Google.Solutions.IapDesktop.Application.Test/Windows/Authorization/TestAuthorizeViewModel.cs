@@ -44,14 +44,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
     {
         private class AuthorizeViewModelWithMockSigninAdapter : AuthorizeViewModel
         {
-            public Mock<ISignInAdapter> Client = new Mock<ISignInAdapter>();
+            public Mock<ISignInClient> Client = new Mock<ISignInClient>();
 
             public AuthorizeViewModelWithMockSigninAdapter(Mock<IInstall> install)
                 : base(
                     install.Object,
-                    SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                    SignInAdapter.OAuthClient.CreateEndpoint(),
-                    SignInAdapter.OpenIdClient.CreateEndpoint())
+                    SignInClient.AuthorizationClient.CreateEndpoint(),
+                    SignInClient.OAuthClient.CreateEndpoint(),
+                    SignInClient.OpenIdClient.CreateEndpoint())
             {
             }
 
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             {
             }
 
-            protected override ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
+            protected override ISignInClient CreateSignInAdapter(BrowserPreference preference)
             {
                 return this.Client.Object;
             }

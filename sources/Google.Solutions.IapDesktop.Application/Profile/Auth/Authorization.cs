@@ -30,12 +30,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 {
     public class Authorization : IAuthorization
     {
-        private readonly ISignInAdapter adapter;
+        private readonly ISignInClient adapter;
 
         private readonly UserCredential credential;
 
         private Authorization(
-            ISignInAdapter adapter,
+            ISignInClient adapter,
             IDeviceEnrollment deviceEnrollment,
             UserCredential credential,
             UserInfo userInfo)
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         //---------------------------------------------------------------------
 
         public static async Task<Authorization> TryLoadExistingAuthorizationAsync(
-            ISignInAdapter oauthAdapter,
+            ISignInClient oauthAdapter,
             IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
         {
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         }
 
         public static async Task<Authorization> CreateAuthorizationAsync(
-            ISignInAdapter oauthAdapter,
+            ISignInClient oauthAdapter,
             IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
         {

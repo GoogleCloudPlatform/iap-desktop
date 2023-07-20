@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Apis.Test.Auth
 {
     [TestFixture]
-    public class TestSignInAdapter
+    public class TestSignInClient
     {
         private IDeviceEnrollment CreateEnrollent()
         {
@@ -59,15 +59,15 @@ namespace Google.Solutions.Apis.Test.Auth
                 .ReturnsAsync(new TokenResponse()
                 {
                     RefreshToken = "refresh-token-1",
-                    Scope = "scope-1 " + SignInAdapter.EmailScope
+                    Scope = "scope-1 " + SignInClient.EmailScope
                 });
             flow.Setup(f => f.ShouldForceTokenRetrieval())
                 .Returns(false);
 
-            var adapter = new SignInAdapter(
-                SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                SignInAdapter.OAuthClient.CreateEndpoint(),
-                SignInAdapter.OpenIdClient.CreateEndpoint(),
+            var client = new SignInClient(
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
                 new ClientSecrets(),
                 TestProject.UserAgent,
@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 new Mock<ICodeReceiver>().Object,
                 _ => flow.Object);
 
-            var credential = await adapter
+            var credential = await client
                 .TrySignInWithRefreshTokenAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -99,10 +99,10 @@ namespace Google.Solutions.Apis.Test.Auth
             flow.Setup(f => f.ShouldForceTokenRetrieval())
                 .Returns(false);
 
-            var adapter = new SignInAdapter(
-                SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                SignInAdapter.OAuthClient.CreateEndpoint(),
-                SignInAdapter.OpenIdClient.CreateEndpoint(),
+            var client = new SignInClient(
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
                 new ClientSecrets(),
                 TestProject.UserAgent,
@@ -111,7 +111,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 new Mock<ICodeReceiver>().Object,
                 _ => flow.Object);
 
-            var credential = await adapter
+            var credential = await client
                 .TrySignInWithRefreshTokenAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -124,10 +124,10 @@ namespace Google.Solutions.Apis.Test.Auth
             var flow = new Mock<IAuthorizationCodeFlow>();
             flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
 
-            var adapter = new SignInAdapter(
-                SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                SignInAdapter.OAuthClient.CreateEndpoint(),
-                SignInAdapter.OpenIdClient.CreateEndpoint(),
+            var client = new SignInClient(
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
                 new ClientSecrets(),
                 TestProject.UserAgent,
@@ -136,7 +136,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 new Mock<ICodeReceiver>().Object,
                 _ => flow.Object);
 
-            var credential = await adapter
+            var credential = await client
                 .TrySignInWithRefreshTokenAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -173,10 +173,10 @@ namespace Google.Solutions.Apis.Test.Auth
                     RefreshToken = "refreshtoken-1"
                 });
 
-            var adapter = new SignInAdapter(
-                SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                SignInAdapter.OAuthClient.CreateEndpoint(),
-                SignInAdapter.OpenIdClient.CreateEndpoint(),
+            var client = new SignInClient(
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
                 new ClientSecrets(),
                 TestProject.UserAgent,
@@ -185,7 +185,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 receiver.Object,
                 _ => flow.Object);
 
-            var credential = await adapter.SignInWithBrowserAsync(
+            var credential = await client.SignInWithBrowserAsync(
                     "bob@example.com",
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -219,10 +219,10 @@ namespace Google.Solutions.Apis.Test.Auth
                     RefreshToken = "refreshtoken-1"
                 });
 
-            var adapter = new SignInAdapter(
-                SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                SignInAdapter.OAuthClient.CreateEndpoint(),
-                SignInAdapter.OpenIdClient.CreateEndpoint(),
+            var client = new SignInClient(
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
                 new ClientSecrets(),
                 TestProject.UserAgent,
@@ -232,7 +232,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 _ => flow.Object);
 
             ExceptionAssert.ThrowsAggregateException<OAuthScopeNotGrantedException>(
-                () => adapter.SignInWithBrowserAsync(
+                () => client.SignInWithBrowserAsync(
                     "bob@example.com",
                     CancellationToken.None).Wait());
         }
@@ -263,10 +263,10 @@ namespace Google.Solutions.Apis.Test.Auth
                     ErrorUri = "https://accounts.google.com/info/servicerestricted?es\u003d..."
                 }));
 
-            var adapter = new SignInAdapter(
-                SignInAdapter.AuthorizationClient.CreateEndpoint(),
-                SignInAdapter.OAuthClient.CreateEndpoint(),
-                SignInAdapter.OpenIdClient.CreateEndpoint(),
+            var client = new SignInClient(
+                SignInClient.AuthorizationClient.CreateEndpoint(),
+                SignInClient.OAuthClient.CreateEndpoint(),
+                SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
                 new ClientSecrets(),
                 TestProject.UserAgent,
@@ -276,7 +276,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 _ => flow.Object);
 
             ExceptionAssert.ThrowsAggregateException<AuthorizationFailedException>(
-                () => adapter.SignInWithBrowserAsync(
+                () => client.SignInWithBrowserAsync(
                     "bob@example.com",
                     CancellationToken.None).Wait());
         }

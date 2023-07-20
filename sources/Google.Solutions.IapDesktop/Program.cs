@@ -405,7 +405,7 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
                 preAuthLayer.AddSingleton(new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"),
-                    SignInAdapter.StoreUserId));
+                    SignInClient.StoreUserId));
 
                 //
                 // Configure networking settings.
@@ -437,9 +437,9 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Register and configure API client endpoints.
                 //
-                preAuthLayer.AddSingleton(SignInAdapter.AuthorizationClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInAdapter.OAuthClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInAdapter.OpenIdClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(SignInClient.AuthorizationClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint());
