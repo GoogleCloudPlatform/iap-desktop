@@ -31,14 +31,13 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
-using static Google.Solutions.Apis.Logging.LoggingClient;
 
 namespace Google.Solutions.Apis.Logging
 {
     /// <summary>
     /// Client for Cloud Logging API.
     /// </summary>
-    public interface ILoggingClient
+    public interface ILoggingClient : IClient
     {
         /// <summary>
         /// Read logs in reverse chronological order, page-by-page.
@@ -50,23 +49,22 @@ namespace Google.Solutions.Apis.Logging
             CancellationToken cancellationToken);
     }
 
+    /// <summary>
+    /// Read a page of results.
+    /// </summary>
+    /// <returns>next page token</returns>
+    public delegate string ReadPageCallback(Stream stream);
+
     public class LoggingClient : ILoggingClient
     {
-        private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
-
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
         private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
 
         private readonly LoggingService service;
 
-        /// <summary>
-        /// Read a page of results.
-        /// </summary>
-        /// <returns>next page token</returns>
-        public delegate string ReadPageCallback(Stream stream);
-
         public LoggingClient(
+            ServiceEndpoint<LoggingClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
@@ -75,10 +73,26 @@ namespace Google.Solutions.Apis.Logging
 
             this.service = new LoggingService(
                 new AuthorizedClientInitializer(
+                    endpoint,
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+        public static ServiceEndpoint<LoggingClient> CreateEndpoint()
+        {
+            return new ServiceEndpoint<LoggingClient>(
+                "https://logging.googleapis.com/");
+        }
+
+        //---------------------------------------------------------------------
+        // IClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
+
+        //---------------------------------------------------------------------
+        // ILoggingClient.
+        //---------------------------------------------------------------------
 
         public async Task ReadLogsAsync(
             IList<string> resourceNames,

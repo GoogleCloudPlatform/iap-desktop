@@ -473,6 +473,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
                 mainLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
                 mainLayer.AddSingleton(OsLoginClient.CreateEndpoint());
+                mainLayer.AddSingleton(LoggingClient.CreateEndpoint());
                 mainLayer.AddSingleton(IapClient.CreateEndpoint());
 
                 //

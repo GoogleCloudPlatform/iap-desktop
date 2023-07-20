@@ -60,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
 
             var client = new AuditLogClient(
                 new LoggingClient(
+                    LoggingClient.CreateEndpoint(),
                     await credential.ToAuthorization(),
                     TestProject.UserAgent));
 
@@ -82,6 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
 
             var client = new AuditLogClient(
                 new LoggingClient(
+                    LoggingClient.CreateEndpoint(),
                     await credential.ToAuthorization(),
                     TestProject.UserAgent));
 
