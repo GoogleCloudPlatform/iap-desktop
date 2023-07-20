@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
@@ -130,11 +129,13 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
 
-            var accountsEndpoint = new ServiceEndpoint<SampleClient>(
+            var accountsEndpoint = new ServiceEndpoint<SignInAdapter.AuthorizationClient>(
                 new Uri("https://accounts.google.com"),
                 new Uri("https://accounts.mtls.google.com"));
-            var oauthEndpoint = new ServiceEndpoint<SampleClient>("https://oauth.googleapis.com");
-            var oidcEndpoint = new ServiceEndpoint<SampleClient>("https://openidconnect.googleapis.com");
+            var oauthEndpoint = new ServiceEndpoint<SignInAdapter.OAuthClient>(
+                "https://oauth.googleapis.com");
+            var oidcEndpoint = new ServiceEndpoint<SignInAdapter.OpenIdClient>(
+                "https://openidconnect.googleapis.com");
 
             var initializer = Initializers.CreateOpenIdInitializer(
                 accountsEndpoint,
@@ -154,11 +155,13 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
-            var accountsEndpoint = new ServiceEndpoint<SampleClient>(
+            var accountsEndpoint = new ServiceEndpoint<SignInAdapter.AuthorizationClient>(
                 new Uri("https://accounts.google.com"),
                 new Uri("https://accounts.mtls.google.com"));
-            var oauthEndpoint = new ServiceEndpoint<SampleClient>("https://oauth.googleapis.com");
-            var oidcEndpoint = new ServiceEndpoint<SampleClient>("https://openidconnect.googleapis.com");
+            var oauthEndpoint = new ServiceEndpoint<SignInAdapter.OAuthClient>(
+                "https://oauth.googleapis.com");
+            var oidcEndpoint = new ServiceEndpoint<SignInAdapter.OpenIdClient>(
+                "https://openidconnect.googleapis.com");
 
             var initializer = Initializers.CreateOpenIdInitializer(
                 accountsEndpoint,
@@ -178,17 +181,19 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var accountsEndpoint = new ServiceEndpoint<SampleClient>(
+            var accountsEndpoint = new ServiceEndpoint<SignInAdapter.AuthorizationClient>(
                 new Uri("https://accounts.google.com"),
                 new Uri("https://accounts.mtls.google.com"))
             {
                 PscHostOverride = "accounts.example.com"
             };
-            var oauthEndpoint = new ServiceEndpoint<SampleClient>("https://oauth.googleapis.com")
+            var oauthEndpoint = new ServiceEndpoint<SignInAdapter.OAuthClient>(
+                "https://oauth.googleapis.com")
             {
                 PscHostOverride = "oauth.example.com"
             };
-            var oidcEndpoint = new ServiceEndpoint<SampleClient>("https://openidconnect.googleapis.com")
+            var oidcEndpoint = new ServiceEndpoint<SignInAdapter.OpenIdClient>(
+                "https://openidconnect.googleapis.com")
             {
                 PscHostOverride = "openidconnect.example.com"
             };

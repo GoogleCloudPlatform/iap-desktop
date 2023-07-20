@@ -24,6 +24,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
@@ -270,6 +271,39 @@ namespace Google.Solutions.Apis.Auth
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
+
+        public abstract class AuthorizationClient : IClient
+        {
+            public static ServiceEndpoint<AuthorizationClient> CreateEndpoint()
+            {
+                return new ServiceEndpoint<AuthorizationClient>(
+                    "https://account.google.com/");
+            }
+
+            public IServiceEndpoint Endpoint { get; }
+        }
+
+        public abstract class OAuthClient : IClient
+        {
+            public static ServiceEndpoint<OAuthClient> CreateEndpoint()
+            {
+                return new ServiceEndpoint<OAuthClient>(
+                    "https://oauth.googleapis.com/");
+            }
+
+            public IServiceEndpoint Endpoint { get; }
+        }
+
+        public abstract class OpenIdClient : IClient
+        {
+            public static ServiceEndpoint<OpenIdClient> CreateEndpoint()
+            {
+                return new ServiceEndpoint<OpenIdClient>(
+                    "https://openidconnect.googleapis.com/");
+            }
+
+            public IServiceEndpoint Endpoint { get; }
+        }
 
         private class OAuthInitializer : GoogleAuthorizationCodeFlow.Initializer
         {

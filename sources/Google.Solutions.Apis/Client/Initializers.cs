@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Auth.OAuth2.Flows;
 using System;
+using static Google.Solutions.Apis.Auth.SignInAdapter;
 
 namespace Google.Solutions.Apis.Client
 {
@@ -68,9 +69,9 @@ namespace Google.Solutions.Apis.Client
         /// Create an initializer for OAuth that configures PSC and mTLS.
         /// </summary>
         public static OpenIdInitializer CreateOpenIdInitializer(
-            IServiceEndpoint accountsEndpoint,
-            IServiceEndpoint oauthEndpoint,
-            IServiceEndpoint openIdEndpoint,
+            ServiceEndpoint<AuthorizationClient> accountsEndpoint,
+            ServiceEndpoint<OAuthClient> oauthEndpoint,
+            ServiceEndpoint<OpenIdClient> openIdEndpoint,
             IDeviceEnrollment enrollment)
         {
             var accountEndpointDetails = accountsEndpoint.GetDetails(
