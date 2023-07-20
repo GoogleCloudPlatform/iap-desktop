@@ -44,10 +44,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
     {
         private class AuthorizeViewModelWithMockSigninAdapter : AuthorizeViewModel
         {
-            public Mock<ISignInAdapter> SignInAdapter = new Mock<ISignInAdapter>();
+            public Mock<ISignInAdapter> Client = new Mock<ISignInAdapter>();
 
             public AuthorizeViewModelWithMockSigninAdapter(Mock<IInstall> install)
-                : base(install.Object)
+                : base(
+                    install.Object,
+                    SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                    SignInAdapter.OAuthClient.CreateEndpoint(),
+                    SignInAdapter.OpenIdClient.CreateEndpoint())
             {
             }
 
@@ -58,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 
             protected override ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
             {
-                return this.SignInAdapter.Object;
+                return this.Client.Object;
             }
         }
         private static UserCredential CreateCredential()
@@ -110,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
                     .ReturnsAsync((UserCredential)null);
 
@@ -136,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
                     .ThrowsAsync(new InvalidOperationException("mock"));
 
@@ -162,10 +166,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
                     .ReturnsAsync(CreateCredential());
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.QueryUserInfoAsync(
                         It.IsAny<ICredential>(),
                         It.IsAny<CancellationToken>()))
@@ -197,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.SignInWithBrowserAsync(
                         It.IsAny<string>(),
                         It.IsAny<CancellationToken>()))
@@ -222,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.SignInWithBrowserAsync(
                         It.IsAny<string>(),
                         It.IsAny<CancellationToken>()))
@@ -264,12 +268,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     Scope = "email"
                 };
 
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.SignInWithBrowserAsync(
                         It.IsAny<string>(),
                         It.IsAny<CancellationToken>()))
                     .Throws(new OAuthScopeNotGrantedException("mock"));
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.QueryUserInfoAsync(
                         It.IsAny<ICredential>(),
                         It.IsAny<CancellationToken>()))
@@ -314,12 +318,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     Scope = "email"
                 };
 
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.SignInWithBrowserAsync(
                         It.IsAny<string>(),
                         It.IsAny<CancellationToken>()))
                     .ReturnsAsync(CreateCredential());
-                viewModel.SignInAdapter
+                viewModel.Client
                     .Setup(a => a.QueryUserInfoAsync(
                         It.IsAny<ICredential>(),
                         It.IsAny<CancellationToken>()))

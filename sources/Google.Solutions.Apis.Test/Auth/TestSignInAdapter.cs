@@ -37,6 +37,14 @@ namespace Google.Solutions.Apis.Test.Auth
     [TestFixture]
     public class TestSignInAdapter
     {
+        private IDeviceEnrollment CreateEnrollent()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
+
+            return enrollment.Object;
+        }
+
         //---------------------------------------------------------------------
         // TrySignInWithRefreshTokenAsync.
         //---------------------------------------------------------------------
@@ -57,8 +65,11 @@ namespace Google.Solutions.Apis.Test.Auth
                 .Returns(false);
 
             var adapter = new SignInAdapter(
-                null,
-                new Google.Apis.Auth.OAuth2.ClientSecrets(),
+                SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                SignInAdapter.OAuthClient.CreateEndpoint(),
+                SignInAdapter.OpenIdClient.CreateEndpoint(),
+                CreateEnrollent(),
+                new ClientSecrets(),
                 TestProject.UserAgent,
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
@@ -89,8 +100,11 @@ namespace Google.Solutions.Apis.Test.Auth
                 .Returns(false);
 
             var adapter = new SignInAdapter(
-                null,
-                new Google.Apis.Auth.OAuth2.ClientSecrets(),
+                SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                SignInAdapter.OAuthClient.CreateEndpoint(),
+                SignInAdapter.OpenIdClient.CreateEndpoint(),
+                CreateEnrollent(),
+                new ClientSecrets(),
                 TestProject.UserAgent,
                 new[] { "scope-1", "scope-2" },
                 new Mock<IDataStore>().Object,
@@ -111,8 +125,11 @@ namespace Google.Solutions.Apis.Test.Auth
             flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
 
             var adapter = new SignInAdapter(
-                null,
-                new Google.Apis.Auth.OAuth2.ClientSecrets(),
+                SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                SignInAdapter.OAuthClient.CreateEndpoint(),
+                SignInAdapter.OpenIdClient.CreateEndpoint(),
+                CreateEnrollent(),
+                new ClientSecrets(),
                 TestProject.UserAgent,
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
@@ -157,8 +174,11 @@ namespace Google.Solutions.Apis.Test.Auth
                 });
 
             var adapter = new SignInAdapter(
-                null,
-                new Google.Apis.Auth.OAuth2.ClientSecrets(),
+                SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                SignInAdapter.OAuthClient.CreateEndpoint(),
+                SignInAdapter.OpenIdClient.CreateEndpoint(),
+                CreateEnrollent(),
+                new ClientSecrets(),
                 TestProject.UserAgent,
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
@@ -200,8 +220,11 @@ namespace Google.Solutions.Apis.Test.Auth
                 });
 
             var adapter = new SignInAdapter(
-                null,
-                new Google.Apis.Auth.OAuth2.ClientSecrets(),
+                SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                SignInAdapter.OAuthClient.CreateEndpoint(),
+                SignInAdapter.OpenIdClient.CreateEndpoint(),
+                CreateEnrollent(),
+                new ClientSecrets(),
                 TestProject.UserAgent,
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
@@ -241,8 +264,11 @@ namespace Google.Solutions.Apis.Test.Auth
                 }));
 
             var adapter = new SignInAdapter(
-                null,
-                new Google.Apis.Auth.OAuth2.ClientSecrets(),
+                SignInAdapter.AuthorizationClient.CreateEndpoint(),
+                SignInAdapter.OAuthClient.CreateEndpoint(),
+                SignInAdapter.OpenIdClient.CreateEndpoint(),
+                CreateEnrollent(),
+                new ClientSecrets(),
                 TestProject.UserAgent,
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,

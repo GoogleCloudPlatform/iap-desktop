@@ -434,6 +434,18 @@ namespace Google.Solutions.IapDesktop
                     // Settings invalid -> ignore.
                 }
 
+                //
+                // Register and configure API client endpoints.
+                //
+                preAuthLayer.AddSingleton(SignInAdapter.AuthorizationClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(SignInAdapter.OAuthClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(SignInAdapter.OpenIdClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(IapClient.CreateEndpoint());
+
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
                 preAuthLayer.AddTransient<OAuthScopeNotGrantedView>();
@@ -466,15 +478,6 @@ namespace Google.Solutions.IapDesktop
                 // Load main services.
                 //
                 var eventService = new EventQueue(mainForm);
-
-                //
-                // Register and configure API client endpoints.
-                //
-                mainLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
-                mainLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
-                mainLayer.AddSingleton(OsLoginClient.CreateEndpoint());
-                mainLayer.AddSingleton(LoggingClient.CreateEndpoint());
-                mainLayer.AddSingleton(IapClient.CreateEndpoint());
 
                 //
                 // Register API clients as singletons to ensure connection reuse.

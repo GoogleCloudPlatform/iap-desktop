@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Properties;
@@ -34,15 +35,28 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Apis.Auth.SignInAdapter;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     public class AuthorizeViewModel : ViewModelBase
     {
+        private readonly ServiceEndpoint<AuthorizationClient> accountsEndpoint;
+        private readonly ServiceEndpoint<OAuthClient> oauthEndpoint;
+        private readonly ServiceEndpoint<OpenIdClient> openIdEndpoint;
+
         private CancellationTokenSource cancelCurrentSignin = null;
 
-        public AuthorizeViewModel(IInstall install)
+        public AuthorizeViewModel(
+            IInstall install,
+            ServiceEndpoint<AuthorizationClient> accountsEndpoint,
+            ServiceEndpoint<OAuthClient> oauthEndpoint,
+            ServiceEndpoint<OpenIdClient> openIdEndpoint)
         {
+            this.accountsEndpoint = accountsEndpoint.ExpectNotNull(nameof(accountsEndpoint));
+            this.oauthEndpoint = oauthEndpoint.ExpectNotNull(nameof(oauthEndpoint));
+            this.openIdEndpoint = openIdEndpoint.ExpectNotNull(nameof(openIdEndpoint));
+
             //
             // NB. Properties are access from a non-GUI thread, so
             // they must be thread-safe.
@@ -82,7 +96,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             Precondition.ExpectNotNull(this.TokenStore, nameof(this.TokenStore));
 
             return new SignInAdapter(
-                this.DeviceEnrollment.Certificate,
+                this.accountsEndpoint,
+                this.oauthEndpoint,
+                this.openIdEndpoint,
+                this.DeviceEnrollment,
                 this.ClientSecrets,
                 Install.UserAgent,
                 this.Scopes,
