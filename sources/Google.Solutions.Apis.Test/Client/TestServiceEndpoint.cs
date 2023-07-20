@@ -97,7 +97,7 @@ namespace Google.Solutions.Apis.Test.Client
 
             Assert.AreEqual(new Uri("https://sample.p.Googleapis.COM/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.PrivateServiceConnect, details.Type);
-            Assert.AreEqual("sample.Googleapis.COM", details.Host);
+            Assert.AreEqual("sample.googleapis.com", details.Host);
             Assert.IsFalse(details.UseClientCertificate);
         }
 
