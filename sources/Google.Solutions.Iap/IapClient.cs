@@ -75,7 +75,7 @@ namespace Google.Solutions.Iap
         // IIapClient.
         //---------------------------------------------------------------------
 
-        public IapInstanceEndpoint GetTarget( // TODO: Add test
+        public IapInstanceEndpoint GetTarget(
             InstanceLocator instance, 
             ushort port, 
             string nic)
@@ -85,18 +85,27 @@ namespace Google.Solutions.Iap
             var endpointDetails = this.Endpoint.GetDetails(
                 this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
+            if (endpointDetails.Type == ServiceEndpointType.PrivateServiceConnect)
+            {
+                //
+                // ClientWebSocket doesn't support Host-header overrides, so
+                // we can't use PSC.
+                //
+                throw new ArgumentException("Private Service Connect is not supported for IAP");
+            }
+
             X509Certificate2 clientCertificate = null;
             if (endpointDetails.UseClientCertificate)
             {
-                Debug.Assert(authorization.DeviceEnrollment.Certificate != null);
+                Debug.Assert(this.authorization.DeviceEnrollment.Certificate != null);
 
                 //
                 // Device is enrolled and we have a device certificate -> enable DCA.
                 //
+                clientCertificate = this.authorization.DeviceEnrollment.Certificate;
+
                 IapTraceSources.Default.TraceInformation(
                     "Using client certificate (valid till {0})", clientCertificate.NotAfter);
-
-                clientCertificate = this.authorization.DeviceEnrollment.Certificate;
             }
 
             return new IapInstanceEndpoint(

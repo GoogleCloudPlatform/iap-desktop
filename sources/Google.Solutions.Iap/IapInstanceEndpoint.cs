@@ -56,11 +56,12 @@ namespace Google.Solutions.Iap
 
         public UserAgent UserAgent { get; }
 
-        public bool IsMutualTlsEnabled => this.clientCertificate != null;
+        public bool IsMutualTlsEnabled => this.ClientCertificate != null;
 
         private readonly Uri baseUri;
         private readonly ICredential credential;
-        private readonly X509Certificate2 clientCertificate;
+
+        internal X509Certificate2 ClientCertificate { get; }
 
         private Uri CreateConnectUri()
         {
@@ -129,9 +130,9 @@ namespace Google.Solutions.Iap
                 IapTraceSources.Default.TraceWarning("Failed to set User-Agent header");
             }
 
-            if (this.clientCertificate != null)
+            if (this.ClientCertificate != null)
             {
-                websocket.Options.ClientCertificates.Add(this.clientCertificate);
+                websocket.Options.ClientCertificates.Add(this.ClientCertificate);
             }
 
             try
@@ -174,7 +175,7 @@ namespace Google.Solutions.Iap
             this.Port = port;
             this.Interface = nic;
             this.UserAgent = userAgent;
-            this.clientCertificate = clientCertificate;
+            this.ClientCertificate = clientCertificate;
         }
 
         internal IapInstanceEndpoint(
