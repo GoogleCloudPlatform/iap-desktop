@@ -31,14 +31,14 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
-using static Google.Solutions.Apis.Logging.LoggingAdapter;
+using static Google.Solutions.Apis.Logging.LoggingClient;
 
 namespace Google.Solutions.Apis.Logging
 {
     /// <summary>
-    /// Adapter for Cloud Logging API.
+    /// Client for Cloud Logging API.
     /// </summary>
-    public interface ILoggingAdapter
+    public interface ILoggingClient
     {
         /// <summary>
         /// Read logs in reverse chronological order, page-by-page.
@@ -50,7 +50,7 @@ namespace Google.Solutions.Apis.Logging
             CancellationToken cancellationToken);
     }
 
-    public class LoggingAdapter : ILoggingAdapter
+    public class LoggingClient : ILoggingClient
     {
         private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
 
@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Logging
         /// <returns>next page token</returns>
         public delegate string ReadPageCallback(Stream stream);
 
-        public LoggingAdapter(
+        public LoggingClient(
             IAuthorization authorization,
             UserAgent userAgent)
         {

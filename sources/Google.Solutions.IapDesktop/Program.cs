@@ -480,10 +480,10 @@ namespace Google.Solutions.IapDesktop
                 //
                 mainLayer.AddSingleton<IResourceManagerClient, ResourceManagerClient>();
                 mainLayer.AddSingleton<IComputeEngineClient, ComputeEngineClient>();
-                mainLayer.AddTransient<IAddressResolver, AddressResolver>();
-                mainLayer.AddSingleton<ILoggingAdapter, LoggingAdapter>();
+                mainLayer.AddSingleton<ILoggingClient, LoggingClient>();
                 mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();
                 mainLayer.AddSingleton<IIapClient, IapClient>();
+                mainLayer.AddTransient<IAddressResolver, AddressResolver>();
 
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();

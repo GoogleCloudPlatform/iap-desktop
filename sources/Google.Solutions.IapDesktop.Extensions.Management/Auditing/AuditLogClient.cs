@@ -51,9 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
     [Service(typeof(IAuditLogClient), ServiceLifetime.Singleton)]
     public class AuditLogClient : IAuditLogClient
     {
-        private readonly ILoggingAdapter client;
+        private readonly ILoggingClient client;
 
-        public AuditLogClient(ILoggingAdapter client)
+        public AuditLogClient(ILoggingClient client)
         {
             this.client = client.ExpectNotNull(nameof(client));
         }
