@@ -19,9 +19,15 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Google.Solutions.Apis.Client
 {
@@ -53,6 +59,98 @@ namespace Google.Solutions.Apis.Client
                     endpointDetails,
                     authorization.DeviceEnrollment)
             };
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Client factory that enables client certificate authenticateion
+        /// if the device is enrolled.
+        /// </summary>
+        private class MtlsAwareHttpClientFactory : HttpClientFactory
+        {
+            private readonly ServiceEndpointDetails endpointDetails;
+            private readonly IDeviceEnrollment deviceEnrollment;
+
+            public MtlsAwareHttpClientFactory(
+                ServiceEndpointDetails endpointDetails,
+                IDeviceEnrollment deviceEnrollment)
+            {
+                this.endpointDetails = endpointDetails.ExpectNotNull(nameof(endpointDetails));
+                this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
+            }
+
+            protected override HttpClientHandler CreateClientHandler()
+            {
+                var handler = base.CreateClientHandler();
+
+                if (this.endpointDetails.UseClientCertificate &&
+                    HttpClientHandlerExtensions.CanUseClientCertificates)
+                {
+                    Debug.Assert(this.deviceEnrollment.State == DeviceEnrollmentState.Enrolled);
+                    Debug.Assert(this.deviceEnrollment.Certificate != null);
+
+                    ApiTraceSources.Default.TraceInformation("Enabling MTLS");
+
+                    var added = handler.TryAddClientCertificate(this.deviceEnrollment.Certificate);
+                    Debug.Assert(added);
+                }
+
+                return handler;
+            }
+        }
+
+        /// <summary>
+        /// Client initializer that injects a Host header if PSC is enabled.
+        /// </summary>
+        private class PscAwareHttpClientInitializer
+            : IConfigurableHttpClientInitializer, IHttpExecuteInterceptor
+        {
+            private readonly ServiceEndpointDetails endpointDetails;
+            private readonly ICredential credential;
+
+            public PscAwareHttpClientInitializer(
+                ServiceEndpointDetails endpointDetails,
+                ICredential credential)
+            {
+                this.endpointDetails = endpointDetails.ExpectNotNull(nameof(endpointDetails));
+                this.credential = credential;
+            }
+
+            public void Initialize(ConfigurableHttpClient httpClient)
+            {
+                if (this.credential != null)
+                {
+                    this.credential.Initialize(httpClient);
+                }
+
+                httpClient.MessageHandler.AddExecuteInterceptor(this);
+            }
+
+            public Task InterceptAsync(
+                HttpRequestMessage request,
+                CancellationToken cancellationToken)
+            {
+                if (this.endpointDetails.Type == ServiceEndpointType.PrivateServiceConnect)
+                {
+                    Debug.Assert(!string.IsNullOrEmpty(this.endpointDetails.Host));
+
+                    //
+                    // We're using PSC, thw so hostname we're using to connect is
+                    // different than what the server expects.
+                    //
+                    Debug.Assert(request.RequestUri.Host != this.endpointDetails.Host);
+
+                    //
+                    // Inject the normal hostname so that certificate validation works.
+                    //
+                    request.Headers.Host = this.endpointDetails.Host;
+                }
+
+                return Task.CompletedTask;
+            }
         }
     }
 }
