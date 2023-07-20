@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Client
 
             var endpoint = new ServiceEndpoint<SampleAdapter>(SampleEndpoint);
 
-            var initializer = new AuthorizedClientInitializer(
+            var initializer = Initializers.CreateServiceInitializer(
                 endpoint,
                 authorization.Object,
                 TestProject.UserAgent);
@@ -74,7 +74,7 @@ namespace Google.Solutions.Apis.Test.Client
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(SampleEndpoint);
 
-            var initializer = new AuthorizedClientInitializer(
+            var initializer = Initializers.CreateServiceInitializer(
                 endpoint,
                 AuthorizationMocks.ForSecureConnectUser(),
                 TestProject.UserAgent);
@@ -99,7 +99,7 @@ namespace Google.Solutions.Apis.Test.Client
                 PscHostOverride = "crm.example.com"
             };
 
-            var initializer = new AuthorizedClientInitializer(
+            var initializer = Initializers.CreateServiceInitializer(
                 endpoint,
                 authorization.Object,
                 TestProject.UserAgent);

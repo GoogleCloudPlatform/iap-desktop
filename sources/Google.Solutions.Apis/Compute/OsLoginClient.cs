@@ -82,7 +82,7 @@ namespace Google.Solutions.Apis.Compute
             this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
 
             this.service = new CloudOSLoginService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
                     endpoint, 
                     authorization,
                     userAgent));

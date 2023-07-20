@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis.Logging
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new LoggingService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
                     endpoint,
                     authorization,
                     userAgent));

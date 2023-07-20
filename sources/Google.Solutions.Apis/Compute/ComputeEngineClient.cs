@@ -53,7 +53,7 @@ namespace Google.Solutions.Apis.Compute
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new ComputeService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
                     endpoint,
                     authorization,
                     userAgent));

@@ -25,9 +25,12 @@ using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.Apis.Client
 {
-    internal class AuthorizedClientInitializer : BaseClientService.Initializer
+    internal static class Initializers
     {
-        public AuthorizedClientInitializer( //TODO: Test
+        /// <summary>
+        /// Create an initializer for API services.
+        /// </summary>
+        public static BaseClientService.Initializer CreateServiceInitializer(
             IServiceEndpoint endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
@@ -39,14 +42,17 @@ namespace Google.Solutions.Apis.Client
             var endpointDetails = endpoint.GetDetails(
                 authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
-            this.BaseUri = endpointDetails.BaseUri.ToString();
-            this.ApplicationName = userAgent.ToApplicationName();
-            this.HttpClientInitializer = new PscAwareHttpClientInitializer(
-                endpointDetails,
-                authorization.Credential);
-            this.HttpClientFactory = new MtlsAwareHttpClientFactory(
-                endpointDetails,
-                authorization.DeviceEnrollment);
+            return new BaseClientService.Initializer()
+            {
+                BaseUri = endpointDetails.BaseUri.ToString(),
+                ApplicationName = userAgent.ToApplicationName(),
+                HttpClientInitializer = new PscAwareHttpClientInitializer(
+                    endpointDetails,
+                    authorization.Credential),
+                HttpClientFactory = new MtlsAwareHttpClientFactory(
+                    endpointDetails,
+                    authorization.DeviceEnrollment)
+            };
         }
     }
 }

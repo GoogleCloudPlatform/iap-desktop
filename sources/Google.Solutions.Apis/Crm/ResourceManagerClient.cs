@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Crm
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new CloudResourceManagerService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
                     endpoint,
                     authorization,
                     userAgent));
