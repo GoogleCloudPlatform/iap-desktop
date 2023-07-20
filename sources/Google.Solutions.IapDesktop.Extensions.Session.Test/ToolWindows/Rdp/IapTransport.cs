@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 client.GetTarget(
                     instance,
                     3389,
-                    IapInstanceEndpoint.DefaultNetworkInterface),
+                    IapClient.DefaultNetworkInterface),
                 policy,
                 null);
 

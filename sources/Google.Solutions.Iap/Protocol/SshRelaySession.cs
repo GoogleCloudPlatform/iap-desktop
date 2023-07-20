@@ -31,10 +31,9 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
-    /// Factory for creating (Web Socket) connections to the tunneling 
-    /// endpoint (for ex, Cloud IAP).
+    /// Target for an SSH Relay Connection.
     /// </summary>
-    public interface ISshRelayEndpoint
+    public interface ISshRelayTarget
     {
         Task<INetworkStream> ConnectAsync(CancellationToken token);
 
@@ -53,7 +52,7 @@ namespace Google.Solutions.Iap.Protocol
     {
         private const uint MaxReconnects = 2;
 
-        public ISshRelayEndpoint Endpoint { get; }
+        public ISshRelayTarget Endpoint { get; }
 
         //
         // Current connection, guarded by the a lock.
@@ -278,7 +277,7 @@ namespace Google.Solutions.Iap.Protocol
         // Publics.
         //---------------------------------------------------------------------
 
-        public SshRelaySession(ISshRelayEndpoint endpoint)
+        public SshRelaySession(ISshRelayTarget endpoint)
         {
             this.Endpoint = endpoint;
         }

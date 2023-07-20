@@ -37,13 +37,12 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Iap
 {
     /// <summary>
-    /// IAP endpoint for a specific VM instance.
+    /// IAP target for a specific VM instance.
     /// </summary>
-    public class IapInstanceEndpoint : ISshRelayEndpoint //TODO: Rename to IapInstanceTarget / SshRelayTarget
+    public class IapInstanceTarget : ISshRelayTarget
     {
         private const string SubprotocolName = "relay.tunnel.cloudproxy.app";
         private const string Origin = "bot:iap-tunneler";
-        public const string DefaultNetworkInterface = "nic0"; // TODO: Move to IapClient
 
         // Cf. https://developers.google.com/identity/protocols/googlescopes#iapv1
         public const string RequiredScope = "https://www.googleapis.com/auth/cloud-platform";// TODO: Move to IapClient
@@ -160,7 +159,7 @@ namespace Google.Solutions.Iap
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal IapInstanceEndpoint(
+        internal IapInstanceTarget(
             Uri baseUri,
             ICredential credential,
             InstanceLocator vmInstance,
@@ -178,7 +177,7 @@ namespace Google.Solutions.Iap
             this.ClientCertificate = clientCertificate;
         }
 
-        internal IapInstanceEndpoint(
+        internal IapInstanceTarget(
             Uri baseUri,
             ICredential credential,
             InstanceLocator vmInstance,

@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop
                     new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                dialog.ViewModel.Scopes = new[] { IapInstanceEndpoint.RequiredScope };
+                dialog.ViewModel.Scopes = new[] { IapInstanceTarget.RequiredScope };
                 dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();
 
                 //

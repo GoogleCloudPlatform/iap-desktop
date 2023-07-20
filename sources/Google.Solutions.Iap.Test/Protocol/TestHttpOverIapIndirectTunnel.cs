@@ -54,7 +54,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 client.GetTarget(
                     vmRef,
                     80,
-                    IapInstanceEndpoint.DefaultNetworkInterface),
+                    IapClient.DefaultNetworkInterface),
                 policy.Object,
                 null);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.

@@ -63,7 +63,7 @@ namespace Google.Solutions.Iap.Test
                 () => client.GetTarget(
                     SampleLocator, 
                     22, 
-                    IapInstanceEndpoint.DefaultNetworkInterface));
+                    IapClient.DefaultNetworkInterface));
         }
 
         //---------------------------------------------------------------------
@@ -89,7 +89,7 @@ namespace Google.Solutions.Iap.Test
             var target = client.GetTarget(
                 SampleLocator,
                 22,
-                IapInstanceEndpoint.DefaultNetworkInterface);
+                IapClient.DefaultNetworkInterface);
 
             Assert.IsFalse(target.IsMutualTlsEnabled);
             Assert.IsNull(target.ClientCertificate);
@@ -117,7 +117,7 @@ namespace Google.Solutions.Iap.Test
             var target = client.GetTarget(
                 SampleLocator,
                 22,
-                IapInstanceEndpoint.DefaultNetworkInterface);
+                IapClient.DefaultNetworkInterface);
             
             Assert.IsTrue(target.IsMutualTlsEnabled);
             Assert.IsNotNull(target.ClientCertificate);

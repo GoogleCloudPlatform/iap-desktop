@@ -37,7 +37,7 @@ namespace Google.Solutions.Iap
         /// <summary>
         /// Returns the IAP endpoint for a VM instance.
         /// </summary>
-        IapInstanceEndpoint GetTarget(
+        IapInstanceTarget GetTarget(
             InstanceLocator vmInstance,
             ushort port,
             string nic);
@@ -47,6 +47,8 @@ namespace Google.Solutions.Iap
     {
         private readonly IAuthorization authorization;
         private readonly UserAgent userAgent;
+
+        public const string DefaultNetworkInterface = "nic0";
 
         public IapClient(
             ServiceEndpoint<IapClient> endpoint,
@@ -75,7 +77,7 @@ namespace Google.Solutions.Iap
         // IIapClient.
         //---------------------------------------------------------------------
 
-        public IapInstanceEndpoint GetTarget(
+        public IapInstanceTarget GetTarget(
             InstanceLocator instance, 
             ushort port, 
             string nic)
@@ -91,7 +93,8 @@ namespace Google.Solutions.Iap
                 // ClientWebSocket doesn't support Host-header overrides, so
                 // we can't use PSC.
                 //
-                throw new ArgumentException("Private Service Connect is not supported for IAP");
+                throw new ArgumentException(
+                    "Private Service Connect is not supported for IAP");
             }
 
             X509Certificate2 clientCertificate = null;
@@ -105,10 +108,10 @@ namespace Google.Solutions.Iap
                 clientCertificate = this.authorization.DeviceEnrollment.Certificate;
 
                 IapTraceSources.Default.TraceInformation(
-                    "Using client certificate (valid till {0})", clientCertificate.NotAfter);
+                    "Using client certificate {0}", clientCertificate);
             }
 
-            return new IapInstanceEndpoint(
+            return new IapInstanceTarget(
                 endpointDetails.BaseUri,
                 this.authorization.Credential,
                 instance,

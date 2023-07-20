@@ -49,7 +49,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             this.server.Dispose();
         }
 
-        private class Endpoint : ISshRelayEndpoint, IDisposable
+        private class Endpoint : ISshRelayTarget, IDisposable
         {
             private readonly WebSocketServer server;
             private readonly WebSocketConnection connection;

@@ -70,7 +70,7 @@ namespace Google.Solutions.Iap
     {
         private const int BacklogLength = 32;
 
-        private readonly ISshRelayEndpoint server;
+        private readonly ISshRelayTarget server;
         private readonly IIapListenerPolicy policy;
         private readonly TcpListener listener;
 
@@ -111,7 +111,7 @@ namespace Google.Solutions.Iap
         /// Create a listener.
         /// </summary>
         public IapListener(
-            ISshRelayEndpoint server,
+            ISshRelayTarget server,
             IIapListenerPolicy policy,
             IPEndPoint localEndpoint)
         {

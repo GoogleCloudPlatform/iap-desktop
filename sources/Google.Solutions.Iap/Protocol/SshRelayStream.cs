@@ -125,7 +125,7 @@ namespace Google.Solutions.Iap.Protocol
         // Publics
         //---------------------------------------------------------------------
 
-        public SshRelayStream(ISshRelayEndpoint endpoint)
+        public SshRelayStream(ISshRelayTarget endpoint)
         {
             this.session = new SshRelaySession(endpoint);
         }

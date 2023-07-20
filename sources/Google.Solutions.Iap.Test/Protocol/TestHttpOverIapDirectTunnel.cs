@@ -48,7 +48,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 TestProject.UserAgent);
 
             return new SshRelayStream(
-                client.GetTarget(vmRef, 80, IapInstanceEndpoint.DefaultNetworkInterface));
+                client.GetTarget(vmRef, 80, IapClient.DefaultNetworkInterface));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 client.GetTarget(
                     await vm,
                     80,
-                    IapInstanceEndpoint.DefaultNetworkInterface));
+                    IapClient.DefaultNetworkInterface));
 
             ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
             {

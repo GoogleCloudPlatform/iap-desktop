@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     var target = this.client.GetTarget(
                         profile.TargetInstance,
                         profile.TargetPort,
-                        IapInstanceEndpoint.DefaultNetworkInterface);
+                        IapClient.DefaultNetworkInterface);
 
                     //
                     // Check if we can actually connect to this instance before we

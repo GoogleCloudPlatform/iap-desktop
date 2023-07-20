@@ -73,7 +73,7 @@ namespace Google.Solutions.Iap.Test
                 client.GetTarget(
                     await vm,
                     7,
-                    IapInstanceEndpoint.DefaultNetworkInterface),
+                    IapClient.DefaultNetworkInterface),
                 policy.Object,
                 null);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.

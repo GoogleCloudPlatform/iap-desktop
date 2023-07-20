@@ -48,7 +48,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 client.GetTarget(
                     new InstanceLocator("invalid", TestProject.Zone, "invalid"),
                     80,
-                    IapInstanceEndpoint.DefaultNetworkInterface)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -71,7 +71,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                         "invalid",
                         "invalid"),
                     80,
-                    IapInstanceEndpoint.DefaultNetworkInterface)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -94,7 +94,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                         TestProject.Zone,
                         "invalid"),
                     80,
-                    IapInstanceEndpoint.DefaultNetworkInterface)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -115,7 +115,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 client.GetTarget(
                     await testInstance,
                     3389,
-                    IapInstanceEndpoint.DefaultNetworkInterface)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 await stream
                     .ProbeConnectionAsync(TimeSpan.FromSeconds(10))
@@ -137,7 +137,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                client.GetTarget(
                     await testInstance,
                     22,
-                    IapInstanceEndpoint.DefaultNetworkInterface)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());

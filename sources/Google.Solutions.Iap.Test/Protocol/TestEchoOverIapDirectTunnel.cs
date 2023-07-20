@@ -46,7 +46,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 client.GetTarget(
                     vmRef,
                     7,
-                    IapInstanceEndpoint.DefaultNetworkInterface));
+                    IapClient.DefaultNetworkInterface));
         }
 
         [Test]
