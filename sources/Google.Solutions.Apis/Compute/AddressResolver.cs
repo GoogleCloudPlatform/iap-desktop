@@ -99,7 +99,7 @@ namespace Google.Solutions.Apis.Compute
         }
     }
 
-    public class AddressNotFoundException : AdapterException, IExceptionWithHelpTopic
+    public class AddressNotFoundException : ClientException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 

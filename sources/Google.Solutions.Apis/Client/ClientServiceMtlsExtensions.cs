@@ -35,7 +35,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Enable mTLS/device certificate authentication.
         /// </summary>
-        public static void EnableDeviceCertificateAuthentication(
+        public static void EnableDeviceCertificateAuthentication(// TODO: Remove
             this BaseClientService.Initializer initializer,
             X509Certificate2 deviceCertificate)
         {
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Enable mTLS/device certificate authentication.
         /// </summary>
-        public static void EnableDeviceCertificateAuthentication(
+        public static void EnableDeviceCertificateAuthentication(// TODO: Remove
             this AuthorizationCodeFlow.Initializer initializer,
             X509Certificate2 deviceCertificate)
         {
@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Client
         // Helper classes.
         //---------------------------------------------------------------------
 
-        internal class MtlsHttpClientFactory : HttpClientFactory
+        internal class MtlsHttpClientFactory : HttpClientFactory // TODO: Remove
         {
             private readonly X509Certificate2 clientCertificate;
 

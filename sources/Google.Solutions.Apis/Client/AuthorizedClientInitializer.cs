@@ -20,14 +20,10 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Client
 {
@@ -83,66 +79,12 @@ namespace Google.Solutions.Apis.Client
 
             this.BaseUri = endpointDetails.BaseUri.ToString();
             this.ApplicationName = userAgent.ToApplicationName();
-
             this.HttpClientInitializer = new PscAwareHttpClientInitializer(
                 endpointDetails,
                 authorization.Credential);
-
-            if (endpointDetails.UseClientCertificate)
-            {
-                Debug.Assert(authorization.DeviceEnrollment.Certificate != null);
-
-                //
-                // Device is enrolled and we have a device certificate -> enable DCA.
-                //
-                ClientServiceMtlsExtensions.EnableDeviceCertificateAuthentication(
-                    this,
-                    authorization.DeviceEnrollment.Certificate);
-            }
-        }
-
-        private class PscAwareHttpClientInitializer
-            : IConfigurableHttpClientInitializer, IHttpExecuteInterceptor
-        {
-            private readonly ServiceEndpointDetails endpointDetails;
-            private readonly ICredential credential;
-
-            public PscAwareHttpClientInitializer(
-                ServiceEndpointDetails endpointDetails,
-                ICredential credential)
-            {
-                this.endpointDetails = endpointDetails.ExpectNotNull(nameof(endpointDetails));
-                this.credential = credential.ExpectNotNull(nameof(credential));
-            }
-
-            public void Initialize(ConfigurableHttpClient httpClient)
-            {
-                this.credential.Initialize(httpClient);
-                httpClient.MessageHandler.AddExecuteInterceptor(this);
-            }
-
-            public Task InterceptAsync(
-                HttpRequestMessage request, 
-                CancellationToken cancellationToken)
-            {
-                if (this.endpointDetails.Type == ServiceEndpointType.PrivateServiceConnect)
-                {
-                    Debug.Assert(!string.IsNullOrEmpty(this.endpointDetails.Host));
-
-                    //
-                    // We're using PSC, so hostname we're sending the request to isn't
-                    // the hostname that we'd normally use.
-                    //
-                    Debug.Assert(request.RequestUri.Host != this.endpointDetails.Host);
-                
-                    //
-                    // Inject the normal hostname so that certificate validation works.
-                    //
-                    request.Headers.Host = this.endpointDetails.Host;
-                }
-
-                return Task.CompletedTask;
-            }
+            this.HttpClientFactory = new MtlsAwareHttpClientFactory(
+                endpointDetails,
+                authorization.DeviceEnrollment);
         }
     }
 }

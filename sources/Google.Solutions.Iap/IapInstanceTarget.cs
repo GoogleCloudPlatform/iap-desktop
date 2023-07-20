@@ -45,7 +45,7 @@ namespace Google.Solutions.Iap
         private const string Origin = "bot:iap-tunneler";
 
         // Cf. https://developers.google.com/identity/protocols/googlescopes#iapv1
-        public const string RequiredScope = "https://www.googleapis.com/auth/cloud-platform";// TODO: Move to IapClient
+        public const string RequiredScope = "https://www.googleapis.com/auth/cloud-platform";
 
         public InstanceLocator VmInstance { get; }
 
@@ -115,8 +115,6 @@ namespace Google.Solutions.Iap
             websocket.Options.SetRequestHeader("Authorization", "Bearer " + accessToken);
             websocket.Options.SetRequestHeader("Origin", Origin);
             websocket.Options.KeepAliveInterval = TimeSpan.FromMinutes(1);
-
-            // TODO: Inject Host header
 
             try
             {

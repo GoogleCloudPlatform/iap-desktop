@@ -24,19 +24,19 @@ using System;
 
 namespace Google.Solutions.Apis
 {
-    public abstract class AdapterException : Exception // TODO: Rename to ClientException, move to Client ns.
+    public abstract class ClientException : Exception
     {
-        protected AdapterException(string message) : base(message)
+        protected ClientException(string message) : base(message)
         {
         }
 
-        protected AdapterException(string message, Exception inner)
+        protected ClientException(string message, Exception inner)
             : base(message, inner)
         {
         }
     }
 
-    public class ResourceNotFoundException : AdapterException
+    public class ResourceNotFoundException : ClientException
     {
         public ResourceNotFoundException(string message, Exception inner)
             : base(message, inner)
@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis
         }
     }
 
-    public class ResourceAccessDeniedException : AdapterException, IExceptionWithHelpTopic
+    public class ResourceAccessDeniedException : ClientException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 
