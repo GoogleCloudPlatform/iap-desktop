@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Google.Solutions.IapDesktop": {
+      "commandName": "Project",
+      "commandLineArgs": "/debug"
+    }
+  }
+}

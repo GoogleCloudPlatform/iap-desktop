@@ -178,8 +178,8 @@ namespace Google.Solutions.Apis.Client
         public override string ToString()
         {
             var psc = this.pscDirections.UsePrivateServiceConnect 
-                ? "off" 
-                : this.pscDirections.Endpoint;
+                ? this.pscDirections.Endpoint
+                : "off";
             return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {psc})";
         }
     }

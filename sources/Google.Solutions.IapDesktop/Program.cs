@@ -256,8 +256,14 @@ namespace Google.Solutions.IapDesktop
                 else
                 {
                     //
-                    // User just closed the dialog.
+                    // User closed the dialog without completing the sign-in.
                     //
+
+                    //
+                    // Ensure logs are flushed.
+                    //
+                    IsLoggingEnabled = false;
+
                     Environment.Exit(1);
                     throw new InvalidOperationException();
                 }
@@ -668,8 +674,15 @@ namespace Google.Solutions.IapDesktop
 
         private static void ShowFatalError(Exception e)
         {
+            //
+            // Ensure logs are flushed.
+            //
+            IsLoggingEnabled = false;
+
+            //
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
+            //
             ErrorDialog.Show(e);
             Environment.Exit(e.HResult);
         }
