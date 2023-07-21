@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Client
         /// </summary>
         public bool UsePrivateServiceConnect
         {
-            get => string.IsNullOrEmpty(this.Endpoint);
+            get => !string.IsNullOrEmpty(this.Endpoint);
         }
 
         /// <summary>
