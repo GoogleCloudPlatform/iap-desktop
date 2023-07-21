@@ -24,7 +24,6 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
@@ -75,9 +74,11 @@ namespace Google.Solutions.Apis.Crm
         }
 
 
-        public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint()
+        public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint(
+            PrivateServiceConnectDirections pscDirections = null)
         {
             return new ServiceEndpoint<ResourceManagerClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://cloudresourcemanager.googleapis.com/");
         }
 
@@ -99,8 +100,9 @@ namespace Google.Solutions.Apis.Crm
             {
                 try
                 {
-                    return await this.service.Projects.Get(
-                        projectId).ExecuteAsync(cancellationToken)
+                    return await this.service.Projects
+                        .Get(projectId)
+                        .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())

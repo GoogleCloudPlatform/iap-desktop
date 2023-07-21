@@ -56,9 +56,9 @@ namespace Google.Solutions.Iap
 
         public UserAgent UserAgent { get; }
 
-        public bool IsMutualTlsEnabled => this.endpointDetails.UseClientCertificate;
+        public bool IsMutualTlsEnabled => this.endpointDirections.UseClientCertificate;
 
-        private readonly ServiceEndpointDetails endpointDetails;
+        private readonly ServiceEndpointDirections endpointDirections;
         private readonly ICredential credential;
 
         internal X509Certificate2 ClientCertificate { get; }
@@ -78,7 +78,7 @@ namespace Google.Solutions.Iap
                 "&",
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
-            return new Uri(this.endpointDetails.BaseUri, "connect?" + queryString);
+            return new Uri(this.endpointDirections.BaseUri, "connect?" + queryString);
         }
 
         private Uri CreateReconnectUri(
@@ -97,7 +97,7 @@ namespace Google.Solutions.Iap
                 "&",
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
-            return new Uri(this.endpointDetails.BaseUri, "reconnect?" + queryString);
+            return new Uri(this.endpointDirections.BaseUri, "reconnect?" + queryString);
         }
 
         private async Task<INetworkStream> ConnectOrReconnectAsync(
@@ -117,10 +117,10 @@ namespace Google.Solutions.Iap
             websocket.Options.SetRequestHeader("Origin", Origin);
             websocket.Options.KeepAliveInterval = TimeSpan.FromMinutes(1);
 
-            if (this.endpointDetails.Type == ServiceEndpointType.PrivateServiceConnect)
+            if (this.endpointDirections.Type == ServiceEndpointType.PrivateServiceConnect)
             {
-                Debug.Assert(!string.IsNullOrEmpty(this.endpointDetails.Host));
-                Debug.Assert(requestUri.Host != this.endpointDetails.Host);
+                Debug.Assert(!string.IsNullOrEmpty(this.endpointDirections.Host));
+                Debug.Assert(requestUri.Host != this.endpointDirections.Host);
 
                 //
                 // We're using PSC, so hostname we're sending the request to isn't
@@ -144,7 +144,7 @@ namespace Google.Solutions.Iap
                     // Stash the hostname as username and rely on the system patch
                     // to take and apply it as Host header.
                     //
-                    UserName = this.endpointDetails.Host
+                    UserName = this.endpointDirections.Host
                 }.Uri;
             }
 
@@ -163,7 +163,7 @@ namespace Google.Solutions.Iap
                 IapTraceSources.Default.TraceWarning("Failed to set User-Agent header");
             }
 
-            if (this.endpointDetails.UseClientCertificate)
+            if (this.endpointDirections.UseClientCertificate)
             {
                 Debug.Assert(this.ClientCertificate != null);
                 websocket.Options.ClientCertificates.Add(this.ClientCertificate);
@@ -195,7 +195,7 @@ namespace Google.Solutions.Iap
         //---------------------------------------------------------------------
 
         internal IapInstanceTarget(
-            ServiceEndpointDetails endpointDetails,
+            ServiceEndpointDirections endpointDetails,
             ICredential credential,
             InstanceLocator vmInstance,
             ushort port,
@@ -203,7 +203,7 @@ namespace Google.Solutions.Iap
             UserAgent userAgent,
             X509Certificate2 clientCertificate)
         {
-            this.endpointDetails = endpointDetails;
+            this.endpointDirections = endpointDetails;
             this.credential = credential;
             this.VmInstance = vmInstance;
             this.Port = port;
@@ -213,7 +213,7 @@ namespace Google.Solutions.Iap
         }
 
         internal IapInstanceTarget(
-            ServiceEndpointDetails endpointDetails,
+            ServiceEndpointDirections endpointDetails,
             ICredential credential,
             InstanceLocator vmInstance,
             ushort port,

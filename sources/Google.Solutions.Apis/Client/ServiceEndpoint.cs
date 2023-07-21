@@ -32,16 +32,16 @@ namespace Google.Solutions.Apis.Client
     public interface IServiceEndpoint
     {
         /// <summary>
-        /// Determine the effective endpoint to use, given
-        /// the device enrollment state.
+        /// Get directions for connecting to the endpoint.
         /// </summary>
-        ServiceEndpointDetails GetDetails(DeviceEnrollmentState enrollment);
+        ServiceEndpointDirections GetDirections(
+            DeviceEnrollmentState enrollment);
     }
 
     /// <summary>
-    /// Effective endpoi nt data to use for a Google API.
+    /// Directions for connecting to the endpoint to a Google API.
     /// </summary>
-    public struct ServiceEndpointDetails
+    public struct ServiceEndpointDirections
     {
         /// <summary>
         /// Type of endpoint.
@@ -54,7 +54,8 @@ namespace Google.Solutions.Apis.Client
         public Uri BaseUri { get; }
 
         /// <summary>
-        /// Host header to inject.
+        /// Host header to inject. Only applicable if Type
+        /// is set to PrivateServiceConnect.
         /// </summary>
         public string Host { get; }
 
@@ -63,7 +64,7 @@ namespace Google.Solutions.Apis.Client
         /// </summary>
         public bool UseClientCertificate => this.Type == ServiceEndpointType.MutualTls;
 
-        internal ServiceEndpointDetails(ServiceEndpointType type, Uri baseUri, string host)
+        internal ServiceEndpointDirections(ServiceEndpointType type, Uri baseUri, string host)
         {
             this.Type = type;
             this.BaseUri = baseUri;
@@ -81,8 +82,14 @@ namespace Google.Solutions.Apis.Client
     public class ServiceEndpoint<T> : IServiceEndpoint
         where T : IClient
     {
-        public ServiceEndpoint(Uri tlsUri, Uri mtlsUri)
+        private readonly PrivateServiceConnectDirections pscDirections;
+
+        public ServiceEndpoint(
+            PrivateServiceConnectDirections pscDirections,
+            Uri tlsUri, 
+            Uri mtlsUri)
         {
+            this.pscDirections = pscDirections.ExpectNotNull(nameof(pscDirections));
             this.CanonicalUri = tlsUri.ExpectNotNull(nameof(tlsUri));
             this.MtlsUri = mtlsUri; // Optional.
 
@@ -90,8 +97,11 @@ namespace Google.Solutions.Apis.Client
             Debug.Assert(mtlsUri == null || mtlsUri.Host.Contains("mtls."));
         }
 
-        public ServiceEndpoint(Uri tlsUri)
+        public ServiceEndpoint(
+            PrivateServiceConnectDirections pscDirections,
+            Uri tlsUri)
             : this(
+                  pscDirections,
                   tlsUri,
                   new UriBuilder(tlsUri)
                   {
@@ -102,14 +112,11 @@ namespace Google.Solutions.Apis.Client
         {
         }
 
-        public ServiceEndpoint(string tlsUri)
-            : this(new Uri(tlsUri))
+        public ServiceEndpoint(
+            PrivateServiceConnectDirections pscDirections,
+            string tlsUri)
+            : this(pscDirections, new Uri(tlsUri))
         { }
-
-        /// <summary>
-        /// Alternate hostname to use for Private Service Connect (PSC).
-        /// </summary>
-        public string PscHostOverride { get; set; }
 
         /// <summary>
         /// Default URI to use, if neither mTLS or PSC is required.
@@ -125,20 +132,20 @@ namespace Google.Solutions.Apis.Client
         // IServiceEndpoint.
         //---------------------------------------------------------------------
 
-        public ServiceEndpointDetails GetDetails(DeviceEnrollmentState enrollment)
+        public ServiceEndpointDirections GetDirections(DeviceEnrollmentState enrollment)
         {
-            if (!string.IsNullOrEmpty(this.PscHostOverride)) 
+            if (this.pscDirections.UsePrivateServiceConnect) 
             {
                 //
                 // Use an alternate PSC endpoint.
                 //
                 // NB. PSC trumps mTLS.
                 //
-                return new ServiceEndpointDetails(
+                return new ServiceEndpointDirections(
                     ServiceEndpointType.PrivateServiceConnect,
                     new UriBuilder(this.CanonicalUri)
                     {
-                        Host = this.PscHostOverride
+                        Host = this.pscDirections.Endpoint
                     }.Uri,
                     this.CanonicalUri.Host);
             }
@@ -147,7 +154,7 @@ namespace Google.Solutions.Apis.Client
                 //
                 // Device is enrolled and we have a device certificate -> use mTLS.
                 //
-                return new ServiceEndpointDetails(
+                return new ServiceEndpointDirections(
                     ServiceEndpointType.MutualTls,
                     this.MtlsUri,
                     this.MtlsUri.Host);
@@ -157,7 +164,7 @@ namespace Google.Solutions.Apis.Client
                 //
                 // Use the regular endpoint.
                 //
-                return new ServiceEndpointDetails(
+                return new ServiceEndpointDirections(
                     ServiceEndpointType.Tls,
                     this.CanonicalUri,
                     this.CanonicalUri.Host);
@@ -170,7 +177,10 @@ namespace Google.Solutions.Apis.Client
 
         public override string ToString()
         {
-            return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {this.PscHostOverride})";
+            var psc = this.pscDirections.UsePrivateServiceConnect 
+                ? "off" 
+                : this.pscDirections.Endpoint;
+            return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {psc})";
         }
     }
 }

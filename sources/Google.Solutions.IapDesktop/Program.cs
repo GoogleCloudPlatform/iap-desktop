@@ -451,14 +451,17 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Register and configure API client endpoints.
                 //
-                preAuthLayer.AddSingleton(SignInClient.AuthorizationClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(IapClient.CreateEndpoint());
+                var psc = new PrivateServiceConnectDirections(
+                    Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
+
+                preAuthLayer.AddSingleton(SignInClient.AuthorizationClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(IapClient.CreateEndpoint(psc));
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();

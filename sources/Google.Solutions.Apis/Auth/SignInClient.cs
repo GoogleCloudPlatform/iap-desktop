@@ -289,12 +289,14 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract class AuthorizationClient : IClient
         {
-            public static ServiceEndpoint<AuthorizationClient> CreateEndpoint()
+            public static ServiceEndpoint<AuthorizationClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
             {
                 //
                 // NB. There's no mTLS counterpart to accounts.google.com.
                 //
                 return new ServiceEndpoint<AuthorizationClient>(
+                    pscDirections ?? PrivateServiceConnectDirections.None,
                     new Uri("https://accounts.google.com"),
                     null);
             }
@@ -304,9 +306,11 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract class OAuthClient : IClient
         {
-            public static ServiceEndpoint<OAuthClient> CreateEndpoint()
+            public static ServiceEndpoint<OAuthClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
             {
                 return new ServiceEndpoint<OAuthClient>(
+                    pscDirections ?? PrivateServiceConnectDirections.None,
                     "https://oauth2.googleapis.com/");
             }
 
@@ -315,9 +319,11 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract class OpenIdClient : IClient
         {
-            public static ServiceEndpoint<OpenIdClient> CreateEndpoint()
+            public static ServiceEndpoint<OpenIdClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
             {
                 return new ServiceEndpoint<OpenIdClient>(
+                    pscDirections ?? PrivateServiceConnectDirections.None,
                     "https://openidconnect.googleapis.com/");
             }
 

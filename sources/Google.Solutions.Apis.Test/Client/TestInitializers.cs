@@ -61,7 +61,9 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
-            var endpoint = new ServiceEndpoint<SampleClient>(SampleEndpoint);
+            var endpoint = new ServiceEndpoint<SampleClient>(
+                PrivateServiceConnectDirections.None,
+                SampleEndpoint);
 
             var initializer = Initializers.CreateServiceInitializer(
                 endpoint,
@@ -77,7 +79,9 @@ namespace Google.Solutions.Apis.Test.Client
         [Test]
         public void WhenEnrolled_ThenCreateServiceInitializerUsesTlsUsesMtls()
         {
-            var endpoint = new ServiceEndpoint<SampleClient>(SampleEndpoint);
+            var endpoint = new ServiceEndpoint<SampleClient>(
+                PrivateServiceConnectDirections.None, 
+                SampleEndpoint);
 
             var initializer = Initializers.CreateServiceInitializer(
                 endpoint,
@@ -99,10 +103,9 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
-            var endpoint = new ServiceEndpoint<SampleClient>(SampleEndpoint)
-            {
-                PscHostOverride = "crm.googleapis.com"
-            };
+            var endpoint = new ServiceEndpoint<SampleClient>(
+                new PrivateServiceConnectDirections("crm.googleapis.com"),
+                SampleEndpoint);
 
             var initializer = Initializers.CreateServiceInitializer(
                 endpoint,
@@ -165,14 +168,14 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var accountsEndpoint = SignInClient.AuthorizationClient.CreateEndpoint();
-            accountsEndpoint.PscHostOverride = "accounts.example.com";
+            var accountsEndpoint = SignInClient.AuthorizationClient.CreateEndpoint(
+                new PrivateServiceConnectDirections("accounts.example.com"));
 
-            var oauthEndpoint = SignInClient.OAuthClient.CreateEndpoint();
-            oauthEndpoint.PscHostOverride = "oauth2.example.com";
+            var oauthEndpoint = SignInClient.OAuthClient.CreateEndpoint(
+                new PrivateServiceConnectDirections("oauth2.example.com"));
 
-            var oidcEndpoint = SignInClient.OpenIdClient.CreateEndpoint();
-            oidcEndpoint.PscHostOverride = "openidconnect.example.com";
+            var oidcEndpoint = SignInClient.OpenIdClient.CreateEndpoint(
+                new PrivateServiceConnectDirections("openidconnect.example.com"));
 
             var initializer = Initializers.CreateOpenIdInitializer(
                 accountsEndpoint,

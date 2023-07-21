@@ -31,8 +31,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net;
 using System.Linq;
 using Google.Solutions.Iap.Net;
-using Google.Solutions.Testing.Apis;
 using System.Net.WebSockets;
+using Google.Solutions.Apis.Client;
 
 namespace Google.Solutions.Iap.Test
 {
@@ -52,15 +52,15 @@ namespace Google.Solutions.Iap.Test
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var endpoint = IapClient.CreateEndpoint();
             var address = await Dns
-                .GetHostAddressesAsync(endpoint.CanonicalUri.Host)
+                .GetHostAddressesAsync(IapClient.CreateEndpoint().CanonicalUri.Host)
                 .ConfigureAwait(false);
 
             //
             // Use IP address as pseudo-PSC endpoint.
             //
-            endpoint.PscHostOverride = address.FirstOrDefault().ToString();
+            var endpoint = IapClient.CreateEndpoint(
+                new PrivateServiceConnectDirections(address.FirstOrDefault().ToString()));
 
             var client = new IapClient(
                 endpoint,

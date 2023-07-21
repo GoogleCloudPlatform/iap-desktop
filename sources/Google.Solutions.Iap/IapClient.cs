@@ -67,9 +67,11 @@ namespace Google.Solutions.Iap
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
         }
 
-        public static ServiceEndpoint<IapClient> CreateEndpoint()
+        public static ServiceEndpoint<IapClient> CreateEndpoint(
+            PrivateServiceConnectDirections pscDirections = null)
         {
             return new ServiceEndpoint<IapClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
                 new Uri("wss://tunnel.cloudproxy.app/v4/"),
                 new Uri("wss://mtls.tunnel.cloudproxy.app/v4/"));
         }
@@ -91,11 +93,11 @@ namespace Google.Solutions.Iap
         {
             instance.ExpectNotNull(nameof(instance));
 
-            var endpointDetails = this.Endpoint.GetDetails(
+            var directions = this.Endpoint.GetDirections(
                 this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
             X509Certificate2 clientCertificate = null;
-            if (endpointDetails.UseClientCertificate)
+            if (directions.UseClientCertificate)
             {
                 Debug.Assert(this.authorization.DeviceEnrollment.Certificate != null);
 
@@ -109,7 +111,7 @@ namespace Google.Solutions.Iap
             }
 
             return new IapInstanceTarget(
-                endpointDetails,
+                directions,
                 this.authorization.Credential,
                 instance,
                 port,

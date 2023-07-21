@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Testing.Apis;
@@ -44,15 +45,15 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenPscEnabled_ThenRequestSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var endpoint = ResourceManagerClient.CreateEndpoint();
             var address = await Dns
-                .GetHostAddressesAsync(endpoint.CanonicalUri.Host)
+                .GetHostAddressesAsync(ResourceManagerClient.CreateEndpoint().CanonicalUri.Host)
                 .ConfigureAwait(false);
 
             //
             // Use IP address as pseudo-PSC endpoint.
             //
-            endpoint.PscHostOverride = address.FirstOrDefault().ToString();
+            var endpoint = ResourceManagerClient.CreateEndpoint(
+                new PrivateServiceConnectDirections(address.FirstOrDefault().ToString()));
 
             var client = new ResourceManagerClient(
                 endpoint,

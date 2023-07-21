@@ -78,9 +78,11 @@ namespace Google.Solutions.Apis.Logging
                     userAgent));
         }
 
-        public static ServiceEndpoint<LoggingClient> CreateEndpoint()
+        public static ServiceEndpoint<LoggingClient> CreateEndpoint(
+            PrivateServiceConnectDirections pscDirections = null)
         {
             return new ServiceEndpoint<LoggingClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://logging.googleapis.com/");
         }
 

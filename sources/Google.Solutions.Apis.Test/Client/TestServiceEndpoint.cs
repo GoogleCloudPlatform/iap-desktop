@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Iam.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using NUnit.Framework;
@@ -50,9 +49,10 @@ namespace Google.Solutions.Apis.Test.Client
             DeviceEnrollmentState state)
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
+                PrivateServiceConnectDirections.None,
                 new Uri("https://sample.Googleapis.COM/compute"));
 
-            var details = endpoint.GetDetails(state);
+            var details = endpoint.GetDirections(state);
 
             Assert.AreEqual(new Uri("https://sample.googleapis.com/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
@@ -68,9 +68,10 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenMtlsEnabled_ThenSelectEndpointReturnsMtlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
+                PrivateServiceConnectDirections.None,
                 "https://sample.Googleapis.COM/compute");
 
-            var details = endpoint.GetDetails(DeviceEnrollmentState.Enrolled);
+            var details = endpoint.GetDirections(DeviceEnrollmentState.Enrolled);
 
             Assert.AreEqual(new Uri("https://sample.mtls.googleapis.com/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.MutualTls, details.Type);
@@ -82,10 +83,11 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenMtlsEnabledButMtlsEndpointisNull_ThenSelectEndpointReturnsTlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
+                PrivateServiceConnectDirections.None,
                 new Uri("https://sample.Googleapis.COM/compute"),
                 null);
 
-            var details = endpoint.GetDetails(DeviceEnrollmentState.Enrolled);
+            var details = endpoint.GetDirections(DeviceEnrollmentState.Enrolled);
 
             Assert.AreEqual(new Uri("https://sample.Googleapis.COM/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
@@ -98,17 +100,15 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPscEndpointFound_ThenSelectEndpointReturnsPscEndpoint(
+        public void WhenPscEnabled_ThenSelectEndpointReturnsPscEndpoint(
             [Values(DeviceEnrollmentState.Disabled, DeviceEnrollmentState.Enrolled)]
             DeviceEnrollmentState state)
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                new Uri("https://sample.Googleapis.COM/compute"))
-            {
-                PscHostOverride = "sample.p.Googleapis.COM"
-            };
+                new PrivateServiceConnectDirections("sample.p.Googleapis.COM"),
+                new Uri("https://sample.Googleapis.COM/compute"));
 
-            var details = endpoint.GetDetails(state);
+            var details = endpoint.GetDirections(state);
 
             Assert.AreEqual(new Uri("https://sample.p.Googleapis.COM/compute"), details.BaseUri);
             Assert.AreEqual(ServiceEndpointType.PrivateServiceConnect, details.Type);
@@ -124,6 +124,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void ToStringContainsUri()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
+                PrivateServiceConnectDirections.None,
                 new Uri("https://sample.googleapis.com/compute"));
 
             StringAssert.Contains("https://sample.googleapis.com/compute", endpoint.ToString());

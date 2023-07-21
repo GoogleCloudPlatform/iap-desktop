@@ -59,9 +59,11 @@ namespace Google.Solutions.Apis.Compute
                     userAgent));
         }
 
-        public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint()
+        public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
         {
             return new ServiceEndpoint<ComputeEngineClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://compute.googleapis.com/compute/v1/");
         }
 

@@ -88,9 +88,11 @@ namespace Google.Solutions.Apis.Compute
                     userAgent));
         }
 
-        public static ServiceEndpoint<OsLoginClient> CreateEndpoint()
+        public static ServiceEndpoint<OsLoginClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
         {
             return new ServiceEndpoint<OsLoginClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://oslogin.googleapis.com/");
         }
 
