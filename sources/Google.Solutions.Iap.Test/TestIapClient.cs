@@ -26,10 +26,13 @@ using Google.Solutions.Apis.Locator;
 using System;
 using Moq;
 using Google.Solutions.Apis.Auth;
-using System.Net;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Net;
+using System.Linq;
+using Google.Solutions.Iap.Net;
+using Google.Solutions.Testing.Apis;
+using System.Net.WebSockets;
 
 namespace Google.Solutions.Iap.Test
 {
@@ -45,25 +48,36 @@ namespace Google.Solutions.Iap.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPscEnabled_ThenGetTargetThrowsException()
+        public async Task WhenPscEnabled_ThenProbeSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var endpoint = IapClient.CreateEndpoint();
+            var address = await Dns
+                .GetHostAddressesAsync(endpoint.CanonicalUri.Host)
+                .ConfigureAwait(false);
 
             //
             // Use IP address as pseudo-PSC endpoint.
             //
-            endpoint.PscHostOverride = "psc.example.org";
+            endpoint.PscHostOverride = address.FirstOrDefault().ToString();
 
             var client = new IapClient(
                 endpoint,
-                new Mock<IAuthorization>().Object,
+                (await credential).ToAuthorization(),
                 TestProject.UserAgent);
 
-            Assert.Throws<ArgumentException>(
-                () => client.GetTarget(
-                    SampleLocator, 
-                    22, 
-                    IapClient.DefaultNetworkInterface));
+            WebSocket.RegisterPrefixes();
+            SystemPatch.SetUsernameAsHostHeaderForWssRequests.Install();
+
+            await client.GetTarget(
+                    await vm,
+                    22,
+                    IapClient.DefaultNetworkInterface)
+                .ProbeAsync(TimeSpan.FromSeconds(5))
+                .ConfigureAwait(false);
+
+            SystemPatch.SetUsernameAsHostHeaderForWssRequests.Uninstall();
         }
 
         //---------------------------------------------------------------------

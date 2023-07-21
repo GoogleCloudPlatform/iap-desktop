@@ -23,9 +23,16 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Iap.Net;
 using System;
+using System.Collections;
 using System.Diagnostics;
+using System.Drawing;
+using System.Net;
+using System.Net.WebSockets;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 
 namespace Google.Solutions.Iap
 {
@@ -87,16 +94,6 @@ namespace Google.Solutions.Iap
             var endpointDetails = this.Endpoint.GetDetails(
                 this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
-            if (endpointDetails.Type == ServiceEndpointType.PrivateServiceConnect)
-            {
-                //
-                // ClientWebSocket doesn't support Host-header overrides, so
-                // we can't use PSC.
-                //
-                throw new ArgumentException(
-                    "Private Service Connect is not supported for IAP");
-            }
-
             X509Certificate2 clientCertificate = null;
             if (endpointDetails.UseClientCertificate)
             {
@@ -112,7 +109,7 @@ namespace Google.Solutions.Iap
             }
 
             return new IapInstanceTarget(
-                endpointDetails.BaseUri,
+                endpointDetails,
                 this.authorization.Credential,
                 instance,
                 port,

@@ -27,6 +27,7 @@ using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
@@ -55,9 +56,9 @@ namespace Google.Solutions.Iap
 
         public UserAgent UserAgent { get; }
 
-        public bool IsMutualTlsEnabled => this.ClientCertificate != null;
+        public bool IsMutualTlsEnabled => this.endpointDetails.UseClientCertificate;
 
-        private readonly Uri baseUri;
+        private readonly ServiceEndpointDetails endpointDetails;
         private readonly ICredential credential;
 
         internal X509Certificate2 ClientCertificate { get; }
@@ -77,7 +78,7 @@ namespace Google.Solutions.Iap
                 "&",
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
-            return new Uri(this.baseUri, "connect?" + queryString);
+            return new Uri(this.endpointDetails.BaseUri, "connect?" + queryString);
         }
 
         private Uri CreateReconnectUri(
@@ -96,11 +97,11 @@ namespace Google.Solutions.Iap
                 "&",
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
-            return new Uri(this.baseUri, "reconnect?" + queryString);
+            return new Uri(this.endpointDetails.BaseUri, "reconnect?" + queryString);
         }
 
         private async Task<INetworkStream> ConnectOrReconnectAsync(
-            Uri endpoint,
+            Uri requestUri,
             CancellationToken token)
         {
             //
@@ -116,10 +117,45 @@ namespace Google.Solutions.Iap
             websocket.Options.SetRequestHeader("Origin", Origin);
             websocket.Options.KeepAliveInterval = TimeSpan.FromMinutes(1);
 
+            if (this.endpointDetails.Type == ServiceEndpointType.PrivateServiceConnect)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(this.endpointDetails.Host));
+                Debug.Assert(requestUri.Host != this.endpointDetails.Host);
+
+                //
+                // We're using PSC, so hostname we're sending the request to isn't
+                // the hostname that the server expects to see in the Host header.
+                //
+                // Sadly, the ClientWebSocket doesn't let us specify a Host header
+                // (the unrestricted header trick won't work here), so we have to rely
+                // on another patch.
+                //
+
+                Debug.Assert(SystemPatch.SetUsernameAsHostHeaderForWssRequests.IsInstalled);
+                if (!SystemPatch.SetUsernameAsHostHeaderForWssRequests.IsInstalled)
+                {
+                    throw new InvalidOperationException(
+                        "This system does not support IAP over private service connect");
+                }
+
+                requestUri = new UriBuilder(requestUri)
+                {
+                    //
+                    // Stash the hostname as username and rely on the system patch
+                    // to take and apply it as Host header.
+                    //
+                    UserName = this.endpointDetails.Host
+                }.Uri;
+            }
+
             try
             {
-                // NB. User-Agent is a restricted header, so this call will fail
-                // unless un-restricted using RestrictedHeaderConfigPatch.
+                Debug.Assert(SystemPatch.UnrestrictUserAgentHeader.IsInstalled);
+
+                //
+                // NB. User-Agent is a restricted header, so this call fails
+                // unless un-restricted using UnrestrictUserAgentHeader.
+                //
                 websocket.Options.SetRequestHeader("User-Agent", this.UserAgent.ToString());
             }
             catch (ArgumentException)
@@ -127,15 +163,16 @@ namespace Google.Solutions.Iap
                 IapTraceSources.Default.TraceWarning("Failed to set User-Agent header");
             }
 
-            if (this.ClientCertificate != null)
+            if (this.endpointDetails.UseClientCertificate)
             {
+                Debug.Assert(this.ClientCertificate != null);
                 websocket.Options.ClientCertificates.Add(this.ClientCertificate);
             }
 
             try
             {
                 await websocket
-                    .ConnectAsync(endpoint, token)
+                    .ConnectAsync(requestUri, token)
                     .ConfigureAwait(false);
 
                 return new WebSocketStream(websocket);
@@ -158,7 +195,7 @@ namespace Google.Solutions.Iap
         //---------------------------------------------------------------------
 
         internal IapInstanceTarget(
-            Uri baseUri,
+            ServiceEndpointDetails endpointDetails,
             ICredential credential,
             InstanceLocator vmInstance,
             ushort port,
@@ -166,7 +203,7 @@ namespace Google.Solutions.Iap
             UserAgent userAgent,
             X509Certificate2 clientCertificate)
         {
-            this.baseUri = baseUri;
+            this.endpointDetails = endpointDetails;
             this.credential = credential;
             this.VmInstance = vmInstance;
             this.Port = port;
@@ -176,13 +213,13 @@ namespace Google.Solutions.Iap
         }
 
         internal IapInstanceTarget(
-            Uri baseUri,
+            ServiceEndpointDetails endpointDetails,
             ICredential credential,
             InstanceLocator vmInstance,
             ushort port,
             string nic,
             UserAgent userAgent)
-            : this(baseUri, credential, vmInstance, port, nic, userAgent, null)
+            : this(endpointDetails, credential, vmInstance, port, nic, userAgent, null)
         { }
 
         /// <summary>

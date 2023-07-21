@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,31 +21,19 @@
 
 using Google.Solutions.Iap.Net;
 using NUnit.Framework;
-using System;
 using System.Net.WebSockets;
 
-namespace Google.Solutions.Iap.Test.Net
+namespace Google.Solutions.Iap.Test
 {
-    [TestFixture]
-    public class TestRestrictedHeaderConfigPatch : IapFixtureBase
+    [SetUpFixture]
+    public class Setup
     {
-        [Test]
-        public void WhenPatchNotApplied_ThenSetUserAgentHeaderFails()
+        [OneTimeSetUp]
+        public void RunBeforeAnyTests()
         {
-            var websocket = new ClientWebSocket();
-            Assert.Throws<ArgumentException>(
-                () => websocket.Options.SetRequestHeader("User-Agent", "test"));
-        }
-
-        [Test]
-        public void WhenPatchApplied_ThenSetUserAgentHeaderSuceeds()
-        {
-            RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", false);
-
-            var websocket = new ClientWebSocket();
-            websocket.Options.SetRequestHeader("User-Agent", "test");
-
-            RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", true);
+            WebSocket.RegisterPrefixes();
+            SystemPatch.SetUsernameAsHostHeaderForWssRequests.Install();
+            SystemPatch.UnrestrictUserAgentHeader.Install();
         }
     }
 }

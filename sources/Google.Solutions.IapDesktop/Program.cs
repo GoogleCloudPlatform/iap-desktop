@@ -67,6 +67,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -324,15 +325,28 @@ namespace Google.Solutions.IapDesktop
                     SecurityProtocolType.Tls11;
             }
 
-            // Allow custom User-Agent headers.
+            //
+            // Install patches requires for IAP.
+            //
             try
             {
-                RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", false);
+                SystemPatch.UnrestrictUserAgentHeader.Install();
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
                 ApplicationTraceSources.Default.TraceWarning(
-                    "Failed to un-restrict User-Agent headers");
+                    "Installing UnrestrictUserAgentHeader patch failed: {0}", e);
+            }
+
+            try
+            {
+                WebSocket.RegisterPrefixes();
+                SystemPatch.SetUsernameAsHostHeaderForWssRequests.Install();
+            }
+            catch (Exception e)
+            {
+                ApplicationTraceSources.Default.TraceWarning(
+                    "Installing SetUsernameAsHostHeaderForWssRequests patch failed: {0}", e);
             }
 
             System.Windows.Forms.Application.EnableVisualStyles();
