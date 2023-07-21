@@ -49,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             public AuthorizeViewModelWithMockSigninAdapter(Mock<IInstall> install)
                 : base(
                     install.Object,
-                    SignInClient.AuthorizationClient.CreateEndpoint(),
                     SignInClient.OAuthClient.CreateEndpoint(),
                     SignInClient.OpenIdClient.CreateEndpoint())
             {

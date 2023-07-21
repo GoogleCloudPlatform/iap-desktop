@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Http;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
@@ -62,7 +63,6 @@ namespace Google.Solutions.Apis.Auth
 
         public const string StoreUserId = "oauth";
 
-        private readonly ServiceEndpoint<AuthorizationClient> accountsEndpoint;
         private readonly ServiceEndpoint<OAuthClient> oauthEndpoint;
         private readonly ServiceEndpoint<OpenIdClient> openIdEndpoint;
         private readonly IDeviceEnrollment enrollment;
@@ -74,7 +74,6 @@ namespace Google.Solutions.Apis.Auth
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
         public SignInClient(
-            ServiceEndpoint<AuthorizationClient> accountsEndpoint,
             ServiceEndpoint<OAuthClient> oauthEndpoint,
             ServiceEndpoint<OpenIdClient> openIdEndpoint,
             IDeviceEnrollment enrollment,
@@ -85,7 +84,6 @@ namespace Google.Solutions.Apis.Auth
             ICodeReceiver codeReceiver,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
-            this.accountsEndpoint = accountsEndpoint.ExpectNotNull(nameof(accountsEndpoint));  
             this.oauthEndpoint = oauthEndpoint.ExpectNotNull(nameof(oauthEndpoint));
             this.openIdEndpoint = openIdEndpoint.ExpectNotNull(nameof(openIdEndpoint));
             this.enrollment = enrollment.ExpectNotNull(nameof(enrollment));
@@ -100,7 +98,6 @@ namespace Google.Solutions.Apis.Auth
         private Initializers.OpenIdInitializer CreateInitializer()
         {
             var initializer = Initializers.CreateOpenIdInitializer(
-                this.accountsEndpoint,
                 this.oauthEndpoint,
                 this.openIdEndpoint,
                 this.enrollment);
@@ -131,10 +128,6 @@ namespace Google.Solutions.Apis.Auth
                     "mTLS supported: {0}", ClientServiceMtlsExtensions.CanEnableDeviceCertificateAuthentication);
                 ApiTraceSources.Default.TraceVerbose(
                     "mTLS certificate: {0}", this.enrollment?.Certificate?.Subject);
-                ApiTraceSources.Default.TraceVerbose(
-                    "TokenServerUrl: {0}", flow.TokenServerUrl);
-                ApiTraceSources.Default.TraceVerbose(
-                    "RevokeTokenUrl: {0}", flow.RevokeTokenUrl);
 
                 return flow;
             }
@@ -273,8 +266,12 @@ namespace Google.Solutions.Apis.Auth
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient(this.userAgent, this.enrollment.Certificate);
-
+            var initializer = CreateInitializer();
+            var client = new RestClient(
+                initializer.HttpClientFactory
+                    .CreateHttpClient(new CreateHttpClientArgs()),
+                this.userAgent);
+            
             return await client
                 .GetAsync<UserInfo>(
                     CreateInitializer().UserInfoUrl.ToString(),
@@ -286,23 +283,6 @@ namespace Google.Solutions.Apis.Auth
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
-
-        public abstract class AuthorizationClient : IClient
-        {
-            public static ServiceEndpoint<AuthorizationClient> CreateEndpoint(
-                PrivateServiceConnectDirections pscDirections = null)
-            {
-                //
-                // NB. There's no mTLS counterpart to accounts.google.com.
-                //
-                return new ServiceEndpoint<AuthorizationClient>(
-                    pscDirections ?? PrivateServiceConnectDirections.None,
-                    new Uri("https://accounts.google.com"),
-                    null);
-            }
-
-            public IServiceEndpoint Endpoint { get; }
-        }
 
         public abstract class OAuthClient : IClient
         {

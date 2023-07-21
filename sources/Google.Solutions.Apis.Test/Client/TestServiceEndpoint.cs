@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         //---------------------------------------------------------------------
-        // GetDetails - TLS.
+        // GetDirections - TLS.
         //---------------------------------------------------------------------
 
         [Test]
@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         //---------------------------------------------------------------------
-        // GetDetails - mTLS.
+        // GetDirections - mTLS.
         //---------------------------------------------------------------------
 
         [Test]
@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         //---------------------------------------------------------------------
-        // GetDetails - PSC.
+        // GetDirections - PSC.
         //---------------------------------------------------------------------
 
         [Test]
@@ -129,5 +129,7 @@ namespace Google.Solutions.Apis.Test.Client
 
             StringAssert.Contains("https://sample.googleapis.com/compute", endpoint.ToString());
         }
+
+        //TODO: Test ToString for Directions class
     }
 }

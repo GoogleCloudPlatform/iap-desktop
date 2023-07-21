@@ -460,7 +460,6 @@ namespace Google.Solutions.IapDesktop
                 var psc = new PrivateServiceConnectDirections(
                     Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
 
-                preAuthLayer.AddSingleton(SignInClient.AuthorizationClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));

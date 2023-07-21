@@ -65,7 +65,6 @@ namespace Google.Solutions.Apis.Test.Auth
                 .Returns(false);
 
             var client = new SignInClient(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
@@ -100,7 +99,6 @@ namespace Google.Solutions.Apis.Test.Auth
                 .Returns(false);
 
             var client = new SignInClient(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
@@ -125,7 +123,6 @@ namespace Google.Solutions.Apis.Test.Auth
             flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
 
             var client = new SignInClient(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
@@ -174,7 +171,6 @@ namespace Google.Solutions.Apis.Test.Auth
                 });
 
             var client = new SignInClient(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
@@ -220,7 +216,6 @@ namespace Google.Solutions.Apis.Test.Auth
                 });
 
             var client = new SignInClient(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),
@@ -264,7 +259,6 @@ namespace Google.Solutions.Apis.Test.Auth
                 }));
 
             var client = new SignInClient(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 CreateEnrollent(),

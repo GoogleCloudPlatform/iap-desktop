@@ -133,7 +133,6 @@ namespace Google.Solutions.Apis.Test.Client
             enrollment.SetupGet(e => e.State).Returns(state);
 
             var initializer = Initializers.CreateOpenIdInitializer(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 enrollment.Object);
@@ -151,7 +150,6 @@ namespace Google.Solutions.Apis.Test.Client
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
             var initializer = Initializers.CreateOpenIdInitializer(
-                SignInClient.AuthorizationClient.CreateEndpoint(),
                 SignInClient.OAuthClient.CreateEndpoint(),
                 SignInClient.OpenIdClient.CreateEndpoint(),
                 enrollment.Object);
@@ -168,9 +166,6 @@ namespace Google.Solutions.Apis.Test.Client
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var accountsEndpoint = SignInClient.AuthorizationClient.CreateEndpoint(
-                new PrivateServiceConnectDirections("accounts.example.com"));
-
             var oauthEndpoint = SignInClient.OAuthClient.CreateEndpoint(
                 new PrivateServiceConnectDirections("oauth2.example.com"));
 
@@ -178,7 +173,6 @@ namespace Google.Solutions.Apis.Test.Client
                 new PrivateServiceConnectDirections("openidconnect.example.com"));
 
             var initializer = Initializers.CreateOpenIdInitializer(
-                accountsEndpoint,
                 oauthEndpoint,
                 oidcEndpoint,
                 enrollment.Object);

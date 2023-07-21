@@ -41,7 +41,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     public class AuthorizeViewModel : ViewModelBase
     {
-        private readonly ServiceEndpoint<AuthorizationClient> accountsEndpoint;
         private readonly ServiceEndpoint<OAuthClient> oauthEndpoint;
         private readonly ServiceEndpoint<OpenIdClient> openIdEndpoint;
 
@@ -49,11 +48,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 
         public AuthorizeViewModel(
             IInstall install,
-            ServiceEndpoint<AuthorizationClient> accountsEndpoint,
             ServiceEndpoint<OAuthClient> oauthEndpoint,
             ServiceEndpoint<OpenIdClient> openIdEndpoint)
         {
-            this.accountsEndpoint = accountsEndpoint.ExpectNotNull(nameof(accountsEndpoint));
             this.oauthEndpoint = oauthEndpoint.ExpectNotNull(nameof(oauthEndpoint));
             this.openIdEndpoint = openIdEndpoint.ExpectNotNull(nameof(openIdEndpoint));
 
@@ -96,7 +93,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             Precondition.ExpectNotNull(this.TokenStore, nameof(this.TokenStore));
 
             return new SignInClient(
-                this.accountsEndpoint,
                 this.oauthEndpoint,
                 this.openIdEndpoint,
                 this.DeviceEnrollment,

@@ -70,6 +70,11 @@ namespace Google.Solutions.Apis.Client
             this.BaseUri = baseUri;
             this.Host = host;
         }
+
+        public override string ToString()
+        {
+            return $"{this.BaseUri} (Type: {this.Type}, Host: {this.Host}, Cert: {this.UseClientCertificate})";
+        }
     }
 
     public enum ServiceEndpointType

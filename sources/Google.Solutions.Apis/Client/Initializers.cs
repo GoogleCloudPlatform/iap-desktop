@@ -31,7 +31,7 @@ using System.Threading;
 using Google.Apis.Auth.OAuth2.Flows;
 using System;
 using static Google.Solutions.Apis.Auth.SignInClient;
-using System.Net;
+using System.Collections.Generic;
 
 namespace Google.Solutions.Apis.Client
 {
@@ -50,23 +50,20 @@ namespace Google.Solutions.Apis.Client
             Precondition.ExpectNotNull(authorization, nameof(authorization));
             Precondition.ExpectNotNull(userAgent, nameof(userAgent));
 
-            ApiTraceSources.Default.TraceInformation(
-                "Initializing client for endpoint {0}",
-                endpoint);
-
             var directions = endpoint.GetDirections(
                 authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
+
+            ApiTraceSources.Default.TraceInformation(
+                "Using endpoint {0}",
+                directions);
 
             return new BaseClientService.Initializer()
             {
                 BaseUri = directions.BaseUri.ToString(),
                 ApplicationName = userAgent.ToApplicationName(),
-                HttpClientInitializer = new PscAwareHttpClientInitializer(
+                HttpClientFactory = new PscAndMtlsAwareClientFactory(
                     directions,
-                    authorization.Credential),
-                HttpClientFactory = new MtlsAwareHttpClientFactory(
-                    directions,
-                    authorization.DeviceEnrollment)
+                    authorization)
             };
         }
 
@@ -74,24 +71,13 @@ namespace Google.Solutions.Apis.Client
         /// Create an initializer for OAuth that configures PSC and mTLS.
         /// </summary>
         public static OpenIdInitializer CreateOpenIdInitializer(
-            ServiceEndpoint<AuthorizationClient> accountsEndpoint,
             ServiceEndpoint<OAuthClient> oauthEndpoint,
             ServiceEndpoint<OpenIdClient> openIdEndpoint,
             IDeviceEnrollment enrollment)
         {
-            Precondition.ExpectNotNull(accountsEndpoint, nameof(accountsEndpoint));
             Precondition.ExpectNotNull(oauthEndpoint, nameof(oauthEndpoint));
             Precondition.ExpectNotNull(openIdEndpoint, nameof(openIdEndpoint));
             Precondition.ExpectNotNull(enrollment, nameof(enrollment));
-
-            ApiTraceSources.Default.TraceInformation(
-                "Initializing client for endpoints {0}, {1}, {2}",
-                accountsEndpoint,
-                oauthEndpoint,
-                openIdEndpoint);
-
-            var accountDirections = accountsEndpoint.GetDirections(
-                enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
             var oauthDirections = oauthEndpoint.GetDirections(
                 enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
@@ -99,14 +85,27 @@ namespace Google.Solutions.Apis.Client
             var openIdDirections = openIdEndpoint.GetDirections(
                 enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
+            ApiTraceSources.Default.TraceInformation(
+                "OAuth: Using endpoint {0}",
+                oauthDirections);
+            ApiTraceSources.Default.TraceInformation(
+                "OpenID: Using endpoint {0}",
+                openIdDirections);
+
+            //
+            // NB. OidcAuthorizationUrl is a browser endpoint, not an
+            // API endpoint. Therefore, it's not subject to the 
+            // service endpoint logic.
+            //
+
             return new OpenIdInitializer(
-                new Uri(accountDirections.BaseUri, "/o/oauth2/v2/auth"),
+                new Uri(GoogleAuthConsts.OidcAuthorizationUrl),
                 new Uri(oauthDirections.BaseUri, "/token"),
                 new Uri(oauthDirections.BaseUri, "/revoke"),
                 new Uri(openIdDirections.BaseUri, "/v1/userinfo"))
             {
-                HttpClientFactory = new MtlsAwareHttpClientFactory(
-                    accountDirections,
+                HttpClientFactory = new PscAndMtlsAwareClientFactory(
+                    oauthDirections,
                     enrollment)
             };
         }
@@ -130,6 +129,73 @@ namespace Google.Solutions.Apis.Client
                       revokeTokenUrl.ToString())
             {
                 this.UserInfoUrl = userInfoUrl;
+            }
+        }
+
+        /// <summary>
+        /// Client factory that enables client certificate and adds PSC-style Host headers
+        /// if needed.
+        /// </summary>
+        private class PscAndMtlsAwareClientFactory : IHttpClientFactory, IHttpExecuteInterceptor
+        {
+            private readonly ServiceEndpointDirections directions;
+            private readonly IDeviceEnrollment deviceEnrollment;
+            private readonly ICredential credential;
+
+            public PscAndMtlsAwareClientFactory(
+                ServiceEndpointDirections directions,
+                IAuthorization authorization)
+            {
+                this.directions = directions;
+                this.deviceEnrollment = authorization.DeviceEnrollment;
+                this.credential = authorization.Credential;
+            }
+
+            public PscAndMtlsAwareClientFactory(
+                ServiceEndpointDirections directions,
+                IDeviceEnrollment deviceEnrollment)
+            {
+                this.directions = directions;
+                this.deviceEnrollment = deviceEnrollment;
+                this.credential = null;
+            }
+
+            public ConfigurableHttpClient CreateHttpClient(CreateHttpClientArgs args)
+            {
+                if (this.credential != null)
+                {
+                    args.Initializers.Add(this.credential);
+                }
+
+                var factory = new MtlsAwareHttpClientFactory(this.directions, this.deviceEnrollment);
+                var httpClient = factory.CreateHttpClient(args);
+
+                httpClient.MessageHandler.AddExecuteInterceptor(this);
+
+                return httpClient;
+            }
+
+            public Task InterceptAsync(
+                HttpRequestMessage request,
+                CancellationToken cancellationToken)
+            {
+                if (this.directions.Type == ServiceEndpointType.PrivateServiceConnect)
+                {
+                    Debug.Assert(!string.IsNullOrEmpty(this.directions.Host));
+
+                    //
+                    // We're using PSC, thw so hostname we're using to connect is
+                    // different than what the server expects.
+                    //
+                    Debug.Assert(request.RequestUri.Host != this.directions.Host);
+
+                    //
+                    // Inject the normal hostname so that certificate validation works.
+                    //
+                    request.Headers.Host = this.directions.Host;
+                }
+
+                return Task.CompletedTask;
             }
         }
 
@@ -160,64 +226,11 @@ namespace Google.Solutions.Apis.Client
                     Debug.Assert(this.deviceEnrollment.State == DeviceEnrollmentState.Enrolled);
                     Debug.Assert(this.deviceEnrollment.Certificate != null);
 
-                    ApiTraceSources.Default.TraceInformation("Enabling MTLS");
-
                     var added = handler.TryAddClientCertificate(this.deviceEnrollment.Certificate);
                     Debug.Assert(added);
                 }
 
                 return handler;
-            }
-        }
-
-        /// <summary>
-        /// Client initializer that injects a Host header if PSC is enabled.
-        /// </summary>
-        private class PscAwareHttpClientInitializer
-            : IConfigurableHttpClientInitializer, IHttpExecuteInterceptor
-        {
-            private readonly ServiceEndpointDirections directions;
-            private readonly ICredential credential;
-
-            public PscAwareHttpClientInitializer(
-                ServiceEndpointDirections directions,
-                ICredential credential)
-            {
-                this.directions = directions.ExpectNotNull(nameof(directions));
-                this.credential = credential;
-            }
-
-            public void Initialize(ConfigurableHttpClient httpClient)
-            {
-                if (this.credential != null)
-                {
-                    this.credential.Initialize(httpClient);
-                }
-
-                httpClient.MessageHandler.AddExecuteInterceptor(this);
-            }
-
-            public Task InterceptAsync(
-                HttpRequestMessage request,
-                CancellationToken cancellationToken)
-            {
-                if (this.directions.Type == ServiceEndpointType.PrivateServiceConnect)
-                {
-                    Debug.Assert(!string.IsNullOrEmpty(this.directions.Host));
-
-                    //
-                    // We're using PSC, thw so hostname we're using to connect is
-                    // different than what the server expects.
-                    //
-                    Debug.Assert(request.RequestUri.Host != this.directions.Host);
-
-                    //
-                    // Inject the normal hostname so that certificate validation works.
-                    //
-                    request.Headers.Host = this.directions.Host;
-                }
-
-                return Task.CompletedTask;
             }
         }
     }
