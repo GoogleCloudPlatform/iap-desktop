@@ -30,8 +30,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Auth.OAuth2.Flows;
 using System;
-using static Google.Solutions.Apis.Auth.SignInClient;
-using System.Collections.Generic;
 
 namespace Google.Solutions.Apis.Client
 {
@@ -61,18 +59,18 @@ namespace Google.Solutions.Apis.Client
             {
                 BaseUri = directions.BaseUri.ToString(),
                 ApplicationName = userAgent.ToApplicationName(),
-                HttpClientFactory = new PscAndMtlsAwareClientFactory(
+                HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
                     directions,
                     authorization)
             };
         }
 
         /// <summary>
-        /// Create an initializer for OAuth that configures PSC and mTLS.
+        /// Create an initializer for OAuth that configures mTLS.
         /// </summary>
         public static OpenIdInitializer CreateOpenIdInitializer(
-            ServiceEndpoint<OAuthClient> oauthEndpoint,
-            ServiceEndpoint<OpenIdClient> openIdEndpoint,
+            ServiceEndpoint<SignInClient.OAuthClient> oauthEndpoint,
+            ServiceEndpoint<SignInClient.OpenIdClient> openIdEndpoint,
             IDeviceEnrollment enrollment)
         {
             Precondition.ExpectNotNull(oauthEndpoint, nameof(oauthEndpoint));
@@ -104,7 +102,7 @@ namespace Google.Solutions.Apis.Client
                 new Uri(oauthDirections.BaseUri, "/revoke"),
                 new Uri(openIdDirections.BaseUri, "/v1/userinfo"))
             {
-                HttpClientFactory = new PscAndMtlsAwareClientFactory(
+                HttpClientFactory = new MtlsAwareHttpClientFactory(
                     oauthDirections,
                     enrollment)
             };
@@ -136,13 +134,13 @@ namespace Google.Solutions.Apis.Client
         /// Client factory that enables client certificate and adds PSC-style Host headers
         /// if needed.
         /// </summary>
-        private class PscAndMtlsAwareClientFactory : IHttpClientFactory, IHttpExecuteInterceptor
+        private class PscAndMtlsAwareHttpClientFactory : IHttpClientFactory, IHttpExecuteInterceptor
         {
             private readonly ServiceEndpointDirections directions;
             private readonly IDeviceEnrollment deviceEnrollment;
             private readonly ICredential credential;
 
-            public PscAndMtlsAwareClientFactory(
+            public PscAndMtlsAwareHttpClientFactory(
                 ServiceEndpointDirections directions,
                 IAuthorization authorization)
             {
@@ -151,7 +149,7 @@ namespace Google.Solutions.Apis.Client
                 this.credential = authorization.Credential;
             }
 
-            public PscAndMtlsAwareClientFactory(
+            public PscAndMtlsAwareHttpClientFactory(
                 ServiceEndpointDirections directions,
                 IDeviceEnrollment deviceEnrollment)
             {

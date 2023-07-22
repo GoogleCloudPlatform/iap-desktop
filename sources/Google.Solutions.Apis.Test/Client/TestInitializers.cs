@@ -159,28 +159,5 @@ namespace Google.Solutions.Apis.Test.Client
             Assert.AreEqual("https://oauth2.mtls.googleapis.com/revoke", initializer.RevokeTokenUrl);
             Assert.AreEqual("https://openidconnect.mtls.googleapis.com/v1/userinfo", initializer.UserInfoUrl.ToString());
         }
-
-        [Test]
-        public void WhenPscOverrideFound_ThenCreateOpenIdInitializerUsesPsc()
-        {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
-
-            var oauthEndpoint = SignInClient.OAuthClient.CreateEndpoint(
-                new PrivateServiceConnectDirections("oauth2.example.com"));
-
-            var oidcEndpoint = SignInClient.OpenIdClient.CreateEndpoint(
-                new PrivateServiceConnectDirections("openidconnect.example.com"));
-
-            var initializer = Initializers.CreateOpenIdInitializer(
-                oauthEndpoint,
-                oidcEndpoint,
-                enrollment.Object);
-
-            Assert.AreEqual("https://accounts.example.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
-            Assert.AreEqual("https://oauth2.example.com/token", initializer.TokenServerUrl);
-            Assert.AreEqual("https://oauth2.example.com/revoke", initializer.RevokeTokenUrl);
-            Assert.AreEqual("https://openidconnect.example.com/v1/userinfo", initializer.UserInfoUrl.ToString());
-        }
     }
 }

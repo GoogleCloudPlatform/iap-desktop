@@ -129,7 +129,5 @@ namespace Google.Solutions.Apis.Test.Client
 
             StringAssert.Contains("https://sample.googleapis.com/compute", endpoint.ToString());
         }
-
-        //TODO: Test ToString for Directions class
     }
 }

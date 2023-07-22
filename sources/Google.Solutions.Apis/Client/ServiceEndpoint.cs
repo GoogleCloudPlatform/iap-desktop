@@ -32,56 +32,11 @@ namespace Google.Solutions.Apis.Client
     public interface IServiceEndpoint
     {
         /// <summary>
-        /// Get directions for connecting to the endpoint.
+        /// Get directions for connecting to the endpoint, considering
+        /// mTLS and PSC.
         /// </summary>
         ServiceEndpointDirections GetDirections(
             DeviceEnrollmentState enrollment);
-    }
-
-    /// <summary>
-    /// Directions for connecting to the endpoint to a Google API.
-    /// </summary>
-    public struct ServiceEndpointDirections
-    {
-        /// <summary>
-        /// Type of endpoint.
-        /// </summary>
-        public ServiceEndpointType Type { get; }
-
-        /// <summary>
-        /// Base URI to use for sending requests.
-        /// </summary>
-        public Uri BaseUri { get; }
-
-        /// <summary>
-        /// Host header to inject. Only applicable if Type
-        /// is set to PrivateServiceConnect.
-        /// </summary>
-        public string Host { get; }
-
-        /// <summary>
-        /// Determines whether a client certificate must be used.
-        /// </summary>
-        public bool UseClientCertificate => this.Type == ServiceEndpointType.MutualTls;
-
-        internal ServiceEndpointDirections(ServiceEndpointType type, Uri baseUri, string host)
-        {
-            this.Type = type;
-            this.BaseUri = baseUri;
-            this.Host = host;
-        }
-
-        public override string ToString()
-        {
-            return $"{this.BaseUri} (Type: {this.Type}, Host: {this.Host}, Cert: {this.UseClientCertificate})";
-        }
-    }
-
-    public enum ServiceEndpointType
-    {
-        Tls,
-        MutualTls,
-        PrivateServiceConnect
     }
 
     public class ServiceEndpoint<T> : IServiceEndpoint

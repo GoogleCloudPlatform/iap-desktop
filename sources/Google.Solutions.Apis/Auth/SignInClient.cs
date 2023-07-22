@@ -286,11 +286,10 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract class OAuthClient : IClient
         {
-            public static ServiceEndpoint<OAuthClient> CreateEndpoint(
-                PrivateServiceConnectDirections pscDirections = null)
+            public static ServiceEndpoint<OAuthClient> CreateEndpoint()
             {
                 return new ServiceEndpoint<OAuthClient>(
-                    pscDirections ?? PrivateServiceConnectDirections.None,
+                    PrivateServiceConnectDirections.None,
                     "https://oauth2.googleapis.com/");
             }
 
@@ -299,11 +298,10 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract class OpenIdClient : IClient
         {
-            public static ServiceEndpoint<OpenIdClient> CreateEndpoint(
-                PrivateServiceConnectDirections pscDirections = null)
+            public static ServiceEndpoint<OpenIdClient> CreateEndpoint()
             {
                 return new ServiceEndpoint<OpenIdClient>(
-                    pscDirections ?? PrivateServiceConnectDirections.None,
+                    PrivateServiceConnectDirections.None,
                     "https://openidconnect.googleapis.com/");
             }
 
