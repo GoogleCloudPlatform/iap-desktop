@@ -27,22 +27,22 @@ using NUnit.Framework;
 namespace Google.Solutions.Apis.Test.Auth
 {
     [TestFixture]
-    public class TestDecodedGoogleJsonWebToken
+    public class TestUnverifiedGoogleJsonWebToken
     {
         [Test]
         public void WhenTokenMissesPart_ThenDecodeThrowsException()
         {
             Assert.Throws<InvalidJwtException>(
-                () => DecodedGoogleJsonWebToken.Decode("a"));
+                () => UnverifiedGoogleJsonWebToken.Decode("a"));
             Assert.Throws<InvalidJwtException>(
-                () => DecodedGoogleJsonWebToken.Decode("a.b"));
+                () => UnverifiedGoogleJsonWebToken.Decode("a.b"));
         }
 
         [Test]
         public void WhenJsonIsMalformed_ThenDecodeThrowsException()
         {
             Assert.Throws<InvalidJwtException>(
-                () => DecodedGoogleJsonWebToken.Decode("YQ.YQ.YQ"));
+                () => UnverifiedGoogleJsonWebToken.Decode("YQ.YQ.YQ"));
         }
     }
 }

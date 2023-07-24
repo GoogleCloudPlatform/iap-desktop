@@ -31,12 +31,12 @@ namespace Google.Solutions.Apis.Auth
     /// <summary>
     /// A decoded but unverified Google JWT.
     /// </summary>
-    internal class DecodedGoogleJsonWebToken
+    internal class UnverifiedGoogleJsonWebToken
     {
         public GoogleJsonWebSignature.Header Header;
         public GoogleJsonWebSignature.Payload Payload;
 
-        private DecodedGoogleJsonWebToken(
+        private UnverifiedGoogleJsonWebToken(
             GoogleJsonWebSignature.Header header,
             GoogleJsonWebSignature.Payload payload)
         {
@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// Decode, but don't verify, a JSON web token.
         /// </summary>
-        public static DecodedGoogleJsonWebToken Decode(string token)
+        public static UnverifiedGoogleJsonWebToken Decode(string token)
         {
             token.ExpectNotEmpty(nameof(token));
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Auth
                 var payload = NewtonsoftJsonSerializer.Instance.Deserialize<GoogleJsonWebSignature.Payload>(
                     Encoding.UTF8.GetString(Base64UrlEncoding.Decode(encodedPayload)));
 
-                return new DecodedGoogleJsonWebToken(header, payload);
+                return new UnverifiedGoogleJsonWebToken(header, payload);
             } 
             catch (JsonException e)
             {
