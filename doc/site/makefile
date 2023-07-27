@@ -19,14 +19,14 @@
 # under the License.
 #
 
-public-site: install
+serve:
 	@echo "========================================================"
-	@echo "=== Building site                                    ==="
+	@echo "=== Serving site                                     ==="
 	@echo "========================================================"
-
-    cd $(MAKEDIR)/sources
-    python -m mkdocs build --site-dir $(MAKEDIR)/public
-    cd $(MAKEDIR)    
+    
+    cd $(MAKEDIR)\sources
+    python -m mkdocs serve
+    cd $(MAKEDIR)
     
 install:
 	@echo "========================================================"
@@ -34,12 +34,3 @@ install:
 	@echo "========================================================"
     
     python -m pip install mkdocs-material
-
-serve:
-	@echo "========================================================"
-	@echo "=== Serving site                                     ==="
-	@echo "========================================================"
-    
-    cd $(MAKEDIR)/sources
-    python -m mkdocs serve
-    cd $(MAKEDIR)
