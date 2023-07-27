@@ -1,0 +1,95 @@
+#
+# Copyright 2023 Google LLC
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+site_name: IAP Desktop
+theme:
+  name: material
+  custom_dir: overrides
+  logo: images/logo.png
+  favicon: images/favicon.ico
+  features:
+    - navigation.tabs
+    - content.code.copy
+    - navigation.expand
+  palette:
+    primary: #006CBE
+  icon:
+    repo: fontawesome/brands/github
+    admonition:
+        info: fontawesome/solid/user-shield
+extra:
+  generator: false
+extra_css:
+  - stylesheets/extra.css
+  
+repo_name: iap-desktop
+repo_url: https://github.com/GoogleCloudPlatform/iap-desktop
+download_url: https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi
+copyright: |
+    IAP Desktop is an open-source project developed and maintained by the Google Cloud Solutions Architects team.<br>
+    The project is not an officially supported Google product.<br>
+    Copyright &copy; 2019-2023 Google LLC<br>
+    <a href='https://cloud.google.com/'><img src='https://googlecloudplatform.github.io/iap-desktop/images/cloud.svg' width='240' height='160'/></a>
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.tabbed:
+      alternate_style: true 
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.details
+nav:
+  - Guides: 
+    - Overview: 
+      - Features: 'index.md'
+#      - "What's new?": '#todo'
+    - 'Get started':
+      - 'Install IAP Desktop': 'install.md'
+      - 'Configure IAP in your project': 'setup-iap.md'
+      - 'Connect to a Windows VM': 'connect-windows.md'
+      - 'Connect to a Linux VM': 'connect-linux.md'
+      - 'Connect to SQL Server': 'connect-sqlserver.md'
+      - 'Connect to VMs from within a web browser': 'connect-by-url.md'
+    - 'Use the tool windows':
+      - 'Instance properties': 'toolwindow-instance-properties.md'
+      - 'Event log': 'toolwindow-eventlog.md'
+      - 'Serial port output': 'toolwindow-serial-port-output.md'
+    - 'Customize IAP Desktop':
+#      - 'Change the theme': '#todo'
+      - 'Create profiles': 'create-profiles.md'
+    - 'Administer IAP Desktop':
+      - 'Use group policies': 'group-policies.md'
+      - 'Troubleshoot common issues': 'troubleshooting.md'
+  - 'Reference':
+    - User interface:
+        - 'Keyboard shortcuts': 'keyboard-shortcuts.md'
+        - 'Command line options': 'command-line-options.md'
+    - Configuration:
+        - 'Proxy configuration': 'proxy-configuration.md'
+        - 'Client application configuration': 'client-application-configuration.md'
+    - 'Privacy & securiry': 'security.md'
+  - GitHub: https://github.com/GoogleCloudPlatform/iap-desktop
+    
