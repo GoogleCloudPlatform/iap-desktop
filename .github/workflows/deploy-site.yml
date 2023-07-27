@@ -44,20 +44,17 @@ permissions:
   pages: write
   id-token: write
 
-#
-# Allow only one concurrent deployment, skipping runs queued between the run 
-# in-progress and latest queued. However, do NOT cancel in-progress runs as 
-# we want to allow these production deployments to complete.
-#
 concurrency:
+  #
+  # Allow only one concurrent deployment, skipping runs queued between the run 
+  # in-progress and latest queued. However, do NOT cancel in-progress runs as 
+  # we want to allow these production deployments to complete.
+  #
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  deploy:
-#    environment:
-#      name: github-pages
-#      url: ${{ steps.deployment.outputs.page_url }}
+  deploy-site:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -73,7 +70,7 @@ jobs:
         run: |
           python -m pip install mkdocs-material
           python -m mkdocs build --site-dir ../public
-      
+          
       - name: Set up Pages
         if: github.ref == 'refs/heads/master'
         uses: actions/configure-pages@v3
@@ -83,7 +80,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         with:
           path: 'doc/site/public'
-#          
-#      - name: Deploy to GitHub Pages
-#        id: deployment
-#        uses: actions/deploy-pages@v2
+          
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: actions/deploy-pages@v2
