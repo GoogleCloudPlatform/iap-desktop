@@ -29,7 +29,10 @@ on:
   push:
     branches: ["master"]
     paths: ["doc/site/**"]
-
+    
+  pull_request:
+    branches: ["master"]
+    
   #
   # Allows to run this workflow manually from the Actions tab
   #
