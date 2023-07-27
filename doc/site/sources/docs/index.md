@@ -1,3 +1,8 @@
+---
+title: Convenient, secure remote access and management for Windows Server and Linux VMs on Google Cloud
+description: IAP Desktop provides zero-trust Remote Desktop and SSH access to Linux and Windows VMs on Compute Engine.
+---
+
 # IAP Desktop
 
 IAP Desktop is a Remote Desktop and SSH client that lets you connect to your Google Cloud VM instances from anywhere.

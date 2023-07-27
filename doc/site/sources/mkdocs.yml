@@ -63,8 +63,7 @@ markdown_extensions:
   - pymdownx.details
 nav:
   - Guides: 
-    - Overview: 
-      - Features: 'index.md'
+    - Overview: 'index.md'
 #      - "What's new?": '#todo'
     - 'Get started':
       - 'Install IAP Desktop': 'install.md'
