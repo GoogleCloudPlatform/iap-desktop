@@ -3,6 +3,7 @@
 IAP Desktop is a Remote Desktop and SSH client that lets you connect to your Google Cloud VM instances from anywhere.
 
 [<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi)
+[<img src="doc/images/documentation.png">](https://googlecloudplatform.github.io/iap-desktop/)
 
 <sub>
 For Windows 11/10/8.1. No admin rights required.
@@ -35,7 +36,7 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 <img src='doc/images/RemoteDesktop_350.png' align='right'>
 </a>
 
-IAP Desktop is a [full-featured Remote Desktop client](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-instances) that lets you:
+IAP Desktop is a [full-featured Remote Desktop client](https://googlecloudplatform.github.io/iap-desktop/connect-windows/) that lets you:
 
 *   Use multiple Remote Desktop sessions at the same time
 *   Switch between full-screen and tabbed Remote Desktop sessions
@@ -56,7 +57,7 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 <img src='doc/images/SSH_350.png?raw=true' align='right'>
 </a>
 
-IAP Desktop [includes an SSH client and terminal](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-linux-instances) so that you can:
+IAP Desktop [includes an SSH client and terminal](https://googlecloudplatform.github.io/iap-desktop/connect-linux/) so that you can:
 
 *   Use multiple SSH sessions in parallel, and switch between them using tabs
 *   Upload and download files using SFTP
@@ -81,7 +82,7 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 IAP Desktop gives you a consolidated view of your VMs and lets you:
 
 *   Connect to VMs across multiple projects and Google Cloud organizations
-*   [View diagnostics information](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-activity)
+*   [View diagnostics information](https://googlecloudplatform.github.io/iap-desktop/toolwindow-eventlog/)
     such as logs and serial port output
 *   Remotely join a VM to Active Directory 
 *   Perform other common operations such as starting or stopping VMs
@@ -104,29 +105,41 @@ application through an IAP TCP forwarding tunnel.
 
 Supported client applications include:
 
-*   [SQL Server Management Studio](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-SQL-Server) (supporting Windows authentication and SQL Server authentication)
+*   [SQL Server Management Studio](https://googlecloudplatform.github.io/iap-desktop/connect-sqlserver/) (supporting Windows authentication and SQL Server authentication)
 *   MySQL Shell
 *   Chrome (to connect to management portals and other internal websites)
-*   [Custom applications](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Client-application-configuration)
+*   [Custom applications](https://googlecloudplatform.github.io/iap-desktop/client-application-configuration/)
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
 ## Learn more about IAP Desktop
 
-* [Setting up IAP-Desktop](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Installation)
-* [Connecting to Windows VMs](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-instances)
-* [Connecting to Linux VMs](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-linux-instances)
-* [Connecting to VM instances from within a web browser](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration)
-* [Viewing instance details](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-details)
-* [Viewing instance activity](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-activity)
-* [Analyzing VM instance usage](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Analyzing-usage)
-* [Managing IAP Desktop using group policies](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Managing-IAP-Desktop-using-group-policies)
-* [Troubleshooting](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Troubleshooting)
+### Get started
+
+*   [Install IAP Desktop](https://googlecloudplatform.github.io/iap-desktop/install/)
+*   [Configure IAP in your project](https://googlecloudplatform.github.io/iap-desktop/setup-iap/)
+*   [Connect to a Windows VM](https://googlecloudplatform.github.io/iap-desktop/connect-windows/)
+*   [Connect to a Linux VM](https://googlecloudplatform.github.io/iap-desktop/connect-linux/)
+*   [Connect to SQL Server](https://googlecloudplatform.github.io/iap-desktop/connect-sqlserver/)
+*   [Connect to VMs from within a web browser](https://googlecloudplatform.github.io/iap-desktop/connect-by-url/)
+
+### Use the tool windows
+
+*   [Instance properties](https://googlecloudplatform.github.io/iap-desktop/toolwindow-instance-properties/)
+*   [Event log](https://googlecloudplatform.github.io/iap-desktop/toolwindow-eventlog/)
+*   [Serial port output](https://googlecloudplatform.github.io/iap-desktop/toolwindow-serial-port-output/)
+
+### Customize IAP Desktop
+
+*   [Create profiles](https://googlecloudplatform.github.io/iap-desktop/create-profiles/)
+
+### Administer IAP Desktop
+
+*   [Use group policies](https://googlecloudplatform.github.io/iap-desktop/group-policies/)
+*   [Troubleshoot common issues](https://googlecloudplatform.github.io/iap-desktop/troubleshooting/)
 
 
-
-
-_IAP Desktop is an open-source project and not an officially supported Google product._
+_IAP Desktop is an open-source project developed and maintained by the Google Cloud Solutions Architects team. The project is not an officially supported Google product._
 
 _All files in this repository are under the
 [Apache License, Version 2.0](LICENSE.txt) unless noted otherwise._
