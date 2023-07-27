@@ -73,9 +73,9 @@ jobs:
         
       - name: Build site
         working-directory: doc/site
-        run: 
-        - python -m pip install mkdocs-material
-        - python -m mkdocs build --site-dir public
+        run: |
+          python -m pip install mkdocs-material
+          python -m mkdocs build --site-dir public
         
 #      - name: Upload artifact
 #        uses: actions/upload-pages-artifact@v2
