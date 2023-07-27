@@ -1,0 +1,67 @@
+# Privacy & security
+
+## Usage of Google APIs
+
+IAP Desktop accesses Google Cloud Platform to:
+
+* establish [Cloud IAP TCP tunnels  :octicons-link-external-16:](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to VM instances
+* list VMs and obtain metadata and logs for VM instances  
+* generate Windows logon credentials if requested
+* publish SSH public keys if requested
+
+The application uses the following Google APIs for this purpose:
+
+* [OAuth 2  :octicons-link-external-16:](https://developers.google.com/identity/protocols/OAuth2)
+* [Compute Engine API  :octicons-link-external-16:](https://cloud.google.com/compute/docs/reference/rest/v1/)
+* [Resource Manager API  :octicons-link-external-16:](https://cloud.google.com/resource-manager/reference/rest)
+* [OS Login API  :octicons-link-external-16:](https://cloud.google.com/compute/docs/oslogin/rest)
+* [Logging API  :octicons-link-external-16:](https://cloud.google.com/logging/docs/reference/v2/rest)
+
+Periodically, IAP Desktop accesses the [GitHub API :octicons-link-external-16: ](https://docs.github.com/en/rest) to check
+for updates.
+
+IAP Desktop does not disclose or transmit any data to APIs other than the
+ones listed above. 
+
+## Credential storage
+
+All credentials managed by IAP Desktop are stored locally and are encrypted before storage.
+
+### OAuth tokens
+
+When you use the application for the first time, you have to authorize it to 
+access your Google Cloud Platform on your behalf. As a result of this authorization,
+the application receives an OAuth refresh token which allows it to re-authenticate 
+automatically the next time you use it. This refresh token
+is encrypted by using the [Windows Data Protection API :octicons-link-external-16: ](https://en.wikipedia.org/wiki/Data_Protection_API)
+(DPAPI) and stored in the _current user_ part of the Windows registry. 
+
+
+### Windows logon credentials
+
+IAP Desktop allows you to save Windows logon credentials. These credentials are 
+stored in the _current user_ part of the Windows registry. Like the OAuth refresh token,
+all passwords are encrypted by using the DPAPI before storage.
+
+### SSH keys
+
+By default, IAP Desktop uses a ECDSA NISTP-256 key pair for SSH public key authentication.
+The key is managed using the
+[Microsoft Software Key Storage Provider :octicons-link-external-16: ](https://docs.microsoft.com/en-us/windows/win32/seccertenroll/cng-key-storage-providers#microsoft-software-key-storage-provider)
+and is not exportable.
+
+Alternatively, you can configure IAP Desktop to use one of the following key types:
+
+*   RSA (3072 bit)
+*   ECDSA NISTP-384
+*   ECDSA NISTP-521 
+
+You can list existing keys by running the following command:
+
+    certutil -csp "Microsoft Software Key Storage Provider" -key -user | findstr IAPDESKTOP_
+
+### Proxy credentials
+
+If you've configured IAP Desktop to use an HTTP proxy server that requires authentication,
+then the proxy credentials are stored in the _current user_ part of the Windows registry. 
+Like the OAuth refresh token, the password is encrypted by using the DPAPI before storage.

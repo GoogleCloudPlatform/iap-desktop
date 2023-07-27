@@ -1,0 +1,86 @@
+#
+# Copyright 2023 Google LLC
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: Deploy documentation to GitHub Pages
+
+on:
+  #
+  # Only run when there are changes in the doc/ directory of the
+  # master branch.
+  #
+  push:
+    branches: ["master"]
+    paths: ["doc/site/**"]
+    
+  pull_request:
+    branches: ["master"]
+    paths: ["doc/site/**"]
+    
+  #
+  # Allows to run this workflow manually from the Actions tab
+  #
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  #
+  # Allow only one concurrent deployment, skipping runs queued between the run 
+  # in-progress and latest queued. However, do NOT cancel in-progress runs as 
+  # we want to allow these production deployments to complete.
+  #
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+        
+      - name: Build site
+        working-directory: doc/site/sources
+        run: |
+          python -m pip install mkdocs-material
+          python -m mkdocs build --site-dir ../public
+          
+      - name: Set up Pages
+        if: github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v3
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        if: github.ref == 'refs/heads/master'
+        with:
+          path: 'doc/site/public'
+          
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: actions/deploy-pages@v2
