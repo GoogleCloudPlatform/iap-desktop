@@ -4,7 +4,7 @@ IAP Desktop supports the following command line options:
 
 | Switch | Synopsis |
 | ------ | -------- |
-| `/url URL` | Launch IAM Desktop and connect to instance specified by `URL`. For details on the supported URL format, see [Connecting to VM instances from within a web browser](Browser-Integration) |
+| `/url URL` | Launch IAM Desktop and connect to instance specified by `URL`. For details on the supported URL format, see [Connecting to VM instances from within a web browser](connect-by-url.md) |
 | `/debug`     |  Launch IAM Desktop with debug logging enabled. Logs are saved to `%APPDATA%\Google\IAP Desktop\Logs`.
 | `/profile NAME` | Use profile `NAME` instead of the default profile. |
 
