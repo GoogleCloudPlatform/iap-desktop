@@ -5,7 +5,7 @@ description: IAP Desktop provides zero-trust Remote Desktop and SSH access to Li
 
 # IAP Desktop
 
-IAP Desktop is a Remote Desktop and SSH client that lets you connect to your Google Cloud VM instances from anywhere.
+IAP Desktop is an open-source Remote Desktop and SSH client that lets you connect to your Google Cloud VM instances from anywhere.
 
 [Download IAP Desktop](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi){ .md-button }
 
