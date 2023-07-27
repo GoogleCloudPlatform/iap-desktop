@@ -32,6 +32,7 @@ on:
     
   pull_request:
     branches: ["master"]
+    paths: ["doc/site/**"]
     
   #
   # Allows to run this workflow manually from the Actions tab
@@ -67,8 +68,8 @@ jobs:
         with:
           python-version: 3.x
       
-      - name: Set up Pages
-        uses: actions/configure-pages@v3
+#      - name: Set up Pages
+#        uses: actions/configure-pages@v3
         
       - name: Build site
         working-directory: doc/site
