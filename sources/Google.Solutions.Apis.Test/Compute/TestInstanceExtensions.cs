@@ -38,10 +38,11 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var instance = await adapter
+            var instance = await client
                 .GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)
@@ -61,10 +62,11 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var instance = await adapter.GetInstanceAsync(
+            var instance = await client.GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -81,10 +83,11 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance(PublicIp = false)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var instance = await adapter.GetInstanceAsync(
+            var instance = await client.GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -97,10 +100,11 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var instance = await adapter.GetInstanceAsync(
+            var instance = await client.GetInstanceAsync(
                     await testInstance,
                     CancellationToken.None)
                 .ConfigureAwait(false);

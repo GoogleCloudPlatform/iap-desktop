@@ -47,28 +47,20 @@ namespace Google.Solutions.Apis.Client
         //
         private readonly HttpClient client;
 
-        public RestClient(
-            UserAgent userAgent,
-            X509Certificate2 clientCertificate)
+        internal RestClient(
+            HttpClient client,
+            UserAgent userAgent)
         {
+            this.client = client.ExpectNotNull(nameof(client));
             this.UserAgent = userAgent.ExpectNotNull(nameof(userAgent));
-            this.ClientCertificate = clientCertificate;
-
-            if (this.ClientCertificate != null)
-            {
-                var handler = new HttpClientHandler();
-                handler.TryAddClientCertificate(this.ClientCertificate);
-                this.client = new HttpClient(handler);
-            }
-            else
-            {
-                this.client = new HttpClient();
-            }
 
             this.client.Timeout = DefaultTimeout;
         }
 
-        public RestClient(UserAgent userAgent) : this(userAgent, null)
+        public RestClient(UserAgent userAgent) 
+            : this(
+                  new HttpClient(),
+                  userAgent)
         {
         }
 

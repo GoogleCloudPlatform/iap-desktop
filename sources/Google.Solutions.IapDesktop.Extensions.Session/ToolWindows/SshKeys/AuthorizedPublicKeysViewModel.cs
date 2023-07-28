@@ -49,8 +49,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         private readonly IConfirmationDialog confirmationDialog;
         private readonly IJobService jobService;
         private readonly Service<IOsLoginProfile> osLoginService;
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
-        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
+        private readonly Service<IComputeEngineClient> computeClient;
+        private readonly Service<IResourceManagerClient> resourceManagerAdapter;
 
         private string filter;
         private AuthorizedPublicKeysModel.Item selectedItem;
@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.confirmationDialog = serviceProvider.GetService<IConfirmationDialog>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.osLoginService = serviceProvider.GetService<Service<IOsLoginProfile>>();
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
-            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
+            this.computeClient = serviceProvider.GetService<Service<IComputeEngineClient>>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerClient>>();
 
             this.IsListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                     else
                     {
                         await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                this.computeEngineAdapter.GetInstance(),
+                                this.computeClient.GetInstance(),
                                 this.resourceManagerAdapter.GetInstance(),
                                 this.ModelKey,
                                 this.selectedItem,
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                         {
                             return await AuthorizedPublicKeysModel
                                 .LoadAsync(
-                                    this.computeEngineAdapter.GetInstance(),
+                                    this.computeClient.GetInstance(),
                                     this.resourceManagerAdapter.GetInstance(),
                                     this.osLoginService.GetInstance(),
                                     node,

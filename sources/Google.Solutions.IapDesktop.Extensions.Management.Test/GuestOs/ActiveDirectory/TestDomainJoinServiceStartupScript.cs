@@ -57,16 +57,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineAdapter(
+                var computeClient = new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
                     await credentialTask.ToAuthorization(),
                     TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
-                    computeEngineAdapter))
+                    computeClient))
                 {
-                    var hello = await new DomainJoinService(new Mock<IComputeEngineAdapter>().AsService())
+                    var hello = await new DomainJoinService(new Mock<IComputeEngineClient>().AsService())
                         .AwaitMessageAsync<DomainJoinService.HelloMessage>(
                             operation,
                             DomainJoinService.HelloMessage.MessageTypeString,
@@ -97,16 +98,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var computeEngineAdapter = new ComputeEngineAdapter(
+                var computeClient = new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
                     await credentialTask.ToAuthorization(),
                     TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
-                    computeEngineAdapter))
+                    computeClient))
                 {
-                    var response = await new DomainJoinService(new Mock<IComputeEngineAdapter>().AsService())
+                    var response = await new DomainJoinService(new Mock<IComputeEngineClient>().AsService())
                         .AwaitMessageAsync<DomainJoinService.JoinResponse>(
                             operation,
                             DomainJoinService.JoinResponse.MessageTypeString,

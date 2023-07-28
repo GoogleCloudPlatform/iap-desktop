@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
         DialogResult SelectCloudProjects(
             IWin32Window owner,
             string caption,
-            IResourceManagerAdapter resourceManager,
+            IResourceManagerClient resourceManager,
             out IReadOnlyCollection<ProjectLocator> selectedProjects);
 
         DialogResult SelectLocalProjects(
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
         public DialogResult SelectCloudProjects(
             IWin32Window owner,
             string caption,
-            IResourceManagerAdapter resourceManager,
+            IResourceManagerClient resourceManager,
             out IReadOnlyCollection<ProjectLocator> selectedProjects)
         {
             return SelectProjects(
@@ -141,9 +141,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
 
         internal sealed class CloudModel : IProjectPickerModel
         {
-            private readonly IResourceManagerAdapter resourceManager;
+            private readonly IResourceManagerClient resourceManager;
 
-            public CloudModel(IResourceManagerAdapter resourceManager)
+            public CloudModel(IResourceManagerClient resourceManager)
             {
                 this.resourceManager = resourceManager;
             }

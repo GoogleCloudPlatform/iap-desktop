@@ -22,8 +22,10 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Http;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
@@ -38,7 +40,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth
 {
-    public interface ISignInAdapter
+    public interface ISignInClient
     {
         Task DeleteRefreshTokenAsync();
 
@@ -54,14 +56,16 @@ namespace Google.Solutions.Apis.Auth
             CancellationToken token);
     }
 
-    public class SignInAdapter : ISignInAdapter
+    public class SignInClient : ISignInClient 
     {
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
         public const string StoreUserId = "oauth";
 
-        private readonly X509Certificate2 deviceCertificate;
+        private readonly ServiceEndpoint<OAuthClient> oauthEndpoint;
+        private readonly ServiceEndpoint<OpenIdClient> openIdEndpoint;
+        private readonly IDeviceEnrollment enrollment;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
         private readonly UserAgent userAgent;
@@ -69,8 +73,10 @@ namespace Google.Solutions.Apis.Auth
         private readonly IDataStore dataStore;
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
-        public SignInAdapter(
-            X509Certificate2 deviceCertificate,
+        public SignInClient(
+            ServiceEndpoint<OAuthClient> oauthEndpoint,
+            ServiceEndpoint<OpenIdClient> openIdEndpoint,
+            IDeviceEnrollment enrollment,
             ClientSecrets clientSecrets,
             UserAgent userAgent,
             IEnumerable<string> scopes,
@@ -78,7 +84,9 @@ namespace Google.Solutions.Apis.Auth
             ICodeReceiver codeReceiver,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
-            this.deviceCertificate = deviceCertificate;
+            this.oauthEndpoint = oauthEndpoint.ExpectNotNull(nameof(oauthEndpoint));
+            this.openIdEndpoint = openIdEndpoint.ExpectNotNull(nameof(openIdEndpoint));
+            this.enrollment = enrollment.ExpectNotNull(nameof(enrollment));
             this.codeReceiver = codeReceiver.ExpectNotNull(nameof(codeReceiver));
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
@@ -87,21 +95,26 @@ namespace Google.Solutions.Apis.Auth
             this.createCodeFlow = createCodeFlow;
         }
 
-        private OAuthInitializer CreateInitializer()
+        private Initializers.OpenIdInitializer CreateInitializer()
         {
+            var initializer = Initializers.CreateOpenIdInitializer(
+                this.oauthEndpoint,
+                this.openIdEndpoint,
+                this.enrollment);
+
             //
             // Add email scope to requested scope so that we can query
             // user info.
             //
-            return new OAuthInitializer(this.deviceCertificate)
-            {
-                ClientSecrets = clientSecrets,
-                Scopes = this.scopes.Concat(new[] { SignInAdapter.EmailScope }),
-                DataStore = dataStore
-            };
+            initializer.ClientSecrets = this.clientSecrets;
+            initializer.Scopes = this.scopes.Concat(new[] { SignInClient.EmailScope });
+            initializer.DataStore = this.dataStore;
+
+            return initializer;
         }
 
-        private IAuthorizationCodeFlow CreateFlow(OAuthInitializer initializer)
+        private IAuthorizationCodeFlow CreateFlow(
+            Initializers.OpenIdInitializer initializer)
         {
             if (this.createCodeFlow != null)
             {
@@ -114,11 +127,7 @@ namespace Google.Solutions.Apis.Auth
                 ApiTraceSources.Default.TraceVerbose(
                     "mTLS supported: {0}", ClientServiceMtlsExtensions.CanEnableDeviceCertificateAuthentication);
                 ApiTraceSources.Default.TraceVerbose(
-                    "mTLS certificate: {0}", this.deviceCertificate?.Subject);
-                ApiTraceSources.Default.TraceVerbose(
-                    "TokenServerUrl: {0}", flow.TokenServerUrl);
-                ApiTraceSources.Default.TraceVerbose(
-                    "RevokeTokenUrl: {0}", flow.RevokeTokenUrl);
+                    "mTLS certificate: {0}", this.enrollment?.Certificate?.Subject);
 
                 return flow;
             }
@@ -224,7 +233,7 @@ namespace Google.Solutions.Apis.Auth
                 e.Error?.ErrorUri != null &&
                 e.Error.ErrorUri.StartsWith("https://accounts.google.com/info/servicerestricted"))
             {
-                if (this.deviceCertificate != null)
+                if (this.enrollment.State == DeviceEnrollmentState.Enrolled)
                 {
                     throw new AuthorizationFailedException(
                         "Authorization failed because your computer's device certificate is " +
@@ -257,11 +266,15 @@ namespace Google.Solutions.Apis.Auth
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient(this.userAgent, this.deviceCertificate);
-
+            var initializer = CreateInitializer();
+            var client = new RestClient(
+                initializer.HttpClientFactory
+                    .CreateHttpClient(new CreateHttpClientArgs()),
+                this.userAgent);
+            
             return await client
                 .GetAsync<UserInfo>(
-                    CreateInitializer().UserInfoUrl,
+                    CreateInitializer().UserInfoUrl.ToString(),
                     credential,
                     token)
                 .ConfigureAwait(false);
@@ -271,52 +284,28 @@ namespace Google.Solutions.Apis.Auth
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class OAuthInitializer : GoogleAuthorizationCodeFlow.Initializer
+        public abstract class OAuthClient : IClient
         {
-            public string UserInfoUrl { get; }
-
-            private static string FixupUrl(
-                string url,
-                X509Certificate2 certificate)
+            public static ServiceEndpoint<OAuthClient> CreateEndpoint()
             {
-                //
-                // Switch to mTLS endpoint if there is a device certificate.
-                //
-                return certificate == null
-                    ? url
-                    : url.Replace(".googleapis.com", ".mtls.googleapis.com");
+                return new ServiceEndpoint<OAuthClient>(
+                    PrivateServiceConnectDirections.None,
+                    "https://oauth2.googleapis.com/");
             }
 
-            public OAuthInitializer(X509Certificate2 certificate)
-                : base(FixupUrl("https://accounts.google.com/o/oauth2/v2/auth", certificate),
-                       FixupUrl("https://oauth2.googleapis.com/token", certificate),
-                       FixupUrl("https://oauth2.googleapis.com/revoke", certificate))
-            {
-                this.UserInfoUrl = FixupUrl(
-                    "https://openidconnect.googleapis.com/v1/userinfo", certificate);
-
-                if (certificate != null)
-                {
-                    //
-                    // Inject the certificate into all HTTP communication.
-                    //
-                    ClientServiceMtlsExtensions.EnableDeviceCertificateAuthentication(
-                        this,
-                        certificate);
-
-                    ApiTraceSources.Default.TraceVerbose("Using OAuth mTLS endpoints");
-                }
-                else
-                {
-                    ApiTraceSources.Default.TraceVerbose("Using OAuth TLS endpoints");
-                }
-            }
+            public IServiceEndpoint Endpoint { get; }
         }
 
-        public class OpenIdConfiguration
+        public abstract class OpenIdClient : IClient
         {
-            [JsonProperty("userinfo_endpoint")]
-            public string UserInfoEndpoint { get; set; }
+            public static ServiceEndpoint<OpenIdClient> CreateEndpoint()
+            {
+                return new ServiceEndpoint<OpenIdClient>(
+                    PrivateServiceConnectDirections.None,
+                    "https://openidconnect.googleapis.com/");
+            }
+
+            public IServiceEndpoint Endpoint { get; }
         }
     }
 
@@ -326,6 +315,7 @@ namespace Google.Solutions.Apis.Auth
         {
         }
     }
+
     public class OAuthScopeNotGrantedException : AuthorizationFailedException
     {
         public OAuthScopeNotGrantedException(string message) : base(message)

@@ -48,14 +48,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         {
             await testInstance;
 
-            var adapter = new ComputeEngineAdapter(
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             var model = await SerialOutputModel
                 .LoadAsync(
                     "display-name",
-                    adapter,
+                    computeClient,
                     await testInstance,
                     ConsolePort,
                     CancellationToken.None)
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync("");
 
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter.Setup(a => a.GetSerialPortOutput(
                 It.IsAny<InstanceLocator>(),
                 1)).Returns(stream.Object);
@@ -110,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync("");
 
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter.Setup(a => a.GetSerialPortOutput(
                 It.IsAny<InstanceLocator>(),
                 1)).Returns(stream.Object);

@@ -27,6 +27,7 @@ using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,13 +42,13 @@ namespace Google.Solutions.Iap.Test.Protocol
             InstanceLocator vmRef,
             ICredential credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             return new SshRelayStream(
-                new IapClient(
-                    credential,
-                    vmRef,
-                    80,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent));
+                client.GetTarget(vmRef, 80, IapClient.DefaultNetworkInterface));
         }
 
         [Test]
@@ -81,13 +82,18 @@ namespace Google.Solutions.Iap.Test.Protocol
             var request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
 
+            var credential = GoogleCredential.FromAccessToken("invalid");
+
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var stream = new SshRelayStream(
-                new IapClient(
-                    GoogleCredential.FromAccessToken("invalid"),
+                client.GetTarget(
                     await vm,
                     80,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent));
+                    IapClient.DefaultNetworkInterface));
 
             ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
             {

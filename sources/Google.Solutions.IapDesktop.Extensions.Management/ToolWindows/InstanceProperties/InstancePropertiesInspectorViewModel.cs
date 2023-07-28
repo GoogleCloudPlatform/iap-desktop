@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         private readonly IJobService jobService;
         private readonly Service<IGuestOsInventory> packageInventory;
-        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IComputeEngineClient> computeClient;
 
 
         public InstancePropertiesInspectorViewModel(IServiceProvider serviceProvider)
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.packageInventory = serviceProvider.GetService<Service<IGuestOsInventory>>();
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.computeClient = serviceProvider.GetService<Service<IComputeEngineClient>>();
 
             this.informationText = ObservableProperty.Build<string>(null);
             this.inspectedObject = ObservableProperty.Build<object>(null);
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                                     return await InstancePropertiesInspectorModel
                                         .LoadAsync(
                                             vmNode.Instance,
-                                            this.computeEngineAdapter.GetInstance(),
+                                            this.computeClient.GetInstance(),
                                             this.packageInventory.GetInstance(),
                                             combinedTokenSource.Token)
                                         .ConfigureAwait(false);

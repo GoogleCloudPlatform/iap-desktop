@@ -113,9 +113,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
         private const string SampleProjectId = "project-1";
 
-        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock()
+        private static Mock<IResourceManagerClient> CreateResourceManagerClientMock()
         {
-            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()))
@@ -131,11 +131,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             return resourceManagerAdapter;
         }
 
-        private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineClientMock(
             string projectId,
             params Instance[] instances)
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     It.Is<string>(id => id == projectId),
                     It.IsAny<CancellationToken>()))
@@ -166,8 +166,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventService = new Mock<IEventQueue>();
 
             var workspace = new ProjectWorkspace(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
@@ -194,8 +194,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventService = new Mock<IEventQueue>();
 
             var workspace = new ProjectWorkspace(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 projectRepository.Object,
                 eventService.Object);
 
@@ -218,12 +218,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectsNotCached_ThenGetRootNodeLoadsProjects()
         {
-            var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
-            var resourceManagerAdapter = CreateResourceManagerAdapterMock();
+            var computeClient = CreateComputeEngineClientMock(SampleProjectId);
+            var resourceManagerClient = CreateResourceManagerClientMock();
 
             var workspace = new ProjectWorkspace(
-                computeEngineAdapter.Object,
-                resourceManagerAdapter.Object,
+                computeClient.Object,
+                resourceManagerClient.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -235,11 +235,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreEqual(SampleProjectId, model.Projects.First().Project.Name);
             Assert.AreEqual("[project-1]", model.Projects.First().DisplayName);
 
-            resourceManagerAdapter.Verify(a => a.GetProjectAsync(
+            resourceManagerClient.Verify(a => a.GetProjectAsync(
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
-            computeEngineAdapter.Verify(a => a.ListInstancesAsync(
+            computeClient.Verify(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenSomeProjectsInaccessible_ThenGetRootNodeLoadsOtherProjects()
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     It.Is<string>(id => id == "accessible-project"),
                     It.IsAny<CancellationToken>()))
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("test", new Exception()));
 
-            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "accessible-project"),
                     It.IsAny<CancellationToken>()))
@@ -299,11 +299,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectsCached_ThenGetRootNodeAsyncReturnsCachedProjects()
         {
-            var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
-            var resourceManagerAdapter = CreateResourceManagerAdapterMock();
+            var computeClient = CreateComputeEngineClientMock(SampleProjectId);
+            var resourceManagerAdapter = CreateResourceManagerClientMock();
 
             var workspace = new ProjectWorkspace(
-                computeEngineAdapter.Object,
+                computeClient.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
@@ -321,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
-            computeEngineAdapter.Verify(a => a.ListInstancesAsync(
+            computeClient.Verify(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -330,11 +330,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectsCachedButForceRefreshIsTrue_ThenGetRootNodeAsyncLoadsProjects()
         {
-            var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
-            var resourceManagerAdapter = CreateResourceManagerAdapterMock();
+            var computeClient = CreateComputeEngineClientMock(SampleProjectId);
+            var resourceManagerAdapter = CreateResourceManagerClientMock();
 
             var workspace = new ProjectWorkspace(
-                computeEngineAdapter.Object,
+                computeClient.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
-            computeEngineAdapter.Verify(a => a.ListInstancesAsync(
+            computeClient.Verify(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
@@ -362,8 +362,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(
                     SampleProjectId,
                     "nonexisting-1").Object,
@@ -384,7 +384,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public void WhenLoadingDataCausesReauthError_ThenGetRootNodeAsyncPropagatesException()
         {
-            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -394,7 +394,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 }));
 
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
@@ -410,14 +410,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenZonesNotCached_ThenGetZoneNodesAsyncLoadsZones()
         {
-            var computeAdapter = CreateComputeEngineAdapterMock(
+            var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
 
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -446,14 +446,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenZonesCached_ThenGetZoneNodesAsyncReturnsCachedZones()
         {
-            var computeAdapter = CreateComputeEngineAdapterMock(
+            var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
 
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -481,14 +481,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenZonesCachedButForceRefreshIsTrue_ThenGetZoneNodesAsyncLoadsZones()
         {
-            var computeAdapter = CreateComputeEngineAdapterMock(
+            var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
 
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -514,14 +514,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenInstanceHasNoDisk_ThenGetZoneNodesAsyncSkipsInstance()
         {
-            var computeAdapter = CreateComputeEngineAdapterMock(
+            var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceWithoutDiskInZone1);
 
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -543,14 +543,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenInstanceIsTerminated_ThenGetZoneNodesAsyncMarksInstanceAsNotRunning()
         {
-            var computeAdapter = CreateComputeEngineAdapterMock(
+            var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
                 SampleTerminatedLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone1);
 
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -583,8 +583,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -601,8 +601,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -627,10 +627,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -653,10 +653,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -679,10 +679,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenProjectNotAddedButZoneLocatorValid_ThenGetNodeAsyncReturnsNull()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
@@ -697,10 +697,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenProjectNotAddedButInstanceLocatorValid_ThenGetNodeAsyncReturnsNull()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
@@ -719,8 +719,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -740,10 +740,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public async Task WhenActiveNodeSet_ThenGetActiveNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     SampleProjectId,
                     SampleWindowsInstanceInZone1).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
@@ -771,8 +771,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -802,8 +802,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -832,8 +832,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -864,8 +864,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 eventService.Object);
 
@@ -882,8 +882,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenLocatorIsInvalid_ThenSetActiveNodeAsyncRaisesArgumentException()
         {
             var workspace = new ProjectWorkspace(
-                CreateComputeEngineAdapterMock(SampleProjectId).Object,
-                CreateResourceManagerAdapterMock().Object,
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 

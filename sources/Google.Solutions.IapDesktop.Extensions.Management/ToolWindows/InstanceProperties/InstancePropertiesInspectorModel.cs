@@ -377,17 +377,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         public static async Task<InstancePropertiesInspectorModel> LoadAsync(
             InstanceLocator instanceLocator,
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeClient,
             IGuestOsInventory packageInventory,
             CancellationToken token)
         {
-            var instance = await computeEngineAdapter
+            var instance = await computeClient
                 .GetInstanceAsync(
                     instanceLocator,
                     token)
                 .ConfigureAwait(false);
 
-            var project = await computeEngineAdapter
+            var project = await computeClient
                 .GetProjectAsync(
                     instanceLocator.ProjectId,
                     token)

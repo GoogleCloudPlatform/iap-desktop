@@ -50,14 +50,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             InstanceLocator instance,
             ICredential credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var policy = new AllowAllPolicy();
             var listener = new IapListener(
-                new IapClient(
-                    credential,
+                client.GetTarget(
                     instance,
                     3389,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent),
+                    IapClient.DefaultNetworkInterface),
                 policy,
                 null);
 

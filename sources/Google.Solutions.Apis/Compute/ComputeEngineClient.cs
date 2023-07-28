@@ -36,21 +36,16 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-
-    /// <summary>
-    /// Adapter class for the Compute Engine API.
-    /// </summary>
-    public sealed class ComputeEngineAdapter : IComputeEngineAdapter
+    public sealed class ComputeEngineClient : IComputeEngineClient
     {
-        internal const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
-
         private readonly ComputeService service;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ComputeEngineAdapter(
+        public ComputeEngineClient(
+            ServiceEndpoint<ComputeEngineClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
@@ -58,11 +53,29 @@ namespace Google.Solutions.Apis.Compute
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new ComputeService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
+                    endpoint,
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+        public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
+        {
+            return new ServiceEndpoint<ComputeEngineClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
+                "https://compute.googleapis.com/compute/v1/");
+        }
+
+        //---------------------------------------------------------------------
+        // IClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
+
+        //---------------------------------------------------------------------
+        // IComputeEngineClient.
+        //---------------------------------------------------------------------
 
         //---------------------------------------------------------------------
         // Projects.
@@ -76,8 +89,8 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
-                    return await this.service.Projects.Get(
-                        projectId).ExecuteAsync(cancellationToken)
+                    return await this.service.Projects
+                        .Get(projectId).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())

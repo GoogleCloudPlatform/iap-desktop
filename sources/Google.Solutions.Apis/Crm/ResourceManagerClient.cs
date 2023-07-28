@@ -34,7 +34,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Crm
 {
-    public interface IResourceManagerAdapter
+    /// <summary>
+    /// Client for Resource Manager (CRM) API.
+    /// </summary>
+    public interface IResourceManagerClient : IClient
     {
         Task<Project> GetProjectAsync(
             string projectId,
@@ -51,13 +54,12 @@ namespace Google.Solutions.Apis.Crm
             CancellationToken cancellationToken);
     }
 
-    public class ResourceManagerAdapter : IResourceManagerAdapter
+    public class ResourceManagerClient : IResourceManagerClient
     {
-        private const string MtlsBaseUri = "https://cloudresourcemanager.mtls.googleapis.com/";
-
         private readonly CloudResourceManagerService service;
 
-        public ResourceManagerAdapter(
+        public ResourceManagerClient(
+            ServiceEndpoint<ResourceManagerClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
@@ -65,11 +67,30 @@ namespace Google.Solutions.Apis.Crm
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new CloudResourceManagerService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
+                    endpoint,
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+
+        public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint(
+            PrivateServiceConnectDirections pscDirections = null)
+        {
+            return new ServiceEndpoint<ResourceManagerClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
+                "https://cloudresourcemanager.googleapis.com/");
+        }
+
+        //---------------------------------------------------------------------
+        // IClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
+
+        //---------------------------------------------------------------------
+        // IResourceManagerClient.
+        //---------------------------------------------------------------------
 
         public async Task<Project> GetProjectAsync(
             string projectId,
@@ -79,8 +100,9 @@ namespace Google.Solutions.Apis.Crm
             {
                 try
                 {
-                    return await this.service.Projects.Get(
-                        projectId).ExecuteAsync(cancellationToken)
+                    return await this.service.Projects
+                        .Get(projectId)
+                        .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())

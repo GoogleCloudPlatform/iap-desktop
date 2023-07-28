@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return authorization;
         }
 
-        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private Mock<IComputeEngineClient> CreateComputeEngineClientMock(
             bool? osLoginEnabledForProject,
             bool? osLoginEnabledForInstance,
             bool osLogin2fa,
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 instanceMetadata.Add("enable-oslogin-sk", "true");
             }
 
-            var adapter = new Mock<IComputeEngineAdapter>();
+            var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
@@ -136,12 +136,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
@@ -164,12 +164,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
@@ -192,12 +192,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     osLoginEnabledForProject: false,
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
@@ -218,15 +218,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginEnabledForProjectButDisabledForInstance_ThenAuthorizeKeyAsyncPushesKeyToMetadata()
         {
-            var computeEngineAdapter = CreateComputeEngineAdapterMock(
+            var computeClient = CreateComputeEngineClientMock(
                 osLoginEnabledForProject: true,
                 osLoginEnabledForInstance: false,
                 osLogin2fa: false,
                 osLoginSk: false);
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                computeEngineAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                computeClient.Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
-                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.Is<InstanceLocator>(loc => loc == SampleLocator),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -257,12 +257,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
@@ -280,12 +280,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: false).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
@@ -303,12 +303,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new KeyAuthorizer(
                 CreateAuthorizationMock().Object,
-                CreateComputeEngineAdapterMock(
+                CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     osLoginSk: true).Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<NotImplementedException>(

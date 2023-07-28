@@ -20,12 +20,14 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,16 +35,49 @@ namespace Google.Solutions.Apis.Test.Crm
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestResourceManagerAdapter
+    public class TestResourceManagerClient
     {
+        //---------------------------------------------------------------------
+        // PSC.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenPscEnabled_ThenRequestSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var address = await Dns
+                .GetHostAddressesAsync(ResourceManagerClient.CreateEndpoint().CanonicalUri.Host)
+                .ConfigureAwait(false);
+
+            //
+            // Use IP address as pseudo-PSC endpoint.
+            //
+            var endpoint = ResourceManagerClient.CreateEndpoint(
+                new PrivateServiceConnectDirections(address.FirstOrDefault().ToString()));
+
+            var client = new ResourceManagerClient(
+                endpoint,
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var project = await client.GetProjectAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(project);
+            Assert.AreEqual(TestProject.ProjectId, project.Name);
+        }
+
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var result = await adapter.IsGrantedPermissionAsync(
+            var result = await client.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
                     Permissions.ComputeInstancesGet,
                     CancellationToken.None)
@@ -59,10 +94,11 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var result = await adapter.IsGrantedPermissionAsync(
+            var result = await client.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
                     "compute.disks.create",
                     CancellationToken.None)
@@ -79,10 +115,11 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var project = await adapter.GetProjectAsync(
+            var project = await client.GetProjectAsync(
                     TestProject.ProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -95,11 +132,12 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetProjectAsync(
+                () => client.GetProjectAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
         }
@@ -108,11 +146,12 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenProjectIdInvalid_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetProjectAsync(
+                () => client.GetProjectAsync(
                     "invalid",
                     CancellationToken.None).Wait());
         }
@@ -125,10 +164,11 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenProjectIdExists_ThenQueryProjectsByIdReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
-            var result = await adapter.ListProjectsAsync(
+            var result = await client.ListProjectsAsync(
                     ProjectFilter.ByProjectId(TestProject.ProjectId),
                     null,
                     CancellationToken.None)
@@ -144,14 +184,15 @@ namespace Google.Solutions.Apis.Test.Crm
         public async Task WhenProjectIdExists_ThenQueryProjectsByPrefixReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             // Remove last character from project ID.
             var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 
-            var result = await adapter.ListProjectsAsync(
+            var result = await client.ListProjectsAsync(
                     ProjectFilter.ByPrefix(prefix),
                     10,
                     CancellationToken.None)

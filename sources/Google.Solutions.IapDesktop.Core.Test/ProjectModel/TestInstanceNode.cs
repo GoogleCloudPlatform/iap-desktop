@@ -44,8 +44,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         private static ProjectWorkspace CreateWorkspace()
         {
             return new ProjectWorkspace(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 new Mock<IEventQueue>().Object);
         }
@@ -185,11 +185,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 InstanceControlCommand.Resume)]
             InstanceControlCommand command)
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             var eventQueue = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 eventQueue.Object);
 
@@ -223,11 +223,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 InstanceControlCommand.Suspend)]
             InstanceControlCommand command)
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             var eventQueue = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 eventQueue.Object);
 
@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public void WhenOperationFails_ThenControlInstanceFiresEvent()
         {
-            var computeAdapter = new Mock<IComputeEngineAdapter>();
+            var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter
                 .Setup(a => a.ControlInstanceAsync(
                     SampleLocator,
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var eventQueue = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
                 computeAdapter.Object,
-                new Mock<IResourceManagerAdapter>().Object,
+                new Mock<IResourceManagerClient>().Object,
                 new Mock<IProjectRepository>().Object,
                 eventQueue.Object);
 

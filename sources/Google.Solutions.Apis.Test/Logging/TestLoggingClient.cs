@@ -31,7 +31,7 @@ namespace Google.Solutions.Apis.Test.Logging
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestLoggingAdapter
+    public class TestLoggingClient
     {
         //---------------------------------------------------------------------
         // ReadLogs.
@@ -41,7 +41,8 @@ namespace Google.Solutions.Apis.Test.Logging
         public async Task WhenUserNotInRole_ThenReadLogsThrowsException(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new LoggingAdapter(
+            var adapter = new LoggingClient(
+                LoggingClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -57,7 +58,8 @@ namespace Google.Solutions.Apis.Test.Logging
         public async Task WhenProjectIdInvalid_ThenReadLogsThrowsException(
             [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new LoggingAdapter(
+            var adapter = new LoggingClient(
+                LoggingClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
@@ -73,7 +75,8 @@ namespace Google.Solutions.Apis.Test.Logging
         public async Task WhenUserInViewerRole_ThenReadLogsInvokesCallback(
             [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new LoggingAdapter(
+            var adapter = new LoggingClient(
+                LoggingClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 

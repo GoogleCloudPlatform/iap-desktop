@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
 
         public static async Task<SerialOutputModel> LoadAsync(
             string displayName,
-            IComputeEngineAdapter adapter,
+            IComputeEngineClient adapter,
             InstanceLocator instanceLocator,
             ushort portNumber,
             CancellationToken token)

@@ -44,13 +44,13 @@ namespace Google.Solutions.Iap.Test.Protocol
             var policy = new Mock<IIapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                credential.ToAuthorization(),
+                TestProject.UserAgent);
+
             var listener = new IapListener(
-                new IapClient(
-                    credential,
-                    vmRef,
-                    7,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent),
+                client.GetTarget(vmRef, 7, IapClient.DefaultNetworkInterface),
                 policy.Object,
                 null);
             listener.ClientAcceptLimit = 1; // Terminate after first connection.

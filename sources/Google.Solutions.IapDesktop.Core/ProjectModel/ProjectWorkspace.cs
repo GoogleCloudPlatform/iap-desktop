@@ -104,8 +104,8 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
     public class ProjectWorkspace : IProjectWorkspace
     {
-        private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IResourceManagerAdapter resourceManagerAdapter;
+        private readonly IComputeEngineClient computeClient;
+        private readonly IResourceManagerClient resourceManagerClient;
         private readonly IProjectRepository projectRepository;
         private readonly IEventQueue eventQueue;
 
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                 {
                     tasks.Add(
                         new ProjectLocator(project.ProjectId),
-                        this.resourceManagerAdapter
+                        this.resourceManagerClient
                             .GetProjectAsync(project.ProjectId, token));
                 }
 
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         {
             using (CoreTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                var instances = await this.computeEngineAdapter
+                var instances = await this.computeClient
                     .ListInstancesAsync(project.ProjectId, token)
                     .ConfigureAwait(false);
 
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             using (CoreTraceSources.Default.TraceMethod()
                 .WithParameters(instance, command))
             {
-                await this.computeEngineAdapter.ControlInstanceAsync(
+                await this.computeClient.ControlInstanceAsync(
                     instance,
                     command,
                     cancellationToken)
@@ -264,13 +264,13 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         //---------------------------------------------------------------------
 
         public ProjectWorkspace(
-            IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IComputeEngineClient computeClient,
+            IResourceManagerClient resourceManagerAdapter,
             IProjectRepository projectRepository,
             IEventQueue eventQueue)
         {
-            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
-            this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
+            this.computeClient = computeClient.ExpectNotNull(nameof(computeClient));
+            this.resourceManagerClient = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
             this.eventQueue = eventQueue.ExpectNotNull(nameof(eventQueue));
         }

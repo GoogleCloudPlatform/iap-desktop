@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis;
@@ -27,6 +28,7 @@ using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,8 +36,40 @@ namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestComputeEngineAdapter
+    public class TestComputeEngineClient
     {
+        //---------------------------------------------------------------------
+        // PSC.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenPscEnabled_ThenRequestSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var address = await Dns
+                .GetHostAddressesAsync(ComputeEngineClient.CreateEndpoint().CanonicalUri.Host)
+                .ConfigureAwait(false);
+
+            //
+            // Use IP address as pseudo-PSC endpoint.
+            //
+            var endpoint = ComputeEngineClient.CreateEndpoint(
+                new PrivateServiceConnectDirections(address.FirstOrDefault().ToString()));
+
+            var client = new ComputeEngineClient(
+                endpoint,
+                await credential.ToAuthorization(),
+                TestProject.UserAgent);
+
+            var project = await client.GetProjectAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(project);
+            Assert.AreEqual(TestProject.ProjectId, project.Name);
+        }
+
         //---------------------------------------------------------------------
         // Projects.
         //---------------------------------------------------------------------
@@ -44,11 +78,12 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var project = await adapter.GetProjectAsync(
+            var project = await client.GetProjectAsync(
                     TestProject.ProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -61,12 +96,13 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetProjectAsync(
+                () => client.GetProjectAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
         }
@@ -75,12 +111,13 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenProjectIdInvalid_ThenGetProjectThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
-                () => adapter.GetProjectAsync(
+                () => client.GetProjectAsync(
                     TestProject.InvalidProjectId,
                     CancellationToken.None).Wait());
         }
@@ -98,11 +135,12 @@ namespace Google.Solutions.Apis.Test.Compute
             await testInstance;
             var instanceRef = await testInstance;
 
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var instances = await adapter.ListInstancesAsync(
+            var instances = await client.ListInstancesAsync(
                     TestProject.ProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -120,11 +158,12 @@ namespace Google.Solutions.Apis.Test.Compute
             await testInstance;
             var instanceRef = await testInstance;
 
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var instances = await adapter.ListInstancesAsync(
+            var instances = await client.ListInstancesAsync(
                     new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -137,12 +176,13 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenUserNotInRole_ThenListInstancesAsyncThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListInstancesAsync(
+                () => client.ListInstancesAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
         }
@@ -151,12 +191,13 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenUserNotInRole_ThenListInstancesAsyncByZoneThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListInstancesAsync(
+                () => client.ListInstancesAsync(
                     new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
                     CancellationToken.None).Wait());
         }
@@ -167,12 +208,13 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetInstanceAsync(
+                () => client.GetInstanceAsync(
                     locator,
                     CancellationToken.None).Wait());
         }
@@ -187,12 +229,13 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetGuestAttributesAsync(
+                () => client.GetGuestAttributesAsync(
                     locator,
                     "somepath/",
                     CancellationToken.None).Wait());
@@ -207,11 +250,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var stream = adapter.GetSerialPortOutput(
+            var stream = client.GetSerialPortOutput(
                 await testInstance,
                 1);
 
@@ -239,12 +283,13 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task WhenInstanceNotFound_ThenControlInstanceThrowsException(
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
-                () => adapter.ControlInstanceAsync(
+                () => client.ControlInstanceAsync(
                     new InstanceLocator(TestProject.ProjectId, "us-central1-a", "doesnotexist"),
                     InstanceControlCommand.Start,
                     CancellationToken.None).Wait());
@@ -255,11 +300,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            await adapter.ControlInstanceAsync(
+            await client.ControlInstanceAsync(
                     await testInstance,
                     InstanceControlCommand.Start,
                     CancellationToken.None)
@@ -277,12 +323,13 @@ namespace Google.Solutions.Apis.Test.Compute
                 InstanceControlCommand.Suspend)] InstanceControlCommand command)
         {
             var instance = await testInstance;
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ControlInstanceAsync(
+                () => client.ControlInstanceAsync(
                     instance,
                     command,
                     CancellationToken.None).Wait());
@@ -298,11 +345,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var result = await adapter.IsGrantedPermission(
+            var result = await client.IsGrantedPermission(
                     locator,
                     Permissions.ComputeInstancesGet)
                 .ConfigureAwait(false);
@@ -316,11 +364,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var result = await adapter.IsGrantedPermission(
+            var result = await client.IsGrantedPermission(
                     locator,
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
@@ -334,11 +383,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(
+            var client = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
                 await credential.ToAuthorization(),
                 TestProject.UserAgent);
 
-            var result = await adapter.IsGrantedPermission(
+            var result = await client.IsGrantedPermission(
                     locator,
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);

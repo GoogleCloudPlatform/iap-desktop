@@ -91,8 +91,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private ApplicationSettingsRepository settingsRepository;
         private ProjectRepository projectRepository;
 
-        private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
-        private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
+        private Mock<IComputeEngineClient> computeClientMock;
+        private Mock<IResourceManagerClient> resourceManagerAdapterMock;
         private Mock<ICloudConsoleAdapter> cloudConsoleServiceMock;
         private Mock<IEventQueue> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             this.projectExplorerSettings = new ProjectExplorerSettings(
                 this.settingsRepository, false);
 
-            this.resourceManagerAdapterMock = new Mock<IResourceManagerAdapter>();
+            this.resourceManagerAdapterMock = new Mock<IResourceManagerClient>();
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -121,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     Name = $"[{SampleProjectId}]"
                 });
 
-            this.computeEngineAdapterMock = new Mock<IComputeEngineAdapter>();
-            this.computeEngineAdapterMock.Setup(a => a.ListInstancesAsync(
+            this.computeClientMock = new Mock<IComputeEngineClient>();
+            this.computeClientMock.Setup(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[]
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private ProjectExplorerViewModel CreateViewModel()
         {
             var workspace = new ProjectWorkspace(
-                this.computeEngineAdapterMock.Object,
+                this.computeClientMock.Object,
                 this.resourceManagerAdapterMock.Object,
                 this.projectRepository,
                 new Mock<IEventQueue>().Object);
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, instances.Count);
 
             // Reapplying filter must not cause reload.
-            this.computeEngineAdapterMock.Verify(
+            this.computeClientMock.Verify(
                 a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, instances.Count);
 
             // Reapplying filter must not cause reload.
-            this.computeEngineAdapterMock.Verify(
+            this.computeClientMock.Verify(
                 a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -843,7 +843,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 true));
 
             // Event must not cause reload.
-            this.computeEngineAdapterMock.Verify(
+            this.computeClientMock.Verify(
                 a => a.ListInstancesAsync(
                     It.Is<string>(p => p == SampleProjectId),
                     It.IsAny<CancellationToken>()), Times.Once);

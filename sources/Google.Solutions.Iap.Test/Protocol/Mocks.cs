@@ -119,7 +119,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
     }
 
-    internal class MockSshRelayEndpoint : ISshRelayEndpoint
+    internal class MockSshRelayEndpoint : ISshRelayTarget
     {
         public IList<INetworkStream> ExpectedStreams { get; set; }
 

@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Properties;
@@ -34,15 +35,25 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Apis.Auth.SignInClient;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     public class AuthorizeViewModel : ViewModelBase
     {
+        private readonly ServiceEndpoint<OAuthClient> oauthEndpoint;
+        private readonly ServiceEndpoint<OpenIdClient> openIdEndpoint;
+
         private CancellationTokenSource cancelCurrentSignin = null;
 
-        public AuthorizeViewModel(IInstall install)
+        public AuthorizeViewModel(
+            IInstall install,
+            ServiceEndpoint<OAuthClient> oauthEndpoint,
+            ServiceEndpoint<OpenIdClient> openIdEndpoint)
         {
+            this.oauthEndpoint = oauthEndpoint.ExpectNotNull(nameof(oauthEndpoint));
+            this.openIdEndpoint = openIdEndpoint.ExpectNotNull(nameof(openIdEndpoint));
+
             //
             // NB. Properties are access from a non-GUI thread, so
             // they must be thread-safe.
@@ -74,15 +85,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        protected virtual ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
+        protected virtual ISignInClient CreateSignInAdapter(BrowserPreference preference)
         {
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
             Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
             Precondition.ExpectNotNull(this.Scopes, nameof(this.Scopes));
             Precondition.ExpectNotNull(this.TokenStore, nameof(this.TokenStore));
 
-            return new SignInAdapter(
-                this.DeviceEnrollment.Certificate,
+            return new SignInClient(
+                this.oauthEndpoint,
+                this.openIdEndpoint,
+                this.DeviceEnrollment,
                 this.ClientSecrets,
                 Install.UserAgent,
                 this.Scopes,

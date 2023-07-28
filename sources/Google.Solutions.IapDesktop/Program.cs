@@ -67,6 +67,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -192,7 +193,7 @@ namespace Google.Solutions.IapDesktop
                     new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                dialog.ViewModel.Scopes = new[] { IapClient.RequiredScope };
+                dialog.ViewModel.Scopes = new[] { IapInstanceTarget.RequiredScope };
                 dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();
 
                 //
@@ -255,8 +256,14 @@ namespace Google.Solutions.IapDesktop
                 else
                 {
                     //
-                    // User just closed the dialog.
+                    // User closed the dialog without completing the sign-in.
                     //
+
+                    //
+                    // Ensure logs are flushed.
+                    //
+                    IsLoggingEnabled = false;
+
                     Environment.Exit(1);
                     throw new InvalidOperationException();
                 }
@@ -324,15 +331,28 @@ namespace Google.Solutions.IapDesktop
                     SecurityProtocolType.Tls11;
             }
 
-            // Allow custom User-Agent headers.
+            //
+            // Install patches requires for IAP.
+            //
             try
             {
-                RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", false);
+                SystemPatch.UnrestrictUserAgentHeader.Install();
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
                 ApplicationTraceSources.Default.TraceWarning(
-                    "Failed to un-restrict User-Agent headers");
+                    "Installing UnrestrictUserAgentHeader patch failed: {0}", e);
+            }
+
+            try
+            {
+                WebSocket.RegisterPrefixes();
+                SystemPatch.SetUsernameAsHostHeaderForWssRequests.Install();
+            }
+            catch (Exception e)
+            {
+                ApplicationTraceSources.Default.TraceWarning(
+                    "Installing SetUsernameAsHostHeaderForWssRequests patch failed: {0}", e);
             }
 
             System.Windows.Forms.Application.EnableVisualStyles();
@@ -405,7 +425,7 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
                 preAuthLayer.AddSingleton(new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"),
-                    SignInAdapter.StoreUserId));
+                    SignInClient.StoreUserId));
 
                 //
                 // Configure networking settings.
@@ -434,6 +454,20 @@ namespace Google.Solutions.IapDesktop
                     // Settings invalid -> ignore.
                 }
 
+                //
+                // Register and configure API client endpoints.
+                //
+                var psc = new PrivateServiceConnectDirections(
+                    Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
+
+                preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(psc));
+                preAuthLayer.AddSingleton(IapClient.CreateEndpoint(psc));
+
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
                 preAuthLayer.AddTransient<OAuthScopeNotGrantedView>();
@@ -450,7 +484,7 @@ namespace Google.Solutions.IapDesktop
                 // Load main layer, containing everything else (except for
                 // extensions).
                 //
-                var mainLayer = new ServiceRegistry(preAuthLayer);
+                var mainLayer = new ServiceRegistry(preAuthLayer); 
                 mainLayer.AddSingleton<IAuthorization>(authorization);
                 mainLayer.AddTransient<IToolWindowHost, ToolWindowHost>();
 
@@ -468,14 +502,16 @@ namespace Google.Solutions.IapDesktop
                 var eventService = new EventQueue(mainForm);
 
                 //
-                // Register adapters as singletons to ensure connection reuse.
+                // Register API clients as singletons to ensure connection reuse.
                 //
-                mainLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
-                mainLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
+                mainLayer.AddSingleton<IResourceManagerClient, ResourceManagerClient>();
+                mainLayer.AddSingleton<IComputeEngineClient, ComputeEngineClient>();
+                mainLayer.AddSingleton<ILoggingClient, LoggingClient>();
+                mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();
+                mainLayer.AddSingleton<IIapClient, IapClient>();
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
-                mainLayer.AddSingleton<IOsLoginAdapter, OsLoginAdapter>();
-                mainLayer.AddSingleton<ILoggingAdapter, LoggingAdapter>();
 
+                mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
@@ -637,8 +673,15 @@ namespace Google.Solutions.IapDesktop
 
         private static void ShowFatalError(Exception e)
         {
+            //
+            // Ensure logs are flushed.
+            //
+            IsLoggingEnabled = false;
+
+            //
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
+            //
             ErrorDialog.Show(e);
             Environment.Exit(e.HResult);
         }

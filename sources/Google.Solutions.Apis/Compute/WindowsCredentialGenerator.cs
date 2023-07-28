@@ -89,16 +89,16 @@ namespace Google.Solutions.Apis.Compute
         private const int SerialPort = 4;
         private const string MetadataKey = "windows-keys";
 
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeClient;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         public WindowsCredentialGenerator(
-            IComputeEngineAdapter computeEngineAdapter)
+            IComputeEngineClient computeClient)
         {
-            this.computeEngineAdapter = computeEngineAdapter;
+            this.computeClient = computeClient;
         }
 
         //---------------------------------------------------------------------
@@ -132,7 +132,7 @@ namespace Google.Solutions.Apis.Compute
                 try
                 {
                     var requestJson = JsonConvert.SerializeObject(requestPayload);
-                    await this.computeEngineAdapter.UpdateMetadataAsync(
+                    await this.computeClient.UpdateMetadataAsync(
                             instanceRef,
                             existingMetadata =>
                             {
@@ -199,7 +199,7 @@ namespace Google.Solutions.Apis.Compute
                 //
                 // Read response from serial port.
                 //
-                using (var serialPortStream = this.computeEngineAdapter.GetSerialPortOutput(
+                using (var serialPortStream = this.computeClient.GetSerialPortOutput(
                     instanceRef,
                     SerialPort))
                 {
@@ -313,7 +313,7 @@ namespace Google.Solutions.Apis.Compute
             //
             // For performance reasons, only check (1).
             //
-            return this.computeEngineAdapter.IsGrantedPermission(
+            return this.computeClient.IsGrantedPermission(
                 instanceRef,
                 Permissions.ComputeInstancesSetMetadata);
         }

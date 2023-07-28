@@ -78,13 +78,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private static readonly ProjectLocator WellKnownProject
             = new ProjectLocator("windows-cloud");
 
-        private readonly IOsLoginAdapter adapter;
+        private readonly IOsLoginClient adapter;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginProfile(IOsLoginAdapter adapter)
+        public OsLoginProfile(IOsLoginClient adapter)
         {
             this.adapter = adapter.ExpectNotNull(nameof(adapter));
         }

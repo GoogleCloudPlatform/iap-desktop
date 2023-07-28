@@ -55,9 +55,9 @@ namespace Google.Solutions.Apis.Compute
 
     public class AddressResolver : IAddressResolver
     {
-        private readonly IComputeEngineAdapter computeEngine;
+        private readonly IComputeEngineClient computeEngine;
 
-        public AddressResolver(IComputeEngineAdapter computeEngine)
+        public AddressResolver(IComputeEngineClient computeEngine)
         {
             this.computeEngine = computeEngine.ExpectNotNull(nameof(computeEngine));
         }
@@ -99,7 +99,7 @@ namespace Google.Solutions.Apis.Compute
         }
     }
 
-    public class AddressNotFoundException : AdapterException, IExceptionWithHelpTopic
+    public class AddressNotFoundException : ClientException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 

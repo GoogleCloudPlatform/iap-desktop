@@ -59,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
             var instanceRef = await testInstance;
 
             var client = new AuditLogClient(
-                new LoggingAdapter(
+                new LoggingClient(
+                    LoggingClient.CreateEndpoint(),
                     await credential.ToAuthorization(),
                     TestProject.UserAgent));
 
@@ -81,7 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
             var endDate = DateTime.UtcNow;
 
             var client = new AuditLogClient(
-                new LoggingAdapter(
+                new LoggingClient(
+                    LoggingClient.CreateEndpoint(),
                     await credential.ToAuthorization(),
                     TestProject.UserAgent));
 

@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         private readonly IExceptionDialog exceptionDialog;
         private readonly IProjectPickerDialog projectPickerDialog;
 
-        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
+        private readonly Service<IResourceManagerClient> resourceManagerAdapter;
 
         private ProjectExplorerViewModel viewModel;
         private CommandContainer<IProjectModelNode> contextMenuCommands;
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.authorization = serviceProvider.GetService<IAuthorization>();
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.projectPickerDialog = serviceProvider.GetService<IProjectPickerDialog>();
-            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerClient>>();
 
             //
             // This window is a singleton, so we never want it to be closed,

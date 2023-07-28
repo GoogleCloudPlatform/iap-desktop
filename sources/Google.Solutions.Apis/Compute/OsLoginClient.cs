@@ -34,7 +34,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public interface IOsLoginAdapter
+    /// <summary>
+    /// Client for OS Login API.
+    /// </summary>
+    public interface IOsLoginClient : IClient
     {
         /// <summary>
         /// Import user's public key to OS Login.
@@ -63,30 +66,41 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken cancellationToken);
     }
 
-    public class OsLoginAdapter : IOsLoginAdapter
+    public class OsLoginClient : IOsLoginClient
     {
-        private const string MtlsBaseUri = "https://oslogin.mtls.googleapis.com/";
-
         private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
 
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public OsLoginAdapter(
+        public OsLoginClient(
+            ServiceEndpoint<OsLoginClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
-            this.authorization = authorization.ExpectNotNull(nameof(authorization));
             userAgent.ExpectNotNull(nameof(userAgent));
 
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
+
             this.service = new CloudOSLoginService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
+                    endpoint, 
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+        public static ServiceEndpoint<OsLoginClient> CreateEndpoint(
+                PrivateServiceConnectDirections pscDirections = null)
+        {
+            return new ServiceEndpoint<OsLoginClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
+                "https://oslogin.googleapis.com/");
+        }
+
+        //---------------------------------------------------------------------
+        // IClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
 
         //---------------------------------------------------------------------
         // IOsLoginAdapter.

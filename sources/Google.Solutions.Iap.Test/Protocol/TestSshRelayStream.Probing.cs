@@ -39,16 +39,16 @@ namespace Google.Solutions.Iap.Test.Protocol
         public async Task WhenProjectDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                (await credential).ToAuthorization(),
+                TestProject.UserAgent);
+
             using (var stream = new SshRelayStream(
-                new IapClient(
-                    await credential,
-                    new InstanceLocator(
-                        "invalid",
-                        TestProject.Zone,
-                        "invalid"),
+                client.GetTarget(
+                    new InstanceLocator("invalid", TestProject.Zone, "invalid"),
                     80,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -59,16 +59,19 @@ namespace Google.Solutions.Iap.Test.Protocol
         public async Task WhenZoneDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                (await credential).ToAuthorization(),
+                TestProject.UserAgent);
+
             using (var stream = new SshRelayStream(
-               new IapClient(
-                    await credential,
+               client.GetTarget(
                     new InstanceLocator(
                         TestProject.ProjectId,
                         "invalid",
                         "invalid"),
                     80,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -79,16 +82,19 @@ namespace Google.Solutions.Iap.Test.Protocol
         public async Task WhenInstanceDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                (await credential).ToAuthorization(),
+                TestProject.UserAgent);
+
             using (var stream = new SshRelayStream(
-                new IapClient(
-                    await credential,
+                client.GetTarget(
                     new InstanceLocator(
                         TestProject.ProjectId,
                         TestProject.Zone,
                         "invalid"),
                     80,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -100,13 +106,16 @@ namespace Google.Solutions.Iap.Test.Protocol
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                (await credential).ToAuthorization(),
+                TestProject.UserAgent);
+
             using (var stream = new SshRelayStream(
-                new IapClient(
-                    await credential,
+                client.GetTarget(
                     await testInstance,
                     3389,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 await stream
                     .ProbeConnectionAsync(TimeSpan.FromSeconds(10))
@@ -119,13 +128,16 @@ namespace Google.Solutions.Iap.Test.Protocol
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var client = new IapClient(
+                IapClient.CreateEndpoint(),
+                (await credential).ToAuthorization(),
+                TestProject.UserAgent);
+
             using (var stream = new SshRelayStream(
-                new IapClient(
-                    await credential,
+               client.GetTarget(
                     await testInstance,
                     22,
-                    IapClient.DefaultNetworkInterface,
-                    TestProject.UserAgent)))
+                    IapClient.DefaultNetworkInterface)))
             {
                 ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());

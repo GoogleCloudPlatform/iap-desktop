@@ -31,14 +31,13 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
-using static Google.Solutions.Apis.Logging.LoggingAdapter;
 
 namespace Google.Solutions.Apis.Logging
 {
     /// <summary>
-    /// Adapter for Cloud Logging API.
+    /// Client for Cloud Logging API.
     /// </summary>
-    public interface ILoggingAdapter
+    public interface ILoggingClient : IClient
     {
         /// <summary>
         /// Read logs in reverse chronological order, page-by-page.
@@ -50,23 +49,22 @@ namespace Google.Solutions.Apis.Logging
             CancellationToken cancellationToken);
     }
 
-    public class LoggingAdapter : ILoggingAdapter
-    {
-        private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
+    /// <summary>
+    /// Read a page of results.
+    /// </summary>
+    /// <returns>next page token</returns>
+    public delegate string ReadPageCallback(Stream stream);
 
+    public class LoggingClient : ILoggingClient
+    {
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
         private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
 
         private readonly LoggingService service;
 
-        /// <summary>
-        /// Read a page of results.
-        /// </summary>
-        /// <returns>next page token</returns>
-        public delegate string ReadPageCallback(Stream stream);
-
-        public LoggingAdapter(
+        public LoggingClient(
+            ServiceEndpoint<LoggingClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
         {
@@ -74,11 +72,29 @@ namespace Google.Solutions.Apis.Logging
             userAgent.ExpectNotNull(nameof(userAgent));
 
             this.service = new LoggingService(
-                new AuthorizedClientInitializer(
+                Initializers.CreateServiceInitializer(
+                    endpoint,
                     authorization,
-                    userAgent,
-                    MtlsBaseUri));
+                    userAgent));
         }
+
+        public static ServiceEndpoint<LoggingClient> CreateEndpoint(
+            PrivateServiceConnectDirections pscDirections = null)
+        {
+            return new ServiceEndpoint<LoggingClient>(
+                pscDirections ?? PrivateServiceConnectDirections.None,
+                "https://logging.googleapis.com/");
+        }
+
+        //---------------------------------------------------------------------
+        // IClient.
+        //---------------------------------------------------------------------
+
+        public IServiceEndpoint Endpoint { get; }
+
+        //---------------------------------------------------------------------
+        // ILoggingClient.
+        //---------------------------------------------------------------------
 
         public async Task ReadLogsAsync(
             IList<string> resourceNames,

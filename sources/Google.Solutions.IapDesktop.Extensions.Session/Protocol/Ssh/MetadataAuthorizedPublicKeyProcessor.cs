@@ -134,29 +134,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         //---------------------------------------------------------------------
 
         public static async Task<InstanceMetadataAuthorizedPublicKeyProcessor> ForInstance(
-            IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IComputeEngineClient computeClient,
+            IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
             CancellationToken token)
         {
-            Precondition.ExpectNotNull(computeEngineAdapter, nameof(computeEngineAdapter));
+            Precondition.ExpectNotNull(computeClient, nameof(computeClient));
             Precondition.ExpectNotNull(resourceManagerAdapter, nameof(resourceManagerAdapter));
             Precondition.ExpectNotNull(instance, nameof(instance));
 
             //
             // Query metadata for instance and project in parallel.
             //
-            var instanceDetailsTask = computeEngineAdapter.GetInstanceAsync(
+            var instanceDetailsTask = computeClient.GetInstanceAsync(
                     instance,
                     token)
                 .ConfigureAwait(false);
-            var projectDetailsTask = computeEngineAdapter.GetProjectAsync(
+            var projectDetailsTask = computeClient.GetProjectAsync(
                     instance.ProjectId,
                     token)
                 .ConfigureAwait(false);
 
             return new InstanceMetadataAuthorizedPublicKeyProcessor(
-                computeEngineAdapter,
+                computeClient,
                 resourceManagerAdapter,
                 instance,
                 await instanceDetailsTask,
@@ -164,27 +164,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public static async Task<ProjectMetadataAuthorizedPublicKeyProcessor> ForProject(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeClient,
             ProjectLocator project,
             CancellationToken token)
         {
-            Precondition.ExpectNotNull(computeEngineAdapter, nameof(computeEngineAdapter));
+            Precondition.ExpectNotNull(computeClient, nameof(computeClient));
             Precondition.ExpectNotNull(project, nameof(project));
 
-            var projectDetails = await computeEngineAdapter.GetProjectAsync(
+            var projectDetails = await computeClient.GetProjectAsync(
                     project.ProjectId,
                     token)
                 .ConfigureAwait(false);
 
             return new ProjectMetadataAuthorizedPublicKeyProcessor(
-                computeEngineAdapter,
+                computeClient,
                 projectDetails);
         }
     }
 
     public class ProjectMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
     {
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineClient computeClient;
         private readonly Project projectDetails;
 
         public override bool IsOsLoginEnabled
@@ -197,10 +197,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             => this.projectDetails.GetFlag(BlockProjectSshKeysFlag) == true;
 
         internal ProjectMetadataAuthorizedPublicKeyProcessor(
-            IComputeEngineAdapter computeEngineAdapter,
+            IComputeEngineClient computeClient,
             Project projectDetails)
         {
-            this.computeEngineAdapter = computeEngineAdapter;
+            this.computeClient = computeClient;
             this.projectDetails = projectDetails;
         }
 
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             MetadataAuthorizedPublicKey key,
             CancellationToken cancellationToken)
         {
-            await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+            await this.computeClient.UpdateCommonInstanceMetadataAsync(
                     this.projectDetails.Name,
                     metadata => RemovePublicKeyFromMetadata(metadata, key),
                     cancellationToken)
@@ -233,21 +233,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
     public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
     {
-        private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IResourceManagerAdapter resourceManagerAdapter;
+        private readonly IComputeEngineClient computeClient;
+        private readonly IResourceManagerClient resourceManagerAdapter;
 
         private readonly InstanceLocator instance;
         private readonly Instance instanceDetails;
         private readonly Project projectDetails;
 
         internal InstanceMetadataAuthorizedPublicKeyProcessor(
-            IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
+            IComputeEngineClient computeClient,
+            IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
             Instance instanceDetails,
             Project projectDetails)
         {
-            this.computeEngineAdapter = computeEngineAdapter;
+            this.computeClient = computeClient;
             this.resourceManagerAdapter = resourceManagerAdapter;
             this.instance = instance;
             this.instanceDetails = instanceDetails;
@@ -296,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         {
             if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
             {
-                await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                await this.computeClient.UpdateCommonInstanceMetadataAsync(
                         this.instance.ProjectId,
                         metadata => RemovePublicKeyFromMetadata(metadata, key),
                         cancellationToken)
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
             {
-                await this.computeEngineAdapter.UpdateMetadataAsync(
+                await this.computeClient.UpdateMetadataAsync(
                         this.instance,
                         metadata => RemovePublicKeyFromMetadata(metadata, key),
                         cancellationToken)
@@ -436,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     {
                         if (useInstanceKeySet)
                         {
-                            await this.computeEngineAdapter.UpdateMetadataAsync(
+                            await this.computeClient.UpdateMetadataAsync(
                                 this.instance,
                                 metadata => AddPublicKeyToMetadata(metadata, metadataKey),
                                 token)
@@ -444,7 +444,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         }
                         else
                         {
-                            await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                            await this.computeClient.UpdateCommonInstanceMetadataAsync(
                                 this.instance.ProjectId,
                                 metadata => AddPublicKeyToMetadata(metadata, metadataKey),
                                 token)
