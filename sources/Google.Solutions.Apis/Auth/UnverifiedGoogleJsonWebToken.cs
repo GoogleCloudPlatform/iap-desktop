@@ -31,10 +31,10 @@ namespace Google.Solutions.Apis.Auth
     /// <summary>
     /// A decoded but unverified Google JWT.
     /// </summary>
-    internal class UnverifiedGoogleJsonWebToken
+    internal class UnverifiedGoogleJsonWebToken : IJsonWebToken
     {
-        public GoogleJsonWebSignature.Header Header;
-        public GoogleJsonWebSignature.Payload Payload;
+        public GoogleJsonWebSignature.Header Header { get; }
+        public GoogleJsonWebSignature.Payload Payload { get; }
 
         private UnverifiedGoogleJsonWebToken(
             GoogleJsonWebSignature.Header header,
@@ -70,7 +70,7 @@ namespace Google.Solutions.Apis.Auth
 
                 return new UnverifiedGoogleJsonWebToken(header, payload);
             } 
-            catch (JsonException e)
+            catch (JsonException)
             {
                 throw new InvalidJwtException(
                     "The JWT contains malformed JSON data");
