@@ -201,7 +201,7 @@ namespace Google.Solutions.Apis.Client
         /// Client factory that enables client certificate authenticateion
         /// if the device is enrolled.
         /// </summary>
-        private class MtlsAwareHttpClientFactory : HttpClientFactory
+        internal class MtlsAwareHttpClientFactory : HttpClientFactory
         {
             private readonly ServiceEndpointDirections directions;
             private readonly IDeviceEnrollment deviceEnrollment;
