@@ -34,6 +34,7 @@ namespace Google.Solutions.Apis.Auth
     public abstract class OidcClientBase : IOidcClient
     {
         private readonly IOidcOfflineCredentialStore store;
+
         protected IDeviceEnrollment DeviceEnrollment { get; }
 
         protected OidcClientBase(
@@ -43,7 +44,6 @@ namespace Google.Solutions.Apis.Auth
             this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.store = store.ExpectNotNull(nameof(store));
         }
-
 
         //---------------------------------------------------------------------
         // IOidcClient.
@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Auth
             if (this.store.TryRead(out var offlineCredential))
             {
                 ApiTraceSources.Default.TraceVerbose(
-                    "Attempting authorization using offline credential");
+                    "Attempting authorization using offline credential...");
 
                 Debug.Assert(offlineCredential.RefreshToken != null);
                 try
@@ -66,6 +66,7 @@ namespace Google.Solutions.Apis.Auth
                         ActivateOfflineCredentialAsync(offlineCredential, cancellationToken)
                         .ConfigureAwait(false);
                     Debug.Assert(authorization != null);
+                    Debug.Assert(authorization.IdToken.Payload.Email != null);
 
                     //
                     // Update the offline credential as the refresh
@@ -95,41 +96,30 @@ namespace Google.Solutions.Apis.Auth
             }
         }
 
-        public Task<IOidcAuthorization> AuthorizeAsync(
+        public async Task<IOidcAuthorization> AuthorizeAsync(
             CancellationToken cancellationToken)
         {
-            IAuthorizationCodeFlow flow;
-            if (this.store.TryRead(out var offlineCredential) &&
-                offlineCredential.IdToken != null &&
-                UnverifiedGoogleJsonWebToken.Decode(offlineCredential.IdToken) is var idToken &&
-                !string.IsNullOrEmpty(idToken.Payload.Email))
-            {
-                //
-                // Perform a "minimal" authorization:
-                //  - use existing email as login hint (to skip account chooser)
-                //  - don't request the email scope so that consent unbundling
-                //    doesn't apply
-                //
-                flow = CreateReauthFlow(idToken.Payload.Email);
-            }
-            else
-            {
-                flow = CreateFlow();
-            }
+            this.store.TryRead(out var offlineCredential);
+
+            var authorization = await 
+                AuthorizeWithBrowserAsync(offlineCredential, cancellationToken)
+                .ConfigureAwait(false);
 
             //
-            // TODO: same as old client.
-
-            throw new NotImplementedException();
+            // Store the refresh token so that we can do a silent
+            // activation next time.
+            //
+            this.store.Write(authorization.OfflineCredential);
+            return authorization;
         }
+
+        protected abstract Task<OidcAuthorization> AuthorizeWithBrowserAsync(
+            OidcOfflineCredential offlineCredential,
+            CancellationToken cancellationToken);
 
         protected abstract Task<OidcAuthorization> ActivateOfflineCredentialAsync(
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken);
-
-        protected abstract IAuthorizationCodeFlow CreateFlow();
-
-        protected abstract IAuthorizationCodeFlow CreateReauthFlow(string email);
 
         //---------------------------------------------------------------------
         // Inner classes.
@@ -165,16 +155,19 @@ namespace Google.Solutions.Apis.Auth
     public class GoogleOidcClient : OidcClientBase
     {
         private readonly ServiceEndpoint<GoogleOidcClient> endpoint;
+        private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
 
         public GoogleOidcClient(
             ServiceEndpoint<GoogleOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
+            ICodeReceiver codeReceiver,
             IOidcOfflineCredentialStore store,
             ClientSecrets clientSecrets)
             : base(deviceEnrollment, store)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
+            this.codeReceiver = codeReceiver.ExpectNotNull(nameof(codeReceiver));   
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
         }
 
@@ -192,64 +185,16 @@ namespace Google.Solutions.Apis.Auth
 
         public override IServiceEndpoint Endpoint => this.endpoint;
 
+
         //---------------------------------------------------------------------
-        // Overrides
+        // Privates.
         //---------------------------------------------------------------------
 
-        protected override IAuthorizationCodeFlow CreateFlow()
-        {
-            var initializer = new CodeFlowInitializer(
-                this.endpoint, 
-                this.DeviceEnrollment)
-            {
-                ClientSecrets = this.clientSecrets,
-                Scopes = new[] { GoogleOAuthScopes.Cloud, GoogleOAuthScopes.Email }
-            };
-
-            return new GoogleAuthorizationCodeFlow(initializer);
-        }
-
-        protected override IAuthorizationCodeFlow CreateReauthFlow(string email)
-        {
-            var initializer = new CodeFlowInitializer(
-                this.endpoint,
-                this.DeviceEnrollment)
-            {
-                LoginHint = email.ExpectNotEmpty(nameof(email)),
-                ClientSecrets = this.clientSecrets,
-                Scopes = new[] { GoogleOAuthScopes.Cloud }
-            };
-
-            return new GoogleAuthorizationCodeFlow(initializer);
-        }
-
-        protected override async Task<OidcAuthorization> ActivateOfflineCredentialAsync(
+        private OidcAuthorization MergeCredentials(
+            GoogleAuthorizationCodeFlow flow,
             OidcOfflineCredential offlineCredential,
-            CancellationToken cancellationToken)
+            TokenResponse tokenResponse)
         {
-            var flow = CreateFlow();
-
-            TokenResponse tokenResponse;
-            try
-            {
-                tokenResponse = await flow
-                    .RefreshTokenAsync(null, offlineCredential.RefreshToken, cancellationToken)
-                    .ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                ApiTraceSources.Default.TraceWarning(
-                    "Refreshing the stored token failed: {0}", e.FullMessage());
-
-                //
-                // The refresh token must have been revoked or
-                // the session expired (reauth).
-                //
-
-                flow.Dispose();
-                throw;
-            }
-
             Debug.Assert(tokenResponse.RefreshToken != null);
             Debug.Assert(tokenResponse.AccessToken != null);
 
@@ -306,11 +251,161 @@ namespace Google.Solutions.Apis.Auth
                 //
                 // We don't have any usable ID token.
                 //
-                flow.Dispose();
-
                 throw new OAuthScopeNotGrantedException(
                     "The offline credential neither contains an existing ID token " +
                     "nor the necessary scopes to obtain an ID token");
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides
+        //---------------------------------------------------------------------
+
+        protected override async Task<OidcAuthorization> AuthorizeWithBrowserAsync(
+            OidcOfflineCredential offlineCredential,
+            CancellationToken cancellationToken)
+        {
+            var initializer = new CodeFlowInitializer(
+                this.endpoint,
+                this.DeviceEnrollment)
+            {
+                ClientSecrets = this.clientSecrets
+            };
+
+            if (offlineCredential?.IdToken != null &&
+                UnverifiedGoogleJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
+                !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
+            {
+                //
+                // We still have an ID token with an email address, so we can perform
+                // a "minimal" authorization:
+                //
+                //  - use existing email as login hint (to skip account chooser)
+                //  - don't request the email scope again so that consent unbundling
+                //    doesn't apply
+                //
+                initializer.LoginHint = offlineIdToken.Payload.Email;
+                initializer.Scopes = new[] { GoogleOAuthScopes.Cloud };
+            }
+            else
+            {
+                initializer.Scopes = new[] { GoogleOAuthScopes.Cloud, GoogleOAuthScopes.Email };
+            }
+
+            try
+            {
+                var flow = new GoogleAuthorizationCodeFlow(initializer);
+                var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
+
+                var apiCredential = await 
+                    app.AuthorizeAsync(null, cancellationToken)
+                    .ConfigureAwait(true);
+
+                //
+                // Verify that all requested scopes have been granted.
+                //
+                var grantedScopes = apiCredential.Token.Scope?.Split(' ');
+                if (initializer.Scopes.Any(
+                    requestedScope => !grantedScopes.Contains(requestedScope)))
+                {
+                    throw new OAuthScopeNotGrantedException(
+                        "Authorization failed because you have denied access to a " +
+                        "required resource. Sign in again and make sure " +
+                        "to grant access to all requested resources.");
+                }
+
+                try
+                {
+                    //
+                    // N.B. Do not dispose the flow if the sign-in succeeds as the
+                    // credential object must hold on to it.
+                    //
+                    return MergeCredentials(flow, offlineCredential, apiCredential.Token);
+                }
+                catch
+                {
+                    flow.Dispose();
+                    throw;
+                }
+
+            }
+            catch (TokenResponseException e) when (
+                e.Error?.ErrorUri != null &&
+                e.Error.ErrorUri.StartsWith("https://accounts.google.com/info/servicerestricted"))
+            {
+                if (this.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because your computer's device certificate is " +
+                        "is invalid or unrecognized. Use the Endpoint Verification extension " +
+                        "to verify that your computer is enrolled and try again.\n\n" +
+                        e.Error.ErrorDescription);
+                }
+                else
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because your computer is not enrolled in Endpoint " +
+                        "Verification.\n\n" + e.Error.ErrorDescription);
+
+                }
+            }
+            catch (PlatformNotSupportedException)
+            {
+                // Convert this into an exception with more actionable information.
+                throw new AuthorizationFailedException(
+                    "Authorization failed because the HTTP Server API is not enabled " +
+                    "on your computer. This API is required to complete the OAuth authorization flow.\n\n" +
+                    "To enable the API, open an elevated command prompt and run " +
+                    "'sc config http start= auto'.");
+            }
+        }
+
+        protected override async Task<OidcAuthorization> ActivateOfflineCredentialAsync(
+            OidcOfflineCredential offlineCredential,
+            CancellationToken cancellationToken)
+        {
+            var initializer = new CodeFlowInitializer(
+                this.endpoint,
+                this.DeviceEnrollment)
+            {
+                ClientSecrets = this.clientSecrets
+            };
+
+            var flow = new GoogleAuthorizationCodeFlow(initializer);
+
+            TokenResponse tokenResponse;
+            try
+            {
+                tokenResponse = await flow
+                    .RefreshTokenAsync(null, offlineCredential.RefreshToken, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                ApiTraceSources.Default.TraceWarning(
+                    "Refreshing the stored token failed: {0}", e.FullMessage());
+
+                //
+                // The refresh token must have been revoked or
+                // the session expired (reauth).
+                //
+
+                flow.Dispose();
+                throw;
+            }
+
+            try
+            {
+                //
+                // N.B. Do not dispose the flow if the sign-in succeeds as the
+                // credential object must hold on to it.
+                //
+                return MergeCredentials(flow, offlineCredential, tokenResponse);
+            }
+            catch
+            {
+                flow.Dispose();
+                throw;
             }
         }
 
