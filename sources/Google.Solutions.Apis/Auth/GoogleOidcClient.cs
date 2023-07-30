@@ -12,21 +12,20 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth
 {
-
     /// <summary>
     /// Client for Google "1PI" OIDC.
     /// </summary>
-    public class GoogleOAuthClient : OAuthClientBase
+    public class GoogleOidcClient : OidcClientBase
     {
-        private readonly ServiceEndpoint<GoogleOAuthClient> endpoint;
+        private readonly ServiceEndpoint<GoogleOidcClient> endpoint;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
 
-        public GoogleOAuthClient(
-            ServiceEndpoint<GoogleOAuthClient> endpoint,
+        public GoogleOidcClient(
+            ServiceEndpoint<GoogleOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
             ICodeReceiver codeReceiver,
-            IOAuthOfflineCredentialStore store,
+            IOidcOfflineCredentialStore store,
             ClientSecrets clientSecrets)
             : base(deviceEnrollment, store)
         {
@@ -35,10 +34,10 @@ namespace Google.Solutions.Apis.Auth
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
         }
 
-        public static ServiceEndpoint<GoogleOAuthClient> CreateEndpoint(
+        public static ServiceEndpoint<GoogleOidcClient> CreateEndpoint(
             PrivateServiceConnectDirections pscDirections)
         {
-            return new ServiceEndpoint<GoogleOAuthClient>(
+            return new ServiceEndpoint<GoogleOidcClient>(
                 pscDirections,
                 "https://oauth2.googleapis.com/");
         }
@@ -298,7 +297,7 @@ namespace Google.Solutions.Apis.Auth
             }
 
             public CodeFlowInitializer(
-                ServiceEndpoint<GoogleOAuthClient> endpoint,
+                ServiceEndpoint<GoogleOidcClient> endpoint,
                 IDeviceEnrollment deviceEnrollment)
                 : this(
                       endpoint.GetDirections(deviceEnrollment.State),

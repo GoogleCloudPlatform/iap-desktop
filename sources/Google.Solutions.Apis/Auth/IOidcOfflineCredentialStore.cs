@@ -10,7 +10,7 @@ namespace Google.Solutions.Apis.Auth
     /// <summary>
     /// Persistent storage for offline credentials.
     /// </summary>
-    public interface IOAuthOfflineCredentialStore
+    public interface IOidcOfflineCredentialStore
     {
         /// <summary>
         /// Try to load an offline credential.

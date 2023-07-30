@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth
 {
-    public class ByoidOidcClient : OAuthClientBase
+    public class ByoidOidcClient : OidcClientBase
     {
         public ByoidOidcClient(
             IDeviceEnrollment deviceEnrollment, 
-            IOAuthOfflineCredentialStore store) 
+            IOidcOfflineCredentialStore store) 
             : base(deviceEnrollment, store)
         {
         }
