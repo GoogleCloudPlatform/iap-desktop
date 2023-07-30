@@ -26,7 +26,7 @@ namespace Google.Solutions.Apis.Auth
     /// <summary>
     /// OIDC user info.
     /// </summary>
-    public class UserInfo
+    public class UserInfo // TODO: Delete UserInfo
     {
         [JsonProperty("email")]
         public string Email { get; set; }

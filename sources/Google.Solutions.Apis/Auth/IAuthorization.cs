@@ -29,7 +29,7 @@ namespace Google.Solutions.Apis.Auth
     /// <summary>
     /// OAuth authorization for this app.
     /// </summary>
-    public interface IAuthorization
+    public interface IAuthorization //TODO: Move to App DLL
     {
         /// <summary>
         /// Event triggered after a successful reauthorization. Might be
