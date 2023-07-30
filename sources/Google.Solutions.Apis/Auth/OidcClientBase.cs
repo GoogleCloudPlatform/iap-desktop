@@ -152,6 +152,9 @@ namespace Google.Solutions.Apis.Auth
         }
     }
 
+    /// <summary>
+    /// Client for Google "1PI" OIDC.
+    /// </summary>
     public class GoogleOidcClient : OidcClientBase
     {
         private readonly ServiceEndpoint<GoogleOidcClient> endpoint;
@@ -184,7 +187,6 @@ namespace Google.Solutions.Apis.Auth
         //---------------------------------------------------------------------
 
         public override IServiceEndpoint Endpoint => this.endpoint;
-
 
         //---------------------------------------------------------------------
         // Privates.
@@ -231,7 +233,7 @@ namespace Google.Solutions.Apis.Auth
                 //
                 // We didn't get a new ID token, but we still have
                 // the one from last time. This one might be expired,
-                // but that doesn't matter since we just use it to
+                // but that doesn't matter since we only use it to
                 // extract the email address.
                 //
 
@@ -444,6 +446,8 @@ namespace Google.Solutions.Apis.Auth
             }
         }
     }
+
+    // TODO: WorkforceIdentityClient, cf https://docs.google.com/document/d/1wVqW62U-BMXnSlNdS962ixPPeUf-IN-MJjuZduEfgIU/edit?resourcekey=0-Oc-wjfuG9RWL5-yjnkiltg#heading=h.l5nfl0rnl0va
 
     public static class GoogleOAuthScopes
     {

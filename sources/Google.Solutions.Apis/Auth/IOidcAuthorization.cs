@@ -45,6 +45,8 @@ namespace Google.Solutions.Apis.Auth
             this.RefreshToken = refreshToken.ExpectNotEmpty(nameof(refreshToken));
             this.IdToken = idToken;
         }
+
+        //TODO: Store browser preference?
     }
 
     public interface IOidcOfflineCredentialStore
