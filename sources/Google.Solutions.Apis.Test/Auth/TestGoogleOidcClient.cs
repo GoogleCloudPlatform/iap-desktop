@@ -26,6 +26,7 @@ using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
@@ -37,13 +38,6 @@ namespace Google.Solutions.Apis.Test.Auth
     [TestFixture]
     public class TestGoogleOidcClient
     {
-        private static readonly GoogleAuthorizationCodeFlow Flow 
-            = new GoogleAuthorizationCodeFlow(
-                new GoogleAuthorizationCodeFlow.Initializer()
-                {
-                    ClientSecrets = new ClientSecrets()
-                });
-
         //---------------------------------------------------------------------
         // CreateSession.
         //---------------------------------------------------------------------
@@ -79,7 +73,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 oldIdToken);
 
             var session = GoogleOidcClient.CreateSession(
-                Flow,
+                new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse);
@@ -116,7 +110,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 oldIdToken);
 
             var session = GoogleOidcClient.CreateSession(
-                Flow,
+                new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse);
@@ -154,7 +148,7 @@ namespace Google.Solutions.Apis.Test.Auth
 
             Assert.Throws<OAuthScopeNotGrantedException>
                 (() => GoogleOidcClient.CreateSession(
-                Flow,
+                new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse));
@@ -177,7 +171,7 @@ namespace Google.Solutions.Apis.Test.Auth
 
             Assert.Throws<OAuthScopeNotGrantedException>
                 (() => GoogleOidcClient.CreateSession(
-                Flow,
+                new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse));
@@ -203,6 +197,26 @@ namespace Google.Solutions.Apis.Test.Auth
                 {
                     Error = "mock"
                 });
+            }
+        }
+
+        private class GoogleOidcClientWithMockFlow : GoogleOidcClient
+        {
+            public Mock<IAuthorizationCodeFlow> Flow = new Mock<IAuthorizationCodeFlow>();
+
+            public GoogleOidcClientWithMockFlow(
+                ServiceEndpoint<GoogleOidcClient> endpoint,
+                IDeviceEnrollment deviceEnrollment,
+                ICodeReceiver codeReceiver,
+                IOidcOfflineCredentialStore store,
+                ClientSecrets clientSecrets) : base(endpoint, deviceEnrollment, codeReceiver, store, clientSecrets)
+            {
+            }
+
+            protected override IAuthorizationCodeFlow CreateFlow(
+                GoogleAuthorizationCodeFlow.Initializer initializer)
+            {
+                return this.Flow.Object;
             }
         }
 

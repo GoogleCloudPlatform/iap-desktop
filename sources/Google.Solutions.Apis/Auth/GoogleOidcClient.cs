@@ -52,8 +52,14 @@ namespace Google.Solutions.Apis.Auth
         // Helper methods.
         //---------------------------------------------------------------------
 
+        protected virtual IAuthorizationCodeFlow CreateFlow(
+            GoogleAuthorizationCodeFlow.Initializer initializer)
+        {
+            return new GoogleAuthorizationCodeFlow(initializer);
+        }
+
         internal static OidcSession CreateSession(
-            GoogleAuthorizationCodeFlow flow,
+            IAuthorizationCodeFlow flow,
             IDeviceEnrollment deviceEnrollment,
             OidcOfflineCredential offlineCredential,
             TokenResponse tokenResponse)
@@ -169,7 +175,7 @@ namespace Google.Solutions.Apis.Auth
 
             try
             {
-                var flow = new GoogleAuthorizationCodeFlow(initializer);
+                var flow = CreateFlow(initializer);
                 var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
 
                 var apiCredential = await
@@ -252,7 +258,7 @@ namespace Google.Solutions.Apis.Auth
                 ClientSecrets = this.clientSecrets
             };
 
-            var flow = new GoogleAuthorizationCodeFlow(initializer);
+            var flow = CreateFlow(initializer);
 
             TokenResponse tokenResponse;
             try
