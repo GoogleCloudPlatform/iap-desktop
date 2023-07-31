@@ -51,6 +51,11 @@ namespace Google.Solutions.Apis.Auth
     public class OidcOfflineCredential
     {
         /// <summary>
+        /// Source of the credential.
+        /// </summary>
+        public OidcOfflineCredentialIssuer Issuer { get; }
+
+        /// <summary>
         /// Refresh token, not null.
         /// </summary>
         public string RefreshToken { get; }
@@ -60,10 +65,20 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         public string IdToken { get; }
 
-        public OidcOfflineCredential(string refreshToken, string idToken)
+        public OidcOfflineCredential(
+            OidcOfflineCredentialIssuer issuer,
+            string refreshToken, 
+            string idToken)
         {
+            this.Issuer = issuer;
             this.RefreshToken = refreshToken.ExpectNotEmpty(nameof(refreshToken));
             this.IdToken = idToken;
         }
+    }
+
+    public enum OidcOfflineCredentialIssuer
+    {
+        Gaia,
+        Sts
     }
 }

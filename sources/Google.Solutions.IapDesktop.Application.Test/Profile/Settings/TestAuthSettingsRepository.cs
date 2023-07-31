@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenBlobOnlyContainsRefreshToken_ThenTryReadReturnsTrue()
+        public void WhenBlobOnlyContainsGaiaRefreshToken_ThenTryReadReturnsTrue()
         {
             var value = @"{
                 'refresh_token':'rt',
@@ -136,6 +136,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             // Read.
             Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.IsNull(offlineCredential.IdToken);
+        }
+
+        [Test]
+        public void WhenBlobOnlyContainsStsRefreshToken_ThenTryReadReturnsTrue()
+        {
+            var value = @"{
+                'refresh_token':'rt',
+                'issuer': 'sts'
+                }";
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
         }
@@ -145,19 +169,41 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void Write()
+        public void WriteGaiaOfflineCredential()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
             // Write.
-            repository.Write(new OidcOfflineCredential("rt", "idt"));
+            repository.Write(new OidcOfflineCredential( 
+                OidcOfflineCredentialIssuer.Gaia, "rt", "idt"));
 
             // Read again.
             Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.AreEqual("idt", offlineCredential.IdToken);
+        }
+
+        [Test]
+        public void WriteStsOfflineCredential()
+        {
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Write.
+            repository.Write(new OidcOfflineCredential(
+                OidcOfflineCredentialIssuer.Sts,
+                "rt",
+                null));
+
+            // Read again.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.IsNull(offlineCredential.IdToken);
         }
 
         //---------------------------------------------------------------------
@@ -171,7 +217,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             var repository = new AuthSettingsRepository(baseKey);
 
             // Write & clear.
-            repository.Write(new OidcOfflineCredential("rt", "idt"));
+            repository.Write(new OidcOfflineCredential(
+                OidcOfflineCredentialIssuer.Gaia, "rt", "idt"));
             repository.Clear();
 
             // Read again.

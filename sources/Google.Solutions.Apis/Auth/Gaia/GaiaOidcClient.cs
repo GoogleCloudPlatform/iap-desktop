@@ -179,6 +179,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken)
         {
+            Precondition.Expect(offlineCredential == null ||
+                offlineCredential.Issuer == OidcOfflineCredentialIssuer.Gaia,
+                "Offline credential must be issued by Gaia");
+
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
                 this.deviceEnrollment)
@@ -289,6 +293,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
             CancellationToken cancellationToken)
         {
             offlineCredential.ExpectNotNull(nameof(offlineCredential));
+            Precondition.Expect(offlineCredential.Issuer == OidcOfflineCredentialIssuer.Gaia,
+                "Offline credential must be issued by Gaia");
 
             var initializer = new CodeFlowInitializer(
                 this.endpoint,

@@ -65,6 +65,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     : this.apiCredential.Token.IdToken;
 
                 return new OidcOfflineCredential(
+                    OidcOfflineCredentialIssuer.Gaia,
                     this.apiCredential.Token.RefreshToken,
                     idToken);
             }

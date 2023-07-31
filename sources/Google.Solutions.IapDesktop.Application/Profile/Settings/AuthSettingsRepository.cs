@@ -181,11 +181,29 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             [JsonProperty("id_token")]
             public string IdToken { get; set; }
 
+            /// <summary>
+            /// Issuer of credential. For backwards compatibility,
+            /// a null/empty value is interpreted as Gaia.
+            /// </summary>
+            [JsonProperty("issuer")]
+            public string Issuer { get; set; }
+
             public OidcOfflineCredential ToOidcOfflineCredential()
             {
-                return new OidcOfflineCredential(
-                    this.RefreshToken, 
-                    this.IdToken);
+                if (this.Issuer == "sts")
+                {
+                    return new OidcOfflineCredential(
+                        OidcOfflineCredentialIssuer.Sts,
+                        this.RefreshToken,
+                        this.IdToken);
+                }
+                else
+                {
+                    return new OidcOfflineCredential(
+                        OidcOfflineCredentialIssuer.Gaia,
+                        this.RefreshToken,
+                        this.IdToken);
+                }
             }
 
             public static CredentialBlob FromOidcOfflineCredential(
@@ -193,6 +211,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             {
                 return new CredentialBlob()
                 {
+                    Issuer = offlineCredential.Issuer == OidcOfflineCredentialIssuer.Sts
+                        ? "sts"
+                        : null,
                     RefreshToken = offlineCredential.RefreshToken,
                     IdToken = offlineCredential.IdToken
                 };
