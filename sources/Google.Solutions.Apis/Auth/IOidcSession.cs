@@ -24,8 +24,7 @@ using Google.Apis.Auth.OAuth2;
 namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
-    /// OpenID Connect session. A session is backed by a refresh token, 
-    /// but it may expire due to the 'Google Cloud Session Lenth' control.
+    /// OpenID Connect session. A session is backed by a refresh token.
     /// </summary>
     public interface IOidcSession 
     {
@@ -33,12 +32,6 @@ namespace Google.Solutions.Apis.Auth
         /// Username. The syntax differs depending on the implementation.
         /// </summary>
         string Username { get; }
-
-        /// <summary>
-        /// ID token for the signed-in user.
-        /// Not null.
-        /// </summary>
-        IJsonWebToken IdToken { get; }
 
         /// <summary>
         /// Credential to use for Google API calls.

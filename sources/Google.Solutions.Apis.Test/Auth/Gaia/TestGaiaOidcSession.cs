@@ -64,7 +64,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     Email = "x@example.com",
                     HostedDomain = "example.com"
                 });
-            var session = new GaiaOidcClient.OidcSession(
+            var session = new GaiaOidcSession(
                 new Mock<IDeviceEnrollment>().Object,
                 CreateUserCredential(idToken),
                 idToken);

@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             return new GoogleAuthorizationCodeFlow(initializer);
         }
 
-        internal static OidcSession CreateSession(
+        internal static GaiaOidcSession CreateSession(
             IAuthorizationCodeFlow flow,
             IDeviceEnrollment deviceEnrollment,
             OidcOfflineCredential offlineCredential,
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 // verification requires access to the JWKS, and the JWKS
                 // might not be available over PSC.
                 //
-                return new OidcSession(
+                return new GaiaOidcSession(
                     deviceEnrollment,
                     apiCredential,
                     UnverifiedGaiaJsonWebToken.Decode(idToken));
@@ -138,7 +138,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
                 var apiCredential = new UserCredential(flow, null, tokenResponse);
 
-                return new OidcSession(
+                return new GaiaOidcSession(
                     deviceEnrollment,
                     apiCredential,
                     offlineIdToken);
@@ -360,49 +360,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                       deviceEnrollment)
             {
             }
-        }
-
-        internal class OidcSession : IGaiaOidcSession
-        {
-            private readonly UserCredential apiCredential;
-
-            public OidcSession(
-                IDeviceEnrollment deviceEnrollment,
-                UserCredential apiCredential,
-                IJsonWebToken idToken)
-            {
-                this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
-                this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
-                this.IdToken = idToken.ExpectNotNull(nameof(idToken));
-
-                Debug.Assert(idToken.Payload.Email != null);
-            }
-
-            public IJsonWebToken IdToken { get; }
-            public ICredential ApiCredential => this.apiCredential;
-            public IDeviceEnrollment DeviceEnrollment { get; }
-            public string Username => this.IdToken.Payload.Email;
-            public string Email => this.IdToken.Payload.Email;
-            public string HostedDomain => this.IdToken.Payload.HostedDomain;
-
-            public OidcOfflineCredential OfflineCredential
-            {
-                get
-                {
-                    //
-                    // Prefer fresh ID token if it's available, otherwise
-                    // use old.
-                    //
-                    var idToken = string.IsNullOrEmpty(this.apiCredential.Token.IdToken)
-                        ? this.IdToken.ToString()
-                        : this.apiCredential.Token.IdToken;
-
-                    return new OidcOfflineCredential(
-                        this.apiCredential.Token.RefreshToken,
-                        idToken);
-                }
-            }
-
         }
 
         internal static class Scopes
