@@ -30,7 +30,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
     /// Sessions are subject to the 'Google Cloud Session Length' control,
     /// and end when reauthorization is triggered.
     /// </summary>
-    internal interface IGaiaOidcSession : IOidcSession
+    public interface IGaiaOidcSession : IOidcSession
     {
         /// <summary>
         /// ID token for the signed-in user.
@@ -48,10 +48,5 @@ namespace Google.Solutions.Apis.Auth.Gaia
         /// account. Null if it's a consumer user account.
         /// </summary>
         string HostedDomain { get; }
-
-        /// <summary>
-        /// Revoke the underlying OAuth grant.
-        /// </summary>
-        Task RevokeGrantAsync(CancellationToken cancellationToken);
     }
 }

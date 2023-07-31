@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Moq;
@@ -53,6 +54,7 @@ namespace Google.Solutions.Apis.Test.Auth
 
             protected override Task<IOidcSession> AuthorizeWithBrowserAsync(
                 OidcOfflineCredential offlineCredential,
+                ICodeReceiver codeReceiver,
                 CancellationToken cancellationToken)
             {
                 return Task.FromResult(this.AuthorizeWithBrowser());
@@ -141,7 +143,9 @@ namespace Google.Solutions.Apis.Test.Auth
             };
             
             var session = await client
-                .AuthorizeAsync(CancellationToken.None)
+                .AuthorizeAsync(
+                    new Mock<ICodeReceiver>().Object,
+                    CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);

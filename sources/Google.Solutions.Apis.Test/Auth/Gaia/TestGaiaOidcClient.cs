@@ -210,9 +210,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             public GoogleOidcClientWithMockFlow(
                 ServiceEndpoint<GaiaOidcClient> endpoint,
                 IDeviceEnrollment deviceEnrollment,
-                ICodeReceiver codeReceiver,
                 IOidcOfflineCredentialStore store,
-                ClientSecrets clientSecrets) : base(endpoint, deviceEnrollment, codeReceiver, store, clientSecrets)
+                ClientSecrets clientSecrets) 
+                : base(endpoint, deviceEnrollment, store, clientSecrets)
             {
             }
 
@@ -249,12 +249,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
-                codeReceiver,
                 store.Object,
                 new ClientSecrets());
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(CancellationToken.None).Wait());
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
                 GaiaOidcClient.Scopes.Cloud,
@@ -291,12 +290,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
-                codeReceiver,
                 store.Object,
                 new ClientSecrets());
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(CancellationToken.None).Wait());
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
                 $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
@@ -322,12 +320,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
-                codeReceiver,
                 store.Object,
                 new ClientSecrets());
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(CancellationToken.None).Wait());
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
                 $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
@@ -352,12 +349,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
-                codeReceiver,
                 store.Object,
                 new ClientSecrets());
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(CancellationToken.None).Wait());
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
                 $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
@@ -387,12 +383,12 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
-                new Mock<ICodeReceiver>().Object,
                 store.Object,
                 new ClientSecrets());
 
             var session = await client
-                .TryAuthorizeSilentlyAsync(CancellationToken.None)
+                .TryAuthorizeSilentlyAsync(
+                    CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNull(session);

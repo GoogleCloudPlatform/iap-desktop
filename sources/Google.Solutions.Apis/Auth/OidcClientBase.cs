@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -45,6 +46,7 @@ namespace Google.Solutions.Apis.Auth
         /// Authorize using a browser-based OIDC flow.
         /// </summary>
         Task<IOidcSession> AuthorizeAsync(
+            ICodeReceiver codeReceiver,
             CancellationToken cancellationToken);
     }
 
@@ -113,12 +115,18 @@ namespace Google.Solutions.Apis.Auth
         }
 
         public async Task<IOidcSession> AuthorizeAsync(
+            ICodeReceiver codeReceiver,
             CancellationToken cancellationToken)
         {
+            codeReceiver.ExpectNotNull(nameof(codeReceiver));
+
             this.store.TryRead(out var offlineCredential);
 
             var authorization = await 
-                AuthorizeWithBrowserAsync(offlineCredential, cancellationToken)
+                AuthorizeWithBrowserAsync(
+                    offlineCredential, 
+                    codeReceiver, 
+                    cancellationToken)
                 .ConfigureAwait(false);
 
             //
@@ -131,6 +139,7 @@ namespace Google.Solutions.Apis.Auth
 
         protected abstract Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
+            ICodeReceiver codeReceiver,
             CancellationToken cancellationToken);
 
         protected abstract Task<IOidcSession> ActivateOfflineCredentialAsync(

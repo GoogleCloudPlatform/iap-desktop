@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class BrowserCodeReceiver : LocalServerCodeReceiver
+        private class BrowserCodeReceiver : LocalServerCodeReceiver // TODO: remove
         {
             private readonly BrowserPreference browserPreference;
 

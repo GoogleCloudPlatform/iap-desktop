@@ -30,10 +30,9 @@ namespace Google.Solutions.Apis.Auth.Gaia
         public GaiaPkceOidcClient(
             ServiceEndpoint<GaiaOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
-            ICodeReceiver codeReceiver,
             IOidcOfflineCredentialStore store,
             ClientSecrets clientSecrets) 
-            : base(endpoint, deviceEnrollment, codeReceiver, store, clientSecrets)
+            : base(endpoint, deviceEnrollment, store, clientSecrets)
         {
         }
 

@@ -21,6 +21,8 @@
 
 using Google.Apis.Auth.OAuth2;
 using System;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Google.Solutions.Apis.Auth
 {
@@ -65,5 +67,10 @@ namespace Google.Solutions.Apis.Auth
         /// but keep the underling grant.
         /// </summary>
         void Terminate();
+
+        /// <summary>
+        /// Revoke the underlying OAuth grant.
+        /// </summary>
+        Task RevokeGrantAsync(CancellationToken cancellationToken);
     }
 }

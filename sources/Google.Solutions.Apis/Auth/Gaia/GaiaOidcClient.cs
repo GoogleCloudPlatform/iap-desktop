@@ -39,20 +39,17 @@ namespace Google.Solutions.Apis.Auth.Gaia
     public class GaiaOidcClient : OidcClientBase
     {
         private readonly ServiceEndpoint<GaiaOidcClient> endpoint;
-        private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
         private readonly IDeviceEnrollment deviceEnrollment;
 
         public GaiaOidcClient(
             ServiceEndpoint<GaiaOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
-            ICodeReceiver codeReceiver,
             IOidcOfflineCredentialStore store,
             ClientSecrets clientSecrets)
             : base(store)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-            this.codeReceiver = codeReceiver.ExpectNotNull(nameof(codeReceiver));
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
             this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
         }
@@ -177,11 +174,14 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
+            ICodeReceiver codeReceiver,
             CancellationToken cancellationToken)
         {
             Precondition.Expect(offlineCredential == null ||
                 offlineCredential.Issuer == OidcOfflineCredentialIssuer.Gaia,
                 "Offline credential must be issued by Gaia");
+
+            codeReceiver.ExpectNotNull(nameof(codeReceiver));
 
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
@@ -220,7 +220,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             try
             {
                 var flow = CreateFlow(initializer);
-                var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
+                var app = new AuthorizationCodeInstalledApp(flow, codeReceiver);
 
                 var apiCredential = await
                     app.AuthorizeAsync(null, cancellationToken)

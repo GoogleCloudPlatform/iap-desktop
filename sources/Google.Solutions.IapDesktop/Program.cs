@@ -251,6 +251,9 @@ namespace Google.Solutions.IapDesktop
                 if (dialog.ShowDialog(null) == DialogResult.OK)
                 {
                     Debug.Assert(dialog.ViewModel.Authorization != null);
+
+                    // TODO: Register Reauthorize event handler
+
                     return dialog.ViewModel.Authorization.Value;
                 }
                 else
