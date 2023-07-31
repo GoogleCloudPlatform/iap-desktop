@@ -30,6 +30,11 @@ namespace Google.Solutions.Apis.Auth
     public interface IOidcSession 
     {
         /// <summary>
+        /// Username. The syntax differs depending on the implementation.
+        /// </summary>
+        string Username { get; }
+
+        /// <summary>
         /// ID token for the signed-in user.
         /// Not null.
         /// </summary>

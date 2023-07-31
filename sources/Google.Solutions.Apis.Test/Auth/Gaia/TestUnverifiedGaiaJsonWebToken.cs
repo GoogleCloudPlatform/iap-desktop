@@ -21,13 +21,13 @@
 
 
 using Google.Apis.Auth;
-using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using NUnit.Framework;
 
-namespace Google.Solutions.Apis.Test.Auth
+namespace Google.Solutions.Apis.Test.Auth.Gaia
 {
     [TestFixture]
-    public class TestUnverifiedGoogleJsonWebToken
+    public class TestUnverifiedGaiaJsonWebToken
     {
         private const string SampleJwtWithInvalidSignature
             = "eyJ0eXAiOiJqd3QifQ.eyJlbWFpbCI6InhAZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2V9.nosig";
@@ -40,22 +40,22 @@ namespace Google.Solutions.Apis.Test.Auth
         public void WhenTokenMissesPart_ThenDecodeThrowsException()
         {
             Assert.Throws<InvalidJwtException>(
-                () => UnverifiedGoogleJsonWebToken.Decode("a"));
+                () => UnverifiedGaiaJsonWebToken.Decode("a"));
             Assert.Throws<InvalidJwtException>(
-                () => UnverifiedGoogleJsonWebToken.Decode("a.b"));
+                () => UnverifiedGaiaJsonWebToken.Decode("a.b"));
         }
 
         [Test]
         public void WhenJsonIsMalformed_ThenDecodeThrowsException()
         {
             Assert.Throws<InvalidJwtException>(
-                () => UnverifiedGoogleJsonWebToken.Decode("YQ.YQ.YQ"));
+                () => UnverifiedGaiaJsonWebToken.Decode("YQ.YQ.YQ"));
         }
 
         [Test]
         public void Decode()
         {
-            var jwt = UnverifiedGoogleJsonWebToken.Decode(SampleJwtWithInvalidSignature);
+            var jwt = UnverifiedGaiaJsonWebToken.Decode(SampleJwtWithInvalidSignature);
             Assert.AreEqual("jwt", jwt.Header.Type);
             Assert.AreEqual("x@example.com", jwt.Payload.Email);
         }
@@ -67,13 +67,13 @@ namespace Google.Solutions.Apis.Test.Auth
         [Test]
         public void WhenJsonIsMalformed_ThenTryDecodeReturnsFalse()
         {
-            Assert.IsFalse(UnverifiedGoogleJsonWebToken.TryDecode("YQ.YQ.YQ", out var _));
+            Assert.IsFalse(UnverifiedGaiaJsonWebToken.TryDecode("YQ.YQ.YQ", out var _));
         }
 
         [Test]
         public void TryDecode()
         {
-            Assert.IsTrue(UnverifiedGoogleJsonWebToken.TryDecode(
+            Assert.IsTrue(UnverifiedGaiaJsonWebToken.TryDecode(
                 SampleJwtWithInvalidSignature,
                 out var jwt));
             Assert.AreEqual("jwt", jwt.Header.Type);
@@ -87,7 +87,7 @@ namespace Google.Solutions.Apis.Test.Auth
         [Test]
         public void ToStringReturnsEncodedToken()
         {
-            var jwt = UnverifiedGoogleJsonWebToken.Decode(SampleJwtWithInvalidSignature);
+            var jwt = UnverifiedGaiaJsonWebToken.Decode(SampleJwtWithInvalidSignature);
             Assert.AreEqual(SampleJwtWithInvalidSignature, jwt.ToString());
         }
     }

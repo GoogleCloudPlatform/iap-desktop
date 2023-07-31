@@ -119,10 +119,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 return new OidcSession(
                     deviceEnrollment,
                     apiCredential,
-                    UnverifiedGoogleJsonWebToken.Decode(idToken));
+                    UnverifiedGaiaJsonWebToken.Decode(idToken));
             }
             else if (!string.IsNullOrEmpty(offlineCredential.IdToken) &&
-                UnverifiedGoogleJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
+                UnverifiedGaiaJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {
                 //
@@ -170,7 +170,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             };
 
             if (offlineCredential?.IdToken != null &&
-                UnverifiedGoogleJsonWebToken.TryDecode(offlineCredential.IdToken, out var offlineIdToken) &&
+                UnverifiedGaiaJsonWebToken.TryDecode(offlineCredential.IdToken, out var offlineIdToken) &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {
                 //
@@ -362,7 +362,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             }
         }
 
-        public class OidcSession : IOidcSession
+        internal class OidcSession : IGaiaOidcSession
         {
             private readonly UserCredential apiCredential;
 
@@ -374,11 +374,16 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
                 this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
                 this.IdToken = idToken.ExpectNotNull(nameof(idToken));
+
+                Debug.Assert(idToken.Payload.Email != null);
             }
 
             public IJsonWebToken IdToken { get; }
             public ICredential ApiCredential => this.apiCredential;
             public IDeviceEnrollment DeviceEnrollment { get; }
+            public string Username => this.IdToken.Payload.Email;
+            public string Email => this.IdToken.Payload.Email;
+            public string HostedDomain => this.IdToken.Payload.HostedDomain;
 
             public OidcOfflineCredential OfflineCredential
             {
@@ -397,6 +402,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                         idToken);
                 }
             }
+
         }
 
         internal static class Scopes

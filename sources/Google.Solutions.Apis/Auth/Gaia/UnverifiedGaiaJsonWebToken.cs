@@ -26,17 +26,17 @@ using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
     /// <summary>
-    /// A decoded but unverified Google JWT.
+    /// A decoded but unverified Gaia-issued JWT.
     /// </summary>
-    internal class UnverifiedGoogleJsonWebToken : IJsonWebToken
+    internal class UnverifiedGaiaJsonWebToken : IJsonWebToken
     {
         public GoogleJsonWebSignature.Header Header { get; }
         public GoogleJsonWebSignature.Payload Payload { get; }
 
-        internal UnverifiedGoogleJsonWebToken(
+        internal UnverifiedGaiaJsonWebToken(
             GoogleJsonWebSignature.Header header,
             GoogleJsonWebSignature.Payload payload)
         {
@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// Decode, but don't verify, a JSON web token.
         /// </summary>
-        public static UnverifiedGoogleJsonWebToken Decode(string token)
+        public static UnverifiedGaiaJsonWebToken Decode(string token)
         {
             token.ExpectNotEmpty(nameof(token));
 
@@ -70,8 +70,8 @@ namespace Google.Solutions.Apis.Auth
                     Encoding.UTF8.GetString(
                         Base64UrlEncoding.Decode(encodedPayload)));
 
-                return new UnverifiedGoogleJsonWebToken(header, payload);
-            } 
+                return new UnverifiedGaiaJsonWebToken(header, payload);
+            }
             catch (JsonException)
             {
                 throw new InvalidJwtException(
@@ -81,17 +81,17 @@ namespace Google.Solutions.Apis.Auth
 
         public static bool TryDecode(
             string token,
-            out UnverifiedGoogleJsonWebToken result)
+            out UnverifiedGaiaJsonWebToken result)
         {
             try
             {
                 result = Decode(token);
                 return true;
             }
-            catch 
+            catch
             {
                 result = null;
-                return false; 
+                return false;
             }
         }
 

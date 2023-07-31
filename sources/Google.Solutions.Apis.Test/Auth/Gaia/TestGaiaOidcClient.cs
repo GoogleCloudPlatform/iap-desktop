@@ -24,7 +24,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
@@ -46,14 +45,14 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenTokenResponseContainsIdToken_ThenCreateSessionUsesFreshIdToken()
         {
-            var freshIdToken = new UnverifiedGoogleJsonWebToken(
+            var freshIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
                 {
                     JwtId = "fresh",
                     Email = "x@example.com"
                 }).ToString();
-            var oldIdToken = new UnverifiedGoogleJsonWebToken(
+            var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
                 {
@@ -90,7 +89,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenTokenResponseLacksIdTokenButOfflineCredentialContainsOldIdToken_ThenCreateSessionUsesOldIdToken()
         {
-            var oldIdToken = new UnverifiedGoogleJsonWebToken(
+            var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
                 {
@@ -127,7 +126,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenTokenResponseLacksIdTokenAndOfflineCredentialContainsUnusableIdToken_ThenCreateSessionThrowsException()
         {
-            var oldIdToken = new UnverifiedGoogleJsonWebToken(
+            var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
                 {
@@ -228,7 +227,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
-            var oldIdToken = new UnverifiedGoogleJsonWebToken(
+            var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
                 {
@@ -269,7 +268,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
-            var oldIdToken = new UnverifiedGoogleJsonWebToken(
+            var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
                 {
