@@ -122,7 +122,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 new GoogleJsonWebSignature.Header(),
                 new GoogleJsonWebSignature.Payload()
                 {
-                    Email = "x2@example.com",
+                    Email = "x@example.com",
                 });
             var newSession = new GaiaOidcSession(
                 new Mock<IDeviceEnrollment>().Object,

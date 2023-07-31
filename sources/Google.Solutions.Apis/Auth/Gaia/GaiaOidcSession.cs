@@ -78,12 +78,18 @@ namespace Google.Solutions.Apis.Auth.Gaia
             // as interceptor) continues to work, and immediately starts
             // using the new tokens.
             //
+            // NB. A more obviuos approach to achiveve the same would be to
+            // implement an ICredential facade, and swap out its backing
+            // credential with the new session's credential. But UserCredential
+            // hands out `this` pointers in multiple places, and that makes the
+            // facade approach brittle in practice.
+            //
             if (newSession is GaiaOidcSession gaiaSession && gaiaSession != null)
             {
                 this.apiCredential.Token = gaiaSession.apiCredential.Token;
 
                 //
-                // Leave IdToken and other properties as is as their
+                // NB. Leave IdToken and other properties as is as their
                 // values shouldn't have changed.
                 //
 
