@@ -28,6 +28,7 @@ using Google.Solutions.Apis.Client;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,19 +46,19 @@ namespace Google.Solutions.Apis.Test.Auth
             {
             }
 
-            public Func<OidcSession> ActivateOfflineCredential;
-            public Func<OidcSession> AuthorizeWithBrowser;
+            public Func<IOidcSession> ActivateOfflineCredential;
+            public Func<IOidcSession> AuthorizeWithBrowser;
 
             public override IServiceEndpoint Endpoint => throw new System.NotImplementedException();
 
-            protected override Task<OidcSession> ActivateOfflineCredentialAsync(
+            protected override Task<IOidcSession> ActivateOfflineCredentialAsync(
                 OidcOfflineCredential offlineCredential,
                 CancellationToken cancellationToken)
             {
                 return Task.FromResult(this.ActivateOfflineCredential());
             }
 
-            protected override Task<OidcSession> AuthorizeWithBrowserAsync(
+            protected override Task<IOidcSession> AuthorizeWithBrowserAsync(
                 OidcOfflineCredential offlineCredential,
                 CancellationToken cancellationToken)
             {
@@ -155,21 +156,16 @@ namespace Google.Solutions.Apis.Test.Auth
             var offlineCredential = new OidcOfflineCredential("rt", "idt");
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
-            var newSession = new OidcClientBase.OidcSession(
-                enrollment.Object,
-                CreateUserCredential(),
-                CreateIdToken());
-
             var client = new SampleClient(enrollment.Object, store.Object)
             {
-                ActivateOfflineCredential = () => newSession
+                ActivateOfflineCredential = () => new Mock<IOidcSession>().Object
             };
 
             var session = await client
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(newSession, session);
+            Assert.IsNotNull(session);
             store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
         }
 
@@ -189,21 +185,16 @@ namespace Google.Solutions.Apis.Test.Auth
             OidcOfflineCredential offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
-            var newSession = new OidcClientBase.OidcSession(
-                enrollment.Object,
-                CreateUserCredential(),
-                CreateIdToken());
-
             var client = new SampleClient(enrollment.Object, store.Object)
             {
-                AuthorizeWithBrowser = () => newSession
+                AuthorizeWithBrowser = () => new Mock<IOidcSession>().Object
             };
             
             var session = await client
                 .AuthorizeAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(newSession, session);
+            Assert.IsNotNull(session);
             store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
         }
     }

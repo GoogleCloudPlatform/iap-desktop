@@ -20,35 +20,26 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Solutions.Apis.Client;
 
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
-    /// <summary>
-    /// OpenID Connect session. A session is backed by a refresh token, 
-    /// but it may expire due to the 'Google Cloud Session Lenth' control.
-    /// </summary>
-    public interface IOidcSession 
+    public class GaiaPkceOidcClient : GaiaOidcClient
     {
-        /// <summary>
-        /// ID token for the signed-in user.
-        /// Not null.
-        /// </summary>
-        IJsonWebToken IdToken { get; }
+        public GaiaPkceOidcClient(
+            ServiceEndpoint<GaiaOidcClient> endpoint,
+            IDeviceEnrollment deviceEnrollment,
+            ICodeReceiver codeReceiver,
+            IOidcOfflineCredentialStore store,
+            ClientSecrets clientSecrets) : base(endpoint, deviceEnrollment, codeReceiver, store, clientSecrets)
+        {
+        }
 
-        /// <summary>
-        /// Credential to use for Google API calls.
-        /// Not null.
-        /// </summary>
-        ICredential ApiCredential { get; }
-
-        /// <summary>
-        /// Device enrollment. Not null.
-        /// </summary>
-        IDeviceEnrollment DeviceEnrollment { get; }
-
-        /// <summary>
-        /// Offline credential for silent reauthentication.
-        /// </summary>
-        OidcOfflineCredential OfflineCredential { get; }
+        protected override IAuthorizationCodeFlow CreateFlow(
+            GoogleAuthorizationCodeFlow.Initializer initializer)
+        {
+            return new PkceGoogleAuthorizationCodeFlow(initializer);
+        }
     }
 }

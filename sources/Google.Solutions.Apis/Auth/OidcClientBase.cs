@@ -32,7 +32,7 @@ namespace Google.Solutions.Apis.Auth
     {
         private readonly IOidcOfflineCredentialStore store;
 
-        protected IDeviceEnrollment DeviceEnrollment { get; }
+        protected IDeviceEnrollment DeviceEnrollment { get; } // TODO: Push down to GaiaClient
 
         protected OidcClientBase(
             IDeviceEnrollment deviceEnrollment,
@@ -63,7 +63,6 @@ namespace Google.Solutions.Apis.Auth
                         ActivateOfflineCredentialAsync(offlineCredential, cancellationToken)
                         .ConfigureAwait(false);
                     Debug.Assert(session != null);
-                    Debug.Assert(session.IdToken.Payload.Email != null);
 
                     //
                     // Update the offline credential as the refresh
@@ -110,53 +109,12 @@ namespace Google.Solutions.Apis.Auth
             return authorization;
         }
 
-        protected abstract Task<OidcSession> AuthorizeWithBrowserAsync(
+        protected abstract Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken);
 
-        protected abstract Task<OidcSession> ActivateOfflineCredentialAsync(
+        protected abstract Task<IOidcSession> ActivateOfflineCredentialAsync(
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken);
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        public class OidcSession : IOidcSession
-        {
-            private readonly UserCredential apiCredential;
-
-            public OidcSession(
-                IDeviceEnrollment deviceEnrollment,
-                UserCredential apiCredential, 
-                IJsonWebToken idToken)
-            {
-                this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
-                this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
-                this.IdToken = idToken.ExpectNotNull(nameof(idToken));
-            }
-
-            public IJsonWebToken IdToken { get; }
-            public ICredential ApiCredential => this.apiCredential;
-            public IDeviceEnrollment DeviceEnrollment { get; }
-
-            public OidcOfflineCredential OfflineCredential
-            {
-                get
-                {
-                    //
-                    // Prefer fresh ID token if it's available, otherwise
-                    // use old.
-                    //
-                    var idToken = string.IsNullOrEmpty(this.apiCredential.Token.IdToken)
-                        ? this.IdToken.ToString()
-                        : this.apiCredential.Token.IdToken;
-
-                    return new OidcOfflineCredential(
-                        this.apiCredential.Token.RefreshToken,
-                        idToken);
-                }
-            }
-        }
     }
 }

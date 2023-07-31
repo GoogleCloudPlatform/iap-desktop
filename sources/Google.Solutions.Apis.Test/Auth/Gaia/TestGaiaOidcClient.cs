@@ -26,6 +26,7 @@ using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -33,16 +34,16 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Apis.Test.Auth
+namespace Google.Solutions.Apis.Test.Auth.Gaia
 {
     [TestFixture]
-    public class TestGoogleOidcClient
+    public class TestGaiaOidcClient
     {
         //---------------------------------------------------------------------
         // CreateSession.
         //---------------------------------------------------------------------
 
-        [Test] 
+        [Test]
         public void WhenTokenResponseContainsIdToken_ThenCreateSessionUsesFreshIdToken()
         {
             var freshIdToken = new UnverifiedGoogleJsonWebToken(
@@ -65,14 +66,14 @@ namespace Google.Solutions.Apis.Test.Auth
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = freshIdToken,
-                Scope = $"{GoogleOidcClient.Scopes.Cloud} {GoogleOidcClient.Scopes.Email}"
+                Scope = $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}"
             };
 
             var offlineCredential = new OidcOfflineCredential(
                 "old-rt",
                 oldIdToken);
 
-            var session = GoogleOidcClient.CreateSession(
+            var session = GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
@@ -102,14 +103,14 @@ namespace Google.Solutions.Apis.Test.Auth
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GoogleOidcClient.Scopes.Cloud}"
+                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
             };
 
             var offlineCredential = new OidcOfflineCredential(
                 "old-rt",
                 oldIdToken);
 
-            var session = GoogleOidcClient.CreateSession(
+            var session = GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
@@ -139,7 +140,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GoogleOidcClient.Scopes.Cloud}"
+                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
             };
 
             var offlineCredential = new OidcOfflineCredential(
@@ -147,7 +148,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 oldIdToken);
 
             Assert.Throws<OAuthScopeNotGrantedException>
-                (() => GoogleOidcClient.CreateSession(
+                (() => GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
@@ -162,7 +163,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GoogleOidcClient.Scopes.Cloud}"
+                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
             };
 
             var offlineCredential = new OidcOfflineCredential(
@@ -170,7 +171,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 string.Empty);
 
             Assert.Throws<OAuthScopeNotGrantedException>
-                (() => GoogleOidcClient.CreateSession(
+                (() => GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
                 new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
@@ -188,7 +189,7 @@ namespace Google.Solutions.Apis.Test.Auth
             public string RedirectUri => "http://localhost/";
 
             public Task<AuthorizationCodeResponseUrl> ReceiveCodeAsync(
-                AuthorizationCodeRequestUrl url, 
+                AuthorizationCodeRequestUrl url,
                 CancellationToken taskCancellationToken)
             {
                 this.RequestUrl = url;
@@ -200,12 +201,12 @@ namespace Google.Solutions.Apis.Test.Auth
             }
         }
 
-        private class GoogleOidcClientWithMockFlow : GoogleOidcClient
+        private class GoogleOidcClientWithMockFlow : GaiaOidcClient
         {
             public Mock<IAuthorizationCodeFlow> Flow = new Mock<IAuthorizationCodeFlow>();
 
             public GoogleOidcClientWithMockFlow(
-                ServiceEndpoint<GoogleOidcClient> endpoint,
+                ServiceEndpoint<GaiaOidcClient> endpoint,
                 IDeviceEnrollment deviceEnrollment,
                 ICodeReceiver codeReceiver,
                 IOidcOfflineCredentialStore store,
@@ -242,8 +243,8 @@ namespace Google.Solutions.Apis.Test.Auth
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
-            var client = new GoogleOidcClient(
-                GoogleOidcClient.CreateEndpoint(),
+            var client = new GaiaOidcClient(
+                GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 codeReceiver,
                 store.Object,
@@ -253,11 +254,11 @@ namespace Google.Solutions.Apis.Test.Auth
                 () => client.AuthorizeAsync(CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                GoogleOidcClient.Scopes.Cloud, 
+                GaiaOidcClient.Scopes.Cloud,
                 codeReceiver.RequestUrl.Scope,
                 "Minimal flow");
             StringAssert.Contains(
-                "login_hint=x%40example.com", 
+                "login_hint=x%40example.com",
                 codeReceiver.RequestUrl.Build().ToString());
         }
 
@@ -283,8 +284,8 @@ namespace Google.Solutions.Apis.Test.Auth
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
-            var client = new GoogleOidcClient(
-                GoogleOidcClient.CreateEndpoint(),
+            var client = new GaiaOidcClient(
+                GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 codeReceiver,
                 store.Object,
@@ -294,7 +295,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 () => client.AuthorizeAsync(CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                $"{GoogleOidcClient.Scopes.Cloud} {GoogleOidcClient.Scopes.Email}",
+                $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
                 codeReceiver.RequestUrl.Scope,
                 "Normal flow");
         }
@@ -313,8 +314,8 @@ namespace Google.Solutions.Apis.Test.Auth
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
-            var client = new GoogleOidcClient(
-                GoogleOidcClient.CreateEndpoint(),
+            var client = new GaiaOidcClient(
+                GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 codeReceiver,
                 store.Object,
@@ -324,7 +325,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 () => client.AuthorizeAsync(CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                $"{GoogleOidcClient.Scopes.Cloud} {GoogleOidcClient.Scopes.Email}", 
+                $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
                 codeReceiver.RequestUrl.Scope,
                 "Normal flow");
         }
@@ -343,8 +344,8 @@ namespace Google.Solutions.Apis.Test.Auth
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
-            var client = new GoogleOidcClient(
-                GoogleOidcClient.CreateEndpoint(),
+            var client = new GaiaOidcClient(
+                GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 codeReceiver,
                 store.Object,
@@ -354,7 +355,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 () => client.AuthorizeAsync(CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                $"{GoogleOidcClient.Scopes.Cloud} {GoogleOidcClient.Scopes.Email}",
+                $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
                 codeReceiver.RequestUrl.Scope,
                 "Normal flow");
         }
@@ -377,8 +378,8 @@ namespace Google.Solutions.Apis.Test.Auth
                 null);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
-            var client = new GoogleOidcClient(
-                GoogleOidcClient.CreateEndpoint(),
+            var client = new GaiaOidcClient(
+                GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 new Mock<ICodeReceiver>().Object,
                 store.Object,

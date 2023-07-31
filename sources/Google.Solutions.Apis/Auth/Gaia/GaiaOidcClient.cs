@@ -1,4 +1,25 @@
-﻿using Google.Apis.Auth.OAuth2.Flows;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Client;
@@ -10,19 +31,19 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
     /// <summary>
     /// Client for Google "1PI" OIDC.
     /// </summary>
-    public class GoogleOidcClient : OidcClientBase
+    public class GaiaOidcClient : OidcClientBase
     {
-        private readonly ServiceEndpoint<GoogleOidcClient> endpoint;
+        private readonly ServiceEndpoint<GaiaOidcClient> endpoint;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
 
-        public GoogleOidcClient(
-            ServiceEndpoint<GoogleOidcClient> endpoint,
+        public GaiaOidcClient(
+            ServiceEndpoint<GaiaOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
             ICodeReceiver codeReceiver,
             IOidcOfflineCredentialStore store,
@@ -34,10 +55,10 @@ namespace Google.Solutions.Apis.Auth
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
         }
 
-        public static ServiceEndpoint<GoogleOidcClient> CreateEndpoint(
+        public static ServiceEndpoint<GaiaOidcClient> CreateEndpoint(
             PrivateServiceConnectDirections pscDirections = null)
         {
-            return new ServiceEndpoint<GoogleOidcClient>(
+            return new ServiceEndpoint<GaiaOidcClient>(
                 pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://oauth2.googleapis.com/");
         }
@@ -67,7 +88,7 @@ namespace Google.Solutions.Apis.Auth
             flow.ExpectNotNull(nameof(flow));
             deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             offlineCredential.ExpectNotNull(nameof(offlineCredential));
-            tokenResponse.ExpectNotNull(nameof(tokenResponse)); 
+            tokenResponse.ExpectNotNull(nameof(tokenResponse));
 
             Debug.Assert(tokenResponse.RefreshToken != null);
             Debug.Assert(tokenResponse.AccessToken != null);
@@ -132,10 +153,10 @@ namespace Google.Solutions.Apis.Auth
         }
 
         //---------------------------------------------------------------------
-        // Overrides
+        // Overrides.
         //---------------------------------------------------------------------
 
-        protected override async Task<OidcSession> AuthorizeWithBrowserAsync(
+        protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken)
         {
@@ -202,9 +223,9 @@ namespace Google.Solutions.Apis.Auth
                     // credential object must hold on to it.
                     //
                     return CreateSession(
-                        flow, 
-                        this.DeviceEnrollment, 
-                        offlineCredential, 
+                        flow,
+                        this.DeviceEnrollment,
+                        offlineCredential,
                         apiCredential.Token);
                 }
                 catch
@@ -245,7 +266,7 @@ namespace Google.Solutions.Apis.Auth
             }
         }
 
-        protected override async Task<OidcSession> ActivateOfflineCredentialAsync(
+        protected override async Task<IOidcSession> ActivateOfflineCredentialAsync(
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken)
         {
@@ -287,11 +308,15 @@ namespace Google.Solutions.Apis.Auth
                 // N.B. Do not dispose the flow if the sign-in succeeds as the
                 // credential object must hold on to it.
                 //
-                return CreateSession(
-                    flow, 
+                var session = CreateSession(
+                    flow,
                     this.DeviceEnrollment,
-                    offlineCredential, 
+                    offlineCredential,
                     tokenResponse);
+
+                Debug.Assert(session.IdToken.Payload.Email != null);
+
+                return session;
             }
             catch
             {
@@ -326,12 +351,49 @@ namespace Google.Solutions.Apis.Auth
             }
 
             public CodeFlowInitializer(
-                ServiceEndpoint<GoogleOidcClient> endpoint,
+                ServiceEndpoint<GaiaOidcClient> endpoint,
                 IDeviceEnrollment deviceEnrollment)
                 : this(
                       endpoint.GetDirections(deviceEnrollment.State),
                       deviceEnrollment)
             {
+            }
+        }
+
+        public class OidcSession : IOidcSession
+        {
+            private readonly UserCredential apiCredential;
+
+            public OidcSession(
+                IDeviceEnrollment deviceEnrollment,
+                UserCredential apiCredential,
+                IJsonWebToken idToken)
+            {
+                this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
+                this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
+                this.IdToken = idToken.ExpectNotNull(nameof(idToken));
+            }
+
+            public IJsonWebToken IdToken { get; }
+            public ICredential ApiCredential => this.apiCredential;
+            public IDeviceEnrollment DeviceEnrollment { get; }
+
+            public OidcOfflineCredential OfflineCredential
+            {
+                get
+                {
+                    //
+                    // Prefer fresh ID token if it's available, otherwise
+                    // use old.
+                    //
+                    var idToken = string.IsNullOrEmpty(this.apiCredential.Token.IdToken)
+                        ? this.IdToken.ToString()
+                        : this.apiCredential.Token.IdToken;
+
+                    return new OidcOfflineCredential(
+                        this.apiCredential.Token.RefreshToken,
+                        idToken);
+                }
             }
         }
 

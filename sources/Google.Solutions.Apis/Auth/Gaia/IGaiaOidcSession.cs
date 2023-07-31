@@ -19,36 +19,19 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
-    /// <summary>
-    /// OpenID Connect session. A session is backed by a refresh token, 
-    /// but it may expire due to the 'Google Cloud Session Lenth' control.
-    /// </summary>
-    public interface IOidcSession 
+    internal interface IGaiaOidcSession : IOidcSession
     {
         /// <summary>
-        /// ID token for the signed-in user.
-        /// Not null.
+        /// Primary email address of user.
         /// </summary>
-        IJsonWebToken IdToken { get; }
+        string Email { get; }
 
         /// <summary>
-        /// Credential to use for Google API calls.
-        /// Not null.
+        /// Primary domain of the user's Cloud Identity/Workspace
+        /// account. Null if it's a consumer user account.
         /// </summary>
-        ICredential ApiCredential { get; }
-
-        /// <summary>
-        /// Device enrollment. Not null.
-        /// </summary>
-        IDeviceEnrollment DeviceEnrollment { get; }
-
-        /// <summary>
-        /// Offline credential for silent reauthentication.
-        /// </summary>
-        OidcOfflineCredential OfflineCredential { get; }
+        string HostedDomain { get; }
     }
 }
