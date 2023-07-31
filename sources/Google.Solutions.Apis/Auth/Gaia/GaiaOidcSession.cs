@@ -23,6 +23,8 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth.Gaia
 {
@@ -42,6 +44,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             Debug.Assert(idToken.Payload.Email != null);
         }
 
+        public event EventHandler Terminated;
         public IJsonWebToken IdToken { get; }
         public ICredential ApiCredential => this.apiCredential;
         public IDeviceEnrollment DeviceEnrollment { get; }
@@ -100,6 +103,26 @@ namespace Google.Solutions.Apis.Auth.Gaia
             {
                 throw new ArgumentException(nameof(newSession));
             }
+        }
+
+        public void Terminate()
+        {
+            this.Terminated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public async Task RevokeGrantAsync(CancellationToken cancellationToken)
+        {
+            //
+            // Revoke the refresh token. This removes the underlying grant.
+            //
+            await this.apiCredential.Flow
+                .RevokeTokenAsync(
+                    null, 
+                    this.apiCredential.Token.RefreshToken, 
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            Terminate();
         }
     }
 }

@@ -19,6 +19,9 @@
 // under the License.
 //
 
+using System.Threading.Tasks;
+using System.Threading;
+
 namespace Google.Solutions.Apis.Auth.Gaia
 {
     /// <summary>
@@ -45,5 +48,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
         /// account. Null if it's a consumer user account.
         /// </summary>
         string HostedDomain { get; }
+
+        /// <summary>
+        /// Revoke the underlying OAuth grant.
+        /// </summary>
+        Task RevokeGrantAsync(CancellationToken cancellationToken);
     }
 }

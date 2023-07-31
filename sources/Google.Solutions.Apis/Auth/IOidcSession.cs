@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using System;
 
 namespace Google.Solutions.Apis.Auth
 {
@@ -30,6 +31,8 @@ namespace Google.Solutions.Apis.Auth
     /// </summary>
     public interface IOidcSession 
     {
+        event EventHandler Terminated;
+
         /// <summary>
         /// Username. The syntax differs depending on the implementation.
         /// </summary>
@@ -56,5 +59,11 @@ namespace Google.Solutions.Apis.Auth
         /// that the API credential remains valid.
         /// </summary>
         void Splice(IOidcSession newSession);
+
+        /// <summary>
+        /// Terminate the session and drop offline credential,
+        /// but keep the underling grant.
+        /// </summary>
+        void Terminate();
     }
 }

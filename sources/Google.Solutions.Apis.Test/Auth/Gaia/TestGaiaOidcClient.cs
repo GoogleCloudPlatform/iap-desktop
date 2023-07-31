@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;

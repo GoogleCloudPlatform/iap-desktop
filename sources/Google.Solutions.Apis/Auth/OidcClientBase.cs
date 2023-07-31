@@ -57,6 +57,11 @@ namespace Google.Solutions.Apis.Auth
             this.store = store.ExpectNotNull(nameof(store));
         }
 
+        internal void ClearOfflineCredentialStore()
+        {
+            this.store.Clear();
+        }
+
         //---------------------------------------------------------------------
         // IOidcClient.
         //---------------------------------------------------------------------

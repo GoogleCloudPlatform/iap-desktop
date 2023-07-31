@@ -23,11 +23,14 @@ using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Test.Auth.Gaia
 {
@@ -39,11 +42,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             string accessToken,
             IJsonWebToken jwt)
         {
-            var flow = new GoogleAuthorizationCodeFlow(
-                new GoogleAuthorizationCodeFlow.Initializer()
-                {
-                    ClientSecrets = new ClientSecrets()
-                });
+            var flow = new Mock<IAuthorizationCodeFlow>().Object;
             return new UserCredential(flow, null, null)
             {
                 Token = new TokenResponse()
@@ -56,7 +55,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         //---------------------------------------------------------------------
-        // OidcSession.
+        // Properties.
         //---------------------------------------------------------------------
 
         [Test]
@@ -133,6 +132,73 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
             Assert.AreEqual("new-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+        }
+
+        //---------------------------------------------------------------------
+        // Terminate.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TerminateRaisesEvent()
+        {
+            var idToken = new UnverifiedGaiaJsonWebToken(
+                new GoogleJsonWebSignature.Header(),
+                new GoogleJsonWebSignature.Payload()
+                {
+                    Email = "x@example.com",
+                    HostedDomain = "example.com"
+                });
+            var session = new GaiaOidcSession(
+                new Mock<IDeviceEnrollment>().Object,
+                CreateUserCredential("rt", "at", idToken),
+                idToken);
+
+            bool eventRaised = false;
+            session.Terminated += (_, __) => eventRaised = true;
+            session.Terminate();
+
+            Assert.IsTrue(eventRaised);
+        }
+
+        //---------------------------------------------------------------------
+        // RevokeGrant.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task RevokeGrantRevokesRefreshToken()
+        {
+            var flow = new Mock<IAuthorizationCodeFlow>();
+
+            var credential = new UserCredential(flow.Object, null, null)
+            {
+                Token = new TokenResponse()
+                {
+                    RefreshToken = "rt",
+                    AccessToken = "at"
+                }
+            };
+
+            var session = new GaiaOidcSession(
+                new Mock<IDeviceEnrollment>().Object,
+                credential,
+                new UnverifiedGaiaJsonWebToken(
+                    new GoogleJsonWebSignature.Header(),
+                    new GoogleJsonWebSignature.Payload()
+                    {
+                        Email = "x@example.com",
+                    }));
+
+            bool eventRaised = false;
+            session.Terminated += (_, __) => eventRaised = true;
+
+            await session
+                .RevokeGrantAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            flow.Verify(
+                f => f.RevokeTokenAsync(null, "rt", CancellationToken.None),
+                Times.Once);
+            Assert.IsTrue(eventRaised);
         }
     }
 }

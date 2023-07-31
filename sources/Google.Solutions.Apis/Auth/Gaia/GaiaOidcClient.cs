@@ -154,6 +154,23 @@ namespace Google.Solutions.Apis.Auth.Gaia
             }
         }
 
+        private GaiaOidcSession CreateSession(
+            IAuthorizationCodeFlow flow,
+            OidcOfflineCredential offlineCredential,
+            TokenResponse tokenResponse)
+        {
+            var session = CreateSession(
+                flow,
+                this.deviceEnrollment,
+                offlineCredential,
+                tokenResponse);
+
+            Debug.Assert(session.IdToken.Payload.Email != null);
+
+            session.Terminated += (_, __) => ClearOfflineCredentialStore();
+            return session;
+        }
+
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
@@ -226,7 +243,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     //
                     return CreateSession(
                         flow,
-                        this.deviceEnrollment,
                         offlineCredential,
                         apiCredential.Token);
                 }
@@ -310,15 +326,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 // N.B. Do not dispose the flow if the sign-in succeeds as the
                 // credential object must hold on to it.
                 //
-                var session = CreateSession(
+                return CreateSession(
                     flow,
-                    this.deviceEnrollment,
                     offlineCredential,
                     tokenResponse);
-
-                Debug.Assert(session.IdToken.Payload.Email != null);
-
-                return session;
             }
             catch
             {
