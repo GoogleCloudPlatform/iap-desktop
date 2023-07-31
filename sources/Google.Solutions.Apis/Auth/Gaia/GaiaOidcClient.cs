@@ -41,6 +41,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
         private readonly ServiceEndpoint<GaiaOidcClient> endpoint;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
+        private readonly IDeviceEnrollment deviceEnrollment;
 
         public GaiaOidcClient(
             ServiceEndpoint<GaiaOidcClient> endpoint,
@@ -48,11 +49,12 @@ namespace Google.Solutions.Apis.Auth.Gaia
             ICodeReceiver codeReceiver,
             IOidcOfflineCredentialStore store,
             ClientSecrets clientSecrets)
-            : base(deviceEnrollment, store)
+            : base(store)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
             this.codeReceiver = codeReceiver.ExpectNotNull(nameof(codeReceiver));
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
+            this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
         }
 
         public static ServiceEndpoint<GaiaOidcClient> CreateEndpoint(
@@ -162,7 +164,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
         {
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
-                this.DeviceEnrollment)
+                this.deviceEnrollment)
             {
                 ClientSecrets = this.clientSecrets
             };
@@ -224,7 +226,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     //
                     return CreateSession(
                         flow,
-                        this.DeviceEnrollment,
+                        this.deviceEnrollment,
                         offlineCredential,
                         apiCredential.Token);
                 }
@@ -239,7 +241,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 e.Error?.ErrorUri != null &&
                 e.Error.ErrorUri.StartsWith("https://accounts.google.com/info/servicerestricted"))
             {
-                if (this.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                if (this.deviceEnrollment.State == DeviceEnrollmentState.Enrolled)
                 {
                     throw new AuthorizationFailedException(
                         "Authorization failed because your computer's device certificate is " +
@@ -274,7 +276,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
-                this.DeviceEnrollment)
+                this.deviceEnrollment)
             {
                 ClientSecrets = this.clientSecrets
             };
@@ -310,7 +312,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 //
                 var session = CreateSession(
                     flow,
-                    this.DeviceEnrollment,
+                    this.deviceEnrollment,
                     offlineCredential,
                     tokenResponse);
 

@@ -19,16 +19,11 @@
 // under the License.
 //
 
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,10 +34,8 @@ namespace Google.Solutions.Apis.Test.Auth
     {
         private class SampleClient : OidcClientBase
         {
-            public SampleClient(
-                IDeviceEnrollment deviceEnrollment,
-                IOidcOfflineCredentialStore store)
-                : base(deviceEnrollment, store)
+            public SampleClient(IOidcOfflineCredentialStore store)
+                : base(store)
             {
             }
 
@@ -66,35 +59,6 @@ namespace Google.Solutions.Apis.Test.Auth
             }
         }
 
-        private static UserCredential CreateUserCredential()
-        {
-            var flow = new GoogleAuthorizationCodeFlow(
-                new GoogleAuthorizationCodeFlow.Initializer()
-                {
-                    ClientSecrets = new ClientSecrets()
-                });
-            return new UserCredential(flow, null, null)
-            {
-                Token = new TokenResponse()
-                {
-                    RefreshToken = "rt",
-                    IdToken = "idt"
-                }
-            };
-        }
-
-        private static IJsonWebToken CreateIdToken()
-        {
-            var jwt = new Mock<IJsonWebToken>();
-            jwt
-                .SetupGet(j => j.Payload)
-                .Returns(new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
-                {
-                    Email = "x@example.com"
-                });
-            return jwt.Object;
-        }
-
         //---------------------------------------------------------------------
         // TryAuthorizeSilently.
         //---------------------------------------------------------------------
@@ -102,16 +66,12 @@ namespace Google.Solutions.Apis.Test.Auth
         [Test]
         public async Task WhenOfflineCredentialNotFound_ThenTryAuthorizeSilentlyReturnsNull()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             OidcOfflineCredential offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
-            var client = new SampleClient(enrollment.Object, store.Object);
+            var client = new SampleClient(store.Object);
             var session = await client
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -122,16 +82,12 @@ namespace Google.Solutions.Apis.Test.Auth
         [Test]
         public async Task WhenActivatingOfflineCredentialFails_ThenTryAuthorizeSilentlyClearsStore()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential("rt", "idt");
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
-            var client = new SampleClient(enrollment.Object, store.Object)
+            var client = new SampleClient(store.Object)
             {
                 ActivateOfflineCredential = () => throw new Exception("mock")
             };
@@ -147,16 +103,12 @@ namespace Google.Solutions.Apis.Test.Auth
         [Test]
         public async Task WhenActivatingOfflineCredentialSucceeds_ThenTryAuthorizeSilentlySavesOfflineCredential()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential("rt", "idt");
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
-            var client = new SampleClient(enrollment.Object, store.Object)
+            var client = new SampleClient(store.Object)
             {
                 ActivateOfflineCredential = () => new Mock<IOidcSession>().Object
             };
@@ -176,16 +128,12 @@ namespace Google.Solutions.Apis.Test.Auth
         [Test]
         public async Task WhenAuthorizationSucceeds_ThenAuthorizeSavesOfflineCredential()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             OidcOfflineCredential offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
-            var client = new SampleClient(enrollment.Object, store.Object)
+            var client = new SampleClient(store.Object)
             {
                 AuthorizeWithBrowser = () => new Mock<IOidcSession>().Object
             };
