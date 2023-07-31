@@ -35,10 +35,10 @@ namespace Google.Solutions.Apis.Auth
         }
 
         public static ServiceEndpoint<GoogleOidcClient> CreateEndpoint(
-            PrivateServiceConnectDirections pscDirections)
+            PrivateServiceConnectDirections pscDirections = null)
         {
             return new ServiceEndpoint<GoogleOidcClient>(
-                pscDirections,
+                pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://oauth2.googleapis.com/");
         }
 
@@ -49,14 +49,20 @@ namespace Google.Solutions.Apis.Auth
         public override IServiceEndpoint Endpoint => this.endpoint;
 
         //---------------------------------------------------------------------
-        // Privates.
+        // Helper methods.
         //---------------------------------------------------------------------
 
-        private OidcAuthorization MergeCredentials(
+        internal static OidcSession CreateSession(
             GoogleAuthorizationCodeFlow flow,
-            OAuthOfflineCredential offlineCredential,
+            IDeviceEnrollment deviceEnrollment,
+            OidcOfflineCredential offlineCredential,
             TokenResponse tokenResponse)
         {
+            flow.ExpectNotNull(nameof(flow));
+            deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
+            offlineCredential.ExpectNotNull(nameof(offlineCredential));
+            tokenResponse.ExpectNotNull(nameof(tokenResponse)); 
+
             Debug.Assert(tokenResponse.RefreshToken != null);
             Debug.Assert(tokenResponse.AccessToken != null);
 
@@ -69,7 +75,7 @@ namespace Google.Solutions.Apis.Auth
 
                 Debug.Assert(tokenResponse.Scope
                     .Split(' ')
-                    .Contains(GoogleOAuthScopes.Email));
+                    .Contains(Scopes.Email));
 
                 var apiCredential = new UserCredential(flow, null, tokenResponse);
                 var idToken = tokenResponse.IdToken;
@@ -81,12 +87,12 @@ namespace Google.Solutions.Apis.Auth
                 // verification requires access to the JWKS, and the JWKS
                 // might not be available over PSC.
                 //
-                return new OidcAuthorization(
-                    this.DeviceEnrollment,
+                return new OidcSession(
+                    deviceEnrollment,
                     apiCredential,
                     UnverifiedGoogleJsonWebToken.Decode(idToken));
             }
-            else if (offlineCredential.IdToken != null &&
+            else if (!string.IsNullOrEmpty(offlineCredential.IdToken) &&
                 UnverifiedGoogleJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {
@@ -99,12 +105,12 @@ namespace Google.Solutions.Apis.Auth
 
                 Debug.Assert(!tokenResponse.Scope
                     .Split(' ')
-                    .Contains(GoogleOAuthScopes.Email));
+                    .Contains(Scopes.Email));
 
                 var apiCredential = new UserCredential(flow, null, tokenResponse);
 
-                return new OidcAuthorization(
-                    this.DeviceEnrollment,
+                return new OidcSession(
+                    deviceEnrollment,
                     apiCredential,
                     offlineIdToken);
             }
@@ -123,8 +129,8 @@ namespace Google.Solutions.Apis.Auth
         // Overrides
         //---------------------------------------------------------------------
 
-        protected override async Task<OidcAuthorization> AuthorizeWithBrowserAsync(
-            OAuthOfflineCredential offlineCredential,
+        protected override async Task<OidcSession> AuthorizeWithBrowserAsync(
+            OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken)
         {
             var initializer = new CodeFlowInitializer(
@@ -135,23 +141,30 @@ namespace Google.Solutions.Apis.Auth
             };
 
             if (offlineCredential?.IdToken != null &&
-                UnverifiedGoogleJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
+                UnverifiedGoogleJsonWebToken.TryDecode(offlineCredential.IdToken, out var offlineIdToken) &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {
                 //
                 // We still have an ID token with an email address, so we can perform
-                // a "minimal" authorization:
+                // a "minimal flow":
                 //
                 //  - use existing email as login hint (to skip account chooser)
                 //  - don't request the email scope again so that consent unbundling
                 //    doesn't apply
                 //
+                // NB. The last point is important and the entire point why we're storing
+                // the ID token: Consent unbundling (i.e., the behavior of the OAuth consent
+                // screen where it shows unchecked checkboxes for all scopes) only applies
+                // when we request two or more scopes. By only requesting a single scope,
+                // we can sidestep consent unbundling, thereby improving UX.
+                //
+
                 initializer.LoginHint = offlineIdToken.Payload.Email;
-                initializer.Scopes = new[] { GoogleOAuthScopes.Cloud };
+                initializer.Scopes = new[] { Scopes.Cloud };
             }
             else
             {
-                initializer.Scopes = new[] { GoogleOAuthScopes.Cloud, GoogleOAuthScopes.Email };
+                initializer.Scopes = new[] { Scopes.Cloud, Scopes.Email };
             }
 
             try
@@ -182,7 +195,11 @@ namespace Google.Solutions.Apis.Auth
                     // N.B. Do not dispose the flow if the sign-in succeeds as the
                     // credential object must hold on to it.
                     //
-                    return MergeCredentials(flow, offlineCredential, apiCredential.Token);
+                    return CreateSession(
+                        flow, 
+                        this.DeviceEnrollment, 
+                        offlineCredential, 
+                        apiCredential.Token);
                 }
                 catch
                 {
@@ -222,10 +239,12 @@ namespace Google.Solutions.Apis.Auth
             }
         }
 
-        protected override async Task<OidcAuthorization> ActivateOfflineCredentialAsync(
-            OAuthOfflineCredential offlineCredential,
+        protected override async Task<OidcSession> ActivateOfflineCredentialAsync(
+            OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken)
         {
+            offlineCredential.ExpectNotNull(nameof(offlineCredential));
+
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
                 this.DeviceEnrollment)
@@ -262,7 +281,11 @@ namespace Google.Solutions.Apis.Auth
                 // N.B. Do not dispose the flow if the sign-in succeeds as the
                 // credential object must hold on to it.
                 //
-                return MergeCredentials(flow, offlineCredential, tokenResponse);
+                return CreateSession(
+                    flow, 
+                    this.DeviceEnrollment,
+                    offlineCredential, 
+                    tokenResponse);
             }
             catch
             {
@@ -306,7 +329,7 @@ namespace Google.Solutions.Apis.Auth
             }
         }
 
-        private static class GoogleOAuthScopes
+        internal static class Scopes
         {
             public const string Email = "https://www.googleapis.com/auth/userinfo.email";
             public const string Cloud = "https://www.googleapis.com/auth/cloud-platform";

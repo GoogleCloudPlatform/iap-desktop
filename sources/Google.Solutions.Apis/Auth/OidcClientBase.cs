@@ -59,19 +59,19 @@ namespace Google.Solutions.Apis.Auth
                 Debug.Assert(offlineCredential.RefreshToken != null);
                 try
                 {
-                    var authorization = await
+                    var session = await
                         ActivateOfflineCredentialAsync(offlineCredential, cancellationToken)
                         .ConfigureAwait(false);
-                    Debug.Assert(authorization != null);
-                    Debug.Assert(authorization.IdToken.Payload.Email != null);
+                    Debug.Assert(session != null);
+                    Debug.Assert(session.IdToken.Payload.Email != null);
 
                     //
                     // Update the offline credential as the refresh
                     // token and/or ID token might have changed.
                     //
-                    this.store.Write(authorization.OfflineCredential);
+                    this.store.Write(session.OfflineCredential);
 
-                    return authorization;
+                    return session;
                 }
                 catch (Exception e)
                 {
@@ -110,23 +110,23 @@ namespace Google.Solutions.Apis.Auth
             return authorization;
         }
 
-        protected abstract Task<OidcAuthorization> AuthorizeWithBrowserAsync(
-            OAuthOfflineCredential offlineCredential,
+        protected abstract Task<OidcSession> AuthorizeWithBrowserAsync(
+            OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken);
 
-        protected abstract Task<OidcAuthorization> ActivateOfflineCredentialAsync(
-            OAuthOfflineCredential offlineCredential,
+        protected abstract Task<OidcSession> ActivateOfflineCredentialAsync(
+            OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken);
 
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
 
-        protected class OidcAuthorization : IOidcSession
+        public class OidcSession : IOidcSession
         {
             private readonly UserCredential apiCredential;
 
-            public OidcAuthorization(
+            public OidcSession(
                 IDeviceEnrollment deviceEnrollment,
                 UserCredential apiCredential, 
                 IJsonWebToken idToken)
@@ -140,13 +140,23 @@ namespace Google.Solutions.Apis.Auth
             public ICredential ApiCredential => this.apiCredential;
             public IDeviceEnrollment DeviceEnrollment { get; }
 
-            public OAuthOfflineCredential OfflineCredential
+            public OidcOfflineCredential OfflineCredential
             {
-                get => new OAuthOfflineCredential(
-                    this.apiCredential.Token.RefreshToken,
-                    this.apiCredential.Token.IdToken);
+                get
+                {
+                    //
+                    // Prefer fresh ID token if it's available, otherwise
+                    // use old.
+                    //
+                    var idToken = string.IsNullOrEmpty(this.apiCredential.Token.IdToken)
+                        ? this.IdToken.ToString()
+                        : this.apiCredential.Token.IdToken;
+
+                    return new OidcOfflineCredential(
+                        this.apiCredential.Token.RefreshToken,
+                        idToken);
+                }
             }
         }
     }
-
 }

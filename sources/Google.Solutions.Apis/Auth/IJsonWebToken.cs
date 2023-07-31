@@ -28,5 +28,10 @@ namespace Google.Solutions.Apis.Auth
         GoogleJsonWebSignature.Header Header { get; } // TODO: use base class
 
         GoogleJsonWebSignature.Payload Payload { get; }
+
+        /// <summary>
+        /// Return encoded JWT.
+        /// </summary>
+        string ToString();
     }
 }

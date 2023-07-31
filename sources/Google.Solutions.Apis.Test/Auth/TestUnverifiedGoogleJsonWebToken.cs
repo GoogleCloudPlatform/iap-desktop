@@ -29,6 +29,13 @@ namespace Google.Solutions.Apis.Test.Auth
     [TestFixture]
     public class TestUnverifiedGoogleJsonWebToken
     {
+        private const string SampleJwtWithInvalidSignature
+            = "eyJ0eXAiOiJqd3QifQ.eyJlbWFpbCI6InhAZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2V9.nosig";
+
+        //---------------------------------------------------------------------
+        // Decode.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenTokenMissesPart_ThenDecodeThrowsException()
         {
@@ -43,6 +50,45 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             Assert.Throws<InvalidJwtException>(
                 () => UnverifiedGoogleJsonWebToken.Decode("YQ.YQ.YQ"));
+        }
+
+        [Test]
+        public void Decode()
+        {
+            var jwt = UnverifiedGoogleJsonWebToken.Decode(SampleJwtWithInvalidSignature);
+            Assert.AreEqual("jwt", jwt.Header.Type);
+            Assert.AreEqual("x@example.com", jwt.Payload.Email);
+        }
+
+        //---------------------------------------------------------------------
+        // TryDecode.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenJsonIsMalformed_ThenTryDecodeReturnsFalse()
+        {
+            Assert.IsFalse(UnverifiedGoogleJsonWebToken.TryDecode("YQ.YQ.YQ", out var _));
+        }
+
+        [Test]
+        public void TryDecode()
+        {
+            Assert.IsTrue(UnverifiedGoogleJsonWebToken.TryDecode(
+                SampleJwtWithInvalidSignature,
+                out var jwt));
+            Assert.AreEqual("jwt", jwt.Header.Type);
+            Assert.AreEqual("x@example.com", jwt.Payload.Email);
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ToStringReturnsEncodedToken()
+        {
+            var jwt = UnverifiedGoogleJsonWebToken.Decode(SampleJwtWithInvalidSignature);
+            Assert.AreEqual(SampleJwtWithInvalidSignature, jwt.ToString());
         }
     }
 }

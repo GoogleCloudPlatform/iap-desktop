@@ -36,12 +36,12 @@ namespace Google.Solutions.Apis.Auth
         public GoogleJsonWebSignature.Header Header { get; }
         public GoogleJsonWebSignature.Payload Payload { get; }
 
-        private UnverifiedGoogleJsonWebToken(
+        internal UnverifiedGoogleJsonWebToken(
             GoogleJsonWebSignature.Header header,
             GoogleJsonWebSignature.Payload payload)
         {
-            this.Header = header;
-            this.Payload = payload;
+            this.Header = header.ExpectNotNull(nameof(header));
+            this.Payload = payload.ExpectNotNull(nameof(payload));
         }
 
         /// <summary>
@@ -64,9 +64,11 @@ namespace Google.Solutions.Apis.Auth
             try
             {
                 var header = NewtonsoftJsonSerializer.Instance.Deserialize<GoogleJsonWebSignature.Header>(
-                    Encoding.UTF8.GetString(Base64UrlEncoding.Decode(encodedHeader)));
+                    Encoding.UTF8.GetString(
+                        Base64UrlEncoding.Decode(encodedHeader)));
                 var payload = NewtonsoftJsonSerializer.Instance.Deserialize<GoogleJsonWebSignature.Payload>(
-                    Encoding.UTF8.GetString(Base64UrlEncoding.Decode(encodedPayload)));
+                    Encoding.UTF8.GetString(
+                        Base64UrlEncoding.Decode(encodedPayload)));
 
                 return new UnverifiedGoogleJsonWebToken(header, payload);
             } 
@@ -75,6 +77,34 @@ namespace Google.Solutions.Apis.Auth
                 throw new InvalidJwtException(
                     "The JWT contains malformed JSON data");
             }
+        }
+
+        public static bool TryDecode(
+            string token,
+            out UnverifiedGoogleJsonWebToken result)
+        {
+            try
+            {
+                result = Decode(token);
+                return true;
+            }
+            catch 
+            {
+                result = null;
+                return false; 
+            }
+        }
+
+        public override string ToString()
+        {
+            var header = Base64UrlEncoding.Encode(
+                Encoding.UTF8.GetBytes(
+                    NewtonsoftJsonSerializer.Instance.Serialize(this.Header)));
+            var payload = Base64UrlEncoding.Encode(
+                Encoding.UTF8.GetBytes(
+                    NewtonsoftJsonSerializer.Instance.Serialize(this.Payload)));
+
+            return $"{header}.{payload}.nosig";
         }
     }
 }

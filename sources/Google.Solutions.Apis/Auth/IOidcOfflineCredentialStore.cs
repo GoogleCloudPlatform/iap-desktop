@@ -15,12 +15,12 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// Try to load an offline credential.
         /// </summary>
-        bool TryRead(out OAuthOfflineCredential credential);
+        bool TryRead(out OidcOfflineCredential credential);
 
         /// <summary>
         /// Store offline credential.
         /// </summary>
-        void Write(OAuthOfflineCredential credential);
+        void Write(OidcOfflineCredential credential);
 
         /// <summary>
         /// Delete all offline credentials.
@@ -32,7 +32,7 @@ namespace Google.Solutions.Apis.Auth
     /// Offline credential that permits silent extension of an existing
     /// OAuth session.
     /// </summary>
-    public class OAuthOfflineCredential
+    public class OidcOfflineCredential
     {
         /// <summary>
         /// Refresh token, not null.
@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         public string IdToken { get; }
 
-        public OAuthOfflineCredential(string refreshToken, string idToken)
+        public OidcOfflineCredential(string refreshToken, string idToken)
         {
             this.RefreshToken = refreshToken.ExpectNotEmpty(nameof(refreshToken));
             this.IdToken = idToken;
