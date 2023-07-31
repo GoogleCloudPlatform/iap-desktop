@@ -27,7 +27,8 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
-    /// OAuth authorization for this app.
+    /// OIDC authorization. An authorization is a sequence of one
+    /// or more OIDC sessions.
     /// </summary>
     public interface IAuthorization //TODO: Move to App DLL
     {
@@ -42,7 +43,7 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         ICredential Credential { get; }
 
-        Task RevokeAsync();
+        Task RevokeAsync(); // TODO: Rename to Terminate
 
         Task ReauthorizeAsync(CancellationToken token);
 
@@ -59,5 +60,4 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         IDeviceEnrollment DeviceEnrollment { get; }
     }
-
 }

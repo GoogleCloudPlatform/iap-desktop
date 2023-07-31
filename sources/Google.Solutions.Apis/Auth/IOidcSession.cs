@@ -25,7 +25,8 @@ namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
     /// OpenID Connect session. A session is backed by a refresh token,
-    /// and it ends when the refresh token is invalidated.
+    /// and it ends when the refresh token is invalidated or the app is 
+    /// closed.
     /// </summary>
     public interface IOidcSession 
     {
