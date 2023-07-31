@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Testing.Apis;
@@ -68,6 +69,113 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(
                 "secure",
                 settings.Credentials.ClearTextValue);
+        }
+
+        //---------------------------------------------------------------------
+        // TryRead.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
+            [Values(null, "", "{")]  string value)
+        {
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsFalse(repository.TryRead(out var _));
+        }
+
+        [Test]
+        public void WhenBlobContainsFullTokenResponse_ThenTryReadReturnsTrue()
+        {
+            var value = @"{
+                'access_token':'ya29.a0A...',
+                'token_type':'Bearer',
+                'expires_in':3599,
+                'refresh_token':'rt',
+                'scope':'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid',
+                'id_token':'idt',
+                'Issued':'2023-07-29T09:15:08.643+10:00',
+                'IssuedUtc':'2023-07-28T23:15:08.643Z'
+                }";
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.AreEqual("idt", offlineCredential.IdToken);
+        }
+
+        [Test]
+        public void WhenBlobOnlyContainsRefreshToken_ThenTryReadReturnsTrue()
+        {
+            var value = @"{
+                'refresh_token':'rt',
+                }";
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.IsNull(offlineCredential.IdToken);
+        }
+
+        //---------------------------------------------------------------------
+        // Write.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Write()
+        {
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Write.
+            repository.Write(new OidcOfflineCredential("rt", "idt"));
+
+            // Read again.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.AreEqual("idt", offlineCredential.IdToken);
+        }
+
+        //---------------------------------------------------------------------
+        // Clear.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Clear()
+        {
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Write & clear.
+            repository.Write(new OidcOfflineCredential("rt", "idt"));
+            repository.Clear();
+
+            // Read again.
+            Assert.IsFalse(repository.TryRead(out var _));
         }
 
         //---------------------------------------------------------------------

@@ -21,9 +21,12 @@
 
 using Google.Apis.Json;
 using Google.Apis.Util.Store;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -33,7 +36,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Registry-backed repository for UI layout settings.
     /// </summary>
-    public class AuthSettingsRepository : SettingsRepositoryBase<AuthSettings>, IDataStore
+    public class AuthSettingsRepository : 
+        SettingsRepositoryBase<AuthSettings>, IDataStore, IOidcOfflineCredentialStore
     {
         public string CredentialStoreKey { get; }
 
@@ -50,12 +54,55 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
 
         //---------------------------------------------------------------------
-        // SettingsRepositoryBase
+        // SettingsRepositoryBase.
         //---------------------------------------------------------------------
 
         protected override AuthSettings LoadSettings(RegistryKey key)
             => AuthSettings.FromKey(key);
 
+        //---------------------------------------------------------------------
+        // IOidcOfflineCredentialStore
+        //---------------------------------------------------------------------
+
+        public bool TryRead(out OidcOfflineCredential credential)
+        {
+            credential = null;
+
+            var clearTextJson = GetSettings().Credentials.ClearTextValue;
+            if (!string.IsNullOrEmpty(clearTextJson))
+            {
+                try
+                {
+                    credential = NewtonsoftJsonSerializer
+                        .Instance
+                        .Deserialize<CredentialBlob>(clearTextJson)
+                        .ToOidcOfflineCredential();
+                } 
+                catch (JsonSerializationException)
+                { }
+            }
+
+            return credential?.RefreshToken != null;
+        }
+
+        public void Write(OidcOfflineCredential credential)
+        {
+            credential.ExpectNotNull(nameof(credential));
+
+            var settings = GetSettings();
+            settings.Credentials.ClearTextValue = NewtonsoftJsonSerializer
+                .Instance
+                .Serialize(CredentialBlob.FromOidcOfflineCredential(credential));
+            SetSettings(settings);
+        }
+
+        public void Clear()
+        {
+            ClearSettings();
+        }
+
+
+        // TODO: Remove IDataStore impl
         //---------------------------------------------------------------------
         // IDataStore.
         //
@@ -117,6 +164,40 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 throw new KeyNotFoundException(key);
             }
         }
+
+        /// <summary>
+        /// Credential blob stored in the registry.
+        /// 
+        /// NB. Previous versions of IAP Desktop implemented IDataStore
+        /// to load and store OAuth credentials. IDataStore uses TokenResult
+        /// objects for persistence. Therefore, the blob is JSON-compatible
+        /// with TokenResult.
+        /// </summary>
+        private class CredentialBlob
+        {
+            [JsonProperty("refresh_token")]
+            public string RefreshToken { get; set; }
+
+            [JsonProperty("id_token")]
+            public string IdToken { get; set; }
+
+            public OidcOfflineCredential ToOidcOfflineCredential()
+            {
+                return new OidcOfflineCredential(
+                    this.RefreshToken, 
+                    this.IdToken);
+            }
+
+            public static CredentialBlob FromOidcOfflineCredential(
+                OidcOfflineCredential offlineCredential)
+            {
+                return new CredentialBlob()
+                {
+                    RefreshToken = offlineCredential.RefreshToken,
+                    IdToken = offlineCredential.IdToken
+                };
+            }
+        }
     }
 
     public class AuthSettings : IRegistrySettingsCollection
@@ -137,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             {
                 Credentials = RegistrySecureStringSetting.FromKey(
                     "Credentials",
-                    "OAuth credentials",
+                    "JSON-formatted credentials",
                     null,
                     null,
                     registryKey,
