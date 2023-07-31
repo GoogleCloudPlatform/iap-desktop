@@ -52,8 +52,7 @@ namespace Google.Solutions.Apis.Auth
     {
         private readonly IOidcOfflineCredentialStore store;
 
-        protected OidcClientBase(
-            IOidcOfflineCredentialStore store)
+        protected OidcClientBase(IOidcOfflineCredentialStore store)
         {
             this.store = store.ExpectNotNull(nameof(store));
         }

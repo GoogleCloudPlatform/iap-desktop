@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Create an initializer for OAuth that configures mTLS.
         /// </summary>
-        public static OpenIdInitializer CreateOpenIdInitializer(
+        public static OpenIdInitializer CreateOpenIdInitializer( // TODO: Delete
             ServiceEndpoint<SignInClient.OAuthClient> oauthEndpoint,
             ServiceEndpoint<SignInClient.OpenIdClient> openIdEndpoint,
             IDeviceEnrollment enrollment)
@@ -112,7 +112,7 @@ namespace Google.Solutions.Apis.Client
         // Inner classes.
         //---------------------------------------------------------------------
 
-        public class OpenIdInitializer : GoogleAuthorizationCodeFlow.Initializer
+        public class OpenIdInitializer : GoogleAuthorizationCodeFlow.Initializer // TODO: Delete
         {
             public Uri UserInfoUrl { get; }
 
@@ -134,7 +134,7 @@ namespace Google.Solutions.Apis.Client
         /// Client factory that enables client certificate and adds PSC-style Host headers
         /// if needed.
         /// </summary>
-        private class PscAndMtlsAwareHttpClientFactory : IHttpClientFactory, IHttpExecuteInterceptor
+        internal class PscAndMtlsAwareHttpClientFactory : IHttpClientFactory, IHttpExecuteInterceptor
         {
             private readonly ServiceEndpointDirections directions;
             private readonly IDeviceEnrollment deviceEnrollment;
@@ -182,7 +182,7 @@ namespace Google.Solutions.Apis.Client
                     Debug.Assert(!string.IsNullOrEmpty(this.directions.Host));
 
                     //
-                    // We're using PSC, thw so hostname we're using to connect is
+                    // We're using PSC, the so hostname we're using to connect is
                     // different than what the server expects.
                     //
                     Debug.Assert(request.RequestUri.Host != this.directions.Host);

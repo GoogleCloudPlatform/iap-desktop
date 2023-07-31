@@ -27,13 +27,17 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.Apis.Test.Auth.Gaia
 {
     [TestFixture]
     public class TestGaiaOidcSession
     {
-        private static UserCredential CreateUserCredential(IJsonWebToken jwt)
+        private static UserCredential CreateUserCredential(
+            string refreshToken,
+            string accessToken,
+            IJsonWebToken jwt)
         {
             var flow = new GoogleAuthorizationCodeFlow(
                 new GoogleAuthorizationCodeFlow.Initializer()
@@ -44,7 +48,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             {
                 Token = new TokenResponse()
                 {
-                    RefreshToken = "rt",
+                    RefreshToken = refreshToken,
+                    AccessToken = accessToken,
                     IdToken = jwt.ToString()
                 }
             };
@@ -66,12 +71,68 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 });
             var session = new GaiaOidcSession(
                 new Mock<IDeviceEnrollment>().Object,
-                CreateUserCredential(idToken),
+                CreateUserCredential("rt", "at", idToken),
                 idToken);
 
             Assert.AreEqual("x@example.com", session.Username);
             Assert.AreEqual("x@example.com", session.Email);
             Assert.AreEqual("example.com", session.HostedDomain);
+        }
+
+        //---------------------------------------------------------------------
+        // Splice.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNewSessionNotCompatible_ThenSpliceThrowsException()
+        {
+            var idToken = new UnverifiedGaiaJsonWebToken(
+                new GoogleJsonWebSignature.Header(),
+                new GoogleJsonWebSignature.Payload()
+                {
+                    Email = "x@example.com",
+                });
+            var session = new GaiaOidcSession(
+                new Mock<IDeviceEnrollment>().Object,
+                CreateUserCredential("rt", "at", idToken),
+                idToken);
+
+            Assert.Throws<ArgumentException>(
+                () => session.Splice(new Mock<IOidcSession>().Object));
+        }
+
+        [Test]
+        public void WhenNewSessionCompatible_ThenSpliceReplacesTokens()
+        {
+            var idToken = new UnverifiedGaiaJsonWebToken(
+                new GoogleJsonWebSignature.Header(),
+                new GoogleJsonWebSignature.Payload()
+                {
+                    Email = "x@example.com",
+                });
+            var session = new GaiaOidcSession(
+                new Mock<IDeviceEnrollment>().Object,
+                CreateUserCredential("old-rt", "old-at", idToken),
+                idToken);
+
+            Assert.AreEqual("old-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.AreEqual("old-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+
+            var newIdToken = new UnverifiedGaiaJsonWebToken(
+                new GoogleJsonWebSignature.Header(),
+                new GoogleJsonWebSignature.Payload()
+                {
+                    Email = "x2@example.com",
+                });
+            var newSession = new GaiaOidcSession(
+                new Mock<IDeviceEnrollment>().Object,
+                CreateUserCredential("new-rt", "new-at", newIdToken),
+                newIdToken);
+
+            session.Splice(newSession);
+
+            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.AreEqual("new-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
         }
     }
 }

@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.Apis.Auth.Gaia
@@ -63,6 +64,35 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 return new OidcOfflineCredential(
                     this.apiCredential.Token.RefreshToken,
                     idToken);
+            }
+        }
+
+        public void Splice(IOidcSession newSession)
+        {
+            //
+            // Replace the current tokens (which might be invalid)
+            // with the new session's tokens.
+            //
+            // By retaining the UserCredential object, we ensure that
+            // any existing API client (which has the UserCredential installed
+            // as interceptor) continues to work, and immediately starts
+            // using the new tokens.
+            //
+            if (newSession is GaiaOidcSession gaiaSession && gaiaSession != null)
+            {
+                this.apiCredential.Token = gaiaSession.apiCredential.Token;
+
+                //
+                // Leave IdToken and other properties as is as their
+                // values shouldn't have changed.
+                //
+
+                Debug.Assert(gaiaSession.Email == this.Email);
+                Debug.Assert(gaiaSession.HostedDomain == this.HostedDomain);
+            }
+            else
+            {
+                throw new ArgumentException(nameof(newSession));
             }
         }
     }

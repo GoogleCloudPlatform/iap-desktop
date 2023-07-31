@@ -32,7 +32,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
             IDeviceEnrollment deviceEnrollment,
             ICodeReceiver codeReceiver,
             IOidcOfflineCredentialStore store,
-            ClientSecrets clientSecrets) : base(endpoint, deviceEnrollment, codeReceiver, store, clientSecrets)
+            ClientSecrets clientSecrets) 
+            : base(endpoint, deviceEnrollment, codeReceiver, store, clientSecrets)
         {
         }
 

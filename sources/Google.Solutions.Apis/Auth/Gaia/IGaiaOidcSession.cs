@@ -24,7 +24,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
     /// <summary>
     /// A Google "1PI" OIDC session.
     /// 
-    /// Sessions are subject to the 'Google Cloud Session Lenth' control.
+    /// Sessions are subject to the 'Google Cloud Session Length' control,
+    /// and end when reauthorization is triggered.
     /// </summary>
     internal interface IGaiaOidcSession : IOidcSession
     {

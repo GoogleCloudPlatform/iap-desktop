@@ -341,7 +341,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                       new Uri(directions.BaseUri, "/token").ToString(),
                       new Uri(directions.BaseUri, "/revoke").ToString())
             {
-                this.HttpClientFactory = new Initializers.MtlsAwareHttpClientFactory(
+                this.HttpClientFactory = new Initializers.PscAndMtlsAwareHttpClientFactory(
                     directions,
                     deviceEnrollment);
 

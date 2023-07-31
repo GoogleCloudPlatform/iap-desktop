@@ -24,7 +24,8 @@ using Google.Apis.Auth.OAuth2;
 namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
-    /// OpenID Connect session. A session is backed by a refresh token.
+    /// OpenID Connect session. A session is backed by a refresh token,
+    /// and it ends when the refresh token is invalidated.
     /// </summary>
     public interface IOidcSession 
     {
@@ -48,5 +49,11 @@ namespace Google.Solutions.Apis.Auth
         /// Offline credential for silent reauthentication.
         /// </summary>
         OidcOfflineCredential OfflineCredential { get; }
+
+        /// <summary>
+        /// Use a new session to extend the current session so
+        /// that the API credential remains valid.
+        /// </summary>
+        void Splice(IOidcSession newSession);
     }
 }
