@@ -33,7 +33,7 @@ namespace Google.Solutions.Apis.Auth
     public interface IAuthorization //TODO: Move to App DLL
     {
         /// <summary>
-        /// Event triggered after a successful reauthorization. Might be
+        /// Raised after a successful reauthorization. Might be
         /// triggere on any thread.
         /// </summary>
         event EventHandler Reauthorized;
@@ -43,9 +43,21 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         ICredential Credential { get; }
 
+        /// <summary>
+        /// Terminate the current session and delete any offline
+        /// credential.
+        /// </summary>
         Task RevokeAsync(); // TODO: Rename to Terminate
 
+        /// <summary>
+        /// Reauthorize, only intended to be used by jobs.
+        /// </summary>
         Task ReauthorizeAsync(CancellationToken token);
+
+
+
+        //---------------------------------------------------------------------
+        // TODO: Obsolete methods below?
 
         string Email { get; }
 

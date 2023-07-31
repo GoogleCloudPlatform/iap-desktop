@@ -1,4 +1,25 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
@@ -11,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 {
-    internal class NewAuthorization : IAuthorization
+    internal class NewAuthorization : IAuthorization // TODO: Rename class
     {
         private IOidcClient client;
         private IOidcSession session = null;
@@ -27,6 +48,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
                 // all we can do it is splice it to extend its lifetime.
                 //
                 this.session.Splice(newSession);
+
+                this.Reauthorized?.Invoke(this, EventArgs.Empty);
             }
             else
             {
@@ -54,15 +77,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         // Publics.
         //---------------------------------------------------------------------
 
-
-        public Task RevokeAsync(CancellationToken cancellationToken)
-        {
-            return this.Session.RevokeGrantAsync(cancellationToken); // TODO: Test if null
-        }
-
-        //---------------------------------------------------------------------
-        // Factory methods.
-        //---------------------------------------------------------------------
+        /// <summary>
+        /// Raised before reauthorizations. Subscribers can use this event
+        /// to show a UI and/or modify the browser preference.
+        /// </summary>
+        public event EventHandler<ReauthorizeEventArgs> BeforeReauthorize;
 
         /// <summary>
         /// Try to authorize using an existing refresh token.
@@ -75,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
                 "Silent authorize should only be performed initially");
 
             var newSession = await this.client
-                .TryAuthorizeSilentlyAsync(cancellationToken) 
+                .TryAuthorizeSilentlyAsync(cancellationToken)
                 .ConfigureAwait(false);
 
             if (newSession != null)
@@ -98,15 +117,34 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         {
             var newSession = await this.client
                 .AuthorizeAsync(
-                new BrowserCodeReceiver(browserPreference),
-                cancellationToken)
+                    new BrowserCodeReceiver(browserPreference),
+                    cancellationToken)
                 .ConfigureAwait(false);
             SetOrSpliceSession(newSession);
+        }
+
+        public Task ReauthorizeAsync(CancellationToken cancellationToken)
+        {
+            Debug.Assert(this.session != null);
+
+            //
+            // Give the UI a chance to react and decide which browser to use.
+            //
+            var args = new ReauthorizeEventArgs();
+            this.BeforeReauthorize?.Invoke(this, args);
+
+            return AuthorizeAsync(args.BrowserPreference, cancellationToken);
         }
 
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
+
+        public class ReauthorizeEventArgs : EventArgs
+        {
+            public BrowserPreference BrowserPreference { get; set; } 
+                = BrowserPreference.Default;
+        }
 
         private class BrowserCodeReceiver : LocalServerCodeReceiver 
         {
@@ -143,11 +181,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         public IDeviceEnrollment DeviceEnrollment => this.Session.DeviceEnrollment;
 
         public Task RevokeAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ReauthorizeAsync(CancellationToken token)
         {
             throw new NotImplementedException();
         }
