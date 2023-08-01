@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop
 
                     // TODO: Register Reauthorize event handler
 
-                    return dialog.ViewModel.Authorization.Value;
+                    return dialog.ViewModel.Authorization;
                 }
                 else
                 {
@@ -425,9 +425,12 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(appSettingsRepository);
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
-                preAuthLayer.AddSingleton(new AuthSettingsRepository(
+
+                var authSettingsRepository = new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"),
-                    SignInClient.StoreUserId));
+                    SignInClient.StoreUserId);
+                preAuthLayer.AddSingleton(authSettingsRepository);
+                preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
 
                 //
                 // Configure networking settings.

@@ -25,7 +25,7 @@ namespace Google.Solutions.Apis.Auth
 {
     public interface IJsonWebToken
     {
-        GoogleJsonWebSignature.Header Header { get; } // TODO: use base class
+        GoogleJsonWebSignature.Header Header { get; }
 
         GoogleJsonWebSignature.Payload Payload { get; }
 

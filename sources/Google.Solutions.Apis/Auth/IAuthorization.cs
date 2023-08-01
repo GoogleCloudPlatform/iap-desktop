@@ -30,7 +30,7 @@ namespace Google.Solutions.Apis.Auth
     /// OIDC authorization. An authorization is a sequence of one
     /// or more OIDC sessions.
     /// </summary>
-    public interface IAuthorization //TODO: Move to App DLL
+    public interface IAuthorization
     {
         /// <summary>
         /// Raised after a successful reauthorization. Might be

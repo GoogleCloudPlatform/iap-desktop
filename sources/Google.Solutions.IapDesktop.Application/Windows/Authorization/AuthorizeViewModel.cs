@@ -26,7 +26,6 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
@@ -41,17 +40,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
     public class AuthorizeViewModel : ViewModelBase
     {
         private readonly ServiceEndpoint<GaiaOidcClient> gaiaEndpoint;
-        private readonly AuthSettingsRepository authSettingsRepository;
+        private readonly IOidcOfflineCredentialStore offlineStore;
 
         private CancellationTokenSource cancelCurrentSignin = null;
 
         public AuthorizeViewModel(
-            IInstall install,
             ServiceEndpoint<GaiaOidcClient> gaiaEndpoint,
-            AuthSettingsRepository repository)
+            IInstall install,
+            IOidcOfflineCredentialStore offlineStore)
         {
             this.gaiaEndpoint = gaiaEndpoint.ExpectNotNull(nameof(gaiaEndpoint));
-            this.authSettingsRepository = repository.ExpectNotNull(nameof(repository));
+            this.offlineStore = offlineStore.ExpectNotNull(nameof(offlineStore));
 
             //
             // NB. Properties are access from a non-GUI thread, so
@@ -59,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             //
             this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
             this.Version = ObservableProperty.Build($"Version {install.CurrentVersion}");
-            this.Authorization = ObservableProperty.Build<IAuthorization>(null, this);
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
             this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
@@ -85,9 +83,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        private NewAuthorization CreateAuthorization(OidcOfflineCredentialIssuer issuer)
+        private protected virtual NewAuthorization CreateAuthorization(OidcOfflineCredentialIssuer issuer)
         {
-            Debug.Assert(this.Authorization.Value == null);
+            Debug.Assert(this.Authorization == null);
             Debug.Assert(issuer == OidcOfflineCredentialIssuer.Gaia);
 
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
@@ -96,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             var client = new GaiaOidcClient(
                 this.gaiaEndpoint,
                 this.DeviceEnrollment,
-                this.authSettingsRepository,
+                this.offlineStore,
                 this.ClientSecrets);
 
             return new NewAuthorization(client);
@@ -148,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         /// <summary>
         /// Authorization result. Set after a successful authorization.
         /// </summary>
-        public ObservableProperty<IAuthorization> Authorization { get; set; } // TODO: make non-observable.
+        public IAuthorization Authorization { get; private set; }
 
         //---------------------------------------------------------------------
         // Observable commands.
@@ -185,7 +183,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             {
                 try
                 {
-                    // TODO: Check which type of offine credential we have, and create suitable client.
                     var authorization = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
 
                     if (await authorization
@@ -196,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                         // We have existing credentials, there is no need to even
                         // show the "Sign In" button.
                         //
-                        this.Authorization.Value = authorization;
+                        this.Authorization = authorization;
                         this.IsAuthorizationComplete.Value = true;//TODO: Test
                     }
                     else
@@ -236,22 +233,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 {
                     try
                     {
-                        if (this.Authorization.Value == null)
+                        NewAuthorization authorization;
+                        if (this.Authorization == null)
                         {
                             //
                             // First-time authorization.
                             //
-                            // TODO: Use preferred issuer.
-                            this.Authorization.Value = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
+                            authorization = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
                         }
                         else
                         {
                             //
                             // We're reauthorizing. Don't let the user change issuers.
                             //
+                            authorization = (NewAuthorization)this.Authorization;
                         }
 
-                        await ((NewAuthorization)this.Authorization.Value)
+                        await authorization
                             .AuthorizeAsync(
                                 browserPreference,
                                 this.cancelCurrentSignin.Token)
@@ -261,6 +259,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                         // Authorization successful.
                         //
                         retry = false;
+
+                        this.Authorization = authorization;
                         this.IsAuthorizationComplete.Value = true;//TODO: Test
                     }
                     catch (OAuthScopeNotGrantedException e)
