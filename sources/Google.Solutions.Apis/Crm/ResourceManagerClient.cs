@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Crm
             CancellationToken cancellationToken);
     }
 
-    public class ResourceManagerClient : IResourceManagerClient
+    public class ResourceManagerClient : ApiClientBase, IResourceManagerClient
     {
         private readonly CloudResourceManagerService service;
 
@@ -62,17 +62,10 @@ namespace Google.Solutions.Apis.Crm
             ServiceEndpoint<ResourceManagerClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
+            : base(endpoint, authorization, userAgent)
         {
-            authorization.ExpectNotNull(nameof(authorization));
-            userAgent.ExpectNotNull(nameof(userAgent));
-
-            this.service = new CloudResourceManagerService(
-                Initializers.CreateServiceInitializer(
-                    endpoint,
-                    authorization,
-                    userAgent));
+            this.service = new CloudResourceManagerService(this.Initializer);
         }
-
 
         public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint(
             PrivateServiceConnectDirections pscDirections = null)
@@ -81,12 +74,6 @@ namespace Google.Solutions.Apis.Crm
                 pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://cloudresourcemanager.googleapis.com/");
         }
-
-        //---------------------------------------------------------------------
-        // IClient.
-        //---------------------------------------------------------------------
-
-        public IServiceEndpoint Endpoint { get; }
 
         //---------------------------------------------------------------------
         // IResourceManagerClient.

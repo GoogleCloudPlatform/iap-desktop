@@ -453,5 +453,42 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             Assert.IsNull(session);
         }
+
+        //---------------------------------------------------------------------
+        // CodeFlowInitializer.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotEnrolled_ThenCreateOpenIdInitializerUsesTls(
+            [Values(
+                DeviceEnrollmentState.NotEnrolled,
+                DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(state);
+
+            var initializer = new GaiaOidcClient.CodeFlowInitializer(
+                GaiaOidcClient.CreateEndpoint(),
+                enrollment.Object);
+
+            Assert.AreEqual("https://accounts.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
+            Assert.AreEqual("https://oauth2.googleapis.com/token", initializer.TokenServerUrl);
+            Assert.AreEqual("https://oauth2.googleapis.com/revoke", initializer.RevokeTokenUrl);
+        }
+
+        [Test]
+        public void WhenEnrolled_ThenCreateOpenIdInitializerUsesTlsUsesMtls()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
+
+            var initializer = new GaiaOidcClient.CodeFlowInitializer(
+                GaiaOidcClient.CreateEndpoint(),
+                enrollment.Object);
+
+            Assert.AreEqual("https://accounts.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
+            Assert.AreEqual("https://oauth2.mtls.googleapis.com/token", initializer.TokenServerUrl);
+            Assert.AreEqual("https://oauth2.mtls.googleapis.com/revoke", initializer.RevokeTokenUrl);
+        }
     }
 }

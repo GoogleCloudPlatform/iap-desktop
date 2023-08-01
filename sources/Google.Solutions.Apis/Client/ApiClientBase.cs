@@ -19,27 +19,18 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Threading;
-using Google.Apis.Auth.OAuth2.Flows;
-using System;
 
 namespace Google.Solutions.Apis.Client
 {
-    internal static class Initializers 
+    /// <summary>
+    /// Base class for Google API clients.
+    /// </summary>
+    public abstract class ApiClientBase : IClient
     {
-        /// <summary>
-        /// Create an initializer for API services that configures PSC
-        /// and mTLS.
-        /// </summary>
-        public static BaseClientService.Initializer CreateServiceInitializer( // TODO: Move to ApiClientBase
+        protected ApiClientBase(
             IServiceEndpoint endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
@@ -55,7 +46,8 @@ namespace Google.Solutions.Apis.Client
                 "Using endpoint {0}",
                 directions);
 
-            return new BaseClientService.Initializer()
+            this.Endpoint = endpoint;
+            this.Initializer = new BaseClientService.Initializer()
             {
                 BaseUri = directions.BaseUri.ToString(),
                 ApplicationName = userAgent.ToApplicationName(),
@@ -64,5 +56,12 @@ namespace Google.Solutions.Apis.Client
                     authorization)
             };
         }
+
+        public IServiceEndpoint Endpoint { get; }
+
+        /// <summary>
+        /// Initializer for creating XxxService objects.
+        /// </summary>
+        protected internal BaseClientService.Initializer Initializer { get; }
     }
 }

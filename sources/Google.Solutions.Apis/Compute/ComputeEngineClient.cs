@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public sealed class ComputeEngineClient : IComputeEngineClient
+    public sealed class ComputeEngineClient : ApiClientBase, IComputeEngineClient
     {
         private readonly ComputeService service;
 
@@ -48,15 +48,9 @@ namespace Google.Solutions.Apis.Compute
             ServiceEndpoint<ComputeEngineClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
+            : base(endpoint, authorization, userAgent)
         {
-            authorization.ExpectNotNull(nameof(authorization));
-            userAgent.ExpectNotNull(nameof(userAgent));
-
-            this.service = new ComputeService(
-                Initializers.CreateServiceInitializer(
-                    endpoint,
-                    authorization,
-                    userAgent));
+            this.service = new ComputeService(this.Initializer);
         }
 
         public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint(
@@ -66,12 +60,6 @@ namespace Google.Solutions.Apis.Compute
                 pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://compute.googleapis.com/compute/v1/");
         }
-
-        //---------------------------------------------------------------------
-        // IClient.
-        //---------------------------------------------------------------------
-
-        public IServiceEndpoint Endpoint { get; }
 
         //---------------------------------------------------------------------
         // IComputeEngineClient.

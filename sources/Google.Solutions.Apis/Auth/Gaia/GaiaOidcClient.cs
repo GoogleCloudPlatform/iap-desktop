@@ -348,7 +348,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class CodeFlowInitializer : GoogleAuthorizationCodeFlow.Initializer
+        internal class CodeFlowInitializer : GoogleAuthorizationCodeFlow.Initializer
         {
             protected CodeFlowInitializer(
                 ServiceEndpointDirections directions,

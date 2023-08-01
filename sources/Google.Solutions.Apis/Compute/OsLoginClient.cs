@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken cancellationToken);
     }
 
-    public class OsLoginClient : IOsLoginClient
+    public class OsLoginClient : ApiClientBase, IOsLoginClient
     {
         private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
@@ -75,17 +75,10 @@ namespace Google.Solutions.Apis.Compute
             ServiceEndpoint<OsLoginClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
+            : base(endpoint, authorization, userAgent)
         {
-            userAgent.ExpectNotNull(nameof(userAgent));
-
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
-            this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-
-            this.service = new CloudOSLoginService(
-                Initializers.CreateServiceInitializer(
-                    endpoint, 
-                    authorization,
-                    userAgent));
+            this.service = new CloudOSLoginService(this.Initializer);
         }
 
         public static ServiceEndpoint<OsLoginClient> CreateEndpoint(
@@ -95,12 +88,6 @@ namespace Google.Solutions.Apis.Compute
                 pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://oslogin.googleapis.com/");
         }
-
-        //---------------------------------------------------------------------
-        // IClient.
-        //---------------------------------------------------------------------
-
-        public IServiceEndpoint Endpoint { get; }
 
         //---------------------------------------------------------------------
         // IOsLoginAdapter.
