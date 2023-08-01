@@ -31,10 +31,11 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Apis.Client
 {
     /// <summary>
-    /// Client factory that enables client certificate and adds PSC-style Host headers
-    /// if needed.
+    /// Client factory that enables client certificate and adds 
+    /// PSC-style Host headers if needed.
     /// </summary>
-    internal class PscAndMtlsAwareHttpClientFactory : IHttpClientFactory, IHttpExecuteInterceptor
+    internal class PscAndMtlsAwareHttpClientFactory 
+        : IHttpClientFactory, IHttpExecuteInterceptor
     {
         private readonly ServiceEndpointDirections directions;
         private readonly IDeviceEnrollment deviceEnrollment;
@@ -64,6 +65,8 @@ namespace Google.Solutions.Apis.Client
             {
                 args.Initializers.Add(this.credential);
             }
+
+            // TODO: b/293968777: Set user agent
 
             var factory = new MtlsAwareHttpClientFactory(this.directions, this.deviceEnrollment);
             var httpClient = factory.CreateHttpClient(args);

@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop
                 {
                     Debug.Assert(dialog.ViewModel.Authorization != null);
 
-                    // TODO: Register Reauthorize event handler
+                    // TODO: b/293968777: Register Reauthorize event handler
 
                     return dialog.ViewModel.Authorization;
                 }

@@ -59,10 +59,6 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         IDeviceEnrollment DeviceEnrollment { get; }
 
-
-        //---------------------------------------------------------------------
-        // TODO: Obsolete methods below?
-
         string Email { get; }
     }
 }

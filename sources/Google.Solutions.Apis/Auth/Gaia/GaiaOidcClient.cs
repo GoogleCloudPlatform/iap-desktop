@@ -357,8 +357,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     directions,
                     deviceEnrollment);
 
-                // TODO: set user agent?
-
                 ApiTraceSources.Default.TraceInformation(
                     "OAuth: Using token URL {0}",
                     this.TokenServerUrl);
