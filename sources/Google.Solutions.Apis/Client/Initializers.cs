@@ -39,7 +39,7 @@ namespace Google.Solutions.Apis.Client
         /// Create an initializer for API services that configures PSC
         /// and mTLS.
         /// </summary>
-        public static BaseClientService.Initializer CreateServiceInitializer(
+        public static BaseClientService.Initializer CreateServiceInitializer( // TODO: Move to ApiClientBase
             IServiceEndpoint endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
@@ -62,49 +62,6 @@ namespace Google.Solutions.Apis.Client
                 HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
                     directions,
                     authorization)
-            };
-        }
-
-        /// <summary>
-        /// Create an initializer for OAuth that configures mTLS.
-        /// </summary>
-        public static OpenIdInitializer CreateOpenIdInitializer( // TODO: Delete
-            ServiceEndpoint<SignInClient.OAuthClient> oauthEndpoint,
-            ServiceEndpoint<SignInClient.OpenIdClient> openIdEndpoint,
-            IDeviceEnrollment enrollment)
-        {
-            Precondition.ExpectNotNull(oauthEndpoint, nameof(oauthEndpoint));
-            Precondition.ExpectNotNull(openIdEndpoint, nameof(openIdEndpoint));
-            Precondition.ExpectNotNull(enrollment, nameof(enrollment));
-
-            var oauthDirections = oauthEndpoint.GetDirections(
-                enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
-
-            var openIdDirections = openIdEndpoint.GetDirections(
-                enrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
-
-            ApiTraceSources.Default.TraceInformation(
-                "OAuth: Using endpoint {0}",
-                oauthDirections);
-            ApiTraceSources.Default.TraceInformation(
-                "OpenID: Using endpoint {0}",
-                openIdDirections);
-
-            //
-            // NB. OidcAuthorizationUrl is a browser endpoint, not an
-            // API endpoint. Therefore, it's not subject to the 
-            // service endpoint logic.
-            //
-
-            return new OpenIdInitializer(
-                new Uri(GoogleAuthConsts.OidcAuthorizationUrl),
-                new Uri(oauthDirections.BaseUri, "/token"),
-                new Uri(oauthDirections.BaseUri, "/revoke"),
-                new Uri(openIdDirections.BaseUri, "/v1/userinfo"))
-            {
-                HttpClientFactory = new MtlsAwareHttpClientFactory(
-                    oauthDirections,
-                    enrollment)
             };
         }
 

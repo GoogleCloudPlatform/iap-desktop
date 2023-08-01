@@ -39,18 +39,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     public class AuthSettingsRepository : 
         SettingsRepositoryBase<AuthSettings>, IOidcOfflineCredentialStore
     {
-        public string CredentialStoreKey { get; }
-
-        public AuthSettingsRepository(RegistryKey baseKey, string credentialStoreKey) : base(baseKey)
+        public AuthSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
             baseKey.ExpectNotNull(nameof(baseKey));
-            credentialStoreKey.ExpectNotEmpty(nameof(credentialStoreKey));
-
-            this.CredentialStoreKey = credentialStoreKey;
-        }
-
-        public AuthSettingsRepository(RegistryKey baseKey) : this(baseKey, "credential")
-        {
         }
 
         //---------------------------------------------------------------------

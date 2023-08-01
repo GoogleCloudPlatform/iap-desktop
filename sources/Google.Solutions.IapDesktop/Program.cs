@@ -427,8 +427,7 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
 
                 var authSettingsRepository = new AuthSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Auth"),
-                    SignInClient.StoreUserId);
+                    profile.SettingsKey.CreateSubKey("Auth"));
                 preAuthLayer.AddSingleton(authSettingsRepository);
                 preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
 
@@ -466,8 +465,6 @@ namespace Google.Solutions.IapDesktop
                     Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
 
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(psc));

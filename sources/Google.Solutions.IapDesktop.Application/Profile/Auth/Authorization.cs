@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 {
-    internal class Authorization : IAuthorization // TODO: Rename class
+    internal class Authorization : IAuthorization
     {
         private readonly IOidcClient client;
         private IOidcSession session = null;

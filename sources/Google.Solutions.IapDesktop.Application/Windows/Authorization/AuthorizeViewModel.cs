@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                         // show the "Sign In" button.
                         //
                         this.Authorization = authorization;
-                        this.IsAuthorizationComplete.Value = true;//TODO: Test
+                        this.IsAuthorizationComplete.Value = true;
                     }
                     else
                     {
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                         retry = false;
 
                         this.Authorization = authorization;
-                        this.IsAuthorizationComplete.Value = true;//TODO: Test
+                        this.IsAuthorizationComplete.Value = true;
                     }
                     catch (OAuthScopeNotGrantedException e)
                     {

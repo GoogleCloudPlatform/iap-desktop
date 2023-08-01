@@ -146,4 +146,19 @@ namespace Google.Solutions.Apis.Auth
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken);
     }
+
+
+    public class AuthorizationFailedException : Exception
+    {
+        public AuthorizationFailedException(string message) : base(message)
+        {
+        }
+    }
+
+    public class OAuthScopeNotGrantedException : AuthorizationFailedException
+    {
+        public OAuthScopeNotGrantedException(string message) : base(message)
+        {
+        }
+    }
 }
