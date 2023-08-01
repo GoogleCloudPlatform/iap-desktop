@@ -168,18 +168,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             }
         }
 
+        public IDeviceEnrollment DeviceEnrollment { get; }
+
         //---------------------------------------------------------------------
         // TODO: Obsolete methods below?
 
         public ICredential Credential => this.Session.ApiCredential;
 
         public string Email => this.Session.Username;
-
-        public IDeviceEnrollment DeviceEnrollment { get; }
-
-        public Task RevokeAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
