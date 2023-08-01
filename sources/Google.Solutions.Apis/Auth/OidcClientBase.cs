@@ -97,14 +97,15 @@ namespace Google.Solutions.Apis.Auth
                 catch (Exception e)
                 {
                     //
-                    // The offline credentials didn't work.
+                    // The offline credentials didn't work, but they might still
+                    // be useful to streamline a browser-based sign-in. Therefore,
+                    // we don't clear the store.
                     //
 
                     ApiTraceSources.Default.TraceWarning(
                         "Activating offline credential failed: {0}", 
                         e.FullMessage());
 
-                    this.store.Clear();
                     return null;
                 }
             }

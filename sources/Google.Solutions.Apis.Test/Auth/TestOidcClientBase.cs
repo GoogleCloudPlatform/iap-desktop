@@ -82,7 +82,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenActivatingOfflineCredentialFails_ThenTryAuthorizeSilentlyClearsStore()
+        public async Task WhenActivatingOfflineCredentialFails_ThenTryAuthorizeSilentlyRetainsStore()
         {
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 .ConfigureAwait(false);
 
             Assert.IsNull(session);
-            store.Verify(s => s.Clear(), Times.Once);
+            store.Verify(s => s.Clear(), Times.Never);
         }
 
         [Test]
