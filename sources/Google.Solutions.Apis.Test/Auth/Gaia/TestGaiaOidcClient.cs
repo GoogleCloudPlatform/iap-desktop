@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
         // CreateSession.
         //---------------------------------------------------------------------
-
+        // TODO: Add test with offlinecred = null
         [Test]
         public void WhenTokenResponseContainsIdToken_ThenCreateSessionUsesFreshIdToken()
         {

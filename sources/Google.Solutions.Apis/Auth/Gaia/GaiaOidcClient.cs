@@ -86,7 +86,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
         {
             flow.ExpectNotNull(nameof(flow));
             deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
-            offlineCredential.ExpectNotNull(nameof(offlineCredential));
             tokenResponse.ExpectNotNull(nameof(tokenResponse));
 
             Debug.Assert(tokenResponse.RefreshToken != null);
@@ -118,7 +117,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     apiCredential,
                     UnverifiedGaiaJsonWebToken.Decode(idToken));
             }
-            else if (!string.IsNullOrEmpty(offlineCredential.IdToken) &&
+            else if (offlineCredential != null &&
+                !string.IsNullOrEmpty(offlineCredential.IdToken) &&
                 UnverifiedGaiaJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {

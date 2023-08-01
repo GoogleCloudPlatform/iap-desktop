@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
@@ -193,8 +194,6 @@ namespace Google.Solutions.IapDesktop
                     new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                dialog.ViewModel.Scopes = new[] { IapInstanceTarget.RequiredScope };
-                dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();
 
                 //
                 // Allow recovery from common errors.
@@ -463,6 +462,7 @@ namespace Google.Solutions.IapDesktop
                 var psc = new PrivateServiceConnectDirections(
                     Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
 
+                preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint());
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));

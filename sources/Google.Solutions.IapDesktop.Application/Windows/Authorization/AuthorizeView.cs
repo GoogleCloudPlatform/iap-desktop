@@ -123,9 +123,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 m => m.SignInWithChromeGuestModeCommand,
                 bindingContext);
 
-            viewModel.Authorization.PropertyChanged += (_, __) =>
+            viewModel.IsAuthorizationComplete.PropertyChanged += (_, __) =>
             {
-                if (viewModel.Authorization.Value != null)
+                if (viewModel.IsAuthorizationComplete.Value)
                 {
                     //
                     // We're all set, close the dialog.

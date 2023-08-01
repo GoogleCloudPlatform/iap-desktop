@@ -46,7 +46,7 @@ namespace Google.Solutions.Iap
         private const string Origin = "bot:iap-tunneler";
 
         // Cf. https://developers.google.com/identity/protocols/googlescopes#iapv1
-        public const string RequiredScope = "https://www.googleapis.com/auth/cloud-platform";
+        public const string RequiredScope = "https://www.googleapis.com/auth/cloud-platform"; //TODO: Delete
 
         public InstanceLocator VmInstance { get; }
 

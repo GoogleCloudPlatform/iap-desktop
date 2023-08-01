@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                         // Retrying a second time is pointless.
                         throw;
                     }
-                    else if (this.host.ConfirmReauthorization())
+                    else if (this.host.ConfirmReauthorization()) // TODO: Remove confirmation call
                     {
                         // Reauthorize. This might take a while since the user has to use 
                         // a browser - show the WaitDialog in the meantime.
