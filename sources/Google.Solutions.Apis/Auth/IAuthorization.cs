@@ -49,12 +49,6 @@ namespace Google.Solutions.Apis.Auth
         ICredential Credential { get; }
 
         /// <summary>
-        /// Terminate the current session and delete any offline
-        /// credential.
-        /// </summary>
-        Task RevokeAsync(); // TODO: Rename to Terminate
-
-        /// <summary>
         /// Reauthorize, only intended to be used by jobs.
         /// </summary>
         Task ReauthorizeAsync(CancellationToken token);

@@ -221,12 +221,13 @@ namespace Google.Solutions.IapDesktop.Windows
         // Authorization actions.
         //---------------------------------------------------------------------
 
-        public Task RevokeAuthorizationAsync() // TODO: Rename to Terminate
+        public Task SignOutAsync()
         {
             Debug.Assert(this.authorization != null);
             Debug.Assert(this.authorization.DeviceEnrollment != null);
 
-            return this.authorization.RevokeAsync();
+            this.authorization.Session.Terminate();
+            return Task.CompletedTask;
         }
 
         //---------------------------------------------------------------------
