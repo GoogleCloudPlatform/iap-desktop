@@ -55,19 +55,12 @@ namespace Google.Solutions.Testing.Apis.Integration
             {
                 this.Credential = credential;
                 this.Email = "test@example.com";
-                this.UserInfo = new UserInfo()
-                {
-                    Email = this.Email,
-                    Name = "Test"
-                };
                 this.DeviceEnrollment = new DeviceEnrollment();
             }
 
             public ICredential Credential { get; }
 
             public string Email { get; }
-
-            public UserInfo UserInfo { get; }
 
             public IDeviceEnrollment DeviceEnrollment { get; }
 

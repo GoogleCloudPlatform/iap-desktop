@@ -203,10 +203,6 @@ namespace Google.Solutions.Testing.Application.Views
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.Credential).Returns(credential);
             authorization.SetupGet(a => a.Email).Returns("test@example.com");
-            authorization.SetupGet(a => a.UserInfo).Returns(new UserInfo()
-            {
-                Email = "test@example.com"
-            });
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
             return authorization;

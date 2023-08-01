@@ -65,11 +65,6 @@ namespace Google.Solutions.Apis.Auth
         string Email { get; }
 
         /// <summary>
-        /// OIDC user info.
-        /// </summary>
-        UserInfo UserInfo { get; }
-
-        /// <summary>
         /// Device. This is non-null, but the enrollment might be
         /// in state "Disabled".
         /// </summary>

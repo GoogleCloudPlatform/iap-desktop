@@ -172,12 +172,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         public string Email => this.Session.Username;
 
-        public UserInfo UserInfo => new UserInfo()
-        {
-            Email = this.Session.Username,
-            HostedDomain = (this.Session as IGaiaOidcSession)?.HostedDomain
-        };
-
         public IDeviceEnrollment DeviceEnrollment => this.Session.DeviceEnrollment;
 
         public Task RevokeAsync()
