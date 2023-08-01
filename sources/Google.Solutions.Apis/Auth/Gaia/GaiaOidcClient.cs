@@ -80,12 +80,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
         internal static GaiaOidcSession CreateSession(
             IAuthorizationCodeFlow flow,
-            IDeviceEnrollment deviceEnrollment,
             OidcOfflineCredential offlineCredential,
             TokenResponse tokenResponse)
         {
             flow.ExpectNotNull(nameof(flow));
-            deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             tokenResponse.ExpectNotNull(nameof(tokenResponse));
 
             Debug.Assert(tokenResponse.RefreshToken != null);
@@ -113,7 +111,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 // might not be available over PSC.
                 //
                 return new GaiaOidcSession(
-                    deviceEnrollment,
                     apiCredential,
                     UnverifiedGaiaJsonWebToken.Decode(idToken));
             }
@@ -136,7 +133,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 var apiCredential = new UserCredential(flow, null, tokenResponse);
 
                 return new GaiaOidcSession(
-                    deviceEnrollment,
                     apiCredential,
                     offlineIdToken);
             }
@@ -151,14 +147,13 @@ namespace Google.Solutions.Apis.Auth.Gaia
             }
         }
 
-        private GaiaOidcSession CreateSession(
+        private GaiaOidcSession CreateSessionndRegisterTerminateEvent(
             IAuthorizationCodeFlow flow,
             OidcOfflineCredential offlineCredential,
             TokenResponse tokenResponse)
         {
             var session = CreateSession(
                 flow,
-                this.deviceEnrollment,
                 offlineCredential,
                 tokenResponse);
 
@@ -245,7 +240,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     // N.B. Do not dispose the flow if the sign-in succeeds as the
                     // credential object must hold on to it.
                     //
-                    return CreateSession(
+                    return CreateSessionndRegisterTerminateEvent(
                         flow,
                         offlineCredential,
                         apiCredential.Token);
@@ -332,7 +327,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 // N.B. Do not dispose the flow if the sign-in succeeds as the
                 // credential object must hold on to it.
                 //
-                return CreateSession(
+                return CreateSessionndRegisterTerminateEvent(
                     flow,
                     offlineCredential,
                     tokenResponse);

@@ -33,11 +33,9 @@ namespace Google.Solutions.Apis.Auth.Gaia
         private readonly UserCredential apiCredential;
 
         public GaiaOidcSession(
-            IDeviceEnrollment deviceEnrollment,
             UserCredential apiCredential,
             IJsonWebToken idToken)
         {
-            this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
             this.IdToken = idToken.ExpectNotNull(nameof(idToken));
 
@@ -47,7 +45,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
         public event EventHandler Terminated;
         public IJsonWebToken IdToken { get; }
         public ICredential ApiCredential => this.apiCredential;
-        public IDeviceEnrollment DeviceEnrollment { get; }
         public string Username => this.IdToken.Payload.Email;
         public string Email => this.IdToken.Payload.Email;
         public string HostedDomain => this.IdToken.Payload.HostedDomain;

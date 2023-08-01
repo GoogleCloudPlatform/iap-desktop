@@ -53,15 +53,16 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         Task ReauthorizeAsync(CancellationToken token);
 
-        //---------------------------------------------------------------------
-        // TODO: Obsolete methods below?
-
-        string Email { get; }
-
         /// <summary>
         /// Device. This is non-null, but the enrollment might be
         /// in state "Disabled".
         /// </summary>
         IDeviceEnrollment DeviceEnrollment { get; }
+
+
+        //---------------------------------------------------------------------
+        // TODO: Obsolete methods below?
+
+        string Email { get; }
     }
 }

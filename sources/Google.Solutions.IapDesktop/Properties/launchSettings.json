@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Google.Solutions.IapDesktop": {
-      "commandName": "Project",
-      "commandLineArgs": "/profile Fred"
+      "commandName": "Project"
     }
   }
 }

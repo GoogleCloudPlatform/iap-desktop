@@ -62,7 +62,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var session = GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
-                new Mock<IDeviceEnrollment>().Object,
                 null,
                 tokenResponse);
 
@@ -107,7 +106,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var session = GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
-                new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse);
 
@@ -145,7 +143,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var session = GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
-                new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse);
 
@@ -179,7 +176,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.Throws<OAuthScopeNotGrantedException>
                 (() => GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
-                new Mock<IDeviceEnrollment>().Object,
                 null,
                 tokenResponse));
         }
@@ -211,7 +207,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.Throws<OAuthScopeNotGrantedException>
                 (() => GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
-                new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse));
         }
@@ -235,7 +230,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.Throws<OAuthScopeNotGrantedException>
                 (() => GaiaOidcClient.CreateSession(
                 new Mock<IAuthorizationCodeFlow>().Object,
-                new Mock<IDeviceEnrollment>().Object,
                 offlineCredential,
                 tokenResponse));
         }

@@ -47,11 +47,6 @@ namespace Google.Solutions.Apis.Auth
         ICredential ApiCredential { get; }
 
         /// <summary>
-        /// Device enrollment. Not null.
-        /// </summary>
-        IDeviceEnrollment DeviceEnrollment { get; }
-
-        /// <summary>
         /// Offline credential for silent reauthentication.
         /// </summary>
         OidcOfflineCredential OfflineCredential { get; }

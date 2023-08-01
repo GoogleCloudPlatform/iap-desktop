@@ -97,7 +97,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.offlineStore,
                 this.ClientSecrets);
 
-            return new Profile.Auth.Authorization(client);
+            return new Profile.Auth.Authorization(
+                client,
+                this.DeviceEnrollment);
         }
 
         //---------------------------------------------------------------------

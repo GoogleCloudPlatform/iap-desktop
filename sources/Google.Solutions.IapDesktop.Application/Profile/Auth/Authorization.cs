@@ -57,9 +57,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             }
         }
 
-        public Authorization(IOidcClient client)
+        public Authorization(
+            IOidcClient client,
+            IDeviceEnrollment deviceEnrollment)
         {
             this.client = client.ExpectNotNull(nameof(client));
+            this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
         }
 
         //---------------------------------------------------------------------
@@ -172,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         public string Email => this.Session.Username;
 
-        public IDeviceEnrollment DeviceEnrollment => this.Session.DeviceEnrollment;
+        public IDeviceEnrollment DeviceEnrollment { get; }
 
         public Task RevokeAsync()
         {

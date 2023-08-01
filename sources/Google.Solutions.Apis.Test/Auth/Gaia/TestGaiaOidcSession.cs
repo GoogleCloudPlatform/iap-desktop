@@ -69,7 +69,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     HostedDomain = "example.com"
                 });
             var session = new GaiaOidcSession(
-                new Mock<IDeviceEnrollment>().Object,
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
@@ -92,7 +91,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     Email = "x@example.com",
                 });
             var session = new GaiaOidcSession(
-                new Mock<IDeviceEnrollment>().Object,
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
@@ -110,7 +108,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     Email = "x@example.com",
                 });
             var session = new GaiaOidcSession(
-                new Mock<IDeviceEnrollment>().Object,
                 CreateUserCredential("old-rt", "old-at", idToken),
                 idToken);
 
@@ -124,7 +121,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     Email = "x@example.com",
                 });
             var newSession = new GaiaOidcSession(
-                new Mock<IDeviceEnrollment>().Object,
                 CreateUserCredential("new-rt", "new-at", newIdToken),
                 newIdToken);
 
@@ -149,7 +145,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     HostedDomain = "example.com"
                 });
             var session = new GaiaOidcSession(
-                new Mock<IDeviceEnrollment>().Object,
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
@@ -179,7 +174,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             };
 
             var session = new GaiaOidcSession(
-                new Mock<IDeviceEnrollment>().Object,
                 credential,
                 new UnverifiedGaiaJsonWebToken(
                     new GoogleJsonWebSignature.Header(),
