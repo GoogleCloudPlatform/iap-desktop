@@ -66,10 +66,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     
             }
 
-            private protected override NewAuthorization CreateAuthorization(
+            private protected override Application.Profile.Auth.Authorization CreateAuthorization(
                 OidcOfflineCredentialIssuer issuer)
             {
-                return new NewAuthorization(this.Client.Object);
+                return new Application.Profile.Auth.Authorization(this.Client.Object);
             }
         }
 

@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 {
     [TestFixture]
-    public class TestNewAuthorization
+    public class TesrAuthorization
     {
 
         //---------------------------------------------------------------------
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         public void WhenNotAuthorized_ThenSessionThrowsException()
         {
             var client = new Mock<IOidcClient>();
-            var authorization = new NewAuthorization(client.Object);
+            var authorization = new Authorization(client.Object);
 
             Assert.Throws<InvalidOperationException>(
                 () => authorization.Session.ToString());
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .Setup(c => c.TryAuthorizeSilentlyAsync(CancellationToken.None))
                 .ReturnsAsync(session.Object);
 
-            var authorization = new NewAuthorization(client.Object);
+            var authorization = new Authorization(client.Object);
             await authorization
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
                 .ReturnsAsync(session.Object);
 
-            var authorization = new NewAuthorization(client.Object);
+            var authorization = new Authorization(client.Object);
 
             int eventsRaised = 0;
             authorization.Reauthorized += (_, __) => eventsRaised++;
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         public async Task WhenSessionExists_ThenAuthorizeSplicesSessionsAndRaisesEvent()
         {
             var client = new Mock<IOidcClient>();
-            var authorization = new NewAuthorization(client.Object);
+            var authorization = new Authorization(client.Object);
 
             int eventsRaised = 0;
             authorization.Reauthorized += (_, __) => eventsRaised++;
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             client
                 .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
                 .ReturnsAsync(new Mock<IOidcSession>().Object);
-            var authorization = new NewAuthorization(client.Object);
+            var authorization = new Authorization(client.Object);
 
             int eventsRaised = 0;
             authorization.BeforeReauthorize += (_, __) => eventsRaised++;

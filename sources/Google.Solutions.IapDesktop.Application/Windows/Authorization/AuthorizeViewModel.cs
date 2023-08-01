@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        private protected virtual NewAuthorization CreateAuthorization(OidcOfflineCredentialIssuer issuer)
+        private protected virtual Profile.Auth.Authorization CreateAuthorization(OidcOfflineCredentialIssuer issuer)
         {
             Debug.Assert(this.Authorization == null);
             Debug.Assert(issuer == OidcOfflineCredentialIssuer.Gaia);
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.offlineStore,
                 this.ClientSecrets);
 
-            return new NewAuthorization(client);
+            return new Profile.Auth.Authorization(client);
         }
 
         //---------------------------------------------------------------------
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 {
                     try
                     {
-                        NewAuthorization authorization;
+                        Profile.Auth.Authorization authorization;
                         if (this.Authorization == null)
                         {
                             //
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                             //
                             // We're reauthorizing. Don't let the user change issuers.
                             //
-                            authorization = (NewAuthorization)this.Authorization;
+                            authorization = (Profile.Auth.Authorization)this.Authorization;
                         }
 
                         await authorization
