@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 {
     internal class Authorization : IAuthorization // TODO: Rename class
     {
-        private IOidcClient client;
+        private readonly IOidcClient client;
         private IOidcSession session = null;
 
         private void SetOrSpliceSession(IOidcSession newSession)

@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// Registry-backed repository for UI layout settings.
     /// </summary>
     public class AuthSettingsRepository : 
-        SettingsRepositoryBase<AuthSettings>, IDataStore, IOidcOfflineCredentialStore
+        SettingsRepositoryBase<AuthSettings>, IOidcOfflineCredentialStore
     {
         public string CredentialStoreKey { get; }
 
@@ -99,70 +99,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         public void Clear()
         {
             ClearSettings();
-        }
-
-
-        // TODO: Remove IDataStore impl
-        //---------------------------------------------------------------------
-        // IDataStore.
-        //
-        // Rather than supporting all possible keys, this implementation only 
-        // supports a single known key and maps that to a property.
-        //---------------------------------------------------------------------
-
-        public Task ClearAsync()
-        {
-            ClearSettings();
-            return Task.CompletedTask;
-        }
-
-        public Task DeleteAsync<T>(string key)
-        {
-            key.ExpectNotEmpty(nameof(key));
-
-            if (key == this.CredentialStoreKey)
-            {
-                return ClearAsync();
-            }
-            else
-            {
-                throw new KeyNotFoundException(key);
-            }
-        }
-
-        public Task<T> GetAsync<T>(string key)
-        {
-            key.ExpectNotEmpty(nameof(key));
-
-            if (key == this.CredentialStoreKey)
-            {
-                var clearText = GetSettings().Credentials.ClearTextValue;
-                return Task.FromResult(
-                    NewtonsoftJsonSerializer.Instance.Deserialize<T>(clearText));
-            }
-            else
-            {
-                throw new KeyNotFoundException(key);
-            }
-        }
-
-        public Task StoreAsync<T>(string key, T value)
-        {
-            key.ExpectNotEmpty(nameof(key));
-
-            if (key == this.CredentialStoreKey)
-            {
-                var settings = GetSettings();
-                settings.Credentials.Value = SecureStringExtensions.FromClearText(
-                        NewtonsoftJsonSerializer.Instance.Serialize(value));
-                SetSettings(settings);
-
-                return Task.CompletedTask;
-            }
-            else
-            {
-                throw new KeyNotFoundException(key);
-            }
         }
 
         /// <summary>
