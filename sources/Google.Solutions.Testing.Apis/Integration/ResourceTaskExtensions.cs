@@ -71,6 +71,8 @@ namespace Google.Solutions.Testing.Apis.Integration
 
             public IDeviceEnrollment DeviceEnrollment { get; }
 
+            public IOidcSession Session => throw new NotImplementedException();
+
             public event EventHandler Reauthorized;
 
             public Task ReauthorizeAsync(CancellationToken token)

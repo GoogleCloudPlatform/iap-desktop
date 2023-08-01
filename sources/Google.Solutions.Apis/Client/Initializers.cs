@@ -69,24 +69,6 @@ namespace Google.Solutions.Apis.Client
         // Inner classes.
         //---------------------------------------------------------------------
 
-        public class OpenIdInitializer : GoogleAuthorizationCodeFlow.Initializer // TODO: Delete
-        {
-            public Uri UserInfoUrl { get; }
-
-            public OpenIdInitializer(
-                Uri authorizationServerUrl, 
-                Uri tokenServerUrl,
-                Uri revokeTokenUrl,
-                Uri userInfoUrl) 
-                : base(
-                      authorizationServerUrl.ToString(),
-                      tokenServerUrl.ToString(), 
-                      revokeTokenUrl.ToString())
-            {
-                this.UserInfoUrl = userInfoUrl;
-            }
-        }
-
         /// <summary>
         /// Client factory that enables client certificate and adds PSC-style Host headers
         /// if needed.

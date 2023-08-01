@@ -40,9 +40,42 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
         // CreateSession.
         //---------------------------------------------------------------------
-        // TODO: Add test with offlinecred = null
+        
         [Test]
         public void WhenTokenResponseContainsIdToken_ThenCreateSessionUsesFreshIdToken()
+        {
+            var freshIdToken = new UnverifiedGaiaJsonWebToken(
+                new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
+                new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
+                {
+                    JwtId = "fresh",
+                    Email = "x@example.com"
+                }).ToString();
+
+            var tokenResponse = new TokenResponse()
+            {
+                AccessToken = "new-at",
+                RefreshToken = "new-rt",
+                IdToken = freshIdToken,
+                Scope = $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}"
+            };
+
+            var session = GaiaOidcClient.CreateSession(
+                new Mock<IAuthorizationCodeFlow>().Object,
+                new Mock<IDeviceEnrollment>().Object,
+                null,
+                tokenResponse);
+
+            Assert.AreEqual(freshIdToken, ((UserCredential)session.ApiCredential).Token.IdToken);
+            Assert.AreEqual(freshIdToken, session.OfflineCredential.IdToken);
+            Assert.AreEqual(freshIdToken, session.IdToken.ToString());
+
+            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.AreEqual("new-rt", session.OfflineCredential.RefreshToken);
+        }
+
+        [Test]
+        public void WhenTokenResponseContainsIdTokenAndOfflineCredentialContainsOldIdToken_ThenCreateSessionUsesFreshIdToken()
         {
             var freshIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -122,6 +155,33 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
             Assert.AreEqual("new-rt", session.OfflineCredential.RefreshToken);
+        }
+
+        [Test]
+        public void WhenTokenResponseLacksIdTokenAndOfflineCredentialIsNull_ThenCreateSessionThrowsException()
+        {
+            var oldIdToken = new UnverifiedGaiaJsonWebToken(
+                new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
+                new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
+                {
+                    JwtId = "old",
+                    Email = null
+                }).ToString();
+
+            var tokenResponse = new TokenResponse()
+            {
+                AccessToken = "new-at",
+                RefreshToken = "new-rt",
+                IdToken = null,
+                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
+            };
+
+            Assert.Throws<OAuthScopeNotGrantedException>
+                (() => GaiaOidcClient.CreateSession(
+                new Mock<IAuthorizationCodeFlow>().Object,
+                new Mock<IDeviceEnrollment>().Object,
+                null,
+                tokenResponse));
         }
 
         [Test]

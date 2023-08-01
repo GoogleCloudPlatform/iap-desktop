@@ -39,6 +39,11 @@ namespace Google.Solutions.Apis.Auth
         event EventHandler Reauthorized;
 
         /// <summary>
+        /// Curent OIDC session.
+        /// </summary>
+        IOidcSession Session { get; }
+
+        /// <summary>
         /// Credential to use for Google API requests.
         /// </summary>
         ICredential Credential { get; }
@@ -53,8 +58,6 @@ namespace Google.Solutions.Apis.Auth
         /// Reauthorize, only intended to be used by jobs.
         /// </summary>
         Task ReauthorizeAsync(CancellationToken token);
-
-
 
         //---------------------------------------------------------------------
         // TODO: Obsolete methods below?
