@@ -32,7 +32,7 @@ release-notes:
 	@echo "========================================================"
 	@echo "=== Serving site                                     ==="
 	@echo "========================================================"
-    powershell -File generate-releasenotes.ps1 > $(MAKEDIR)\sources\docs\release-notes.md
+    powershell -File sources\generate-releasenotes.ps1 > $(MAKEDIR)\sources\docs\release-notes.md
 
 install:
 	@echo "========================================================"
