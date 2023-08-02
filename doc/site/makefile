@@ -19,7 +19,7 @@
 # under the License.
 #
 
-serve:
+serve: release-notes
 	@echo "========================================================"
 	@echo "=== Serving site                                     ==="
 	@echo "========================================================"
@@ -27,7 +27,13 @@ serve:
     cd $(MAKEDIR)\sources
     python -m mkdocs serve
     cd $(MAKEDIR)
-    
+
+release-notes:
+	@echo "========================================================"
+	@echo "=== Serving site                                     ==="
+	@echo "========================================================"
+    powershell -File sources\generate-releasenotes.ps1 > $(MAKEDIR)\sources\docs\release-notes.md
+
 install:
 	@echo "========================================================"
 	@echo "=== Install mkdocs                                   ==="

@@ -64,8 +64,9 @@ markdown_extensions:
   - pymdownx.details
 nav:
   - Guides: 
-    - Overview: 'index.md'
-#      - "What's new?": '#todo'
+    - Discover: 
+      - 'Overview': 'index.md'
+      - "What's new": 'release-notes.md'
     - 'Get started':
       - 'Install IAP Desktop': 'install.md'
       - 'Configure IAP in your project': 'setup-iap.md'
