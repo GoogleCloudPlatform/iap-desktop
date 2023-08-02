@@ -63,9 +63,13 @@ You can now use the IAP Desktop Policy Templates to configure policies:
 1.  Close the Group Policy Management Editor window.
 
 
-## Restrict copy/paste and other Remote Desktop features
+## Customize server-side policies
 
-To restrict Remote Desktop features like copy/paste, you can configure appropriate group policies
-on the VM instance (Local Group policy) or in the domain the VM instance is joined to. You can find
-the server-side Remote Desktop policies in the Group Policy Management Editor under 
+To disallow clipboard sharing or restrict the usage of other Remote Desktop features, 
+configure [group policies :octicons-link-external-16:](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remotedesktopservices)
+on the target VM instance. You can configure these policies either by using the 
+[Local Group Policy Editor](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/dn265982(v=ws.11))
+or by using Active Directory to apply a group policy.
+
+You can find Remote Desktop policies under 
 **User (or Computer) Configuration > Policies > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host**.
