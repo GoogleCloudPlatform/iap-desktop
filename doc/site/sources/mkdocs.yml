@@ -87,7 +87,7 @@ nav:
       - "What's new": 'release-notes.md'
     - 'Get started':
       - 'Install IAP Desktop': 'install.md'
-      - 'Configure IAP in your project': 'setup-iap.md'
+      - 'Set up IAP in your project': 'setup-iap.md'
       - 'Connect to a Windows VM': 'connect-windows.md'
       - 'Connect to a Linux VM': 'connect-linux.md'
       - 'Connect to SQL Server': 'connect-sqlserver.md'
@@ -96,12 +96,14 @@ nav:
       - 'Instance properties': 'toolwindow-instance-properties.md'
       - 'Event log': 'toolwindow-eventlog.md'
       - 'Serial port output': 'toolwindow-serial-port-output.md'
-    - 'Customize IAP Desktop':
-#      - 'Change the theme': '#todo'
+    - 'Optimize IAP Desktop':
       - 'Create profiles': 'create-profiles.md'
-    - 'Administer IAP Desktop':
       - 'Use group policies': 'group-policies.md'
       - 'Troubleshoot common issues': 'troubleshooting.md'
+    - 'Deploy context-aware access':
+      - 'Set up a basic access policy': setup-caa-with-a-basic-access-policy.md
+      - 'Set up a device-based access policy': setup-caa-with-a-device-posture-access-policy.md
+      - 'Set up a BeyondCorp certificate-based access policy': setup-caa-with-a-beyondcorp-certificate-access-policy.md
   - 'Reference':
     - User interface:
         - 'Keyboard shortcuts': 'keyboard-shortcuts.md'
