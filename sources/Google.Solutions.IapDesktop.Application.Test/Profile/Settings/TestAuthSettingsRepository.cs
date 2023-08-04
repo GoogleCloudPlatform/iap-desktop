@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Testing.Apis;
@@ -71,78 +72,170 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         //---------------------------------------------------------------------
-        // IDataStore.
+        // TryRead.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDeleteAsyncWithUnknownKey_KeyNotFoundExceptionThrown()
+        public void WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
+            [Values(null, "", "{")]  string value)
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
-            {
-                repository.DeleteAsync<string>("invalidkey");
-            });
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsFalse(repository.TryRead(out var _));
         }
 
         [Test]
-        public void WhenGetAsyncWithUnknownKey_KeyNotFoundExceptionThrown()
+        public void WhenBlobContainsFullTokenResponse_ThenTryReadReturnsTrue()
         {
+            var value = @"{
+                'access_token':'ya29.a0A...',
+                'token_type':'Bearer',
+                'expires_in':3599,
+                'refresh_token':'rt',
+                'scope':'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid',
+                'id_token':'idt',
+                'Issued':'2023-07-29T09:15:08.643+10:00',
+                'IssuedUtc':'2023-07-28T23:15:08.643Z'
+                }";
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
-            {
-                repository.GetAsync<string>("invalidkey");
-            });
-        }
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
 
-        [Test]
-        public void WhenStoreAsyncWithUnknownKey_KeyNotFoundExceptionThrown()
-        {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            // Read.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
-            ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
-            {
-                repository.StoreAsync<string>("invalidkey", null);
-            });
-        }
-
-        [Test]
-        public async Task WhenStoreWithValidKey_GetReturnsSameData()
-        {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
-
-            await repository
-                .StoreAsync<string>(repository.CredentialStoreKey, "test")
-                .ConfigureAwait(false);
-
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.AreEqual("idt", offlineCredential.IdToken);
             Assert.AreEqual(
-                "test",
-                await repository
-                    .GetAsync<string>(repository.CredentialStoreKey)
-                    .ConfigureAwait(false));
+                "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid",
+                offlineCredential.Scope);
         }
 
         [Test]
-        public async Task WhenStoreWithValidKeyAndClear_GetReturnsNull()
+        public void WhenBlobOnlyContainsGaiaRefreshToken_ThenTryReadReturnsTrue()
+        {
+            var value = @"{
+                'refresh_token':'rt',
+                'scope': 'openid'
+                }";
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.IsNull(offlineCredential.IdToken);
+            Assert.AreEqual("openid", offlineCredential.Scope);
+        }
+
+        [Test]
+        public void WhenBlobOnlyContainsStsRefreshToken_ThenTryReadReturnsTrue()
+        {
+            var value = @"{
+                'refresh_token':'rt',
+                'issuer': 'sts',
+                'scope': 'openid'
+                }";
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Store value.
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+            repository.SetSettings(originalSettings);
+
+            // Read.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.IsNull(offlineCredential.IdToken);
+            Assert.AreEqual("openid", offlineCredential.Scope);
+        }
+
+        //---------------------------------------------------------------------
+        // Write.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WriteGaiaOfflineCredential()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            await repository
-                .StoreAsync<string>(repository.CredentialStoreKey, "test")
-                .ConfigureAwait(false);
-            await repository
-                .ClearAsync()
-                .ConfigureAwait(false);
+            // Write.
+            repository.Write(new OidcOfflineCredential( 
+                OidcOfflineCredentialIssuer.Gaia, 
+                "openid",
+                "rt", 
+                "idt"));
 
-            Assert.IsNull(await repository
-                .GetAsync<string>(repository.CredentialStoreKey)
-                .ConfigureAwait(false));
+            // Read again.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.AreEqual("idt", offlineCredential.IdToken);
+            Assert.AreEqual("openid", offlineCredential.Scope);
+        }
+
+        [Test]
+        public void WriteStsOfflineCredential()
+        {
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Write.
+            repository.Write(new OidcOfflineCredential(
+                OidcOfflineCredentialIssuer.Sts,
+                "openid",
+                "rt",
+                null));
+
+            // Read again.
+            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+            Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
+            Assert.AreEqual("rt", offlineCredential.RefreshToken);
+            Assert.IsNull(offlineCredential.IdToken);
+            Assert.AreEqual("openid", offlineCredential.Scope);
+        }
+
+        //---------------------------------------------------------------------
+        // Clear.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Clear()
+        {
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var repository = new AuthSettingsRepository(baseKey);
+
+            // Write & clear.
+            repository.Write(new OidcOfflineCredential(
+                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", "idt"));
+            repository.Clear();
+
+            // Read again.
+            Assert.IsFalse(repository.TryRead(out var _));
         }
     }
 }

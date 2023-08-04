@@ -19,46 +19,34 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using System;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
 
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
     /// <summary>
-    /// OIDC authorization. An authorization is a sequence of one
-    /// or more OIDC sessions.
+    /// A Google "1PI" OIDC session.
+    /// 
+    /// Sessions are subject to the 'Google Cloud Session Length' control,
+    /// and end when reauthorization is triggered.
     /// </summary>
-    public interface IAuthorization
+    public interface IGaiaOidcSession : IOidcSession
     {
         /// <summary>
-        /// Raised after a successful reauthorization. Might be
-        /// triggere on any thread.
+        /// ID token for the signed-in user.
+        /// Not null.
         /// </summary>
-        event EventHandler Reauthorized;
+        IJsonWebToken IdToken { get; }
 
         /// <summary>
-        /// Curent OIDC session.
+        /// Primary email address of user.
         /// </summary>
-        IOidcSession Session { get; }
-
-        /// <summary>
-        /// Credential to use for Google API requests.
-        /// </summary>
-        ICredential Credential { get; }
-
-        /// <summary>
-        /// Reauthorize, only intended to be used by jobs.
-        /// </summary>
-        Task ReauthorizeAsync(CancellationToken token);
-
-        /// <summary>
-        /// Device. This is non-null, but the enrollment might be
-        /// in state "Disabled".
-        /// </summary>
-        IDeviceEnrollment DeviceEnrollment { get; }
-
         string Email { get; }
+
+        /// <summary>
+        /// Primary domain of the user's Cloud Identity/Workspace
+        /// account. Null if it's a consumer user account.
+        /// </summary>
+        string HostedDomain { get; }
     }
 }

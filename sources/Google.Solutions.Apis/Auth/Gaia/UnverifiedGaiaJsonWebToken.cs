@@ -26,28 +26,28 @@ using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
     /// <summary>
-    /// A decoded but unverified Google JWT.
+    /// A decoded but unverified Gaia-issued JWT.
     /// </summary>
-    internal class UnverifiedGoogleJsonWebToken
+    internal class UnverifiedGaiaJsonWebToken : IJsonWebToken
     {
-        public GoogleJsonWebSignature.Header Header;
-        public GoogleJsonWebSignature.Payload Payload;
+        public GoogleJsonWebSignature.Header Header { get; }
+        public GoogleJsonWebSignature.Payload Payload { get; }
 
-        private UnverifiedGoogleJsonWebToken(
+        internal UnverifiedGaiaJsonWebToken(
             GoogleJsonWebSignature.Header header,
             GoogleJsonWebSignature.Payload payload)
         {
-            this.Header = header;
-            this.Payload = payload;
+            this.Header = header.ExpectNotNull(nameof(header));
+            this.Payload = payload.ExpectNotNull(nameof(payload));
         }
 
         /// <summary>
         /// Decode, but don't verify, a JSON web token.
         /// </summary>
-        public static UnverifiedGoogleJsonWebToken Decode(string token)
+        public static UnverifiedGaiaJsonWebToken Decode(string token)
         {
             token.ExpectNotEmpty(nameof(token));
 
@@ -64,17 +64,47 @@ namespace Google.Solutions.Apis.Auth
             try
             {
                 var header = NewtonsoftJsonSerializer.Instance.Deserialize<GoogleJsonWebSignature.Header>(
-                    Encoding.UTF8.GetString(Base64UrlEncoding.Decode(encodedHeader)));
+                    Encoding.UTF8.GetString(
+                        Base64UrlEncoding.Decode(encodedHeader)));
                 var payload = NewtonsoftJsonSerializer.Instance.Deserialize<GoogleJsonWebSignature.Payload>(
-                    Encoding.UTF8.GetString(Base64UrlEncoding.Decode(encodedPayload)));
+                    Encoding.UTF8.GetString(
+                        Base64UrlEncoding.Decode(encodedPayload)));
 
-                return new UnverifiedGoogleJsonWebToken(header, payload);
-            } 
-            catch (JsonException e)
+                return new UnverifiedGaiaJsonWebToken(header, payload);
+            }
+            catch (JsonException)
             {
                 throw new InvalidJwtException(
                     "The JWT contains malformed JSON data");
             }
+        }
+
+        public static bool TryDecode(
+            string token,
+            out UnverifiedGaiaJsonWebToken result)
+        {
+            try
+            {
+                result = Decode(token);
+                return true;
+            }
+            catch
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            var header = Base64UrlEncoding.Encode(
+                Encoding.UTF8.GetBytes(
+                    NewtonsoftJsonSerializer.Instance.Serialize(this.Header)));
+            var payload = Base64UrlEncoding.Encode(
+                Encoding.UTF8.GetBytes(
+                    NewtonsoftJsonSerializer.Instance.Serialize(this.Payload)));
+
+            return $"{header}.{payload}.nosig";
         }
     }
 }

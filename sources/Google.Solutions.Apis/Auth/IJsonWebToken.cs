@@ -19,30 +19,19 @@
 // under the License.
 //
 
-
 using Google.Apis.Auth;
-using Google.Solutions.Apis.Auth;
-using NUnit.Framework;
 
-namespace Google.Solutions.Apis.Test.Auth
+namespace Google.Solutions.Apis.Auth
 {
-    [TestFixture]
-    public class TestUnverifiedGoogleJsonWebToken
+    public interface IJsonWebToken
     {
-        [Test]
-        public void WhenTokenMissesPart_ThenDecodeThrowsException()
-        {
-            Assert.Throws<InvalidJwtException>(
-                () => UnverifiedGoogleJsonWebToken.Decode("a"));
-            Assert.Throws<InvalidJwtException>(
-                () => UnverifiedGoogleJsonWebToken.Decode("a.b"));
-        }
+        GoogleJsonWebSignature.Header Header { get; }
 
-        [Test]
-        public void WhenJsonIsMalformed_ThenDecodeThrowsException()
-        {
-            Assert.Throws<InvalidJwtException>(
-                () => UnverifiedGoogleJsonWebToken.Decode("YQ.YQ.YQ"));
-        }
+        GoogleJsonWebSignature.Payload Payload { get; }
+
+        /// <summary>
+        /// Return encoded JWT.
+        /// </summary>
+        string ToString();
     }
 }

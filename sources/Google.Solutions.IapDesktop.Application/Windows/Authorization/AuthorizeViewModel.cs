@@ -20,39 +20,37 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.Apis.Auth.SignInClient;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     public class AuthorizeViewModel : ViewModelBase
     {
-        private readonly ServiceEndpoint<OAuthClient> oauthEndpoint;
-        private readonly ServiceEndpoint<OpenIdClient> openIdEndpoint;
+        private readonly ServiceEndpoint<GaiaOidcClient> gaiaEndpoint;
+        private readonly IOidcOfflineCredentialStore offlineStore;
 
         private CancellationTokenSource cancelCurrentSignin = null;
 
         public AuthorizeViewModel(
+            ServiceEndpoint<GaiaOidcClient> gaiaEndpoint,
             IInstall install,
-            ServiceEndpoint<OAuthClient> oauthEndpoint,
-            ServiceEndpoint<OpenIdClient> openIdEndpoint)
+            IOidcOfflineCredentialStore offlineStore)
         {
-            this.oauthEndpoint = oauthEndpoint.ExpectNotNull(nameof(oauthEndpoint));
-            this.openIdEndpoint = openIdEndpoint.ExpectNotNull(nameof(openIdEndpoint));
+            this.gaiaEndpoint = gaiaEndpoint.ExpectNotNull(nameof(gaiaEndpoint));
+            this.offlineStore = offlineStore.ExpectNotNull(nameof(offlineStore));
 
             //
             // NB. Properties are access from a non-GUI thread, so
@@ -60,11 +58,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             //
             this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
             this.Version = ObservableProperty.Build($"Version {install.CurrentVersion}");
-            this.Authorization = ObservableProperty.Build<IAuthorization>(null, this);
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
             this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
             this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(ChromeBrowser.IsAvailable);
+            this.IsAuthorizationComplete = ObservableProperty.Build(false, this);
 
             this.CancelSignInCommand = ObservableCommand.Build(
                 string.Empty,
@@ -85,22 +83,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        protected virtual ISignInClient CreateSignInAdapter(BrowserPreference preference)
+        private protected virtual Profile.Auth.Authorization CreateAuthorization(OidcOfflineCredentialIssuer issuer)
         {
+            Debug.Assert(this.Authorization == null);
+            Debug.Assert(issuer == OidcOfflineCredentialIssuer.Gaia);
+
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
             Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
-            Precondition.ExpectNotNull(this.Scopes, nameof(this.Scopes));
-            Precondition.ExpectNotNull(this.TokenStore, nameof(this.TokenStore));
 
-            return new SignInClient(
-                this.oauthEndpoint,
-                this.openIdEndpoint,
+            var client = new GaiaOidcClient(
+                this.gaiaEndpoint,
                 this.DeviceEnrollment,
-                this.ClientSecrets,
-                Install.UserAgent,
-                this.Scopes,
-                this.TokenStore,
-                new BrowserCodeReceiver(preference));
+                this.offlineStore,
+                this.ClientSecrets);
+
+            return new Profile.Auth.Authorization(
+                client,
+                this.DeviceEnrollment);
         }
 
         //---------------------------------------------------------------------
@@ -123,14 +122,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 
         public IDeviceEnrollment DeviceEnrollment { get; set; }
         public ClientSecrets ClientSecrets { get; set; }
-        public IEnumerable<string> Scopes { get; set; }
-        public IDataStore TokenStore { get; set; }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
         public ObservableProperty<string> WindowTitle { get; }
+
         public ObservableProperty<string> Version { get; }
 
         public ObservableProperty<bool> IsWaitControlVisible { get; set; }
@@ -141,6 +139,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 
         public ObservableProperty<bool> IsChromeSingnInButtonEnabled { get; }
 
+        public ObservableProperty<bool> IsAuthorizationComplete { get; }
+
         //---------------------------------------------------------------------
         // Output properties.
         //---------------------------------------------------------------------
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         /// <summary>
         /// Authorization result. Set after a successful authorization.
         /// </summary>
-        public ObservableProperty<IAuthorization> Authorization { get; set; }
+        public IAuthorization Authorization { get; private set; }
 
         //---------------------------------------------------------------------
         // Observable commands.
@@ -185,20 +185,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             {
                 try
                 {
-                    // Try to authorize using OAuth.
-                    var authorization = await Profile.Auth.Authorization.TryLoadExistingAuthorizationAsync(
-                            CreateSignInAdapter(BrowserPreference.Default),
-                            this.DeviceEnrollment,
-                            CancellationToken.None)
-                        .ConfigureAwait(false);
+                    var authorization = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
 
-                    if (authorization != null)
+                    if (await authorization
+                        .TryAuthorizeSilentlyAsync(CancellationToken.None)
+                        .ConfigureAwait(false))
                     {
                         //
                         // We have existing credentials, there is no need to even
                         // show the "Sign In" button.
                         //
-                        this.Authorization.Value = authorization;
+                        this.Authorization = authorization;
+                        this.IsAuthorizationComplete.Value = true;
                     }
                     else
                     {
@@ -237,15 +235,25 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 {
                     try
                     {
-                        //
-                        // Clear any existing token to force a fresh authentication.
-                        //
-                        await this.TokenStore.ClearAsync();
+                        Profile.Auth.Authorization authorization;
+                        if (this.Authorization == null)
+                        {
+                            //
+                            // First-time authorization.
+                            //
+                            authorization = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
+                        }
+                        else
+                        {
+                            //
+                            // We're reauthorizing. Don't let the user change issuers.
+                            //
+                            authorization = (Profile.Auth.Authorization)this.Authorization;
+                        }
 
-                        this.Authorization.Value = await Profile.Auth.Authorization
-                            .CreateAuthorizationAsync(
-                                CreateSignInAdapter(browserPreference),
-                                this.DeviceEnrollment,
+                        await authorization
+                            .AuthorizeAsync(
+                                browserPreference,
                                 this.cancelCurrentSignin.Token)
                             .ConfigureAwait(true);
 
@@ -253,6 +261,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                         // Authorization successful.
                         //
                         retry = false;
+
+                        this.Authorization = authorization;
+                        this.IsAuthorizationComplete.Value = true;
                     }
                     catch (OAuthScopeNotGrantedException e)
                     {
@@ -273,29 +284,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsSignOnControlVisible.Value = true;
                 this.IsWaitControlVisible.Value = false;
                 this.IsCancelButtonVisible.Value = false;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private class BrowserCodeReceiver : LocalServerCodeReceiver
-        {
-            private readonly BrowserPreference browserPreference;
-
-            public BrowserCodeReceiver(BrowserPreference browserPreference)
-                : base(Resources.AuthorizationSuccessful)
-            {
-                this.browserPreference = browserPreference;
-            }
-
-            protected override bool OpenBrowser(string url)
-            {
-                Browser
-                    .Get(this.browserPreference)
-                    .Navigate(url);
-                return true;
             }
         }
     }

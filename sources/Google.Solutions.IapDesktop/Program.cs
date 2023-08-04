@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
@@ -193,8 +194,6 @@ namespace Google.Solutions.IapDesktop
                     new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                dialog.ViewModel.Scopes = new[] { IapInstanceTarget.RequiredScope };
-                dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();
 
                 //
                 // Allow recovery from common errors.
@@ -251,7 +250,10 @@ namespace Google.Solutions.IapDesktop
                 if (dialog.ShowDialog(null) == DialogResult.OK)
                 {
                     Debug.Assert(dialog.ViewModel.Authorization != null);
-                    return dialog.ViewModel.Authorization.Value;
+
+                    // TODO: b/293968777: Register Reauthorize event handler
+
+                    return dialog.ViewModel.Authorization;
                 }
                 else
                 {
@@ -423,9 +425,11 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(appSettingsRepository);
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
-                preAuthLayer.AddSingleton(new AuthSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Auth"),
-                    SignInClient.StoreUserId));
+
+                var authSettingsRepository = new AuthSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Auth"));
+                preAuthLayer.AddSingleton(authSettingsRepository);
+                preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
 
                 //
                 // Configure networking settings.
@@ -460,8 +464,7 @@ namespace Google.Solutions.IapDesktop
                 var psc = new PrivateServiceConnectDirections(
                     Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
 
-                preAuthLayer.AddSingleton(SignInClient.OAuthClient.CreateEndpoint());
-                preAuthLayer.AddSingleton(SignInClient.OpenIdClient.CreateEndpoint());
+                preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(psc));
                 preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(psc));

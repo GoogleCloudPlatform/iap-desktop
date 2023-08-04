@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Email}";
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
-            this.IsReportInternalIssueVisible = this.authorization.UserInfo?.HostedDomain == "google.com";
+            this.IsReportInternalIssueVisible = (this.authorization.Session as IGaiaOidcSession).HostedDomain == "google.com";
 
             this.authorization.Reauthorized += (_, __) =>
             {
@@ -220,12 +221,13 @@ namespace Google.Solutions.IapDesktop.Windows
         // Authorization actions.
         //---------------------------------------------------------------------
 
-        public Task RevokeAuthorizationAsync()
+        public Task SignOutAsync()
         {
             Debug.Assert(this.authorization != null);
             Debug.Assert(this.authorization.DeviceEnrollment != null);
 
-            return this.authorization.RevokeAsync();
+            this.authorization.Session.Terminate();
+            return Task.CompletedTask;
         }
 
         //---------------------------------------------------------------------

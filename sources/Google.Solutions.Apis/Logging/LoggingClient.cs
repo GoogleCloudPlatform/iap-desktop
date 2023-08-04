@@ -55,7 +55,7 @@ namespace Google.Solutions.Apis.Logging
     /// <returns>next page token</returns>
     public delegate string ReadPageCallback(Stream stream);
 
-    public class LoggingClient : ILoggingClient
+    public class LoggingClient : ApiClientBase, ILoggingClient
     {
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
@@ -67,15 +67,9 @@ namespace Google.Solutions.Apis.Logging
             ServiceEndpoint<LoggingClient> endpoint,
             IAuthorization authorization,
             UserAgent userAgent)
+            : base(endpoint, authorization, userAgent)
         {
-            authorization.ExpectNotNull(nameof(authorization));
-            userAgent.ExpectNotNull(nameof(userAgent));
-
-            this.service = new LoggingService(
-                Initializers.CreateServiceInitializer(
-                    endpoint,
-                    authorization,
-                    userAgent));
+            this.service = new LoggingService(this.Initializer);
         }
 
         public static ServiceEndpoint<LoggingClient> CreateEndpoint(
@@ -85,12 +79,6 @@ namespace Google.Solutions.Apis.Logging
                 pscDirections ?? PrivateServiceConnectDirections.None,
                 "https://logging.googleapis.com/");
         }
-
-        //---------------------------------------------------------------------
-        // IClient.
-        //---------------------------------------------------------------------
-
-        public IServiceEndpoint Endpoint { get; }
 
         //---------------------------------------------------------------------
         // ILoggingClient.

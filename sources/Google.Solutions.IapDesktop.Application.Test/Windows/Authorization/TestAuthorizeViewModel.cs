@@ -24,7 +24,9 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Authorization;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis;
@@ -44,32 +46,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
     {
         private class AuthorizeViewModelWithMockSigninAdapter : AuthorizeViewModel
         {
-            public Mock<ISignInClient> Client = new Mock<ISignInClient>();
+            public Mock<IOidcClient> Client = new Mock<IOidcClient>();
 
-            public AuthorizeViewModelWithMockSigninAdapter(Mock<IInstall> install)
+            public AuthorizeViewModelWithMockSigninAdapter(
+                IInstall install,
+                IOidcOfflineCredentialStore offlineStore)
                 : base(
-                    install.Object,
-                    SignInClient.OAuthClient.CreateEndpoint(),
-                    SignInClient.OpenIdClient.CreateEndpoint())
+                    GaiaOidcClient.CreateEndpoint(),
+                    install,
+                    offlineStore)
             {
             }
 
             public AuthorizeViewModelWithMockSigninAdapter()
-                : this(new Mock<IInstall>())
+                : this(
+                      new Mock<IInstall>().Object, 
+                      new Mock<IOidcOfflineCredentialStore>().Object)
             {
+                    
             }
 
-            protected override ISignInClient CreateSignInAdapter(BrowserPreference preference)
+            private protected override Application.Profile.Auth.Authorization CreateAuthorization(
+                OidcOfflineCredentialIssuer issuer)
             {
-                return this.Client.Object;
+                return new Application.Profile.Auth.Authorization(
+                    this.Client.Object,
+                    new Mock<IDeviceEnrollment>().Object);
             }
-        }
-        private static UserCredential CreateCredential()
-        {
-            return new UserCredential(
-                new Mock<IAuthorizationCodeFlow>().Object,
-                "mock-user",
-                new TokenResponse());
         }
 
         //---------------------------------------------------------------------
@@ -108,23 +111,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = new Mock<IDataStore>().Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 viewModel.Client
-                    .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
-                    .ReturnsAsync((UserCredential)null);
+                    .Setup(a => a.TryAuthorizeSilentlyAsync(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync((IOidcSession)null);
 
                 await viewModel.TryLoadExistingAuthorizationCommand
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsNull(viewModel.Authorization.Value);
+                Assert.IsNull(viewModel.Authorization);
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);
+                Assert.IsFalse(viewModel.IsAuthorizationComplete.Value);
             }
         }
 
@@ -134,23 +136,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = new Mock<IDataStore>().Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 viewModel.Client
-                    .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
+                    .Setup(a => a.TryAuthorizeSilentlyAsync(It.IsAny<CancellationToken>()))
                     .ThrowsAsync(new InvalidOperationException("mock"));
 
                 await viewModel.TryLoadExistingAuthorizationCommand
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsNull(viewModel.Authorization.Value);
+                Assert.IsNull(viewModel.Authorization);
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);
+                Assert.IsFalse(viewModel.IsAuthorizationComplete.Value);
             }
         }
 
@@ -160,28 +161,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = new Mock<IDataStore>().Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 viewModel.Client
-                    .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(CreateCredential());
-                viewModel.Client
-                    .Setup(a => a.QueryUserInfoAsync(
-                        It.IsAny<ICredential>(),
-                        It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new UserInfo());
+                    .Setup(a => a.TryAuthorizeSilentlyAsync(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Mock<IOidcSession>().Object);
 
                 await viewModel.TryLoadExistingAuthorizationCommand
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(viewModel.Authorization.Value);
+                Assert.IsNotNull(viewModel.Authorization);
 
                 Assert.IsFalse(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsTrue(viewModel.IsWaitControlVisible.Value);
+                Assert.IsTrue(viewModel.IsAuthorizationComplete.Value);
             }
         }
 
@@ -195,14 +190,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = new Mock<IDataStore>().Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 viewModel.Client
-                    .Setup(a => a.SignInWithBrowserAsync(
-                        It.IsAny<string>(),
+                    .Setup(a => a.AuthorizeAsync(
+                        It.IsAny<ICodeReceiver>(),
                         It.IsAny<CancellationToken>()))
                     .Throws(new TaskCanceledException());
 
@@ -216,18 +209,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
         [Test]
         public async Task NetworkErrorAndRetryDenied()
         {
-            var tokenStore = new Mock<IDataStore>();
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = tokenStore.Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 viewModel.Client
-                    .Setup(a => a.SignInWithBrowserAsync(
-                        It.IsAny<string>(),
+                    .Setup(a => a.AuthorizeAsync(
+                        It.IsAny<ICodeReceiver>(),
                         It.IsAny<CancellationToken>()))
                     .Throws(new InvalidOperationException("mock"));
 
@@ -241,25 +231,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                tokenStore.Verify(s => s.ClearAsync(), Times.Once);
-
-                Assert.IsNull(viewModel.Authorization.Value);
+                Assert.IsNull(viewModel.Authorization);
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);
+                Assert.IsFalse(viewModel.IsAuthorizationComplete.Value);
             }
         }
 
         [Test]
         public async Task OAuthScopeNotGrantedAndRetryDenied()
         {
-            var tokenStore = new Mock<IDataStore>();
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = tokenStore.Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 var tokenResponse = new TokenResponse()
@@ -268,18 +254,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 };
 
                 viewModel.Client
-                    .Setup(a => a.SignInWithBrowserAsync(
-                        It.IsAny<string>(),
+                    .Setup(a => a.AuthorizeAsync(
+                        It.IsAny<ICodeReceiver>(),
                         It.IsAny<CancellationToken>()))
                     .Throws(new OAuthScopeNotGrantedException("mock"));
-                viewModel.Client
-                    .Setup(a => a.QueryUserInfoAsync(
-                        It.IsAny<ICredential>(),
-                        It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new UserInfo()
-                    {
-                        Email = "mock@example.com"
-                    });
 
                 viewModel.OAuthScopeNotGranted += (_, args) =>
                 {
@@ -291,25 +269,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                tokenStore.Verify(s => s.ClearAsync(), Times.Once);
-
-                Assert.IsNull(viewModel.Authorization.Value);
+                Assert.IsNull(viewModel.Authorization);
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);
+                Assert.IsFalse(viewModel.IsAuthorizationComplete.Value);
             }
         }
 
         [Test]
         public async Task SignInSuccessful()
         {
-            var tokenStore = new Mock<IDataStore>();
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                TokenStore = tokenStore.Object,
-                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
+                View = view
             })
             {
                 var tokenResponse = new TokenResponse()
@@ -318,27 +292,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 };
 
                 viewModel.Client
-                    .Setup(a => a.SignInWithBrowserAsync(
-                        It.IsAny<string>(),
+                    .Setup(a => a.AuthorizeAsync(
+                        It.IsAny<ICodeReceiver>(),
                         It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(CreateCredential());
-                viewModel.Client
-                    .Setup(a => a.QueryUserInfoAsync(
-                        It.IsAny<ICredential>(),
-                        It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new UserInfo()
-                    {
-                        Email = "mock@example.com"
-                    });
+                    .ReturnsAsync(new Mock<IOidcSession>().Object);
 
                 await viewModel.SignInWithDefaultBrowserCommand
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(viewModel.Authorization.Value);
+                Assert.IsNotNull(viewModel.Authorization);
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);
+                Assert.IsTrue(viewModel.IsAuthorizationComplete.Value);
             }
         }
     }

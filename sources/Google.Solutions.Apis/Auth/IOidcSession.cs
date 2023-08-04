@@ -21,44 +21,51 @@
 
 using Google.Apis.Auth.OAuth2;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
-    /// OIDC authorization. An authorization is a sequence of one
-    /// or more OIDC sessions.
+    /// OpenID Connect session. A session is backed by a refresh token,
+    /// and it ends when the refresh token is invalidated or the app is 
+    /// closed.
     /// </summary>
-    public interface IAuthorization
+    public interface IOidcSession 
     {
-        /// <summary>
-        /// Raised after a successful reauthorization. Might be
-        /// triggere on any thread.
-        /// </summary>
-        event EventHandler Reauthorized;
+        event EventHandler Terminated;
 
         /// <summary>
-        /// Curent OIDC session.
+        /// Username. The syntax differs depending on the implementation.
         /// </summary>
-        IOidcSession Session { get; }
+        string Username { get; }
 
         /// <summary>
-        /// Credential to use for Google API requests.
+        /// Credential to use for Google API calls.
+        /// Not null.
         /// </summary>
-        ICredential Credential { get; }
+        ICredential ApiCredential { get; }
 
         /// <summary>
-        /// Reauthorize, only intended to be used by jobs.
+        /// Offline credential for silent reauthentication.
         /// </summary>
-        Task ReauthorizeAsync(CancellationToken token);
+        OidcOfflineCredential OfflineCredential { get; }
 
         /// <summary>
-        /// Device. This is non-null, but the enrollment might be
-        /// in state "Disabled".
+        /// Use a new session to extend the current session so
+        /// that the API credential remains valid.
         /// </summary>
-        IDeviceEnrollment DeviceEnrollment { get; }
+        void Splice(IOidcSession newSession);
 
-        string Email { get; }
+        /// <summary>
+        /// Terminate the session and drop offline credential,
+        /// but keep the underling grant.
+        /// </summary>
+        void Terminate();
+
+        /// <summary>
+        /// Revoke the underlying OAuth grant.
+        /// </summary>
+        Task RevokeGrantAsync(CancellationToken cancellationToken);
     }
 }

@@ -55,11 +55,6 @@ namespace Google.Solutions.Testing.Apis.Integration
             {
                 this.Credential = credential;
                 this.Email = "test@example.com";
-                this.UserInfo = new UserInfo()
-                {
-                    Email = this.Email,
-                    Name = "Test"
-                };
                 this.DeviceEnrollment = new DeviceEnrollment();
             }
 
@@ -67,9 +62,9 @@ namespace Google.Solutions.Testing.Apis.Integration
 
             public string Email { get; }
 
-            public UserInfo UserInfo { get; }
-
             public IDeviceEnrollment DeviceEnrollment { get; }
+
+            public IOidcSession Session => throw new NotImplementedException();
 
             public event EventHandler Reauthorized;
 

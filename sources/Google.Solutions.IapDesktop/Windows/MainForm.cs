@@ -660,7 +660,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                await this.viewModel.RevokeAuthorizationAsync().ConfigureAwait(true);
+                await this.viewModel.SignOutAsync().ConfigureAwait(true);
 
                 var profile = this.serviceProvider.GetService<UserProfile>();
                 if (!profile.IsDefault)

@@ -19,25 +19,27 @@
 // under the License.
 //
 
-using Newtonsoft.Json;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Solutions.Apis.Client;
 
-namespace Google.Solutions.Apis.Auth
+namespace Google.Solutions.Apis.Auth.Gaia
 {
-    /// <summary>
-    /// OIDC user info.
-    /// </summary>
-    public class UserInfo
+    public class GaiaPkceOidcClient : GaiaOidcClient
     {
-        [JsonProperty("email")]
-        public string Email { get; set; }
+        public GaiaPkceOidcClient(
+            ServiceEndpoint<GaiaOidcClient> endpoint,
+            IDeviceEnrollment deviceEnrollment,
+            IOidcOfflineCredentialStore store,
+            ClientSecrets clientSecrets) 
+            : base(endpoint, deviceEnrollment, store, clientSecrets)
+        {
+        }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("hd")]
-        public string HostedDomain { get; set; }
-
-        [JsonProperty("sub")]
-        public string Subject { get; set; }
+        protected override IAuthorizationCodeFlow CreateFlow(
+            GoogleAuthorizationCodeFlow.Initializer initializer)
+        {
+            return new PkceGoogleAuthorizationCodeFlow(initializer);
+        }
     }
 }
