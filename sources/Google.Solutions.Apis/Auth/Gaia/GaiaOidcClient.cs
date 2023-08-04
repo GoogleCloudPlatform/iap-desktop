@@ -358,8 +358,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     deviceEnrollment);
 
                 ApiTraceSources.Default.TraceInformation(
-                    "OAuth: Using token URL {0}",
-                    this.TokenServerUrl);
+                    "Using endpoint {0}",
+                    directions);
             }
 
             public CodeFlowInitializer(
