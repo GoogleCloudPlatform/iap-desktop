@@ -280,9 +280,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 catch (SshRelayDeniedException e)
                 {
                     throw new TransportFailedException(
-                        "You are not authorized to connect to this VM instance.\n\n" +
-                        $"Verify that the Cloud IAP API is enabled in the project {targetInstance.ProjectId} " +
-                        "and that your user has the 'IAP-secured Tunnel User' role.",
+                        "You do not have sufficient permissions to access this VM instance. " +
+                        "You need the 'IAP-secured Tunnel User' role (or an equivalent custom role) " +
+                        "to perform this action.\n\n" +
+                        "Note: If you've just been granted the role, it might take a few minutes " +
+                        "for the change to take effect.",
                         HelpTopics.IapAccess,
                         e);
                 }
