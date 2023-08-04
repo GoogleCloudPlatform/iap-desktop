@@ -28,29 +28,31 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public static class HelpTopics
     {
+        private const string GaParameters = "utm_source=iapdesktop&utm_medium=help";
+
         public static readonly IHelpTopic General = new HelpTopic(
             "Documentation",
-            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki");
+            $"https://googlecloudplatform.github.io/iap-desktop/?{GaParameters}");
 
         public static readonly IHelpTopic Shortcuts = new HelpTopic(
             "Keyboard shortcuts",
-            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Keyboard-shortcuts");
+            $"https://googlecloudplatform.github.io/iap-desktop/keyboard-shortcuts/?{GaParameters}");
 
         public static readonly IHelpTopic BrowserIntegration = new HelpTopic(
             "Browser Integration",
-            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration");
+            $"https://googlecloudplatform.github.io/iap-desktop/connect-by-url/?{GaParameters}");
 
         public static readonly IHelpTopic IapOverview = new HelpTopic(
             "Overview of Cloud IAP TCP forwarding",
             "https://cloud.google.com/iap/docs/tcp-forwarding-overview");
 
         public static readonly IHelpTopic IapAccess = new HelpTopic(
-            "Configuring access to Cloud IAP",
-            "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
+            "Grant access to VMs",
+            $"https://googlecloudplatform.github.io/iap-desktop/setup-iap/?{GaParameters}#grant-access");
 
         public static readonly IHelpTopic CreateIapFirewallRule = new HelpTopic(
-            "Creating a firewall rule for Cloud IAP",
-            "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
+            "Create a firewall rule for IAP",
+            $"https://googlecloudplatform.github.io/iap-desktop/setup-iap/?{GaParameters}#create-a-firewall-rule");
 
         public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
             "Device certificate authentication",
@@ -68,17 +70,13 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             "Granting OS Login IAM roles",
             "https://cloud.google.com/compute/docs/instances/managing-instance-access#grant-iam-roles");
 
-        public static readonly IHelpTopic ReleaseNotes = new HelpTopic(
-           "Release notes",
-           "https://github.com/GoogleCloudPlatform/iap-desktop/releases");
-
         public static readonly IHelpTopic NodeUsageReporting = new HelpTopic(
            "Track VM and sole-tenant node usage for license reporting",
            "https://cloud.google.com/compute/docs/nodes/determining-server-usage");
 
         public static readonly IHelpTopic AppProtocols = new HelpTopic(
             "App protocols",
-            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki");
+            $"https://googlecloudplatform.github.io/iap-desktop/client-application-configuration/?{GaParameters}");
     }
 
     public class HelpAdapter
