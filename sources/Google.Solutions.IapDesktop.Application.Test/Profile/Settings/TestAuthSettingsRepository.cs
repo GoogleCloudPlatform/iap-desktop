@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             var value = @"{
                 'refresh_token':'rt',
-                'scope': 'oidc'
+                'scope': 'openid'
                 }";
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
-            Assert.AreEqual("oidc", offlineCredential.Scope);
+            Assert.AreEqual("openid", offlineCredential.Scope);
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             var value = @"{
                 'refresh_token':'rt',
                 'issuer': 'sts',
-                'scope': 'oidc'
+                'scope': 'openid'
                 }";
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
-            Assert.AreEqual("oidc", offlineCredential.Scope);
+            Assert.AreEqual("openid", offlineCredential.Scope);
         }
 
         //---------------------------------------------------------------------
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             // Write.
             repository.Write(new OidcOfflineCredential( 
                 OidcOfflineCredentialIssuer.Gaia, 
-                "oidc",
+                "openid",
                 "rt", 
                 "idt"));
 
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.AreEqual("idt", offlineCredential.IdToken);
-            Assert.AreEqual("oidc", offlineCredential.Scope);
+            Assert.AreEqual("openid", offlineCredential.Scope);
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             // Write.
             repository.Write(new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Sts,
-                "oidc",
+                "openid",
                 "rt",
                 null));
 
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
-            Assert.AreEqual("oidc", offlineCredential.Scope);
+            Assert.AreEqual("openid", offlineCredential.Scope);
         }
 
         //---------------------------------------------------------------------
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             // Write & clear.
             repository.Write(new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "oidc", "rt", "idt"));
+                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", "idt"));
             repository.Clear();
 
             // Read again.

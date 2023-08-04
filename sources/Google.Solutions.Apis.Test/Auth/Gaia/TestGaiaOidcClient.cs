@@ -101,6 +101,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var offlineCredential = new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Gaia,
+                "openid",
                 "old-rt",
                 oldIdToken);
 
@@ -138,6 +139,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var offlineCredential = new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Gaia,
+                "openid",
                 "old-rt",
                 oldIdToken);
 
@@ -201,6 +203,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var offlineCredential = new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Gaia,
+                "openid",
                 "old-rt",
                 oldIdToken);
 
@@ -224,6 +227,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var offlineCredential = new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Gaia,
+                "openid",
                 "old-rt",
                 string.Empty);
 
@@ -295,7 +299,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "rt", oldIdToken);
+                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", oldIdToken);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             // Trigger a request, but let it fail.
@@ -336,7 +340,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "rt", oldIdToken);
+                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", oldIdToken);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             // Trigger a request, but let it fail.
@@ -366,7 +370,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "rt", "junk");
+                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", "junk");
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             // Trigger a request, but let it fail.
@@ -430,6 +434,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Gaia,
+                "openid",
                 "invalid-rt",
                 null);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
