@@ -25,6 +25,8 @@ namespace Google.Solutions.IapDesktop.Core
 {
     internal static class HelpTopics
     {
+        private const string GaParameters = "utm_source=iapdesktop&utm_medium=help";
+
         public static readonly IHelpTopic IapAccess = new HelpTopic(
             "Configuring access to Cloud IAP",
             "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
@@ -35,6 +37,6 @@ namespace Google.Solutions.IapDesktop.Core
 
         public static readonly IHelpTopic ProxyConfiguration = new HelpTopic(
             "Proxy Configuration",
-            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Proxy-Configuration");
+            $"https://googlecloudplatform.github.io/iap-desktop/proxy-configuration/?{GaParameters}");
     }
 }
