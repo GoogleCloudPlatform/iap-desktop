@@ -117,6 +117,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.AreEqual("idt", offlineCredential.IdToken);
+            Assert.AreEqual(
+                "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid",
+                offlineCredential.Scope);
         }
 
         [Test]
@@ -124,6 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             var value = @"{
                 'refresh_token':'rt',
+                'scope': 'oidc'
                 }";
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -139,6 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
+            Assert.AreEqual("oidc", offlineCredential.Scope);
         }
 
         [Test]
@@ -146,7 +151,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             var value = @"{
                 'refresh_token':'rt',
-                'issuer': 'sts'
+                'issuer': 'sts',
+                'scope': 'oidc'
                 }";
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -162,6 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
+            Assert.AreEqual("oidc", offlineCredential.Scope);
         }
 
         //---------------------------------------------------------------------
@@ -176,7 +183,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             // Write.
             repository.Write(new OidcOfflineCredential( 
-                OidcOfflineCredentialIssuer.Gaia, "rt", "idt"));
+                OidcOfflineCredentialIssuer.Gaia, 
+                "oidc",
+                "rt", 
+                "idt"));
 
             // Read again.
             Assert.IsTrue(repository.TryRead(out var offlineCredential));
@@ -184,6 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Gaia, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.AreEqual("idt", offlineCredential.IdToken);
+            Assert.AreEqual("oidc", offlineCredential.Scope);
         }
 
         [Test]
@@ -195,6 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             // Write.
             repository.Write(new OidcOfflineCredential(
                 OidcOfflineCredentialIssuer.Sts,
+                "oidc",
                 "rt",
                 null));
 
@@ -204,6 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             Assert.AreEqual(OidcOfflineCredentialIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
+            Assert.AreEqual("oidc", offlineCredential.Scope);
         }
 
         //---------------------------------------------------------------------
@@ -218,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             // Write & clear.
             repository.Write(new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "rt", "idt"));
+                OidcOfflineCredentialIssuer.Gaia, "oidc", "rt", "idt"));
             repository.Clear();
 
             // Read again.

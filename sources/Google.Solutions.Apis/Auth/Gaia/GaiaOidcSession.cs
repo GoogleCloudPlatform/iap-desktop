@@ -63,6 +63,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
                 return new OidcOfflineCredential(
                     OidcOfflineCredentialIssuer.Gaia,
+                    this.apiCredential.Token.Scope,
                     this.apiCredential.Token.RefreshToken,
                     idToken);
             }

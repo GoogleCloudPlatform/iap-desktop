@@ -65,12 +65,19 @@ namespace Google.Solutions.Apis.Auth
         /// </summary>
         public string IdToken { get; }
 
+        /// <summary>
+        /// List of authorized scopes (space separated).
+        /// </summary>
+        public string Scope { get; }
+
         public OidcOfflineCredential(
             OidcOfflineCredentialIssuer issuer,
+            string scope,
             string refreshToken, 
             string idToken)
         {
             this.Issuer = issuer;
+            this.Scope = scope.ExpectNotEmpty(nameof(scope));
             this.RefreshToken = refreshToken.ExpectNotEmpty(nameof(refreshToken));
             this.IdToken = idToken;
         }

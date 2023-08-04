@@ -108,6 +108,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             [JsonProperty("id_token")]
             public string IdToken { get; set; }
 
+            [JsonProperty("scope")]
+            public string Scope { get; set; }
+
             /// <summary>
             /// Issuer of credential. For backwards compatibility,
             /// a null/empty value is interpreted as Gaia.
@@ -121,6 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 {
                     return new OidcOfflineCredential(
                         OidcOfflineCredentialIssuer.Sts,
+                        this.Scope,
                         this.RefreshToken,
                         this.IdToken);
                 }
@@ -128,6 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 {
                     return new OidcOfflineCredential(
                         OidcOfflineCredentialIssuer.Gaia,
+                        this.Scope,
                         this.RefreshToken,
                         this.IdToken);
                 }
@@ -142,7 +147,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                         ? "sts"
                         : null,
                     RefreshToken = offlineCredential.RefreshToken,
-                    IdToken = offlineCredential.IdToken
+                    IdToken = offlineCredential.IdToken,
+                    Scope = offlineCredential.Scope
                 };
             }
         }
