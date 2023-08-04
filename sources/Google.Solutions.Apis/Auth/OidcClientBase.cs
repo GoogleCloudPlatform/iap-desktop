@@ -92,6 +92,9 @@ namespace Google.Solutions.Apis.Auth
                     //
                     this.store.Write(session.OfflineCredential);
 
+                    ApiTraceSources.Default.TraceVerbose(
+                        "Activating offline credential succeeded.");
+
                     return session;
                 }
                 catch (Exception e)
@@ -135,6 +138,10 @@ namespace Google.Solutions.Apis.Auth
             // activation next time.
             //
             this.store.Write(authorization.OfflineCredential);
+
+            ApiTraceSources.Default.TraceVerbose(
+                "Browser-based authorization succeeded.");
+
             return authorization;
         }
 
