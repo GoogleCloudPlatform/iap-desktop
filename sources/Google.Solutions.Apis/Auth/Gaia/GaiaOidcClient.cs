@@ -41,17 +41,20 @@ namespace Google.Solutions.Apis.Auth.Gaia
         private readonly ServiceEndpoint<GaiaOidcClient> endpoint;
         private readonly ClientSecrets clientSecrets;
         private readonly IDeviceEnrollment deviceEnrollment;
+        private readonly UserAgent userAgent;
 
         public GaiaOidcClient(
             ServiceEndpoint<GaiaOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
             IOidcOfflineCredentialStore store,
-            ClientSecrets clientSecrets)
+            ClientSecrets clientSecrets,
+            UserAgent userAgent)
             : base(store)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
             this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
             this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
+            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
         }
 
         public static ServiceEndpoint<GaiaOidcClient> CreateEndpoint(
@@ -180,7 +183,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
-                this.deviceEnrollment)
+                this.deviceEnrollment,
+                this.userAgent)
             {
                 ClientSecrets = this.clientSecrets
             };
@@ -293,7 +297,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             var initializer = new CodeFlowInitializer(
                 this.endpoint,
-                this.deviceEnrollment)
+                this.deviceEnrollment,
+                this.userAgent)
             {
                 ClientSecrets = this.clientSecrets
             };
@@ -347,7 +352,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
         {
             protected CodeFlowInitializer(
                 ServiceEndpointDirections directions,
-                IDeviceEnrollment deviceEnrollment)
+                IDeviceEnrollment deviceEnrollment,
+                UserAgent userAgent)
                 : base(
                       GoogleAuthConsts.OidcAuthorizationUrl,
                       new Uri(directions.BaseUri, "/token").ToString(),
@@ -355,7 +361,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
             {
                 this.HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
                     directions,
-                    deviceEnrollment);
+                    deviceEnrollment,
+                    userAgent);
 
                 ApiTraceSources.Default.TraceInformation(
                     "Using endpoint {0}",
@@ -364,10 +371,12 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             public CodeFlowInitializer(
                 ServiceEndpoint<GaiaOidcClient> endpoint,
-                IDeviceEnrollment deviceEnrollment)
+                IDeviceEnrollment deviceEnrollment,
+                UserAgent userAgent)
                 : this(
                       endpoint.GetDirections(deviceEnrollment.State),
-                      deviceEnrollment)
+                      deviceEnrollment,
+                      userAgent)
             {
             }
         }

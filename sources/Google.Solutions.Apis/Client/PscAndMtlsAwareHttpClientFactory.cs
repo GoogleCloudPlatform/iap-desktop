@@ -40,23 +40,28 @@ namespace Google.Solutions.Apis.Client
         private readonly ServiceEndpointDirections directions;
         private readonly IDeviceEnrollment deviceEnrollment;
         private readonly ICredential credential;
+        private readonly UserAgent userAgent;
 
         public PscAndMtlsAwareHttpClientFactory(
             ServiceEndpointDirections directions,
-            IAuthorization authorization)
+            IAuthorization authorization,
+            UserAgent userAgent)
         {
-            this.directions = directions;
-            this.deviceEnrollment = authorization.DeviceEnrollment;
+            this.directions = directions.ExpectNotNull(nameof(directions));
+            this.deviceEnrollment = authorization.DeviceEnrollment.ExpectNotNull(nameof(this.deviceEnrollment));
             this.credential = authorization.Session.ApiCredential;
+            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
         }
 
         public PscAndMtlsAwareHttpClientFactory(
             ServiceEndpointDirections directions,
-            IDeviceEnrollment deviceEnrollment)
+            IDeviceEnrollment deviceEnrollment,
+            UserAgent userAgent)
         {
-            this.directions = directions;
-            this.deviceEnrollment = deviceEnrollment;
+            this.directions = directions.ExpectNotNull(nameof(directions));
+            this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.credential = null;
+            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
         }
 
         public ConfigurableHttpClient CreateHttpClient(CreateHttpClientArgs args)
@@ -66,7 +71,7 @@ namespace Google.Solutions.Apis.Client
                 args.Initializers.Add(this.credential);
             }
 
-            // TODO: b/293968777: Set user agent
+            args.ApplicationName = this.userAgent.ToApplicationName();
 
             var factory = new MtlsAwareHttpClientFactory(this.directions, this.deviceEnrollment);
             var httpClient = factory.CreateHttpClient(args);

@@ -41,16 +41,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
     {
         private readonly ServiceEndpoint<GaiaOidcClient> gaiaEndpoint;
         private readonly IOidcOfflineCredentialStore offlineStore;
+        private readonly UserAgent userAgent;
 
         private CancellationTokenSource cancelCurrentSignin = null;
 
         public AuthorizeViewModel(
             ServiceEndpoint<GaiaOidcClient> gaiaEndpoint,
             IInstall install,
-            IOidcOfflineCredentialStore offlineStore)
+            IOidcOfflineCredentialStore offlineStore,
+            UserAgent userAgent)
         {
             this.gaiaEndpoint = gaiaEndpoint.ExpectNotNull(nameof(gaiaEndpoint));
             this.offlineStore = offlineStore.ExpectNotNull(nameof(offlineStore));
+            this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
 
             //
             // NB. Properties are access from a non-GUI thread, so
@@ -95,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.gaiaEndpoint,
                 this.DeviceEnrollment,
                 this.offlineStore,
-                this.ClientSecrets);
+                this.ClientSecrets,
+                this.userAgent);
 
             return new Profile.Auth.Authorization(
                 client,

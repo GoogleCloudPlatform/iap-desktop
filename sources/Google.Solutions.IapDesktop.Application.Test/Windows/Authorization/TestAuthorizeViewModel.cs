@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Authorization;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -54,7 +55,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 : base(
                     GaiaOidcClient.CreateEndpoint(),
                     install,
-                    offlineStore)
+                    offlineStore,
+                    TestProject.UserAgent)
             {
             }
 
