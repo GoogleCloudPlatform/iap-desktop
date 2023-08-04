@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
-            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
+            registry.AddSingleton(CreateAuthorizationMock(credential));
             return registry;
         }
 

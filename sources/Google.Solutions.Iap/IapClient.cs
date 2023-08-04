@@ -112,7 +112,7 @@ namespace Google.Solutions.Iap
 
             return new IapInstanceTarget(
                 directions,
-                this.authorization.Credential,
+                this.authorization.Session.ApiCredential,
                 instance,
                 port,
                 nic,

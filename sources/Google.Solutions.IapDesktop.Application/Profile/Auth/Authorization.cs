@@ -76,6 +76,10 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             get => this.session ?? throw new InvalidOperationException("Not authorized yet");
         }
 
+        public IDeviceEnrollment DeviceEnrollment { get; }
+
+        public string Email => this.Session.Username;
+
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
@@ -167,11 +171,5 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
                 return true;
             }
         }
-
-        public IDeviceEnrollment DeviceEnrollment { get; }
-
-        public ICredential Credential => this.Session.ApiCredential;
-
-        public string Email => this.Session.Username;
     }
 }

@@ -43,8 +43,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
     [UsesCloudResourcesAttribute]
     public class TestInstanceSessionBroker : WindowTestFixtureBase
     {
+        //
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
+        //
         private const string MachineTypeForRdp = "n1-highmem-2";
 
         private IServiceProvider CreateServiceProvider(ICredential credential = null)
@@ -55,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
-            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
+            registry.AddSingleton(CreateAuthorizationMock(credential));
 
             return registry;
         }

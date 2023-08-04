@@ -21,17 +21,14 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,39 +38,21 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestOsLoginClient
     {
-        private OsLoginClient CreateClient(string email)
-        {
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Email).Returns(email);
-            authz.SetupGet(a => a.Credential).Returns(TestProject.GetAdminCredential());
-            authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
-            return new OsLoginClient(
-                OsLoginClient.CreateEndpoint(),
-                authz.Object, 
-                TestProject.UserAgent);
-        }
-
-        private OsLoginClient CreateClient(TemporaryServiceCredential credential)
-        {
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Email).Returns(credential.Email);
-            authz.SetupGet(a => a.Credential).Returns(credential);
-            authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
-
-            return new OsLoginClient(
-                OsLoginClient.CreateEndpoint(),
-                authz.Object, 
-                TestProject.UserAgent);
-        }
-
         //---------------------------------------------------------------------
         // ImportSshPublicKeyAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEmailInvalid_ThenImportSshPublicKeyThrowsException()
+        public async Task WhenEmailInvalid_ThenImportSshPublicKeyThrowsException(
+            [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var client = CreateClient("x@gmail.com");
+            var authorization = new TemporaryAuthorization(
+                "x@gmail.com",
+                await credentialTask);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                authorization,
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.ImportSshPublicKeyAsync(
@@ -86,10 +65,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenImportSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
         {
-            var credential = (TemporaryServiceCredential)(await credentialTask);
-            var client = CreateClient(credential);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
 
             var keyType = "ssh-rsa";
             var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
@@ -114,9 +95,16 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEmailInvalid_ThenGetLoginProfileThrowsException()
+        public async Task WhenEmailInvalid_ThenGetLoginProfileThrowsException(
+            [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var client = CreateClient("x@gmail.com");
+            var authorization = new TemporaryAuthorization(
+                "x@gmail.com",
+                await credentialTask);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                authorization,
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetLoginProfileAsync(
@@ -125,16 +113,19 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenGetLoginProfileReturnsProfile(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+        public async Task WhenEmailValid_ThenGetLoginProfileReturnsProfile(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
         {
-            var credential = (TemporaryServiceCredential)(await credentialTask);
-            var client = CreateClient(credential);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
 
-            var profile = await client.GetLoginProfileAsync(
-                        new ProjectLocator(TestProject.ProjectId),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+            var profile = await client
+                .GetLoginProfileAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(profile);
         }
@@ -145,10 +136,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingKeyTwice_ThenDeleteSucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
         {
-            var credential = (TemporaryServiceCredential)(await credentialTask);
-            var client = CreateClient(credential);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
 
             var keyType = "ssh-rsa";
             var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
@@ -197,10 +190,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingNonexistingKey_ThenDeleteSucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
         {
-            var credential = (TemporaryServiceCredential)(await credentialTask);
-            var client = CreateClient(credential);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
 
             await client.DeleteSshPublicKeyAsync(
                     "nonexisting",

@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Integration
 {
+    //TODO: Remove class
     public static class ResourceTaskExtensions
     {
         public static IAuthorization ToAuthorization(

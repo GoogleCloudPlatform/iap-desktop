@@ -44,11 +44,6 @@ namespace Google.Solutions.Apis.Auth
         IOidcSession Session { get; }
 
         /// <summary>
-        /// Credential to use for Google API requests.
-        /// </summary>
-        ICredential Credential { get; }
-
-        /// <summary>
         /// Reauthorize, only intended to be used by jobs.
         /// </summary>
         Task ReauthorizeAsync(CancellationToken token);
