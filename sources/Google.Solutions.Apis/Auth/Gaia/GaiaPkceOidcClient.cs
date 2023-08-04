@@ -31,8 +31,9 @@ namespace Google.Solutions.Apis.Auth.Gaia
             ServiceEndpoint<GaiaOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
             IOidcOfflineCredentialStore store,
-            ClientSecrets clientSecrets) 
-            : base(endpoint, deviceEnrollment, store, clientSecrets)
+            ClientSecrets clientSecrets,
+            UserAgent userAgent) 
+            : base(endpoint, deviceEnrollment, store, clientSecrets, userAgent)
         {
         }
 

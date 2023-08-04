@@ -50,10 +50,10 @@ namespace Google.Solutions.Apis.Client
             this.Initializer = new BaseClientService.Initializer()
             {
                 BaseUri = directions.BaseUri.ToString(),
-                ApplicationName = userAgent.ToApplicationName(),
                 HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
                     directions,
-                    authorization)
+                    authorization,
+                    userAgent)
             };
         }
 
