@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         protected abstract INetworkStream ConnectToEchoServer(
             InstanceLocator vmRef,
-            ICredential credential);
+            IAuthorization authorization);
 
         private static void FillArray(byte[] array)
         {
@@ -47,7 +48,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         protected async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             InstanceLocator locator,
-            ICredential credential,
+            IAuthorization authorization,
             int messageSize,
             int writeSize,
             int readSize,
@@ -59,7 +60,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             var stream = ConnectToEchoServer(
                 locator,
-                credential);
+                authorization);
 
             for (var i = 0; i < repetitions; i++)
             {

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
@@ -39,14 +40,14 @@ namespace Google.Solutions.Iap.Test.Protocol
     {
         protected override INetworkStream ConnectToEchoServer(
             InstanceLocator vmRef,
-            ICredential credential)
+            IAuthorization authorization)
         {
             var policy = new Mock<IIapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
-                credential.ToAuthorization(),
+                authorization,
                 TestProject.UserAgent);
 
             var listener = new IapListener(
@@ -65,7 +66,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test]
         public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
             [Values(
                 1,
                 (int)SshRelayFormat.Data.MaxPayloadLength - 1,
@@ -76,7 +77,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         {
             await WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
                     await vm,
-                    await credential,
+                    await auth,
                     messageSize,
                     messageSize,
                     messageSize,
