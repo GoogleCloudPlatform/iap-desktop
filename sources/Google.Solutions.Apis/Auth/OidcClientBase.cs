@@ -126,23 +126,37 @@ namespace Google.Solutions.Apis.Auth
 
             this.store.TryRead(out var offlineCredential);
 
-            var authorization = await 
-                AuthorizeWithBrowserAsync(
-                    offlineCredential, 
-                    codeReceiver, 
-                    cancellationToken)
-                .ConfigureAwait(false);
+            try
+            {
+                var authorization = await
+                    AuthorizeWithBrowserAsync(
+                        offlineCredential,
+                        codeReceiver,
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
-            //
-            // Store the refresh token so that we can do a silent
-            // activation next time.
-            //
-            this.store.Write(authorization.OfflineCredential);
+                //
+                // Store the refresh token so that we can do a silent
+                // activation next time.
+                //
+                this.store.Write(authorization.OfflineCredential);
 
-            ApiTraceSources.Default.TraceVerbose(
-                "Browser-based authorization succeeded.");
+                ApiTraceSources.Default.TraceVerbose(
+                    "Browser-based authorization succeeded.");
 
-            return authorization;
+                return authorization;
+            }
+            catch (PlatformNotSupportedException)
+            {
+                //
+                // Convert this into an exception with more actionable information.
+                //
+                throw new AuthorizationFailedException(
+                    "Authorization failed because the HTTP Server API is not enabled " +
+                    "on your computer. This API is required to complete the OAuth authorization flow.\n\n" +
+                    "To enable the API, open an elevated command prompt and run " +
+                    "'sc config http start= auto'.");
+            }
         }
 
         protected abstract Task<IOidcSession> AuthorizeWithBrowserAsync(

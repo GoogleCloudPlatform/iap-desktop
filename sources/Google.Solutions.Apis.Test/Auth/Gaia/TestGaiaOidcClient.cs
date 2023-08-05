@@ -38,6 +38,13 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
     [TestFixture]
     public class TestGaiaOidcClient
     {
+        private static readonly OidcClientRegistration SampleRegistration
+            = new OidcClientRegistration(
+                OidcIssuer.Gaia,
+                "client-id",
+                "client-secret",
+                "/authorize/");
+
         //---------------------------------------------------------------------
         // CreateSession.
         //---------------------------------------------------------------------
@@ -58,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = freshIdToken,
-                Scope = $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}"
+                Scope = $"{Scopes.Cloud} {Scopes.Email}"
             };
 
             var session = GaiaOidcClient.CreateSession(
@@ -97,11 +104,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = freshIdToken,
-                Scope = $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}"
+                Scope = $"{Scopes.Cloud} {Scopes.Email}"
             };
 
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia,
+                OidcIssuer.Gaia,
                 "openid",
                 "old-rt",
                 oldIdToken);
@@ -135,11 +142,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
+                Scope = Scopes.Cloud
             };
 
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia,
+                OidcIssuer.Gaia,
                 "openid",
                 "old-rt",
                 oldIdToken);
@@ -173,7 +180,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
+                Scope = Scopes.Cloud
             };
 
             Assert.Throws<OAuthScopeNotGrantedException>
@@ -199,11 +206,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
+                Scope = Scopes.Cloud
             };
 
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia,
+                OidcIssuer.Gaia,
                 "openid",
                 "old-rt",
                 oldIdToken);
@@ -223,11 +230,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 AccessToken = "new-at",
                 RefreshToken = "new-rt",
                 IdToken = null,
-                Scope = $"{GaiaOidcClient.Scopes.Cloud}"
+                Scope = Scopes.Cloud
             };
 
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia,
+                OidcIssuer.Gaia,
                 "openid",
                 "old-rt",
                 string.Empty);
@@ -270,8 +277,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 ServiceEndpoint<GaiaOidcClient> endpoint,
                 IDeviceEnrollment deviceEnrollment,
                 IOidcOfflineCredentialStore store,
-                ClientSecrets clientSecrets) 
-                : base(endpoint, deviceEnrollment, store, clientSecrets, TestProject.UserAgent)
+                OidcClientRegistration registration) 
+                : base(endpoint, deviceEnrollment, store, registration, TestProject.UserAgent)
             {
             }
 
@@ -300,7 +307,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", oldIdToken);
+                OidcIssuer.Gaia, "openid", "rt", oldIdToken);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             // Trigger a request, but let it fail.
@@ -309,14 +316,14 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets(),
+                SampleRegistration,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                GaiaOidcClient.Scopes.Cloud,
+                Scopes.Cloud,
                 codeReceiver.RequestUrl.Scope,
                 "Minimal flow");
             StringAssert.Contains(
@@ -342,7 +349,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", oldIdToken);
+                OidcIssuer.Gaia, "openid", "rt", oldIdToken);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             // Trigger a request, but let it fail.
@@ -351,14 +358,14 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets(),
+                SampleRegistration,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
+                $"{Scopes.Cloud} {Scopes.Email}",
                 codeReceiver.RequestUrl.Scope,
                 "Normal flow");
         }
@@ -373,7 +380,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia, "openid", "rt", "junk");
+                OidcIssuer.Gaia, "openid", "rt", "junk");
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             // Trigger a request, but let it fail.
@@ -382,14 +389,14 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets(),
+                SampleRegistration,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
+                $"{Scopes.Cloud} {Scopes.Email}",
                 codeReceiver.RequestUrl.Scope,
                 "Normal flow");
         }
@@ -412,14 +419,14 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets(),
+                SampleRegistration,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
             Assert.AreEqual(
-                $"{GaiaOidcClient.Scopes.Cloud} {GaiaOidcClient.Scopes.Email}",
+                $"{Scopes.Cloud} {Scopes.Email}",
                 codeReceiver.RequestUrl.Scope,
                 "Normal flow");
         }
@@ -438,7 +445,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
             var offlineCredential = new OidcOfflineCredential(
-                OidcOfflineCredentialIssuer.Gaia,
+                OidcIssuer.Gaia,
                 "openid",
                 "invalid-rt",
                 null);
@@ -448,7 +455,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets(),
+                SampleRegistration,
                 TestProject.UserAgent);
 
             var session = await client

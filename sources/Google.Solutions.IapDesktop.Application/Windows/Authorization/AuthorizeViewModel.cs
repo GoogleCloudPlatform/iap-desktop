@@ -31,6 +31,8 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,19 +88,30 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        private protected virtual Profile.Auth.Authorization CreateAuthorization(OidcOfflineCredentialIssuer issuer)
+        private protected virtual Profile.Auth.Authorization CreateAuthorization(
+            OidcIssuer issuer)
         {
             Debug.Assert(this.Authorization == null);
-            Debug.Assert(issuer == OidcOfflineCredentialIssuer.Gaia);
+            Debug.Assert(issuer == OidcIssuer.Gaia);
 
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
-            Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
+
+            Precondition.ExpectNotNull(this.ClientRegistrations, nameof(this.ClientRegistrations));
+            if (!this.ClientRegistrations.TryGetValue(issuer, out var registration))
+            {
+                throw new ArgumentException(
+                    $"Missing client registration for issuer {issuer}");
+            }
+            else if (registration.Issuer != OidcIssuer.Gaia)
+            {
+                throw new NotImplementedException("Unsupported issuer");
+            }
 
             var client = new GaiaOidcClient(
                 this.gaiaEndpoint,
                 this.DeviceEnrollment,
                 this.offlineStore,
-                this.ClientSecrets,
+                registration,
                 this.userAgent);
 
             return new Profile.Auth.Authorization(
@@ -125,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         //---------------------------------------------------------------------
 
         public IDeviceEnrollment DeviceEnrollment { get; set; }
-        public ClientSecrets ClientSecrets { get; set; }
+        public IDictionary<OidcIssuer, OidcClientRegistration> ClientRegistrations { get; set; }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -189,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             {
                 try
                 {
-                    var authorization = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
+                    var authorization = CreateAuthorization(OidcIssuer.Gaia);
 
                     if (await authorization
                         .TryAuthorizeSilentlyAsync(CancellationToken.None)
@@ -245,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                             //
                             // First-time authorization.
                             //
-                            authorization = CreateAuthorization(OidcOfflineCredentialIssuer.Gaia);
+                            authorization = CreateAuthorization(OidcIssuer.Gaia);
                         }
                         else
                         {

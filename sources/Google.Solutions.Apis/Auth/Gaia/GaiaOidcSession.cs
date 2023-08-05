@@ -42,6 +42,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
             Debug.Assert(idToken.Payload.Email != null);
         }
 
+        //---------------------------------------------------------------------
+        // IGaiaOidcSession.
+        //---------------------------------------------------------------------
+
         public event EventHandler Terminated;
         public IJsonWebToken IdToken { get; }
         public ICredential ApiCredential => this.apiCredential;
@@ -62,7 +66,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     : this.apiCredential.Token.IdToken;
 
                 return new OidcOfflineCredential(
-                    OidcOfflineCredentialIssuer.Gaia,
+                    OidcIssuer.Gaia,
                     this.apiCredential.Token.Scope,
                     this.apiCredential.Token.RefreshToken,
                     idToken);
@@ -107,6 +111,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
         public void Terminate()
         {
             this.Terminated?.Invoke(this, EventArgs.Empty);
+
+            //
+            // NB. The GaiaOidcClient handles the actual termination.
+            //
         }
 
         public async Task RevokeGrantAsync(CancellationToken cancellationToken)
