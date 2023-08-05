@@ -78,10 +78,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             InstanceLocator instanceLocator,
             ushort port)
         {
-            var authorization = TestProject.GetAdminCredential().ToAuthorization();
             var addressResolver = new AddressResolver(new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                authorization,
+                TemporaryAuthorization.ForAdmin(),
                 TestProject.UserAgent));
 
             return await new DirectTransportFactory(addressResolver)

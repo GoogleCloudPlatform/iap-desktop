@@ -193,21 +193,13 @@ namespace Google.Solutions.Testing.Application.Views
             }
         }
 
-        //TODO: Delete
-        protected static TemporaryAuthorization CreateAuthorizationMock(ICredential credential = null)
-        {
-            return new TemporaryAuthorization(
-                "test@example.com",
-                credential ?? new Mock<ICredential>().Object);
-        }
-
         protected async Task<NetworkCredential> GenerateWindowsCredentialsAsync(InstanceLocator locator)
         {
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
             var credentialAdapter = new WindowsCredentialGenerator(
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    TestProject.GetAdminCredential().ToAuthorization(),
+                    TemporaryAuthorization.ForAdmin(),
                     TestProject.UserAgent));
 
             return await credentialAdapter

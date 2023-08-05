@@ -79,6 +79,13 @@ namespace Google.Solutions.Testing.Apis.Integration
                 GoogleCredential.FromAccessToken("invalid"));
         }
 
+        public static TemporaryAuthorization ForAdmin()
+        {
+            return new TemporaryAuthorization(
+                "admin@gserviceaccount.com",
+                TestProject.GetAdminCredential());
+        }
+
         //---------------------------------------------------------------------
         // IAuthorization.
         //---------------------------------------------------------------------
