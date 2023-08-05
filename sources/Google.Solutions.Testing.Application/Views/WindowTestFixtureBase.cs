@@ -193,6 +193,7 @@ namespace Google.Solutions.Testing.Application.Views
             }
         }
 
+        //TODO: Delete
         protected static TemporaryAuthorization CreateAuthorizationMock(ICredential credential = null)
         {
             return new TemporaryAuthorization(

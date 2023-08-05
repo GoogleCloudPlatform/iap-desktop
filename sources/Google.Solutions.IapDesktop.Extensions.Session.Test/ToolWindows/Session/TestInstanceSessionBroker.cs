@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -49,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //
         private const string MachineTypeForRdp = "n1-highmem-2";
 
-        private IServiceProvider CreateServiceProvider(ICredential credential = null)
+        private IServiceProvider CreateServiceProvider(IAuthorization authorization)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<RdpDesktopView>();
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
-            registry.AddSingleton(CreateAuthorizationMock(credential));
+            registry.AddSingleton(authorization);
 
             return registry;
         }
@@ -69,7 +70,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenIsConnectedIsFalse()
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(
+                TemporaryAuthorization.ForInvalidCredential());
+
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
             var broker = new InstanceSessionBroker(serviceProvider);
             Assert.IsFalse(broker.IsConnected(sampleLocator));
@@ -82,7 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenActiveSessionReturnsNull()
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(
+                TemporaryAuthorization.ForInvalidCredential());
+
             var broker = new InstanceSessionBroker(serviceProvider);
             Assert.IsNull(broker.ActiveSession);
         }
@@ -94,7 +99,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenTryActivateReturnsFalse()
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(
+                TemporaryAuthorization.ForInvalidCredential());
+
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
             var broker = new InstanceSessionBroker(serviceProvider);
             Assert.IsFalse(broker.TryActivate(sampleLocator, out var _));
@@ -104,14 +111,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenRdpSessionExists_ThenTryActivateSucceeds(
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await credential);
+            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
-                await credential))
+                await auth))
             {
                 var credentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
                 var rdpCredential = new RdpCredential(

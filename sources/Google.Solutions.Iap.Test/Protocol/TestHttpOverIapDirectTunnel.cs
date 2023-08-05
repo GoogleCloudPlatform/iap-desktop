@@ -83,11 +83,9 @@ namespace Google.Solutions.Iap.Test.Protocol
             var request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
 
-            var credential = GoogleCredential.FromAccessToken("invalid");
-
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
-                credential.ToAuthorization(),
+                TemporaryAuthorization.ForInvalidCredential(),
                 TestProject.UserAgent);
 
             var stream = new SshRelayStream(

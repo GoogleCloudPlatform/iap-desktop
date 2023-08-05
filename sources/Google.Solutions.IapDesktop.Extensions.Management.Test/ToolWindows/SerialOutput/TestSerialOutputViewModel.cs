@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -70,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             return node.Object;
         }
 
-        private SerialOutputViewModel CreateViewModel(ICredential credential)
+        private SerialOutputViewModel CreateViewModel(IAuthorization authorization)
 
         {
             var serviceProvider = new ServiceRegistry();
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             serviceProvider.AddSingleton<IComputeEngineClient>(
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    credential.ToAuthorization(),
+                    authorization,
                     TestProject.UserAgent));
 
             return new SerialOutputViewModel(serviceProvider)
@@ -95,9 +96,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         [Test]
         public async Task WhenNotBlocked_ThenEnableControlsTailing(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
-            var viewModel = CreateViewModel(await credential);
+            var viewModel = CreateViewModel(await auth);
             var node = await CreateNode(testInstance, true).ConfigureAwait(true);
             await viewModel
                 .SwitchToModelAsync(node)
@@ -121,9 +122,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         [Test]
         public async Task WhenBlocked_ThenEnableHasNoImpactOnTailing(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
-            var viewModel = CreateViewModel(await credential);
+            var viewModel = CreateViewModel(await auth);
             var node = await CreateNode(testInstance, true).ConfigureAwait(true);
             await viewModel
                 .SwitchToModelAsync(node)
@@ -138,9 +139,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         [Test]
         public async Task WhenEnabled_ThenBlockControlsTailing(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
-            var viewModel = CreateViewModel(await credential);
+            var viewModel = CreateViewModel(await auth);
             var node = await CreateNode(testInstance, true).ConfigureAwait(true);
             await viewModel
                 .SwitchToModelAsync(node)
@@ -167,9 +168,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenControlsAreDisabled(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
-            var viewModel = CreateViewModel(await credential);
+            var viewModel = CreateViewModel(await auth);
             var node = new Mock<IProjectModelCloudNode>();
             await viewModel
                 .SwitchToModelAsync(node.Object)
@@ -182,9 +183,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         [Test]
         public async Task WhenSwitchingToStoppedInstanceNode_ThenControlsAreDisabled(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
-            var viewModel = CreateViewModel(await credential);
+            var viewModel = CreateViewModel(await auth);
             var node = await CreateNode(testInstance, false).ConfigureAwait(true);
             await viewModel
                 .SwitchToModelAsync(node)
@@ -198,9 +199,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         [Test]
         public async Task WhenSwitchingToRunningInstanceNode_ThenOutputIsPopulated(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
-            var viewModel = CreateViewModel(await credential);
+            var viewModel = CreateViewModel(await auth);
             var node = await CreateNode(testInstance, true).ConfigureAwait(true);
             await viewModel
                 .SwitchToModelAsync(node)
