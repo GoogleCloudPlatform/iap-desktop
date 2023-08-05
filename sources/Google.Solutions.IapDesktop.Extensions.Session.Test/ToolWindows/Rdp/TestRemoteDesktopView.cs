@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Theme;
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project", "zone", "instance");
 
-        private IServiceProvider CreateServiceProvider(ICredential credential = null)
+        private IServiceProvider CreateServiceProvider(IAuthorization authorization)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<RdpDesktopView>();
@@ -65,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
-            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
+            registry.AddSingleton(authorization);
             return registry;
         }
 
@@ -82,12 +83,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var unboundEndpoint = new IPEndPoint(IPAddress.Loopback, 1);
             var transport = CreateTransportForEndpoint(unboundEndpoint);
 
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await auth);
             var broker = new InstanceSessionBroker(serviceProvider);
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectRdpSession(
@@ -106,13 +108,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         [Test]
         [Ignore("")]
-        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             // That one will be listening, but it is RPC, not RDP.
             var wrongEndpoint = new IPEndPoint(IPAddress.Loopback, 135);
             var transport = CreateTransportForEndpoint(wrongEndpoint);
 
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await auth);
             var broker = new InstanceSessionBroker(serviceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
@@ -134,14 +137,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         [Test]
         public async Task WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await credential);
+            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
-                await credential))
+                await auth))
             {
                 var rdpCredential = new RdpCredential(
                     "wrong",
@@ -185,9 +188,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             RdpRedirectClipboard redirectClipboard,
 
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await credential);
+            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
             var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
 
@@ -200,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
-                await credential))
+                await auth))
             {
                 var rdpCredential = new RdpCredential(
                     windowsCredentials.UserName,
@@ -243,15 +246,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         [Test]
         public async Task WhenWindowChangedToFloating_ThenConnectionSurvives(
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await credential);
+            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
             var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
-                await credential))
+                await auth))
             {
                 var rdpCredential = new RdpCredential(
                     windowsCredentials.UserName,
@@ -291,15 +294,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
             [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)]
             ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await credential);
+            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
             var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
-                await credential))
+                await auth))
             {
                 var rdpCredential = new RdpCredential(
                     windowsCredentials.UserName,

@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -54,11 +55,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
 
         [Test]
         public async Task WhenInstanceDoesNotExist_ThenGetInstanceInventoryAsyncReturnsNull(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -76,12 +77,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenInstanceHasInventoryData_ThenGetInstanceInventoryAsyncSucceeds(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -99,12 +100,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenUserNotInRole_ThenGetInstanceInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -123,13 +124,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListProjectInventoryAsyncSucceeds(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -148,13 +149,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenOsMismatches_ThenListProjectInventoryAsyncExcludesInstance(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -173,12 +174,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenUserNotInRole_ThenListProjectInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -198,13 +199,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListZoneInventoryAsyncSucceeds(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -223,13 +224,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenOsMismatches_ThenListZoneInventoryAsyncExcludesInstance(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);
@@ -248,12 +249,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         public async Task WhenUserNotInRole_ThenListZoneInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var instanceRef = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var service = new GuestOsInventory(computeClient);

@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Client
         {
             this.directions = directions;
             this.deviceEnrollment = authorization.DeviceEnrollment;
-            this.credential = authorization.Credential;
+            this.credential = authorization.Session.ApiCredential;
         }
 
         public PscAndMtlsAwareHttpClientFactory(

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Iap;
@@ -48,11 +49,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         public static IapTransport ForRdp(
             InstanceLocator instance,
-            ICredential credential)
+            IAuthorization authorization)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
-                credential.ToAuthorization(),
+                authorization,
                 TestProject.UserAgent);
 
             var policy = new AllowAllPolicy();

@@ -193,28 +193,13 @@ namespace Google.Solutions.Testing.Application.Views
             }
         }
 
-        protected static Mock<IAuthorization> CreateAuthorizationMock(ICredential credential = null)
-        {
-            credential = credential ?? new Mock<ICredential>().Object;
-
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.Setup(e => e.State).Returns(DeviceEnrollmentState.Disabled);
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.Credential).Returns(credential);
-            authorization.SetupGet(a => a.Email).Returns("test@example.com");
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
-
-            return authorization;
-        }
-
         protected async Task<NetworkCredential> GenerateWindowsCredentialsAsync(InstanceLocator locator)
         {
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
             var credentialAdapter = new WindowsCredentialGenerator(
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    TestProject.GetAdminCredential().ToAuthorization(),
+                    TemporaryAuthorization.ForAdmin(),
                     TestProject.UserAgent));
 
             return await credentialAdapter

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Iap.Net;
@@ -42,7 +43,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         protected abstract INetworkStream ConnectToWebServer(
             InstanceLocator vmRef,
-            ICredential credential);
+            IAuthorization authorization);
 
         private class HttpResponseAccumulator
         {
@@ -78,11 +79,11 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var stream = ConnectToWebServer(
                 await vm,
-                await credential);
+                await auth);
 
             var request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -111,12 +112,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(
                 locator,
-                await credential);
+                await auth);
 
             for (var i = 0; i < 3; i++)
             {
@@ -154,12 +155,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test, Repeat(RepeatCount)]
         public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(
                 locator,
-                await credential);
+                await auth);
 
             var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

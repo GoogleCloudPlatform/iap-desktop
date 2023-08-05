@@ -270,7 +270,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             {
                 await this.jobService.RunAsync(
                         new JobDescription("Loading projects..."),
-                        _ => this.authorization.Credential.GetAccessTokenForRequestAsync())
+                        _ => this.authorization
+                            .Session
+                            .ApiCredential
+                            .GetAccessTokenForRequestAsync())
                     .ConfigureAwait(true);
 
                 //

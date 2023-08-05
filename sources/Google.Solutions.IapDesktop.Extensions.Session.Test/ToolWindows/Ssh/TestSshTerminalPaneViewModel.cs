@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
         private static async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
             InstanceLocator instance,
-            ICredential credential,
+            IAuthorization authorization,
             SshKeyType keyType)
         {
             var authorizationSource = CreateAuthorizationMock();
@@ -109,11 +109,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 authorizationSource.Object,
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    credential.ToAuthorization(), 
+                    authorization,
                     TestProject.UserAgent),
                 new ResourceManagerClient(
                     ResourceManagerClient.CreateEndpoint(), 
-                    credential.ToAuthorization(), 
+                    authorization,
                     TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);
 
@@ -129,13 +129,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
         private async Task<SshTerminalViewModel> CreateViewModelAsync(
             InstanceLocator instance,
-            ICredential credential,
+            IAuthorization authorization,
             SshKeyType keyType,
             CultureInfo language = null)
         {
-            var authorizedKey = await CreateAuthorizedKeyAsync(
+            var authorizedKey = await 
+                CreateAuthorizedKeyAsync(
                     instance,
-                    credential,
+                    authorization,
                     keyType)
                 .ConfigureAwait(false);
 
@@ -178,12 +179,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenDataReceived_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -206,12 +207,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenConectionLostErrorReceived_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -247,12 +248,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenConectionFailedErrorReceived_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -285,12 +286,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenConnectionSucceeds_ThenEventFires(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     keyType,
                     null)
                 .ConfigureAwait(true))
@@ -401,12 +402,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenNoFileSelected_ThenDownloadIsCancelled(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -441,12 +442,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenFileExists_ThenDownloadShowsConfirmationPrompt(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -505,12 +506,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenQuarantineScanFails_ThenDownloadShowsErrorDialog(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -566,12 +567,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenNoConflictsFound_ThenDownloadSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))
@@ -617,12 +618,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenFileExistsAndOverwriteDenied_ThenUploadIsCancelled(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.Rsa3072,
                     null)
                 .ConfigureAwait(true))

@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Apis.Logging;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
@@ -37,6 +38,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         [Test]
         public async Task WhenUserNotInRole_ThenProcessInstanceEventsThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             await testInstance;
             var instanceRef = await testInstance;
@@ -61,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
             var client = new AuditLogClient(
                 new LoggingClient(
                     LoggingClient.CreateEndpoint(),
-                    await credential.ToAuthorization(),
+                    await auth,
                     TestProject.UserAgent));
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -76,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
 
         [Test]
         public async Task WhenUserInViewerRole_ThenProcessInstanceEventsInvokesProcessor(
-            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<IAuthorization> auth)
         {
             var startDate = DateTime.UtcNow.AddDays(-3);
             var endDate = DateTime.UtcNow;
@@ -84,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
             var client = new AuditLogClient(
                 new LoggingClient(
                     LoggingClient.CreateEndpoint(),
-                    await credential.ToAuthorization(),
+                    await auth,
                     TestProject.UserAgent));
 
             var processor = new Mock<IEventProcessor>();

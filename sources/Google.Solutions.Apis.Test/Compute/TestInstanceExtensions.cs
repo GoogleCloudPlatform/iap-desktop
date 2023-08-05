@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis.Integration;
@@ -36,11 +37,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var instance = await client
                 .GetInstanceAsync(
@@ -60,11 +61,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstanceHasInternalIp_ThenPrivateAddressReturnsRfc1918Ip(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var instance = await client.GetInstanceAsync(
                     await testInstance,
@@ -81,11 +82,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstanceLacksPublicIp_ThenPublicAddressReturnsNull(
             [LinuxInstance(PublicIp = false)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var instance = await client.GetInstanceAsync(
                     await testInstance,
@@ -98,11 +99,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstanceHasPublicIp_ThenPublicAddressReturnsNonRfc1918Ip(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var instance = await client.GetInstanceAsync(
                     await testInstance,

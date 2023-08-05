@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
@@ -40,14 +41,14 @@ namespace Google.Solutions.Iap.Test.Protocol
     {
         protected override INetworkStream ConnectToWebServer(
             InstanceLocator vmRef,
-            ICredential credential)
+            IAuthorization authorization)
         {
             var policy = new Mock<IIapListenerPolicy>();
             policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
-                credential.ToAuthorization(),
+                authorization,
                 TestProject.UserAgent);
 
             var listener = new IapListener(
@@ -69,12 +70,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(
                 locator,
-                await credential);
+                await auth);
 
             var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

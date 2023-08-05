@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
@@ -44,7 +45,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenPscEnabled_ThenRequestSucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var address = await Dns
                 .GetHostAddressesAsync(ComputeEngineClient.CreateEndpoint().CanonicalUri.Host)
@@ -58,7 +59,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var client = new ComputeEngineClient(
                 endpoint,
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var project = await client.GetProjectAsync(
@@ -76,11 +77,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var project = await client.GetProjectAsync(
@@ -94,11 +95,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -109,11 +110,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenProjectIdInvalid_ThenGetProjectThrowsException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
@@ -129,7 +130,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserInViewerRole_ThenListInstancesAsyncReturnsInstances(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             // Make sure there is at least one instance.
             await testInstance;
@@ -137,7 +138,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var instances = await client.ListInstancesAsync(
@@ -152,7 +153,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserInViewerRole_ThenListInstancesAsyncByZoneReturnsInstances(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             // Make sure there is at least one instance.
             await testInstance;
@@ -160,7 +161,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var instances = await client.ListInstancesAsync(
@@ -174,11 +175,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenUserNotInRole_ThenListInstancesAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -189,11 +190,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenUserNotInRole_ThenListInstancesAsyncByZoneThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -205,12 +206,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserNotInRole_ThenGetInstanceAsyncThrowsResourceAccessDeniedException(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -226,12 +227,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserNotInRole_ThenGetGuestAttributesAsyncThrowsResourceAccessDeniedException(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -248,11 +249,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenLaunchingInstance_ThenInstanceSetupFinishedTextAppearsInStream(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var stream = client.GetSerialPortOutput(
@@ -281,11 +282,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenInstanceNotFound_ThenControlInstanceThrowsException(
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
@@ -298,11 +299,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstanceRunning_ThenStartingWithControlInstanceSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             await client.ControlInstanceAsync(
@@ -315,7 +316,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserInRole_ThenControlInstanceFails(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth,
             [Values(
                 InstanceControlCommand.Stop,
                 InstanceControlCommand.Resume,
@@ -325,7 +326,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var instance = await testInstance;
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -342,12 +343,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var result = await client.IsGrantedPermission(
@@ -361,12 +362,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var result = await client.IsGrantedPermission(
@@ -380,12 +381,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserLacksInstanceListPermission_ThenIsGrantedPermissionFailsOpenAndReturnsTrue(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var client = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var result = await client.IsGrantedPermission(

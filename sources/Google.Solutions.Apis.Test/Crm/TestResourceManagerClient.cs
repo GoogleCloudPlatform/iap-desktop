@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
@@ -43,7 +44,7 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenPscEnabled_ThenRequestSucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var address = await Dns
                 .GetHostAddressesAsync(ResourceManagerClient.CreateEndpoint().CanonicalUri.Host)
@@ -57,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Crm
 
             var client = new ResourceManagerClient(
                 endpoint,
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var project = await client.GetProjectAsync(
@@ -71,11 +72,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var result = await client.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
@@ -92,11 +93,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var result = await client.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
@@ -113,11 +114,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var project = await client.GetProjectAsync(
                     TestProject.ProjectId,
@@ -130,11 +131,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetProjectAsync(
@@ -144,11 +145,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenProjectIdInvalid_ThenGetProjectThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetProjectAsync(
@@ -162,11 +163,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenProjectIdExists_ThenQueryProjectsByIdReturnsProject(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var result = await client.ListProjectsAsync(
                     ProjectFilter.ByProjectId(TestProject.ProjectId),
@@ -182,11 +183,11 @@ namespace Google.Solutions.Apis.Test.Crm
 
         [Test]
         public async Task WhenProjectIdExists_ThenQueryProjectsByPrefixReturnsProject(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             // Remove last character from project ID.

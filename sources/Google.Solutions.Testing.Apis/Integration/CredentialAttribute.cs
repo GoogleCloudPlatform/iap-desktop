@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
@@ -48,7 +49,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     string.Join(",", this.Roles));
                 return "s" + BitConverter
                     .ToString(sha.ComputeHash(specificationRaw))
-                    .Replace("-", String.Empty)
+                    .Replace("-", string.Empty)
                     .Substring(0, 14)
                     .ToLower();
             }
@@ -57,16 +58,29 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         public IEnumerable GetData(IParameterInfo parameter)
         {
-            if (parameter.ParameterType == typeof(ResourceTask<ICredential>))
+            if (parameter.ParameterType == typeof(ResourceTask<IAuthorization>))
+            {
+                var fingerprint = CreateSpecificationFingerprint();
+                return new[] {
+                    ResourceTask<IAuthorization>.ProvisionOnce(
+                        parameter.Method,
+                        fingerprint,
+                        () => CredentialFactory.CreateServiceAccountAuthorizationAsync(
+                            fingerprint,
+                            this.Roles))
+                };
+            }
+            else if (parameter.ParameterType == typeof(ResourceTask<ICredential>))
             {
                 var fingerprint = CreateSpecificationFingerprint();
                 return new[] {
                     ResourceTask<ICredential>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        () => CredentialFactory.CreateServiceAccountCredentialAsync(
-                            fingerprint,
-                            this.Roles))
+                        async () => (await CredentialFactory
+                            .CreateServiceAccountAuthorizationAsync(fingerprint, this.Roles))
+                            .Session
+                            .ApiCredential)
                 };
             }
             else

@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Iam.v1.Data;
+using Google.Solutions.Apis.Auth;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -109,51 +110,56 @@ namespace Google.Solutions.Testing.Apis.Integration
             }
         }
 
-        private static async Task<ICredential> CreateTemporaryCredentialsAsync(
-            string serviceAccountEmail)
-        {
-            var service = TestProject.CreateIamCredentialsService();
-            var response = await service.Projects.ServiceAccounts.GenerateAccessToken(
-                    new Google.Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
-                    {
-                        Scope = new string[] { TestProject.CloudPlatformScope }
-                    },
-                    $"projects/-/serviceAccounts/{serviceAccountEmail}")
-                .ExecuteAsync()
-                .ConfigureAwait(false);
-
-            return new TemporaryServiceCredential(
-                serviceAccountEmail,
-                response.AccessToken);
-        }
-
-        public static async Task<ICredential> CreateServiceAccountCredentialAsync(
+        public static async Task<IAuthorization> CreateServiceAccountAuthorizationAsync(
             string name,
             string[] roles)
         {
             if (roles == null || !roles.Any())
             {
+                //
                 // Return the credentials of the (admin) account the
                 // tests are run as.
-                return TestProject.GetAdminCredential();
+                //
+                return new TemporaryAuthorization(
+                    "admin@gserviceaccount.com",
+                    TestProject.GetAdminCredential());
             }
             else
             {
+                //
                 // Create a service account with exactly these
                 // roles and return temporary credentials.
+                //
                 try
                 {
+                    //
                     // Create a service account.
+                    //
                     var serviceAccount = await CreateOrGetServiceAccountAsync(name)
                         .ConfigureAwait(true);
 
+                    //
                     // Assign roles.
+                    //
                     await GrantRolesToServiceAccountAsync(serviceAccount, roles)
                         .ConfigureAwait(true);
 
+                    //
                     // Create a token.
-                    return await CreateTemporaryCredentialsAsync(serviceAccount.Email)
-                        .ConfigureAwait(true);
+                    //
+                    var service = TestProject.CreateIamCredentialsService();
+                    var response = await service.Projects.ServiceAccounts.GenerateAccessToken(
+                            new Google.Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
+                            {
+                                Scope = new string[] { TestProject.CloudPlatformScope }
+                            },
+                            $"projects/-/serviceAccounts/{serviceAccount.Email}")
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+
+                    return new TemporaryAuthorization(
+                        serviceAccount.Email,
+                        response.AccessToken);
                 }
                 catch (Exception e)
                 {
@@ -162,33 +168,6 @@ namespace Google.Solutions.Testing.Apis.Integration
                     throw;
                 }
             }
-        }
-    }
-
-    public class TemporaryServiceCredential : ServiceCredential
-    {
-        public string AccessToken { get; }
-        public string Email { get; }
-
-        internal TemporaryServiceCredential(
-            string email,
-            string accessToken)
-            : base(new ServiceCredential.Initializer(GoogleAuthConsts.TokenUrl))
-        {
-            this.Email = email;
-            this.AccessToken = accessToken;
-        }
-
-        public override Task<bool> RequestAccessTokenAsync(
-            CancellationToken taskCancellationToken)
-        {
-            this.Token = new TokenResponse()
-            {
-                AccessToken = this.AccessToken,
-                ExpiresInSeconds = 3600
-            };
-
-            return Task.FromResult(true);
         }
     }
 }

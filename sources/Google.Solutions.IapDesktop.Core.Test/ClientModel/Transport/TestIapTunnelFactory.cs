@@ -28,6 +28,7 @@ using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -44,21 +45,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
         private static readonly UserAgent SampleUserAgent
             = new UserAgent("Test", new System.Version(1, 0));
-
-        private static Mock<IAuthorization> CreateAuthorizationWithInvalidToken()
-        {
-            var cred = new Mock<ICredential>();
-            cred
-                .Setup(c => c.GetAccessTokenForRequestAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync("notatoken");
-
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Credential).Returns(cred.Object);
-
-            return authz;
-        }
 
         //---------------------------------------------------------------------
         // CreateTunnel.
@@ -79,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             var iapClient = new IapClient(
                 IapClient.CreateEndpoint(),
-                CreateAuthorizationWithInvalidToken().Object,
+                TemporaryAuthorization.ForInvalidCredential(),
                 SampleUserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(
@@ -97,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             var iapClient = new IapClient(
                 IapClient.CreateEndpoint(),
-                CreateAuthorizationWithInvalidToken().Object,
+                TemporaryAuthorization.ForInvalidCredential(),
                 SampleUserAgent);
 
             var profile = new IapTunnel.Profile(
