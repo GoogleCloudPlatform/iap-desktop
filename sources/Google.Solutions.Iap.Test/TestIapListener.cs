@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
@@ -50,7 +51,7 @@ namespace Google.Solutions.Iap.Test
         [Test]
         public async Task WhenSendingMessagesToEchoServer_ThenStatisticsAreUpdated(
             [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
             [Values(
                 1,
                 (int)SshRelayFormat.Data.MaxPayloadLength,
@@ -66,7 +67,7 @@ namespace Google.Solutions.Iap.Test
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
-                (await credential).ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var listener = new IapListener(

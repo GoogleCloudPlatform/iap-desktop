@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
@@ -41,13 +42,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
 
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var model = await InstancePropertiesInspectorModel
@@ -76,13 +77,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         [Test]
         public async Task WhenGuestAttributesDisabledByPolicy_ThenOsPropertiesAreNull(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
 
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
             var packageInventory = new Mock<IGuestOsInventory>();
             packageInventory.Setup(s => s.GetInstanceInventoryAsync(

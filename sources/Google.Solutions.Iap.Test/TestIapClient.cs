@@ -50,7 +50,7 @@ namespace Google.Solutions.Iap.Test
         [Test]
         public async Task WhenPscEnabled_ThenProbeSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var address = await Dns
                 .GetHostAddressesAsync(IapClient.CreateEndpoint().CanonicalUri.Host)
@@ -64,7 +64,7 @@ namespace Google.Solutions.Iap.Test
 
             var client = new IapClient(
                 endpoint,
-                (await credential).ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             WebSocket.RegisterPrefixes();

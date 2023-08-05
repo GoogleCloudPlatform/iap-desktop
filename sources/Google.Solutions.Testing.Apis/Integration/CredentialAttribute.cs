@@ -49,7 +49,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     string.Join(",", this.Roles));
                 return "s" + BitConverter
                     .ToString(sha.ComputeHash(specificationRaw))
-                    .Replace("-", String.Empty)
+                    .Replace("-", string.Empty)
                     .Substring(0, 14)
                     .ToLower();
             }

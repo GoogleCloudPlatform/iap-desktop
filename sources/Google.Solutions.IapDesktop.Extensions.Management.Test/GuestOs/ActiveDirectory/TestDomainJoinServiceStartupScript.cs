@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirectory;
@@ -49,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         [Test]
         public async Task WhenInstanceUsesStartupScript_ThenAwaitHelloMessageSucceeds(
             [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credentialTask)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -59,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 var computeClient = new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    await credentialTask.ToAuthorization(),
+                    await auth,
                     TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
@@ -90,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         [Test]
         public async Task WhenInstanceUsesStartupScript_ThenJoinFailsBecausePasswordCannotBeDecrypted(
             [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credentialTask)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -100,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 var computeClient = new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    await credentialTask.ToAuthorization(),
+                    await auth,
                     TestProject.UserAgent);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,

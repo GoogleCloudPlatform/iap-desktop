@@ -40,12 +40,6 @@ namespace Google.Solutions.Testing.Apis.Integration
             return new Authorization(credential);
         }
 
-        public static async Task<IAuthorization> ToAuthorization(
-            this ResourceTask<ICredential> credential)
-        {
-            return new Authorization(await credential);
-        }
-
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Logging;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -39,11 +40,11 @@ namespace Google.Solutions.Apis.Test.Logging
 
         [Test]
         public async Task WhenUserNotInRole_ThenReadLogsThrowsException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var adapter = new LoggingClient(
                 LoggingClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -56,11 +57,11 @@ namespace Google.Solutions.Apis.Test.Logging
 
         [Test]
         public async Task WhenProjectIdInvalid_ThenReadLogsThrowsException(
-            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<IAuthorization> auth)
         {
             var adapter = new LoggingClient(
                 LoggingClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
@@ -73,11 +74,11 @@ namespace Google.Solutions.Apis.Test.Logging
 
         [Test]
         public async Task WhenUserInViewerRole_ThenReadLogsInvokesCallback(
-            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<IAuthorization> auth)
         {
             var adapter = new LoggingClient(
                 LoggingClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             bool callbackInvoked = false;

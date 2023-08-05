@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis;
@@ -38,11 +39,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -66,11 +67,11 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -100,11 +101,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserDoesntExist_ThenCreateWindowsCredentialsCreatesNewUser(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -125,11 +126,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenAdminUserExists_ThenCreateWindowsCredentialsUpdatesPassword(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -156,11 +157,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenNormalUserExists_ThenCreateWindowsCredentialsUpdatesPasswordAndChangesType(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -187,11 +188,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenTokenSourceIsCanceled_ThenCreateWindowsCredentialsThrowsTaskCanceledException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -213,11 +214,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenTimeoutElapses_ThenCreateWindowsCredentialsThrowsPasswordResetException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -242,12 +243,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionToCreateWindowsCredentialsReturnsTrue(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -262,12 +263,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionToCreateWindowsCredentialsReturnsFalse(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -282,12 +283,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenUserNotInInstanceAdminRole_ThenCreateWindowsCredentialsAsyncThrowsPasswordResetException(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -304,11 +305,11 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstanceHasNoServiceAccountAndUserInInstanceAdminRole_ThenCreateWindowsCredentialsAsyncSucceeds(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -326,12 +327,12 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task WhenInstanceHasServiceAccountAndUserInInstanceAdminRole_ThenCreateWindowsCredentialsAsyncThrowsPasswordResetException(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.ComputeDefault)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var locator = await testInstance;
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
@@ -351,11 +352,11 @@ namespace Google.Solutions.Apis.Test.Compute
             [Credential(Roles = new [] {
                 PredefinedRole.ComputeInstanceAdminV1,
                 PredefinedRole.ServiceAccountUser
-            })] ResourceTask<ICredential> credential)
+            })] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                await credential.ToAuthorization(),
+                await auth,
                 TestProject.UserAgent);
 
             var adapter = new WindowsCredentialGenerator(computeClient);
