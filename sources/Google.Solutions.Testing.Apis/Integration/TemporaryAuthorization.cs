@@ -28,6 +28,8 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using System.Security.Cryptography.X509Certificates;
 
+#pragma warning disable CS0067 // The event is never used
+
 namespace Google.Solutions.Testing.Apis.Integration
 {
     public class TemporaryAuthorization : IAuthorization, IOidcSession
