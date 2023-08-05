@@ -77,6 +77,17 @@ body {
 }
 
 article li {
-  padding: 2px;
-    
+  padding: 2px;   
+}
+
+.tabbed-content {
+    background-color: var(--md-admonition-bg-color);
+    border: 0.05rem solid 0x66666;
+    border-radius: 0.2rem;
+    box-shadow: var(--md-shadow-z1);
+    padding: 0.2rem;
+}
+
+.tabbed-labels {
+    padding-left: 0.2rem;
 }
