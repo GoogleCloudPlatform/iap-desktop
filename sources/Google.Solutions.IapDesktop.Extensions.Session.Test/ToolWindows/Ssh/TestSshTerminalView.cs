@@ -111,25 +111,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
         private async Task<SshTerminalView> ConnectSshTerminalPane(
             InstanceLocator instance,
-            ICredential credential,
+            IAuthorization authorization,
             SshKeyType keyType,
             CultureInfo language = null)
         {
             var serviceProvider = CreateServiceProvider();
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("test@example.com");
 
             var keyAdapter = new KeyAuthorizer(
-                authorization.Object,
+                authorization,
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(), 
-                    credential.ToAuthorization(), 
+                    authorization,
                     TestProject.UserAgent),
                 new ResourceManagerClient(
                     ResourceManagerClient.CreateEndpoint(), 
-                    credential.ToAuthorization(), 
+                    authorization,
                     TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);
 
@@ -312,14 +308,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenAuthenticationSucceeds_ThenConnectionSuceededEventEventIsFired(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             await AssertRaisesEventAsync<SessionStartedEvent>(
                 async () =>
                 {
                     using (var pane = await ConnectSshTerminalPane(
                             await instanceLocatorTask,
-                            await credential,
+                            await auth,
                             keyType)
                         .ConfigureAwait(true))
                     {
@@ -342,11 +338,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenSendingExit_ThenDisconnectedEventIsFiredAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     keyType)
                 .ConfigureAwait(true))
             {
@@ -365,11 +361,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     keyType)
                 .ConfigureAwait(true))
             {
@@ -388,11 +384,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenClosingPane_ThenDisposeDoesNotHang(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     keyType)
                 .ConfigureAwait(true))
             {
@@ -415,11 +411,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenPastingMultiLineTextFromClipboard_ThenLineEndingsAreConverted(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
@@ -451,11 +447,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenConnected_ThenPseudoterminalHasRightSize(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
@@ -478,11 +474,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenConnected_ThenPseudoterminalHasRightEncoding(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384,
                     new CultureInfo("en-AU"))
                 .ConfigureAwait(true))
@@ -509,11 +505,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenSendingBackspace_ThenLastCharacterIsRemoved(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
@@ -540,11 +536,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenUsingHomeAndEnd_ThenCursorJumpsToPosition(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
@@ -578,11 +574,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenUsingCtrlAAndCtrlE_ThenCursorJumpsToPosition(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
@@ -616,11 +612,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenUsingAlt_ThenInputIsNotInterpretedAsKeySequence(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
@@ -643,7 +639,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [Test]
         public async Task WhenTerminalSettingsChange_ThenSettingsAreReapplied(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             // Disable Ctrl+C/V.
 
@@ -655,7 +651,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential,
+                    await auth,
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
