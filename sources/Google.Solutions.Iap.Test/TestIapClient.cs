@@ -43,6 +43,22 @@ namespace Google.Solutions.Iap.Test
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(state);
+            enrollment.Setup(e => e.Certificate).Returns(new X509Certificate2());
+
+            var session = new Mock<IOidcSession>();
+            session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            authorization.SetupGet(a => a.Session).Returns(session.Object);
+
+            return authorization;
+        }
+
         //---------------------------------------------------------------------
         // PSC.
         //---------------------------------------------------------------------
@@ -89,11 +105,7 @@ namespace Google.Solutions.Iap.Test
             [Values(DeviceEnrollmentState.Disabled, DeviceEnrollmentState.NotEnrolled)]
             DeviceEnrollmentState state)
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.Setup(e => e.State).Returns(state);
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            var authorization = CreateAuthorization(state);
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -116,12 +128,7 @@ namespace Google.Solutions.Iap.Test
         [Test]
         public void WhenMtlsEnabled_ThenTargetUsesCertificate()
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.Setup(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
-            enrollment.Setup(e => e.Certificate).Returns(new X509Certificate2());
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            var authorization = CreateAuthorization(DeviceEnrollmentState.Enrolled);
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),

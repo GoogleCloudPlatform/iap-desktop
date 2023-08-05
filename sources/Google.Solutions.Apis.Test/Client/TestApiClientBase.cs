@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
@@ -50,6 +51,21 @@ namespace Google.Solutions.Apis.Test.Client
 
         private const string SampleEndpoint = "https://sample.googleapis.com/";
 
+        private Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(state);
+
+            var session = new Mock<IOidcSession>();
+            session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            authorization.SetupGet(a => a.Session).Returns(session.Object);
+
+            return authorization;
+        }
+
         //---------------------------------------------------------------------
         // CreateServiceInitializer.
         //---------------------------------------------------------------------
@@ -60,11 +76,7 @@ namespace Google.Solutions.Apis.Test.Client
                 DeviceEnrollmentState.NotEnrolled,
                 DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(state);
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            var authorization = CreateAuthorization(state);
 
             var endpoint = new ServiceEndpoint<SampleClient>(
                 PrivateServiceConnectDirections.None,
@@ -98,11 +110,7 @@ namespace Google.Solutions.Apis.Test.Client
         [Test]
         public void WhenPscOverrideFound_ThenCreateServiceInitializerUsesPsc()
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            var authorization = CreateAuthorization(DeviceEnrollmentState.Disabled);
 
             var endpoint = new ServiceEndpoint<SampleClient>(
                 new PrivateServiceConnectDirections("crm.googleapis.com"),
