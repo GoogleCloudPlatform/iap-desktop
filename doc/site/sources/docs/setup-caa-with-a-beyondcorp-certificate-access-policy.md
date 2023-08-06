@@ -26,25 +26,50 @@ of public key infrastructure you use.
     ![Certificate template](images/caa-adcs-template.png){ width="250", align=right }
 
     1.  Open the **Certificate Templates** MMC snap-in.
-    1.  Right-click the **User** template and select **Duplicate template**.
-    1.  On the **General** tab, configure the following settings:
-
-        *   **Template display name**: Enter a name such as `BeyondCorp User`
+    1.  Right-click the **User** template and select **All tasks > Duplicate template**.
         
     1.  On the **Compatibility** tab, configure the following settings:
 
         *   **Certificate authority**: **Windows Server 2012** or a later version
         *   **Certificate recipient**: **Windows 8/Windows Server 2012** or a later version
         
+    1.  On the **General** tab, configure the following settings:
+
+        *   **Template display name**: Enter a name such as `BeyondCorp User`
+        
+    1.  On the **Request handling** tab, configure the following settings:
+    
+        *   **Allow private key to be exported**: **disabled**
+        
     1.  On the **Cryptography** tab, configure the following settings:
 
         *   **Provider category**: **Key Storage Provider**
-        
-    1.  On the **Subject name** tab, configure the following settings:
 
+    1.  On the **Subject name** tab, select **Build from Active Directory information** and 
+        configure the following settings:
+
+        *   **Subject name format**: **Common name**
         *   **Include e-mail name in subject name**: **disabled**
         *   **E-mail name**: **disabled**
+        *   **DNS name**: **disabled**
+        *   **User principal name**: **disabled**
+        *   **Service principal name**: **disabled**
+    
+        These settings help limit the risk of bad actors abusing the certificate for other purposes
+        such as smart card authentication. 
+        
+        For further details on how Windows determines whether
+        a certificate can be used for smart card authentication, see 
+        [Client certificate mappings :octicons-link-external-16:](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/ff404289(v=ws.10)#client-certificate-mappings).
+        For additional ways to mitigate risks, see [How to disable the Subject Alternative Name for UPN mapping :octicons-link-external-16:](https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/disable-subject-alternative-name-upn-mapping).
+    
+    1.  On the **Extensions** tab, select **Application Policies** and click **Edit**.
+        Then configure the following settings:
 
+        *   **Application policies**: **Client authentication**
+        
+            Remove all other policies.
+            
     1.  On the **Security** tab, select one or more groups that you want to
         distribute the certificate to. Grant each group the following permissions:
         
