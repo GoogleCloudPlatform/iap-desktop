@@ -99,6 +99,9 @@ namespace Google.Solutions.Apis.Auth
                 }
                 catch (Exception e)
                 {
+                    Debug.Assert(!(e is ArgumentException));
+                    Debug.Assert(!(e is NullReferenceException));
+
                     //
                     // The offline credentials didn't work, but they might still
                     // be useful to streamline a browser-based sign-in. Therefore,

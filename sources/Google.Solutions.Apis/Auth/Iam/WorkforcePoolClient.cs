@@ -1,17 +1,33 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Http;
 using Google.Apis.Services;
-using Google.Apis.Util;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -90,6 +106,37 @@ namespace Google.Solutions.Apis.Auth.Iam
             return new AuthPortalCodeFlow(initializer);
         }
 
+        private async Task<WorkforcePoolSession> CreateSessionAsync(
+            UserCredential apiCredential,
+            CancellationToken cancellationToken)
+        {
+            var tokenInfo = await this.stsService
+                .IntrospectTokenAsync(
+                    new StsService.IntrospectTokenRequest()
+                    {
+                        ClientCredentials = this.registration.ToClientSecrets(),
+                        Token = apiCredential.Token.AccessToken,
+                        TokenTypeHint = StsService.TokenTypes.AccessToken
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            if (tokenInfo.Active != true)
+            {
+                throw new AuthorizationFailedException(
+                    "Authorization failed because the access token could " +
+                    "not be introspected.");
+            }
+
+            Debug.Assert(tokenInfo.ClientId == this.registration.ClientId);
+            Debug.Assert(tokenInfo.Iss == "https://sts.googleapis.com/");
+            Debug.Assert(tokenInfo.Username.StartsWith("principal://"));
+
+            return new WorkforcePoolSession(
+                apiCredential,
+                WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
+        }
+
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
@@ -121,31 +168,9 @@ namespace Google.Solutions.Apis.Auth.Iam
             
             try
             {
-                var tokenInfo = await this.stsService
-                    .IntrospectTokenAsync(
-                        new StsService.IntrospectTokenRequest()
-                        {
-                            ClientCredentials = this.registration.ToClientSecrets(),
-                            Token = apiCredential.Token.AccessToken,
-                            TokenTypeHint = StsService.TokenTypes.AccessToken
-                        },
-                        cancellationToken)
+                return await
+                    CreateSessionAsync(apiCredential, cancellationToken)
                     .ConfigureAwait(false);
-
-                if (tokenInfo.Active != true) 
-                {
-                    throw new AuthorizationFailedException(
-                        "Authorization failed because the access token could " +
-                        "not be introspected.");
-                }
-                
-                Debug.Assert(tokenInfo.ClientId == this.registration.ClientId);
-                Debug.Assert(tokenInfo.Iss == "https://sts.googleapis.com/");
-                Debug.Assert(tokenInfo.Username.StartsWith("principal://"));
-
-                return new WorkforcePoolSession(
-                    apiCredential,
-                    WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
             }
             catch
             {
@@ -154,12 +179,49 @@ namespace Google.Solutions.Apis.Auth.Iam
             }
         }
 
-        protected override Task<IOidcSession> ActivateOfflineCredentialAsync(
+        protected override async Task<IOidcSession> ActivateOfflineCredentialAsync(
             OidcOfflineCredential offlineCredential,
             CancellationToken cancellationToken)
         {
-            // TODO: ActivateOfflineCredentialAsync
-            throw new NotImplementedException();
+            offlineCredential.ExpectNotNull(nameof(offlineCredential));
+            Precondition.Expect(offlineCredential.Issuer == OidcIssuer.Iam,
+                "Offline credential must be issued by STS");
+
+            var flow = CreateFlow();
+
+            //
+            // Try to use the refresh token to obtain a new access token.
+            //
+            try
+            {
+                var tokenResponse = await flow
+                    .RefreshTokenAsync(null, offlineCredential.RefreshToken, cancellationToken)
+                    .ConfigureAwait(false);
+
+                //
+                // N.B. Do not dispose the flow if the sign-in succeeds as the
+                // credential object must hold on to it.
+                //
+
+                var apiCredential = new UserCredential(flow, null, tokenResponse);
+
+                return await
+                    CreateSessionAsync(apiCredential, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                ApiTraceSources.Default.TraceWarning(
+                    "Refreshing the stored token failed: {0}", e.FullMessage());
+
+                //
+                // The refresh token must have been revoked or
+                // the session expired (reauth).
+                //
+
+                flow.Dispose();
+                throw;
+            }
         }
     }
 }

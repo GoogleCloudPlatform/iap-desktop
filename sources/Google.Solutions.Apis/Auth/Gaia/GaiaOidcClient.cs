@@ -298,12 +298,23 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             var flow = CreateFlow(initializer);
 
-            TokenResponse tokenResponse;
+            //
+            // Try to use the refresh token to obtain a new access token.
+            //
             try
             {
-                tokenResponse = await flow
+                var tokenResponse = await flow
                     .RefreshTokenAsync(null, offlineCredential.RefreshToken, cancellationToken)
                     .ConfigureAwait(false);
+
+                //
+                // N.B. Do not dispose the flow if the sign-in succeeds as the
+                // credential object must hold on to it.
+                //
+                return CreateSessionAndRegisterTerminateEvent(
+                    flow,
+                    offlineCredential,
+                    tokenResponse);
             }
             catch (Exception e)
             {
@@ -315,23 +326,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 // the session expired (reauth).
                 //
 
-                flow.Dispose();
-                throw;
-            }
-
-            try
-            {
-                //
-                // N.B. Do not dispose the flow if the sign-in succeeds as the
-                // credential object must hold on to it.
-                //
-                return CreateSessionAndRegisterTerminateEvent(
-                    flow,
-                    offlineCredential,
-                    tokenResponse);
-            }
-            catch
-            {
                 flow.Dispose();
                 throw;
             }
