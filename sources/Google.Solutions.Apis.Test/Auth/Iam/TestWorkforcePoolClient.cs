@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 "pool",
                 "provider");
 
-            var flow = new WorkforcePoolClient.StsCodeFlow(
+            var flow = new WorkforcePoolClient.AuthPortalCodeFlow(
                 new WorkforcePoolClient.StsCodeFlowInitializer(
                     WorkforcePoolClient.CreateEndpoint(),
                     CreateDisabledEnrollment().Object,
@@ -76,7 +76,6 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             Assert.AreEqual(provider.ToString(), parameters.Get("provider_name"));
             Assert.AreEqual("client-id", parameters.Get("client_id"));
             Assert.AreEqual("http://localhost/", parameters.Get("redirect_uri"));
-            Assert.AreEqual("none", parameters.Get("state"));
             Assert.AreEqual("scope-1 scope-2", parameters.Get("scope"));
         }
 

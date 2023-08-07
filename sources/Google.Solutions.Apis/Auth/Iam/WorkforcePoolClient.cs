@@ -63,7 +63,7 @@ namespace Google.Solutions.Apis.Auth.Iam
 
         protected virtual IAuthorizationCodeFlow CreateFlow()
         {
-            var initializer = new StsCodeFlowInitializer(
+            var initializer = new AuthPortalCodeFlow.Initializer(
                 this.endpoint,
                 this.deviceEnrollment,
                 this.provider,
@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                 Scopes = new[] { Scopes.Cloud }
             };
 
-            return new StsCodeFlow(initializer);
+            return new AuthPortalCodeFlow(initializer);
         }
 
         //---------------------------------------------------------------------
@@ -127,119 +127,6 @@ namespace Google.Solutions.Apis.Auth.Iam
         {
             // TODO: ActivateOfflineCredentialAsync
             throw new NotImplementedException();
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private class StsAuthorizationCodeRequestUrl : AuthorizationCodeRequestUrl
-        {
-            public StsAuthorizationCodeRequestUrl(Uri authorizationServerUrl) 
-                : base(authorizationServerUrl)
-            {
-            }
-
-            [RequestParameter("provider_name", RequestParameterType.Query)]
-            public string ProviderName { get; set; }
-        }
-
-        internal class StsCodeFlow : AuthorizationCodeFlow
-        {
-            private readonly StsCodeFlowInitializer initializer;
-
-            public StsCodeFlow(StsCodeFlowInitializer initializer) : base(initializer)
-            {
-                this.initializer = initializer;
-            }
-
-            public override AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(string redirectUri)
-            {
-                return new StsAuthorizationCodeRequestUrl(
-                    new Uri(this.initializer.AuthorizationServerUrl))
-                {
-                    ClientId = base.ClientSecrets.ClientId,
-                    Scope = string.Join(" ", base.Scopes),
-                    RedirectUri = redirectUri,
-                    ProviderName = this.initializer.Provider.ToString()
-                };
-            }
-        }
-
-        internal class StsCodeFlowInitializer : AuthorizationCodeFlow.Initializer
-        {
-            private const string StsAuthorizationUrl = "https://auth.cloud.google/authorize";
-
-            public WorkforcePoolProviderLocator Provider { get; set; }
-
-            protected StsCodeFlowInitializer(
-                ServiceEndpointDirections directions,
-                IDeviceEnrollment deviceEnrollment,
-                WorkforcePoolProviderLocator provider,
-                ClientSecrets clientSecrets,
-                UserAgent userAgent)
-                : base(
-                      StsAuthorizationUrl,
-                      new Uri(directions.BaseUri, "/v1/oauthtoken").ToString())
-            {
-                this.Provider = provider;
-                this.ClientSecrets = clientSecrets;
-
-                //
-                // Unlike the Gaia API, the /v1/oauthtoken ignores client secrets when
-                // passed as POST parameters. Therefore, inject them as header too.
-                //
-                var clientSecretAuth = Convert.ToBase64String(
-                    Encoding.UTF8.GetBytes($"{clientSecrets.ClientId}:{clientSecrets.ClientSecret}"));
-
-                this.HttpClientFactory = new AuthenticatedClientFactory(
-                    new PscAndMtlsAwareHttpClientFactory(
-                        directions,
-                        deviceEnrollment,
-                        userAgent),
-                    new AuthenticationHeaderValue("Basic", clientSecretAuth));
-
-                ApiTraceSources.Default.TraceInformation(
-                    "Using endpoint {0} and client {1}",
-                    directions,
-                    clientSecrets.ClientId);
-            }
-
-            public StsCodeFlowInitializer(
-                ServiceEndpoint<WorkforcePoolClient> endpoint,
-                IDeviceEnrollment deviceEnrollment,
-                WorkforcePoolProviderLocator provider,
-                ClientSecrets clientSecrets,
-                UserAgent userAgent)
-                : this(
-                      endpoint.GetDirections(deviceEnrollment.State),
-                      deviceEnrollment,
-                      provider, 
-                      clientSecrets,
-                      userAgent)
-            {
-            }
-        }
-
-        private class AuthenticatedClientFactory : IHttpClientFactory
-        {
-            private readonly IHttpClientFactory factory;
-            private readonly AuthenticationHeaderValue authenticationHeader;
-
-            public AuthenticatedClientFactory(
-                IHttpClientFactory factory, 
-                AuthenticationHeaderValue authenticationHeader)
-            {
-                this.factory = factory;
-                this.authenticationHeader = authenticationHeader;
-            }
-
-            public ConfigurableHttpClient CreateHttpClient(CreateHttpClientArgs args)
-            {
-                var client = this.factory.CreateHttpClient(args);
-                client.DefaultRequestHeaders.Authorization = this.authenticationHeader;
-                return client;
-            }
         }
     }
 }

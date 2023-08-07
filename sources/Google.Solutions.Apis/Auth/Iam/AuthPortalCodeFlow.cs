@@ -1,0 +1,128 @@
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Requests;
+using Google.Apis.Http;
+using Google.Apis.Util;
+using Google.Solutions.Apis.Client;
+using System;
+using System.Net.Http.Headers;
+using System.Text;
+
+namespace Google.Solutions.Apis.Auth.Iam
+{
+    /// <summary>
+    /// Authorization code flow that uses the workforce identity
+    /// "auth portal".
+    /// </summary>
+    internal class AuthPortalCodeFlow : AuthorizationCodeFlow
+    {
+        private readonly Initializer initializer;
+
+        public AuthPortalCodeFlow(Initializer initializer) : base(initializer)
+        {
+            this.initializer = initializer;
+        }
+
+        public override AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(string redirectUri)
+        {
+            return new RequestUrl(new Uri(this.initializer.AuthorizationServerUrl))
+            {
+                ClientId = base.ClientSecrets.ClientId,
+                Scope = string.Join(" ", base.Scopes),
+                RedirectUri = redirectUri,
+                ProviderName = this.initializer.Provider.ToString()
+            };
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        internal new class Initializer : AuthorizationCodeFlow.Initializer
+        {
+            private const string StsAuthorizationUrl = "https://auth.cloud.google/authorize";
+
+            public WorkforcePoolProviderLocator Provider { get; set; }
+
+            protected Initializer(
+                ServiceEndpointDirections directions,
+                IDeviceEnrollment deviceEnrollment,
+                WorkforcePoolProviderLocator provider,
+                ClientSecrets clientSecrets,
+                UserAgent userAgent)
+                : base(
+                      StsAuthorizationUrl,
+                      new Uri(directions.BaseUri, "/v1/oauthtoken").ToString())
+            {
+                this.Provider = provider;
+                this.ClientSecrets = clientSecrets;
+
+                //
+                // Unlike the Gaia API, the /v1/oauthtoken ignores client secrets when
+                // passed as POST parameters. Therefore, inject them as header too.
+                //
+                var clientSecretAuth = Convert.ToBase64String(
+                    Encoding.UTF8.GetBytes($"{clientSecrets.ClientId}:{clientSecrets.ClientSecret}"));
+
+                this.HttpClientFactory = new AuthenticatedClientFactory(
+                    new PscAndMtlsAwareHttpClientFactory(
+                        directions,
+                        deviceEnrollment,
+                        userAgent),
+                    new AuthenticationHeaderValue("Basic", clientSecretAuth));
+
+                ApiTraceSources.Default.TraceInformation(
+                    "Using endpoint {0} and client {1}",
+                    directions,
+                    clientSecrets.ClientId);
+            }
+
+            public Initializer(
+                ServiceEndpoint<WorkforcePoolClient> endpoint,
+                IDeviceEnrollment deviceEnrollment,
+                WorkforcePoolProviderLocator provider,
+                ClientSecrets clientSecrets,
+                UserAgent userAgent)
+                : this(
+                      endpoint.GetDirections(deviceEnrollment.State),
+                      deviceEnrollment,
+                      provider,
+                      clientSecrets,
+                      userAgent)
+            {
+            }
+        }
+
+        private class RequestUrl : AuthorizationCodeRequestUrl
+        {
+            public RequestUrl(Uri authorizationServerUrl)
+                : base(authorizationServerUrl)
+            {
+            }
+
+            [RequestParameter("provider_name", RequestParameterType.Query)]
+            public string ProviderName { get; set; }
+        }
+
+        private class AuthenticatedClientFactory : IHttpClientFactory
+        {
+            private readonly IHttpClientFactory factory;
+            private readonly AuthenticationHeaderValue authenticationHeader;
+
+            public AuthenticatedClientFactory(
+                IHttpClientFactory factory,
+                AuthenticationHeaderValue authenticationHeader)
+            {
+                this.factory = factory;
+                this.authenticationHeader = authenticationHeader;
+            }
+
+            public ConfigurableHttpClient CreateHttpClient(CreateHttpClientArgs args)
+            {
+                var client = this.factory.CreateHttpClient(args);
+                client.DefaultRequestHeaders.Authorization = this.authenticationHeader;
+                return client;
+            }
+        }
+    }
+}
