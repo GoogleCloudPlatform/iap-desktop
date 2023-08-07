@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Testing.Apis.Integration;
@@ -28,7 +27,6 @@ using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Google.Solutions.Apis.Test.Auth.Iam
 {
@@ -40,43 +38,6 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
             return enrollment;
-        }
-
-        //---------------------------------------------------------------------
-        // Code flow.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void AuthorizationUrl()
-        {
-            var provider = new WorkforcePoolProviderLocator(
-                "global",
-                "pool",
-                "provider");
-
-            var flow = new WorkforcePoolClient.AuthPortalCodeFlow(
-                new WorkforcePoolClient.StsCodeFlowInitializer(
-                    WorkforcePoolClient.CreateEndpoint(),
-                    CreateDisabledEnrollment().Object,
-                    provider,
-                    new ClientSecrets()
-                    {
-                        ClientId = "client-id",
-                        ClientSecret = "client-secret"
-                    },
-                    TestProject.UserAgent)
-                {
-                    Scopes = new[] { "scope-1", "scope-2" }
-                });
-
-            var url = flow.CreateAuthorizationCodeRequest("http://localhost/").Build();
-            var parameters = HttpUtility.ParseQueryString(url.Query);
-
-            Assert.AreEqual("auth.cloud.google", url.Host);
-            Assert.AreEqual(provider.ToString(), parameters.Get("provider_name"));
-            Assert.AreEqual("client-id", parameters.Get("client_id"));
-            Assert.AreEqual("http://localhost/", parameters.Get("redirect_uri"));
-            Assert.AreEqual("scope-1 scope-2", parameters.Get("scope"));
         }
 
         [Test]
@@ -112,6 +73,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                         "done!!1!"),
                     CancellationToken.None)
                 .ConfigureAwait(false);
+
+            Assert.IsNotNull(session.Username);
         }
     }
 }

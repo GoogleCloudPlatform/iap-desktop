@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using Google.Solutions.Common.Diagnostics;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Util;
+using Google.Apis.Util;
 
 namespace Google.Solutions.Apis.Auth.Iam
 {
@@ -134,11 +135,13 @@ namespace Google.Solutions.Apis.Auth.Iam
             /// <summary>
             /// Required. The OAuth 2.0 security token issued by the Security Token Service API.
             /// </summary>
+            [RequestParameter("token")]
             public string Token { get; set; }
 
             /// <summary>
             /// Optional. The type of the given token. 
             /// </summary>
+            [RequestParameter("token_type_hint")]
             public string TokenTypeHint { get; set; }
         }
 
@@ -196,6 +199,11 @@ namespace Google.Solutions.Apis.Auth.Iam
             /// </summary>
             [JsonProperty("username")]
             public string Username { get; set; }
+        }
+
+        public static class TokenTypes
+        {
+            public const string AccessToken = "urn:ietf:params:oauth:token-type:access_token";
         }
     }
 }

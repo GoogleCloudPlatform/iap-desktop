@@ -1,12 +1,15 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Http;
+using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
@@ -24,8 +27,9 @@ namespace Google.Solutions.Apis.Auth.Iam
         private readonly IDeviceEnrollment deviceEnrollment;
         private readonly WorkforcePoolProviderLocator provider;
         private readonly UserAgent userAgent;
+        private readonly StsService stsService;
 
-        public WorkforcePoolClient( // TODO: Inject StsClioent
+        public WorkforcePoolClient(
             ServiceEndpoint<WorkforcePoolClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
             IOidcOfflineCredentialStore store,
@@ -41,6 +45,16 @@ namespace Google.Solutions.Apis.Auth.Iam
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
 
             Precondition.Expect(registration.Issuer == OidcIssuer.Iam, "Issuer");
+
+            var directions = endpoint.GetDirections(deviceEnrollment.State);
+            this.stsService = new StsService(new BaseClientService.Initializer()
+            {
+                BaseUri = directions.BaseUri.ToString(),
+                HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
+                    directions,
+                    deviceEnrollment,
+                    userAgent)
+            });
         }
 
         public static ServiceEndpoint<WorkforcePoolClient> CreateEndpoint(
@@ -107,12 +121,31 @@ namespace Google.Solutions.Apis.Auth.Iam
             
             try
             {
-                //TODO: introspect
-                var identity = new WorkforcePoolIdentity("mock", "mock", "mock");
+                var tokenInfo = await this.stsService
+                    .IntrospectTokenAsync(
+                        new StsService.IntrospectTokenRequest()
+                        {
+                            ClientCredentials = this.registration.ToClientSecrets(),
+                            Token = apiCredential.Token.AccessToken,
+                            TokenTypeHint = StsService.TokenTypes.AccessToken
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (tokenInfo.Active != true) 
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because the access token could " +
+                        "not be introspected.");
+                }
+                
+                Debug.Assert(tokenInfo.ClientId == this.registration.ClientId);
+                Debug.Assert(tokenInfo.Iss == "https://sts.googleapis.com/");
+                Debug.Assert(tokenInfo.Username.StartsWith("principal://"));
 
                 return new WorkforcePoolSession(
                     apiCredential,
-                    identity);
+                    WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
             }
             catch
             {
