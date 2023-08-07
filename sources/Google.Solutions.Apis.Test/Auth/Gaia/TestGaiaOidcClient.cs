@@ -27,6 +27,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
@@ -270,7 +271,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 IDeviceEnrollment deviceEnrollment,
                 IOidcOfflineCredentialStore store,
                 ClientSecrets clientSecrets) 
-                : base(endpoint, deviceEnrollment, store, clientSecrets)
+                : base(endpoint, deviceEnrollment, store, clientSecrets, TestProject.UserAgent)
             {
             }
 
@@ -308,7 +309,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets());
+                new ClientSecrets(),
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
@@ -349,7 +351,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets());
+                new ClientSecrets(),
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
@@ -379,7 +382,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets());
+                new ClientSecrets(),
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
@@ -408,7 +412,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets());
+                new ClientSecrets(),
+                TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
@@ -443,7 +448,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 GaiaOidcClient.CreateEndpoint(),
                 enrollment.Object,
                 store.Object,
-                new ClientSecrets());
+                new ClientSecrets(),
+                TestProject.UserAgent);
 
             var session = await client
                 .TryAuthorizeSilentlyAsync(
@@ -468,7 +474,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var initializer = new GaiaOidcClient.CodeFlowInitializer(
                 GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object);
+                enrollment.Object,
+                TestProject.UserAgent);
 
             Assert.AreEqual("https://accounts.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
             Assert.AreEqual("https://oauth2.googleapis.com/token", initializer.TokenServerUrl);
@@ -483,7 +490,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             var initializer = new GaiaOidcClient.CodeFlowInitializer(
                 GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object);
+                enrollment.Object,
+                TestProject.UserAgent);
 
             Assert.AreEqual("https://accounts.google.com/o/oauth2/v2/auth", initializer.AuthorizationServerUrl);
             Assert.AreEqual("https://oauth2.mtls.googleapis.com/token", initializer.TokenServerUrl);
