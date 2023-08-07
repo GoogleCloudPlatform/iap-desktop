@@ -184,7 +184,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             codeReceiver.ExpectNotNull(nameof(codeReceiver));
 
-            var initializer = new CodeFlowInitializer(
+            var initializer = new GaiaCodeFlow.Initializer(
                 this.endpoint,
                 this.deviceEnrollment,
                 this.userAgent)
@@ -288,7 +288,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             Precondition.Expect(offlineCredential.Issuer == OidcIssuer.Gaia,
                 "Offline credential must be issued by Gaia");
 
-            var initializer = new CodeFlowInitializer(
+            var initializer = new GaiaCodeFlow.Initializer(
                 this.endpoint,
                 this.deviceEnrollment,
                 this.userAgent)
@@ -336,44 +336,5 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 throw;
             }
         }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        internal class CodeFlowInitializer : GoogleAuthorizationCodeFlow.Initializer
-        {
-            protected CodeFlowInitializer(
-                ServiceEndpointDirections directions,
-                IDeviceEnrollment deviceEnrollment,
-                UserAgent userAgent)
-                : base(
-                      GoogleAuthConsts.OidcAuthorizationUrl,
-                      new Uri(directions.BaseUri, "/token").ToString(),
-                      new Uri(directions.BaseUri, "/revoke").ToString())
-            {
-                this.HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
-                    directions,
-                    deviceEnrollment,
-                    userAgent);
-
-                ApiTraceSources.Default.TraceInformation(
-                    "Using endpoint {0}",
-                    directions);
-            }
-
-            public CodeFlowInitializer(
-                ServiceEndpoint<GaiaOidcClient> endpoint,
-                IDeviceEnrollment deviceEnrollment,
-                UserAgent userAgent)
-                : this(
-                      endpoint.GetDirections(deviceEnrollment.State),
-                      deviceEnrollment,
-                      userAgent)
-            {
-            }
-        }
-
-        // TODO: Extract GaiaAuthorizationCodeFlow
     }
 }
