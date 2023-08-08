@@ -90,6 +90,6 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// Workforce/workload identity federation.
         /// </summary>
-        Iam
+        Sts
     }
 }

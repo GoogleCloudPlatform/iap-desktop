@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             // Read.
             Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
-            Assert.AreEqual(OidcIssuer.Iam, offlineCredential.Issuer);
+            Assert.AreEqual(OidcIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
             Assert.AreEqual("openid", offlineCredential.Scope);
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             // Write.
             repository.Write(new OidcOfflineCredential(
-                OidcIssuer.Iam,
+                OidcIssuer.Sts,
                 "openid",
                 "rt",
                 null));
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             // Read again.
             Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
-            Assert.AreEqual(OidcIssuer.Iam, offlineCredential.Issuer);
+            Assert.AreEqual(OidcIssuer.Sts, offlineCredential.Issuer);
             Assert.AreEqual("rt", offlineCredential.RefreshToken);
             Assert.IsNull(offlineCredential.IdToken);
             Assert.AreEqual("openid", offlineCredential.Scope);

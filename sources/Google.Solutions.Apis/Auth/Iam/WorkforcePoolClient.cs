@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             this.provider = provider.ExpectNotNull(nameof(provider));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
 
-            Precondition.Expect(registration.Issuer == OidcIssuer.Iam, "Issuer");
+            Precondition.Expect(registration.Issuer == OidcIssuer.Sts, "Issuer");
 
             var directions = endpoint.GetDirections(deviceEnrollment.State);
             this.stsService = new StsService(new BaseClientService.Initializer()
@@ -147,7 +147,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override OidcIssuer Issuer => OidcIssuer.Iam;
+        protected override OidcIssuer Issuer => OidcIssuer.Sts;
 
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential, 
@@ -155,7 +155,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             CancellationToken cancellationToken)
         {
             Precondition.Expect(offlineCredential == null ||
-                offlineCredential.Issuer == OidcIssuer.Iam,
+                offlineCredential.Issuer == OidcIssuer.Sts,
                 "Offline credential must be issued by STS");
 
             codeReceiver.ExpectNotNull(nameof(codeReceiver));
@@ -192,7 +192,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             CancellationToken cancellationToken)
         {
             offlineCredential.ExpectNotNull(nameof(offlineCredential));
-            Precondition.Expect(offlineCredential.Issuer == OidcIssuer.Iam,
+            Precondition.Expect(offlineCredential.Issuer == OidcIssuer.Sts,
                 "Offline credential must be issued by STS");
 
             var flow = CreateFlow();

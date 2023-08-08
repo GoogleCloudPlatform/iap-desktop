@@ -45,7 +45,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         private static readonly OidcClientRegistration SampleRegistration
             = new OidcClientRegistration(
-                OidcIssuer.Iam,
+                OidcIssuer.Sts,
                 "client-id",
                 "client-secret",
                 "/");
@@ -238,7 +238,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var store = new OfflineStore()
             {
                 StoredCredential = new OidcOfflineCredential(
-                    OidcIssuer.Iam,
+                    OidcIssuer.Sts,
                     null,
                     "refresh-token",
                     null)
@@ -273,7 +273,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var store = new OfflineStore()
             {
                 StoredCredential = new OidcOfflineCredential(
-                    OidcIssuer.Iam,
+                    OidcIssuer.Sts,
                     null,
                     "refresh-token",
                     null)

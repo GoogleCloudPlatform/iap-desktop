@@ -35,7 +35,7 @@ namespace Google.Solutions.Apis.Test.Auth
         public void ToClientSecrets()
         {
             var registration = new OidcClientRegistration(
-                OidcIssuer.Iam,
+                OidcIssuer.Sts,
                 "client-id",
                 "client-secret",
                 "/redirect");
@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Test.Auth
         public void ToStringReturnsClientId()
         {
             var registration = new OidcClientRegistration(
-                OidcIssuer.Iam,
+                OidcIssuer.Sts,
                 "client-id",
                 "client-secret",
                 "/redirect");

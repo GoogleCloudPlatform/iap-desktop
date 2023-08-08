@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 if (this.Issuer == "sts")
                 {
                     return new OidcOfflineCredential(
-                        OidcIssuer.Iam,
+                        OidcIssuer.Sts,
                         this.Scope,
                         this.RefreshToken,
                         this.IdToken);
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             {
                 return new CredentialBlob()
                 {
-                    Issuer = offlineCredential.Issuer == OidcIssuer.Iam
+                    Issuer = offlineCredential.Issuer == OidcIssuer.Sts
                         ? "sts"
                         : null,
                     RefreshToken = offlineCredential.RefreshToken,

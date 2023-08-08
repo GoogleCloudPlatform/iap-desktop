@@ -59,7 +59,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             get
             {
                 return new OidcOfflineCredential(
-                    OidcIssuer.Iam,
+                    OidcIssuer.Sts,
                     this.apiCredential.Token.Scope,
                     this.apiCredential.Token.RefreshToken,
                     null);
