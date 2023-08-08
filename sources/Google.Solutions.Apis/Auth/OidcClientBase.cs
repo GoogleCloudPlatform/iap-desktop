@@ -81,6 +81,8 @@ namespace Google.Solutions.Apis.Auth
                 Debug.Assert(offlineCredential.RefreshToken != null);
                 try
                 {
+                    // TODO: Check if offline credential matches client
+
                     var session = await
                         ActivateOfflineCredentialAsync(offlineCredential, cancellationToken)
                         .ConfigureAwait(false);
@@ -143,6 +145,8 @@ namespace Google.Solutions.Apis.Auth
                 // activation next time.
                 //
                 this.store.Write(authorization.OfflineCredential);
+
+                //TODO: Assert issuer
 
                 ApiTraceSources.Default.TraceVerbose(
                     "Browser-based authorization succeeded.");
