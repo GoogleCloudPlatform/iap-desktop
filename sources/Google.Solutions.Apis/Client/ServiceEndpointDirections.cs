@@ -35,7 +35,8 @@ namespace Google.Solutions.Apis.Client
         public ServiceEndpointType Type { get; }
 
         /// <summary>
-        /// Base URI to use for sending requests.
+        /// Base URI to use for sending requests. When using PSC,
+        /// the base URI uses the PSC endpoint as host.
         /// </summary>
         public Uri BaseUri { get; }
 

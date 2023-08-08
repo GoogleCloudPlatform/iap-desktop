@@ -25,13 +25,17 @@ using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis.Integration;
+using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
-    public class TestApiClientBase
+    public class TestPscAndMtlsAwareHttpClientFactory
     {
         private class SampleClient : ApiClientBase
         {
@@ -53,6 +57,7 @@ namespace Google.Solutions.Apis.Test.Client
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
+            enrollment.SetupGet(e => e.Certificate).Returns(new X509Certificate2());
 
             var session = new Mock<IOidcSession>();
             session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
@@ -65,62 +70,91 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         //---------------------------------------------------------------------
-        // CreateServiceInitializer.
+        // PSC.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotEnrolled_ThenClientUsesTls(
-            [Values(
-                DeviceEnrollmentState.NotEnrolled,
-                DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
+        public void WhenPscDisabled_ThenProxyIsEnabled()
         {
-            var authorization = CreateAuthorization(state);
-
             var endpoint = new ServiceEndpoint<SampleClient>(
                 ServiceRoute.Public,
                 SampleEndpoint);
+            var directions = endpoint.GetDirections(DeviceEnrollmentState.NotEnrolled);
 
-            var client = new SampleClient(
-                endpoint,
-                authorization.Object,
+            var factory = new PscAndMtlsAwareHttpClientFactory(
+                directions,
+                CreateAuthorization(DeviceEnrollmentState.NotEnrolled).Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual(SampleEndpoint, client.Initializer.BaseUri);
-            Assert.IsFalse(client.Service.IsDeviceCertificateAuthenticationEnabled());
+            var handler = (HttpClientHandler)factory
+                .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
+                .GetInnerHandler();
+
+            Assert.IsTrue(handler.UseProxy);
         }
 
         [Test]
-        public void WhenEnrolled_ThenCreateServiceInitializerUsesTlsUsesMtls()
+        public void WhenPscEnabled_ThenProxyIsBypassed()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
-                ServiceRoute.Public, 
+                new ServiceRoute("psc-endpoint"),
                 SampleEndpoint);
+            var directions = endpoint.GetDirections(DeviceEnrollmentState.NotEnrolled);
 
-            var client = new SampleClient(
-                endpoint,
-                TemporaryAuthorization.ForSecureConnectUser(),
+            var factory = new PscAndMtlsAwareHttpClientFactory(
+                directions,
+                CreateAuthorization(DeviceEnrollmentState.NotEnrolled).Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://sample.mtls.googleapis.com/", client.Initializer.BaseUri);
-            Assert.IsTrue(client.Service.IsDeviceCertificateAuthenticationEnabled());
+            var handler = (HttpClientHandler)factory
+                .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
+                .GetInnerHandler();
+
+            Assert.IsFalse(handler.UseProxy);
+        }
+
+        //---------------------------------------------------------------------
+        // mTLS.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotEnrolled_ThenClientDoesNotUseCertificate()
+        {
+            var endpoint = new ServiceEndpoint<SampleClient>(
+                ServiceRoute.Public,
+                SampleEndpoint);
+            var directions = endpoint.GetDirections(DeviceEnrollmentState.NotEnrolled);
+
+            var factory = new PscAndMtlsAwareHttpClientFactory(
+                directions,
+                CreateAuthorization(DeviceEnrollmentState.Enrolled).Object,
+                TestProject.UserAgent);
+
+            var handler = (HttpClientHandler)factory
+                .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
+                .GetInnerHandler();
+
+            CollectionAssert.IsEmpty(handler.GetClientCertificates());
         }
 
         [Test]
-        public void WhenPscOverrideFound_ThenCreateServiceInitializerUsesPsc()
+        public void WhenEnrolled_ThenClientUsesCertificate()
         {
-            var authorization = CreateAuthorization(DeviceEnrollmentState.Disabled);
-
             var endpoint = new ServiceEndpoint<SampleClient>(
-                new ServiceRoute("crm.googleapis.com"),
+                ServiceRoute.Public,
                 SampleEndpoint);
+            var directions = endpoint.GetDirections(DeviceEnrollmentState.Enrolled);
 
-            var client = new SampleClient(
-                endpoint,
-                authorization.Object,
+            var factory = new PscAndMtlsAwareHttpClientFactory(
+                directions,
+                CreateAuthorization(DeviceEnrollmentState.Enrolled).Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://crm.googleapis.com/", client.Initializer.BaseUri);
-            Assert.IsFalse(client.Service.IsDeviceCertificateAuthenticationEnabled());
+            var handler = (HttpClientHandler)factory
+                .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
+                .GetInnerHandler();
+
+            CollectionAssert.IsNotEmpty(handler.GetClientCertificates());
         }
     }
 }

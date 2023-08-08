@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Http;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -40,10 +41,13 @@ namespace Google.Solutions.Apis.Client
                 "ClientCertificates",
                 BindingFlags.Instance | BindingFlags.Public);
 
-        public static bool CanUseClientCertificates
+        /// <summary>
+        /// Check if the platform/runtime supports device certificate authentication.
+        /// </summary>
+        internal static bool CanUseClientCertificates
             => clientCertificatesProperty != null;
 
-        public static bool TryAddClientCertificate(
+        internal static bool TryAddClientCertificate(
             this HttpClientHandler handler,
             X509Certificate2 certificate)
         {
@@ -60,7 +64,7 @@ namespace Google.Solutions.Apis.Client
             }
         }
 
-        public static IEnumerable<X509Certificate2> GetClientCertificates(
+        internal static IEnumerable<X509Certificate2> GetClientCertificates(
             this HttpClientHandler handler)
         {
             if (CanUseClientCertificates)
@@ -73,6 +77,18 @@ namespace Google.Solutions.Apis.Client
             {
                 return Enumerable.Empty<X509Certificate2>();
             }
+        }
+
+        internal static HttpMessageHandler GetInnerHandler(
+            this ConfigurableHttpClient client)
+        {
+            var handler = client.MessageHandler.InnerHandler;
+            while (handler is DelegatingHandler delegatingHandler) 
+            { 
+                handler = delegatingHandler.InnerHandler;
+            }
+
+            return handler;
         }
     }
 }
