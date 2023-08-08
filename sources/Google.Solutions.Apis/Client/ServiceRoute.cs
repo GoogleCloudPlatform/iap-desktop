@@ -19,55 +19,44 @@
 // under the License.
 //
 
-using System;
+using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.Apis.Client
 {
     /// <summary>
-    /// Directions for connecting to a particular endpoint of the
-    /// Google API.
+    /// Defines the "route" to take for connecting to Google API
+    /// endpoints.
     /// </summary>
-    public struct ServiceEndpointDirections
+    public class ServiceRoute
     {
         /// <summary>
-        /// Type of endpoint.
+        /// Use default endpoints, either via the public internet
+        /// of Private Google Access.
         /// </summary>
-        public ServiceEndpointType Type { get; }
+        public static ServiceRoute Public = new ServiceRoute(null);
 
-        /// <summary>
-        /// Base URI to use for sending requests.
-        /// </summary>
-        public Uri BaseUri { get; }
-
-        /// <summary>
-        /// Host header to inject. Only applicable if Type
-        /// is set to PrivateServiceConnect.
-        /// </summary>
-        public string Host { get; }
-
-        /// <summary>
-        /// Determines whether a client certificate must be used.
-        /// </summary>
-        public bool UseClientCertificate => this.Type == ServiceEndpointType.MutualTls;
-
-        internal ServiceEndpointDirections(ServiceEndpointType type, Uri baseUri, string host)
+        public ServiceRoute(string endpoint)
         {
-            this.Type = type;
-            this.BaseUri = baseUri;
-            this.Host = host;
+            this.Endpoint = endpoint;
         }
+
+        /// <summary>
+        /// Determine whether to use Private Service Connect to 
+        /// connect to Google API endpoints.
+        /// </summary>
+        public bool UsePrivateServiceConnect
+        {
+            get => !string.IsNullOrEmpty(this.Endpoint);
+        }
+
+        /// <summary>
+        /// Name of IP address of the PSC endpoint. Null for the public route.
+        /// </summary>
+        public string Endpoint { get; }
 
         public override string ToString()
         {
-            return $"{this.BaseUri} (Type: {this.Type}, Host: {this.Host}, " +
-                $"Cert: {this.UseClientCertificate})";
+            return this.Endpoint ?? "public";
         }
-    }
-
-    public enum ServiceEndpointType
-    {
-        Tls,
-        MutualTls,
-        PrivateServiceConnect
     }
 }

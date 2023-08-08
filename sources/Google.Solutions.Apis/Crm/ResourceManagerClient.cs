@@ -68,10 +68,10 @@ namespace Google.Solutions.Apis.Crm
         }
 
         public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint(
-            PrivateServiceConnectDirections pscDirections = null)
+            ServiceRoute route = null)
         {
             return new ServiceEndpoint<ResourceManagerClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 "https://cloudresourcemanager.googleapis.com/");
         }
 

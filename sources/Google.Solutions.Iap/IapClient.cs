@@ -68,10 +68,10 @@ namespace Google.Solutions.Iap
         }
 
         public static ServiceEndpoint<IapClient> CreateEndpoint(
-            PrivateServiceConnectDirections pscDirections = null)
+            ServiceRoute route = null)
         {
             return new ServiceEndpoint<IapClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 new Uri("wss://tunnel.cloudproxy.app/v4/"),
                 new Uri("wss://mtls.tunnel.cloudproxy.app/v4/"));
         }

@@ -19,34 +19,29 @@
 // under the License.
 //
 
-namespace Google.Solutions.Apis.Client
+using Google.Solutions.Apis.Client;
+using NUnit.Framework;
+
+namespace Google.Solutions.Apis.Test.Client
 {
-    /// <summary>
-    /// Directions for whether to use PSC, and which 
-    /// PSC endpoint to use.
-    /// </summary>
-    public class PrivateServiceConnectDirections
+    [TestFixture]
+    public class TestServiceRoute
     {
-        public static PrivateServiceConnectDirections None
-            = new PrivateServiceConnectDirections(null);
-
-        public PrivateServiceConnectDirections(string endpoint)
+        [Test]
+        public void Public()
         {
-            this.Endpoint = endpoint;
+            Assert.IsFalse(ServiceRoute.Public.UsePrivateServiceConnect);
+            Assert.IsNull(ServiceRoute.Public.Endpoint);
+            Assert.AreEqual("public", ServiceRoute.Public.ToString());
         }
 
-        /// <summary>
-        /// Determine whether to use PSC to connect to
-        /// Google APIs.
-        /// </summary>
-        public bool UsePrivateServiceConnect
+        [Test]
+        public void Psc()
         {
-            get => !string.IsNullOrEmpty(this.Endpoint);
+            var route = new ServiceRoute("www-endpoint.p.googleapis.com");
+            Assert.IsTrue(route.UsePrivateServiceConnect);
+            Assert.AreEqual("www-endpoint.p.googleapis.com", route.Endpoint);
+            Assert.AreEqual("www-endpoint.p.googleapis.com", ServiceRoute.Public.ToString());
         }
-
-        /// <summary>
-        /// Name of IP address of the PSC endpoint.
-        /// </summary>
-        public string Endpoint { get; }
     }
 }

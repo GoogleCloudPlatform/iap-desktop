@@ -76,7 +76,7 @@ namespace Google.Solutions.Iap.Test
             // Use IP address as pseudo-PSC endpoint.
             //
             var endpoint = IapClient.CreateEndpoint(
-                new PrivateServiceConnectDirections(address.FirstOrDefault().ToString()));
+                new ServiceRoute(address.FirstOrDefault().ToString()));
 
             var client = new IapClient(
                 endpoint,

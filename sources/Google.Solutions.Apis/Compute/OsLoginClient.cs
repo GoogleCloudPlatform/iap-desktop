@@ -82,10 +82,10 @@ namespace Google.Solutions.Apis.Compute
         }
 
         public static ServiceEndpoint<OsLoginClient> CreateEndpoint(
-                PrivateServiceConnectDirections pscDirections = null)
+                ServiceRoute route = null)
         {
             return new ServiceEndpoint<OsLoginClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 "https://oslogin.googleapis.com/");
         }
 
