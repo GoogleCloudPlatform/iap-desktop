@@ -25,11 +25,13 @@ using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,10 +47,46 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 "client-secret",
                 "/authorize/");
 
+        private static UnverifiedGaiaJsonWebToken SampleIdToken
+            = new UnverifiedGaiaJsonWebToken(
+                new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
+                new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
+                {
+                    Email = "test@example.com"
+                });
+
+        private static Mock<IDeviceEnrollment> CreateDisabledEnrollment()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
+            return enrollment;
+        }
+
+        private class OfflineStore : IOidcOfflineCredentialStore
+        {
+            public OidcOfflineCredential StoredCredential { get; set; }
+
+            public void Clear()
+            {
+                this.StoredCredential = null;
+            }
+
+            public bool TryRead(out OidcOfflineCredential credential)
+            {
+                credential = this.StoredCredential;
+                return credential != null;
+            }
+
+            public void Write(OidcOfflineCredential credential)
+            {
+                this.StoredCredential = credential;
+            }
+        }
+
         //---------------------------------------------------------------------
         // CreateSession.
         //---------------------------------------------------------------------
-        
+
         [Test]
         public void WhenTokenResponseContainsIdToken_ThenCreateSessionUsesFreshIdToken()
         {
@@ -269,16 +307,20 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             }
         }
 
-        private class GoogleOidcClientWithMockFlow : GaiaOidcClient
+        private class GaiaOidcClientWithMockFlow : GaiaOidcClient
         {
             public Mock<IAuthorizationCodeFlow> Flow = new Mock<IAuthorizationCodeFlow>();
 
-            public GoogleOidcClientWithMockFlow(
-                ServiceEndpoint<GaiaOidcClient> endpoint,
+            public GaiaOidcClientWithMockFlow(
                 IDeviceEnrollment deviceEnrollment,
                 IOidcOfflineCredentialStore store,
                 OidcClientRegistration registration) 
-                : base(endpoint, deviceEnrollment, store, registration, TestProject.UserAgent)
+                : base(
+                      GaiaOidcClient.CreateEndpoint(), 
+                      deviceEnrollment, 
+                      store, 
+                      registration, 
+                      TestProject.UserAgent)
             {
             }
 
@@ -292,10 +334,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenOfflineCredentialPresent_ThenAuthorizeWithBrowserUsesMinimalFlow()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
@@ -305,17 +343,18 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 }).ToString();
 
             // Non-empty store.
-            var store = new Mock<IOidcOfflineCredentialStore>();
-            var offlineCredential = new OidcOfflineCredential(
-                OidcIssuer.Gaia, "openid", "rt", oldIdToken);
-            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
+            var store = new OfflineStore()
+            {
+                StoredCredential = new OidcOfflineCredential(
+                    OidcIssuer.Gaia, "openid", "rt", oldIdToken)
+            };
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object,
-                store.Object,
+                CreateDisabledEnrollment().Object,
+                store,
                 SampleRegistration,
                 TestProject.UserAgent);
 
@@ -334,10 +373,6 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenOfflineCredentialLacksEmail_ThenAuthorizeWithBrowserUsesMinimalFlow()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()
@@ -347,17 +382,18 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 }).ToString();
 
             // Non-empty store.
-            var store = new Mock<IOidcOfflineCredentialStore>();
-            var offlineCredential = new OidcOfflineCredential(
-                OidcIssuer.Gaia, "openid", "rt", oldIdToken);
-            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
+            var store = new OfflineStore()
+            {
+                StoredCredential = new OidcOfflineCredential(
+                    OidcIssuer.Gaia, "openid", "rt", oldIdToken)
+            };
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object,
-                store.Object,
+                CreateDisabledEnrollment().Object,
+                store,
                 SampleRegistration,
                 TestProject.UserAgent);
 
@@ -373,22 +409,19 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenOfflineCredentialIsInvalid_ThenAuthorizeWithBrowserUsesFullFlow()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             // Non-empty store.
-            var store = new Mock<IOidcOfflineCredentialStore>();
-            var offlineCredential = new OidcOfflineCredential(
-                OidcIssuer.Gaia, "openid", "rt", "junk");
-            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
+            var store = new OfflineStore()
+            {
+                StoredCredential = new OidcOfflineCredential(
+                    OidcIssuer.Gaia, "openid", "rt", "junk")
+            };
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object,
-                store.Object,
+                CreateDisabledEnrollment().Object,
+                store,
                 SampleRegistration,
                 TestProject.UserAgent);
 
@@ -404,21 +437,15 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void WhenNoOfflineCredentialFound_ThenAuthorizeWithBrowserUsesFullFlow()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
-
             // Empty store.
-            var store = new Mock<IOidcOfflineCredentialStore>();
-            OidcOfflineCredential offlineCredential = null;
-            store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
+            var store = new OfflineStore();
 
             // Trigger a request, but let it fail.
             var codeReceiver = new FailingCodeReceiver();
             var client = new GaiaOidcClient(
                 GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object,
-                store.Object,
+                CreateDisabledEnrollment().Object,
+                store,
                 SampleRegistration,
                 TestProject.UserAgent);
 
@@ -431,39 +458,230 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 "Normal flow");
         }
 
+        [Test]
+        public void WhenBrowserFlowFails_ThenAuthorizeWithBrowserThrowsException()
+        {
+            var store = new OfflineStore();
+            var client = new GaiaOidcClientWithMockFlow(
+                CreateDisabledEnrollment().Object,
+                store,
+                SampleRegistration);
+
+            var codeReceiver = new Mock<ICodeReceiver>();
+            codeReceiver
+                .Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Error = "invalid_grant"
+                });
+
+            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
+                "invalid_grant",
+                () => client
+                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
+                    .Wait());
+        }
+
+        [Test]
+        public void WhenTokenExchangeFails_ThenAuthorizeWithBrowserThrowsException()
+        {
+            var store = new OfflineStore();
+            var client = new GaiaOidcClientWithMockFlow(
+                CreateDisabledEnrollment().Object,
+                store,
+                SampleRegistration);
+
+            var codeReceiver = new Mock<ICodeReceiver>();
+            codeReceiver
+                .Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "code"
+                });
+            client.Flow
+                .Setup(f => f.ExchangeCodeForTokenAsync(
+                    null,
+                    "code",
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
+                {
+                    Error = "invalid_grant"
+                }));
+
+            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
+                "invalid_grant",
+                () => client
+                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
+                    .Wait());
+        }
+
+        [Test]
+        public async Task WhenScopeNotGranted_ThenAuthorizeWithBrowserReturnsSession()
+        {
+            var store = new OfflineStore();
+            var client = new GaiaOidcClientWithMockFlow(
+                CreateDisabledEnrollment().Object,
+                store,
+                SampleRegistration);
+
+            var codeReceiver = new Mock<ICodeReceiver>();
+            codeReceiver
+                .Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "code"
+                });
+            client.Flow
+                .Setup(f => f.ExchangeCodeForTokenAsync(
+                    null,
+                    "code",
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    AccessToken = "access-token",
+                    RefreshToken = "refresh-token",
+                    IdToken = "id-token",
+                    Scope = Scopes.Cloud, // missing email scope
+                    ExpiresInSeconds = 3600,
+                    IssuedUtc = DateTime.UtcNow
+                });
+
+            ExceptionAssert.ThrowsAggregateException<OAuthScopeNotGrantedException>(
+                () => client
+                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
+                    .Wait());
+        }
+
+        [Test]
+        public async Task WhenTokenExchangeSucceeds_ThenAuthorizeWithBrowserReturnsSession()
+        {
+            var store = new OfflineStore();
+            var client = new GaiaOidcClientWithMockFlow(
+                CreateDisabledEnrollment().Object,
+                store,
+                SampleRegistration);
+
+            var codeReceiver = new Mock<ICodeReceiver>();
+            codeReceiver
+                .Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "code"
+                });
+            client.Flow
+                .Setup(f => f.ExchangeCodeForTokenAsync(
+                    null,
+                    "code",
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    AccessToken = "access-token",
+                    RefreshToken = "refresh-token",
+                    IdToken = SampleIdToken.ToString(),
+                    Scope = $"{Scopes.Cloud} {Scopes.Email} some more junk",
+                    ExpiresInSeconds = 3600,
+                    IssuedUtc = DateTime.UtcNow
+                });
+
+            var session = await client
+                .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(session);
+            Assert.AreEqual(SampleIdToken.Payload.Email, session.Username);
+            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
+            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+        }
+
         //---------------------------------------------------------------------
         // ActivateOfflineCredential.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenRefreshTokenInvalid_ThenActivateOfflineCredentialReturnsNull()
+        public async Task WhenTokenExchangeFails_ThenTryAuthorizeSilentlyReturnsNull()
         {
-            // Not enrolled.
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
+            var store = new OfflineStore()
+            {
+                StoredCredential = new OidcOfflineCredential(
+                    OidcIssuer.Gaia,
+                    null,
+                    "refresh-token",
+                    null)
+            };
 
-            // Non-empty store.
-            var store = new Mock<IOidcOfflineCredentialStore>();
-            var offlineCredential = new OidcOfflineCredential(
-                OidcIssuer.Gaia,
-                "openid",
-                "invalid-rt",
-                null);
-            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
+            var client = new GaiaOidcClientWithMockFlow(
+                CreateDisabledEnrollment().Object,
+                store,
+                SampleRegistration);
 
-            var client = new GaiaOidcClient(
-                GaiaOidcClient.CreateEndpoint(),
-                enrollment.Object,
-                store.Object,
-                SampleRegistration,
-                TestProject.UserAgent);
+            client.Flow
+                .Setup(f => f.RefreshTokenAsync(
+                    null,
+                    "refresh-token",
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
+                {
+                    Error = "invalid_grant"
+                }));
 
             var session = await client
-                .TryAuthorizeSilentlyAsync(
-                    CancellationToken.None)
+                .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNull(session);
+        }
+
+        [Test]
+        public async Task WhenTokenExchangeSucceeds_ThenTryAuthorizeSilentlyReturnsSession()
+        {
+            var store = new OfflineStore()
+            {
+                StoredCredential = new OidcOfflineCredential(
+                    OidcIssuer.Gaia,
+                    null,
+                    "refresh-token",
+                    null)
+            };
+
+            var client = new GaiaOidcClientWithMockFlow(
+                CreateDisabledEnrollment().Object,
+                store,
+                SampleRegistration);
+
+            client.Flow
+                .Setup(f => f.RefreshTokenAsync(
+                    null,
+                    "refresh-token",
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    AccessToken = "access-token",
+                    RefreshToken = "refresh-token",
+                    IdToken = SampleIdToken.ToString(),
+                    Scope = $"{Scopes.Cloud} {Scopes.Email}",
+                    ExpiresInSeconds = 3600,
+                    IssuedUtc = DateTime.UtcNow
+                });
+
+            var session = await client
+                .TryAuthorizeSilentlyAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(session);
+            Assert.AreEqual(SampleIdToken.Payload.Email, session.Username);
+            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
+            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
         }
     }
 }

@@ -267,7 +267,6 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             Assert.IsNull(session);
         }
 
-
         [Test]
         public async Task WhenTokenExchangeSucceeds_ThenTryAuthorizeSilentlyReturnsSession()
         {
