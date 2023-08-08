@@ -682,6 +682,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.AreEqual(SampleIdToken.Payload.Email, session.Username);
             Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
             Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+
+            // Terminate session.
+            Assert.IsNotNull(store.StoredCredential);
+            session.Terminate();
+            Assert.IsNull(store.StoredCredential);
         }
     }
 }
