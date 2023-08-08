@@ -27,6 +27,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth.Iam
 {
+    /// <summary>
+    /// A workforce identity "3PI" session.
+    /// </summary>
     internal class WorkforcePoolSession : IOidcSession
     {
         private readonly UserCredential apiCredential;

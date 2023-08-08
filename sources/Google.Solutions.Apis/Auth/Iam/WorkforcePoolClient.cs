@@ -106,12 +106,18 @@ namespace Google.Solutions.Apis.Auth.Iam
             return new AuthPortalCodeFlow(initializer);
         }
 
+        private protected virtual Task<StsService.IntrospectTokenResponse> IntrospectTokenAsync(
+            StsService.IntrospectTokenRequest request,
+            CancellationToken cancellationToken)
+        {
+            return this.stsService.IntrospectTokenAsync(request, cancellationToken);
+        }
+
         private async Task<WorkforcePoolSession> CreateSessionAsync(
             UserCredential apiCredential,
             CancellationToken cancellationToken)
         {
-            var tokenInfo = await this.stsService
-                .IntrospectTokenAsync(
+            var tokenInfo = await IntrospectTokenAsync(
                     new StsService.IntrospectTokenRequest()
                     {
                         ClientCredentials = this.registration.ToClientSecrets(),
