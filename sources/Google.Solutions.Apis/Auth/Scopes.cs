@@ -19,28 +19,14 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Solutions.Apis.Client;
-
-namespace Google.Solutions.Apis.Auth.Gaia
+namespace Google.Solutions.Apis.Auth
 {
-    public class GaiaPkceOidcClient : GaiaOidcClient
+    /// <summary>
+    /// Google OAuth scopes.
+    /// </summary>
+    internal static class Scopes
     {
-        public GaiaPkceOidcClient(
-            ServiceEndpoint<GaiaOidcClient> endpoint,
-            IDeviceEnrollment deviceEnrollment,
-            IOidcOfflineCredentialStore store,
-            OidcClientRegistration registration,
-            UserAgent userAgent) 
-            : base(endpoint, deviceEnrollment, store, registration, userAgent)
-        {
-        }
-
-        protected override IAuthorizationCodeFlow CreateFlow(
-            GoogleAuthorizationCodeFlow.Initializer initializer)
-        {
-            return new PkceGoogleAuthorizationCodeFlow(initializer);
-        }
+        public const string Email = "https://www.googleapis.com/auth/userinfo.email";
+        public const string Cloud = "https://www.googleapis.com/auth/cloud-platform";
     }
 }

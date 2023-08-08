@@ -39,7 +39,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
     public class GaiaOidcClient : OidcClientBase
     {
         private readonly ServiceEndpoint<GaiaOidcClient> endpoint;
-        private readonly ClientSecrets clientSecrets;
+        private readonly OidcClientRegistration registration;
         private readonly IDeviceEnrollment deviceEnrollment;
         private readonly UserAgent userAgent;
 
@@ -47,14 +47,17 @@ namespace Google.Solutions.Apis.Auth.Gaia
             ServiceEndpoint<GaiaOidcClient> endpoint,
             IDeviceEnrollment deviceEnrollment,
             IOidcOfflineCredentialStore store,
-            ClientSecrets clientSecrets,
+            OidcClientRegistration registration,
             UserAgent userAgent)
             : base(store)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-            this.clientSecrets = clientSecrets.ExpectNotNull(nameof(clientSecrets));
+            this.registration = registration.ExpectNotNull(nameof(registration));
             this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
+
+            Precondition.Expect(registration.Issuer == OidcIssuer.Gaia, "Issuer");
+            Precondition.Expect(registration.RedirectPath == "/authorize/", "RedirectPath");
         }
 
         public static ServiceEndpoint<GaiaOidcClient> CreateEndpoint(
@@ -150,7 +153,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             }
         }
 
-        private GaiaOidcSession CreateSessionndRegisterTerminateEvent(
+        private GaiaOidcSession CreateSessionAndRegisterTerminateEvent(
             IAuthorizationCodeFlow flow,
             OidcOfflineCredential offlineCredential,
             TokenResponse tokenResponse)
@@ -170,23 +173,25 @@ namespace Google.Solutions.Apis.Auth.Gaia
         // Overrides.
         //---------------------------------------------------------------------
 
+        protected override OidcIssuer Issuer => OidcIssuer.Gaia;
+
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
             ICodeReceiver codeReceiver,
             CancellationToken cancellationToken)
         {
             Precondition.Expect(offlineCredential == null ||
-                offlineCredential.Issuer == OidcOfflineCredentialIssuer.Gaia,
+                offlineCredential.Issuer == OidcIssuer.Gaia,
                 "Offline credential must be issued by Gaia");
 
             codeReceiver.ExpectNotNull(nameof(codeReceiver));
 
-            var initializer = new CodeFlowInitializer(
+            var initializer = new GaiaCodeFlow.Initializer(
                 this.endpoint,
                 this.deviceEnrollment,
                 this.userAgent)
             {
-                ClientSecrets = this.clientSecrets
+                ClientSecrets = this.registration.ToClientSecrets()
             };
 
             if (offlineCredential?.IdToken != null &&
@@ -244,7 +249,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     // N.B. Do not dispose the flow if the sign-in succeeds as the
                     // credential object must hold on to it.
                     //
-                    return CreateSessionndRegisterTerminateEvent(
+                    return CreateSessionAndRegisterTerminateEvent(
                         flow,
                         offlineCredential,
                         apiCredential.Token);
@@ -254,7 +259,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     flow.Dispose();
                     throw;
                 }
-
             }
             catch (TokenResponseException e) when (
                 e.Error?.ErrorUri != null &&
@@ -276,15 +280,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
                 }
             }
-            catch (PlatformNotSupportedException)
-            {
-                // Convert this into an exception with more actionable information.
-                throw new AuthorizationFailedException(
-                    "Authorization failed because the HTTP Server API is not enabled " +
-                    "on your computer. This API is required to complete the OAuth authorization flow.\n\n" +
-                    "To enable the API, open an elevated command prompt and run " +
-                    "'sc config http start= auto'.");
-            }
         }
 
         protected override async Task<IOidcSession> ActivateOfflineCredentialAsync(
@@ -292,25 +287,36 @@ namespace Google.Solutions.Apis.Auth.Gaia
             CancellationToken cancellationToken)
         {
             offlineCredential.ExpectNotNull(nameof(offlineCredential));
-            Precondition.Expect(offlineCredential.Issuer == OidcOfflineCredentialIssuer.Gaia,
+            Precondition.Expect(offlineCredential.Issuer == OidcIssuer.Gaia,
                 "Offline credential must be issued by Gaia");
 
-            var initializer = new CodeFlowInitializer(
+            var initializer = new GaiaCodeFlow.Initializer(
                 this.endpoint,
                 this.deviceEnrollment,
                 this.userAgent)
             {
-                ClientSecrets = this.clientSecrets
+                ClientSecrets = this.registration.ToClientSecrets()
             };
 
             var flow = CreateFlow(initializer);
 
-            TokenResponse tokenResponse;
+            //
+            // Try to use the refresh token to obtain a new access token.
+            //
             try
             {
-                tokenResponse = await flow
+                var tokenResponse = await flow
                     .RefreshTokenAsync(null, offlineCredential.RefreshToken, cancellationToken)
                     .ConfigureAwait(false);
+
+                //
+                // N.B. Do not dispose the flow if the sign-in succeeds as the
+                // credential object must hold on to it.
+                //
+                return CreateSessionAndRegisterTerminateEvent(
+                    flow,
+                    offlineCredential,
+                    tokenResponse);
             }
             catch (Exception e)
             {
@@ -325,66 +331,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 flow.Dispose();
                 throw;
             }
-
-            try
-            {
-                //
-                // N.B. Do not dispose the flow if the sign-in succeeds as the
-                // credential object must hold on to it.
-                //
-                return CreateSessionndRegisterTerminateEvent(
-                    flow,
-                    offlineCredential,
-                    tokenResponse);
-            }
-            catch
-            {
-                flow.Dispose();
-                throw;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        internal class CodeFlowInitializer : GoogleAuthorizationCodeFlow.Initializer
-        {
-            protected CodeFlowInitializer(
-                ServiceEndpointDirections directions,
-                IDeviceEnrollment deviceEnrollment,
-                UserAgent userAgent)
-                : base(
-                      GoogleAuthConsts.OidcAuthorizationUrl,
-                      new Uri(directions.BaseUri, "/token").ToString(),
-                      new Uri(directions.BaseUri, "/revoke").ToString())
-            {
-                this.HttpClientFactory = new PscAndMtlsAwareHttpClientFactory(
-                    directions,
-                    deviceEnrollment,
-                    userAgent);
-
-                ApiTraceSources.Default.TraceInformation(
-                    "Using endpoint {0}",
-                    directions);
-            }
-
-            public CodeFlowInitializer(
-                ServiceEndpoint<GaiaOidcClient> endpoint,
-                IDeviceEnrollment deviceEnrollment,
-                UserAgent userAgent)
-                : this(
-                      endpoint.GetDirections(deviceEnrollment.State),
-                      deviceEnrollment,
-                      userAgent)
-            {
-            }
-        }
-
-        internal static class Scopes
-        {
-            public const string Email = "https://www.googleapis.com/auth/userinfo.email";
-            public const string Cloud = "https://www.googleapis.com/auth/cloud-platform";
         }
     }
 }

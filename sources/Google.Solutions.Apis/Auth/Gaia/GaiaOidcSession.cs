@@ -28,6 +28,12 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth.Gaia
 {
+    /// <summary>
+    /// A Google "1PI" OIDC session.
+    /// 
+    /// Sessions are subject to the 'Google Cloud Session Length' control,
+    /// and end when reauthorization is triggered.
+    /// </summary>
     internal class GaiaOidcSession : IGaiaOidcSession
     {
         private readonly UserCredential apiCredential;
@@ -41,6 +47,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             Debug.Assert(idToken.Payload.Email != null);
         }
+
+        //---------------------------------------------------------------------
+        // IGaiaOidcSession.
+        //---------------------------------------------------------------------
 
         public event EventHandler Terminated;
         public IJsonWebToken IdToken { get; }
@@ -62,7 +72,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     : this.apiCredential.Token.IdToken;
 
                 return new OidcOfflineCredential(
-                    OidcOfflineCredentialIssuer.Gaia,
+                    OidcIssuer.Gaia,
                     this.apiCredential.Token.Scope,
                     this.apiCredential.Token.RefreshToken,
                     idToken);
@@ -107,6 +117,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
         public void Terminate()
         {
             this.Terminated?.Invoke(this, EventArgs.Empty);
+
+            //
+            // NB. The GaiaOidcClient handles the actual termination.
+            //
         }
 
         public async Task RevokeGrantAsync(CancellationToken cancellationToken)

@@ -19,28 +19,32 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Solutions.Apis.Client;
-
-namespace Google.Solutions.Apis.Auth.Gaia
+namespace Google.Solutions.Apis.Auth.Iam
 {
-    public class GaiaPkceOidcClient : GaiaOidcClient
+    /// <summary>
+    /// A locator for a workforce or workload identity
+    /// pool provider.
+    /// </summary>
+    internal interface IPoolProviderLocator
     {
-        public GaiaPkceOidcClient(
-            ServiceEndpoint<GaiaOidcClient> endpoint,
-            IDeviceEnrollment deviceEnrollment,
-            IOidcOfflineCredentialStore store,
-            OidcClientRegistration registration,
-            UserAgent userAgent) 
-            : base(endpoint, deviceEnrollment, store, registration, userAgent)
-        {
-        }
+        /// <summary>
+        /// Location, typically 'global'.
+        /// </summary>
+        string Location { get; }
 
-        protected override IAuthorizationCodeFlow CreateFlow(
-            GoogleAuthorizationCodeFlow.Initializer initializer)
-        {
-            return new PkceGoogleAuthorizationCodeFlow(initializer);
-        }
+        /// <summary>
+        /// ID of the pool.
+        /// </summary>
+        string Pool { get; }
+
+        /// <summary>
+        /// ID of the pool provider.
+        /// </summary>
+        string Provider { get; }
+
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        string ToString();
     }
 }

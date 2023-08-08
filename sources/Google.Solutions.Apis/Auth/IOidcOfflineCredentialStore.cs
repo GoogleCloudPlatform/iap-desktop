@@ -53,7 +53,7 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// Source of the credential.
         /// </summary>
-        public OidcOfflineCredentialIssuer Issuer { get; }
+        public OidcIssuer Issuer { get; }
 
         /// <summary>
         /// Refresh token, not null.
@@ -71,21 +71,15 @@ namespace Google.Solutions.Apis.Auth
         public string Scope { get; }
 
         public OidcOfflineCredential(
-            OidcOfflineCredentialIssuer issuer,
+            OidcIssuer issuer,
             string scope,
             string refreshToken, 
             string idToken)
         {
             this.Issuer = issuer;
-            this.Scope = scope.ExpectNotEmpty(nameof(scope));
+            this.Scope = scope;
             this.RefreshToken = refreshToken.ExpectNotEmpty(nameof(refreshToken));
             this.IdToken = idToken;
         }
-    }
-
-    public enum OidcOfflineCredentialIssuer
-    {
-        Gaia,
-        Sts
     }
 }

@@ -64,6 +64,8 @@ namespace Google.Solutions.Apis.Auth
             this.store.Clear();
         }
 
+        protected abstract OidcIssuer Issuer { get; }
+
         //---------------------------------------------------------------------
         // IOidcClient.
         //---------------------------------------------------------------------
@@ -79,12 +81,24 @@ namespace Google.Solutions.Apis.Auth
                     "Attempting authorization using offline credential...");
 
                 Debug.Assert(offlineCredential.RefreshToken != null);
+
+                if (offlineCredential.Issuer != this.Issuer)
+                {
+                    ApiTraceSources.Default.TraceWarning(
+                        "Found offline credential from wrong issuer: {0}",
+                        offlineCredential.Issuer);
+                    return null;
+                }
+
                 try
                 {
                     var session = await
                         ActivateOfflineCredentialAsync(offlineCredential, cancellationToken)
                         .ConfigureAwait(false);
+
                     Debug.Assert(session != null);
+                    Debug.Assert(session.OfflineCredential != null);
+                    Debug.Assert(session.OfflineCredential.Issuer == this.Issuer);
 
                     //
                     // Update the offline credential as the refresh
@@ -99,6 +113,9 @@ namespace Google.Solutions.Apis.Auth
                 }
                 catch (Exception e)
                 {
+                    Debug.Assert(!(e is ArgumentException));
+                    Debug.Assert(!(e is NullReferenceException));
+
                     //
                     // The offline credentials didn't work, but they might still
                     // be useful to streamline a browser-based sign-in. Therefore,
@@ -126,23 +143,40 @@ namespace Google.Solutions.Apis.Auth
 
             this.store.TryRead(out var offlineCredential);
 
-            var authorization = await 
-                AuthorizeWithBrowserAsync(
-                    offlineCredential, 
-                    codeReceiver, 
-                    cancellationToken)
-                .ConfigureAwait(false);
+            try
+            {
+                var session = await
+                    AuthorizeWithBrowserAsync(
+                        offlineCredential,
+                        codeReceiver,
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
-            //
-            // Store the refresh token so that we can do a silent
-            // activation next time.
-            //
-            this.store.Write(authorization.OfflineCredential);
+                Debug.Assert(session != null);
+                Debug.Assert(session.OfflineCredential.Issuer == this.Issuer);
 
-            ApiTraceSources.Default.TraceVerbose(
-                "Browser-based authorization succeeded.");
+                //
+                // Store the refresh token so that we can do a silent
+                // activation next time.
+                //
+                this.store.Write(session.OfflineCredential);
 
-            return authorization;
+                ApiTraceSources.Default.TraceVerbose(
+                    "Browser-based authorization succeeded.");
+
+                return session;
+            }
+            catch (PlatformNotSupportedException)
+            {
+                //
+                // Convert this into an exception with more actionable information.
+                //
+                throw new AuthorizationFailedException(
+                    "Authorization failed because the HTTP Server API is not enabled " +
+                    "on your computer. This API is required to complete the OAuth authorization flow.\n\n" +
+                    "To enable the API, open an elevated command prompt and run " +
+                    "'sc config http start= auto'.");
+            }
         }
 
         protected abstract Task<IOidcSession> AuthorizeWithBrowserAsync(
