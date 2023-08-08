@@ -45,6 +45,8 @@ namespace Google.Solutions.Apis.Test.Auth
 
             public override IServiceEndpoint Endpoint => throw new System.NotImplementedException();
 
+            protected override OidcIssuer Issuer => OidcIssuer.Gaia;
+
             protected override Task<IOidcSession> ActivateOfflineCredentialAsync(
                 OidcOfflineCredential offlineCredential,
                 CancellationToken cancellationToken)
@@ -61,6 +63,15 @@ namespace Google.Solutions.Apis.Test.Auth
             }
         }
 
+        private Mock<IOidcSession> CreateSession()
+        {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(s => s.OfflineCredential)
+                .Returns(new OidcOfflineCredential(OidcIssuer.Gaia, "scope", "rt", "idt"));
+            return session;
+        }
+
         //---------------------------------------------------------------------
         // TryAuthorizeSilently.
         //---------------------------------------------------------------------
@@ -72,6 +83,23 @@ namespace Google.Solutions.Apis.Test.Auth
             var store = new Mock<IOidcOfflineCredentialStore>();
             OidcOfflineCredential offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
+
+            var client = new SampleClient(store.Object);
+            var session = await client
+                .TryAuthorizeSilentlyAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(session);
+        }
+
+        [Test]
+        public async Task WhenOfflineCredentialFromWrongIssuer_ThenTryAuthorizeSilentlyRetainsStore()
+        {
+            // Non-empty store.
+            var store = new Mock<IOidcOfflineCredentialStore>();
+            var offlineCredential = new OidcOfflineCredential(
+                OidcIssuer.Iam, "openid", "rt", "idt");
+            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             var client = new SampleClient(store.Object);
             var session = await client
@@ -114,7 +142,7 @@ namespace Google.Solutions.Apis.Test.Auth
 
             var client = new SampleClient(store.Object)
             {
-                ActivateOfflineCredential = () => new Mock<IOidcSession>().Object
+                ActivateOfflineCredential = () => CreateSession().Object
             };
 
             var session = await client
@@ -139,7 +167,7 @@ namespace Google.Solutions.Apis.Test.Auth
 
             var client = new SampleClient(store.Object)
             {
-                AuthorizeWithBrowser = () => new Mock<IOidcSession>().Object
+                AuthorizeWithBrowser = () => CreateSession().Object
             };
             
             var session = await client

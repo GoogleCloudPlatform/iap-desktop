@@ -147,6 +147,8 @@ namespace Google.Solutions.Apis.Auth.Iam
         // Overrides.
         //---------------------------------------------------------------------
 
+        protected override OidcIssuer Issuer => OidcIssuer.Iam;
+
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential, 
             ICodeReceiver codeReceiver, 

@@ -314,58 +314,5 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
             Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
         }
-
-        //---------------------------------------------------------------------
-        // IClient.
-        //---------------------------------------------------------------------
-
-        [Test]
-        [InteractiveTest] 
-        public async Task __TestAuth() // TODO: Remove this test
-        {
-            var store = new OfflineStore();
-
-            var secret = Environment.GetEnvironmentVariable("WWAUTH_CLIENT_SECRET").Split(':');
-            var registration = new OidcClientRegistration(
-                OidcIssuer.Iam,
-                secret[0],
-                secret[1],
-                "/");
-
-            var provider = new WorkforcePoolProviderLocator(
-                "global",
-                "ntdev-azuread",
-                "ntdev-azuread-saml");
-
-            var client = new WorkforcePoolClient(
-                WorkforcePoolClient.CreateEndpoint(),
-                CreateDisabledEnrollment().Object,
-                store,
-                provider,
-                registration,
-                TestProject.UserAgent);
-
-            var session = await client
-                .AuthorizeAsync(
-                    new LoopbackCodeReceiver(
-                        "/",
-                        "done!!1!"),
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(session);
-            Assert.IsNotNull(session.Username);
-            Assert.IsNotNull(session.OfflineCredential);
-            Assert.IsNotNull(store.StoredCredential);
-
-            var reactivatedSession = await client
-                .TryAuthorizeSilentlyAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(reactivatedSession);
-            Assert.AreEqual(session.Username, reactivatedSession.Username);
-            Assert.IsNotNull(session.OfflineCredential);
-            Assert.IsNotNull(store.StoredCredential);
-        }
     }
 }

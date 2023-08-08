@@ -521,7 +521,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task WhenScopeNotGranted_ThenAuthorizeWithBrowserReturnsSession()
+        public void WhenScopeNotGranted_ThenAuthorizeWithBrowserReturnsSession()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(

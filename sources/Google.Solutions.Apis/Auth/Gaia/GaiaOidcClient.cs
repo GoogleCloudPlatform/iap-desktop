@@ -173,6 +173,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
         // Overrides.
         //---------------------------------------------------------------------
 
+        protected override OidcIssuer Issuer => OidcIssuer.Gaia;
+
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
             ICodeReceiver codeReceiver,

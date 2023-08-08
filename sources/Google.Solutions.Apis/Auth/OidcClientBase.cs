@@ -64,6 +64,8 @@ namespace Google.Solutions.Apis.Auth
             this.store.Clear();
         }
 
+        protected abstract OidcIssuer Issuer { get; }
+
         //---------------------------------------------------------------------
         // IOidcClient.
         //---------------------------------------------------------------------
@@ -79,14 +81,24 @@ namespace Google.Solutions.Apis.Auth
                     "Attempting authorization using offline credential...");
 
                 Debug.Assert(offlineCredential.RefreshToken != null);
+
+                if (offlineCredential.Issuer != this.Issuer)
+                {
+                    ApiTraceSources.Default.TraceWarning(
+                        "Found offline credential from wrong issuer: {0}",
+                        offlineCredential.Issuer);
+                    return null;
+                }
+
                 try
                 {
-                    // TODO: Check if offline credential matches client
-
                     var session = await
                         ActivateOfflineCredentialAsync(offlineCredential, cancellationToken)
                         .ConfigureAwait(false);
+
                     Debug.Assert(session != null);
+                    Debug.Assert(session.OfflineCredential != null);
+                    Debug.Assert(session.OfflineCredential.Issuer == this.Issuer);
 
                     //
                     // Update the offline credential as the refresh
@@ -133,25 +145,26 @@ namespace Google.Solutions.Apis.Auth
 
             try
             {
-                var authorization = await
+                var session = await
                     AuthorizeWithBrowserAsync(
                         offlineCredential,
                         codeReceiver,
                         cancellationToken)
                     .ConfigureAwait(false);
 
+                Debug.Assert(session != null);
+                Debug.Assert(session.OfflineCredential.Issuer == this.Issuer);
+
                 //
                 // Store the refresh token so that we can do a silent
                 // activation next time.
                 //
-                this.store.Write(authorization.OfflineCredential);
-
-                //TODO: Assert issuer
+                this.store.Write(session.OfflineCredential);
 
                 ApiTraceSources.Default.TraceVerbose(
                     "Browser-based authorization succeeded.");
 
-                return authorization;
+                return session;
             }
             catch (PlatformNotSupportedException)
             {
