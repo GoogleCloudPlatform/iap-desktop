@@ -19,25 +19,30 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+
 namespace Google.Solutions.Apis.Client
 {
     /// <summary>
-    /// Directions for whether to use PSC, and which 
-    /// PSC endpoint to use.
+    /// Defines the "route" to take for connecting to Google API
+    /// endpoints.
     /// </summary>
-    public class PrivateServiceConnectDirections
+    public class ServiceRoute
     {
-        public static PrivateServiceConnectDirections None
-            = new PrivateServiceConnectDirections(null);
+        /// <summary>
+        /// Use default endpoints, either via the public internet
+        /// of Private Google Access.
+        /// </summary>
+        public static ServiceRoute Public = new ServiceRoute(null);
 
-        public PrivateServiceConnectDirections(string endpoint)
+        public ServiceRoute(string endpoint)
         {
             this.Endpoint = endpoint;
         }
 
         /// <summary>
-        /// Determine whether to use PSC to connect to
-        /// Google APIs.
+        /// Determine whether to use Private Service Connect to 
+        /// connect to Google API endpoints.
         /// </summary>
         public bool UsePrivateServiceConnect
         {
@@ -45,8 +50,13 @@ namespace Google.Solutions.Apis.Client
         }
 
         /// <summary>
-        /// Name of IP address of the PSC endpoint.
+        /// Name of IP address of the PSC endpoint. Null for the public route.
         /// </summary>
         public string Endpoint { get; }
+
+        public override string ToString()
+        {
+            return this.Endpoint ?? "public";
+        }
     }
 }

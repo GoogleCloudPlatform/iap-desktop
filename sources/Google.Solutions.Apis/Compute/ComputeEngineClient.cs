@@ -54,10 +54,10 @@ namespace Google.Solutions.Apis.Compute
         }
 
         public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint(
-                PrivateServiceConnectDirections pscDirections = null)
+                ServiceRoute route = null)
         {
             return new ServiceEndpoint<ComputeEngineClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 "https://compute.googleapis.com/compute/v1/");
         }
 

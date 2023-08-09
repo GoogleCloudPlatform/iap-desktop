@@ -25,20 +25,23 @@ using NUnit.Framework;
 namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
-    public class TestPrivateServiceConnectDirections
+    public class TestServiceRoute
     {
         [Test]
-        public void None()
+        public void Public()
         {
-            Assert.IsFalse(PrivateServiceConnectDirections.None.UsePrivateServiceConnect);
+            Assert.IsFalse(ServiceRoute.Public.UsePrivateServiceConnect);
+            Assert.IsNull(ServiceRoute.Public.Endpoint);
+            Assert.AreEqual("public", ServiceRoute.Public.ToString());
         }
 
         [Test]
-        public void Endpoint()
+        public void Psc()
         {
-            var directions = new PrivateServiceConnectDirections("endpoint");
-            Assert.IsTrue(directions.UsePrivateServiceConnect);
-            Assert.IsFalse(PrivateServiceConnectDirections.None.UsePrivateServiceConnect);
+            var route = new ServiceRoute("www-endpoint.p.googleapis.com");
+            Assert.IsTrue(route.UsePrivateServiceConnect);
+            Assert.AreEqual("www-endpoint.p.googleapis.com", route.Endpoint);
+            Assert.AreEqual("www-endpoint.p.googleapis.com", route.ToString());
         }
     }
 }

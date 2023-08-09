@@ -73,10 +73,10 @@ namespace Google.Solutions.Apis.Logging
         }
 
         public static ServiceEndpoint<LoggingClient> CreateEndpoint(
-            PrivateServiceConnectDirections pscDirections = null)
+            ServiceRoute route = null)
         {
             return new ServiceEndpoint<LoggingClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 "https://logging.googleapis.com/");
         }
 

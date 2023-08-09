@@ -74,10 +74,10 @@ namespace Google.Solutions.Apis.Auth.Iam
         }
 
         public static ServiceEndpoint<WorkforcePoolClient> CreateEndpoint(
-            PrivateServiceConnectDirections pscDirections = null)
+            ServiceRoute route = null)
         {
             return new ServiceEndpoint<WorkforcePoolClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 "https://sts.googleapis.com/");
         }
 

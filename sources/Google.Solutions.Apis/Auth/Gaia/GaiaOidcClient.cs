@@ -61,10 +61,10 @@ namespace Google.Solutions.Apis.Auth.Gaia
         }
 
         public static ServiceEndpoint<GaiaOidcClient> CreateEndpoint(
-            PrivateServiceConnectDirections pscDirections = null)
+            ServiceRoute route = null)
         {
             return new ServiceEndpoint<GaiaOidcClient>(
-                pscDirections ?? PrivateServiceConnectDirections.None,
+                route ?? ServiceRoute.Public,
                 "https://oauth2.googleapis.com/");
         }
 

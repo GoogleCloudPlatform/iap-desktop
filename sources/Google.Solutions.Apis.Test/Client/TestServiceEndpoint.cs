@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Test.Client
             DeviceEnrollmentState state)
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                PrivateServiceConnectDirections.None,
+                ServiceRoute.Public,
                 new Uri("https://sample.Googleapis.COM/compute"));
 
             var details = endpoint.GetDirections(state);
@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenMtlsEnabled_ThenSelectEndpointReturnsMtlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                PrivateServiceConnectDirections.None,
+                ServiceRoute.Public,
                 "https://sample.Googleapis.COM/compute");
 
             var details = endpoint.GetDirections(DeviceEnrollmentState.Enrolled);
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenMtlsEnabledButMtlsEndpointisNull_ThenSelectEndpointReturnsTlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                PrivateServiceConnectDirections.None,
+                ServiceRoute.Public,
                 new Uri("https://sample.Googleapis.COM/compute"),
                 null);
 
@@ -105,7 +105,7 @@ namespace Google.Solutions.Apis.Test.Client
             DeviceEnrollmentState state)
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                new PrivateServiceConnectDirections("sample.p.Googleapis.COM"),
+                new ServiceRoute("sample.p.Googleapis.COM"),
                 new Uri("https://sample.Googleapis.COM/compute"));
 
             var details = endpoint.GetDirections(state);
@@ -124,7 +124,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void ToStringContainsUri()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
-                PrivateServiceConnectDirections.None,
+                ServiceRoute.Public,
                 new Uri("https://sample.googleapis.com/compute"));
 
             StringAssert.Contains("https://sample.googleapis.com/compute", endpoint.ToString());

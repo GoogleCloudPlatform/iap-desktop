@@ -24,7 +24,8 @@ using System;
 namespace Google.Solutions.Apis.Client
 {
     /// <summary>
-    /// Directions for connecting to the endpoint to a Google API.
+    /// Directions for connecting to a particular endpoint of the
+    /// Google API.
     /// </summary>
     public struct ServiceEndpointDirections
     {

@@ -42,10 +42,10 @@ namespace Google.Solutions.Apis.Client
     public class ServiceEndpoint<T> : IServiceEndpoint
         where T : IClient
     {
-        private readonly PrivateServiceConnectDirections pscDirections;
+        private readonly ServiceRoute pscDirections;
 
         public ServiceEndpoint(
-            PrivateServiceConnectDirections pscDirections,
+            ServiceRoute pscDirections,
             Uri tlsUri, 
             Uri mtlsUri)
         {
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Client
         }
 
         public ServiceEndpoint(
-            PrivateServiceConnectDirections pscDirections,
+            ServiceRoute pscDirections,
             Uri tlsUri)
             : this(
                   pscDirections,
@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Client
         }
 
         public ServiceEndpoint(
-            PrivateServiceConnectDirections pscDirections,
+            ServiceRoute pscDirections,
             string tlsUri)
             : this(pscDirections, new Uri(tlsUri))
         { }

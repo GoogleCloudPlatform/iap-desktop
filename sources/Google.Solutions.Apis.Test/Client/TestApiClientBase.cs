@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = CreateAuthorization(state);
 
             var endpoint = new ServiceEndpoint<SampleClient>(
-                PrivateServiceConnectDirections.None,
+                ServiceRoute.Public,
                 SampleEndpoint);
 
             var client = new SampleClient(
@@ -95,7 +95,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenEnrolled_ThenCreateServiceInitializerUsesTlsUsesMtls()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
-                PrivateServiceConnectDirections.None, 
+                ServiceRoute.Public, 
                 SampleEndpoint);
 
             var client = new SampleClient(
@@ -113,7 +113,7 @@ namespace Google.Solutions.Apis.Test.Client
             var authorization = CreateAuthorization(DeviceEnrollmentState.Disabled);
 
             var endpoint = new ServiceEndpoint<SampleClient>(
-                new PrivateServiceConnectDirections("crm.googleapis.com"),
+                new ServiceRoute("crm.googleapis.com"),
                 SampleEndpoint);
 
             var client = new SampleClient(

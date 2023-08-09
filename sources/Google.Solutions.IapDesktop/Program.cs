@@ -472,7 +472,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Register and configure API client endpoints.
                 //
-                var psc = new PrivateServiceConnectDirections(
+                var psc = new ServiceRoute(
                     Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
 
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(psc));
