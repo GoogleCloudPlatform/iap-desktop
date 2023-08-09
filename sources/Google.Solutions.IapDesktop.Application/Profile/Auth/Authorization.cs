@@ -78,8 +78,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         public IDeviceEnrollment DeviceEnrollment { get; }
 
-        public string Email => this.Session.Username;
-
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------

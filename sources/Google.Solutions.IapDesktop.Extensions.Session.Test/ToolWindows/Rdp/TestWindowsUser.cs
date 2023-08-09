@@ -32,8 +32,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
     {
         private static IAuthorization CreateAuthorization(string email)
         {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(email);
+
             var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.Email).Returns(email);
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
             return authorization.Object;
         }
 
@@ -46,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 "bob.b",
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization("bob.b@example.com")));
         }
 
@@ -55,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 "bob01234567890123456",
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization("bob01234567890123456789@example.com")));
         }
 
@@ -64,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 Environment.UserName,
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization(null)));
         }
 
@@ -73,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 Environment.UserName,
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization("bob")));
         }
     }

@@ -88,9 +88,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         private Mock<IAuthorization> CreateAuthorizationMock()
         {
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Email).Returns(SampleEmail);
-            return authz;
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(SampleEmail);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
+            return authorization;
         }
 
         private Mock<IProjectWorkspace> CreateProjectModelServiceMock(OperatingSystems os)

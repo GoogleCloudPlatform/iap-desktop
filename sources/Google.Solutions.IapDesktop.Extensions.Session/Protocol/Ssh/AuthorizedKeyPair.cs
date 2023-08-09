@@ -35,12 +35,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// </summary>
     public sealed class AuthorizedKeyPair : IDisposable
     {
-        //
-        // NB. This is the pattern used by Debian's shadow-utils.
-        //
-        private static readonly Regex posixUsernamePattern = new Regex("^[a-z_][a-z0-9_-]*$");
-        private const int MaxUsernameLength = 32;
-
         public KeyAuthorizationMethods AuthorizationMethod { get; }
         public ISshKeyPair KeyPair { get; }
         public string Username { get; }
@@ -50,31 +44,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             KeyAuthorizationMethods method,
             string posixUsername)
         {
-            Debug.Assert(IsValidUsername(posixUsername));
+            Debug.Assert(LinuxUser.IsValidUsername(posixUsername));
             Debug.Assert(method.IsSingleFlag());
 
             this.KeyPair = keyPair;
             this.AuthorizationMethod = method;
             this.Username = posixUsername;
-        }
-
-        private static bool IsAsciiLetter(char c)
-        {
-            return (c >= 'a' && c <= 'z') ||
-                   (c >= 'A' && c <= 'Z');
-        }
-
-        private static bool IsAsciiLetterOrNumber(char c)
-        {
-            return (c >= '0' && c <= '9') || IsAsciiLetter(c);
-        }
-
-        internal static bool IsValidUsername(string username)
-        {
-            return !string.IsNullOrWhiteSpace(username) &&
-                username.Length > 0 &&
-                username.Length <= MaxUsernameLength &&
-                posixUsernamePattern.IsMatch(username);
         }
 
         //---------------------------------------------------------------------
@@ -88,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Precondition.ExpectNotNull(key, nameof(key));
             Precondition.ExpectNotNull(posixAccount, nameof(posixAccount));
 
-            Debug.Assert(IsValidUsername(posixAccount.Username));
+            Debug.Assert(LinuxUser.IsValidUsername(posixAccount.Username));
 
             return new AuthorizedKeyPair(
                 key,
@@ -106,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             if (preferredUsername != null)
             {
-                if (!IsValidUsername(preferredUsername))
+                if (!LinuxUser.IsValidUsername(preferredUsername))
                 {
                     throw new ArgumentException(
                         $"The username '{preferredUsername}' is not a valid username");
@@ -130,30 +105,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 // 
                 // No preferred username provided, so derive one
-                // from the user's email address:
+                // from the user's username:
                 //
-                // 1. Remove all characters following and including '@'.
-                // 2. Lowercase all alpha characters.
-                // 3. Replace all non-alphanum characters with '_'.
-                //
-                var username = new string(authorization.Email
-                    .Split('@')[0]
-                    .ToLower()
-                    .Select(c => IsAsciiLetterOrNumber(c) ? c : '_')
-                    .ToArray());
-
-                //
-                // 4. Prepend with 'g' if the username does not start with an alpha character.
-                //
-                if (!IsAsciiLetter(username[0]))
-                {
-                    username = "g" + username;
-                }
-
-                //
-                // 5. Truncate the username to 32 characters.
-                //
-                username = username.Substring(0, Math.Min(MaxUsernameLength, username.Length));
+                var username = LinuxUser.SuggestUsername(authorization);
 
                 return new AuthorizedKeyPair(
                     key,

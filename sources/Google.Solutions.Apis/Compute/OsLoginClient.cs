@@ -22,6 +22,8 @@
 using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
@@ -106,12 +108,15 @@ namespace Google.Solutions.Apis.Compute
 
             Debug.Assert(!keyType.Contains(' '));
 
+            var gaiaSession = this.authorization.Session as IGaiaOidcSession
+                ?? throw new NotSupportedForWorkloadIdentityException();
+
             using (ApiTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
 
-                var userEmail = this.authorization.Email;
+                var userEmail = gaiaSession.Email;
                 Debug.Assert(userEmail != null);
 
                 var request = this.service.Users.ImportSshPublicKey(
@@ -178,8 +183,11 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSources.Default.TraceMethod().WithParameters(project))
             {
+                var gaiaSession = this.authorization.Session as IGaiaOidcSession 
+                    ?? throw new NotSupportedForWorkloadIdentityException();
+
                 var request = this.service.Users.GetLoginProfile(
-                    $"users/{this.authorization.Email}");
+                    $"users/{gaiaSession.Email}");
                 request.ProjectId = project.ProjectId;
 
                 try
@@ -205,9 +213,12 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSources.Default.TraceMethod().WithParameters(fingerprint))
             {
+                var gaiaSession = this.authorization.Session as IGaiaOidcSession
+                    ?? throw new NotSupportedForWorkloadIdentityException();
+
                 try
                 {
-                    var userEmail = this.authorization.Email;
+                    var userEmail = gaiaSession.Email;
                     Debug.Assert(userEmail != null);
 
                     await this.service.Users.SshPublicKeys

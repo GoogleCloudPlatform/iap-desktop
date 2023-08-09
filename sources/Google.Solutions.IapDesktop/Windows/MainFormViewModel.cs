@@ -40,7 +40,6 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
-        private readonly IThemeService themeService;
         private readonly IInstall install;
         private readonly UserProfile profile;
         private readonly IAuthorization authorization;
@@ -60,29 +59,17 @@ namespace Google.Solutions.IapDesktop.Windows
             Control view,
             IInstall install,
             UserProfile profile,
-            IAuthorization authorization,
-            IThemeService themeService)
+            IAuthorization authorization)
         {
             this.View = view.ExpectNotNull(nameof(view));
             this.install = install.ExpectNotNull(nameof(install));
             this.profile = profile.ExpectNotNull(nameof(profile));
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
-            this.themeService = themeService.ExpectNotNull(nameof(themeService));
 
-            this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Email}";
+            this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Session.Username}";
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
             this.IsReportInternalIssueVisible = (this.authorization.Session as IGaiaOidcSession).HostedDomain == "google.com";
-
-            this.authorization.Reauthorized += (_, __) =>
-            {
-                //
-                // The email address might have changed after reauth.
-                //
-                // NB. The event might be fired on a worker thread.
-                //
-                view.BeginInvoke((Action)(() => this.ProfileStateCaption = authorization.Email));
-            };
         }
 
         //---------------------------------------------------------------------

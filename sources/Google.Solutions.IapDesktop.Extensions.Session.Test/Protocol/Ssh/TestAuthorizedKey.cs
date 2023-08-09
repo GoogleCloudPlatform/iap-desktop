@@ -31,6 +31,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
     [TestFixture]
     public class TestAuthorizedKey
     {
+        private static Mock<IAuthorization> CreateAuthorization(string username)
+        {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(username);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
+            return authorization;
+        }
+
         //---------------------------------------------------------------------
         // Metadata with preferred username.
         //---------------------------------------------------------------------
@@ -80,13 +95,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEmailValid_ThenForMetadataGeneratesUsername()
+        public void WhenSessionUsernameValid_ThenForMetadataGeneratesUsername()
         {
             var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("j@ex.ample");
+            var authorization = CreateAuthorization("j@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
                 sshKey,
@@ -100,13 +112,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenEmailTooLong_ThenForMetadataStripsUsername()
+        public void WhenSessionUsernameTooLong_ThenForMetadataStripsUsername()
         {
             var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
+            var authorization = CreateAuthorization("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
                 sshKey,
@@ -115,46 +124,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 authorization.Object);
 
             Assert.AreEqual("abcdefghijklmnopqrstuvwxyzabcxyz", authorizedKey.Username);
-            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-            Assert.AreSame(sshKey, authorizedKey.KeyPair);
-        }
-
-        [Test]
-        public void WhenEmailContainsInvalidChars_ThenForMetadataReplacesChars()
-        {
-            var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("1+9@ex.ample");
-
-            var authorizedKey = AuthorizedKeyPair.ForMetadata(
-                sshKey,
-                null,
-                false,
-                authorization.Object);
-
-            Assert.AreEqual("g1_9", authorizedKey.Username);
-            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-            Assert.AreSame(sshKey, authorizedKey.KeyPair);
-        }
-
-        [Test]
-        public void WhenEmailContainsUpperCaseChars_ThenForMetadataReplacesChars()
-        {
-            var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("ABC@ex.ample");
-
-            var authorizedKey = AuthorizedKeyPair.ForMetadata(
-                sshKey,
-                null,
-                false,
-                authorization.Object);
-
-            Assert.AreEqual("abc", authorizedKey.Username);
             Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
             Assert.AreSame(sshKey, authorizedKey.KeyPair);
         }

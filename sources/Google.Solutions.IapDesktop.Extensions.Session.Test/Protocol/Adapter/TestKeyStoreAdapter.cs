@@ -47,6 +47,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
             { }
         }
 
+        private static Mock<IAuthorization> CreateAuthorization(string username)
+        {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(username);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
+            return authorization;
+        }
+
         //---------------------------------------------------------------------
         // CreateKeyName
         //---------------------------------------------------------------------
@@ -54,13 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenUsingRsa3072AndMicrosoftSoftwareKsp_ThenCreateKeyNameReturnsLegacyName()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
             var keyName = KeyStoreAdapter.CreateKeyName(
-                authorization.Object,
+                CreateAuthorization("bob@example.com").Object,
                 SshKeyType.Rsa3072,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
@@ -70,13 +80,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenUsingRsa3072AndMicrosoftSmartCardKsp_ThenCreateKeyNameReturnsLegacyName()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
             var keyName = KeyStoreAdapter.CreateKeyName(
-                authorization.Object,
+                CreateAuthorization("bob@example.com").Object,
                 SshKeyType.Rsa3072,
                 CngProvider.MicrosoftSmartCardKeyStorageProvider);
 
@@ -86,13 +91,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenUsingEcdsaNistp256AndMicrosoftSoftwareKsp_ThenCreateKeyNameReturnsLegacyName()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
             var keyName = KeyStoreAdapter.CreateKeyName(
-                authorization.Object,
+                CreateAuthorization("bob@example.com").Object,
                 SshKeyType.EcdsaNistp256,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
@@ -102,13 +102,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenUsingEcdsaNistp256AndMicrosoftSmartCardKsp_ThenCreateKeyNameReturnsLegacyName()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
             var keyName = KeyStoreAdapter.CreateKeyName(
-                authorization.Object,
+                CreateAuthorization("bob@example.com").Object,
                 SshKeyType.EcdsaNistp256,
                 CngProvider.MicrosoftSmartCardKeyStorageProvider);
 
@@ -118,13 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenUsingEcdsaNistp521AndMicrosoftSoftwareKsp_ThenCreateKeyNameReturnsLegacyName()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
             var keyName = KeyStoreAdapter.CreateKeyName(
-                authorization.Object,
+                CreateAuthorization("bob@example.com").Object,
                 SshKeyType.EcdsaNistp521,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
@@ -134,13 +124,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenUsingEcdsaNistp521AndMicrosoftSmartCardKsp_ThenCreateKeyNameReturnsLegacyName()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
             var keyName = KeyStoreAdapter.CreateKeyName(
-                authorization.Object,
+                CreateAuthorization("bob@example.com").Object,
                 SshKeyType.EcdsaNistp521,
                 CngProvider.MicrosoftSmartCardKeyStorageProvider);
 
@@ -154,16 +139,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenKeyNotFoundAndCreateNewIsFalse_ThenOpenSshKeyReturnsNull()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("notfound@example.com");
-
             var adapter = new KeyStoreAdapter();
 
             Assert.IsNull(adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
-                authorization.Object,
+                CreateAuthorization("notfound@example.com").Object,
                 false,
                 null));
         }
@@ -171,10 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenKeyNotFoundAndCreateNewIsTrue_ThenOpenSshKeyReturnsNewKey()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
+            var authorization = CreateAuthorization("bob@example.com");
 
             var adapter = new KeyStoreAdapter();
             adapter.DeleteSshKeyPair(SshKeyType.Rsa3072, authorization.Object);
@@ -193,11 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenKeyExists_ThenOpenSshKeyReturnsKey()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
+            var authorization = CreateAuthorization("bob@example.com");
             var adapter = new KeyStoreAdapter();
 
             using (var key1 = adapter.OpenSshKeyPair(
@@ -219,11 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
         [Test]
         public void WhenKeyExistsButKeyTypeDifferent_ThenOpenSshKeyReturnsNewKey()
         {
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
+            var authorization = CreateAuthorization("bob@example.com");
             var adapter = new KeyStoreAdapter();
 
             using (var rsaKey = adapter.OpenSshKeyPair(
@@ -250,11 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Adapter
             var window = new Mock<IWin32Window>();
             window.SetupGet(w => w.Handle).Returns(IntPtr.Zero);
 
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
-
+            var authorization = CreateAuthorization("bob@example.com");
             var adapter = new KeyStoreAdapter();
 
             using (adapter.OpenSshKeyPair(

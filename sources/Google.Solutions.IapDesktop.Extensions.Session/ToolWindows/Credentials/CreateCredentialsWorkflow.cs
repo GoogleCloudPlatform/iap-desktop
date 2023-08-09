@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             bool silent)
         {
             var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
-                ? WindowsUser.SuggestFromGoogleEmailAddress(this.serviceProvider.GetService<IAuthorization>())
+                ? WindowsUser.SuggestUsername(this.serviceProvider.GetService<IAuthorization>())
                 : settings.RdpUsername.StringValue;
 
             if (!silent)

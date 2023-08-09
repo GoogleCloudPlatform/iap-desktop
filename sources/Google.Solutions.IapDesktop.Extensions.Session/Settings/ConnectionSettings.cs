@@ -393,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 null,
                 key,
                 username => string.IsNullOrEmpty(username) ||
-                            AuthorizedKeyPair.IsValidUsername(username));
+                            LinuxUser.IsValidUsername(username));
             this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
                 "SshConnectionTimeout",
                 "Connection timeout",

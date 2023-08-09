@@ -44,6 +44,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private Mock<IAuthorization> CreateAuthorizationMock(string username)
+        {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(username);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
+            return authorization;
+        }
+
         //---------------------------------------------------------------------
         // Non-silent.
         //---------------------------------------------------------------------
@@ -81,9 +96,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public void WhenNoSuggestedUserNameProvidedAndDialogCancelled_ThenSuggestionIsDerivedFromSigninName()
         {
             var serviceRegistry = new ServiceRegistry();
-
-            serviceRegistry.AddMock<IAuthorization>()
-                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddSingleton(
+                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
             var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
@@ -113,9 +127,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public void WhenSuggestedUserNameIsEmptyAndDialogCancelled_ThenSuggestionIsDerivedFromSigninName()
         {
             var serviceRegistry = new ServiceRegistry();
-
-            serviceRegistry.AddMock<IAuthorization>()
-                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddSingleton(
+                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
             var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
@@ -146,9 +159,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public async Task WhenPromptSucceeds_ThenCredentialIsGeneratedAndShown()
         {
             var serviceRegistry = new ServiceRegistry();
-
-            serviceRegistry.AddMock<IAuthorization>()
-                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddSingleton(
+                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
             serviceRegistry.AddMock<IWindowsCredentialGenerator>()
@@ -197,9 +209,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public async Task WhenSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsUsedWithoutPrompting()
         {
             var serviceRegistry = new ServiceRegistry();
-
-            serviceRegistry.AddMock<IAuthorization>()
-                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddSingleton(
+                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
             serviceRegistry.AddMock<IWindowsCredentialGenerator>()
@@ -233,9 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public async Task WhenNoSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsDerivedFromSigninNameWithoutPrompting()
         {
             var serviceRegistry = new ServiceRegistry();
-
-            serviceRegistry.AddMock<IAuthorization>()
-                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddSingleton(
+                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
             serviceRegistry.AddMock<IWindowsCredentialGenerator>()

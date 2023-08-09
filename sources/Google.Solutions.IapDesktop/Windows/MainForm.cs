@@ -186,8 +186,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this,
                 this.serviceProvider.GetService<IInstall>(),
                 this.serviceProvider.GetService<UserProfile>(),
-                this.serviceProvider.GetService<IAuthorization>(),
-                this.themeService);
+                this.serviceProvider.GetService<IAuthorization>());
 
             this.BindProperty(
                 c => c.Text,

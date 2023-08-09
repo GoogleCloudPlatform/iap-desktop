@@ -35,9 +35,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
         {
             var authorization = new Mock<IAuthorization>();
             authorization
-                .SetupGet(a => a.Email)
-                .Returns("test@example.com");
-            authorization
                 .SetupGet(a => a.DeviceEnrollment)
                 .Returns(enrollment);
 
