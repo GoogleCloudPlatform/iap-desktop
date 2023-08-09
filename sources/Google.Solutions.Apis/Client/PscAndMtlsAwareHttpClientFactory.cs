@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System.Diagnostics;
 using System.Net.Http;
@@ -125,6 +126,19 @@ namespace Google.Solutions.Apis.Client
             {
                 var handler = base.CreateClientHandler();
 
+                //
+                // Bypass proxy for accessing PSC endpoint.
+                //
+                if (this.directions.Type == ServiceEndpointType.PrivateServiceConnect)
+                {
+                    handler.UseProxy = false;
+
+                    ApiTraceSources.Default.TraceVerbose(
+                        "Bypassing proxy for for endpoint {0} (Host:{1})",
+                        this.directions.BaseUri,
+                        this.directions.Host);
+                }
+                
                 if (this.directions.UseClientCertificate &&
                     HttpClientHandlerExtensions.CanUseClientCertificates)
                 {
@@ -133,6 +147,12 @@ namespace Google.Solutions.Apis.Client
 
                     var added = handler.TryAddClientCertificate(this.deviceEnrollment.Certificate);
                     Debug.Assert(added);
+
+                    ApiTraceSources.Default.TraceVerbose(
+                        "Using client certificate {0} for endpoint {1} (Host:{2})",
+                        this.deviceEnrollment.Certificate,
+                        this.directions.BaseUri,
+                        this.directions.Host);
                 }
 
                 return handler;

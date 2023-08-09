@@ -58,13 +58,5 @@ namespace Google.Solutions.Apis.Client
                 }
             }
         }
-
-        /// <summary>
-        /// Check if the platform/runtime supports device certificate authentication.
-        /// </summary>
-        public static bool CanEnableDeviceCertificateAuthentication
-        {
-            get => HttpClientHandlerExtensions.CanUseClientCertificates;
-        }
     }
 }
