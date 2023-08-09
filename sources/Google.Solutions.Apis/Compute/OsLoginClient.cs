@@ -214,7 +214,7 @@ namespace Google.Solutions.Apis.Compute
             using (ApiTraceSources.Default.TraceMethod().WithParameters(fingerprint))
             {
                 var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new NotSupportedForWorkloadIdentityException(); // TODO: Add test
+                    ?? throw new NotSupportedForWorkloadIdentityException();
 
                 try
                 {

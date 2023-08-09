@@ -402,7 +402,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 key.Type,
                 key.PublicKeyString,
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
-                    authorization.Session.Username, // TODO: Verify if accurate
+                    authorization.Session.Username,
                     DateTime.UtcNow.Add(validity)));
 
             var existingKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(

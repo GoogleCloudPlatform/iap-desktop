@@ -21,14 +21,17 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,9 +41,41 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestOsLoginClient
     {
+        private IAuthorization CreateNonGaiaAuthorization()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
+
+            var session = new Mock<IOidcSession>();
+            session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+            authorization.SetupGet(a => a.Session).Returns(session.Object);
+
+            return authorization.Object;
+        }
+
         //---------------------------------------------------------------------
         // ImportSshPublicKeyAsync.
         //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUsingNonGaiaSession_ThenImportSshPublicKeyThrowsException()
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                CreateNonGaiaAuthorization(),
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<NotSupportedForWorkloadIdentityException>(
+                () => client.ImportSshPublicKeyAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    "ssh-rsa",
+                    "blob",
+                    TimeSpan.FromMinutes(1),
+                    CancellationToken.None).Wait());
+        }
 
         [Test]
         public async Task WhenEmailInvalid_ThenImportSshPublicKeyThrowsException(
@@ -95,6 +130,20 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenUsingNonGaiaSession_ThenGetLoginProfileThrowsException()
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                CreateNonGaiaAuthorization(),
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<NotSupportedForWorkloadIdentityException>(
+                () => client.GetLoginProfileAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
         public async Task WhenEmailInvalid_ThenGetLoginProfileThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
@@ -135,7 +184,21 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDeletingKeyTwice_ThenDeleteSucceeds(
+        public void WhenUsingNonGaiaSession_ThenDeleteSshPublicKeyhrowsException()
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                CreateNonGaiaAuthorization(),
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<NotSupportedForWorkloadIdentityException>(
+                () => client.DeleteSshPublicKeyAsync(
+                    "fingerprint",
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenDeletingKeyTwice_ThenDeleteSshPublicKeySucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
@@ -189,7 +252,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenDeletingNonexistingKey_ThenDeleteSucceeds(
+        public async Task WhenDeletingNonexistingKey_ThenDeleteSshPublicKeySucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
