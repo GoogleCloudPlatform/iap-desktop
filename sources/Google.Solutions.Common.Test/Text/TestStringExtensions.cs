@@ -87,7 +87,7 @@ namespace Google.Solutions.Common.Test.Text
         [Test]
         public void WhenStringIsNull_ThenNullIfEmptyReturnsNull()
         {
-            string s = null;
+            string? s = null;
             Assert.IsNull(s.NullIfEmpty());
         }
 

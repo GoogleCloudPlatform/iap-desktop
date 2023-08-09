@@ -36,7 +36,7 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenNull_ThenExpectNotNullThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
-                () => ((string)null).ExpectNotNull("test"));
+                () => ((string?)null).ExpectNotNull("test"));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenNullOrEmpty_ThenExpectNotEmptyThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
-                () => ((string)null).ExpectNotEmpty("test"));
+                () => ((string?)null).ExpectNotEmpty("test"));
             Assert.Throws<ArgumentNullException>(
                 () => string.Empty.ExpectNotEmpty("test"));
         }
@@ -79,8 +79,8 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenConditionTrue_ThenExpectReturns()
         {
-            Precondition.Expect(true, null);
-            Precondition.Expect(true, null);
+            Precondition.Expect(true, "");
+            Precondition.Expect(true, "");
         }
 
         //---------------------------------------------------------------------
@@ -99,9 +99,9 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenInRange_ThenExpectInRangeReturnsValue()
         {
-            Assert.AreEqual(0f, (0f).ExpectInRange(-1f, 1f, null));
-            Assert.AreEqual(1f, (1f).ExpectInRange(-1f, 1f, null));
-            Assert.AreEqual(-1f, (-1f).ExpectInRange(-1f, 1f, null));
+            Assert.AreEqual(0f, (0f).ExpectInRange(-1f, 1f, "range"));
+            Assert.AreEqual(1f, (1f).ExpectInRange(-1f, 1f, "range"));
+            Assert.AreEqual(-1f, (-1f).ExpectInRange(-1f, 1f, "range"));
         }
     }
 }

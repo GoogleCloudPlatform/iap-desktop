@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         [Test]
         public void WhenObjectIsNull_ThenDumpPropertiesReturnsEmptyString()
         {
-            Assert.AreEqual(string.Empty, ((object)null).DumpProperties());
+            Assert.AreEqual(string.Empty, ((object?)null).DumpProperties());
         }
 
         [Test]

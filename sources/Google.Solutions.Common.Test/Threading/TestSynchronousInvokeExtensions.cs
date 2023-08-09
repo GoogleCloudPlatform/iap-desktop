@@ -50,7 +50,7 @@ namespace Google.Solutions.Common.Test.Threading
                 return new Mock<IAsyncResult>().Object;
             }
 
-            public object EndInvoke(IAsyncResult result)
+            public object? EndInvoke(IAsyncResult result)
             {
                 return null;
             }
@@ -91,7 +91,7 @@ namespace Google.Solutions.Common.Test.Threading
                 InvokeRequired = true
             };
 
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object?>();
 
             var invoked = false;
             var task = invoker.InvokeAsync(async () =>
@@ -115,7 +115,7 @@ namespace Google.Solutions.Common.Test.Threading
                 InvokeRequired = true
             };
 
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object?>();
 
             var invoked = false;
             var task = invoker.InvokeAsync(async () =>

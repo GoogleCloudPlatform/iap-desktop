@@ -35,12 +35,15 @@ namespace Google.Solutions.Common.Util
             return new HashSet<T>(source, comparer);
         }
 
-        public static IEnumerable<T> EnsureNotNull<T>(this IEnumerable<T> e)
+        public static IEnumerable<T> EnsureNotNull<T>(
+            this IEnumerable<T>? e)
         {
             return e ?? Enumerable.Empty<T>();
         }
 
-        public static bool ContainsAll<T>(this IEnumerable<T> sequence, IEnumerable<T> lookup)
+        public static bool ContainsAll<T>(
+            this IEnumerable<T> sequence, 
+            IEnumerable<T> lookup)
         {
             return !lookup.Except(sequence).Any();
         }
