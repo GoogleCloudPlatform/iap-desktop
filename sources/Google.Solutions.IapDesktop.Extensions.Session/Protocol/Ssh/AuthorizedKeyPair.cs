@@ -130,13 +130,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 // 
                 // No preferred username provided, so derive one
-                // from the user's email address:
+                // from the user's username:
                 //
                 // 1. Remove all characters following and including '@'.
                 // 2. Lowercase all alpha characters.
                 // 3. Replace all non-alphanum characters with '_'.
                 //
-                var username = new string(authorization.Email
+                var username = new string(authorization.Session.Username // TODO: Verify if accurate
                     .Split('@')[0]
                     .ToLower()
                     .Select(c => IsAsciiLetterOrNumber(c) ? c : '_')

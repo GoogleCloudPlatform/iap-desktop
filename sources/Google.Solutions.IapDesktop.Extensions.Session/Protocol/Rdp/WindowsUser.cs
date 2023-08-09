@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
             // - We must truncate to 20 chars.
             //
 
-            var email = authorization.Email;
+            var email = authorization.Session.Username;
 
             int atIndex;
             if (!string.IsNullOrEmpty(email) && (atIndex = email.IndexOf('@')) > 0)

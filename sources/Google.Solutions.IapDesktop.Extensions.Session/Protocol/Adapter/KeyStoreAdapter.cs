@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
                 //
                 // Use backwards-compatible name.
                 //
-                return $"IAPDESKTOP_{authorization.Email}";
+                return $"IAPDESKTOP_{authorization.Session.Username}";
             }
             else
             {
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
                         0,
                         4).Replace("-", string.Empty);
 
-                    return $"IAPDESKTOP_{authorization.Email}_{keyType:x}_{providerToken}";
+                    return $"IAPDESKTOP_{authorization.Session.Username}_{keyType:x}_{providerToken}";
                 }
             }
         }

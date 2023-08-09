@@ -31,6 +31,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
     [TestFixture]
     public class TestAuthorizedKey
     {
+        private static Mock<IAuthorization> CreateAuthorization(string username)
+        {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(username);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
+            return authorization;
+        }
+
         //---------------------------------------------------------------------
         // Metadata with preferred username.
         //---------------------------------------------------------------------
@@ -83,10 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenEmailValid_ThenForMetadataGeneratesUsername()
         {
             var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("j@ex.ample");
+            var authorization = CreateAuthorization("j@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
                 sshKey,
@@ -103,10 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenEmailTooLong_ThenForMetadataStripsUsername()
         {
             var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
+            var authorization = CreateAuthorization("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
                 sshKey,
@@ -123,10 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenEmailContainsInvalidChars_ThenForMetadataReplacesChars()
         {
             var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("1+9@ex.ample");
+            var authorization = CreateAuthorization("1+9@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
                 sshKey,
@@ -143,10 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenEmailContainsUpperCaseChars_ThenForMetadataReplacesChars()
         {
             var sshKey = new Mock<ISshKeyPair>().Object;
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Email)
-                .Returns("ABC@ex.ample");
+            var authorization = CreateAuthorization("ABC@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
                 sshKey,

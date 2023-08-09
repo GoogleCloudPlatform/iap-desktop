@@ -25,6 +25,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CS0067 // The event 'WorkforcePoolSession.Terminated' is never used
+
 namespace Google.Solutions.Apis.Auth.Iam
 {
     /// <summary>
@@ -68,20 +70,23 @@ namespace Google.Solutions.Apis.Auth.Iam
 
         public void Splice(IOidcSession newSession)
         {
-            throw new InvalidOperationException(
-                "Workforce identity doesn't support reauthentication");
+            throw new NotSupportedForWorkloadIdentityException();
         }
 
         public Task RevokeGrantAsync(CancellationToken cancellationToken)
         {
-            throw new InvalidOperationException(
-                "Workforce identity doesn't support revocation");
+            //
+            // STS grants can't be revoked.
+            //
+            throw new NotSupportedForWorkloadIdentityException();
         }
 
         public void Terminate()
         {
-            throw new InvalidOperationException(
-                "Workforce identity doesn't support session termination");
+            //
+            // STS tokens can't be revoked.
+            //
+            throw new NotSupportedForWorkloadIdentityException();
         }
     }
 }

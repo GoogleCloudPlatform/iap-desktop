@@ -45,10 +45,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         private static Mock<IAuthorization> CreateAuthorizationMock()
         {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(SampleEmailAddress);
+
             var authorization = new Mock<IAuthorization>();
             authorization
-                .SetupGet(a => a.Email)
-                .Returns(SampleEmailAddress);
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
 
             return authorization;
         }

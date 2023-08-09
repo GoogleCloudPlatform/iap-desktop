@@ -53,7 +53,5 @@ namespace Google.Solutions.Apis.Auth
         /// in state "Disabled".
         /// </summary>
         IDeviceEnrollment DeviceEnrollment { get; }
-
-        string Email { get; }
     }
 }

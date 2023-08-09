@@ -32,8 +32,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
     {
         private static IAuthorization CreateAuthorization(string email)
         {
+            var session = new Mock<IOidcSession>();
+            session
+                .SetupGet(a => a.Username)
+                .Returns(email);
+
             var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.Email).Returns(email);
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
             return authorization.Object;
         }
 
