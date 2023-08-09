@@ -71,7 +71,7 @@ namespace Google.Solutions.Common.Threading
             this SynchronizationContext context,
             Action func)
         {
-            return RunAsync<object>(
+            return RunAsync<object?>(
                 context,
                 () =>
                 {
@@ -83,11 +83,11 @@ namespace Google.Solutions.Common.Threading
         /// <summary>
         /// Send a callback and pass its return value.
         /// </summary>
-        public static T Send<T>(
+        public static T? Send<T>(
             this SynchronizationContext context,
             Func<T> func) where T : class
         {
-            T value = null;
+            T? value = null;
             context.Send(_ =>
             {
                 value = func();

@@ -58,7 +58,7 @@ namespace Google.Solutions.Common.Threading
         /// </summary>
         public static Task RunAsync(Action action)
         {
-            return RunAsync<object>(() =>
+            return RunAsync<object?>(() =>
             {
                 action();
                 return null;

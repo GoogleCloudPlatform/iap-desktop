@@ -35,7 +35,7 @@ namespace Google.Solutions.Common.Threading
     /// </summary>
     public class SingleThreadSynchronizationContext : SynchronizationContext
     {
-        private Thread designatedThread;
+        private Thread? designatedThread;
         private readonly Queue<QueuedCallback> backlog = new Queue<QueuedCallback>();
 
         public SingleThreadSynchronizationContext()

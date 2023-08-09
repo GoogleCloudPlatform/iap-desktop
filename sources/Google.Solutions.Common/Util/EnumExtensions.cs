@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Util
             return v != 0 && !IsPowerOfTwo(v);
         }
 
-        public static TAttribute GetAttribute<TAttribute>(this Enum enumValue)
+        public static TAttribute? GetAttribute<TAttribute>(this Enum enumValue)
                 where TAttribute : Attribute
         {
             return enumValue

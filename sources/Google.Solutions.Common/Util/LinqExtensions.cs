@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Util
     {
         public static HashSet<T> ToHashSet<T>(
             this IEnumerable<T> source,
-            IEqualityComparer<T> comparer = null)
+            IEqualityComparer<T>? comparer = null)
         {
             return new HashSet<T>(source, comparer);
         }

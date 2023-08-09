@@ -5,6 +5,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Platform extensions library</Description>
     
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

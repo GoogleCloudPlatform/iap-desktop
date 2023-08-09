@@ -71,7 +71,7 @@ namespace Google.Solutions.Common.Threading
             this ISynchronizeInvoke invoker,
             Func<Task> action)
         {
-            async Task<object> AdapterFunc()
+            async Task<object?> AdapterFunc()
             {
                 await action().ConfigureAwait(false);
                 return null;

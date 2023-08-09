@@ -5,6 +5,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>API extensions library</Description>
     
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis" Version="1.61.0" />

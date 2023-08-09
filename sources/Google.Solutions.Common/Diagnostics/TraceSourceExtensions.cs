@@ -70,9 +70,9 @@ namespace Google.Solutions.Common.Diagnostics
 
         public static TraceCallScope TraceMethod(
             this TraceSource source,
-            [CallerMemberName] string method = null)
+            [CallerMemberName] string? method = null)
         {
-            return new TraceCallScope(source, method);
+            return new TraceCallScope(source, method ?? "unknown");
         }
 
         public static void ForwardTo(
