@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 "bob.b",
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization("bob.b@example.com")));
         }
 
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 "bob01234567890123456",
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization("bob01234567890123456789@example.com")));
         }
 
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 Environment.UserName,
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization(null)));
         }
 
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             Assert.AreEqual(
                 Environment.UserName,
-                WindowsUser.SuggestFromGoogleEmailAddress(
+                WindowsUser.SuggestUsername(
                     CreateAuthorization("bob")));
         }
     }

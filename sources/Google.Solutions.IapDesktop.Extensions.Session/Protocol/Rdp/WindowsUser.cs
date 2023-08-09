@@ -26,10 +26,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 {
     internal static class WindowsUser
     {
-        public static string SuggestFromGoogleEmailAddress(IAuthorization authorization)
+        public static string SuggestUsername(IAuthorization authorization)
         {
             //
             // Criteria for local Windows user accounts:
+            //
             // (1) cannot be identical to any other user or group name on the computer
             // (2) can contain up to 20 uppercase or lowercase characters
             // (3) must not contain " / \ [ ] : ; | = , + * ? < >
