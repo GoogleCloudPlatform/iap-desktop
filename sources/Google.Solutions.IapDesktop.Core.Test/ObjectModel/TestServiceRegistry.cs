@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using NUnit.Framework;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
@@ -50,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         public class ServiceWithIncompatibleConstructor
         {
+            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
             public ServiceWithIncompatibleConstructor(string s)
             {
             }
@@ -172,6 +174,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         private class ServiceWithRecursiveConstructor
         {
+            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
             public ServiceWithRecursiveConstructor(ServiceWithRecursiveConstructor obj)
             {
             }
@@ -179,6 +182,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         private class ServiceWithPartiallySatisfiedConstructor
         {
+            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
             public ServiceWithPartiallySatisfiedConstructor(ServiceWithDefaultConstructor obj, int i)
             {
             }
@@ -194,6 +198,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
                 Assert.IsNotNull(obj2);
             }
 
+            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
             public ServiceWithSatisfiedConstructor(
                 ServiceWithDefaultConstructor obj)
             {

@@ -27,12 +27,13 @@ using System.Threading.Tasks;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using System.Security.Cryptography.X509Certificates;
+using Google.Solutions.Apis.Auth.Gaia;
 
 #pragma warning disable CS0067 // The event is never used
 
 namespace Google.Solutions.Testing.Apis.Integration
 {
-    public class TemporaryAuthorization : IAuthorization, IOidcSession
+    public class TemporaryAuthorization : IAuthorization, IGaiaOidcSession
     {
         private TemporaryAuthorization(
             string email,
@@ -96,8 +97,6 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         public IDeviceEnrollment DeviceEnrollment { get; }
 
-        public string Email => this.Username;
-
         public string Username { get; }
 
         public Task ReauthorizeAsync(CancellationToken token)
@@ -112,6 +111,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         public ICredential ApiCredential { get; }
 
         public OidcOfflineCredential OfflineCredential => throw new NotImplementedException();
+
 
         public event EventHandler Reauthorized;
         public event EventHandler Terminated;
@@ -129,6 +129,20 @@ namespace Google.Solutions.Testing.Apis.Integration
         public void Terminate()
         {
         }
+
+        //---------------------------------------------------------------------
+        // IGaiaOidcSession.
+        //---------------------------------------------------------------------
+
+        public IJsonWebToken IdToken => throw new NotImplementedException();
+
+        public string HostedDomain => null;
+
+        public string Email => this.Username;
+
+        //---------------------------------------------------------------------
+        // Helper classes.
+        //---------------------------------------------------------------------
 
         private class Enrollment : IDeviceEnrollment
         {
