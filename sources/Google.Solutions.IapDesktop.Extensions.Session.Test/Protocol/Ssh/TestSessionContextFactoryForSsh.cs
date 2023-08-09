@@ -41,7 +41,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
