@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 dialog.ViewModel.DeviceEnrollment = DeviceEnrollment.Create(
                     new CertificateStore(),
-                    serviceProvider.GetService<IRepository<IApplicationSettings>>());
+                    serviceProvider.GetService<IRepository<IAccessSettings>>());
                 dialog.ViewModel.ClientRegistrations 
                     = new Dictionary<OidcIssuer, OidcClientRegistration>()
                     {
@@ -413,10 +413,15 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton<IWin32ProcessFactory>(processFactory);
                 preAuthLayer.AddSingleton<IWin32ProcessSet>(processFactory);
 
+                //
+                // Load settings.
+                //
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),
                     profile.UserPolicyKey?.OpenSubKey("Application"));
+                preAuthLayer.AddSingleton<IRepository<IApplicationSettings>>(appSettingsRepository);
+
                 if (appSettingsRepository.IsPolicyPresent)
                 {
                     //
@@ -426,21 +431,24 @@ namespace Google.Solutions.IapDesktop
                     Install.UserAgent.Extensions = "Enterprise";
                 }
 
-                preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
-                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Theme")));
-                preAuthLayer.AddSingleton<IThemeService, ThemeService>();
-
-                preAuthLayer.AddTransient<IQuarantine, Quarantine>();
-                preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
-                preAuthLayer.AddSingleton<IRepository<IApplicationSettings>>(appSettingsRepository);
-                preAuthLayer.AddSingleton(new ToolWindowStateRepository(
-                    profile.SettingsKey.CreateSubKey("ToolWindows")));
-
                 var authSettingsRepository = new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"));
                 preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
+
+                preAuthLayer.AddSingleton<IRepository<IAccessSettings>>(new AccessSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Application"),
+                    profile.MachinePolicyKey?.OpenSubKey("Application"),
+                    profile.UserPolicyKey?.OpenSubKey("Application")));
+                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Theme")));
+                preAuthLayer.AddSingleton(new ToolWindowStateRepository(
+                    profile.SettingsKey.CreateSubKey("ToolWindows")));
+
+                preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
+                preAuthLayer.AddSingleton<IThemeService, ThemeService>();
+                preAuthLayer.AddTransient<IQuarantine, Quarantine>();
+                preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
 
                 //
                 // Configure networking settings.
