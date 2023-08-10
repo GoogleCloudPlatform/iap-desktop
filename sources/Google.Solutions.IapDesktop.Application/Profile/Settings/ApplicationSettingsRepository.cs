@@ -44,9 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         IStringSetting ProxyPacUrl { get; }
         IStringSetting ProxyUsername { get; }
         ISecureStringSetting ProxyPassword { get; }
-        IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; }
         IStringSetting FullScreenDevices { get; }
-        IStringSetting DeviceCertificateSelector { get; }
         IStringSetting CollapsedProjects { get; }
         IIntSetting ConnectionLimit { get; }
     }
@@ -62,7 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
+            RegistryKey userPolicyKey) 
+            : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
         }
 
@@ -82,6 +81,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class ApplicationSettings : IApplicationSettings
         {
+            private ApplicationSettings()
+            { }
+
             public IBoolSetting IsMainWindowMaximized { get; private set; }
 
             public IIntSetting MainWindowHeight { get; private set; }
@@ -102,11 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISecureStringSetting ProxyPassword { get; private set; }
 
-            public IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
-
             public IStringSetting FullScreenDevices { get; private set; }
-
-            public IStringSetting DeviceCertificateSelector { get; private set; }
 
             public IStringSetting CollapsedProjects { get; private set; }
 
@@ -124,15 +122,10 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.ProxyPacUrl,
                 this.ProxyUsername,
                 this.ProxyPassword,
-                this.IsDeviceCertificateAuthenticationEnabled,
                 this.FullScreenDevices,
-                this.DeviceCertificateSelector,
                 this.CollapsedProjects,
                 this.ConnectionLimit
             };
-
-            private ApplicationSettings()
-            { }
 
             public static ApplicationSettings FromKey(
                 RegistryKey settingsKey,
@@ -167,15 +160,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             settingsKey)
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),
-                    IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
-                            "IsDeviceCertificateAuthenticationEnabled",
-                            "IsDeviceCertificateAuthenticationEnabled",
-                            null,
-                            null,
-                            false,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
                     ProxyUrl = RegistryStringSetting.FromKey(
                             "ProxyUrl",
                             "ProxyUrl",
@@ -194,16 +178,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             null,
                             settingsKey,
                             url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    DeviceCertificateSelector = RegistryStringSetting.FromKey(
-                            "DeviceCertificateSelector",
-                            "DeviceCertificateSelector",
-                            null,
-                            null,
-                            DeviceEnrollment.DefaultDeviceCertificateSelector,
-                            settingsKey,
-                            selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),
 

@@ -73,11 +73,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.BoolValue;
             this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
 
-            this.IsDeviceCertificateAuthenticationEnabled.Value =
-                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
-            this.IsDeviceCertificateAuthenticationEditable.Value =
-                !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
-
             this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
                 : DateTime.FromBinary(settings.LastUpdateCheck.LongValue).ToString();
@@ -91,8 +86,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         {
             settings.IsUpdateCheckEnabled.BoolValue =
                 this.IsUpdateCheckEnabled.Value;
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
-                this.IsDeviceCertificateAuthenticationEnabled.Value;
 
             //
             // Update protocol registration.
@@ -128,13 +121,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public ObservableProperty<bool> IsUpdateCheckEditable { get; }
 
-        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }
+        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }//TODO: Remove
 
         public ObservableProperty<bool> IsUpdateCheckEnabled { get; }
 
         public ObservableProperty<bool> IsBrowserIntegrationEnabled { get; }
 
-        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }
+        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }//TODO: Remove
 
         public string LastUpdateCheck { get; private set; }
     }
