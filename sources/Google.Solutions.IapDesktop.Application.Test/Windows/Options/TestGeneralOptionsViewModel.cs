@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             this.protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
         }
 
-        private ApplicationSettingsRepository CreateSettingsRepository(
+        private IRepository<IApplicationSettings> CreateSettingsRepository(
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);

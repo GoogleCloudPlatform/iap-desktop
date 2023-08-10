@@ -51,15 +51,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 () => helpService.OpenTopic(HelpTopics.BrowserIntegration));
 
             this.IsUpdateCheckEditable = ObservableProperty.Build(false);
-            this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
 
             this.IsUpdateCheckEnabled = ObservableProperty.Build(false);
             this.IsBrowserIntegrationEnabled = ObservableProperty.Build(false);
-            this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
 
             MarkDirtyWhenPropertyChanges(this.IsUpdateCheckEnabled);
             MarkDirtyWhenPropertyChanges(this.IsBrowserIntegrationEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsDeviceCertificateAuthenticationEnabled);
 
             base.OnInitializationCompleted();
         }
@@ -103,10 +100,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-
-        // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
-        private static string ExecutableLocation =>
-            (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
+        private static string ExecutableLocation
+        {
+            //
+            // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
+            //
+            get => (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
+        }
 
         //---------------------------------------------------------------------
         // Observable command.
@@ -121,13 +121,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public ObservableProperty<bool> IsUpdateCheckEditable { get; }
 
-        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }//TODO: Remove
-
         public ObservableProperty<bool> IsUpdateCheckEnabled { get; }
 
         public ObservableProperty<bool> IsBrowserIntegrationEnabled { get; }
-
-        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }//TODO: Remove
 
         public string LastUpdateCheck { get; private set; }
     }

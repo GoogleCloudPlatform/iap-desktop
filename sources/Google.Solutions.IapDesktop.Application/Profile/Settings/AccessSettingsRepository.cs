@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     // NB. Machine policies override user policies, and
                     //     user policies override settings.
                     //
-                    PrivateServiceConnectEndpoint = RegistryStringSetting.FromKey(
+                    PrivateServiceConnectEndpoint = RegistryStringSetting.FromKey( // TODO: Add to ADMX
                             "PrivateServiceConnectEndpoint",
                             "Private Service Connect endpoint",
                             null,

@@ -46,21 +46,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 viewModel,
                 m => m.IsUpdateCheckEditable,
                 bindingContext);
-            this.secureConnectBox.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.IsDeviceCertificateAuthenticationEditable,
-                bindingContext);
 
             this.enableUpdateCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsUpdateCheckEnabled,
-                bindingContext);
-            this.enableDcaCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsDeviceCertificateAuthenticationEnabled,
                 bindingContext);
             this.lastCheckLabel.BindReadonlyProperty(
                 c => c.Text,
