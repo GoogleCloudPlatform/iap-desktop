@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         }
     }
 
-    public class TerminalSettings : IRegistrySettingsCollection
+    public class TerminalSettings : ISettingsCollection
     {
         public RegistryBoolSetting IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; private set; }
         public RegistryBoolSetting IsSelectAllUsingCtrlAEnabled { get; private set; }

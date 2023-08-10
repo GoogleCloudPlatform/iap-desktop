@@ -39,9 +39,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
         object RegistryValue { get; }
     }
 
-    public interface IRegistrySettingsCollection : ISettingsCollection
-    {
-    }
 
     public class RegistryStringSetting
         : SettingBase<string>, IRegistrySetting, IStringSetting
@@ -653,7 +650,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
         }
 
         public static void Save(
-            this IRegistrySettingsCollection collection,
+            this ISettingsCollection collection,
             RegistryKey registryKey)
         {
             foreach (var setting in collection.Settings

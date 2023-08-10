@@ -40,7 +40,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
-    public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
+    public abstract class ConnectionSettingsBase : ISettingsCollection
     {
         private static class Categories
         {

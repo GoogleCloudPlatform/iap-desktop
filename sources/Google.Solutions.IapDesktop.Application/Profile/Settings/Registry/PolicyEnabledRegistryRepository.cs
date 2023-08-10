@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
     /// </summary>
     public abstract class PolicyEnabledRegistryRepository<TSettings>
         : RegistryRepositoryBase<TSettings>
-        where TSettings : IRegistrySettingsCollection
+        where TSettings : ISettingsCollection
     {
         private readonly RegistryKey machinePolicyKey;
         private readonly RegistryKey userPolicyKey;

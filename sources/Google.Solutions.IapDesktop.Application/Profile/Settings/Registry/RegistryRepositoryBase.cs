@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
     /// Base class for all settings repositories.
     /// </summary>
     public abstract class RegistryRepositoryBase<TSettings> : IDisposable
-        where TSettings : IRegistrySettingsCollection
+        where TSettings : ISettingsCollection
     {
         protected RegistryKey BaseKey { get; }
 

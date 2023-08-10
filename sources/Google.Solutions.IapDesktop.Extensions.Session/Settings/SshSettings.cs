@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.schemaVersion);
     }
 
-    public class SshSettings : IRegistrySettingsCollection
+    public class SshSettings : ISettingsCollection
     {
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
         public RegistryDwordSetting PublicKeyValidity { get; private set; }

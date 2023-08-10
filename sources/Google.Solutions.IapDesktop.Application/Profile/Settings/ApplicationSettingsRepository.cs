@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 userPolicyKey);
     }
 
-    public class ApplicationSettings : IRegistrySettingsCollection
+    public class ApplicationSettings : ISettingsCollection
     {
         public const char FullScreenDevicesSeparator = ',';
 

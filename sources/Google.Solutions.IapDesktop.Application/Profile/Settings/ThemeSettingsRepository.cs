@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             => ThemeSettings.FromKey(key);
     }
 
-    public class ThemeSettings : IRegistrySettingsCollection
+    public class ThemeSettings : ISettingsCollection
     {
         public enum ApplicationTheme
         {

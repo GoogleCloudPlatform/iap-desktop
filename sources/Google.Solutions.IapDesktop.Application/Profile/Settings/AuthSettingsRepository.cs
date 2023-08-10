@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class AuthSettings : IRegistrySettingsCollection
+    public class AuthSettings : ISettingsCollection
     {
         public RegistrySecureStringSetting Credentials { get; private set; }
 

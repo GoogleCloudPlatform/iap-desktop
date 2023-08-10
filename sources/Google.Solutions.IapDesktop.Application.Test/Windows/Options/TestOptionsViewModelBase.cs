@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Mvvm.Binding;
@@ -32,14 +33,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestOptionsViewModelBase
     {
-        public abstract class SettingsRepository : RegistryRepositoryBase<IRegistrySettingsCollection>
+        public abstract class SettingsRepository : RegistryRepositoryBase<ISettingsCollection>
         {
             public SettingsRepository() : base(null)
             {
             }
         }
 
-        private class OptionsViewModel : OptionsViewModelBase<IRegistrySettingsCollection>
+        private class OptionsViewModel : OptionsViewModelBase<ISettingsCollection>
         {
             public bool ThrowOnSave = false;
             public int LoadCalls = 0;
@@ -47,19 +48,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             public OptionsViewModel(
                 string title,
-                RegistryRepositoryBase<IRegistrySettingsCollection> settingsRepository)
+                RegistryRepositoryBase<ISettingsCollection> settingsRepository)
                 : base(title, settingsRepository)
             {
                 OnInitializationCompleted();
             }
 
-            protected override void Load(IRegistrySettingsCollection settings)
+            protected override void Load(ISettingsCollection settings)
             {
                 this.LoadCalls++;
                 Assert.IsNotNull(settings);
             }
 
-            protected override void Save(IRegistrySettingsCollection settings)
+            protected override void Save(ISettingsCollection settings)
             {
                 this.SaveCalls++;
                 Assert.IsNotNull(settings);
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
         private static Mock<SettingsRepository> CreateRepositoryMock()
         {
-            var settings = new Mock<IRegistrySettingsCollection>();
+            var settings = new Mock<ISettingsCollection>();
             var repository = new Mock<SettingsRepository>();
             repository
                 .Setup(r => r.GetSettings())
@@ -138,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             optionsViewModel.ApplyChangesAsync().Wait();
 
             repository.Verify(r => r.GetSettings(), Times.Exactly(2));
-            repository.Verify(r => r.SetSettings(It.IsAny<IRegistrySettingsCollection>()), Times.Once);
+            repository.Verify(r => r.SetSettings(It.IsAny<ISettingsCollection>()), Times.Once);
             Assert.AreEqual(1, optionsViewModel.LoadCalls);
             Assert.AreEqual(1, optionsViewModel.SaveCalls);
         }
@@ -161,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var repository = CreateRepositoryMock();
             repository
-                .Setup(r => r.SetSettings(It.IsAny<IRegistrySettingsCollection>()))
+                .Setup(r => r.SetSettings(It.IsAny<ISettingsCollection>()))
                 .Throws(new ArgumentException("mock"));
             var optionsViewModel = new OptionsViewModel(
                 "Sample",
@@ -180,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var repository = CreateRepositoryMock();
             repository
-                .Setup(r => r.SetSettings(It.IsAny<IRegistrySettingsCollection>()))
+                .Setup(r => r.SetSettings(It.IsAny<ISettingsCollection>()))
                 .Throws(new ArgumentException("mock"));
             var optionsViewModel = new OptionsViewModel(
                 "Sample",

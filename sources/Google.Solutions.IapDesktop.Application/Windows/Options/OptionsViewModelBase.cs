@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
@@ -28,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     public abstract class OptionsViewModelBase<TSettings>
         : PropertiesSheetViewModelBase
-        where TSettings : IRegistrySettingsCollection
+        where TSettings : ISettingsCollection
     {
         private readonly RegistryRepositoryBase<TSettings> settingsRepository;
 
