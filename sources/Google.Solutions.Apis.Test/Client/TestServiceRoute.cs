@@ -19,16 +19,27 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Crm;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
     public class TestServiceRoute
     {
+        //---------------------------------------------------------------------
+        // Basic properties.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void Public()
+        public void PublicRoute()
         {
             Assert.IsFalse(ServiceRoute.Public.UsePrivateServiceConnect);
             Assert.IsNull(ServiceRoute.Public.Endpoint);
@@ -36,12 +47,55 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void Psc()
+        public void PscRoute()
         {
             var route = new ServiceRoute("www-endpoint.p.googleapis.com");
             Assert.IsTrue(route.UsePrivateServiceConnect);
             Assert.AreEqual("www-endpoint.p.googleapis.com", route.Endpoint);
             Assert.AreEqual("www-endpoint.p.googleapis.com", route.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Probe.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task ProbePublicRouteSucceeds()
+        {
+            await ServiceRoute.Public
+                .ProbeAsync(TimeSpan.FromSeconds(5))
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task WhenPscEndpointValid_ThenProbePublicRouteSucceeds()
+        {
+            //
+            // Use IP address as pseudo-PSC endpoint.
+            //
+            var address = await Dns
+                .GetHostAddressesAsync("www.googleapis.com")
+                .ConfigureAwait(false);
+
+            var route = new ServiceRoute(address.First().ToString());
+
+            await route
+                .ProbeAsync(TimeSpan.FromSeconds(5))
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public void WhenPscEndpointInvalid_ThenProbePublicRouteThrowsException()
+        {
+            //
+            // Use IP address as pseudo-PSC endpoint.
+            //
+            var route = new ServiceRoute("127.0.0.254");
+
+            ExceptionAssert.ThrowsAggregateException<InvalidServiceRouteException>(
+                () => route
+                    .ProbeAsync(TimeSpan.FromSeconds(5))
+                    .Wait());
         }
     }
 }

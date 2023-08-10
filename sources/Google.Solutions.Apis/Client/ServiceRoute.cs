@@ -19,7 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Client
 {
@@ -57,6 +60,75 @@ namespace Google.Solutions.Apis.Client
         public override string ToString()
         {
             return this.Endpoint ?? "public";
+        }
+
+        /// <summary>
+        /// Test if the route works. Can be used to validate a PSC endpoint.
+        /// </summary>
+        /// <exception>when connecting to the endpoint failed</exception>
+        public async Task ProbeAsync(TimeSpan timeout)
+        {
+            //
+            // NB. It doesn't matter much which .googleapis.com endpoint
+            // we probe, so we just use the "classic" www one.
+            //
+            const string apiHostForProbing = "www.googleapis.com";
+
+            var uri = new UriBuilder()
+            {
+                Scheme = "https",
+                Host = this.UsePrivateServiceConnect
+                    ? this.Endpoint
+                    : apiHostForProbing,
+                Path = "/generate_204"
+            }.Uri;
+
+            using (var cts = new CancellationTokenSource())
+            using (var handler = new HttpClientHandler()
+            {
+                //
+                // Bypass proxy for accessing PSC endpoint.
+                //
+                UseProxy = !this.UsePrivateServiceConnect
+            })
+            using (var request = new HttpRequestMessage(HttpMethod.Get, uri))
+            using (var client = new HttpClient())
+            {
+                cts.CancelAfter(timeout);
+
+                //
+                // Explicitly set the host header so that certificate
+                // validation works even when we're using PSC.
+                //
+                request.Headers.Host = apiHostForProbing;
+
+                try
+                {
+                    var response = await client
+                        .SendAsync(
+                            request,
+                            HttpCompletionOption.ResponseHeadersRead,
+                            cts.Token)
+                        .ConfigureAwait(false);
+
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidServiceRouteException(
+                        $"Probing the endpoint '{this}' failed", e);
+                }
+            }
+        }
+    }
+
+    public class InvalidServiceRouteException : ClientException
+    {
+        internal InvalidServiceRouteException(
+            string message, 
+            Exception inner) 
+            : base(message, inner)
+        {
         }
     }
 }
