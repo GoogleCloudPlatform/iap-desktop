@@ -25,7 +25,7 @@ using System.Diagnostics;
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
 
-    public abstract class SettingBase<T> : ISetting<T>
+    public abstract class SettingBase<T> : IHierarchicalSetting<T>
     {
         private T currentValue;
 
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         // Overlay.
         //---------------------------------------------------------------------
 
-        public ISetting<T> OverlayBy(ISetting<T> overlaySetting)
+        public IHierarchicalSetting<T> OverlayBy(IHierarchicalSetting<T> overlaySetting)
         {
             //
             // NB. The idea of overlaying is that you use a base setting
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
 
         public ISetting OverlayBy(ISetting setting)
-            => OverlayBy((ISetting<T>)setting);
+            => OverlayBy((IHierarchicalSetting<T>)setting);
 
         //---------------------------------------------------------------------
         // Ctor.

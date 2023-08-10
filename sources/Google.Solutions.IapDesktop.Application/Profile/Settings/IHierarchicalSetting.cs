@@ -20,10 +20,12 @@
 //
 
 using System;
-using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
+    /// <summary>
+    /// Base interface for a setting.
+    /// </summary>
     public interface ISetting
     {
         string Key { get; }
@@ -37,29 +39,61 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         bool IsReadOnly { get; }
         ISetting OverlayBy(ISetting setting);
         void Reset();
-
         Type ValueType { get; }
     }
 
-    public interface ISetting<T> : ISetting
+    /// <summary>
+    /// String-valued setting.
+    /// </summary>
+    public interface IStringSetting : ISetting
+    {
+        string StringValue { get; set; }
+    }
+
+    /// <summary>
+    /// SecureString-valued setting.
+    /// </summary>
+    public interface ISecureStringSetting : ISetting
+    {
+        string ClearTextValue { get; set; }
+    }
+
+    /// <summary>
+    /// Bool-valued setting.
+    /// </summary>
+    public interface IBoolSetting : ISetting
+    {
+        bool BoolValue { get; set; }
+    }
+
+    /// <summary>
+    /// Int-valued setting.
+    /// </summary>
+    public interface IIntSetting : ISetting
+    {
+        int IntValue { get; set; }
+    }
+
+    /// <summary>
+    /// Long-valued setting.
+    /// </summary>
+    public interface ILongSetting : ISetting
+    {
+        long LongValue { get; set; }
+    }
+
+    /// <summary>
+    /// Enum-valued setting.
+    /// </summary>
+    public interface IEnumSetting<TEnum> : ISetting
+        where TEnum : struct
+    {
+        TEnum EnumValue { get; set; }
+    }
+
+    public interface IHierarchicalSetting<T> : ISetting
     {
         T DefaultValue { get; }
-        ISetting<T> OverlayBy(ISetting<T> setting);
-    }
-
-    public interface ISettingsCollection
-    {
-        IEnumerable<ISetting> Settings { get; }
-    }
-
-    public interface IPersistentSettingsCollection : ISettingsCollection
-    {
-        void Save();
-    }
-
-    public interface IPersistentSettingsCollection<out TCollection> : IPersistentSettingsCollection
-        where TCollection : ISettingsCollection
-    {
-        TCollection TypedCollection { get; }
+        IHierarchicalSetting<T> OverlayBy(IHierarchicalSetting<T> setting);
     }
 }

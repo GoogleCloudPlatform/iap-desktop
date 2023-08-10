@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
                     .Where(s => s.Title != null)
                     .Select(s =>
                     {
-                        if (s is ISetting<SecureString> secureStringSetting)
+                        if (s is IHierarchicalSetting<SecureString> secureStringSetting)
                         {
                             return new SecureStringSettingDescriptor(secureStringSetting);
                         }
@@ -117,9 +117,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 
         private class SecureStringSettingDescriptor : SettingDescriptor
         {
-            private readonly ISetting<SecureString> setting;
+            private readonly IHierarchicalSetting<SecureString> setting;
 
-            public SecureStringSettingDescriptor(ISetting<SecureString> setting)
+            public SecureStringSettingDescriptor(IHierarchicalSetting<SecureString> setting)
                 : base(setting)
             {
                 this.setting = setting;
