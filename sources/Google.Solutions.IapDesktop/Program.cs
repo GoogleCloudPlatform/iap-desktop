@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 dialog.ViewModel.DeviceEnrollment = DeviceEnrollment.Create(
                     new CertificateStore(),
-                    serviceProvider.GetService<ApplicationSettingsRepository>());
+                    serviceProvider.GetService<IRepository<IApplicationSettings>>());
                 dialog.ViewModel.ClientRegistrations 
                     = new Dictionary<OidcIssuer, OidcClientRegistration>()
                     {
@@ -433,7 +433,7 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddTransient<IQuarantine, Quarantine>();
                 preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
-                preAuthLayer.AddSingleton(appSettingsRepository);
+                preAuthLayer.AddSingleton<IRepository<IApplicationSettings>>(appSettingsRepository);
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
 
@@ -449,9 +449,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 try
                 {
-                    var settings = preAuthLayer
-                        .GetService<ApplicationSettingsRepository>()
-                        .GetSettings();
+                    var settings = appSettingsRepository.GetSettings();
 
                     //
                     // Set connection pool limit. This limit applies per endpoint,

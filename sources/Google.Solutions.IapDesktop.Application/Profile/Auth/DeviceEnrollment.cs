@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         public static DeviceEnrollment Create(
             ICertificateStore certificateStore,
-            ApplicationSettingsRepository applicationSettingsRepository)
+            IRepository<IApplicationSettings> applicationSettingsRepository)
         {
             certificateStore.ExpectNotNull(nameof(certificateStore));
             applicationSettingsRepository.ExpectNotNull(nameof(applicationSettingsRepository));

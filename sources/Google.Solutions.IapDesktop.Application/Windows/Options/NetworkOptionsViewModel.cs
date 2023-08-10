@@ -28,7 +28,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
-    internal class NetworkOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
+    internal class NetworkOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
     {
         private readonly IHttpProxyAdapter proxyAdapter;
 
@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private string proxyPassword = null;
 
         public NetworkOptionsViewModel(
-            ApplicationSettingsRepository settingsRepository,
+            IRepository<IApplicationSettings> settingsRepository,
             IHttpProxyAdapter proxyAdapter)
             : base("Network", settingsRepository)
         {
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(ApplicationSettings settings)
+        protected override void Load(IApplicationSettings settings)
         {
             this.connectionLimit = settings.ConnectionLimit.IntValue;
             this.IsProxyEditable =
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-        protected override void Save(ApplicationSettings settings)
+        protected override void Save(IApplicationSettings settings)
         {
             Debug.Assert(this.IsDirty.Value);
 

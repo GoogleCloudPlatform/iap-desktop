@@ -558,7 +558,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             this.proxyAdapterMock.Verify(m => m.ActivateSettings(
-                    It.IsAny<ApplicationSettings>()), Times.Once);
+                    It.IsAny<IApplicationSettings>()), Times.Once);
         }
 
         [Test]

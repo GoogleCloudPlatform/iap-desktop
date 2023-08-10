@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         }
 
         public ProjectExplorerViewModel(
-            ApplicationSettingsRepository settingsRepository,
+            IRepository<IApplicationSettings> settingsRepository,
             IJobService jobService,
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,

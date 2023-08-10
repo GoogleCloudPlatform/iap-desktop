@@ -31,12 +31,12 @@ using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
-    internal class GeneralOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
+    internal class GeneralOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
     {
         private readonly IBrowserProtocolRegistry protocolRegistry;
 
         public GeneralOptionsViewModel(
-            ApplicationSettingsRepository settingsRepository,
+            IRepository<IApplicationSettings> settingsRepository,
             IBrowserProtocolRegistry protocolRegistry,
             HelpAdapter helpService)
             : base("General", settingsRepository)
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(ApplicationSettings settings)
+        protected override void Load(IApplicationSettings settings)
         {
             this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.BoolValue;
             this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 ExecutableLocation);
         }
 
-        protected override void Save(ApplicationSettings settings)
+        protected override void Save(IApplicationSettings settings)
         {
             settings.IsUpdateCheckEnabled.BoolValue =
                 this.IsUpdateCheckEnabled.Value;

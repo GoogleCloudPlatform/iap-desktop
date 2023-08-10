@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         private static Form fullScreenForm = null;
 
         protected IMainWindow MainWindow { get; }
-        private readonly ApplicationSettingsRepository settingsRepository;
+        private readonly IRepository<IApplicationSettings> settingsRepository;
 
         protected static void MoveControls(Form source, Form target)
         {
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 //
                 var selectedDevices = (this.settingsRepository.GetSettings()
                     .FullScreenDevices.StringValue ?? string.Empty)
-                        .Split(ApplicationSettings.FullScreenDevicesSeparator)
+                        .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
                         .ToHashSet();
 
                 var screens = Screen.AllScreens
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.Document)
         {
-            this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
+            this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
             this.MainWindow = serviceProvider.GetService<IMainWindow>();
 
             this.DockAreas = DockAreas.Document | DockAreas.Float;
