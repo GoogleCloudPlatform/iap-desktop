@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -168,13 +169,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public void SetUpTerminalSettingsRepository()
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            this.ServiceRegistry.AddSingleton(new TerminalSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath)));
-            this.ServiceRegistry.AddSingleton(new SshSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                null,
-                null,
-                UserProfile.SchemaVersion.Current));
+            this.ServiceRegistry.AddSingleton<ITerminalSettingsRepository>(
+                new TerminalSettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
+            this.ServiceRegistry.AddSingleton<IRepository<ISshSettings>>(
+                new SshSettingsRepository(
+                    hkcu.CreateSubKey(TestKeyPath),
+                    null,
+                    null,
+                    UserProfile.SchemaVersion.Current));
         }
 
         public static async Task CompleteBackgroundWorkAsync()
@@ -644,7 +646,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             // Disable Ctrl+C/V.
 
             var serviceProvider = CreateServiceProvider();
-            var settingsRepository = serviceProvider.GetService<TerminalSettingsRepository>();
+            var settingsRepository = serviceProvider.GetService<ITerminalSettingsRepository>();
             var settings = settingsRepository.GetSettings();
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = false;
             settingsRepository.SetSettings(settings);
