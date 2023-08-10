@@ -28,16 +28,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     public abstract class OptionsViewModelBase<TSettings>
         : PropertiesSheetViewModelBase
-        where TSettings : IRegistrySettingsCollection
+        where TSettings : ISettingsCollection
     {
-        private readonly SettingsRepositoryBase<TSettings> settingsRepository;
+        private readonly IRepository<TSettings> repository;
 
         public OptionsViewModelBase(
             string title,
-            SettingsRepositoryBase<TSettings> settingsRepository)
+            IRepository<TSettings> repository)
             : base(title)
         {
-            this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
+            this.repository = repository.ExpectNotNull(nameof(repository));
 
             this.IsDirty = ObservableProperty.Build(false);
         }
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         /// </summary>
         protected void OnInitializationCompleted()
         {
-            Load(this.settingsRepository.GetSettings());
+            Load(this.repository.GetSettings());
 
             this.IsDirty.Value = false;
         }
@@ -75,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             //
             // Save settings.
             //
-            var settings = this.settingsRepository.GetSettings();
+            var settings = this.repository.GetSettings();
             Save(settings);
-            this.settingsRepository.SetSettings(settings);
+            this.repository.SetSettings(settings);
 
             this.IsDirty.Value = false;
 

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
 using System;
@@ -31,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Registry-backed repository for app settings.
     /// </summary>
-    public class ApplicationSettingsRepository : PolicyEnabledSettingsRepository<ApplicationSettings>
+    public class ApplicationSettingsRepository : PolicyEnabledRegistryRepository<ApplicationSettings>
     {
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 userPolicyKey);
     }
 
-    public class ApplicationSettings : IRegistrySettingsCollection
+    public class ApplicationSettings : ISettingsCollection
     {
         public const char FullScreenDevicesSeparator = ',';
 

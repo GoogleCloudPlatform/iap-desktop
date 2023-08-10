@@ -20,24 +20,26 @@
 //
 
 using Google.Apis.Json;
-using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
     /// <summary>
-    /// Registry-backed repository for UI layout settings.
+    /// Authentication-related settings.
     /// </summary>
-    public class AuthSettingsRepository : 
-        SettingsRepositoryBase<AuthSettings>, IOidcOfflineCredentialStore
+    public interface IAuthSettings : ISettingsCollection
+    {
+        ISecureStringSetting Credentials { get; }
+    }
+
+    public class AuthSettingsRepository :
+        RegistryRepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {
         public AuthSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
@@ -48,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         // SettingsRepositoryBase.
         //---------------------------------------------------------------------
 
-        protected override AuthSettings LoadSettings(RegistryKey key)
+        protected override IAuthSettings LoadSettings(RegistryKey key)
             => AuthSettings.FromKey(key);
 
         //---------------------------------------------------------------------
@@ -68,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                         .Instance
                         .Deserialize<CredentialBlob>(clearTextJson)
                         .ToOidcOfflineCredential();
-                } 
+                }
                 catch (JsonSerializationException)
                 { }
             }
@@ -152,32 +154,36 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 };
             }
         }
-    }
 
-    public class AuthSettings : IRegistrySettingsCollection
-    {
-        public RegistrySecureStringSetting Credentials { get; private set; }
+        //---------------------------------------------------------------------
+        // Inner class.
+        //---------------------------------------------------------------------
 
-        public IEnumerable<ISetting> Settings => new ISetting[]
+        private class AuthSettings : IAuthSettings
         {
-            this.Credentials
-        };
+            public ISecureStringSetting Credentials { get; private set; }
 
-        private AuthSettings()
-        { }
-
-        public static AuthSettings FromKey(RegistryKey registryKey)
-        {
-            return new AuthSettings()
+            public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                Credentials = RegistrySecureStringSetting.FromKey(
-                    "Credentials",
-                    "JSON-formatted credentials",
-                    null,
-                    null,
-                    registryKey,
-                    DataProtectionScope.CurrentUser)
+                this.Credentials
             };
+
+            private AuthSettings()
+            { }
+
+            public static AuthSettings FromKey(RegistryKey registryKey)
+            {
+                return new AuthSettings()
+                {
+                    Credentials = RegistrySecureStringSetting.FromKey(
+                        "Credentials",
+                        "JSON-formatted credentials",
+                        null,
+                        null,
+                        registryKey,
+                        DataProtectionScope.CurrentUser)
+                };
+            }
         }
     }
 }

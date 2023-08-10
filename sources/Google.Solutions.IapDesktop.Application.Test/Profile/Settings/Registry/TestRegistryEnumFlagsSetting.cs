@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
+namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
 {
     [TestFixture]
     public class TestRegistryEnumFlagsSetting

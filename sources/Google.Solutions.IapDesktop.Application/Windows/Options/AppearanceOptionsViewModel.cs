@@ -25,9 +25,9 @@ using Google.Solutions.Mvvm.Theme;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
-    internal class AppearanceOptionsViewModel : OptionsViewModelBase<ThemeSettings>
+    internal class AppearanceOptionsViewModel : OptionsViewModelBase<IThemeSettings>
     {
-        public AppearanceOptionsViewModel(ThemeSettingsRepository settingsRepository)
+        public AppearanceOptionsViewModel(IRepository<IThemeSettings> settingsRepository)
             : base("Appearance", settingsRepository)
         {
             base.OnInitializationCompleted();
@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(ThemeSettings settings)
+        protected override void Load(IThemeSettings settings)
         {
             //
             // If Windows doesn't support dark mode, none other than
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             MarkDirtyWhenPropertyChanges(this.SelectedTheme);
         }
 
-        protected override void Save(ThemeSettings settings)
+        protected override void Save(IThemeSettings settings)
         {
             settings.Theme.EnumValue = this.SelectedTheme.Value;
         }
@@ -65,6 +65,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public string ThemeInfoText { get; private set; }
 
-        public ObservableProperty<ThemeSettings.ApplicationTheme> SelectedTheme { get; private set; }
+        public ObservableProperty<ApplicationTheme> SelectedTheme { get; private set; }
     }
 }

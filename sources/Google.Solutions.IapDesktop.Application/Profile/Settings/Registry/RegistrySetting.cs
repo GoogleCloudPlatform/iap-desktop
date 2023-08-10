@@ -31,7 +31,7 @@ using System.Text;
 #pragma warning disable CA1000 // Do not declare static members on generic types
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
 {
     public interface IRegistrySetting : ISetting
     {
@@ -39,11 +39,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         object RegistryValue { get; }
     }
 
-    public interface IRegistrySettingsCollection : ISettingsCollection
-    {
-    }
 
-    public class RegistryStringSetting : SettingBase<string>, IRegistrySetting
+    public class RegistryStringSetting
+        : SettingBase<string>, IRegistrySetting, IStringSetting
     {
         private readonly Func<string, bool> validate;
 
@@ -129,7 +127,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistrySecureStringSetting : SettingBase<SecureString>, IRegistrySetting
+    public class RegistrySecureStringSetting
+        : SettingBase<SecureString>, IRegistrySetting, ISecureStringSetting
     {
         private readonly DataProtectionScope protectionScope;
 
@@ -261,7 +260,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
+    public class RegistryBoolSetting
+        : SettingBase<bool>, IRegistrySetting, IBoolSetting
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
         public object RegistryValue => this.Value;
@@ -343,7 +343,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
+    public class RegistryDwordSetting
+        : SettingBase<int>, IRegistrySetting, IIntSetting
     {
         private readonly int minInclusive;
         private readonly int maxInclusive;
@@ -438,7 +439,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistryQwordSetting : SettingBase<long>, IRegistrySetting
+    public class RegistryQwordSetting
+        : SettingBase<long>, IRegistrySetting, ILongSetting
     {
         private readonly long minInclusive;
         private readonly long maxInclusive;
@@ -533,7 +535,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
+    public class RegistryEnumSetting<TEnum>
+        : SettingBase<TEnum>, IRegistrySetting, IEnumSetting<TEnum>
         where TEnum : struct
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
@@ -647,7 +650,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
 
         public static void Save(
-            this IRegistrySettingsCollection collection,
+            this ISettingsCollection collection,
             RegistryKey registryKey)
         {
             foreach (var setting in collection.Settings

@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.Mvvm.Controls;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(ServiceLifetime.Singleton)]
-    public class TerminalSettingsRepository : SettingsRepositoryBase<TerminalSettings>
+    public class TerminalSettingsRepository : RegistryRepositoryBase<TerminalSettings>
     {
         public event EventHandler<EventArgs<TerminalSettings>> SettingsChanged;
 
@@ -63,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         }
     }
 
-    public class TerminalSettings : IRegistrySettingsCollection
+    public class TerminalSettings : ISettingsCollection
     {
         public RegistryBoolSetting IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; private set; }
         public RegistryBoolSetting IsSelectAllUsingCtrlAEnabled { get; private set; }

@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(ServiceLifetime.Singleton)]
-    public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
+    public class SshSettingsRepository : PolicyEnabledRegistryRepository<SshSettings>
     {
         private readonly UserProfile.SchemaVersion schemaVersion;
 
@@ -72,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.schemaVersion);
     }
 
-    public class SshSettings : IRegistrySettingsCollection
+    public class SshSettings : ISettingsCollection
     {
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
         public RegistryDwordSetting PublicKeyValidity { get; private set; }

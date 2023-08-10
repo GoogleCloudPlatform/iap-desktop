@@ -20,46 +20,138 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.Security;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
+    /// <summary>
+    /// Base interface for a setting.
+    /// </summary>
     public interface ISetting
     {
+        /// <summary>
+        /// Unique, stable key.
+        /// </summary>
         string Key { get; }
+
+        /// <summary>
+        /// Name of setting, suitable for displaying.
+        /// </summary>
         string Title { get; }
+
+        /// <summary>
+        /// Description of setting, suitable for displaying.
+        /// </summary>
         string Description { get; }
+
+        /// <summary>
+        /// Category of setting, suitable for displaying.
+        /// </summary>
         string Category { get; }
+
+        /// <summary>
+        /// Return current value of setting.
+        /// </summary>
         object Value { get; set; }
+
+        /// <summary>
+        /// Determines whether the current value is equivalent o
+        /// the default value.
+        /// </summary>
         bool IsDefault { get; }
-        bool IsDirty { get; }
-        bool IsSpecified { get; }
-        bool IsReadOnly { get; }
-        ISetting OverlayBy(ISetting setting);
+
+        /// <summary>
+        /// Reset value to default.
+        /// </summary>
         void Reset();
 
+        /// <summary>
+        /// Determines if the value has been changed and needs
+        /// to be written back to the repository.
+        /// </summary>
+        bool IsDirty { get; }
+
+        /// <summary>
+        /// Determines whether the user has modified this setting.
+        /// </summary>
+        bool IsSpecified { get; }
+
+        /// <summary>
+        /// Determines if the user is allowed to change the setting
+        /// (or whether it's mandated by a policy).
+        /// </summary>
+        bool IsReadOnly { get; }
+
+        /// <summary>
+        /// Overlay the setting with defaults from the ancestry,
+        /// </summary>
+        ISetting OverlayBy(ISetting setting);
+
+        /// <summary>
+        /// Returns the type of setting.
+        /// </summary>
         Type ValueType { get; }
     }
 
     public interface ISetting<T> : ISetting
     {
+        /// <summary>
+        /// Returns the typed default value.
+        /// </summary>
         T DefaultValue { get; }
+
+        /// <summary>
+        /// Overlay the setting with defaults from the ancestry,
+        /// </summary>
         ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
-    public interface ISettingsCollection
+    /// <summary>
+    /// String-valued setting.
+    /// </summary>
+    public interface IStringSetting : ISetting<string>
     {
-        IEnumerable<ISetting> Settings { get; }
+        string StringValue { get; set; }
     }
 
-    public interface IPersistentSettingsCollection : ISettingsCollection
+    /// <summary>
+    /// SecureString-valued setting.
+    /// </summary>
+    public interface ISecureStringSetting : ISetting<SecureString>
     {
-        void Save();
+        string ClearTextValue { get; set; }
     }
 
-    public interface IPersistentSettingsCollection<out TCollection> : IPersistentSettingsCollection
-        where TCollection : ISettingsCollection
+    /// <summary>
+    /// Bool-valued setting.
+    /// </summary>
+    public interface IBoolSetting : ISetting<bool>
     {
-        TCollection TypedCollection { get; }
+        bool BoolValue { get; set; }
+    }
+
+    /// <summary>
+    /// Int-valued setting.
+    /// </summary>
+    public interface IIntSetting : ISetting<int>
+    {
+        int IntValue { get; set; }
+    }
+
+    /// <summary>
+    /// Long-valued setting.
+    /// </summary>
+    public interface ILongSetting : ISetting<long>
+    {
+        long LongValue { get; set; }
+    }
+
+    /// <summary>
+    /// Enum-valued setting.
+    /// </summary>
+    public interface IEnumSetting<TEnum> : ISetting<TEnum>
+        where TEnum : struct
+    {
+        TEnum EnumValue { get; set; }
     }
 }
