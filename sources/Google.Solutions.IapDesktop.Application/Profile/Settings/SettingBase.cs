@@ -24,7 +24,9 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
-
+    /// <summary>
+    /// Base class for a setting.
+    /// </summary>
     public abstract class SettingBase<T> : ISetting<T>
     {
         private T currentValue;

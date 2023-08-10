@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Registry-backed repository for theme-related settings.
     /// </summary>
-    public class ThemeSettingsRepository : SettingsRepositoryBase<ThemeSettings>
+    public class ThemeSettingsRepository : RegistryRepositoryBase<ThemeSettings>
     {
         public ThemeSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {

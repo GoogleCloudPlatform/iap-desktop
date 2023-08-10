@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(ServiceLifetime.Singleton)]
-    public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
+    public class SshSettingsRepository : PolicyEnabledRegistryRepository<SshSettings>
     {
         private readonly UserProfile.SchemaVersion schemaVersion;
 

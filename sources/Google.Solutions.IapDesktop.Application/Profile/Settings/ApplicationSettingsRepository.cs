@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Registry-backed repository for app settings.
     /// </summary>
-    public class ApplicationSettingsRepository : PolicyEnabledSettingsRepository<ApplicationSettings>
+    public class ApplicationSettingsRepository : PolicyEnabledRegistryRepository<ApplicationSettings>
     {
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,

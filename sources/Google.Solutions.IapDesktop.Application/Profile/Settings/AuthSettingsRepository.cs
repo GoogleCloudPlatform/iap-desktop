@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// Registry-backed repository for UI layout settings.
     /// </summary>
     public class AuthSettingsRepository : 
-        SettingsRepositoryBase<AuthSettings>, IOidcOfflineCredentialStore
+        RegistryRepositoryBase<AuthSettings>, IOidcOfflineCredentialStore
     {
         public AuthSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {

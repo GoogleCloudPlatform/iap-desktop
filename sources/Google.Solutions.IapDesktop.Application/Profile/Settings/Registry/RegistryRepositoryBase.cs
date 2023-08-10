@@ -19,22 +19,20 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
 {
     /// <summary>
     /// Base class for all settings repositories.
     /// </summary>
-    public abstract class SettingsRepositoryBase<TSettings> : IDisposable
+    public abstract class RegistryRepositoryBase<TSettings> : IDisposable
         where TSettings : IRegistrySettingsCollection
     {
         protected RegistryKey BaseKey { get; }
 
-        protected SettingsRepositoryBase(RegistryKey baseKey)
+        protected RegistryRepositoryBase(RegistryKey baseKey)
         {
             this.BaseKey = baseKey;
         }
@@ -77,37 +75,5 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.BaseKey.Dispose();
             }
         }
-    }
-
-    /// <summary>
-    /// Base class for settings repositories that support group policies.
-    /// </summary>
-    public abstract class PolicyEnabledSettingsRepository<TSettings>
-        : SettingsRepositoryBase<TSettings>
-        where TSettings : IRegistrySettingsCollection
-    {
-        private readonly RegistryKey machinePolicyKey;
-        private readonly RegistryKey userPolicyKey;
-
-        protected PolicyEnabledSettingsRepository(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) : base(settingsKey)
-        {
-            settingsKey.ExpectNotNull(nameof(settingsKey));
-
-            this.machinePolicyKey = machinePolicyKey;
-            this.userPolicyKey = userPolicyKey;
-        }
-        protected override TSettings LoadSettings(RegistryKey key)
-            => LoadSettings(key, this.machinePolicyKey, this.userPolicyKey);
-
-        protected abstract TSettings LoadSettings(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey);
-
-        public bool IsPolicyPresent
-            => this.machinePolicyKey != null || this.userPolicyKey != null;
     }
 }

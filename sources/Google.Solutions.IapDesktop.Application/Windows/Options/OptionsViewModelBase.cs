@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
@@ -31,11 +30,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         : PropertiesSheetViewModelBase
         where TSettings : IRegistrySettingsCollection
     {
-        private readonly SettingsRepositoryBase<TSettings> settingsRepository;
+        private readonly RegistryRepositoryBase<TSettings> settingsRepository;
 
         public OptionsViewModelBase(
             string title,
-            SettingsRepositoryBase<TSettings> settingsRepository)
+            RegistryRepositoryBase<TSettings> settingsRepository)
             : base(title)
         {
             this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));

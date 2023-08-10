@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Mvvm.Binding;
@@ -33,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestOptionsViewModelBase
     {
-        public abstract class SettingsRepository : SettingsRepositoryBase<IRegistrySettingsCollection>
+        public abstract class SettingsRepository : RegistryRepositoryBase<IRegistrySettingsCollection>
         {
             public SettingsRepository() : base(null)
             {
@@ -48,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             public OptionsViewModel(
                 string title,
-                SettingsRepositoryBase<IRegistrySettingsCollection> settingsRepository)
+                RegistryRepositoryBase<IRegistrySettingsCollection> settingsRepository)
                 : base(title, settingsRepository)
             {
                 OnInitializationCompleted();
