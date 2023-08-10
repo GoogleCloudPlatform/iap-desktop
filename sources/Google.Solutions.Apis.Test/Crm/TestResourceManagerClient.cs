@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Test.Crm
             // Use IP address as pseudo-PSC endpoint.
             //
             var endpoint = ResourceManagerClient.CreateEndpoint(
-                new ServiceRoute(address.FirstOrDefault().ToString()));
+                new ServiceRoute(address.First().ToString()));
 
             var client = new ResourceManagerClient(
                 endpoint,
