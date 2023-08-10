@@ -24,7 +24,9 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
-
+    /// <summary>
+    /// Base interface for a a collection of settings.
+    /// </summary>
     public interface ISettingsCollection
     {
         IEnumerable<ISetting> Settings { get; }

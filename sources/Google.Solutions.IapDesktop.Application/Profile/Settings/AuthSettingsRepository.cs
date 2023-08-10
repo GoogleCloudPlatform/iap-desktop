@@ -20,25 +20,26 @@
 //
 
 using Google.Apis.Json;
-using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
     /// <summary>
-    /// Registry-backed repository for UI layout settings.
+    /// Authentication-related settings.
     /// </summary>
+    public interface IAuthSettings : ISettingsCollection
+    {
+        ISecureStringSetting Credentials { get; }
+    }
+
     public class AuthSettingsRepository : 
-        RegistryRepositoryBase<AuthSettings>, IOidcOfflineCredentialStore
+        RegistryRepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {
         public AuthSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
@@ -49,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         // SettingsRepositoryBase.
         //---------------------------------------------------------------------
 
-        protected override AuthSettings LoadSettings(RegistryKey key)
+        protected override IAuthSettings LoadSettings(RegistryKey key)
             => AuthSettings.FromKey(key);
 
         //---------------------------------------------------------------------
@@ -155,9 +156,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class AuthSettings : ISettingsCollection
+    public class AuthSettings : IAuthSettings
     {
-        public RegistrySecureStringSetting Credentials { get; private set; }
+        public ISecureStringSetting Credentials { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
