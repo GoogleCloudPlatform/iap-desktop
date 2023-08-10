@@ -439,7 +439,7 @@ namespace Google.Solutions.IapDesktop
 
                 var authSettingsRepository = new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"));
-                preAuthLayer.AddSingleton(authSettingsRepository);
+                preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
 
                 //

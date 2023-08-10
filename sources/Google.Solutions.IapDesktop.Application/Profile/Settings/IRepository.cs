@@ -19,13 +19,15 @@
 // under the License.
 //
 
+using System;
+
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
     /// <summary>
     /// Persistent respository for settings.
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
-    public interface IRepository<TSettings>
+    public interface IRepository<TSettings> : IDisposable
         where TSettings : ISettingsCollection
     {
         /// <summary>
