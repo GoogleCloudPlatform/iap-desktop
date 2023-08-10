@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Security;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
@@ -28,24 +29,87 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface ISetting
     {
+        /// <summary>
+        /// Unique, stable key.
+        /// </summary>
         string Key { get; }
+
+        /// <summary>
+        /// Name of setting, suitable for displaying.
+        /// </summary>
         string Title { get; }
+
+        /// <summary>
+        /// Description of setting, suitable for displaying.
+        /// </summary>
         string Description { get; }
+
+        /// <summary>
+        /// Category of setting, suitable for displaying.
+        /// </summary>
         string Category { get; }
+
+        /// <summary>
+        /// Return current value of setting.
+        /// </summary>
         object Value { get; set; }
+
+        /// <summary>
+        /// Determines whether the current value is equivalent o
+        /// the default value.
+        /// </summary>
         bool IsDefault { get; }
-        bool IsDirty { get; }
-        bool IsSpecified { get; }
-        bool IsReadOnly { get; }
-        ISetting OverlayBy(ISetting setting);
+
+        /// <summary>
+        /// Reset value to default.
+        /// </summary>
         void Reset();
+
+        /// <summary>
+        /// Determines if the value has been changed and needs
+        /// to be written back to the repository.
+        /// </summary>
+        bool IsDirty { get; }
+
+        /// <summary>
+        /// Determines whether the user has modified this setting.
+        /// </summary>
+        bool IsSpecified { get; }
+
+        /// <summary>
+        /// Determines if the user is allowed to change the setting
+        /// (or whether it's mandated by a policy).
+        /// </summary>
+        bool IsReadOnly { get; }
+
+        /// <summary>
+        /// Overlay the setting with defaults from the ancestry,
+        /// </summary>
+        ISetting OverlayBy(ISetting setting);
+
+        /// <summary>
+        /// Returns the type of setting.
+        /// </summary>
         Type ValueType { get; }
+    }
+
+    public interface ISetting<T> : ISetting
+    {
+        /// <summary>
+        /// Returns the typed default value.
+        /// </summary>
+        T DefaultValue { get; }
+
+        /// <summary>
+        /// Overlay the setting with defaults from the ancestry,
+        /// </summary>
+        ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
     /// <summary>
     /// String-valued setting.
     /// </summary>
-    public interface IStringSetting : ISetting
+    public interface IStringSetting : ISetting<string>
     {
         string StringValue { get; set; }
     }
@@ -53,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// SecureString-valued setting.
     /// </summary>
-    public interface ISecureStringSetting : ISetting
+    public interface ISecureStringSetting : ISetting<SecureString>
     {
         string ClearTextValue { get; set; }
     }
@@ -61,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Bool-valued setting.
     /// </summary>
-    public interface IBoolSetting : ISetting
+    public interface IBoolSetting : ISetting<bool>
     {
         bool BoolValue { get; set; }
     }
@@ -69,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Int-valued setting.
     /// </summary>
-    public interface IIntSetting : ISetting
+    public interface IIntSetting : ISetting<int>
     {
         int IntValue { get; set; }
     }
@@ -77,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Long-valued setting.
     /// </summary>
-    public interface ILongSetting : ISetting
+    public interface ILongSetting : ISetting<long>
     {
         long LongValue { get; set; }
     }
@@ -85,15 +149,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// <summary>
     /// Enum-valued setting.
     /// </summary>
-    public interface IEnumSetting<TEnum> : ISetting
+    public interface IEnumSetting<TEnum> : ISetting<TEnum>
         where TEnum : struct
     {
         TEnum EnumValue { get; set; }
-    }
-
-    public interface IHierarchicalSetting<T> : ISetting
-    {
-        T DefaultValue { get; }
-        IHierarchicalSetting<T> OverlayBy(IHierarchicalSetting<T> setting);
     }
 }
