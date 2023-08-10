@@ -61,9 +61,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.StringValue);
             Assert.AreEqual(
                 TerminalFont.DefaultSize,
-                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
             Assert.AreEqual(
-                TerminalSettings.DefaultBackgroundColor.ToArgb(),
+                TerminalSettingsRepository.DefaultBackgroundColor.ToArgb(),
                 settings.BackgroundColorArgb.IntValue);
             Assert.AreEqual(
                 Color.White.ToArgb(),
