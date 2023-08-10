@@ -33,12 +33,35 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
     /// <summary>
+    /// SSH-related settings.
+    /// </summary>
+    public interface ISshSettings : ISettingsCollection
+    {
+        /// <summary>
+        /// Enable propagation of current locate.
+        /// </summary>
+        IBoolSetting IsPropagateLocaleEnabled { get; }
+
+        /// <summary>
+        /// Gets or sets the validity of public keys uploaded
+        /// to OS Login or metadata.
+        /// </summary>
+        IIntSetting PublicKeyValidity { get; }
+
+        /// <summary>
+        /// Type of public key to use. This determines the
+        /// algorithm for public key use authentication.
+        /// </summary>
+        IEnumSetting<SshKeyType> PublicKeyType { get; }
+    }
+
+    /// <summary>
     /// Registry-backed repository for SSH settings.
     /// 
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
-    [Service(ServiceLifetime.Singleton)]
-    public class SshSettingsRepository : PolicyEnabledRegistryRepository<SshSettings>
+    [Service(typeof(IRepository<ISshSettings>), ServiceLifetime.Singleton)]
+    public class SshSettingsRepository : PolicyEnabledRegistryRepository<ISshSettings>
     {
         private readonly UserProfile.SchemaVersion schemaVersion;
 
@@ -62,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             profile.ExpectNotNull(nameof(profile));
         }
 
-        protected override SshSettings LoadSettings(
+        protected override ISshSettings LoadSettings(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey)
@@ -71,82 +94,87 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 machinePolicyKey,
                 userPolicyKey,
                 this.schemaVersion);
-    }
 
-    public class SshSettings : ISettingsCollection
-    {
-        public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
-        public RegistryDwordSetting PublicKeyValidity { get; private set; }
-        public RegistryEnumSetting<SshKeyType> PublicKeyType { get; private set; }
 
-        public IEnumerable<ISetting> Settings => new ISetting[]
+        //---------------------------------------------------------------------
+        // Inner class.
+        //---------------------------------------------------------------------
+
+        private class SshSettings : ISshSettings
         {
-            this.IsPropagateLocaleEnabled,
-            this.PublicKeyValidity,
-            this.PublicKeyType
-        };
+            public IBoolSetting IsPropagateLocaleEnabled { get; private set; }
+            public IIntSetting PublicKeyValidity { get; private set; }
+            public IEnumSetting<SshKeyType> PublicKeyType { get; private set; }
 
-        private SshSettings()
-        {
-        }
-
-        public static SshSettings FromKey(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey,
-            UserProfile.SchemaVersion schemaVersion)
-        {
-            return new SshSettings()
+            public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                //
-                // Settings that can be overridden by policy.
-                //
-                // NB. Default values must be kept consistent with the
-                //     ADMX policy templates!
-                // NB. Machine policies override user policies, and
-                //     user policies override settings.
-                //
-
-                // 
-                // NB. Initially, the default key type was Rsa3072,
-                // but rsa-ssh is deprecated and many users's machines
-                // aren't allowed to use RSA. Therefore, use ECDSA as
-                // default for newly created profiles.
-                //
-                PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
-                        "PublicKeyType",
-                        "PublicKeyType",
-                        "Key type for public key authentication",
-                        null,
-                        schemaVersion >= UserProfile.SchemaVersion.Version229
-                            ? SshKeyType.EcdsaNistp384
-                            : SshKeyType.Rsa3072,
-                        settingsKey)
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-                PublicKeyValidity = RegistryDwordSetting.FromKey(
-                        "PublicKeyValidity",
-                        "PublicKeyValidity",
-                        "Validity of (OS Login/Metadata) keys in seconds",
-                        null,
-                        (int)SshParameters.DefaultPublicKeyValidity.TotalSeconds,
-                        settingsKey,
-                        (int)TimeSpan.FromMinutes(1).TotalSeconds,
-                        int.MaxValue)
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-
-                //
-                // User preferences. These cannot be overridden by policy.
-                //
-                IsPropagateLocaleEnabled = RegistryBoolSetting.FromKey(
-                    "IsPropagateLocaleEnabled",
-                    "IsPropagateLocaleEnabled",
-                    null,
-                    null,
-                    true,
-                    settingsKey)
+                this.IsPropagateLocaleEnabled,
+                this.PublicKeyValidity,
+                this.PublicKeyType
             };
+
+            private SshSettings()
+            {
+            }
+
+            public static SshSettings FromKey(
+                RegistryKey settingsKey,
+                RegistryKey machinePolicyKey,
+                RegistryKey userPolicyKey,
+                UserProfile.SchemaVersion schemaVersion)
+            {
+                return new SshSettings()
+                {
+                    //
+                    // Settings that can be overridden by policy.
+                    //
+                    // NB. Default values must be kept consistent with the
+                    //     ADMX policy templates!
+                    // NB. Machine policies override user policies, and
+                    //     user policies override settings.
+                    //
+
+                    // 
+                    // NB. Initially, the default key type was Rsa3072,
+                    // but rsa-ssh is deprecated and many users's machines
+                    // aren't allowed to use RSA. Therefore, use ECDSA as
+                    // default for newly created profiles.
+                    //
+                    PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
+                            "PublicKeyType",
+                            "PublicKeyType",
+                            "Key type for public key authentication",
+                            null,
+                            schemaVersion >= UserProfile.SchemaVersion.Version229
+                                ? SshKeyType.EcdsaNistp384
+                                : SshKeyType.Rsa3072,
+                            settingsKey)
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    PublicKeyValidity = RegistryDwordSetting.FromKey(
+                            "PublicKeyValidity",
+                            "PublicKeyValidity",
+                            "Validity of (OS Login/Metadata) keys in seconds",
+                            null,
+                            (int)SshParameters.DefaultPublicKeyValidity.TotalSeconds,
+                            settingsKey,
+                            (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                            int.MaxValue)
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+
+                    //
+                    // User preferences. These cannot be overridden by policy.
+                    //
+                    IsPropagateLocaleEnabled = RegistryBoolSetting.FromKey(
+                        "IsPropagateLocaleEnabled",
+                        "IsPropagateLocaleEnabled",
+                        null,
+                        null,
+                        true,
+                        settingsKey)
+                };
+            }
         }
     }
 }
