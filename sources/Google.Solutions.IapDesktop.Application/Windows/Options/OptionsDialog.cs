@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                         serviceProvider.GetService<HelpAdapter>()));
                 dialog.ViewModel.AddSheet(
                     new AppearanceOptionsSheet(),
-                    new AppearanceOptionsViewModel(serviceProvider.GetService<ThemeSettingsRepository>()));
+                    new AppearanceOptionsViewModel(serviceProvider.GetService<IRepository<IThemeSettings>>()));
                 dialog.ViewModel.AddSheet(
                     new NetworkOptionsSheet(),
                     new NetworkOptionsViewModel(

@@ -427,7 +427,7 @@ namespace Google.Solutions.IapDesktop
                 }
 
                 preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
-                preAuthLayer.AddSingleton(new ThemeSettingsRepository(
+                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Theme")));
                 preAuthLayer.AddSingleton<IThemeService, ThemeService>();
 

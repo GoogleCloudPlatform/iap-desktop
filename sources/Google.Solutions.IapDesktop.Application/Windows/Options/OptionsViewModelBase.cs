@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 
@@ -31,14 +30,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         : PropertiesSheetViewModelBase
         where TSettings : ISettingsCollection
     {
-        private readonly RegistryRepositoryBase<TSettings> settingsRepository;
+        private readonly IRepository<TSettings> repository;
 
         public OptionsViewModelBase(
             string title,
-            RegistryRepositoryBase<TSettings> settingsRepository)
+            IRepository<TSettings> repository)
             : base(title)
         {
-            this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
+            this.repository = repository.ExpectNotNull(nameof(repository));
 
             this.IsDirty = ObservableProperty.Build(false);
         }
@@ -48,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         /// </summary>
         protected void OnInitializationCompleted()
         {
-            Load(this.settingsRepository.GetSettings());
+            Load(this.repository.GetSettings());
 
             this.IsDirty.Value = false;
         }
@@ -76,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             //
             // Save settings.
             //
-            var settings = this.settingsRepository.GetSettings();
+            var settings = this.repository.GetSettings();
             Save(settings);
-            this.settingsRepository.SetSettings(settings);
+            this.repository.SetSettings(settings);
 
             this.IsDirty.Value = false;
 

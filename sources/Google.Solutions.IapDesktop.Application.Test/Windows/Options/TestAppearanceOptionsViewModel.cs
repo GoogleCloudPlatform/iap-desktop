@@ -54,13 +54,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public void WhenSelectedThemeChanged_ThenDirtyFlagIsSet()
         {
             Assert.AreNotEqual(
-                ThemeSettings.ApplicationTheme._Default,
-                ThemeSettings.ApplicationTheme.Dark);
+                ApplicationTheme._Default,
+                ApplicationTheme.Dark);
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.SelectedTheme.Value = ThemeSettings.ApplicationTheme.Dark;
+            viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
         }
@@ -73,33 +73,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public void LoadReadsSettings()
         {
             Assert.AreNotEqual(
-                ThemeSettings.ApplicationTheme._Default,
-                ThemeSettings.ApplicationTheme.Dark);
+                ApplicationTheme._Default,
+                ApplicationTheme.Dark);
 
             //
             // Persist non-default values.
             //
             var settings = this.settingsRepository.GetSettings();
-            settings.Theme.Value = ThemeSettings.ApplicationTheme.Dark;
+            settings.Theme.Value = ApplicationTheme.Dark;
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
-            Assert.AreEqual(ThemeSettings.ApplicationTheme.Dark, viewModel.SelectedTheme.Value);
+            Assert.AreEqual(ApplicationTheme.Dark, viewModel.SelectedTheme.Value);
         }
 
         [Test]
         public async Task SaveUpdatesSettings()
         {
             Assert.AreNotEqual(
-                ThemeSettings.ApplicationTheme._Default,
-                ThemeSettings.ApplicationTheme.Dark);
+                ApplicationTheme._Default,
+                ApplicationTheme.Dark);
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
-            viewModel.SelectedTheme.Value = ThemeSettings.ApplicationTheme.Dark;
+            viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
             await viewModel.ApplyChangesAsync();
 
             var settings = this.settingsRepository.GetSettings();
-            Assert.AreEqual(ThemeSettings.ApplicationTheme.Dark, settings.Theme.Value);
+            Assert.AreEqual(ApplicationTheme.Dark, settings.Theme.Value);
         }
     }
 }

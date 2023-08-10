@@ -28,57 +28,72 @@ using System.ComponentModel.DataAnnotations;
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
     /// <summary>
-    /// Registry-backed repository for theme-related settings.
+    /// Application theme.
     /// </summary>
-    public class ThemeSettingsRepository : RegistryRepositoryBase<ThemeSettings>
+    public enum ApplicationTheme
+    {
+        [Display(Name = "Light theme")]
+        Light = 0,
+
+        [Display(Name = "Current Windows theme")]
+        System = 1,
+
+        [Display(Name = "Dark theme")]
+        Dark = 2,
+        _Default = System
+    }
+
+    /// <summary>
+    /// Theme-related settings.
+    /// </summary>
+    public interface IThemeSettings : ISettingsCollection
+    {
+        /// <summary>
+        /// Current theme.
+        /// </summary>
+        IEnumSetting<ApplicationTheme> Theme { get; }
+    }
+
+    public class ThemeSettingsRepository : RegistryRepositoryBase<IThemeSettings>
     {
         public ThemeSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
             baseKey.ExpectNotNull(nameof(baseKey));
         }
 
-        protected override ThemeSettings LoadSettings(RegistryKey key)
+        protected override IThemeSettings LoadSettings(RegistryKey key)
             => ThemeSettings.FromKey(key);
-    }
 
-    public class ThemeSettings : ISettingsCollection
-    {
-        public enum ApplicationTheme
+        //---------------------------------------------------------------------
+        // Inner class.
+        //---------------------------------------------------------------------
+
+        private class ThemeSettings : IThemeSettings
         {
-            [Display(Name = "Light theme")]
-            Light = 0,
+            public IEnumSetting<ApplicationTheme> Theme { get; private set; }
 
-            [Display(Name = "Current Windows theme")]
-            System = 1,
-
-            [Display(Name = "Dark theme")]
-            Dark = 2,
-            _Default = System
-        }
-
-        public RegistryEnumSetting<ApplicationTheme> Theme { get; private set; }
-
-        public IEnumerable<ISetting> Settings => new ISetting[]
-        {
-            this.Theme
-        };
-
-        private ThemeSettings()
-        {
-        }
-
-        public static ThemeSettings FromKey(RegistryKey registryKey)
-        {
-            return new ThemeSettings()
+            public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                Theme = RegistryEnumSetting<ApplicationTheme>.FromKey(
-                    "Theme",
-                    "Theme",
-                    null,
-                    null,
-                    ApplicationTheme._Default,
-                    registryKey)
+                this.Theme
             };
+
+            private ThemeSettings()
+            {
+            }
+
+            public static ThemeSettings FromKey(RegistryKey registryKey)
+            {
+                return new ThemeSettings()
+                {
+                    Theme = RegistryEnumSetting<ApplicationTheme>.FromKey(
+                        "Theme",
+                        "Theme",
+                        null,
+                        null,
+                        ApplicationTheme._Default,
+                        registryKey)
+                };
+            }
         }
     }
 }
