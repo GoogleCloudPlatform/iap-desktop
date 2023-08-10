@@ -24,6 +24,7 @@ using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;

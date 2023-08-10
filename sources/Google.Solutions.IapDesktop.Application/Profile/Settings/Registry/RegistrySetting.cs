@@ -31,7 +31,7 @@ using System.Text;
 #pragma warning disable CA1000 // Do not declare static members on generic types
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
 {
     public interface IRegistrySetting : ISetting
     {
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     {
     }
 
-    public class RegistryStringSetting 
+    public class RegistryStringSetting
         : SettingBase<string>, IRegistrySetting, IStringSetting
     {
         private readonly Func<string, bool> validate;
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistrySecureStringSetting 
+    public class RegistrySecureStringSetting
         : SettingBase<SecureString>, IRegistrySetting, ISecureStringSetting
     {
         private readonly DataProtectionScope protectionScope;
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistryBoolSetting 
+    public class RegistryBoolSetting
         : SettingBase<bool>, IRegistrySetting, IBoolSetting
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
@@ -442,7 +442,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
     }
 
-    public class RegistryQwordSetting 
+    public class RegistryQwordSetting
         : SettingBase<long>, IRegistrySetting, ILongSetting
     {
         private readonly long minInclusive;

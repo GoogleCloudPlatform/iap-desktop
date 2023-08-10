@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
 using System;

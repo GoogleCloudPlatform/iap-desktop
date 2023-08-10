@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Mvvm.Binding;
 using Moq;
