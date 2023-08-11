@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 dialog.ViewModel.DeviceEnrollment = DeviceEnrollment.Create(
                     new CertificateStore(),
-                    serviceProvider.GetService<ApplicationSettingsRepository>());
+                    serviceProvider.GetService<IRepository<IAccessSettings>>());
                 dialog.ViewModel.ClientRegistrations 
                     = new Dictionary<OidcIssuer, OidcClientRegistration>()
                     {
@@ -413,10 +413,15 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton<IWin32ProcessFactory>(processFactory);
                 preAuthLayer.AddSingleton<IWin32ProcessSet>(processFactory);
 
+                //
+                // Load settings.
+                //
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),
                     profile.UserPolicyKey?.OpenSubKey("Application"));
+                preAuthLayer.AddSingleton<IRepository<IApplicationSettings>>(appSettingsRepository);
+
                 if (appSettingsRepository.IsPolicyPresent)
                 {
                     //
@@ -426,21 +431,25 @@ namespace Google.Solutions.IapDesktop
                     Install.UserAgent.Extensions = "Enterprise";
                 }
 
-                preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
-                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Theme")));
-                preAuthLayer.AddSingleton<IThemeService, ThemeService>();
-
-                preAuthLayer.AddTransient<IQuarantine, Quarantine>();
-                preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
-                preAuthLayer.AddSingleton(appSettingsRepository);
-                preAuthLayer.AddSingleton(new ToolWindowStateRepository(
-                    profile.SettingsKey.CreateSubKey("ToolWindows")));
-
                 var authSettingsRepository = new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"));
                 preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
+
+                var accessSettingsRepository = new AccessSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Application"),
+                    profile.MachinePolicyKey?.OpenSubKey("Application"),
+                    profile.UserPolicyKey?.OpenSubKey("Application"));
+                preAuthLayer.AddSingleton<IRepository<IAccessSettings>>(accessSettingsRepository);
+                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Theme")));
+                preAuthLayer.AddSingleton(new ToolWindowStateRepository(
+                    profile.SettingsKey.CreateSubKey("ToolWindows")));
+
+                preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
+                preAuthLayer.AddSingleton<IThemeService, ThemeService>();
+                preAuthLayer.AddTransient<IQuarantine, Quarantine>();
+                preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
 
                 //
                 // Configure networking settings.
@@ -449,15 +458,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 try
                 {
-                    var settings = preAuthLayer
-                        .GetService<ApplicationSettingsRepository>()
-                        .GetSettings();
-
-                    //
-                    // Set connection pool limit. This limit applies per endpoint,
-                    // and GCE, RM, OS Login, etc are all separate endpoints.
-                    //
-                    ServicePointManager.DefaultConnectionLimit = settings.ConnectionLimit.IntValue;
+                    var settings = appSettingsRepository.GetSettings();
 
                     //
                     // Activate proxy settings based on app settings.
@@ -472,15 +473,31 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Register and configure API client endpoints.
                 //
-                var psc = new ServiceRoute(
-                    Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
+                var serviceRoute = ServiceRoute.Public;
+                {
+                    var accessSettings = accessSettingsRepository.GetSettings();
+                    if (accessSettings.PrivateServiceConnectEndpoint.StringValue is var pscEndpoint &&
+                        !string.IsNullOrEmpty(pscEndpoint))
+                    {
+                        //
+                        // Enable PSC.
+                        //
+                        serviceRoute = new ServiceRoute(pscEndpoint);
+                    }
 
-                preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(IapClient.CreateEndpoint(psc));
+                    //
+                    // Set connection pool limit. This limit applies per endpoint.
+                    //
+                    ServicePointManager.DefaultConnectionLimit 
+                        = accessSettings.ConnectionLimit.IntValue;
+                }
+
+                preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(IapClient.CreateEndpoint(serviceRoute));
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();

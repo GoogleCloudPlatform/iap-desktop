@@ -5,6 +5,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>IAP Desktop</Description>
     
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />

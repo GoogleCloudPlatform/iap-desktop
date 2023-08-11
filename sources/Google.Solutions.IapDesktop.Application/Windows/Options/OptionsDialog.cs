@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             {
                 dialog.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
 
-                var appSettingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
+                var appSettingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
 
                 dialog.ViewModel.AddSheet(
                     new GeneralOptionsSheet(),
@@ -49,13 +49,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                         serviceProvider.GetService<IBrowserProtocolRegistry>(),
                         serviceProvider.GetService<HelpAdapter>()));
                 dialog.ViewModel.AddSheet(
-                    new AppearanceOptionsSheet(),
-                    new AppearanceOptionsViewModel(serviceProvider.GetService<IRepository<IThemeSettings>>()));
-                dialog.ViewModel.AddSheet(
                     new NetworkOptionsSheet(),
                     new NetworkOptionsViewModel(
                         appSettingsRepository,
                         serviceProvider.GetService<IHttpProxyAdapter>()));
+                dialog.ViewModel.AddSheet(
+                    new AccessOptionsSheet(),
+                    new AccessOptionsViewModel(
+                        serviceProvider.GetService<IRepository<IAccessSettings>>(),
+                        serviceProvider.GetService<HelpAdapter>()));
+                dialog.ViewModel.AddSheet(
+                    new AppearanceOptionsSheet(),
+                    new AppearanceOptionsViewModel(serviceProvider.GetService<IRepository<IThemeSettings>>()));
                 dialog.ViewModel.AddSheet(
                     new ScreenOptionsSheet(),
                     new ScreenOptionsViewModel(appSettingsRepository));

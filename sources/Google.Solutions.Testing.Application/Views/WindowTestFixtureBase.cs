@@ -81,7 +81,7 @@ namespace Google.Solutions.Testing.Application.Views
                 hkcu.CreateSubKey(TestKeyPath)));
             registry.AddSingleton(new ToolWindowStateRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
-            registry.AddSingleton(new ApplicationSettingsRepository(
+            registry.AddSingleton<IRepository<IApplicationSettings>>(new ApplicationSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null));

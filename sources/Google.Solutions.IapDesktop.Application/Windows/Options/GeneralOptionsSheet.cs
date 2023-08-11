@@ -37,7 +37,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public Type ViewModel => typeof(GeneralOptionsViewModel);
 
-        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        public void Bind(
+            PropertiesSheetViewModelBase viewModelBase, 
+            IBindingContext bindingContext)
         {
             var viewModel = (GeneralOptionsViewModel)viewModelBase;
 
@@ -46,21 +48,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 viewModel,
                 m => m.IsUpdateCheckEditable,
                 bindingContext);
-            this.secureConnectBox.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.IsDeviceCertificateAuthenticationEditable,
-                bindingContext);
 
             this.enableUpdateCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsUpdateCheckEnabled,
-                bindingContext);
-            this.enableDcaCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsDeviceCertificateAuthenticationEnabled,
                 bindingContext);
             this.lastCheckLabel.BindReadonlyProperty(
                 c => c.Text,
@@ -76,10 +68,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.browserIntegrationLink.BindObservableCommand(
                 viewModel,
                 m => m.OpenBrowserIntegrationHelp,
-                bindingContext);
-            this.secureConnectLink.BindObservableCommand(
-                viewModel,
-                m => m.OpenSecureConnectHelp,
                 bindingContext);
         }
     }

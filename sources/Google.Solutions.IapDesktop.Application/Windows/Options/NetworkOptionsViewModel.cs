@@ -28,11 +28,10 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
-    internal class NetworkOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
+    internal class NetworkOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
     {
         private readonly IHttpProxyAdapter proxyAdapter;
 
-        private int connectionLimit;
         private string proxyPacAddress = null;
         private string proxyServer = null;
         private string proxyPort = null;
@@ -40,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private string proxyPassword = null;
 
         public NetworkOptionsViewModel(
-            ApplicationSettingsRepository settingsRepository,
+            IRepository<IApplicationSettings> settingsRepository,
             IHttpProxyAdapter proxyAdapter)
             : base("Network", settingsRepository)
         {
@@ -53,9 +52,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(ApplicationSettings settings)
+        protected override void Load(IApplicationSettings settings)
         {
-            this.connectionLimit = settings.ConnectionLimit.IntValue;
             this.IsProxyEditable =
                 !settings.ProxyUrl.IsReadOnly &&
                 !settings.ProxyPacUrl.IsReadOnly;
@@ -80,11 +78,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-        protected override void Save(ApplicationSettings settings)
+        protected override void Save(IApplicationSettings settings)
         {
             Debug.Assert(this.IsDirty.Value);
-
-            settings.ConnectionLimit.IntValue = this.connectionLimit;
 
             switch (this.Proxy)
             {
@@ -152,17 +148,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         //---------------------------------------------------------------------
 
         public bool IsProxyEditable { get; private set; }
-
-        public decimal ConnectionLimit
-        {
-            get => this.connectionLimit;
-            set
-            {
-                this.connectionLimit = (int)value;
-                this.IsDirty.Value = true;
-                RaisePropertyChange();
-            }
-        }
 
         public enum ProxyType
         {

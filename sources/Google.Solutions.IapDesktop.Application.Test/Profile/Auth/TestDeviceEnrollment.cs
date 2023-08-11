@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             -----END CERTIFICATE-----";
 
         private const string TestKeyPath = @"Software\Google\__Test";
-        private ApplicationSettingsRepository settingsRepository;
+        private AccessSettingsRepository settingsRepository;
 
         [SetUp]
         public void SetUp()
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var settingsKey = hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new ApplicationSettingsRepository(settingsKey, null, null);
+            this.settingsRepository = new AccessSettingsRepository(settingsKey, null, null);
         }
 
         //---------------------------------------------------------------------

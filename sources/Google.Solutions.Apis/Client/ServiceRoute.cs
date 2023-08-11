@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -116,7 +117,7 @@ namespace Google.Solutions.Apis.Client
                 catch (Exception e)
                 {
                     throw new InvalidServiceRouteException(
-                        $"Probing the endpoint '{this}' failed", e);
+                        $"Probing the endpoint '{this}' failed", e.Unwrap());
                 }
             }
         }

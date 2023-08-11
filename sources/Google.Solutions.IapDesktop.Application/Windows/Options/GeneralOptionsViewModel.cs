@@ -31,35 +31,28 @@ using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
-    internal class GeneralOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
+    internal class GeneralOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
     {
         private readonly IBrowserProtocolRegistry protocolRegistry;
 
         public GeneralOptionsViewModel(
-            ApplicationSettingsRepository settingsRepository,
+            IRepository<IApplicationSettings> settingsRepository,
             IBrowserProtocolRegistry protocolRegistry,
             HelpAdapter helpService)
             : base("General", settingsRepository)
         {
             this.protocolRegistry = protocolRegistry;
-
-            this.OpenSecureConnectHelp = ObservableCommand.Build(
-                string.Empty,
-                () => helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
             this.OpenBrowserIntegrationHelp = ObservableCommand.Build(
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.BrowserIntegration));
 
             this.IsUpdateCheckEditable = ObservableProperty.Build(false);
-            this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
 
             this.IsUpdateCheckEnabled = ObservableProperty.Build(false);
             this.IsBrowserIntegrationEnabled = ObservableProperty.Build(false);
-            this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
 
             MarkDirtyWhenPropertyChanges(this.IsUpdateCheckEnabled);
             MarkDirtyWhenPropertyChanges(this.IsBrowserIntegrationEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsDeviceCertificateAuthenticationEnabled);
 
             base.OnInitializationCompleted();
         }
@@ -68,15 +61,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(ApplicationSettings settings)
+        protected override void Load(IApplicationSettings settings)
         {
             this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.BoolValue;
             this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
-
-            this.IsDeviceCertificateAuthenticationEnabled.Value =
-                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
-            this.IsDeviceCertificateAuthenticationEditable.Value =
-                !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
 
             this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
@@ -87,12 +75,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 ExecutableLocation);
         }
 
-        protected override void Save(ApplicationSettings settings)
+        protected override void Save(IApplicationSettings settings)
         {
             settings.IsUpdateCheckEnabled.BoolValue =
                 this.IsUpdateCheckEnabled.Value;
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
-                this.IsDeviceCertificateAuthenticationEnabled.Value;
 
             //
             // Update protocol registration.
@@ -110,16 +96,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-
-        // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
-        private static string ExecutableLocation =>
-            (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
+        private static string ExecutableLocation
+        {
+            //
+            // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
+            //
+            get => (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
+        }
 
         //---------------------------------------------------------------------
         // Observable command.
         //---------------------------------------------------------------------
 
-        public ObservableCommand OpenSecureConnectHelp { get; }
         public ObservableCommand OpenBrowserIntegrationHelp { get; }
 
         //---------------------------------------------------------------------
@@ -128,13 +116,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public ObservableProperty<bool> IsUpdateCheckEditable { get; }
 
-        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }
-
         public ObservableProperty<bool> IsUpdateCheckEnabled { get; }
 
         public ObservableProperty<bool> IsBrowserIntegrationEnabled { get; }
-
-        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
         public string LastUpdateCheck { get; private set; }
     }

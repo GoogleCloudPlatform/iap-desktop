@@ -41,11 +41,11 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
     internal sealed class ProjectExplorerSettings : IProjectExplorerSettings
     {
-        private readonly ApplicationSettingsRepository settingsRepository;
+        private readonly IRepository<IApplicationSettings> settingsRepository;
         private readonly bool disposeRepositoryAfterUse;
 
         public ProjectExplorerSettings(
-            ApplicationSettingsRepository settingsRepository,
+            IRepository<IApplicationSettings> settingsRepository,
             bool disposeRepositoryAfterUse)
         {
             this.settingsRepository = settingsRepository;

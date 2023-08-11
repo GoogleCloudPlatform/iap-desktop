@@ -29,9 +29,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
-    internal class ScreenOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
+    internal class ScreenOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
     {
-        public ScreenOptionsViewModel(ApplicationSettingsRepository settingsRepository)
+        public ScreenOptionsViewModel(IRepository<IApplicationSettings> settingsRepository)
             : base("Display", settingsRepository)
         {
             base.OnInitializationCompleted();
@@ -41,11 +41,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(ApplicationSettings settings)
+        protected override void Load(IApplicationSettings settings)
         {
             var fullScreenDevices =
                 (settings.FullScreenDevices.StringValue ?? string.Empty)
-                    .Split(ApplicationSettings.FullScreenDevicesSeparator)
+                    .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
                     .ToHashSet();
 
             this.Devices = new ObservableCollection<ScreenDevice>(
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 }));
         }
 
-        protected override void Save(ApplicationSettings settings)
+        protected override void Save(IApplicationSettings settings)
         {
             var selectedDevices = this.Devices
                 .Where(d => d.IsSelected)
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             settings.FullScreenDevices.StringValue = selectedDevices.Any()
                 ? string.Join(
-                    ApplicationSettings.FullScreenDevicesSeparator.ToString(),
+                    ApplicationSettingsRepository.FullScreenDevicesSeparator.ToString(),
                     selectedDevices)
                 : null;
         }

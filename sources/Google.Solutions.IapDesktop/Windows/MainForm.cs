@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly MainFormViewModel viewModel;
 
         private readonly IThemeService themeService;
-        private readonly ApplicationSettingsRepository applicationSettings;
+        private readonly IRepository<IApplicationSettings> applicationSettings;
         private readonly IServiceProvider serviceProvider;
         private readonly IBindingContext bindingContext;
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider = serviceProvider;
 
             this.themeService = this.serviceProvider.GetService<IThemeService>();
-            this.applicationSettings = this.serviceProvider.GetService<ApplicationSettingsRepository>();
+            this.applicationSettings = this.serviceProvider.GetService<IRepository<IApplicationSettings>>();
             this.bindingContext = serviceProvider.GetService<IBindingContext>();
 
             //

@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         /// Read and activate settings.
         /// </summary>
         /// <param name="settings"></param>
-        void ActivateSettings(ApplicationSettings settings);
+        void ActivateSettings(IApplicationSettings settings);
     }
 
     public class HttpProxyAdapter : IHttpProxyAdapter
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             }
         }
 
-        public void ActivateSettings(ApplicationSettings settings)
+        public void ActivateSettings(IApplicationSettings settings)
         {
             NetworkCredential GetProxyCredential()
             {

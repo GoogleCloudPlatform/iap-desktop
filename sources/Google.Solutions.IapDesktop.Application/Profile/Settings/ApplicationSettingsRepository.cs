@@ -30,18 +30,41 @@ using System.Security.Cryptography;
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
     /// <summary>
+    /// General settings.
+    /// </summary>
+    public interface IApplicationSettings : ISettingsCollection
+    {
+        IBoolSetting IsMainWindowMaximized { get; }
+        IIntSetting MainWindowHeight { get; }
+        IIntSetting MainWindowWidth { get; }
+        IBoolSetting IsUpdateCheckEnabled { get; }
+        ILongSetting LastUpdateCheck { get; }
+        IBoolSetting IsPreviewFeatureSetEnabled { get; }
+        IStringSetting ProxyUrl { get; }
+        IStringSetting ProxyPacUrl { get; }
+        IStringSetting ProxyUsername { get; }
+        ISecureStringSetting ProxyPassword { get; }
+        IStringSetting FullScreenDevices { get; }
+        IStringSetting CollapsedProjects { get; }
+    }
+
+    /// <summary>
     /// Registry-backed repository for app settings.
     /// </summary>
-    public class ApplicationSettingsRepository : PolicyEnabledRegistryRepository<ApplicationSettings>
+    public class ApplicationSettingsRepository
+        : PolicyEnabledRegistryRepository<IApplicationSettings>
     {
+        public const char FullScreenDevicesSeparator = ',';
+
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
+            RegistryKey userPolicyKey) 
+            : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
         }
 
-        protected override ApplicationSettings LoadSettings(
+        protected override IApplicationSettings LoadSettings(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey)
@@ -49,215 +72,181 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 settingsKey,
                 machinePolicyKey,
                 userPolicyKey);
-    }
 
-    public class ApplicationSettings : ISettingsCollection
-    {
-        public const char FullScreenDevicesSeparator = ',';
 
-        public RegistryBoolSetting IsMainWindowMaximized { get; private set; }
+        //---------------------------------------------------------------------
+        // Inner class.
+        //---------------------------------------------------------------------
 
-        public RegistryDwordSetting MainWindowHeight { get; private set; }
-
-        public RegistryDwordSetting MainWindowWidth { get; private set; }
-
-        public RegistryBoolSetting IsUpdateCheckEnabled { get; private set; }
-
-        public RegistryQwordSetting LastUpdateCheck { get; private set; }
-
-        public RegistryBoolSetting IsPreviewFeatureSetEnabled { get; private set; }
-
-        public RegistryStringSetting ProxyUrl { get; private set; }
-
-        public RegistryStringSetting ProxyPacUrl { get; private set; }
-
-        public RegistryStringSetting ProxyUsername { get; private set; }
-
-        public RegistrySecureStringSetting ProxyPassword { get; private set; }
-
-        public RegistryBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
-
-        public RegistryStringSetting FullScreenDevices { get; private set; }
-
-        public RegistryStringSetting DeviceCertificateSelector { get; private set; }
-
-        public RegistryStringSetting CollapsedProjects { get; private set; }
-
-        public RegistryDwordSetting ConnectionLimit { get; private set; }
-
-        public IEnumerable<ISetting> Settings => new ISetting[]
+        private class ApplicationSettings : IApplicationSettings
         {
-            this.IsMainWindowMaximized,
-            this.MainWindowHeight,
-            this.MainWindowWidth,
-            this.IsUpdateCheckEnabled,
-            this.LastUpdateCheck,
-            this.IsUpdateCheckEnabled,
-            this.ProxyUrl,
-            this.ProxyPacUrl,
-            this.ProxyUsername,
-            this.ProxyPassword,
-            this.IsDeviceCertificateAuthenticationEnabled,
-            this.FullScreenDevices,
-            this.DeviceCertificateSelector,
-            this.CollapsedProjects,
-            this.ConnectionLimit
-        };
+            private ApplicationSettings()
+            { }
 
-        private ApplicationSettings()
-        { }
+            public IBoolSetting IsMainWindowMaximized { get; private set; }
 
-        public static ApplicationSettings FromKey(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey)
-        {
-            return new ApplicationSettings()
+            public IIntSetting MainWindowHeight { get; private set; }
+
+            public IIntSetting MainWindowWidth { get; private set; }
+
+            public IBoolSetting IsUpdateCheckEnabled { get; private set; }
+
+            public ILongSetting LastUpdateCheck { get; private set; }
+
+            public IBoolSetting IsPreviewFeatureSetEnabled { get; private set; }
+
+            public IStringSetting ProxyUrl { get; private set; }
+
+            public IStringSetting ProxyPacUrl { get; private set; }
+
+            public IStringSetting ProxyUsername { get; private set; }
+
+            public ISecureStringSetting ProxyPassword { get; private set; }
+
+            public IStringSetting FullScreenDevices { get; private set; }
+
+            public IStringSetting CollapsedProjects { get; private set; }
+
+            public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                //
-                // Settings that can be overridden by policy.
-                //
-                // NB. Default values must be kept consistent with the
-                //     ADMX policy templates!
-                // NB. Machine policies override user policies, and
-                //     user policies override settings.
-                //
-                IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
-                        "IsPreviewFeatureSetEnabled",
-                        "IsPreviewFeatureSetEnabled",
-                        null,
-                        null,
-                        false,
-                        settingsKey)
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-                IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
-                        "IsUpdateCheckEnabled",
-                        "IsUpdateCheckEnabled",
-                        null,
-                        null,
-                        true,
-                        settingsKey)
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-                IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
-                        "IsDeviceCertificateAuthenticationEnabled",
-                        "IsDeviceCertificateAuthenticationEnabled",
-                        null,
-                        null,
-                        false,
-                        settingsKey)
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-                ProxyUrl = RegistryStringSetting.FromKey(
-                        "ProxyUrl",
-                        "ProxyUrl",
-                        null,
-                        null,
-                        null,
-                        settingsKey,
-                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-                ProxyPacUrl = RegistryStringSetting.FromKey(
-                        "ProxyPacUrl",
-                        "ProxyPacUrl",
-                        null,
-                        null,
-                        null,
-                        settingsKey,
-                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-                DeviceCertificateSelector = RegistryStringSetting.FromKey(
-                        "DeviceCertificateSelector",
-                        "DeviceCertificateSelector",
-                        null,
-                        null,
-                        DeviceEnrollment.DefaultDeviceCertificateSelector,
-                        settingsKey,
-                        selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
-
-                //
-                // User preferences. These cannot be overridden by policy.
-                //
-                IsMainWindowMaximized = RegistryBoolSetting.FromKey(
-                    "IsMainWindowMaximized",
-                    "IsMainWindowMaximized",
-                    null,
-                    null,
-                    false,
-                    settingsKey),
-                MainWindowHeight = RegistryDwordSetting.FromKey(
-                    "MainWindowHeight",
-                    "MainWindowHeight",
-                    null,
-                    null,
-                    0,
-                    settingsKey,
-                    0,
-                    ushort.MaxValue),
-                MainWindowWidth = RegistryDwordSetting.FromKey(
-                    "WindowWidth",
-                    "WindowWidth",
-                    null,
-                    null,
-                    0,
-                    settingsKey,
-                    0,
-                    ushort.MaxValue),
-                LastUpdateCheck = RegistryQwordSetting.FromKey(
-                    "LastUpdateCheck",
-                    "LastUpdateCheck",
-                    null,
-                    null,
-                    0,
-                    settingsKey,
-                    0,
-                    long.MaxValue),
-                ProxyUsername = RegistryStringSetting.FromKey(
-                    "ProxyUsername",
-                    "ProxyUsername",
-                    null,
-                    null,
-                    null,
-                    settingsKey,
-                    _ => true),
-                ProxyPassword = RegistrySecureStringSetting.FromKey(
-                    "ProxyPassword",
-                    "ProxyPassword",
-                    null,
-                    null,
-                    settingsKey,
-                    DataProtectionScope.CurrentUser),
-                FullScreenDevices = RegistryStringSetting.FromKey(
-                    "FullScreenDevices",
-                    "FullScreenDevices",
-                    null,
-                    null,
-                    null,
-                    settingsKey,
-                    _ => true),
-                CollapsedProjects = RegistryStringSetting.FromKey(
-                    "CollapsedProjects",
-                    "CollapsedProjects",
-                    null,
-                    null,
-                    null,
-                    settingsKey,
-                    _ => true),
-                ConnectionLimit = RegistryDwordSetting.FromKey(
-                    "ConnectionLimit",
-                    "ConnectionLimit",
-                    null,
-                    null,
-                    16,
-                    settingsKey,
-                    1,
-                    32)
+                this.IsMainWindowMaximized,
+                this.MainWindowHeight,
+                this.MainWindowWidth,
+                this.IsUpdateCheckEnabled,
+                this.LastUpdateCheck,
+                this.IsUpdateCheckEnabled,
+                this.ProxyUrl,
+                this.ProxyPacUrl,
+                this.ProxyUsername,
+                this.ProxyPassword,
+                this.FullScreenDevices,
+                this.CollapsedProjects
             };
+
+            public static ApplicationSettings FromKey(
+                RegistryKey settingsKey,
+                RegistryKey machinePolicyKey,
+                RegistryKey userPolicyKey)
+            {
+                return new ApplicationSettings()
+                {
+                    //
+                    // Settings that can be overridden by policy.
+                    //
+                    // NB. Default values must be kept consistent with the
+                    //     ADMX policy templates!
+                    // NB. Machine policies override user policies, and
+                    //     user policies override settings.
+                    //
+                    IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
+                            "IsPreviewFeatureSetEnabled",
+                            "IsPreviewFeatureSetEnabled",
+                            null,
+                            null,
+                            false,
+                            settingsKey)
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
+                            "IsUpdateCheckEnabled",
+                            "IsUpdateCheckEnabled",
+                            null,
+                            null,
+                            true,
+                            settingsKey)
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    ProxyUrl = RegistryStringSetting.FromKey(
+                            "ProxyUrl",
+                            "ProxyUrl",
+                            null,
+                            null,
+                            null,
+                            settingsKey,
+                            url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    ProxyPacUrl = RegistryStringSetting.FromKey(
+                            "ProxyPacUrl",
+                            "ProxyPacUrl",
+                            null,
+                            null,
+                            null,
+                            settingsKey,
+                            url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+
+                    //
+                    // User preferences. These cannot be overridden by policy.
+                    //
+                    IsMainWindowMaximized = RegistryBoolSetting.FromKey(
+                        "IsMainWindowMaximized",
+                        "IsMainWindowMaximized",
+                        null,
+                        null,
+                        false,
+                        settingsKey),
+                    MainWindowHeight = RegistryDwordSetting.FromKey(
+                        "MainWindowHeight",
+                        "MainWindowHeight",
+                        null,
+                        null,
+                        0,
+                        settingsKey,
+                        0,
+                        ushort.MaxValue),
+                    MainWindowWidth = RegistryDwordSetting.FromKey(
+                        "WindowWidth",
+                        "WindowWidth",
+                        null,
+                        null,
+                        0,
+                        settingsKey,
+                        0,
+                        ushort.MaxValue),
+                    LastUpdateCheck = RegistryQwordSetting.FromKey(
+                        "LastUpdateCheck",
+                        "LastUpdateCheck",
+                        null,
+                        null,
+                        0,
+                        settingsKey,
+                        0,
+                        long.MaxValue),
+                    ProxyUsername = RegistryStringSetting.FromKey(
+                        "ProxyUsername",
+                        "ProxyUsername",
+                        null,
+                        null,
+                        null,
+                        settingsKey,
+                        _ => true),
+                    ProxyPassword = RegistrySecureStringSetting.FromKey(
+                        "ProxyPassword",
+                        "ProxyPassword",
+                        null,
+                        null,
+                        settingsKey,
+                        DataProtectionScope.CurrentUser),
+                    FullScreenDevices = RegistryStringSetting.FromKey(
+                        "FullScreenDevices",
+                        "FullScreenDevices",
+                        null,
+                        null,
+                        null,
+                        settingsKey,
+                        _ => true),
+                    CollapsedProjects = RegistryStringSetting.FromKey(
+                        "CollapsedProjects",
+                        "CollapsedProjects",
+                        null,
+                        null,
+                        null,
+                        settingsKey,
+                        _ => true)
+                };
+            }
         }
     }
 }

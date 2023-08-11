@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             this.protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
         }
 
-        private ApplicationSettingsRepository CreateSettingsRepository(
+        private IRepository<IApplicationSettings> CreateSettingsRepository(
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
@@ -188,103 +188,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpAdapter());
 
             Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
-        }
-
-        //---------------------------------------------------------------------
-        // DCA.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenSettingEnabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                this.protocolRegistryMock.Object,
-                new HelpAdapter());
-
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
-        }
-
-        [Test]
-        public void WhenSettingDisabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                this.protocolRegistryMock.Object,
-                new HelpAdapter());
-
-            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
-        }
-
-        [Test]
-        public void WhenSettingEnabledByPolicy_ThenIsDeviceCertificateAuthenticationEditableIsFalse()
-        {
-            var settingsRepository = CreateSettingsRepository(
-                new Dictionary<string, object>
-                {
-                    { "IsDeviceCertificateAuthenticationEnabled", 1 }
-                });
-
-            var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                this.protocolRegistryMock.Object,
-                new HelpAdapter());
-
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
-        }
-
-        [Test]
-        public async Task WhenDisablingDca_ThenChangeIsApplied()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                this.protocolRegistryMock.Object,
-                new HelpAdapter());
-            viewModel.IsDeviceCertificateAuthenticationEnabled.Value = false;
-
-            await viewModel.ApplyChangesAsync();
-
-            settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
-        }
-
-        [Test]
-        public void WhenDcaChanged_ThenIsDirtyIsTrueUntilApplied()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                this.protocolRegistryMock.Object,
-                new HelpAdapter());
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-
-            viewModel.IsDeviceCertificateAuthenticationEnabled.Value =
-                !viewModel.IsDeviceCertificateAuthenticationEnabled.Value;
-
-            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
