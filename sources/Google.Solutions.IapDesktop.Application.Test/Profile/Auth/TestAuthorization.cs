@@ -32,8 +32,16 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 {
     [TestFixture]
-    public class TesrAuthorization
+    public class TestAuthorization
     {
+        private static Mock<IOidcClient> CreateClient()
+        {
+            var client = new Mock<IOidcClient>();
+            client
+                .SetupGet(c => c.Registration)
+                .Returns(new OidcClientRegistration(OidcIssuer.Gaia, "client-id", "", "/"));
+            return client;
+        }
 
         //---------------------------------------------------------------------
         // Session.
@@ -42,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenNotAuthorized_ThenSessionThrowsException()
         {
-            var client = new Mock<IOidcClient>();
+            var client = CreateClient();
             var authorization = new Authorization(
                 client.Object,
                 new Mock<IDeviceEnrollment>().Object);
@@ -59,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         public async Task WhenSuccessful_ThenTryAuthorizeSilentlySetsSession()
         {
             var session = new Mock<IOidcSession>();
-            var client = new Mock<IOidcClient>();
+            var client = CreateClient();
             client
                 .Setup(c => c.TryAuthorizeSilentlyAsync(CancellationToken.None))
                 .ReturnsAsync(session.Object);
@@ -83,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         public async Task WhenSessionIsNull_ThenAuthorizeSetsSession()
         {
             var session = new Mock<IOidcSession>();
-            var client = new Mock<IOidcClient>();
+            var client = CreateClient();
             client
                 .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
                 .ReturnsAsync(session.Object);
@@ -106,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task WhenSessionExists_ThenAuthorizeSplicesSessionsAndRaisesEvent()
         {
-            var client = new Mock<IOidcClient>();
+            var client = CreateClient();
             var authorization = new Authorization(
                 client.Object,
                 new Mock<IDeviceEnrollment>().Object);
@@ -145,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public async Task ReauthorizeRaisesEvent()
         {
-            var client = new Mock<IOidcClient>();
+            var client = CreateClient();
             client
                 .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
                 .ReturnsAsync(new Mock<IOidcSession>().Object);

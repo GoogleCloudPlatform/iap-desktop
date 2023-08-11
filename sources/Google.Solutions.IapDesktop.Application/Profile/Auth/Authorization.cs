@@ -63,6 +63,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         {
             this.client = client.ExpectNotNull(nameof(client));
             this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
+
+            client.Registration.ExpectNotNull("Registration");
         }
 
         //---------------------------------------------------------------------

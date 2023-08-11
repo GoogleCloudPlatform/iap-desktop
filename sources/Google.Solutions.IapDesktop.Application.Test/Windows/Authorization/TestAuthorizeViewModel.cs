@@ -62,6 +62,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     new Mock<IRepository<IAccessSettings>>().Object,
                     TestProject.UserAgent)
             {
+                this.Client
+                    .SetupGet(c => c.Registration)
+                    .Returns(new OidcClientRegistration(OidcIssuer.Gaia, "client-id", "", "/"));
             }
 
             public AuthorizeViewModelWithMockSigninAdapter()
