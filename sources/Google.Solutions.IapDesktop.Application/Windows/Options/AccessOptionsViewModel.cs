@@ -31,6 +31,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     public class AccessOptionsViewModel : OptionsViewModelBase<IAccessSettings>
     {
+        internal TimeSpan ProbeTimeout { get; set; } = TimeSpan.FromSeconds(2);
+
         public AccessOptionsViewModel(
             IRepository<IAccessSettings> settingsRepository,
             HelpAdapter helpService)

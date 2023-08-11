@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -219,7 +220,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpAdapter())
+            {
+                ProbeTimeout = TimeSpan.FromSeconds(10)
+            };
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = SamplePscEndpoint;
 
@@ -235,7 +239,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpAdapter())
+            {
+                ProbeTimeout = TimeSpan.FromSeconds(10)
+            };
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
