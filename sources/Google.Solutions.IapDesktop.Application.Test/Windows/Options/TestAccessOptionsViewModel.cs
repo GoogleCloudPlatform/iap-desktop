@@ -37,6 +37,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
+        //
+        // Pseudo-PSC endpoint that passes validation.
+        //
+        private const string SamplePscEndpoint = "www.googleapis.com";
+
         private IRepository<IAccessSettings> CreateSettingsRepository(
             IDictionary<string, object> policies = null)
         {
@@ -216,12 +221,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpAdapter());
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
-            viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
+            viewModel.PrivateServiceConnectEndpoint.Value = SamplePscEndpoint;
 
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual("new-psc", settings.PrivateServiceConnectEndpoint.StringValue);
+            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.StringValue);
         }
 
         [Test]
@@ -235,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             Assert.IsFalse(viewModel.IsDirty.Value);
 
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
-            viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
+            viewModel.PrivateServiceConnectEndpoint.Value = SamplePscEndpoint;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
         }
@@ -252,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpAdapter());
 
-            Assert.AreEqual(16, viewModel.ConnectionPoolLimit);
+            Assert.AreEqual(16, viewModel.ConnectionPoolLimit.Value);
         }
 
         [Test]
@@ -267,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpAdapter());
 
-            Assert.AreEqual(5, viewModel.ConnectionPoolLimit);
+            Assert.AreEqual(5, viewModel.ConnectionPoolLimit.Value);
         }
 
         [Test]
@@ -325,6 +330,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             viewModel.IsDeviceCertificateAuthenticationEnabled.Value = true;
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
+
+            Assert.Throws<InvalidOptionsException>(
+                () => viewModel.ApplyChangesAsync().Wait());
+        }
+
+        [Test]
+        public void WhenPscEndpointInvalid_ThenApplyChangesThrowsException()
+        { 
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new AccessOptionsViewModel(
+                settingsRepository,
+                new HelpAdapter());
+            viewModel.IsPrivateServiceConnectEnabled.Value = true;
+            viewModel.PrivateServiceConnectEndpoint.Value = "invalid-endpoint";
 
             Assert.Throws<InvalidOptionsException>(
                 () => viewModel.ApplyChangesAsync().Wait());
