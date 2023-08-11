@@ -22,10 +22,12 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
@@ -42,23 +44,29 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
     public class AuthorizeViewModel : ViewModelBase
     {
         private readonly ServiceEndpoint<GaiaOidcClient> gaiaEndpoint;
+        private readonly ServiceEndpoint<WorkforcePoolClient> stsEndpoint;
         private readonly IOidcOfflineCredentialStore offlineStore;
+        private readonly IRepository<IAccessSettings> accessSettings;
         private readonly UserAgent userAgent;
 
         private CancellationTokenSource cancelCurrentSignin = null;
 
         public AuthorizeViewModel(
             ServiceEndpoint<GaiaOidcClient> gaiaEndpoint,
+            ServiceEndpoint<WorkforcePoolClient> stsEndpoint,
             IInstall install,
             IOidcOfflineCredentialStore offlineStore,
+            IRepository<IAccessSettings> accessSettings,
             UserAgent userAgent)
         {
             this.gaiaEndpoint = gaiaEndpoint.ExpectNotNull(nameof(gaiaEndpoint));
+            this.stsEndpoint = stsEndpoint.ExpectNotNull(nameof(stsEndpoint));
             this.offlineStore = offlineStore.ExpectNotNull(nameof(offlineStore));
+            this.accessSettings = accessSettings.ExpectNotNull(nameof(accessSettings));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
 
             //
-            // NB. Properties are access from a non-GUI thread, so
+            // NB. Properties are accessed from a non-GUI thread, so
             // they must be thread-safe.
             //
             this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
@@ -88,31 +96,61 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        private protected virtual Profile.Auth.Authorization CreateAuthorization(
-            OidcIssuer issuer)
+        private protected virtual Profile.Auth.Authorization CreateAuthorization()
         {
             Debug.Assert(this.Authorization == null);
-            Debug.Assert(issuer == OidcIssuer.Gaia);
 
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
-
             Precondition.ExpectNotNull(this.ClientRegistrations, nameof(this.ClientRegistrations));
+
+            OidcIssuer issuer;
+            WorkforcePoolProviderLocator providerLocator = null;
+            if (this.accessSettings.GetSettings().WorkforcePoolProvider.StringValue
+                is var provider &&
+                !string.IsNullOrEmpty(provider) &&
+                WorkforcePoolProviderLocator.TryParse(provider, out providerLocator))
+            {
+                //
+                // Use workforce identity.
+                //
+                issuer = OidcIssuer.Sts;
+            }
+            else
+            {
+                //
+                // Default to Gaia.
+                //
+                issuer = OidcIssuer.Gaia;
+            }
+
             if (!this.ClientRegistrations.TryGetValue(issuer, out var registration))
             {
                 throw new ArgumentException(
                     $"Missing client registration for issuer {issuer}");
             }
-            else if (registration.Issuer != OidcIssuer.Gaia)
-            {
-                throw new NotImplementedException("Unsupported issuer");
-            }
 
-            var client = new GaiaOidcClient(
-                this.gaiaEndpoint,
-                this.DeviceEnrollment,
-                this.offlineStore,
-                registration,
-                this.userAgent);
+            IOidcClient client;
+            if (registration.Issuer == OidcIssuer.Sts)
+            {
+                Debug.Assert(providerLocator != null);
+
+                client = new WorkforcePoolClient(
+                    this.stsEndpoint,
+                    this.DeviceEnrollment,
+                    this.offlineStore,
+                    providerLocator,
+                    registration,
+                    this.userAgent);
+            }
+            else 
+            {
+                client = new GaiaOidcClient(
+                    this.gaiaEndpoint,
+                    this.DeviceEnrollment,
+                    this.offlineStore,
+                    registration,
+                    this.userAgent);
+            }
 
             return new Profile.Auth.Authorization(
                 client,
@@ -202,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             {
                 try
                 {
-                    var authorization = CreateAuthorization(OidcIssuer.Gaia);
+                    var authorization = CreateAuthorization();
 
                     if (await authorization
                         .TryAuthorizeSilentlyAsync(CancellationToken.None)
@@ -258,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                             //
                             // First-time authorization.
                             //
-                            authorization = CreateAuthorization(OidcIssuer.Gaia);
+                            authorization = CreateAuthorization();
                         }
                         else
                         {

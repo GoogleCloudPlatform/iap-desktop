@@ -36,41 +36,82 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         //---------------------------------------------------------------------
-        // FromString.
+        // TryParse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringIsNullOrEmpty_ThenFromStringThrowsException(
+        public void WhenStringIsNullOrEmpty_ThenTryParseReturnsFalse(
             [Values(null, "")] string id)
         {
-            Assert.Throws<ArgumentNullException>(
-                () => WorkforcePoolProviderLocator.FromString(id));
+            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
         }
 
         [Test]
-        public void WhenStringIsMalformed_ThenFromStringThrowsException(
+        public void WhenStringIsMalformed_ThenTryParseReturnsFalse(
             [Values("x", "principal://", " ")] string id)
         {
-            Assert.Throws<ArgumentException>(
-                () => WorkforcePoolProviderLocator.FromString(id));
+            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
         }
 
         [Test]
-        public void WhenStringComponentIsNullOrEmpty_ThenFromStringThrowsException(
+        public void WhenStringComponentIsNullOrEmpty_ThenTryParseReturnsFalse(
             [Values(
                 "locations//workforcePools/POOL/providers/PROVIDER",
                 "locations/LOCATION/workforcePools//providers/PROVIDER",
                 "locations/LOCATION/workforcePools/POOL/providers/")]
             string id)
         {
-            Assert.Throws<ArgumentNullException>(
-                () => WorkforcePoolProviderLocator.FromString(id));
+            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
         }
 
         [Test]
-        public void WhenStringValid_ThenFromStringSucceeds()
+        public void WhenStringValid_ThenTryParseReturnsTrue()
         {
-            var locator = WorkforcePoolProviderLocator.FromString(
+            Assert.IsTrue(WorkforcePoolProviderLocator.TryParse(
+                "locations/LOCATION/workforcePools/POOL/providers/PROVIDER",
+                out var locator));
+
+            Assert.AreEqual("LOCATION", locator.Location);
+            Assert.AreEqual("POOL", locator.Pool);
+            Assert.AreEqual("PROVIDER", locator.Provider);
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenStringIsNullOrEmpty_ThenParseThrowsException(
+            [Values(null, "")] string id)
+        {
+            Assert.Throws<ArgumentException>(
+                () => WorkforcePoolProviderLocator.Parse(id));
+        }
+
+        [Test]
+        public void WhenStringIsMalformed_ThenParseThrowsException(
+            [Values("x", "principal://", " ")] string id)
+        {
+            Assert.Throws<ArgumentException>(
+                () => WorkforcePoolProviderLocator.Parse(id));
+        }
+
+        [Test]
+        public void WhenStringComponentIsNullOrEmpty_ThenParseThrowsException(
+            [Values(
+                "locations//workforcePools/POOL/providers/PROVIDER",
+                "locations/LOCATION/workforcePools//providers/PROVIDER",
+                "locations/LOCATION/workforcePools/POOL/providers/")]
+            string id)
+        {
+            Assert.Throws<ArgumentException>(
+                () => WorkforcePoolProviderLocator.Parse(id));
+        }
+
+        [Test]
+        public void WhenStringValid_ThenParseSucceeds()
+        {
+            var locator = WorkforcePoolProviderLocator.Parse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER");
 
             Assert.AreEqual("LOCATION", locator.Location);

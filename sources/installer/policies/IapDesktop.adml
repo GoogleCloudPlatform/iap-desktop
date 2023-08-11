@@ -31,8 +31,12 @@
       <string id="IsUpdateCheckEnabled">Enable update checks</string>
       <string id="IsUpdateCheckEnabled_Description">Periodically check for updates on exit</string>
 
-      <string id="IsDeviceCertificateAuthenticationEnabled">Enable endpoint verification</string>
-      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using device certificate authentication if possible. Device Certificate authentication requires the computer to be enrolled and the Endpoint Verification native helper to be installed.
+      <string id="IsDeviceCertificateAuthenticationEnabled">Enable BeyondCorp certificate-based access</string>
+      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using BeyondCorp certificate-based access.
+      </string>
+
+      <string id="WorkforcePoolProvider">Enable Workforce Identity</string>
+      <string id="WorkforcePoolProvider_Description">Use workforce identity for authentication. The provider must be specified in the following format: locations/LOCATION/workforcePools/POOL/providers/PROVIDER.
       </string>
 
       <string id="PrivateServiceConnectEndpoint">Enable Private Service Connect</string>
@@ -76,6 +80,11 @@ to connect to Google APIs.
       <presentation id="PrivateServiceConnectEndpoint">
         <textBox refId="PrivateServiceConnectEndpoint">
           <label>Endpoint (IP or FQDN):</label>
+        </textBox>
+      </presentation>
+      <presentation id="WorkforcePoolProvider">
+        <textBox refId="WorkforcePoolProvider">
+          <label>Provider:</label>
         </textBox>
       </presentation>
     </presentationTable>

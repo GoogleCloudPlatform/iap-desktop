@@ -25,8 +25,10 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Authorization;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis;
@@ -54,8 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                 IOidcOfflineCredentialStore offlineStore)
                 : base(
                     GaiaOidcClient.CreateEndpoint(),
+                    WorkforcePoolClient.CreateEndpoint(),
                     install,
                     offlineStore,
+                    new Mock<IRepository<IAccessSettings>>().Object,
                     TestProject.UserAgent)
             {
             }
@@ -68,8 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
                     
             }
 
-            private protected override Application.Profile.Auth.Authorization CreateAuthorization(
-                OidcIssuer issuer)
+            private protected override Application.Profile.Auth.Authorization CreateAuthorization()
             {
                 return new Application.Profile.Auth.Authorization(
                     this.Client.Object,

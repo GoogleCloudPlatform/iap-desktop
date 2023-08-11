@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
@@ -193,16 +194,24 @@ namespace Google.Solutions.IapDesktop
                 dialog.ViewModel.DeviceEnrollment = DeviceEnrollment.Create(
                     new CertificateStore(),
                     serviceProvider.GetService<IRepository<IAccessSettings>>());
-                dialog.ViewModel.ClientRegistrations 
+                dialog.ViewModel.ClientRegistrations
                     = new Dictionary<OidcIssuer, OidcClientRegistration>()
                     {
-                        { 
-                            OidcIssuer.Gaia, 
+                        {
+                            OidcIssuer.Gaia,
                             new OidcClientRegistration(
-                                OidcIssuer.Gaia, 
+                                OidcIssuer.Gaia,
                                 OAuthClient.Secrets.ClientId,
                                 OAuthClient.Secrets.ClientSecret,
                                 "/authorize/")
+                        },
+                        {
+                            OidcIssuer.Sts,
+                            new OidcClientRegistration(
+                                OidcIssuer.Sts,
+                                OAuthClient.SdkSecrets.ClientId,
+                                OAuthClient.SdkSecrets.ClientSecret,
+                                "/") // TODO: This isn't applied yet
                         }
                     };
 
@@ -488,11 +497,12 @@ namespace Google.Solutions.IapDesktop
                     //
                     // Set connection pool limit. This limit applies per endpoint.
                     //
-                    ServicePointManager.DefaultConnectionLimit 
+                    ServicePointManager.DefaultConnectionLimit
                         = accessSettings.ConnectionLimit.IntValue;
                 }
 
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(WorkforcePoolClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(serviceRoute));
@@ -515,7 +525,7 @@ namespace Google.Solutions.IapDesktop
                 // Load main layer, containing everything else (except for
                 // extensions).
                 //
-                var mainLayer = new ServiceRegistry(preAuthLayer); 
+                var mainLayer = new ServiceRegistry(preAuthLayer);
                 mainLayer.AddSingleton<IAuthorization>(authorization);
                 mainLayer.AddTransient<IToolWindowHost, ToolWindowHost>();
 

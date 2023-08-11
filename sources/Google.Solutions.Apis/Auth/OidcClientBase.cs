@@ -143,6 +143,15 @@ namespace Google.Solutions.Apis.Auth
 
             this.store.TryRead(out var offlineCredential);
 
+            if (offlineCredential.Issuer != this.Issuer)
+            {
+                //
+                // User switched issuers, we can't use this credential
+                // anymore.
+                //
+                offlineCredential = null; // TODO: Add test
+            }
+
             try
             {
                 var session = await

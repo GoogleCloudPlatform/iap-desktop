@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
         [Test]
         public void WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
-            [Values(null, "", "{")]  string value)
+            [Values(null, "", "{")] string value)
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -182,10 +182,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             var repository = new AuthSettingsRepository(baseKey);
 
             // Write.
-            repository.Write(new OidcOfflineCredential( 
-                OidcIssuer.Gaia, 
+            repository.Write(new OidcOfflineCredential(
+                OidcIssuer.Gaia,
                 "openid",
-                "rt", 
+                "rt",
                 "idt"));
 
             // Read again.

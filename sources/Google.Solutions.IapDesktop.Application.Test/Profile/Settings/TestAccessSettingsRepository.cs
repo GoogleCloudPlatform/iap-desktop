@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -274,6 +275,97 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var settings = repository.GetSettings();
                 Assert.AreEqual(8, settings.ConnectionLimit.IntValue);
                 Assert.IsFalse(settings.ConnectionLimit.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // WorkforcePoolProvider.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenWorkforcePoolProviderValid_ThenSettingWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new AccessSettingsRepository(settingsKey, null, null);
+
+                var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
+                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
+
+                var settings = repository.GetSettings();
+                Assert.AreEqual(provider.ToString(), settings.WorkforcePoolProvider.StringValue);
+                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenWorkforcePoolProviderValidAndUserPolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new AccessSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
+                var userProvider = new WorkforcePoolProviderLocator("global", "pool", "user-provider");
+                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
+                userPolicyKey.SetValue("WorkforcePoolProvider", userProvider.ToString());
+
+                var settings = repository.GetSettings();
+                Assert.AreEqual(userProvider.ToString(), settings.WorkforcePoolProvider.StringValue);
+                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenWorkforcePoolProviderValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new AccessSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
+                var machineProvider = new WorkforcePoolProviderLocator("global", "pool", "machine-provider");
+                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
+                machinePolicyKey.SetValue("WorkforcePoolProvider", machineProvider.ToString());
+
+                var settings = repository.GetSettings();
+                Assert.AreEqual(machineProvider.ToString(), settings.WorkforcePoolProvider.StringValue);
+                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenWorkforcePoolProviderValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new AccessSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
+                var userProvider = new WorkforcePoolProviderLocator("global", "pool", "user-provider");
+                var machineProvider = new WorkforcePoolProviderLocator("global", "pool", "machine-provider");
+                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
+                userPolicyKey.SetValue("WorkforcePoolProvider", userProvider.ToString());
+                machinePolicyKey.SetValue("WorkforcePoolProvider", machineProvider.ToString());
+
+                var settings = repository.GetSettings();
+                Assert.AreEqual(machineProvider.ToString(), settings.WorkforcePoolProvider.StringValue);
+                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
             }
         }
 
