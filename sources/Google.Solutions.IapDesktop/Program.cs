@@ -194,26 +194,19 @@ namespace Google.Solutions.IapDesktop
                 dialog.ViewModel.DeviceEnrollment = DeviceEnrollment.Create(
                     new CertificateStore(),
                     serviceProvider.GetService<IRepository<IAccessSettings>>());
-                dialog.ViewModel.ClientRegistrations
-                    = new Dictionary<OidcIssuer, OidcClientRegistration>()
-                    {
-                        {
-                            OidcIssuer.Gaia,
-                            new OidcClientRegistration(
-                                OidcIssuer.Gaia,
-                                OAuthClient.Secrets.ClientId,
-                                OAuthClient.Secrets.ClientSecret,
-                                "/authorize/")
-                        },
-                        {
-                            OidcIssuer.Sts,
-                            new OidcClientRegistration(
-                                OidcIssuer.Sts,
-                                OAuthClient.SdkSecrets.ClientId,
-                                OAuthClient.SdkSecrets.ClientSecret,
-                                "/") // TODO: This isn't applied yet
-                        }
-                    };
+                dialog.ViewModel.ClientRegistrations = new List<OidcClientRegistration>()
+                {
+                    new OidcClientRegistration(
+                        OidcIssuer.Gaia,
+                        OAuthClient.Secrets.ClientId,
+                        OAuthClient.Secrets.ClientSecret,
+                        "/authorize/"),
+                    new OidcClientRegistration(
+                        OidcIssuer.Sts,
+                        OAuthClient.SdkSecrets.ClientId,
+                        OAuthClient.SdkSecrets.ClientSecret,
+                        "/") // TODO: This isn't applied yet
+                };
 
                 //
                 // Allow recovery from common errors.

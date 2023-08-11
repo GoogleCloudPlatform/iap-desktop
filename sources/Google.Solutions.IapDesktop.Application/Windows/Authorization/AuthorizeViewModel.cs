@@ -36,6 +36,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -99,6 +100,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         private protected virtual Profile.Auth.Authorization CreateAuthorization()
         {
             Debug.Assert(this.Authorization == null);
+            Debug.Assert(this.DeviceEnrollment != null);
+            Debug.Assert(this.ClientRegistrations != null);
 
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
             Precondition.ExpectNotNull(this.ClientRegistrations, nameof(this.ClientRegistrations));
@@ -123,7 +126,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 issuer = OidcIssuer.Gaia;
             }
 
-            if (!this.ClientRegistrations.TryGetValue(issuer, out var registration))
+            var registration = this.ClientRegistrations
+                .EnsureNotNull()
+                .FirstOrDefault(r => r.Issuer == issuer);
+
+            if (registration == null)
             {
                 throw new ArgumentException(
                     $"Missing client registration for issuer {issuer}");
@@ -175,8 +182,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         // Input properties.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Device enrollment, must be initialized.
+        /// </summary>
         public IDeviceEnrollment DeviceEnrollment { get; set; }
-        public IDictionary<OidcIssuer, OidcClientRegistration> ClientRegistrations { get; set; }
+
+        /// <summary>
+        /// List of client registrations. There must be at least one
+        /// registration for each supported issuer.
+        /// </summary>
+        public IList<OidcClientRegistration> ClientRegistrations { get; set; }
 
         //---------------------------------------------------------------------
         // Observable properties.

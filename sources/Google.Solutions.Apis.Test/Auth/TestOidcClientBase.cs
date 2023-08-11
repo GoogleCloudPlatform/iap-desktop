@@ -36,7 +36,13 @@ namespace Google.Solutions.Apis.Test.Auth
         private class SampleClient : OidcClientBase
         {
             public SampleClient(IOidcOfflineCredentialStore store)
-                : base(store)
+                : base(
+                      store,
+                      new OidcClientRegistration(
+                          OidcIssuer.Gaia,
+                          "client-id",
+                          "client-secret",
+                          "/"))
             {
             }
 
@@ -44,8 +50,6 @@ namespace Google.Solutions.Apis.Test.Auth
             public Func<IOidcSession> AuthorizeWithBrowser;
 
             public override IServiceEndpoint Endpoint => throw new System.NotImplementedException();
-
-            protected override OidcIssuer Issuer => OidcIssuer.Gaia;
 
             protected override Task<IOidcSession> ActivateOfflineCredentialAsync(
                 OidcOfflineCredential offlineCredential,
