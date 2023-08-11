@@ -19,7 +19,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<policyDefinitionResources revision="2.23" schemaVersion="1.0">
+<policyDefinitionResources revision="2.38" schemaVersion="1.0">
   <displayName/>
   <description/>
   <resources>
@@ -35,6 +35,11 @@
       <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using device certificate authentication if possible. Device Certificate authentication requires the computer to be enrolled and the Endpoint Verification native helper to be installed.
       </string>
 
+      <string id="PrivateServiceConnectEndpoint">Enable Private Service Connect</string>
+      <string id="PrivateServiceConnectEndpoint_Description">Use custom Private Service Connect endpoint to connect 
+to connect to Google APIs.
+      </string>
+
       <string id="ProxyUrl">Enable HTTPS proxy</string>
       <string id="ProxyUrl_Description">By default, IAP Desktop uses the proxy server configured in Windows to connect to the internet. Use this policy to explicitly specify a proxy server to use. The proxy server must be specified in the following format: http://proxy.example.com:3128/ </string>
 
@@ -47,7 +52,6 @@
       <string id="PublicKeyType_EcdsaNistp256">ECDSA NIST P-256</string>
       <string id="PublicKeyType_EcdsaNistp384">ECDSA NIST P-384</string>
       <string id="PublicKeyType_EcdsaNistp521">ECDSA NIST P-521</string>
-
 
       <string id="PublicKeyValidity">SSH metadata key validity</string>
       <string id="PublicKeyValidity_Description">Lifetime (in seconds) for SSH keys published to Compute Engine instance metadata and OS Login.</string>
@@ -68,6 +72,11 @@
       </presentation>
       <presentation id="PublicKeyValidity">
         <decimalTextBox refId="PublicKeyValidity" defaultValue="2592000">Validity (in seconds):</decimalTextBox>
+      </presentation>
+      <presentation id="PrivateServiceConnectEndpoint">
+        <textBox refId="PrivateServiceConnectEndpoint">
+          <label>Endpoint (IP or FQDN):</label>
+        </textBox>
       </presentation>
     </presentationTable>
   </resources>

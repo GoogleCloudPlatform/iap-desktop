@@ -93,8 +93,7 @@
             this.enablePscCheckBox.Name = "enablePscCheckBox";
             this.enablePscCheckBox.Size = new System.Drawing.Size(301, 30);
             this.enablePscCheckBox.TabIndex = 1;
-            this.enablePscCheckBox.Text = "Use custom Private Service Connect endpoint to connect \r\nto connect to Google API" +
-    "s";
+            this.enablePscCheckBox.Text = "Use custom Private Service Connect endpoint to connect \r\nto Google APIs";
             this.enablePscCheckBox.UseVisualStyleBackColor = true;
             // 
             // dcaBox

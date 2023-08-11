@@ -22,7 +22,7 @@
 <policyDefinitions 
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    revision="2.23" 
+    revision="2.38" 
     schemaVersion="1.0" 
     xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
 
@@ -31,7 +31,7 @@
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   
-  <resources minRequiredRevision="2.23" />
+  <resources minRequiredRevision="2.28" />
   
   <categories>
     <category name="iapdesktop" displayName="$(string.IapDesktop)"/>
@@ -55,25 +55,6 @@
       <parentCategory ref="iapdesktop" />
       <supportedOn ref="windows:SUPPORTED_Windows8" />
       
-      <enabledValue>
-        <decimal value="1" />
-      </enabledValue>
-      <disabledValue>
-        <decimal value="0" />
-      </disabledValue>
-    </policy>
-    
-    <policy
-        name="IsDeviceCertificateAuthenticationEnabled"
-        class="Both"
-        displayName="$(string.IsDeviceCertificateAuthenticationEnabled)"
-        explainText="$(string.IsDeviceCertificateAuthenticationEnabled_Description)"
-        key="Software\Policies\Google\IapDesktop\1.0\Application"
-        valueName="IsDeviceCertificateAuthenticationEnabled">
-
-      <parentCategory ref="iapdesktop" />
-      <supportedOn ref="windows:SUPPORTED_Windows8" />
-
       <enabledValue>
         <decimal value="1" />
       </enabledValue>
@@ -114,6 +95,47 @@
       </elements>
     </policy>
 
+    <!-- 
+    ===========================================================================
+    = Access
+    ===========================================================================
+    -->
+    
+    <policy
+        name="IsDeviceCertificateAuthenticationEnabled"
+        class="Both"
+        displayName="$(string.IsDeviceCertificateAuthenticationEnabled)"
+        explainText="$(string.IsDeviceCertificateAuthenticationEnabled_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Application"
+        valueName="IsDeviceCertificateAuthenticationEnabled">
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
+    </policy>
+    
+    <policy
+        name="PrivateServiceConnectEndpoint"
+        class="Both"
+        displayName="$(string.PrivateServiceConnectEndpoint)"
+        explainText="$(string.PrivateServiceConnectEndpoint_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Application"
+        presentation="$(presentation.PrivateServiceConnectEndpoint)" >
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <elements>
+        <text id="PrivateServiceConnectEndpoint" valueName="PrivateServiceConnectEndpoint"  required="true"/>
+      </elements>
+    </policy>
+    
     <!-- 
     ===========================================================================
     = SSH
