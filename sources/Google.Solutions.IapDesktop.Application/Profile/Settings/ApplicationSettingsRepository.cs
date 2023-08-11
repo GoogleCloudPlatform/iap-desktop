@@ -46,7 +46,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISecureStringSetting ProxyPassword { get; }
         IStringSetting FullScreenDevices { get; }
         IStringSetting CollapsedProjects { get; }
-        IIntSetting ConnectionLimit { get; }
     }
 
     /// <summary>
@@ -108,8 +107,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public IStringSetting CollapsedProjects { get; private set; }
 
-            public IIntSetting ConnectionLimit { get; private set; }
-
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.IsMainWindowMaximized,
@@ -123,8 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.ProxyUsername,
                 this.ProxyPassword,
                 this.FullScreenDevices,
-                this.CollapsedProjects,
-                this.ConnectionLimit
+                this.CollapsedProjects
             };
 
             public static ApplicationSettings FromKey(
@@ -248,16 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                         null,
                         null,
                         settingsKey,
-                        _ => true),
-                    ConnectionLimit = RegistryDwordSetting.FromKey(
-                        "ConnectionLimit",
-                        "ConnectionLimit",
-                        null,
-                        null,
-                        16,
-                        settingsKey,
-                        1,
-                        32)
+                        _ => true)
                 };
             }
         }

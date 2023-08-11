@@ -48,9 +48,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.IsPrivateServiceConnectEnabled = ObservableProperty.Build(false);
             this.IsPrivateServiceConnectEditable = ObservableProperty.Build(false);
 
+            this.ConnectionPoolLimit = ObservableProperty.Build<decimal>(0m);
+
             MarkDirtyWhenPropertyChanges(this.IsDeviceCertificateAuthenticationEnabled);
             MarkDirtyWhenPropertyChanges(this.IsPrivateServiceConnectEnabled);
             MarkDirtyWhenPropertyChanges(this.PrivateServiceConnectEndpoint);
+            MarkDirtyWhenPropertyChanges(this.ConnectionPoolLimit);
 
             base.OnInitializationCompleted();
         }
@@ -72,6 +75,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 !settings.PrivateServiceConnectEndpoint.IsDefault; 
             this.IsPrivateServiceConnectEditable.Value =
                 !settings.PrivateServiceConnectEndpoint.IsReadOnly;
+
+            this.ConnectionPoolLimit.Value = (decimal)
+                settings.ConnectionLimit.IntValue;
         }
 
         [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
@@ -84,6 +90,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 this.IsPrivateServiceConnectEnabled.Value
                     ? this.PrivateServiceConnectEndpoint.Value
                     : null;
+
+            settings.ConnectionLimit.IntValue =
+                (int)this.ConnectionPoolLimit.Value;
 
             if (settings.PrivateServiceConnectEndpoint.StringValue 
                 is var pscEndpoint &&
@@ -136,5 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public ObservableProperty<bool> IsPrivateServiceConnectEnabled { get; }
         public ObservableProperty<string> PrivateServiceConnectEndpoint { get; }
         public ObservableProperty<bool> IsPrivateServiceConnectEditable{ get; }
+
+        public ObservableProperty<decimal> ConnectionPoolLimit { get; }
     }
 }

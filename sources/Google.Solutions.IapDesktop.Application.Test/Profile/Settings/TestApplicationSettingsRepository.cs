@@ -341,28 +341,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         //---------------------------------------------------------------------
-        // ConnectionLimit.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenConnectionLimitValid_ThenSettingWins()
-        {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    null,
-                    null);
-
-                settingsKey.SetValue("ConnectionLimit", 8);
-
-                var settings = repository.GetSettings();
-                Assert.AreEqual(8, settings.ConnectionLimit.IntValue);
-                Assert.IsFalse(settings.ConnectionLimit.IsDefault);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // IsPolicyPresent.
         //---------------------------------------------------------------------
 

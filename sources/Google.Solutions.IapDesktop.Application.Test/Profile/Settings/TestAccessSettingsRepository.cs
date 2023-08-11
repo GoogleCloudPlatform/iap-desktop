@@ -20,10 +20,8 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 {
@@ -60,6 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 StringAssert.Contains(
                     "Google Endpoint Verification",
                     settings.DeviceCertificateSelector.StringValue);
+                Assert.AreEqual(16, settings.ConnectionLimit.IntValue);
             }
         }
 
@@ -253,6 +252,28 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
                 Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ConnectionLimit.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenConnectionLimitValid_ThenSettingWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new AccessSettingsRepository(
+                    settingsKey,
+                    null,
+                    null);
+
+                settingsKey.SetValue("ConnectionLimit", 8);
+
+                var settings = repository.GetSettings();
+                Assert.AreEqual(8, settings.ConnectionLimit.IntValue);
+                Assert.IsFalse(settings.ConnectionLimit.IsDefault);
             }
         }
 

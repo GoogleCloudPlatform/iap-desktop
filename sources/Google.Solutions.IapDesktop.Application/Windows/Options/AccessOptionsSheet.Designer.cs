@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.pscBox = new System.Windows.Forms.GroupBox();
+            this.pscProxyNote = new System.Windows.Forms.Label();
             this.pscEndpointLabel = new System.Windows.Forms.Label();
             this.pscEndpointTextBox = new System.Windows.Forms.TextBox();
             this.enablePscCheckBox = new System.Windows.Forms.CheckBox();
@@ -37,9 +38,13 @@
             this.secureConnectLink = new System.Windows.Forms.LinkLabel();
             this.enableDcaCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.pscProxyNote = new System.Windows.Forms.Label();
+            this.connectionBox = new System.Windows.Forms.GroupBox();
+            this.connectionPoolSizeLabel = new System.Windows.Forms.Label();
+            this.connectionLimitUpDown = new System.Windows.Forms.NumericUpDown();
             this.pscBox.SuspendLayout();
             this.dcaBox.SuspendLayout();
+            this.connectionBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.connectionLimitUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // pscBox
@@ -54,6 +59,15 @@
             this.pscBox.TabIndex = 0;
             this.pscBox.TabStop = false;
             this.pscBox.Text = "Private Service Connect:";
+            // 
+            // pscProxyNote
+            // 
+            this.pscProxyNote.AutoSize = true;
+            this.pscProxyNote.Location = new System.Drawing.Point(32, 93);
+            this.pscProxyNote.Name = "pscProxyNote";
+            this.pscProxyNote.Size = new System.Drawing.Size(261, 26);
+            this.pscProxyNote.TabIndex = 3;
+            this.pscProxyNote.Text = "Connections to the Private Service Connect endpoint \r\nbypass proxy servers";
             // 
             // pscEndpointLabel
             // 
@@ -90,7 +104,7 @@
             this.dcaBox.Controls.Add(this.enableDcaCheckBox);
             this.dcaBox.Location = new System.Drawing.Point(4, 150);
             this.dcaBox.Name = "dcaBox";
-            this.dcaBox.Size = new System.Drawing.Size(336, 117);
+            this.dcaBox.Size = new System.Drawing.Size(336, 116);
             this.dcaBox.TabIndex = 1;
             this.dcaBox.TabStop = false;
             this.dcaBox.Text = "BeyondCorp:";
@@ -129,34 +143,71 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 284);
+            this.label1.Location = new System.Drawing.Point(16, 350);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(171, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Changes take effect after relaunch";
             // 
-            // pscProxyNote
+            // connectionBox
             // 
-            this.pscProxyNote.AutoSize = true;
-            this.pscProxyNote.Location = new System.Drawing.Point(32, 93);
-            this.pscProxyNote.Name = "pscProxyNote";
-            this.pscProxyNote.Size = new System.Drawing.Size(261, 26);
-            this.pscProxyNote.TabIndex = 3;
-            this.pscProxyNote.Text = "Connections to the Private Service Connect endpoint \r\nbypass proxy servers";
+            this.connectionBox.Controls.Add(this.connectionPoolSizeLabel);
+            this.connectionBox.Controls.Add(this.connectionLimitUpDown);
+            this.connectionBox.Location = new System.Drawing.Point(4, 272);
+            this.connectionBox.Name = "connectionBox";
+            this.connectionBox.Size = new System.Drawing.Size(336, 60);
+            this.connectionBox.TabIndex = 8;
+            this.connectionBox.TabStop = false;
+            this.connectionBox.Text = "Connection pooling:";
+            // 
+            // connectionPoolSizeLabel
+            // 
+            this.connectionPoolSizeLabel.AutoSize = true;
+            this.connectionPoolSizeLabel.Location = new System.Drawing.Point(12, 24);
+            this.connectionPoolSizeLabel.Name = "connectionPoolSizeLabel";
+            this.connectionPoolSizeLabel.Size = new System.Drawing.Size(203, 13);
+            this.connectionPoolSizeLabel.TabIndex = 0;
+            this.connectionPoolSizeLabel.Text = "Max number of connections per endpoint:";
+            // 
+            // connectionLimitUpDown
+            // 
+            this.connectionLimitUpDown.Location = new System.Drawing.Point(231, 22);
+            this.connectionLimitUpDown.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.connectionLimitUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.connectionLimitUpDown.Name = "connectionLimitUpDown";
+            this.connectionLimitUpDown.Size = new System.Drawing.Size(75, 20);
+            this.connectionLimitUpDown.TabIndex = 1;
+            this.connectionLimitUpDown.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
             // 
             // AccessOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.connectionBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dcaBox);
             this.Controls.Add(this.pscBox);
             this.Name = "AccessOptionsSheet";
-            this.Size = new System.Drawing.Size(340, 377);
+            this.Size = new System.Drawing.Size(340, 401);
             this.pscBox.ResumeLayout(false);
             this.pscBox.PerformLayout();
             this.dcaBox.ResumeLayout(false);
             this.dcaBox.PerformLayout();
+            this.connectionBox.ResumeLayout(false);
+            this.connectionBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.connectionLimitUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,5 +225,8 @@
         private System.Windows.Forms.LinkLabel secureConnectLink;
         private System.Windows.Forms.CheckBox enableDcaCheckBox;
         private System.Windows.Forms.Label pscProxyNote;
+        private System.Windows.Forms.GroupBox connectionBox;
+        private System.Windows.Forms.Label connectionPoolSizeLabel;
+        private System.Windows.Forms.NumericUpDown connectionLimitUpDown;
     }
 }

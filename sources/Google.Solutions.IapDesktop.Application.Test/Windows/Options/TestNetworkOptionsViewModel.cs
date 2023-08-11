@@ -67,55 +67,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         //---------------------------------------------------------------------
-        // Connection limit.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenNotConfigured_ThenConnectionLimitSetToDefault()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var viewModel = new NetworkOptionsViewModel(
-                settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            Assert.AreEqual(16, viewModel.ConnectionLimit);
-        }
-
-        [Test]
-        public void WhenConfigured_ThenConnectionLimitSetToCustomValue()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.ConnectionLimit.IntValue = 5;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new NetworkOptionsViewModel(
-                settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            Assert.AreEqual(5, viewModel.ConnectionLimit);
-        }
-
-        [Test]
-        public async Task WhenConnectionLimitChanged_ThenIsDirtyIsTrueUntilApplied()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var viewModel = new NetworkOptionsViewModel(
-                settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-            viewModel.ConnectionLimit = 4;
-
-            Assert.IsTrue(viewModel.IsDirty.Value);
-
-            await viewModel.ApplyChangesAsync();
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.IntValue);
-        }
-
-        //---------------------------------------------------------------------
         // System proxy.
         //---------------------------------------------------------------------
 

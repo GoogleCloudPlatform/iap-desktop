@@ -47,6 +47,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// AutoSelectCertificateForUrl-formatted selector for certificate.
         /// </summary>
         IStringSetting DeviceCertificateSelector { get; }
+
+        /// <summary>
+        /// Maximum number of connections per API endpoint.
+        /// </summary>
+        IIntSetting ConnectionLimit { get; }
     }
 
     /// <summary>
@@ -88,11 +93,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public IStringSetting DeviceCertificateSelector { get; private set; }
 
+            public IIntSetting ConnectionLimit { get; private set; }
+
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.PrivateServiceConnectEndpoint,
                 this.IsDeviceCertificateAuthenticationEnabled,
                 this.DeviceCertificateSelector,
+                this.ConnectionLimit
             };
 
             public static AccessSettings FromKey(
@@ -140,7 +148,16 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                         null,
                         DeviceEnrollment.DefaultDeviceCertificateSelector,
                         settingsKey,
-                        selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
+                        selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _)),
+                    ConnectionLimit = RegistryDwordSetting.FromKey(
+                        "ConnectionLimit",
+                        "ConnectionLimit",
+                        null,
+                        null,
+                        16,
+                        settingsKey,
+                        1,
+                        32)
                 };
             }
         }

@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private IRepository<IAccessSettings> CreateSettingsRepository( // TODO: Extract to helper class
+        private IRepository<IAccessSettings> CreateSettingsRepository(
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
@@ -238,6 +238,55 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
 
             Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // Connection limit.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConfigured_ThenConnectionLimitSetToDefault()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new AccessOptionsViewModel(
+                settingsRepository,
+                new HelpAdapter());
+
+            Assert.AreEqual(16, viewModel.ConnectionPoolLimit);
+        }
+
+        [Test]
+        public void WhenConfigured_ThenConnectionLimitSetToCustomValue()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.ConnectionLimit.IntValue = 5;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new AccessOptionsViewModel(
+                settingsRepository,
+                new HelpAdapter());
+
+            Assert.AreEqual(5, viewModel.ConnectionPoolLimit);
+        }
+
+        [Test]
+        public async Task WhenConnectionLimitChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new AccessOptionsViewModel(
+                settingsRepository,
+                new HelpAdapter());
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+            viewModel.ConnectionPoolLimit.Value = 4;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
+
+            await viewModel.ApplyChangesAsync();
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.IntValue);
         }
 
         //---------------------------------------------------------------------

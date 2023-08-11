@@ -24,6 +24,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
@@ -44,6 +45,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             PropertiesSheetViewModelBase viewModelBase, 
             IBindingContext bindingContext)
         {
+            Debug.Assert(this.connectionLimitUpDown.Minimum == 1);
+            Debug.Assert(this.connectionLimitUpDown.Maximum == 32);
+
             var viewModel = (AccessOptionsViewModel)viewModelBase;
             this.secureConnectLink.BindObservableCommand(
                 viewModel,
@@ -91,6 +95,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsDeviceCertificateAuthenticationEnabled,
+                bindingContext);
+
+            //
+            // Connection pool.
+            //
+            this.connectionLimitUpDown.BindObservableProperty(
+                c => c.Value,
+                viewModel,
+                m => m.ConnectionPoolLimit,
                 bindingContext);
         }
     }

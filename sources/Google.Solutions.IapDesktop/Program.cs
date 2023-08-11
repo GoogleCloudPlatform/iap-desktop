@@ -461,12 +461,6 @@ namespace Google.Solutions.IapDesktop
                     var settings = appSettingsRepository.GetSettings();
 
                     //
-                    // Set connection pool limit. This limit applies per endpoint,
-                    // and GCE, RM, OS Login, etc are all separate endpoints.
-                    //
-                    ServicePointManager.DefaultConnectionLimit = settings.ConnectionLimit.IntValue;
-
-                    //
                     // Activate proxy settings based on app settings.
                     //
                     preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(settings);
@@ -480,15 +474,22 @@ namespace Google.Solutions.IapDesktop
                 // Register and configure API client endpoints.
                 //
                 var serviceRoute = ServiceRoute.Public;
-
-                if (accessSettingsRepository.GetSettings()
-                    .PrivateServiceConnectEndpoint.StringValue is var pscEndpoint &&
-                    !string.IsNullOrEmpty(pscEndpoint))
                 {
+                    var accessSettings = accessSettingsRepository.GetSettings();
+                    if (accessSettings.PrivateServiceConnectEndpoint.StringValue is var pscEndpoint &&
+                        !string.IsNullOrEmpty(pscEndpoint))
+                    {
+                        //
+                        // Enable PSC.
+                        //
+                        serviceRoute = new ServiceRoute(pscEndpoint);
+                    }
+
                     //
-                    // Enable PSC.
+                    // Set connection pool limit. This limit applies per endpoint.
                     //
-                    serviceRoute = new ServiceRoute(pscEndpoint);
+                    ServicePointManager.DefaultConnectionLimit 
+                        = accessSettings.ConnectionLimit.IntValue;
                 }
 
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
