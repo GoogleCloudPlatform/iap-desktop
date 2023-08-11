@@ -138,9 +138,12 @@ namespace Google.Solutions.Apis.Auth.Iam
             Debug.Assert(tokenInfo.Iss == "https://sts.googleapis.com/");
             Debug.Assert(tokenInfo.Username.StartsWith("principal://"));
 
-            return new WorkforcePoolSession(
+            var session =  new WorkforcePoolSession(
                 apiCredential,
                 WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
+
+            session.Terminated += (_, __) => ClearOfflineCredentialStore();
+            return session;
         }
 
         //---------------------------------------------------------------------
