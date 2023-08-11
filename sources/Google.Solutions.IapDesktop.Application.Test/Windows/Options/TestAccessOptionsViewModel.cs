@@ -162,7 +162,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpAdapter());
 
             Assert.AreEqual("psc", viewModel.PrivateServiceConnectEndpoint.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEndpointEditable.Value);
+            Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
+            Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
         }
 
         [Test]
@@ -178,7 +179,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpAdapter());
 
             Assert.IsNull(viewModel.PrivateServiceConnectEndpoint.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEndpointEditable.Value);
+            Assert.IsFalse(viewModel.IsPrivateServiceConnectEnabled.Value);
+            Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
         }
 
         [Test]
@@ -199,7 +201,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpAdapter());
 
             Assert.AreEqual("psc-policy", viewModel.PrivateServiceConnectEndpoint.Value);
-            Assert.IsFalse(viewModel.IsPrivateServiceConnectEndpointEditable.Value);
+            Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
+            Assert.IsFalse(viewModel.IsPrivateServiceConnectEditable.Value);
         }
 
         [Test]
@@ -212,6 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
                 new HelpAdapter());
+            viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
 
             await viewModel.ApplyChangesAsync();
@@ -230,9 +234,51 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
+            viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
 
             Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // Save.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenDisablingPsc_ThenApplyChangesClearsPscEndpoint()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.PrivateServiceConnectEndpoint.StringValue = "psc";
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new AccessOptionsViewModel(
+                settingsRepository,
+                new HelpAdapter());
+            viewModel.IsPrivateServiceConnectEnabled.Value = false;
+
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.IsNull(settings.PrivateServiceConnectEndpoint.StringValue);
+        }
+
+        [Test]
+        public void WhenPscAndDcaEnabled_ThenApplyChangesThrowsException()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new AccessOptionsViewModel(
+                settingsRepository,
+                new HelpAdapter());
+            viewModel.IsDeviceCertificateAuthenticationEnabled.Value = true;
+            viewModel.IsPrivateServiceConnectEnabled.Value = true;
+            viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
+
+            Assert.Throws<InvalidOptionsException>(
+                () => viewModel.ApplyChangesAsync().Wait());
         }
     }
 }

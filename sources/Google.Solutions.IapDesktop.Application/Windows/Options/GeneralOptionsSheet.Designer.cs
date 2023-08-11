@@ -56,14 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.browserIntegrationBox = new System.Windows.Forms.GroupBox();
             this.browserIntegrationLink = new System.Windows.Forms.LinkLabel();
             this.enableBrowserIntegrationCheckBox = new System.Windows.Forms.CheckBox();
-            this.secureConnectBox = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.secureConnectLink = new System.Windows.Forms.LinkLabel();
-            this.enableDcaCheckBox = new System.Windows.Forms.CheckBox();
             this.updateBox.SuspendLayout();
             this.browserIntegrationBox.SuspendLayout();
-            this.secureConnectBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // updateBox
@@ -71,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.updateBox.Controls.Add(this.lastCheckLabel);
             this.updateBox.Controls.Add(this.lastCheckHeaderLabel);
             this.updateBox.Controls.Add(this.enableUpdateCheckBox);
-            this.updateBox.Location = new System.Drawing.Point(4, 261);
+            this.updateBox.Location = new System.Drawing.Point(4, 100);
             this.updateBox.Name = "updateBox";
             this.updateBox.Size = new System.Drawing.Size(336, 83);
             this.updateBox.TabIndex = 2;
@@ -90,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // lastCheckHeaderLabel
             // 
             this.lastCheckHeaderLabel.AutoSize = true;
-            this.lastCheckHeaderLabel.Location = new System.Drawing.Point(34, 49);
+            this.lastCheckHeaderLabel.Location = new System.Drawing.Point(32, 49);
             this.lastCheckHeaderLabel.Name = "lastCheckHeaderLabel";
             this.lastCheckHeaderLabel.Size = new System.Drawing.Size(63, 13);
             this.lastCheckHeaderLabel.TabIndex = 8;
@@ -98,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // enableUpdateCheckBox
             // 
-            this.enableUpdateCheckBox.Location = new System.Drawing.Point(18, 24);
+            this.enableUpdateCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enableUpdateCheckBox.Name = "enableUpdateCheckBox";
             this.enableUpdateCheckBox.Size = new System.Drawing.Size(252, 22);
             this.enableUpdateCheckBox.TabIndex = 7;
@@ -109,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             this.browserIntegrationBox.Controls.Add(this.browserIntegrationLink);
             this.browserIntegrationBox.Controls.Add(this.enableBrowserIntegrationCheckBox);
-            this.browserIntegrationBox.Location = new System.Drawing.Point(4, 3);
+            this.browserIntegrationBox.Location = new System.Drawing.Point(4, 4);
             this.browserIntegrationBox.Name = "browserIntegrationBox";
             this.browserIntegrationBox.Size = new System.Drawing.Size(336, 92);
             this.browserIntegrationBox.TabIndex = 0;
@@ -130,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             this.enableBrowserIntegrationCheckBox.AutoSize = true;
             this.enableBrowserIntegrationCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.enableBrowserIntegrationCheckBox.Location = new System.Drawing.Point(18, 24);
+            this.enableBrowserIntegrationCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enableBrowserIntegrationCheckBox.Name = "enableBrowserIntegrationCheckBox";
             this.enableBrowserIntegrationCheckBox.Size = new System.Drawing.Size(290, 30);
             this.enableBrowserIntegrationCheckBox.TabIndex = 1;
@@ -138,65 +132,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
     "";
             this.enableBrowserIntegrationCheckBox.UseVisualStyleBackColor = true;
             // 
-            // secureConnectBox
-            // 
-            this.secureConnectBox.Controls.Add(this.label2);
-            this.secureConnectBox.Controls.Add(this.label1);
-            this.secureConnectBox.Controls.Add(this.secureConnectLink);
-            this.secureConnectBox.Controls.Add(this.enableDcaCheckBox);
-            this.secureConnectBox.Location = new System.Drawing.Point(4, 101);
-            this.secureConnectBox.Name = "secureConnectBox";
-            this.secureConnectBox.Size = new System.Drawing.Size(336, 154);
-            this.secureConnectBox.TabIndex = 1;
-            this.secureConnectBox.TabStop = false;
-            this.secureConnectBox.Text = "Endpoint Verification:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(33, 62);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(231, 26);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Certificate-based access requires the computer \r\nto be enrolled in Endpoint Verif" +
-    "ication";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(34, 124);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(171, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Changes take effect after relaunch";
-            // 
-            // secureConnectLink
-            // 
-            this.secureConnectLink.AutoSize = true;
-            this.secureConnectLink.Location = new System.Drawing.Point(33, 99);
-            this.secureConnectLink.Name = "secureConnectLink";
-            this.secureConnectLink.Size = new System.Drawing.Size(85, 13);
-            this.secureConnectLink.TabIndex = 5;
-            this.secureConnectLink.TabStop = true;
-            this.secureConnectLink.Text = "More information";
-            // 
-            // enableDcaCheckBox
-            // 
-            this.enableDcaCheckBox.AutoSize = true;
-            this.enableDcaCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.enableDcaCheckBox.Location = new System.Drawing.Point(18, 24);
-            this.enableDcaCheckBox.Name = "enableDcaCheckBox";
-            this.enableDcaCheckBox.Size = new System.Drawing.Size(242, 30);
-            this.enableDcaCheckBox.TabIndex = 3;
-            this.enableDcaCheckBox.Text = "Secure connections to Google Cloud by using\r\ncertificate-based access if possible" +
-    "";
-            this.enableDcaCheckBox.UseVisualStyleBackColor = true;
-            // 
             // GeneralOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.secureConnectBox);
             this.Controls.Add(this.browserIntegrationBox);
             this.Controls.Add(this.updateBox);
             this.Name = "GeneralOptionsSheet";
@@ -205,8 +144,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.updateBox.PerformLayout();
             this.browserIntegrationBox.ResumeLayout(false);
             this.browserIntegrationBox.PerformLayout();
-            this.secureConnectBox.ResumeLayout(false);
-            this.secureConnectBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -220,10 +157,5 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private System.Windows.Forms.GroupBox browserIntegrationBox;
         private System.Windows.Forms.CheckBox enableBrowserIntegrationCheckBox;
         private System.Windows.Forms.LinkLabel browserIntegrationLink;
-        private System.Windows.Forms.GroupBox secureConnectBox;
-        private System.Windows.Forms.LinkLabel secureConnectLink;
-        private System.Windows.Forms.CheckBox enableDcaCheckBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
     }
 }

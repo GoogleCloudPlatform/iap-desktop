@@ -19,9 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Client;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
@@ -30,16 +34,22 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public AccessOptionsViewModel(
             IRepository<IAccessSettings> settingsRepository,
             HelpAdapter helpService)
-            : base("Access", settingsRepository)
+            : base("Cloud access", settingsRepository)
         {
+
+            this.OpenSecureConnectHelp = ObservableCommand.Build(
+                string.Empty,
+                () => helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
 
             this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
             this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
 
             this.PrivateServiceConnectEndpoint = ObservableProperty.Build<string>(null);
-            this.IsPrivateServiceConnectEndpointEditable = ObservableProperty.Build(false);
+            this.IsPrivateServiceConnectEnabled = ObservableProperty.Build(false);
+            this.IsPrivateServiceConnectEditable = ObservableProperty.Build(false);
 
             MarkDirtyWhenPropertyChanges(this.IsDeviceCertificateAuthenticationEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsPrivateServiceConnectEnabled);
             MarkDirtyWhenPropertyChanges(this.PrivateServiceConnectEndpoint);
 
             base.OnInitializationCompleted();
@@ -58,17 +68,63 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             this.PrivateServiceConnectEndpoint.Value =
                 settings.PrivateServiceConnectEndpoint.StringValue;
-            this.IsPrivateServiceConnectEndpointEditable.Value =
+            this.IsPrivateServiceConnectEnabled.Value =
+                !settings.PrivateServiceConnectEndpoint.IsDefault; 
+            this.IsPrivateServiceConnectEditable.Value =
                 !settings.PrivateServiceConnectEndpoint.IsReadOnly;
         }
 
+        [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
         protected override void Save(IAccessSettings settings)
         {
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
                 this.IsDeviceCertificateAuthenticationEnabled.Value;
-            settings.PrivateServiceConnectEndpoint.StringValue=
-                this.PrivateServiceConnectEndpoint.Value;
+
+            settings.PrivateServiceConnectEndpoint.StringValue =
+                this.IsPrivateServiceConnectEnabled.Value
+                    ? this.PrivateServiceConnectEndpoint.Value
+                    : null;
+
+            if (settings.PrivateServiceConnectEndpoint.StringValue 
+                is var pscEndpoint &&
+                pscEndpoint != null)
+            {
+                //
+                // Probe the endpoint using a short timeout that doesn't
+                // substantially impact UI resposiveness.
+                //
+                try
+                {
+                    new ServiceRoute(pscEndpoint)
+                        .ProbeAsync(TimeSpan.FromSeconds(2))
+                        .Wait();
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidOptionsException(
+                        $"The endpoint '{pscEndpoint}' is invalid or " +
+                        $"can't be reached from your computer",
+                        e,
+                        HelpTopics.PrivateServiceConnectOverview);
+
+                }
+            }
+
+            if (settings.PrivateServiceConnectEndpoint.Value != null &&
+                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue)
+            {
+                throw new InvalidOptionsException(
+                    "To use certificate-based access, you must disable " +
+                    "Private Service Connect",
+                    HelpTopics.SecureConnectDcaOverview);
+            }
         }
+
+        //---------------------------------------------------------------------
+        // Observable command.
+        //---------------------------------------------------------------------
+
+        public ObservableCommand OpenSecureConnectHelp { get; }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -77,7 +133,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }
         public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }
 
+        public ObservableProperty<bool> IsPrivateServiceConnectEnabled { get; }
         public ObservableProperty<string> PrivateServiceConnectEndpoint { get; }
-        public ObservableProperty<bool> IsPrivateServiceConnectEndpointEditable{ get; }
+        public ObservableProperty<bool> IsPrivateServiceConnectEditable{ get; }
     }
 }

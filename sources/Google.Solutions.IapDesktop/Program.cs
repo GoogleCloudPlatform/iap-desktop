@@ -436,10 +436,11 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
 
-                preAuthLayer.AddSingleton<IRepository<IAccessSettings>>(new AccessSettingsRepository(
+                var accessSettingsRepository = new AccessSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),
-                    profile.UserPolicyKey?.OpenSubKey("Application")));
+                    profile.UserPolicyKey?.OpenSubKey("Application"));
+                preAuthLayer.AddSingleton<IRepository<IAccessSettings>>(accessSettingsRepository);
                 preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Theme")));
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
@@ -478,15 +479,24 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Register and configure API client endpoints.
                 //
-                var psc = new ServiceRoute(
-                    Environment.GetEnvironmentVariable("IAPDESKTOP_PSC_ENDPOINT"));
+                var serviceRoute = ServiceRoute.Public;
 
-                preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(psc));
-                preAuthLayer.AddSingleton(IapClient.CreateEndpoint(psc));
+                if (accessSettingsRepository.GetSettings()
+                    .PrivateServiceConnectEndpoint.StringValue is var pscEndpoint &&
+                    !string.IsNullOrEmpty(pscEndpoint))
+                {
+                    //
+                    // Enable PSC.
+                    //
+                    serviceRoute = new ServiceRoute(pscEndpoint);
+                }
+
+                preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(ComputeEngineClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(serviceRoute));
+                preAuthLayer.AddSingleton(IapClient.CreateEndpoint(serviceRoute));
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();

@@ -130,7 +130,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),
 
-
                     //
                     // User preferences. These cannot be overridden by policy.
                     //

@@ -50,6 +50,9 @@ namespace Google.Solutions.Mvvm.Binding
             this.CancelCommand = ObservableCommand.Build(
                 "Cancel",
                 () => Task.CompletedTask);
+
+            this.OkCommand.ActivityText = "Applying changes";
+            this.ApplyCommand.ActivityText = "Applying changes";
         }
 
         private async Task ApplyChangesAsync()

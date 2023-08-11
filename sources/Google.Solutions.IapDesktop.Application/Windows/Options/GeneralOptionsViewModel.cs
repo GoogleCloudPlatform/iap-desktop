@@ -42,10 +42,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             : base("General", settingsRepository)
         {
             this.protocolRegistry = protocolRegistry;
-
-            this.OpenSecureConnectHelp = ObservableCommand.Build(
-                string.Empty,
-                () => helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
             this.OpenBrowserIntegrationHelp = ObservableCommand.Build(
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.BrowserIntegration));
@@ -112,7 +108,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Observable command.
         //---------------------------------------------------------------------
 
-        public ObservableCommand OpenSecureConnectHelp { get; }
         public ObservableCommand OpenBrowserIntegrationHelp { get; }
 
         //---------------------------------------------------------------------

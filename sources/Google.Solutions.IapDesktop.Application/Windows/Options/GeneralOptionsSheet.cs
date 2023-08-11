@@ -37,7 +37,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public Type ViewModel => typeof(GeneralOptionsViewModel);
 
-        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        public void Bind(
+            PropertiesSheetViewModelBase viewModelBase, 
+            IBindingContext bindingContext)
         {
             var viewModel = (GeneralOptionsViewModel)viewModelBase;
 
@@ -66,10 +68,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.browserIntegrationLink.BindObservableCommand(
                 viewModel,
                 m => m.OpenBrowserIntegrationHelp,
-                bindingContext);
-            this.secureConnectLink.BindObservableCommand(
-                viewModel,
-                m => m.OpenSecureConnectHelp,
                 bindingContext);
         }
     }

@@ -40,6 +40,11 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         /// Executes the command.
         /// </summary>
         Task ExecuteAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Text to show in error messages.
+        /// </summary>
+        new string ActivityText { get; set; }
     }
 
     public class ObservableCommand : CommandBase, IObservableCommand
@@ -61,6 +66,12 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         public Task ExecuteAsync(CancellationToken cancellationToken)
         {
             return this.executeFunc(cancellationToken);
+        }
+
+        public new string ActivityText
+        {
+            get => base.ActivityText; 
+            set => base.ActivityText = value;
         }
 
         //---------------------------------------------------------------------

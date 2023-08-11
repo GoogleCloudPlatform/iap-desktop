@@ -265,9 +265,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(18, 47);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 13);
+            this.label1.Size = new System.Drawing.Size(171, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Changes take effect after restarting IAP Desktop";
+            this.label1.Text = "Changes take effect after relaunch";
             // 
             // connectionPoolSizeLabel
             // 
