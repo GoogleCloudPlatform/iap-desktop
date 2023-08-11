@@ -179,5 +179,28 @@ namespace Google.Solutions.Apis.Test.Auth
             Assert.IsNotNull(session);
             store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
         }
+
+        [Test]
+        public async Task WhenOfflineCredentialFromDifferentIssuer_ThenAuthorizationIgnoresOfflineCredential()
+        {
+            // Wrong offline credential.
+            var store = new Mock<IOidcOfflineCredentialStore>();
+            var offlineCredential = new OidcOfflineCredential(OidcIssuer.Sts, null, "rt", null);
+            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
+
+            var client = new SampleClient(store.Object)
+            {
+                AuthorizeWithBrowser = () => CreateSession().Object
+            };
+
+            var session = await client
+                .AuthorizeAsync(
+                    new Mock<ICodeReceiver>().Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(session);
+            store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
+        }
     }
 }
