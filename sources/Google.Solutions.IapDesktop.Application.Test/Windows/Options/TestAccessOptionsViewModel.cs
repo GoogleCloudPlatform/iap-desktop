@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpAdapter())
             {
-                ProbeTimeout = TimeSpan.FromSeconds(10)
+                ProbePrivateServiceConnectEndpoint = false
             };
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = SamplePscEndpoint;
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpAdapter())
             {
-                ProbeTimeout = TimeSpan.FromSeconds(10)
+                ProbePrivateServiceConnectEndpoint = false
             };
 
             Assert.IsFalse(viewModel.IsDirty.Value);

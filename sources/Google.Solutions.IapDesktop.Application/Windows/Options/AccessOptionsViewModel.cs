@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     public class AccessOptionsViewModel : OptionsViewModelBase<IAccessSettings>
     {
-        internal TimeSpan ProbeTimeout { get; set; } = TimeSpan.FromSeconds(2);
+        internal bool ProbePrivateServiceConnectEndpoint { get; set; } = true;
 
         public AccessOptionsViewModel(
             IRepository<IAccessSettings> settingsRepository,
@@ -96,7 +96,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             settings.ConnectionLimit.IntValue =
                 (int)this.ConnectionPoolLimit.Value;
 
-            if (settings.PrivateServiceConnectEndpoint.StringValue 
+            if (this.ProbePrivateServiceConnectEndpoint &&
+                settings.PrivateServiceConnectEndpoint.StringValue 
                 is var pscEndpoint &&
                 pscEndpoint != null)
             {
@@ -117,7 +118,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                         $"can't be reached from your computer",
                         e,
                         HelpTopics.PrivateServiceConnectOverview);
-
                 }
             }
 
