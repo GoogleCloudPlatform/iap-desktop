@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Binding
             TObject observed,
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue)
-            where TObject : INotifyPropertyChanged
+            where TObject : class, INotifyPropertyChanged
         {
             Precondition.ExpectNotNull(observed, nameof(observed));
             Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Binding
             TControl observed,
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue)
-            where TControl : IComponent
+            where TControl : class, IComponent
         {
             Precondition.ExpectNotNull(observed, nameof(observed));
             Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
@@ -119,7 +119,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue,
             IBindingContext bindingContext)
-            where TControl : IComponent
+            where TControl : class, IComponent
         {
             Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue,
             IBindingContext bindingContext)
-            where TObject : INotifyPropertyChanged
+            where TObject : class, INotifyPropertyChanged
         {
             Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
@@ -160,8 +160,8 @@ namespace Google.Solutions.Mvvm.Binding
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty,
             IBindingContext bindingContext)
-            where TModel : INotifyPropertyChanged
-            where TControl : IComponent
+            where TModel : class, INotifyPropertyChanged
+            where TControl : class, IComponent
         {
             Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
             Precondition.ExpectNotNull(model, nameof(model));
@@ -204,7 +204,7 @@ namespace Google.Solutions.Mvvm.Binding
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty,
             IBindingContext bindingContext)
-            where TModel : INotifyPropertyChanged
+            where TModel : class, INotifyPropertyChanged
             where TControl : IComponent
         {
             Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
@@ -237,7 +237,8 @@ namespace Google.Solutions.Mvvm.Binding
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
             IBindingContext bindingContext)
-            where TControl : IComponent
+            where TControl : class, IComponent
+            where TModel: class
         {
             Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
             Precondition.ExpectNotNull(model, nameof(model));
@@ -282,6 +283,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
             IBindingContext bindingContext)
             where TControl : IComponent
+            where TModel : class
         {
             Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
             Precondition.ExpectNotNull(model, nameof(model));

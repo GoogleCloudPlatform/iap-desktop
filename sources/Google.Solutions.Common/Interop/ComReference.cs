@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 namespace Google.Solutions.Common.Interop
 {
     public struct ComReference<T> : IDisposable
+        where T : class
     {
         public T Object { get; }
 
@@ -43,6 +44,7 @@ namespace Google.Solutions.Common.Interop
     public static class ComReference
     {
         public static ComReference<TInterface> For<TInterface>(TInterface obj)
+            where TInterface : class
         {
             return new ComReference<TInterface>(obj);
         }

@@ -103,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             this.Endpoint.ExpectNotNull(nameof(this.Endpoint));
             this.AuthorizedKey.ExpectNotNull(nameof(this.AuthorizedKey));
-            this.ConnectionTimeout.ExpectNotNull(nameof(this.ConnectionTimeout));
         }
 
         //---------------------------------------------------------------------

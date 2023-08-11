@@ -43,7 +43,9 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenNotNull_ThenExpectNotNullReturnsValue()
         {
             Assert.AreEqual("value", "value".ExpectNotNull("test"));
-            Assert.AreEqual(123, 123.ExpectNotNull("test"));
+
+            var o = new object();
+            Assert.AreEqual(o, o.ExpectNotNull("test"));
         }
 
         //---------------------------------------------------------------------

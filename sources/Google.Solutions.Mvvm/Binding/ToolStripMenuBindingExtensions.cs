@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Binding
             Func<TModel, ObservableCollection<TModel>> getChildren,
             Action<TModel> click,
             IBindingContext bindingContext)
-            where TModel : INotifyPropertyChanged
+            where TModel : class, INotifyPropertyChanged
         {
             item.BindReadonlyProperty(
                 c => c.Text,
@@ -127,7 +127,7 @@ namespace Google.Solutions.Mvvm.Binding
             Func<TModel, ObservableCollection<TModel>> getChildren,
             Action<TModel> click,
             IBindingContext bindingContext)
-            where TModel : INotifyPropertyChanged
+            where TModel : class, INotifyPropertyChanged
         {
             ToolStripItem CreateMenuItem(TModel model)
             {

@@ -48,7 +48,7 @@ namespace Google.Solutions.Apis.Client
             IAuthorization authorization,
             UserAgent userAgent)
         {
-            this.directions = directions.ExpectNotNull(nameof(directions));
+            this.directions = directions;
             this.deviceEnrollment = authorization.DeviceEnrollment.ExpectNotNull(nameof(this.deviceEnrollment));
             this.credential = authorization.Session.ApiCredential;
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
@@ -59,7 +59,7 @@ namespace Google.Solutions.Apis.Client
             IDeviceEnrollment deviceEnrollment,
             UserAgent userAgent)
         {
-            this.directions = directions.ExpectNotNull(nameof(directions));
+            this.directions = directions;
             this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.credential = null;
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
@@ -135,7 +135,7 @@ namespace Google.Solutions.Apis.Client
                 ServiceEndpointDirections directions,
                 IDeviceEnrollment deviceEnrollment)
             {
-                this.directions = directions.ExpectNotNull(nameof(directions));
+                this.directions = directions;
                 this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             }
 

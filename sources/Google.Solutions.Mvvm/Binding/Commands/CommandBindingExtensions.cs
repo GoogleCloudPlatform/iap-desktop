@@ -35,6 +35,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             IBindingContext bindingContext)
             where TCommand : IObservableCommand
             where TButton : Control, IButtonControl
+            where TModel : class
         {
             Precondition.ExpectNotNull(button, nameof(button));
             Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
@@ -77,6 +78,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             Func<TModel, TCommand> commandProperty,
             IBindingContext bindingContext)
             where TCommand : IObservableCommand
+            where TModel : class
         {
             Precondition.ExpectNotNull(button, nameof(button));
             Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));

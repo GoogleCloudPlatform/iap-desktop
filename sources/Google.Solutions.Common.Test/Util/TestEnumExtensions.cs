@@ -83,7 +83,7 @@ namespace Google.Solutions.Common.Test.Util
         {
             var a = SampleEnumWithAttributes.WithAttribute.GetAttribute<DisplayAttribute>();
             Assert.IsNotNull(a);
-            Assert.AreEqual("With attribute", a.Name);
+            Assert.AreEqual("With attribute", a!.Name);
         }
 
         [Test]

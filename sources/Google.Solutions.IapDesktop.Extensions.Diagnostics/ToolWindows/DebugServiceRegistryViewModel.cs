@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             public Service(Type serviceType, ServiceLifetime lifetime)
             {
                 this.ServiceType = serviceType.ExpectNotNull(nameof(serviceType));
-                this.Lifetime = lifetime.ExpectNotNull(nameof(lifetime));
+                this.Lifetime = lifetime;
             }
 
             public Type ServiceType { get; }
