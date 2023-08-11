@@ -69,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Session.Username}";
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
-            this.IsReportInternalIssueVisible = (this.authorization.Session as IGaiaOidcSession).HostedDomain == "google.com";
+            this.IsReportInternalIssueVisible 
+                = (this.authorization.Session as IGaiaOidcSession)?.HostedDomain == "google.com";
         }
 
         //---------------------------------------------------------------------
