@@ -29,10 +29,10 @@ using System.Drawing;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 {
     [Service(ServiceLifetime.Transient)]
-    public class TerminalOptionsViewModel : OptionsViewModelBase<TerminalSettings>
+    public class TerminalOptionsViewModel : OptionsViewModelBase<ITerminalSettings>
     {
         public TerminalOptionsViewModel(
-            TerminalSettingsRepository settingsRepository)
+            ITerminalSettingsRepository settingsRepository)
             : base("Terminal", settingsRepository)
         {
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled = ObservableProperty.Build(false);
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(TerminalSettings settings)
+        protected override void Load(ITerminalSettings settings)
         {
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
                 settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
@@ -86,14 +86,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
             this.TerminalFont.Value = new Font(
                 settings.FontFamily.StringValue,
-                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
             this.TerminalForegroundColor.Value = Color.FromArgb(
                 settings.ForegroundColorArgb.IntValue);
             this.TerminalBackgroundColor.Value = Color.FromArgb(
                 settings.BackgroundColorArgb.IntValue);
         }
 
-        protected override void Save(TerminalSettings settings)
+        protected override void Save(ITerminalSettings settings)
         {
             Debug.Assert(this.IsDirty.Value);
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             settings.FontFamily.StringValue =
                 this.TerminalFont.Value.FontFamily.Name;
             settings.FontSizeAsDword.IntValue =
-                TerminalSettings.DwordFromFontSize(this.TerminalFont.Value.Size);
+                TerminalSettingsRepository.DwordFromFontSize(this.TerminalFont.Value.Size);
             settings.ForegroundColorArgb.IntValue =
                 this.TerminalForegroundColor.Value.ToArgb();
             settings.BackgroundColorArgb.IntValue =

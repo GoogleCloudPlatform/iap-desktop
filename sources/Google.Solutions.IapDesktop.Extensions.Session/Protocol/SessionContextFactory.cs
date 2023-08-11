@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -87,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private readonly IKeyStoreAdapter keyStoreAdapter;
         private readonly IKeyAuthorizer keyAuthorizer;
         private readonly IConnectionSettingsService settingsService;
-        private readonly SshSettingsRepository sshSettingsRepository;
+        private readonly IRepository<ISshSettings> sshSettingsRepository;
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;
         private readonly ISelectCredentialsDialog credentialDialog;
@@ -104,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             IDirectTransportFactory directTransportFactory,
             ISelectCredentialsDialog credentialDialog,
             IRdpCredentialCallback credentialCallbackService,
-            SshSettingsRepository sshSettingsRepository)
+            IRepository<ISshSettings> sshSettingsRepository)
         {
             this.window = window.ExpectNotNull(nameof(window));
             this.authorization = authorization.ExpectNotNull(nameof(authorization));

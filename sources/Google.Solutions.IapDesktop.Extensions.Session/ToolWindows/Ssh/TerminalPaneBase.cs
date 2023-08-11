@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
     public partial class TerminalViewBase : SessionViewBase
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly TerminalSettingsRepository terminalSettingsRepository;
+        private readonly ITerminalSettingsRepository terminalSettingsRepository;
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
         protected TerminalViewModelBase ViewModel { get; private set; }
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             InitializeComponent();
 
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.terminalSettingsRepository = serviceProvider.GetService<TerminalSettingsRepository>();
+            this.terminalSettingsRepository = serviceProvider.GetService<ITerminalSettingsRepository>();
         }
 
 
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             var settings = this.terminalSettingsRepository.GetSettings();
             ApplyTerminalSettings(settings);
 
-            void reapplyTerminalSettings(object s, EventArgs<TerminalSettings> e)
+            void reapplyTerminalSettings(object s, EventArgs<ITerminalSettings> e)
                 => ApplyTerminalSettings(e.Data);
 
             this.terminalSettingsRepository.SettingsChanged += reapplyTerminalSettings;
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             this.TabPageContextMenuStrip.Items.Add(copySentData);
         }
 
-        private void ApplyTerminalSettings(TerminalSettings settings)
+        private void ApplyTerminalSettings(ITerminalSettings settings)
         {
             this.terminal.EnableCtrlC = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
             this.terminal.EnableCtrlV = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             this.terminal.TerminalFont = new TerminalFont(
                 settings.FontFamily.StringValue,
-                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
 
             this.terminal.TerminalBackgroundColor = Color.FromArgb(settings.BackgroundColorArgb.IntValue);
             this.terminal.TerminalForegroundColor = Color.FromArgb(settings.ForegroundColorArgb.IntValue);

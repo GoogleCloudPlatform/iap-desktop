@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
@@ -31,7 +32,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 {
     [Service(ServiceLifetime.Transient)]
-    public class SshOptionsViewModel : OptionsViewModelBase<SshSettings>
+    public class SshOptionsViewModel : OptionsViewModelBase<ISshSettings>
     {
         private static readonly SshKeyType[] publicKeyTypes =
             Enum.GetValues(typeof(SshKeyType))
@@ -42,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         private int publicKeyValidityInDays;
         private SshKeyType publicKeyType;
 
-        public SshOptionsViewModel(SshSettingsRepository settingsRepository)
+        public SshOptionsViewModel(IRepository<ISshSettings> settingsRepository)
             : base("SSH", settingsRepository)
         {
             base.OnInitializationCompleted();
@@ -52,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Load(SshSettings settings)
+        protected override void Load(ISshSettings settings)
         {
             this.IsPropagateLocaleEnabled =
                 settings.IsPropagateLocaleEnabled.BoolValue;
@@ -65,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
         }
 
-        protected override void Save(SshSettings settings)
+        protected override void Save(ISshSettings settings)
         {
             Debug.Assert(this.IsDirty.Value);
 

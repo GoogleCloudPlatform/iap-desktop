@@ -38,6 +38,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISecureStringSetting Credentials { get; }
     }
 
+    /// <summary>
+    /// Registry-backed repository for authentication-related settings.
+    /// </summary>
     public class AuthSettingsRepository :
         RegistryRepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {

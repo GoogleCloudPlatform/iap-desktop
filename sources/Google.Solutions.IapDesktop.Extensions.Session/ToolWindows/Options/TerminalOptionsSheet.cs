@@ -40,7 +40,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         private readonly IExceptionDialog exceptionDialog;
 
         public TerminalOptionsSheet(
-            TerminalSettingsRepository settingsRepository,
             IExceptionDialog exceptionDialog)
         {
             this.exceptionDialog = exceptionDialog.ExpectNotNull(nameof(exceptionDialog));
