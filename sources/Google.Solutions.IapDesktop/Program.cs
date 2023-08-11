@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop
                         OidcIssuer.Sts,
                         OAuthClient.SdkSecrets.ClientId,
                         OAuthClient.SdkSecrets.ClientSecret,
-                        "/") // TODO: This isn't applied yet
+                        "/")
                 };
 
                 //
