@@ -36,7 +36,13 @@ namespace Google.Solutions.Apis.Test.Auth
         private class SampleClient : OidcClientBase
         {
             public SampleClient(IOidcOfflineCredentialStore store)
-                : base(store)
+                : base(
+                      store,
+                      new OidcClientRegistration(
+                          OidcIssuer.Gaia,
+                          "client-id",
+                          "client-secret",
+                          "/"))
             {
             }
 
@@ -44,8 +50,6 @@ namespace Google.Solutions.Apis.Test.Auth
             public Func<IOidcSession> AuthorizeWithBrowser;
 
             public override IServiceEndpoint Endpoint => throw new System.NotImplementedException();
-
-            protected override OidcIssuer Issuer => OidcIssuer.Gaia;
 
             protected override Task<IOidcSession> ActivateOfflineCredentialAsync(
                 OidcOfflineCredential offlineCredential,
@@ -170,6 +174,29 @@ namespace Google.Solutions.Apis.Test.Auth
                 AuthorizeWithBrowser = () => CreateSession().Object
             };
             
+            var session = await client
+                .AuthorizeAsync(
+                    new Mock<ICodeReceiver>().Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(session);
+            store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenOfflineCredentialFromDifferentIssuer_ThenAuthorizationIgnoresOfflineCredential()
+        {
+            // Wrong offline credential.
+            var store = new Mock<IOidcOfflineCredentialStore>();
+            var offlineCredential = new OidcOfflineCredential(OidcIssuer.Sts, null, "rt", null);
+            store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
+
+            var client = new SampleClient(store.Object)
+            {
+                AuthorizeWithBrowser = () => CreateSession().Object
+            };
+
             var session = await client
                 .AuthorizeAsync(
                     new Mock<ICodeReceiver>().Object,

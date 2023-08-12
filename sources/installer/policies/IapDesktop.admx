@@ -95,6 +95,29 @@
       </elements>
     </policy>
 
+
+    <!-- 
+    ===========================================================================
+    = Auth
+    ===========================================================================
+    -->
+    
+    <policy
+        name="WorkforcePoolProvider"
+        class="Both"
+        displayName="$(string.WorkforcePoolProvider)"
+        explainText="$(string.WorkforcePoolProvider_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Auth"
+        presentation="$(presentation.WorkforcePoolProvider)" >
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <elements>
+        <text id="WorkforcePoolProvider" valueName="WorkforcePoolProvider"  required="true"/>
+      </elements>
+    </policy>
+    
     <!-- 
     ===========================================================================
     = Access

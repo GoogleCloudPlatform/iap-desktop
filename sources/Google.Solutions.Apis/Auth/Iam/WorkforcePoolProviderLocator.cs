@@ -53,23 +53,46 @@ namespace Google.Solutions.Apis.Auth.Iam
             this.Provider = provider.ExpectNotEmpty(nameof(provider));
         }
 
-        public static WorkforcePoolProviderLocator FromString(string resourceReference)
+        public static WorkforcePoolProviderLocator Parse(string resourceReference)
         {
-            resourceReference.ExpectNotEmpty(nameof(resourceReference));
-
-            var match = new Regex("^locations/(.*)/workforcePools/(.*)/providers/(.*)$")
-                .Match(resourceReference);
-            if (match.Success)
+            if (TryParse(resourceReference, out var locator))
             {
-                return new WorkforcePoolProviderLocator(
-                    match.Groups[1].Value,
-                    match.Groups[2].Value,
-                    match.Groups[3].Value);
+                return locator;
             }
             else
             {
                 throw new ArgumentException(
                     $"'{resourceReference}' is not a valid workforce pool provider locator");
+            }
+        }
+
+        public static bool TryParse(
+            string resourceReference, 
+            out WorkforcePoolProviderLocator locator)
+        {
+            if (string.IsNullOrEmpty(resourceReference))
+            {
+                locator = null;
+                return false;
+            }
+
+            var match = new Regex("^locations/(.*)/workforcePools/(.*)/providers/(.*)$")
+                .Match(resourceReference);
+            if (match.Success &&
+                !string.IsNullOrEmpty(match.Groups[1].Value) &&
+                !string.IsNullOrEmpty(match.Groups[2].Value) &&
+                !string.IsNullOrEmpty(match.Groups[3].Value))
+            {
+                locator = new WorkforcePoolProviderLocator(
+                    match.Groups[1].Value,
+                    match.Groups[2].Value,
+                    match.Groups[3].Value);
+                return true;
+            }
+            else
+            {
+                locator = null;
+                return false;
             }
         }
 

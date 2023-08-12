@@ -313,6 +313,11 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             Assert.AreEqual("SUBJECT", session.Username);
             Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
             Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+
+            // Terminate session.
+            Assert.IsNotNull(store.StoredCredential);
+            session.Terminate();
+            Assert.IsNull(store.StoredCredential);
         }
     }
 }

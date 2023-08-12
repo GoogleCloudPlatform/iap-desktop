@@ -36,6 +36,11 @@ namespace Google.Solutions.Apis.Auth
     public interface IOidcClient : IClient
     {
         /// <summary>
+        /// Registration used by this client.
+        /// </summary>
+        OidcClientRegistration Registration { get; }
+
+        /// <summary>
         /// Try to authorize using an existing refresh token.
         /// </summary>
         /// <returns>Null if silent authorization failed</returns>
@@ -54,9 +59,12 @@ namespace Google.Solutions.Apis.Auth
     {
         private readonly IOidcOfflineCredentialStore store;
 
-        protected OidcClientBase(IOidcOfflineCredentialStore store)
+        protected OidcClientBase(
+            IOidcOfflineCredentialStore store,
+            OidcClientRegistration registration)
         {
             this.store = store.ExpectNotNull(nameof(store));
+            this.Registration = registration.ExpectNotNull(nameof(registration));
         }
 
         internal void ClearOfflineCredentialStore()
@@ -64,11 +72,11 @@ namespace Google.Solutions.Apis.Auth
             this.store.Clear();
         }
 
-        protected abstract OidcIssuer Issuer { get; }
-
         //---------------------------------------------------------------------
         // IOidcClient.
         //---------------------------------------------------------------------
+
+        public OidcClientRegistration Registration { get; }
 
         public abstract IServiceEndpoint Endpoint { get; }
 
@@ -82,7 +90,7 @@ namespace Google.Solutions.Apis.Auth
 
                 Debug.Assert(offlineCredential.RefreshToken != null);
 
-                if (offlineCredential.Issuer != this.Issuer)
+                if (offlineCredential.Issuer != this.Registration.Issuer)
                 {
                     ApiTraceSources.Default.TraceWarning(
                         "Found offline credential from wrong issuer: {0}",
@@ -98,7 +106,7 @@ namespace Google.Solutions.Apis.Auth
 
                     Debug.Assert(session != null);
                     Debug.Assert(session.OfflineCredential != null);
-                    Debug.Assert(session.OfflineCredential.Issuer == this.Issuer);
+                    Debug.Assert(session.OfflineCredential.Issuer == this.Registration.Issuer);
 
                     //
                     // Update the offline credential as the refresh
@@ -143,6 +151,16 @@ namespace Google.Solutions.Apis.Auth
 
             this.store.TryRead(out var offlineCredential);
 
+            if (offlineCredential != null &&
+                offlineCredential.Issuer != this.Registration.Issuer)
+            {
+                //
+                // User switched issuers, we can't use this credential
+                // anymore.
+                //
+                offlineCredential = null;
+            }
+
             try
             {
                 var session = await
@@ -153,7 +171,7 @@ namespace Google.Solutions.Apis.Auth
                     .ConfigureAwait(false);
 
                 Debug.Assert(session != null);
-                Debug.Assert(session.OfflineCredential.Issuer == this.Issuer);
+                Debug.Assert(session.OfflineCredential.Issuer == this.Registration.Issuer);
 
                 //
                 // Store the refresh token so that we can do a silent

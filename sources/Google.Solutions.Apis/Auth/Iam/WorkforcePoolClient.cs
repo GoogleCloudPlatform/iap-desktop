@@ -39,7 +39,6 @@ namespace Google.Solutions.Apis.Auth.Iam
     public class WorkforcePoolClient : OidcClientBase
     {
         private readonly ServiceEndpoint<WorkforcePoolClient> endpoint;
-        private readonly OidcClientRegistration registration;
         private readonly IDeviceEnrollment deviceEnrollment;
         private readonly WorkforcePoolProviderLocator provider;
         private readonly UserAgent userAgent;
@@ -52,10 +51,11 @@ namespace Google.Solutions.Apis.Auth.Iam
             WorkforcePoolProviderLocator provider,
             OidcClientRegistration registration,
             UserAgent userAgent)
-            : base(store)
+            : base(store, registration)
         {
+            Precondition.Expect(registration.Issuer == OidcIssuer.Sts, nameof(OidcIssuer));
+
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-            this.registration = registration.ExpectNotNull(nameof(registration));
             this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.provider = provider.ExpectNotNull(nameof(provider));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
@@ -97,7 +97,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                 this.endpoint,
                 this.deviceEnrollment,
                 this.provider,
-                this.registration.ToClientSecrets(),
+                this.Registration.ToClientSecrets(),
                 this.userAgent)
             {
                 Scopes = new[] { Scopes.Cloud }
@@ -120,7 +120,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             var tokenInfo = await IntrospectTokenAsync(
                     new StsService.IntrospectTokenRequest()
                     {
-                        ClientCredentials = this.registration.ToClientSecrets(),
+                        ClientCredentials = this.Registration.ToClientSecrets(),
                         Token = apiCredential.Token.AccessToken,
                         TokenTypeHint = StsService.TokenTypes.AccessToken
                     },
@@ -134,20 +134,21 @@ namespace Google.Solutions.Apis.Auth.Iam
                     "not be introspected.");
             }
 
-            Debug.Assert(tokenInfo.ClientId == this.registration.ClientId);
+            Debug.Assert(tokenInfo.ClientId == this.Registration.ClientId);
             Debug.Assert(tokenInfo.Iss == "https://sts.googleapis.com/");
             Debug.Assert(tokenInfo.Username.StartsWith("principal://"));
 
-            return new WorkforcePoolSession(
+            var session =  new WorkforcePoolSession(
                 apiCredential,
                 WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
+
+            session.Terminated += (_, __) => ClearOfflineCredentialStore();
+            return session;
         }
 
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
-
-        protected override OidcIssuer Issuer => OidcIssuer.Sts;
 
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential, 

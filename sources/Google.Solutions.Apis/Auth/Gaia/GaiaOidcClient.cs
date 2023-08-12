@@ -39,7 +39,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
     public class GaiaOidcClient : OidcClientBase
     {
         private readonly ServiceEndpoint<GaiaOidcClient> endpoint;
-        private readonly OidcClientRegistration registration;
         private readonly IDeviceEnrollment deviceEnrollment;
         private readonly UserAgent userAgent;
 
@@ -49,10 +48,11 @@ namespace Google.Solutions.Apis.Auth.Gaia
             IOidcOfflineCredentialStore store,
             OidcClientRegistration registration,
             UserAgent userAgent)
-            : base(store)
+            : base(store, registration)
         {
+            Precondition.Expect(registration.Issuer == OidcIssuer.Gaia, nameof(OidcIssuer));
+
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-            this.registration = registration.ExpectNotNull(nameof(registration));
             this.deviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
 
@@ -173,8 +173,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override OidcIssuer Issuer => OidcIssuer.Gaia;
-
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
             OidcOfflineCredential offlineCredential,
             ICodeReceiver codeReceiver,
@@ -191,7 +189,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 this.deviceEnrollment,
                 this.userAgent)
             {
-                ClientSecrets = this.registration.ToClientSecrets()
+                ClientSecrets = this.Registration.ToClientSecrets()
             };
 
             if (offlineCredential?.IdToken != null &&
@@ -295,7 +293,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 this.deviceEnrollment,
                 this.userAgent)
             {
-                ClientSecrets = this.registration.ToClientSecrets()
+                ClientSecrets = this.Registration.ToClientSecrets()
             };
 
             var flow = CreateFlow(initializer);

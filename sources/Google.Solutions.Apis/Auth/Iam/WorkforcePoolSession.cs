@@ -73,18 +73,19 @@ namespace Google.Solutions.Apis.Auth.Iam
             throw new NotSupportedForWorkloadIdentityException();
         }
 
+        public void Terminate()
+        {
+            this.Terminated?.Invoke(this, EventArgs.Empty);
+
+            //
+            // NB. The WorkforcePoolClient handles the actual termination.
+            //
+        }
+
         public Task RevokeGrantAsync(CancellationToken cancellationToken)
         {
             //
             // STS grants can't be revoked.
-            //
-            throw new NotSupportedForWorkloadIdentityException();
-        }
-
-        public void Terminate()
-        {
-            //
-            // STS tokens can't be revoked.
             //
             throw new NotSupportedForWorkloadIdentityException();
         }

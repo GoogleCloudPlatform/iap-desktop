@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Platform.Net;
@@ -52,6 +53,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// Maximum number of connections per API endpoint.
         /// </summary>
         IIntSetting ConnectionLimit { get; }
+
+        /// <summary>
+        /// Workforce pool provider locator. 
+        /// 
+        /// When set, authentication is performed using workforce
+        /// identity instead of Gaia.
+        /// </summary>
+        IStringSetting WorkforcePoolProvider { get; }
     }
 
     /// <summary>
@@ -87,6 +96,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             {
             }
 
+            public IStringSetting WorkforcePoolProvider { get; private set; }
+
             public IStringSetting PrivateServiceConnectEndpoint { get; private set; }
 
             public IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
@@ -97,6 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
+                this.WorkforcePoolProvider,
                 this.PrivateServiceConnectEndpoint,
                 this.IsDeviceCertificateAuthenticationEnabled,
                 this.DeviceCertificateSelector,
@@ -118,7 +130,17 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     // NB. Machine policies override user policies, and
                     //     user policies override settings.
                     //
-                    PrivateServiceConnectEndpoint = RegistryStringSetting.FromKey( // TODO: Add to ADMX
+                    WorkforcePoolProvider = RegistryStringSetting.FromKey(
+                            "WorkforcePoolProvider",
+                            "Workforce pool provider locator",
+                            null,
+                            null,
+                            null, // No locator => workforce identits is disabled.
+                            settingsKey,
+                            s => s == null || WorkforcePoolProviderLocator.TryParse(s, out var _))
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    PrivateServiceConnectEndpoint = RegistryStringSetting.FromKey(
                             "PrivateServiceConnectEndpoint",
                             "Private Service Connect endpoint",
                             null,
