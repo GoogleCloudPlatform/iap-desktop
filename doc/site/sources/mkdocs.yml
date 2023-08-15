@@ -92,18 +92,21 @@ nav:
       - 'Connect to a Linux VM': 'connect-linux.md'
       - 'Connect to SQL Server': 'connect-sqlserver.md'
       - 'Connect to VMs from within a web browser': 'connect-by-url.md'
-    - 'Use the tool windows':
-      - 'Instance properties': 'toolwindow-instance-properties.md'
-      - 'Event log': 'toolwindow-eventlog.md'
-      - 'Serial port output': 'toolwindow-serial-port-output.md'
-    - 'Optimize IAP Desktop':
+    - 'Customize IAP Desktop':
+      - 'Use the tool windows':
+        - 'Instance properties': 'toolwindow-instance-properties.md'
+        - 'Event log': 'toolwindow-eventlog.md'
+        - 'Serial port output': 'toolwindow-serial-port-output.md'
       - 'Create profiles': 'create-profiles.md'
+    - 'Secure access to your VMs':
+      - 'Connect to Google Cloud': _.md
+      - 'Control access to VMs': _.md
+      - 'Set up context-aware access': _.md
+      - 'Set up certificate-based access policy': setup-caa-with-a-beyondcorp-certificate-access-policy.md
+    - 'Deploy IAP Desktop across endpoints':
       - 'Use group policies': 'group-policies.md'
       - 'Troubleshoot common issues': 'troubleshooting.md'
-    - 'Deploy context-aware access':
-      - 'Set up a basic access policy': setup-caa-with-a-basic-access-policy.md
-      - 'Set up a device-based access policy': setup-caa-with-a-device-posture-access-policy.md
-      - 'Set up a BeyondCorp certificate-based access policy': setup-caa-with-a-beyondcorp-certificate-access-policy.md
+    
   - 'Reference':
     - User interface:
         - 'Keyboard shortcuts': 'keyboard-shortcuts.md'
