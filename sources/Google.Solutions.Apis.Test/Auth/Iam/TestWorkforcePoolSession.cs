@@ -25,6 +25,10 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth.Iam;
 using Moq;
 using NUnit.Framework;
+using Google.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth;
+using System;
 
 namespace Google.Solutions.Apis.Test.Auth.Iam
 {
@@ -44,6 +48,42 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     AccessToken = accessToken
                 }
             };
+        }
+
+        //---------------------------------------------------------------------
+        // Splice.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNewSessionNotCompatible_ThenSpliceThrowsException()
+        {
+            var session = new WorkforcePoolSession(
+                CreateUserCredential("rt", "at"),
+                new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
+
+            Assert.Throws<ArgumentException>(
+                () => session.Splice(new Mock<IOidcSession>().Object));
+        }
+
+        [Test]
+        public void WhenNewSessionCompatible_ThenSpliceReplacesTokens()
+        {
+            var session = new WorkforcePoolSession(
+                CreateUserCredential("old-rt", "old-at"),
+                new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
+
+            Assert.AreEqual("old-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.AreEqual("old-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+
+
+            var newSession = new WorkforcePoolSession(
+                CreateUserCredential("new-rt", "new-at"),
+                new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
+
+            session.Splice(newSession);
+
+            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.AreEqual("new-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
         }
 
         //---------------------------------------------------------------------

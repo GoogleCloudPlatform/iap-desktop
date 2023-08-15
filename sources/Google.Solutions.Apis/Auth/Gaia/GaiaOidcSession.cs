@@ -34,15 +34,13 @@ namespace Google.Solutions.Apis.Auth.Gaia
     /// Sessions are subject to the 'Google Cloud Session Length' control,
     /// and end when reauthorization is triggered.
     /// </summary>
-    internal class GaiaOidcSession : IGaiaOidcSession
+    internal class GaiaOidcSession : OidcSessionBase, IGaiaOidcSession
     {
-        private readonly UserCredential apiCredential;
-
         public GaiaOidcSession(
             UserCredential apiCredential,
             IJsonWebToken idToken)
+            : base(apiCredential)
         {
-            this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
             this.IdToken = idToken.ExpectNotNull(nameof(idToken));
 
             Debug.Assert(idToken.Payload.Email != null);
@@ -52,14 +50,12 @@ namespace Google.Solutions.Apis.Auth.Gaia
         // IGaiaOidcSession.
         //---------------------------------------------------------------------
 
-        public event EventHandler Terminated;
         public IJsonWebToken IdToken { get; }
-        public ICredential ApiCredential => this.apiCredential;
-        public string Username => this.IdToken.Payload.Email;
+        public override string Username => this.IdToken.Payload.Email;
         public string Email => this.IdToken.Payload.Email;
         public string HostedDomain => this.IdToken.Payload.HostedDomain;
 
-        public OidcOfflineCredential OfflineCredential
+        public override OidcOfflineCredential OfflineCredential
         {
             get
             {
@@ -67,71 +63,43 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 // Prefer fresh ID token if it's available, otherwise
                 // use old.
                 //
-                var idToken = string.IsNullOrEmpty(this.apiCredential.Token.IdToken)
+                var idToken = string.IsNullOrEmpty(this.Credential.Token.IdToken)
                     ? this.IdToken.ToString()
-                    : this.apiCredential.Token.IdToken;
+                    : this.Credential.Token.IdToken;
 
                 return new OidcOfflineCredential(
                     OidcIssuer.Gaia,
-                    this.apiCredential.Token.Scope,
-                    this.apiCredential.Token.RefreshToken,
+                    this.Credential.Token.Scope,
+                    this.Credential.Token.RefreshToken,
                     idToken);
             }
         }
 
-        public void Splice(IOidcSession newSession)
+        public override void Splice(IOidcSession newSession)
         {
             //
-            // Replace the current tokens (which might be invalid)
-            // with the new session's tokens.
+            // The "Google Cloud session length" control causes Gaia
+            // session to expire and the refresh token to be revoked.
+            // Splicing happens after the app has performed "reauth" and
+            // has acquired a new set of tokens (including a new refresh
+            // token).
             //
-            // By retaining the UserCredential object, we ensure that
-            // any existing API client (which has the UserCredential installed
-            // as interceptor) continues to work, and immediately starts
-            // using the new tokens.
             //
-            // NB. A more obviuos approach to achiveve the same would be to
-            // implement an ICredential facade, and swap out its backing
-            // credential with the new session's credential. But UserCredential
-            // hands out `this` pointers in multiple places, and that makes the
-            // facade approach brittle in practice.
-            //
-            if (newSession is GaiaOidcSession gaiaSession && gaiaSession != null)
-            {
-                this.apiCredential.Token = gaiaSession.apiCredential.Token;
+            base.Splice(newSession);
 
-                //
-                // NB. Leave IdToken and other properties as is as their
-                // values shouldn't have changed.
-                //
-
-                Debug.Assert(gaiaSession.Email == this.Email);
-                Debug.Assert(gaiaSession.HostedDomain == this.HostedDomain);
-            }
-            else
-            {
-                throw new ArgumentException(nameof(newSession));
-            }
+            Debug.Assert(((IGaiaOidcSession)newSession).Email == this.Email);
+            Debug.Assert(((IGaiaOidcSession)newSession).HostedDomain == this.HostedDomain);
         }
 
-        public void Terminate()
-        {
-            this.Terminated?.Invoke(this, EventArgs.Empty);
-
-            //
-            // NB. The GaiaOidcClient handles the actual termination.
-            //
-        }
-
-        public async Task RevokeGrantAsync(CancellationToken cancellationToken)
+        public override async Task RevokeGrantAsync(CancellationToken cancellationToken)
         {
             //
             // Revoke the refresh token. This removes the underlying grant.
             //
-            await this.apiCredential.Flow
+            await this.Credential.Flow
                 .RevokeTokenAsync(
                     null, 
-                    this.apiCredential.Token.RefreshToken, 
+                    this.Credential.Token.RefreshToken, 
                     cancellationToken)
                 .ConfigureAwait(false);
 
