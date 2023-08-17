@@ -21,7 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
-using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,57 +32,49 @@ namespace Google.Solutions.Apis.Auth.Iam
     /// <summary>
     /// A workforce identity "3PI" session.
     /// </summary>
-    internal class WorkforcePoolSession : IOidcSession
+    internal class WorkforcePoolSession : OidcSessionBase
     {
-        private readonly UserCredential apiCredential;
         private readonly WorkforcePoolIdentity identity;
 
         public WorkforcePoolSession(
             UserCredential apiCredential, 
             WorkforcePoolIdentity identity)
+            : base(apiCredential)
         {
-            this.apiCredential = apiCredential.ExpectNotNull(nameof(apiCredential));
             this.identity = identity.ExpectNotNull(nameof(identity));
         }
 
-
         //---------------------------------------------------------------------
-        // IOidcSession.
+        // Overrides.
         //---------------------------------------------------------------------
 
-        public event EventHandler Terminated;
+        public override string Username => this.identity.Subject;
 
-        public string Username => this.identity.Subject;
-
-        public ICredential ApiCredential => this.apiCredential;
-
-        public OidcOfflineCredential OfflineCredential
+        public override OidcOfflineCredential OfflineCredential
         {
             get
             {
                 return new OidcOfflineCredential(
                     OidcIssuer.Sts,
-                    this.apiCredential.Token.Scope,
-                    this.apiCredential.Token.RefreshToken,
+                    this.Credential.Token.Scope,
+                    this.Credential.Token.RefreshToken,
                     null);
             }
         }
 
-        public void Splice(IOidcSession newSession)
+        public override void Splice(IOidcSession newSession)
         {
-            throw new NotSupportedForWorkloadIdentityException();
+            //
+            // Workforce pool refresh tokens expire when the session
+            // expires, and the basic behavior is similar to what happens
+            // during a Gaia session expiry.
+            //
+            base.Splice(newSession);
+
+            Debug.Assert(newSession.Username == this.Username);
         }
 
-        public void Terminate()
-        {
-            this.Terminated?.Invoke(this, EventArgs.Empty);
-
-            //
-            // NB. The WorkforcePoolClient handles the actual termination.
-            //
-        }
-
-        public Task RevokeGrantAsync(CancellationToken cancellationToken)
+        public override Task RevokeGrantAsync(CancellationToken cancellationToken)
         {
             //
             // STS grants can't be revoked.
