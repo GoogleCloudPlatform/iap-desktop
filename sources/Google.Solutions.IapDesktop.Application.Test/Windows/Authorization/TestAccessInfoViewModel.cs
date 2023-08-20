@@ -29,7 +29,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 {
     [TestFixture]
-    public class TestDeviceFlyoutViewModel : ApplicationFixtureBase
+    public class TestAccessInfoViewModel : ApplicationFixtureBase
     {
         private static IAuthorization CreateAuthorization(
             IDeviceEnrollment enrollment)
