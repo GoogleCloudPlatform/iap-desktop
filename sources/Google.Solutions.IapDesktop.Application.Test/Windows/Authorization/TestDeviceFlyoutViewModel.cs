@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var viewModel = new DeviceFlyoutViewModel(
+            var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
-            var viewModel = new DeviceFlyoutViewModel(
+            var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
-            var viewModel = new DeviceFlyoutViewModel(
+            var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);

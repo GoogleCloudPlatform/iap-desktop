@@ -25,15 +25,15 @@ using Google.Solutions.Mvvm.Binding;
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     [SkipCodeCoverage("UI")]
-    public partial class DeviceFlyoutView : FlyoutWindow, IView<DeviceFlyoutViewModel>
+    public partial class AccessInfoFlyoutView : FlyoutWindow, IView<AccessInfoViewModel>
     {
-        public DeviceFlyoutView()
+        public AccessInfoFlyoutView()
         {
             InitializeComponent();
         }
 
         public void Bind(
-            DeviceFlyoutViewModel viewModel,
+            AccessInfoViewModel viewModel,
             IBindingContext bindingContext)
         {
             this.enrollmentStateLabel.Text = viewModel.EnrollmentStateDescription;

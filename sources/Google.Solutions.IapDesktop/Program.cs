@@ -566,8 +566,8 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IWin32Window>(mainForm);
                 mainLayer.AddTransient<AboutView>();
                 mainLayer.AddTransient<AboutViewModel>();
-                mainLayer.AddTransient<DeviceFlyoutView>();
-                mainLayer.AddTransient<DeviceFlyoutViewModel>();
+                mainLayer.AddTransient<AccessInfoFlyoutView>();
+                mainLayer.AddTransient<AccessInfoViewModel>();
                 mainLayer.AddTransient<NewProfileView>();
                 mainLayer.AddTransient<NewProfileViewModel>();
 

@@ -804,7 +804,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             this.serviceProvider
-                .GetWindow<DeviceFlyoutView, DeviceFlyoutViewModel>(this.themeService.MainWindowTheme)
+                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel>(this.themeService.MainWindowTheme)
                 .Form
                 .Show(this, screenPosition, ContentAlignment.TopLeft);
         }

@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
-    partial class DeviceFlyoutView
+    partial class AccessInfoFlyoutView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DeviceFlyoutView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AccessInfoFlyoutView));
             this.deviceEnrolledIcon = new System.Windows.Forms.PictureBox();
             this.enrollmentStateLabel = new System.Windows.Forms.Label();
             this.detailsLink = new System.Windows.Forms.LinkLabel();

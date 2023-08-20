@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
-    public class DeviceFlyoutViewModel : ViewModelBase
+    public class AccessInfoViewModel : ViewModelBase
     {
         private const string ProductName = "Endpoint Verification";
         private readonly IDeviceEnrollment enrollment;
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         public string DetailsLinkCaption { get; }
         public bool IsDetailsLinkVisible { get; }
 
-        public DeviceFlyoutViewModel(IAuthorization authorization)
+        public AccessInfoViewModel(IAuthorization authorization)
         {
             this.enrollment = authorization.DeviceEnrollment;
 
