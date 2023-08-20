@@ -334,18 +334,19 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(770, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(804, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // accessStateButton
             // 
-            this.accessStateButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Cloud_16_white;
+            this.accessStateButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.accessStateButton.Image = ((System.Drawing.Image)(resources.GetObject("accessStateButton.Image")));
             this.accessStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.accessStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.accessStateButton.Name = "accessStateButton";
             this.accessStateButton.ShowDropDownArrow = false;
-            this.accessStateButton.Size = new System.Drawing.Size(85, 20);
+            this.accessStateButton.Size = new System.Drawing.Size(20, 20);
             this.accessStateButton.Text = "Connected";
             this.accessStateButton.Click += new System.EventHandler(this.accessStateButton_Click);
             // 

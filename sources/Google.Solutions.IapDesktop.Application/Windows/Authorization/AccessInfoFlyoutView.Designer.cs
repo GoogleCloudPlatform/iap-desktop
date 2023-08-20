@@ -49,30 +49,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         /// </summary>
         private void InitializeComponent()
         {
-            this.infoLabel = new System.Windows.Forms.Label();
-            this.detailsLink = new System.Windows.Forms.LinkLabel();
+            this.dcaLink = new System.Windows.Forms.LinkLabel();
             this.closeButton = new System.Windows.Forms.Button();
+            this.headerLabel = new System.Windows.Forms.Label();
+            this.pscLabel = new System.Windows.Forms.Label();
+            this.psvValueLabel = new System.Windows.Forms.Label();
+            this.dcaLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // infoLabel
+            // dcaLink
             // 
-            this.infoLabel.AutoEllipsis = true;
-            this.infoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.infoLabel.Location = new System.Drawing.Point(11, 11);
-            this.infoLabel.Name = "infoLabel";
-            this.infoLabel.Size = new System.Drawing.Size(160, 43);
-            this.infoLabel.TabIndex = 3;
-            this.infoLabel.Text = " ";
-            // 
-            // detailsLink
-            // 
-            this.detailsLink.AutoSize = true;
-            this.detailsLink.Location = new System.Drawing.Point(11, 53);
-            this.detailsLink.Name = "detailsLink";
-            this.detailsLink.Size = new System.Drawing.Size(16, 13);
-            this.detailsLink.TabIndex = 4;
-            this.detailsLink.TabStop = true;
-            this.detailsLink.Text = "...";
+            this.dcaLink.AutoSize = true;
+            this.dcaLink.Location = new System.Drawing.Point(150, 52);
+            this.dcaLink.Name = "dcaLink";
+            this.dcaLink.Size = new System.Drawing.Size(16, 13);
+            this.dcaLink.TabIndex = 4;
+            this.dcaLink.TabStop = true;
+            this.dcaLink.Text = "...";
             // 
             // closeButton
             // 
@@ -88,6 +81,43 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.closeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.closeButton.UseVisualStyleBackColor = true;
             // 
+            // headerLabel
+            // 
+            this.headerLabel.AutoSize = true;
+            this.headerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headerLabel.Location = new System.Drawing.Point(8, 8);
+            this.headerLabel.Name = "headerLabel";
+            this.headerLabel.Size = new System.Drawing.Size(112, 13);
+            this.headerLabel.TabIndex = 6;
+            this.headerLabel.Text = "Connection details";
+            // 
+            // pscLabel
+            // 
+            this.pscLabel.AutoSize = true;
+            this.pscLabel.Location = new System.Drawing.Point(8, 36);
+            this.pscLabel.Name = "pscLabel";
+            this.pscLabel.Size = new System.Drawing.Size(122, 13);
+            this.pscLabel.TabIndex = 7;
+            this.pscLabel.Text = "Private Service Connect";
+            // 
+            // psvValueLabel
+            // 
+            this.psvValueLabel.AutoSize = true;
+            this.psvValueLabel.Location = new System.Drawing.Point(150, 36);
+            this.psvValueLabel.Name = "psvValueLabel";
+            this.psvValueLabel.Size = new System.Drawing.Size(10, 13);
+            this.psvValueLabel.TabIndex = 8;
+            this.psvValueLabel.Text = "-";
+            // 
+            // dcaLabel
+            // 
+            this.dcaLabel.AutoSize = true;
+            this.dcaLabel.Location = new System.Drawing.Point(8, 52);
+            this.dcaLabel.Name = "dcaLabel";
+            this.dcaLabel.Size = new System.Drawing.Size(123, 13);
+            this.dcaLabel.TabIndex = 9;
+            this.dcaLabel.Text = "Certificate-based access";
+            // 
             // AccessInfoFlyoutView
             // 
             this.AcceptButton = this.closeButton;
@@ -95,9 +125,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(200, 77);
+            this.Controls.Add(this.dcaLabel);
+            this.Controls.Add(this.psvValueLabel);
+            this.Controls.Add(this.pscLabel);
+            this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.closeButton);
-            this.Controls.Add(this.detailsLink);
-            this.Controls.Add(this.infoLabel);
+            this.Controls.Add(this.dcaLink);
             this.Name = "AccessInfoFlyoutView";
             this.Text = "UserFlyoutWindow";
             this.ResumeLayout(false);
@@ -106,8 +139,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         }
 
         #endregion
-        private System.Windows.Forms.Label infoLabel;
-        private System.Windows.Forms.LinkLabel detailsLink;
+        private System.Windows.Forms.LinkLabel dcaLink;
         private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Label headerLabel;
+        private System.Windows.Forms.Label pscLabel;
+        private System.Windows.Forms.Label psvValueLabel;
+        private System.Windows.Forms.Label dcaLabel;
     }
 }

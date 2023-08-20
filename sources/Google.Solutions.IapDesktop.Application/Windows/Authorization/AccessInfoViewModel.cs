@@ -35,9 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
     {
         private readonly IDeviceEnrollment enrollment;
 
-        public string AccessInfoText { get; }
-        public string DetailsLinkCaption { get; }
-        public bool IsDetailsLinkVisible { get; }
+        public string PrivateServiceConnectText { get; }
+        public string DeviceCertificateLinkText { get; }
 
         public AccessInfoViewModel(
             IAuthorization authorization,
@@ -45,40 +44,22 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         {
             this.enrollment = authorization.DeviceEnrollment;
 
-            if (route.UsePrivateServiceConnect)
-            {
-                this.AccessInfoText =
-                    "Connected to Google Cloud " +
-                    "through Private Service Connect";
-                this.IsDetailsLinkVisible = false;
-            }
-            else
-            {
-                switch (this.enrollment.State)
-                {
-                    case DeviceEnrollmentState.Disabled:
-                        this.AccessInfoText =
-                            "Cerfificate-based access is disabled.";
-                        this.IsDetailsLinkVisible = false;
-                        this.DetailsLinkCaption = "More information";
-                        break;
+            this.PrivateServiceConnectText = route.UsePrivateServiceConnect
+                ? "Enabled" : "Disabled";
 
-                    case DeviceEnrollmentState.NotEnrolled:
-                        this.AccessInfoText =
-                            "Cerfificate-based access is enabled," +
-                            "but no suitable certificate was found.";
-                        this.IsDetailsLinkVisible = false;
-                        this.DetailsLinkCaption = "More information";
-                        break;
+            switch (this.enrollment.State)
+            {
+                case DeviceEnrollmentState.Disabled:
+                    this.DeviceCertificateLinkText = "Disabled";
+                    break;
 
-                    case DeviceEnrollmentState.Enrolled:
-                        this.AccessInfoText =
-                            "Connected to Google Cloud using " +
-                            "BeyondCorp certificate-based access.";
-                        this.IsDetailsLinkVisible = true;
-                        this.DetailsLinkCaption = "View certificate";
-                        break;
-                }
+                case DeviceEnrollmentState.NotEnrolled:
+                    this.DeviceCertificateLinkText = "Error";
+                    break;
+
+                case DeviceEnrollmentState.Enrolled:
+                    this.DeviceCertificateLinkText = "Enabled";
+                    break;
             }
         }
 
