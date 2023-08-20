@@ -76,13 +76,12 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.releaseNotesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reportInternalIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new Google.Solutions.Mvvm.Controls.ActiveStatusStrip();
             this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.deviceStateButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.accessStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.profileStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.addProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
@@ -205,7 +204,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutSeparatorToolStripMenuItem,
             this.releaseNotesToolStripMenuItem,
             this.reportIssueToolStripMenuItem,
-            this.reportInternalIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -289,13 +287,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.reportIssueToolStripMenuItem.Text = "&Report issue...";
             this.reportIssueToolStripMenuItem.Click += new System.EventHandler(this.reportGithubIssueToolStripMenuItem_Click);
             // 
-            // reportInternalIssueToolStripMenuItem
-            // 
-            this.reportInternalIssueToolStripMenuItem.Name = "reportInternalIssueToolStripMenuItem";
-            this.reportInternalIssueToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.reportInternalIssueToolStripMenuItem.Text = "Report &issue (Google internal)...";
-            this.reportInternalIssueToolStripMenuItem.Click += new System.EventHandler(this.reportInternalIssueToolStripMenuItem_Click);
-            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
@@ -305,11 +296,18 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // statusStrip
             // 
+            this.statusStrip.Active = false;
+            this.statusStrip.ActiveBackColor = System.Drawing.SystemColors.Highlight;
+            this.statusStrip.ActiveForeColor = System.Drawing.SystemColors.HighlightText;
+            this.statusStrip.BackColor = System.Drawing.SystemColors.Control;
+            this.statusStrip.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.statusStrip.InactiveBackColor = System.Drawing.SystemColors.Control;
+            this.statusStrip.InactiveForeColor = System.Drawing.SystemColors.ControlText;
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.backgroundJobLabel,
             this.cancelBackgroundJobsButton,
             this.toolStripStatus,
-            this.deviceStateButton,
+            this.accessStateButton,
             this.profileStateButton});
             this.statusStrip.Location = new System.Drawing.Point(0, 639);
             this.statusStrip.Name = "statusStrip";
@@ -336,20 +334,20 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(760, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(770, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // deviceStateButton
+            // accessStateButton
             // 
-            this.deviceStateButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.EndpointVerificationWhite_16;
-            this.deviceStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.deviceStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.deviceStateButton.Name = "deviceStateButton";
-            this.deviceStateButton.ShowDropDownArrow = false;
-            this.deviceStateButton.Size = new System.Drawing.Size(95, 20);
-            this.deviceStateButton.Text = "(not verified)";
-            this.deviceStateButton.Click += new System.EventHandler(this.toolStripDeviceStateButton_Click);
+            this.accessStateButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Cloud_16_white;
+            this.accessStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.accessStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.accessStateButton.Name = "accessStateButton";
+            this.accessStateButton.ShowDropDownArrow = false;
+            this.accessStateButton.Size = new System.Drawing.Size(85, 20);
+            this.accessStateButton.Text = "Connected";
+            this.accessStateButton.Click += new System.EventHandler(this.accessStateButton_Click);
             // 
             // profileStateButton
             // 
@@ -433,8 +431,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
         private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripDropDownButton deviceStateButton;
-        private System.Windows.Forms.ToolStripMenuItem reportInternalIssueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton accessStateButton;
         private System.Windows.Forms.ToolStripSeparator howtoSeparatorStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openIapFirewallDocsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator overviewSeparatorStripMenuItem;

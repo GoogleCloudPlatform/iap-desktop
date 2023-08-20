@@ -51,9 +51,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private string windowTitle = Install.FriendlyName;
         private bool isBackgroundJobStatusVisible = false;
         private string profileState = null;
-        private string deviceState = null;
-        private bool isDeviceStateVisible = false;
-        private bool isReportInternalIssueVisible;
 
         public MainFormViewModel(
             Control view,
@@ -67,10 +64,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
 
             this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Session.Username}";
-            this.DeviceStateCaption = "Endpoint Verification";
-            this.IsDeviceStateVisible = this.authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
-            this.IsReportInternalIssueVisible 
-                = (this.authorization.Session as IGaiaOidcSession)?.HostedDomain == "google.com";
         }
 
         //---------------------------------------------------------------------
@@ -143,36 +136,6 @@ namespace Google.Solutions.IapDesktop.Windows
             set
             {
                 this.profileState = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public string DeviceStateCaption
-        {
-            get => this.deviceState;
-            set
-            {
-                this.deviceState = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsDeviceStateVisible
-        {
-            get => this.isDeviceStateVisible;
-            set
-            {
-                this.isDeviceStateVisible = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsReportInternalIssueVisible
-        {
-            get => this.isReportInternalIssueVisible;
-            set
-            {
-                this.isReportInternalIssueVisible = value;
                 RaisePropertyChange();
             }
         }
