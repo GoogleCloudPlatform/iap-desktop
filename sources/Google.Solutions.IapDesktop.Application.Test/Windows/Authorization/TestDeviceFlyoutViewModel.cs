@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.IapDesktop.Application.Windows.Authorization;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -48,11 +49,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
             var viewModel = new AccessInfoViewModel(
-                CreateAuthorization(enrollment.Object));
+                CreateAuthorization(enrollment.Object),
+                ServiceRoute.Public);
 
-            Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
-            Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDeviceNotEnrolledIconVisible);
+            Assert.IsNotEmpty(viewModel.AccessInfoText);
             Assert.IsTrue(viewModel.IsDetailsLinkVisible);
             Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
         }
@@ -64,11 +64,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
             var viewModel = new AccessInfoViewModel(
-                CreateAuthorization(enrollment.Object));
+                CreateAuthorization(enrollment.Object),
+                ServiceRoute.Public);
 
-            Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
-            Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDeviceNotEnrolledIconVisible);
+            Assert.IsNotEmpty(viewModel.AccessInfoText);
             Assert.IsTrue(viewModel.IsDetailsLinkVisible);
             Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
         }
@@ -80,11 +79,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
             var viewModel = new AccessInfoViewModel(
-                CreateAuthorization(enrollment.Object));
+                CreateAuthorization(enrollment.Object),
+                ServiceRoute.Public);
 
-            Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
-            Assert.IsTrue(viewModel.IsDeviceEnrolledIconVisible);
-            Assert.IsFalse(viewModel.IsDeviceNotEnrolledIconVisible);
+            Assert.IsNotEmpty(viewModel.AccessInfoText);
             Assert.IsTrue(viewModel.IsDetailsLinkVisible);
             Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
         }

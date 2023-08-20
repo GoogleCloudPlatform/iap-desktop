@@ -49,39 +49,25 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AccessInfoFlyoutView));
-            this.deviceEnrolledIcon = new System.Windows.Forms.PictureBox();
-            this.enrollmentStateLabel = new System.Windows.Forms.Label();
+            this.infoLabel = new System.Windows.Forms.Label();
             this.detailsLink = new System.Windows.Forms.LinkLabel();
             this.closeButton = new System.Windows.Forms.Button();
-            this.deviceNotEnrolledIcon = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceEnrolledIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceNotEnrolledIcon)).BeginInit();
             this.SuspendLayout();
             // 
-            // deviceEnrolledIcon
+            // infoLabel
             // 
-            this.deviceEnrolledIcon.Image = ((System.Drawing.Image)(resources.GetObject("deviceEnrolledIcon.Image")));
-            this.deviceEnrolledIcon.Location = new System.Drawing.Point(12, 12);
-            this.deviceEnrolledIcon.Name = "deviceEnrolledIcon";
-            this.deviceEnrolledIcon.Size = new System.Drawing.Size(48, 48);
-            this.deviceEnrolledIcon.TabIndex = 2;
-            this.deviceEnrolledIcon.TabStop = false;
-            // 
-            // enrollmentStateLabel
-            // 
-            this.enrollmentStateLabel.AutoEllipsis = true;
-            this.enrollmentStateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.enrollmentStateLabel.Location = new System.Drawing.Point(66, 11);
-            this.enrollmentStateLabel.Name = "enrollmentStateLabel";
-            this.enrollmentStateLabel.Size = new System.Drawing.Size(160, 65);
-            this.enrollmentStateLabel.TabIndex = 3;
-            this.enrollmentStateLabel.Text = " ";
+            this.infoLabel.AutoEllipsis = true;
+            this.infoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.infoLabel.Location = new System.Drawing.Point(11, 11);
+            this.infoLabel.Name = "infoLabel";
+            this.infoLabel.Size = new System.Drawing.Size(160, 43);
+            this.infoLabel.TabIndex = 3;
+            this.infoLabel.Text = " ";
             // 
             // detailsLink
             // 
             this.detailsLink.AutoSize = true;
-            this.detailsLink.Location = new System.Drawing.Point(66, 63);
+            this.detailsLink.Location = new System.Drawing.Point(11, 53);
             this.detailsLink.Name = "detailsLink";
             this.detailsLink.Size = new System.Drawing.Size(16, 13);
             this.detailsLink.TabIndex = 4;
@@ -94,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.closeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.closeButton.Location = new System.Drawing.Point(227, 2);
+            this.closeButton.Location = new System.Drawing.Point(172, 2);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(24, 24);
             this.closeButton.TabIndex = 5;
@@ -102,42 +88,26 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.closeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.closeButton.UseVisualStyleBackColor = true;
             // 
-            // deviceNotEnrolledIcon
-            // 
-            this.deviceNotEnrolledIcon.Image = ((System.Drawing.Image)(resources.GetObject("deviceNotEnrolledIcon.Image")));
-            this.deviceNotEnrolledIcon.Location = new System.Drawing.Point(12, 12);
-            this.deviceNotEnrolledIcon.Name = "deviceNotEnrolledIcon";
-            this.deviceNotEnrolledIcon.Size = new System.Drawing.Size(48, 48);
-            this.deviceNotEnrolledIcon.TabIndex = 6;
-            this.deviceNotEnrolledIcon.TabStop = false;
-            // 
-            // DeviceFlyoutWindow
+            // AccessInfoFlyoutView
             // 
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(254, 90);
-            this.Controls.Add(this.deviceNotEnrolledIcon);
+            this.ClientSize = new System.Drawing.Size(200, 77);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.detailsLink);
-            this.Controls.Add(this.enrollmentStateLabel);
-            this.Controls.Add(this.deviceEnrolledIcon);
-            this.Name = "DeviceFlyoutWindow";
+            this.Controls.Add(this.infoLabel);
+            this.Name = "AccessInfoFlyoutView";
             this.Text = "UserFlyoutWindow";
-            ((System.ComponentModel.ISupportInitialize)(this.deviceEnrolledIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceNotEnrolledIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox deviceEnrolledIcon;
-        private System.Windows.Forms.Label enrollmentStateLabel;
+        private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.LinkLabel detailsLink;
         private System.Windows.Forms.Button closeButton;
-        private System.Windows.Forms.PictureBox deviceNotEnrolledIcon;
     }
 }

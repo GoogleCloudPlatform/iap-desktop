@@ -36,14 +36,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             AccessInfoViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.enrollmentStateLabel.Text = viewModel.EnrollmentStateDescription;
+            this.infoLabel.Text = viewModel.AccessInfoText;
 
             this.detailsLink.Visible = viewModel.IsDetailsLinkVisible;
             this.detailsLink.Text = viewModel.DetailsLinkCaption;
             this.detailsLink.LinkClicked += (_, __) => viewModel.OpenDetails(this.FlyoutOwner);
-
-            this.deviceEnrolledIcon.Visible = viewModel.IsDeviceEnrolledIconVisible;
-            this.deviceNotEnrolledIcon.Visible = viewModel.IsDeviceNotEnrolledIconVisible;
 
             this.closeButton.Click += (_, __) => Close();
         }
