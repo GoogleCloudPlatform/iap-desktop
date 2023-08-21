@@ -38,9 +38,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             AccessInfoViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.psvValueLabel.Text = viewModel.PrivateServiceConnectText;
+            this.pscLink.Text = viewModel.PrivateServiceConnectText;
+            this.pscLink.LinkClicked += (_, __) => viewModel.OpenPrivateServiceConnectDetails();
+
             this.dcaLink.Text = viewModel.DeviceCertificateLinkText;
-            this.dcaLink.LinkClicked += (_, __) => viewModel.OpenDetails(this.FlyoutOwner);
+            this.dcaLink.LinkClicked += (_, __) => viewModel.OpenDeviceCertificateDetails(this.FlyoutOwner);
 
             this.closeButton.Click += (_, __) => Close();
         }

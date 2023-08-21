@@ -56,11 +56,11 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 
         public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
             "Device certificate authentication",
-            "https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access");
+            $"https://googlecloudplatform.github.io/iap-desktop/setup-caa-with-a-beyondcorp-certificate-access-policy/?{GaParameters}");
 
         public static readonly IHelpTopic PrivateServiceConnectOverview = new HelpTopic(
-            "accessing Google APIs through Private Service Connect",
-            "https://cloud.google.com/vpc/docs/about-accessing-google-apis-endpoints");
+            "Access Google APIs through Private Service Connect",
+            $"https://googlecloudplatform.github.io/iap-desktop/connect-to-google-cloud/?{GaParameters}");
 
         public static readonly IHelpTopic ManagingMetadataAuthorizedKeys = new HelpTopic(
             "Managing SSH keys in metadata",

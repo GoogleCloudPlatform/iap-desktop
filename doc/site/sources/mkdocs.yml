@@ -87,21 +87,26 @@ nav:
       - "What's new": 'release-notes.md'
     - 'Get started':
       - 'Install IAP Desktop': 'install.md'
-      - 'Configure IAP in your project': 'setup-iap.md'
+      - 'Set up IAP in your project': 'setup-iap.md'
       - 'Connect to a Windows VM': 'connect-windows.md'
       - 'Connect to a Linux VM': 'connect-linux.md'
       - 'Connect to SQL Server': 'connect-sqlserver.md'
       - 'Connect to VMs from within a web browser': 'connect-by-url.md'
-    - 'Use the tool windows':
-      - 'Instance properties': 'toolwindow-instance-properties.md'
-      - 'Event log': 'toolwindow-eventlog.md'
-      - 'Serial port output': 'toolwindow-serial-port-output.md'
     - 'Customize IAP Desktop':
-#      - 'Change the theme': '#todo'
+      - 'Use the tool windows':
+        - 'Instance properties': 'toolwindow-instance-properties.md'
+        - 'Event log': 'toolwindow-eventlog.md'
+        - 'Serial port output': 'toolwindow-serial-port-output.md'
       - 'Create profiles': 'create-profiles.md'
-    - 'Administer IAP Desktop':
+#   - 'Secure access to your VMs':
+#     - 'Connect to Google Cloud': connect-to-google-cloud.md
+#     - 'Control access to VMs': _.md
+#     - 'Set up context-aware access': _.md
+#     - 'Set up certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
+    - 'Deploy IAP Desktop across endpoints':
       - 'Use group policies': 'group-policies.md'
       - 'Troubleshoot common issues': 'troubleshooting.md'
+    
   - 'Reference':
     - User interface:
         - 'Keyboard shortcuts': 'keyboard-shortcuts.md'

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System.Diagnostics;
@@ -33,6 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     public class AccessInfoViewModel : ViewModelBase
     {
+        private readonly HelpAdapter helpAdapter;
         private readonly IDeviceEnrollment enrollment;
 
         public string PrivateServiceConnectText { get; }
@@ -40,9 +42,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 
         public AccessInfoViewModel(
             IAuthorization authorization,
-            ServiceRoute route)
+            ServiceRoute route,
+            HelpAdapter helpAdapter)
         {
             this.enrollment = authorization.DeviceEnrollment;
+            this.helpAdapter = helpAdapter;
 
             this.PrivateServiceConnectText = route.UsePrivateServiceConnect
                 ? "Enabled" : "Disabled";
@@ -67,12 +71,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         // Actions.
         //---------------------------------------------------------------------
 
-        private void OpenEndpointVerificationHelp()
-        {
-            Browser.Default.Navigate(
-                "https://cloud.google.com/endpoint-verification/docs/overview");
-        }
-
         private void OpenDeviceCertificate(IWin32Window owner)
         {
             //
@@ -84,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                 owner.Handle);
         }
 
-        public void OpenDetails(IWin32Window owner)
+        public void OpenDeviceCertificateDetails(IWin32Window owner)
         {
             Debug.Assert(owner != null);
 
@@ -95,9 +93,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
                     break;
 
                 default:
-                    OpenEndpointVerificationHelp();
+                    this.helpAdapter.OpenTopic(HelpTopics.SecureConnectDcaOverview);
                     break;
             }
+        }
+
+        public void OpenPrivateServiceConnectDetails()
+        {
+            this.helpAdapter.OpenTopic(HelpTopics.PrivateServiceConnectOverview);
         }
     }
 }
