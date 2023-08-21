@@ -107,7 +107,7 @@
         class="Both"
         displayName="$(string.WorkforcePoolProvider)"
         explainText="$(string.WorkforcePoolProvider_Description)"
-        key="Software\Policies\Google\IapDesktop\1.0\Auth"
+        key="Software\Policies\Google\IapDesktop\1.0\Application"
         presentation="$(presentation.WorkforcePoolProvider)" >
 
       <parentCategory ref="iapdesktop" />

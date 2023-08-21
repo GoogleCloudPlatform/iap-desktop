@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
@@ -101,6 +102,8 @@ namespace Google.Solutions.Iap
             Uri requestUri,
             CancellationToken token)
         {
+            IapTraceSources.Default.TraceVerbose("Connecting to... {0}", requestUri);
+
             //
             // Configure web socket.
             //
@@ -143,6 +146,16 @@ namespace Google.Solutions.Iap
                     //
                     UserName = this.endpointDirections.Host
                 }.Uri;
+
+                //
+                // Bypass proxy for accessing PSC endpoint.
+                //
+                websocket.Options.Proxy = null;
+
+                IapTraceSources.Default.TraceVerbose(
+                    "Bypassing proxy for for endpoint {0} (Host:{1})",
+                    requestUri,
+                    this.endpointDirections.Host);
             }
 
             try
