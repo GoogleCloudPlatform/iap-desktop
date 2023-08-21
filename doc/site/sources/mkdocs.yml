@@ -98,11 +98,11 @@ nav:
         - 'Event log': 'toolwindow-eventlog.md'
         - 'Serial port output': 'toolwindow-serial-port-output.md'
       - 'Create profiles': 'create-profiles.md'
-    - 'Secure access to your VMs':
-      - 'Connect to Google Cloud': connect-to-google-cloud.md
-      - 'Control access to VMs': _.md
-      - 'Set up context-aware access': _.md
-      - 'Set up certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
+#   - 'Secure access to your VMs':
+#     - 'Connect to Google Cloud': connect-to-google-cloud.md
+#     - 'Control access to VMs': _.md
+#     - 'Set up context-aware access': _.md
+#     - 'Set up certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
     - 'Deploy IAP Desktop across endpoints':
       - 'Use group policies': 'group-policies.md'
       - 'Troubleshoot common issues': 'troubleshooting.md'
