@@ -193,11 +193,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.WindowTitle,
                 this.bindingContext);
-            this.reportInternalIssueToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsReportInternalIssueVisible,
-                this.bindingContext);
 
             //
             // Status bar.
@@ -226,16 +221,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.BackgroundJobStatus,
-                this.bindingContext);
-            this.deviceStateButton.BindProperty(
-                c => c.Text,
-                this.viewModel,
-                m => m.DeviceStateCaption,
-                this.bindingContext);
-            this.deviceStateButton.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsDeviceStateVisible,
                 this.bindingContext);
             this.profileStateButton.BindReadonlyProperty(
                 c => c.Text,
@@ -740,11 +725,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(new BugReport());
         }
 
-        private void reportInternalIssueToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<BuganizerAdapter>().ReportPrivateBug(new BugReport());
-        }
-
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.General);
@@ -816,7 +796,7 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void toolStripDeviceStateButton_Click(object sender, EventArgs e)
+        private void accessStateButton_Click(object sender, EventArgs e)
         {
             var button = (ToolStripItem)sender;
             var screenPosition = new Rectangle(
@@ -824,7 +804,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             this.serviceProvider
-                .GetWindow<DeviceFlyoutView, DeviceFlyoutViewModel>(this.themeService.MainWindowTheme)
+                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel>(this.themeService.MainWindowTheme)
                 .Form
                 .Show(this, screenPosition, ContentAlignment.TopLeft);
         }

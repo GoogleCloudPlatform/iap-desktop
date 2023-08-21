@@ -126,13 +126,22 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cancelBackgroundJobsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAQRJREFUOE+1kiESglAYhDmAgeARDAaCwWDwUAYCgeANCB7AYPRABqLBAxgIzIDf
+        PhcV0KTuzM7799/9mfceL/oLmqZJ4AYezE3btgvbn0FoQnjHGkBdipbSe5bY8T4wNHyCNcxfg6rh1t6Z
+        emrrCYydAys4c/sB9eASVvDo9h00Er6qLeZQwSssbMsv3JsRy5QFa9shoEsSwrY1IOHBRy1PGetUOgCh
+        my4tA7pBoRvuoCx8HgPx9Qe+OwJ60TVVs+pvDC+xdm58iQKBPawwFBq9OvfnysD+bxQwY4yzA9rJ8CFl
+        9i7U44ckyCBwZA2gHj5lee+HX0FoTTjVgKkd9c/8G0TRDfwF1tiuoAR8AAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="accessStateButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEESURBVDhPtZIhEoJQGIQ5gIHgEQwGgsFg8FAGAoHgDQge
-        wGD0QAaiwQMYCMyA3z4XFdCk7szO+/ff/Zn3Hi/6C5qmSeAGHsxN27YL259BaEJ4xxpAXYqW0nuW2PE+
-        MDR8gjXMX4Oq4dbemXpq6wmMnQMrOHP7AfXgElbw6PYdNBK+qi3mUMErLGzLL9ybEcuUBWvbIaBLEsK2
-        NSDhwUctTxnrVDoAoZsuLQO6QaEb7qAsfB4D8fUHvjsCetE1VbPqbwwvsXZufIkCgT2sMBQavTr358rA
-        /m8UMGOMswPayfAhZfYu1OOHJMggcGQNoB4+ZXnvh19BaE041YCpHfXP/BtE0Q38BdbYrqAEfAAAAABJ
-        RU5ErkJggg==
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADUSURBVDhPzZGtCsJgFIYXBJtBWBAWhF2FYPc2BNuCVyAY
+        bAbzrkKw2Qw2m2C3GYQFwbz5nO11KnP4BUFfeNjOe3727Xze/ypN01aWZX2eA/Blu4mGCZxgAzu4woyB
+        DZXUi8KpGjuyPBq7xFuYy3ova4IjtGWVwgvgYsNkvYpkD1YQy6qI3JIBQ4UPkRiB/XMEoeyKyC0ghkBW
+        bvqwqT3ak6izD60hgfHdtGtK8sBRWurZesvjK+esrw5owh4i5T6KWrtuG1Ask5cQDmDLcaVY4o/leTdt
+        Iwfq1ov20gAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="addProfileToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

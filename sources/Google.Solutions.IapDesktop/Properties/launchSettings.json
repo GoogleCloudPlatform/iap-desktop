@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Google.Solutions.IapDesktop": {
-      "commandName": "Project",
-      "commandLineArgs": "/profile \"Alice BYOID\""
+      "commandName": "Project"
     }
   }
 }

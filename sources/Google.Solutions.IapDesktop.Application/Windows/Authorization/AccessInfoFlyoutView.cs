@@ -21,31 +21,37 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
     [SkipCodeCoverage("UI")]
-    public partial class DeviceFlyoutView : FlyoutWindow, IView<DeviceFlyoutViewModel>
+    public partial class AccessInfoFlyoutView : FlyoutWindow, IView<AccessInfoViewModel>
     {
-        public DeviceFlyoutView()
+        public AccessInfoFlyoutView()
         {
             InitializeComponent();
         }
 
         public void Bind(
-            DeviceFlyoutViewModel viewModel,
+            AccessInfoViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.enrollmentStateLabel.Text = viewModel.EnrollmentStateDescription;
-
-            this.detailsLink.Visible = viewModel.IsDetailsLinkVisible;
-            this.detailsLink.Text = viewModel.DetailsLinkCaption;
-            this.detailsLink.LinkClicked += (_, __) => viewModel.OpenDetails(this.FlyoutOwner);
-
-            this.deviceEnrolledIcon.Visible = viewModel.IsDeviceEnrolledIconVisible;
-            this.deviceNotEnrolledIcon.Visible = viewModel.IsDeviceNotEnrolledIconVisible;
+            this.psvValueLabel.Text = viewModel.PrivateServiceConnectText;
+            this.dcaLink.Text = viewModel.DeviceCertificateLinkText;
+            this.dcaLink.LinkClicked += (_, __) => viewModel.OpenDetails(this.FlyoutOwner);
 
             this.closeButton.Click += (_, __) => Close();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            e.Graphics.DrawLine(
+                SystemPens.ControlDark,
+                new Point(0, 28), new Point(this.Width, 28));
         }
     }
 }

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.IapDesktop.Application.Windows.Authorization;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -28,7 +29,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 {
     [TestFixture]
-    public class TestDeviceFlyoutViewModel : ApplicationFixtureBase
+    public class TestAccessInfoViewModel : ApplicationFixtureBase
     {
         private static IAuthorization CreateAuthorization(
             IDeviceEnrollment enrollment)
@@ -42,19 +43,31 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
         }
 
         [Test]
+        public void WhenPscEnabled_ThenPropertiesAreSetAccordingly()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
+
+            var viewModel = new AccessInfoViewModel(
+                CreateAuthorization(enrollment.Object),
+                new ServiceRoute("endpoint"));
+
+            Assert.AreEqual("Enabled", viewModel.PrivateServiceConnectText);
+            Assert.AreEqual("Disabled", viewModel.DeviceCertificateLinkText);
+        }
+
+        [Test]
         public void WhenNotInstalled_ThenPropertiesAreSetAccordingly()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
-            var viewModel = new DeviceFlyoutViewModel(
-                CreateAuthorization(enrollment.Object));
+            var viewModel = new AccessInfoViewModel(
+                CreateAuthorization(enrollment.Object),
+                ServiceRoute.Public);
 
-            Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
-            Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDeviceNotEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDetailsLinkVisible);
-            Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
+            Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
+            Assert.AreEqual("Disabled", viewModel.DeviceCertificateLinkText);
         }
 
         [Test]
@@ -63,14 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
-            var viewModel = new DeviceFlyoutViewModel(
-                CreateAuthorization(enrollment.Object));
+            var viewModel = new AccessInfoViewModel(
+                CreateAuthorization(enrollment.Object),
+                ServiceRoute.Public);
 
-            Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
-            Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDeviceNotEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDetailsLinkVisible);
-            Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
+            Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
+            Assert.AreEqual("Error", viewModel.DeviceCertificateLinkText);
         }
 
         [Test]
@@ -79,14 +90,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
-            var viewModel = new DeviceFlyoutViewModel(
-                CreateAuthorization(enrollment.Object));
+            var viewModel = new AccessInfoViewModel(
+                CreateAuthorization(enrollment.Object),
+                ServiceRoute.Public);
 
-            Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
-            Assert.IsTrue(viewModel.IsDeviceEnrolledIconVisible);
-            Assert.IsFalse(viewModel.IsDeviceNotEnrolledIconVisible);
-            Assert.IsTrue(viewModel.IsDetailsLinkVisible);
-            Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
+            Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
+            Assert.AreEqual("Enabled", viewModel.DeviceCertificateLinkText);
         }
     }
 }

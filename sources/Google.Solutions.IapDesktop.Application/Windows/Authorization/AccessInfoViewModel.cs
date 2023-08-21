@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System.Diagnostics;
@@ -30,49 +31,34 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
 {
-    public class DeviceFlyoutViewModel : ViewModelBase
+    public class AccessInfoViewModel : ViewModelBase
     {
-        private const string ProductName = "Endpoint Verification";
         private readonly IDeviceEnrollment enrollment;
 
-        public bool IsDeviceEnrolledIconVisible { get; }
-        public bool IsDeviceNotEnrolledIconVisible { get; }
-        public string EnrollmentStateDescription { get; }
-        public string DetailsLinkCaption { get; }
-        public bool IsDetailsLinkVisible { get; }
+        public string PrivateServiceConnectText { get; }
+        public string DeviceCertificateLinkText { get; }
 
-        public DeviceFlyoutViewModel(IAuthorization authorization)
+        public AccessInfoViewModel(
+            IAuthorization authorization,
+            ServiceRoute route)
         {
             this.enrollment = authorization.DeviceEnrollment;
+
+            this.PrivateServiceConnectText = route.UsePrivateServiceConnect
+                ? "Enabled" : "Disabled";
 
             switch (this.enrollment.State)
             {
                 case DeviceEnrollmentState.Disabled:
-                    this.EnrollmentStateDescription =
-                        $"{ProductName} is not available on this computer";
-                    this.IsDeviceEnrolledIconVisible = false;
-                    this.IsDeviceNotEnrolledIconVisible = true;
-                    this.IsDetailsLinkVisible = true;
-                    this.DetailsLinkCaption = "More information";
+                    this.DeviceCertificateLinkText = "Disabled";
                     break;
 
                 case DeviceEnrollmentState.NotEnrolled:
-                    this.EnrollmentStateDescription =
-                        $"This computer is currently not enrolled in {ProductName}";
-                    this.IsDeviceEnrolledIconVisible = false;
-                    this.IsDeviceNotEnrolledIconVisible = true;
-                    this.IsDetailsLinkVisible = true;
-                    this.DetailsLinkCaption = "More information";
+                    this.DeviceCertificateLinkText = "Error";
                     break;
 
                 case DeviceEnrollmentState.Enrolled:
-                    this.EnrollmentStateDescription =
-                        $"Computer is enrolled in {ProductName} and uses " +
-                        "certificate-based access";
-                    this.IsDeviceEnrolledIconVisible = true;
-                    this.IsDeviceNotEnrolledIconVisible = false;
-                    this.IsDetailsLinkVisible = true;
-                    this.DetailsLinkCaption = "View device certificate";
+                    this.DeviceCertificateLinkText = "Enabled";
                     break;
             }
         }
