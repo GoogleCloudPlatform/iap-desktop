@@ -49,10 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             Debug.Assert(this.connectionLimitUpDown.Maximum == 32);
 
             var viewModel = (AccessOptionsViewModel)viewModelBase;
-            this.secureConnectLink.BindObservableCommand(
-                viewModel,
-                m => m.OpenSecureConnectHelp,
-                bindingContext);
 
             //
             // PSC.
@@ -82,6 +78,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 viewModel,
                 m => m.PrivateServiceConnectEndpoint,
                 bindingContext);
+            this.pscLink.BindObservableCommand(
+                viewModel,
+                m => m.OpenPrivateServiceConnectHelp,
+                bindingContext);
 
             //
             // DCA.
@@ -95,6 +95,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsDeviceCertificateAuthenticationEnabled,
+                bindingContext);
+            this.secureConnectLink.BindObservableCommand(
+                viewModel,
+                m => m.OpenCertificateAuthenticationHelp,
                 bindingContext);
 
             //

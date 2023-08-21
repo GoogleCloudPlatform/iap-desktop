@@ -36,12 +36,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public AccessOptionsViewModel(
             IRepository<IAccessSettings> settingsRepository,
             HelpAdapter helpService)
-            : base("Cloud access", settingsRepository)
+            : base("Access", settingsRepository)
         {
 
-            this.OpenSecureConnectHelp = ObservableCommand.Build(
+            this.OpenCertificateAuthenticationHelp = ObservableCommand.Build(
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
+            this.OpenPrivateServiceConnectHelp = ObservableCommand.Build(
+                string.Empty,
+                () => helpService.OpenTopic(HelpTopics.PrivateServiceConnectOverview));
 
             this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
             this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
@@ -135,7 +138,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Observable command.
         //---------------------------------------------------------------------
 
-        public ObservableCommand OpenSecureConnectHelp { get; }
+        public ObservableCommand OpenCertificateAuthenticationHelp { get; }
+        public ObservableCommand OpenPrivateServiceConnectHelp { get; }
 
         //---------------------------------------------------------------------
         // Observable properties.

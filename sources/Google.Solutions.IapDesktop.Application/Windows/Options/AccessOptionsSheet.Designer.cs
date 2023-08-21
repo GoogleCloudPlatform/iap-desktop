@@ -62,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.connectionBox = new System.Windows.Forms.GroupBox();
             this.connectionPoolSizeLabel = new System.Windows.Forms.Label();
             this.connectionLimitUpDown = new System.Windows.Forms.NumericUpDown();
+            this.pscLink = new System.Windows.Forms.LinkLabel();
             this.pscBox.SuspendLayout();
             this.dcaBox.SuspendLayout();
             this.connectionBox.SuspendLayout();
@@ -70,13 +71,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // pscBox
             // 
+            this.pscBox.Controls.Add(this.pscLink);
             this.pscBox.Controls.Add(this.pscProxyNote);
             this.pscBox.Controls.Add(this.pscEndpointLabel);
             this.pscBox.Controls.Add(this.pscEndpointTextBox);
             this.pscBox.Controls.Add(this.enablePscCheckBox);
             this.pscBox.Location = new System.Drawing.Point(3, 3);
             this.pscBox.Name = "pscBox";
-            this.pscBox.Size = new System.Drawing.Size(336, 141);
+            this.pscBox.Size = new System.Drawing.Size(336, 164);
             this.pscBox.TabIndex = 0;
             this.pscBox.TabStop = false;
             this.pscBox.Text = "Private Service Connect:";
@@ -122,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.dcaBox.Controls.Add(this.dcaNote);
             this.dcaBox.Controls.Add(this.secureConnectLink);
             this.dcaBox.Controls.Add(this.enableDcaCheckBox);
-            this.dcaBox.Location = new System.Drawing.Point(4, 150);
+            this.dcaBox.Location = new System.Drawing.Point(4, 173);
             this.dcaBox.Name = "dcaBox";
             this.dcaBox.Size = new System.Drawing.Size(336, 116);
             this.dcaBox.TabIndex = 1;
@@ -163,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 350);
+            this.label1.Location = new System.Drawing.Point(16, 373);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(171, 13);
             this.label1.TabIndex = 7;
@@ -173,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             this.connectionBox.Controls.Add(this.connectionPoolSizeLabel);
             this.connectionBox.Controls.Add(this.connectionLimitUpDown);
-            this.connectionBox.Location = new System.Drawing.Point(4, 272);
+            this.connectionBox.Location = new System.Drawing.Point(4, 295);
             this.connectionBox.Name = "connectionBox";
             this.connectionBox.Size = new System.Drawing.Size(336, 60);
             this.connectionBox.TabIndex = 8;
@@ -210,6 +212,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             0,
             0,
             0});
+            // 
+            // pscLink
+            // 
+            this.pscLink.AutoSize = true;
+            this.pscLink.Location = new System.Drawing.Point(33, 131);
+            this.pscLink.Name = "pscLink";
+            this.pscLink.Size = new System.Drawing.Size(85, 13);
+            this.pscLink.TabIndex = 9;
+            this.pscLink.TabStop = true;
+            this.pscLink.Text = "More information";
             // 
             // AccessOptionsSheet
             // 
@@ -248,5 +260,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private System.Windows.Forms.GroupBox connectionBox;
         private System.Windows.Forms.Label connectionPoolSizeLabel;
         private System.Windows.Forms.NumericUpDown connectionLimitUpDown;
+        private System.Windows.Forms.LinkLabel pscLink;
     }
 }
