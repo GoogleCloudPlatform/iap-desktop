@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.closeButton = new System.Windows.Forms.Button();
             this.headerLabel = new System.Windows.Forms.Label();
             this.pscLabel = new System.Windows.Forms.Label();
-            this.psvValueLabel = new System.Windows.Forms.Label();
+            this.pscLink = new System.Windows.Forms.LinkLabel();
             this.dcaLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -102,12 +102,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             // 
             // psvValueLabel
             // 
-            this.psvValueLabel.AutoSize = true;
-            this.psvValueLabel.Location = new System.Drawing.Point(150, 36);
-            this.psvValueLabel.Name = "psvValueLabel";
-            this.psvValueLabel.Size = new System.Drawing.Size(10, 13);
-            this.psvValueLabel.TabIndex = 8;
-            this.psvValueLabel.Text = "-";
+            this.pscLink.AutoSize = true;
+            this.pscLink.Location = new System.Drawing.Point(150, 36);
+            this.pscLink.Name = "psvValueLabel";
+            this.pscLink.Size = new System.Drawing.Size(10, 13);
+            this.pscLink.TabIndex = 8;
+            this.pscLink.Text = "-";
             // 
             // dcaLabel
             // 
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(200, 77);
             this.Controls.Add(this.dcaLabel);
-            this.Controls.Add(this.psvValueLabel);
+            this.Controls.Add(this.pscLink);
             this.Controls.Add(this.pscLabel);
             this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.closeButton);
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.Label headerLabel;
         private System.Windows.Forms.Label pscLabel;
-        private System.Windows.Forms.Label psvValueLabel;
+        private System.Windows.Forms.LinkLabel pscLink;
         private System.Windows.Forms.Label dcaLabel;
     }
 }

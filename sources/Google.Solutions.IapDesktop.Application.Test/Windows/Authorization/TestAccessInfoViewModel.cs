@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Windows.Authorization;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -50,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 
             var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object),
-                new ServiceRoute("endpoint"));
+                new ServiceRoute("endpoint"),
+                new HelpAdapter());
 
             Assert.AreEqual("Enabled", viewModel.PrivateServiceConnectText);
             Assert.AreEqual("Disabled", viewModel.DeviceCertificateLinkText);
@@ -64,7 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 
             var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object),
-                ServiceRoute.Public);
+                ServiceRoute.Public,
+                new HelpAdapter());
 
             Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
             Assert.AreEqual("Disabled", viewModel.DeviceCertificateLinkText);
@@ -78,7 +81,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 
             var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object),
-                ServiceRoute.Public);
+                ServiceRoute.Public,
+                new HelpAdapter());
 
             Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
             Assert.AreEqual("Error", viewModel.DeviceCertificateLinkText);
@@ -92,7 +96,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
 
             var viewModel = new AccessInfoViewModel(
                 CreateAuthorization(enrollment.Object),
-                ServiceRoute.Public);
+                ServiceRoute.Public,
+                new HelpAdapter());
 
             Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
             Assert.AreEqual("Enabled", viewModel.DeviceCertificateLinkText);
