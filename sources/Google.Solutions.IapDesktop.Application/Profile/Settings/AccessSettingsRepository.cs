@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             "Workforce pool provider locator",
                             null,
                             null,
-                            null, // No locator => workforce identits is disabled.
+                            null, // No locator => workforce identity is disabled.
                             settingsKey,
                             s => s == null || WorkforcePoolProviderLocator.TryParse(s, out var _))
                         .ApplyPolicy(userPolicyKey)
