@@ -69,18 +69,10 @@ namespace Google.Solutions.Apis.Client
         /// <exception>when connecting to the endpoint failed</exception>
         public async Task ProbeAsync(TimeSpan timeout)
         {
-            //
-            // NB. It doesn't matter much which .googleapis.com endpoint
-            // we probe, so we just use the "classic" www one.
-            //
-            const string apiHostForProbing = "www.googleapis.com";
-
             var uri = new UriBuilder()
             {
                 Scheme = "https",
-                Host = this.UsePrivateServiceConnect
-                    ? this.Endpoint
-                    : apiHostForProbing,
+                Host = this.Endpoint,
                 Path = "/generate_204"
             }.Uri;
 
@@ -93,15 +85,9 @@ namespace Google.Solutions.Apis.Client
                 UseProxy = !this.UsePrivateServiceConnect
             })
             using (var request = new HttpRequestMessage(HttpMethod.Get, uri))
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(handler))
             {
                 cts.CancelAfter(timeout);
-
-                //
-                // Explicitly set the host header so that certificate
-                // validation works even when we're using PSC.
-                //
-                request.Headers.Host = apiHostForProbing;
 
                 try
                 {
