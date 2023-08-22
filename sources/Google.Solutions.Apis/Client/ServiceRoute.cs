@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -71,9 +72,9 @@ namespace Google.Solutions.Apis.Client
         {
             //
             // NB. It doesn't matter much which .googleapis.com endpoint
-            // we probe, so we just use the "classic" www one.
+            // we probe, so we just use the compute one.
             //
-            const string apiHostForProbing = "www.googleapis.com";
+            const string apiHostForProbing = "compute.googleapis.com";
 
             var uri = new UriBuilder()
             {
@@ -93,15 +94,22 @@ namespace Google.Solutions.Apis.Client
                 UseProxy = !this.UsePrivateServiceConnect
             })
             using (var request = new HttpRequestMessage(HttpMethod.Get, uri))
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(handler))
             {
                 cts.CancelAfter(timeout);
 
-                //
-                // Explicitly set the host header so that certificate
-                // validation works even when we're using PSC.
-                //
-                request.Headers.Host = apiHostForProbing;
+                if (this.UsePrivateServiceConnect &&
+                    IPAddress.TryParse(this.Endpoint, out var _))
+                {
+                    //
+                    // The PSC endpoint is an IP address (as opposed
+                    // to a DNS name like www-endpoint.p.googleapis.com).
+                    //
+                    // Explicitly set the host header so that certificate
+                    // validation works.
+                    //
+                    request.Headers.Host = apiHostForProbing;
+                }
 
                 try
                 {
