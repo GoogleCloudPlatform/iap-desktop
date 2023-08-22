@@ -55,7 +55,7 @@ use WebSockets. Make sure that your proxy server permits WebSocket communication
     Squid (and possibly other proxy servers) does not allow WebSocket
     connections when configured to perform TLS inspection (_bumping_). To allow
     WebSocket communication, exclude `tunnel.cloudproxy.app` from TLS termination
-    by letting Squid [splice :octicons-link-external-16:](https://wiki.squid-cache.org/Features/TLSPeekAndSplice)
+    by letting Squid [splice :octicons-link-external-16:](https://wiki.squid-cache.org/Features/SslPeekAndSplice)
     connections to this domain.
 
 
@@ -77,5 +77,5 @@ inspects TLS traffic, configure it to exclude the following domains from TLS ins
 
 ???+ Note
     If you use Squid, you can exclude domains from inspection by 
-    configuring them to use [splicing :octicons-link-external-16:](https://wiki.squid-cache.org/Features/TLSPeekAndSplice)
+    configuring them to use [splicing :octicons-link-external-16:](https://wiki.squid-cache.org/Features/SslPeekAndSplice)
     instead of _bumping_.
