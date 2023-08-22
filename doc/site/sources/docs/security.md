@@ -16,11 +16,12 @@ The application uses the following Google APIs for this purpose:
 * [Resource Manager API  :octicons-link-external-16:](https://cloud.google.com/resource-manager/reference/rest)
 * [OS Login API  :octicons-link-external-16:](https://cloud.google.com/compute/docs/oslogin/rest)
 * [Logging API  :octicons-link-external-16:](https://cloud.google.com/logging/docs/reference/v2/rest)
+* [Security Token Service API :octicons-link-external-16:](https://cloud.google.com/iam/docs/reference/sts/rest)
 
-Periodically, IAP Desktop accesses the [GitHub API :octicons-link-external-16: ](https://docs.github.com/en/rest) to check
-for updates.
+Periodically, IAP Desktop accesses the [GitHub API :octicons-link-external-16:](https://docs.github.com/en/rest) to check
+for updates. After an upgrade, IAP Desktop also queries the GitHub API to download release notes.
 
-IAP Desktop does not disclose or transmit any data to APIs other than the
+IAP Desktop does not intentionally disclose or transmit any data to APIs other than the
 ones listed above. 
 
 ## Credential storage
