@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,10 +70,18 @@ namespace Google.Solutions.Apis.Client
         /// <exception>when connecting to the endpoint failed</exception>
         public async Task ProbeAsync(TimeSpan timeout)
         {
+            //
+            // NB. It doesn't matter much which .googleapis.com endpoint
+            // we probe, so we just use the compute one.
+            //
+            const string apiHostForProbing = "compute.googleapis.com";
+
             var uri = new UriBuilder()
             {
                 Scheme = "https",
-                Host = this.Endpoint,
+                Host = this.UsePrivateServiceConnect
+                    ? this.Endpoint
+                    : apiHostForProbing,
                 Path = "/generate_204"
             }.Uri;
 
@@ -88,6 +97,19 @@ namespace Google.Solutions.Apis.Client
             using (var client = new HttpClient(handler))
             {
                 cts.CancelAfter(timeout);
+
+                if (this.UsePrivateServiceConnect &&
+                    IPAddress.TryParse(this.Endpoint, out var _))
+                {
+                    //
+                    // The PSC endpoint is an IP address (as opposed
+                    // to a DNS name like www-endpoint.p.googleapis.com).
+                    //
+                    // Explicitly set the host header so that certificate
+                    // validation works.
+                    //
+                    request.Headers.Host = apiHostForProbing;
+                }
 
                 try
                 {
