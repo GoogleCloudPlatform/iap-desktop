@@ -176,9 +176,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
-            Assert.AreEqual(
-                new ImageLocator("project-1", "image-1"),
-                e.Image);
         }
 
         [Test]
@@ -242,7 +239,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
-            Assert.IsNull(e.Image);
         }
     }
 }

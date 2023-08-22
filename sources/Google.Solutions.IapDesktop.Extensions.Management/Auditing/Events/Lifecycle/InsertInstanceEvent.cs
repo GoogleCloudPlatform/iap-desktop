@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle
@@ -35,32 +33,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Life
         protected override string SuccessMessage => "Instance created";
         protected override string ErrorMessage => "Creating instance failed";
 
-        public ImageLocator Image { get; }
-
         internal InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsInsertInstanceEvent(logRecord));
-
-            var request = logRecord.ProtoPayload.Request;
-            if (request != null)
-            {
-                var disks = request["disks"];
-                if (disks != null)
-                {
-                    foreach (var disk in ((JArray)disks))
-                    {
-                        if (disk["boot"] != null && (bool)disk["boot"])
-                        {
-                            var initializeParams = disk["initializeParams"];
-                            if (initializeParams != null)
-                            {
-                                this.Image = ImageLocator.FromString(
-                                    initializeParams["sourceImage"].Value<string>());
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         public static bool IsInsertInstanceEvent(LogRecord record)
