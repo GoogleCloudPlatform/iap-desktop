@@ -40,8 +40,8 @@ To configure PSC, do the following:
 1.  [Create a PSC endpoint in your VPC :octicons-link-external-16:](https://cloud.google.com/vpc/docs/configure-private-service-connect-apis).
 1.  In IAP Desktop, go to **Tools > Options > Access** and configure the following settings:
 
-    *   **Use Private Service Connect endpoint to connect to Google APIs**: **enabled**.
-    *   **Address**: Enter the IP address of the PSC endpoint that you created earlier. Alternatively,
+    *   **Use Private Service Connect to connect to Google APIs**: **enabled**.
+    *   **Endpoint**: Enter the IP address of the PSC endpoint that you created earlier. Alternatively,
         you can enter the DNS name `www-ENDPOINT.p.googleapis.com` where `ENDPOINT` is the name of the 
         PSC endpoint that you created earlier.
         
