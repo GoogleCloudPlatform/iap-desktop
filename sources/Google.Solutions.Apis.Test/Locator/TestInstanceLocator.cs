@@ -35,7 +35,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                InstanceLocator.FromString(path).ToString());
+                InstanceLocator.Parse(path).ToString());
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                InstanceLocator.FromString(
+                InstanceLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
 

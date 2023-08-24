@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 using Google.Solutions.Apis.Locator;
 using Newtonsoft.Json;
 
-namespace Google.Solutions.Common.Locator
+namespace Google.Solutions.Apis.Locator
 {
 	<#
 	var classNames = new [] {"DiskType", "Instance", "MachineType", "NodeType"};
@@ -56,7 +56,7 @@ namespace Google.Solutions.Common.Locator
             {
             }
 
-            public static <#= className #>Locator FromString(string resourceReference)
+            public static <#= className #>Locator Parse(string resourceReference)
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 

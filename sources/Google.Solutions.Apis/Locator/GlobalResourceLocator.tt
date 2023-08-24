@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static <#= className #>Locator FromString(string resourceReference)
+            public static <#= className #>Locator Parse(string resourceReference)
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 

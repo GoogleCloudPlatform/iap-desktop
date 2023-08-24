@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Compute
                 .Where(d => d.Licenses != null)
                 .SelectMany(d => d.Licenses)
                 .EnsureNotNull()
-                .Any(l => LicenseLocator.FromString(l).IsWindowsLicense());
+                .Any(l => LicenseLocator.Parse(l).IsWindowsLicense());
         }
 
         //---------------------------------------------------------------------
