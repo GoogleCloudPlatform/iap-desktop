@@ -75,7 +75,7 @@ namespace Google.Solutions.Apis.Compute
 
         public static ZoneLocator GetZoneLocator(this Instance instance)
         {
-            return ZoneLocator.FromString(instance.Zone);
+            return ZoneLocator.Parse(instance.Zone);
         }
 
         public static InstanceLocator GetInstanceLocator(this Instance instance)

@@ -37,7 +37,7 @@ namespace Google.Solutions.Apis.Locator
         {
         }
 
-        public static ProjectLocator FromString(string resourceReference)
+        public static ProjectLocator Parse(string resourceReference)
         {
             resourceReference = StripUrlPrefix(resourceReference);
 

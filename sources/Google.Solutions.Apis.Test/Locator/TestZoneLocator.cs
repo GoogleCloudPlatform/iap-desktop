@@ -30,9 +30,9 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestZoneLocator : CommonFixtureBase
     {
         [Test]
-        public void WhenPathIsValid_FromStringReturnsObject()
+        public void WhenPathIsValid_ParseReturnsObject()
         {
-            var ref1 = ZoneLocator.FromString(
+            var ref1 = ZoneLocator.Parse(
                 "projects/project-1/zones/us-central1-a");
 
             Assert.AreEqual("zones", ref1.ResourceType);
@@ -41,9 +41,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
+        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
-            var ref1 = ZoneLocator.FromString(
+            var ref1 = ZoneLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
 
             Assert.AreEqual("zones", ref1.ResourceType);
@@ -52,9 +52,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
+        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
-            var ref1 = ZoneLocator.FromString(
+            var ref1 = ZoneLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
 
             Assert.AreEqual("zones", ref1.ResourceType);
@@ -63,18 +63,18 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_FromStringThrowsArgumentException()
+        public void WhenPathLacksProject_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "/project-1/project-1/zones/us-central1-a"));
         }
 
         [Test]
-        public void WhenPathInvalid_FromStringThrowsArgumentException()
+        public void WhenPathInvalid_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "projects/project-1/zone/us-central1-a"));
-            Assert.Throws<ArgumentException>(() => ZoneLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "projects/project-1/zones"));
         }
 
@@ -143,7 +143,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                ZoneLocator.FromString(path).ToString());
+                ZoneLocator.Parse(path).ToString());
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                ZoneLocator.FromString(
+                ZoneLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

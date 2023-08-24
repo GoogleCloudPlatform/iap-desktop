@@ -30,9 +30,9 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestAccessLevelLocator : CommonFixtureBase
     {
         [Test]
-        public void WhenPathIsValid_FromStringReturnsObject()
+        public void WhenPathIsValid_ParseReturnsObject()
         {
-            var ref1 = AccessLevelLocator.FromString(
+            var ref1 = AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/accessLevels/level-1");
 
             Assert.AreEqual("policy-1", ref1.AccessPolicy);
@@ -40,13 +40,13 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathInvalid_FromStringThrowsArgumentException()
+        public void WhenPathInvalid_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => AccessLevelLocator.FromString(
+            Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/notaccessLevels/level-1"));
-            Assert.Throws<ArgumentException>(() => AccessLevelLocator.FromString(
+            Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
                 "/policy-1/accessLevels/level-1"));
-            Assert.Throws<ArgumentException>(() => AccessLevelLocator.FromString(
+            Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
                 "/"));
         }
 
@@ -115,7 +115,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                AccessLevelLocator.FromString(path).ToString());
+                AccessLevelLocator.Parse(path).ToString());
         }
     }
 }

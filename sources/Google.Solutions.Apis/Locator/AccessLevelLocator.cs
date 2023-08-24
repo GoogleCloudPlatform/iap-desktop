@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Locator
             this.AccessLevel = accessLevel;
         }
 
-        public static AccessLevelLocator FromString(string resourceReference)
+        public static AccessLevelLocator Parse(string resourceReference)
         {
             var match = new Regex("accessPolicies/(.*)/accessLevels/(.*)")
                 .Match(resourceReference);

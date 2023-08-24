@@ -62,7 +62,7 @@ Context-aware access distinguishes between policy definition and policy enforcem
         [ingress rules](#vpc-service-control-ingress-rules) to require users to satisfy a certain access level.
 
 
-## IAM conditions
+### IAM conditions
 
 You can enforce context-aware access by creating an access level and assign it to individual IAM role bindings 
 [by using IAM conditions :octicons-link-external-16:](https://cloud.google.com/iap/docs/cloud-iap-context-aware-access-howto#editing-iam-policy). 

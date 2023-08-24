@@ -205,14 +205,14 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
                 var zoneLocators = instances
                     .EnsureNotNull()
-                    .Select(i => ZoneLocator.FromString(i.Zone))
+                    .Select(i => ZoneLocator.Parse(i.Zone))
                     .ToHashSet();
 
                 var zones = new List<ZoneNode>();
                 foreach (var zoneLocator in zoneLocators.OrderBy(z => z.Name))
                 {
                     var instancesInZone = instances
-                        .Where(i => ZoneLocator.FromString(i.Zone) == zoneLocator)
+                        .Where(i => ZoneLocator.Parse(i.Zone) == zoneLocator)
                         .Where(i => i.Disks != null && i.Disks.Any())
                         .OrderBy(i => i.Name)
                         .Select(i => new InstanceNode(
