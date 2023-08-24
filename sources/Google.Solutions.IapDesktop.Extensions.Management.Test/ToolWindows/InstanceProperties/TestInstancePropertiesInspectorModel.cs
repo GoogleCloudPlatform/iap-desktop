@@ -39,6 +39,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
     [UsesCloudResources]
     public class TestInstancePropertiesInspectorModel : ApplicationFixtureBase
     {
+        private static readonly InstanceLocator SampleLocator =
+            new InstanceLocator("project-1", "zone-1", "instance-1");
+
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
@@ -126,6 +129,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
             Assert.AreEqual(FeatureFlag.Disabled, model.SerialPortAccess);
             Assert.AreEqual(FeatureFlag.Disabled, model.GuestAttributes);
+        }
+
+        [Test]
+        public void WhenGuestOsFieldsAreNull_ThenDefaultsAreApplied()
+        {
+            var model = new InstancePropertiesInspectorModel(
+                new Project(),
+                new Instance(),
+                new GuestOsInfo(
+                    SampleLocator,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null));
+            Assert.IsNull(model.Architecture);
+            Assert.IsNull(model.KernelVersion);
+            Assert.IsNull(model.OperatingSystemFullName);
+            Assert.IsNull(model.OperatingSystemVersion);
         }
 
         [Test]

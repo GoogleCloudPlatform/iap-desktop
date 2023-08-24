@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             this.Architecture = this.guestOsInfo?.Architecture;
             this.KernelVersion = this.guestOsInfo?.KernelVersion;
             this.OperatingSystemFullName = this.guestOsInfo?.OperatingSystemFullName;
-            this.OperatingSystemVersion = this.guestOsInfo?.OperatingSystemVersion.ToString();
+            this.OperatingSystemVersion = this.guestOsInfo?.OperatingSystemVersion?.ToString();
 
             //
             // Guest agent configuration.
