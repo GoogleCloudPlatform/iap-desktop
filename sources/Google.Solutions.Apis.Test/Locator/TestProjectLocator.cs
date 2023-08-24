@@ -30,9 +30,9 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestProjectLocator : CommonFixtureBase
     {
         [Test]
-        public void WhenPathIsValid_FromStringReturnsObject()
+        public void WhenPathIsValid_ParseReturnsObject()
         {
-            var ref1 = ProjectLocator.FromString(
+            var ref1 = ProjectLocator.Parse(
                 "projects/project-1");
 
             Assert.AreEqual("projects", ref1.ResourceType);
@@ -41,9 +41,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
+        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
-            var ref1 = ProjectLocator.FromString(
+            var ref1 = ProjectLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1");
 
             Assert.AreEqual("projects", ref1.ResourceType);
@@ -52,9 +52,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
+        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
-            var ref1 = ProjectLocator.FromString(
+            var ref1 = ProjectLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1");
 
             Assert.AreEqual("projects", ref1.ResourceType);
@@ -63,18 +63,18 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_FromStringThrowsArgumentException()
+        public void WhenPathLacksProject_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ProjectLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "/project-1"));
         }
 
         [Test]
-        public void WhenPathInvalid_FromStringThrowsArgumentException()
+        public void WhenPathInvalid_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ProjectLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "projects/project-1/zone"));
-            Assert.Throws<ArgumentException>(() => ProjectLocator.FromString(""));
+            Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(""));
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                ProjectLocator.FromString(path).ToString());
+                ProjectLocator.Parse(path).ToString());
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                ProjectLocator.FromString(
+                ProjectLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Compute
                 .Where(d => d.Licenses != null)
                 .SelectMany(d => d.Licenses)
                 .EnsureNotNull()
-                .Any(l => LicenseLocator.FromString(l).IsWindowsLicense());
+                .Any(l => LicenseLocator.Parse(l).IsWindowsLicense());
         }
 
         //---------------------------------------------------------------------
@@ -75,7 +75,7 @@ namespace Google.Solutions.Apis.Compute
 
         public static ZoneLocator GetZoneLocator(this Instance instance)
         {
-            return ZoneLocator.FromString(instance.Zone);
+            return ZoneLocator.Parse(instance.Zone);
         }
 
         public static InstanceLocator GetInstanceLocator(this Instance instance)

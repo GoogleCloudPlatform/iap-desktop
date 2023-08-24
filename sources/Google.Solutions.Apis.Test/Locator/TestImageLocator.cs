@@ -30,9 +30,9 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestImageLocator : CommonFixtureBase
     {
         [Test]
-        public void WhenPathIsValid_FromStringReturnsObject()
+        public void WhenPathIsValid_ParseReturnsObject()
         {
-            var ref1 = ImageLocator.FromString(
+            var ref1 = ImageLocator.Parse(
                 "projects/project-1/global/images/image-1");
 
             Assert.AreEqual("images", ref1.ResourceType);
@@ -41,9 +41,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenResourceNameCotainsSlash_FromStringReturnsObject()
+        public void WhenResourceNameCotainsSlash_ParseReturnsObject()
         {
-            var ref1 = ImageLocator.FromString(
+            var ref1 = ImageLocator.Parse(
                 "projects/debian-cloud/global/images/family/debian-9");
 
             Assert.AreEqual("images", ref1.ResourceType);
@@ -52,9 +52,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
+        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
-            var ref1 = ImageLocator.FromString(
+            var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
 
             Assert.AreEqual("images", ref1.ResourceType);
@@ -63,9 +63,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
+        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
-            var ref1 = ImageLocator.FromString(
+            var ref1 = ImageLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core");
 
             Assert.AreEqual("images", ref1.ResourceType);
@@ -74,9 +74,9 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenUsingBetaApi_FromStringReturnsObject()
+        public void WhenUsingBetaApi_ParseReturnsObject()
         {
-            var ref1 = ImageLocator.FromString(
+            var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004");
 
             Assert.AreEqual("images", ref1.ResourceType);
@@ -85,20 +85,20 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_FromStringThrowsArgumentException()
+        public void WhenPathLacksProject_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ImageLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "/project-1/project-1/global/images/image-1"));
         }
 
         [Test]
-        public void WhenPathInvalid_FromStringThrowsArgumentException()
+        public void WhenPathInvalid_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ImageLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "projects/project-1/notglobal/images/image-1"));
-            Assert.Throws<ArgumentException>(() => ImageLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "/project-1/global/images/image-1"));
-            Assert.Throws<ArgumentException>(() => ImageLocator.FromString(
+            Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "/"));
         }
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                ImageLocator.FromString(path).ToString());
+                ImageLocator.Parse(path).ToString());
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.AreEqual(
                 path,
-                ImageLocator.FromString(
+                ImageLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

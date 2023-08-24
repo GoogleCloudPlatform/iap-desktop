@@ -84,14 +84,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             this.Status = this.instanceDetails.Status;
             this.Hostname = this.instanceDetails.Hostname;
             this.MachineType = this.instanceDetails.MachineType != null
-                ? MachineTypeLocator.FromString(this.instanceDetails.MachineType).Name
+                ? MachineTypeLocator.Parse(this.instanceDetails.MachineType).Name
                 : null;
             this.Licenses = this.instanceDetails.Disks != null
                 ? string.Join(", ", this.instanceDetails.Disks
                     .EnsureNotNull()
                     .Where(d => d.Licenses != null && d.Licenses.Any())
                     .SelectMany(d => d.Licenses)
-                    .Select(l => LicenseLocator.FromString(l).Name))
+                    .Select(l => LicenseLocator.Parse(l).Name))
                 : null;
 
             //
