@@ -27,7 +27,7 @@ using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 {
     [TestFixture]
     public class TestAccessInfoViewModel : ApplicationFixtureBase

@@ -41,7 +41,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 {
     [Apartment(ApartmentState.STA)]
     [TestFixture]

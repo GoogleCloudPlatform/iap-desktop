@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 {
     [TestFixture]
     public class TestNewProfileViewModel : ApplicationFixtureBase

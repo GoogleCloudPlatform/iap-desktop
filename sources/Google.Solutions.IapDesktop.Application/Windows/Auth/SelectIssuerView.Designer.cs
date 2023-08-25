@@ -1,4 +1,25 @@
-﻿namespace Google.Solutions.IapDesktop.Application.Windows.Auth
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     partial class SelectIssuerView
     {
@@ -29,18 +50,18 @@
         private void InitializeComponent()
         {
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.gaiaRadioButton = new System.Windows.Forms.RadioButton();
-            this.workforceIdentityRadioButton = new System.Windows.Forms.RadioButton();
-            this.wifLocationLabel = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.wifPoolLabel = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.groupPnel = new System.Windows.Forms.Panel();
+            this.wifProviderIdTextBox = new System.Windows.Forms.TextBox();
             this.wifProviderLabel = new System.Windows.Forms.Label();
+            this.wifPoolIdTextBox = new System.Windows.Forms.TextBox();
+            this.wifPoolLabel = new System.Windows.Forms.Label();
+            this.wifLocationIdTextBox = new System.Windows.Forms.TextBox();
+            this.wifLocationLabel = new System.Windows.Forms.Label();
+            this.workforceIdentityRadioButton = new System.Windows.Forms.RadioButton();
+            this.gaiaRadioButton = new System.Windows.Forms.RadioButton();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.groupBox1.SuspendLayout();
+            this.groupPnel.SuspendLayout();
             this.SuspendLayout();
             // 
             // headerLabel
@@ -53,27 +74,86 @@
             this.headerLabel.TabIndex = 0;
             this.headerLabel.Text = "Sign-in method";
             // 
-            // groupBox1
+            // groupPnel
             // 
-            this.groupBox1.Controls.Add(this.textBox3);
-            this.groupBox1.Controls.Add(this.wifProviderLabel);
-            this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Controls.Add(this.wifPoolLabel);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.wifLocationLabel);
-            this.groupBox1.Controls.Add(this.workforceIdentityRadioButton);
-            this.groupBox1.Controls.Add(this.gaiaRadioButton);
-            this.groupBox1.Location = new System.Drawing.Point(20, 60);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(265, 177);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Identity provider:";
+            this.groupPnel.Controls.Add(this.wifProviderIdTextBox);
+            this.groupPnel.Controls.Add(this.wifProviderLabel);
+            this.groupPnel.Controls.Add(this.wifPoolIdTextBox);
+            this.groupPnel.Controls.Add(this.wifPoolLabel);
+            this.groupPnel.Controls.Add(this.wifLocationIdTextBox);
+            this.groupPnel.Controls.Add(this.wifLocationLabel);
+            this.groupPnel.Controls.Add(this.workforceIdentityRadioButton);
+            this.groupPnel.Controls.Add(this.gaiaRadioButton);
+            this.groupPnel.Location = new System.Drawing.Point(0, 52);
+            this.groupPnel.Name = "groupPnel";
+            this.groupPnel.Size = new System.Drawing.Size(268, 168);
+            this.groupPnel.TabIndex = 1;
+            this.groupPnel.Text = "Identity provider:";
+            // 
+            // wifProviderIdTextBox
+            // 
+            this.wifProviderIdTextBox.Location = new System.Drawing.Point(108, 132);
+            this.wifProviderIdTextBox.Name = "wifProviderIdTextBox";
+            this.wifProviderIdTextBox.Size = new System.Drawing.Size(140, 20);
+            this.wifProviderIdTextBox.TabIndex = 4;
+            // 
+            // wifProviderLabel
+            // 
+            this.wifProviderLabel.AutoSize = true;
+            this.wifProviderLabel.Location = new System.Drawing.Point(41, 135);
+            this.wifProviderLabel.Name = "wifProviderLabel";
+            this.wifProviderLabel.Size = new System.Drawing.Size(63, 13);
+            this.wifProviderLabel.TabIndex = 6;
+            this.wifProviderLabel.Text = "Provider ID:";
+            // 
+            // wifPoolIdTextBox
+            // 
+            this.wifPoolIdTextBox.Location = new System.Drawing.Point(108, 106);
+            this.wifPoolIdTextBox.Name = "wifPoolIdTextBox";
+            this.wifPoolIdTextBox.Size = new System.Drawing.Size(140, 20);
+            this.wifPoolIdTextBox.TabIndex = 3;
+            // 
+            // wifPoolLabel
+            // 
+            this.wifPoolLabel.AutoSize = true;
+            this.wifPoolLabel.Location = new System.Drawing.Point(41, 109);
+            this.wifPoolLabel.Name = "wifPoolLabel";
+            this.wifPoolLabel.Size = new System.Drawing.Size(45, 13);
+            this.wifPoolLabel.TabIndex = 4;
+            this.wifPoolLabel.Text = "Pool ID:";
+            // 
+            // wifLocationIdTextBox
+            // 
+            this.wifLocationIdTextBox.Location = new System.Drawing.Point(108, 80);
+            this.wifLocationIdTextBox.Name = "wifLocationIdTextBox";
+            this.wifLocationIdTextBox.Size = new System.Drawing.Size(140, 20);
+            this.wifLocationIdTextBox.TabIndex = 2;
+            this.wifLocationIdTextBox.Text = "global";
+            // 
+            // wifLocationLabel
+            // 
+            this.wifLocationLabel.AutoSize = true;
+            this.wifLocationLabel.Location = new System.Drawing.Point(41, 83);
+            this.wifLocationLabel.Name = "wifLocationLabel";
+            this.wifLocationLabel.Size = new System.Drawing.Size(65, 13);
+            this.wifLocationLabel.TabIndex = 2;
+            this.wifLocationLabel.Text = "Location ID:";
+            // 
+            // workforceIdentityRadioButton
+            // 
+            this.workforceIdentityRadioButton.AutoSize = true;
+            this.workforceIdentityRadioButton.Location = new System.Drawing.Point(24, 53);
+            this.workforceIdentityRadioButton.Name = "workforceIdentityRadioButton";
+            this.workforceIdentityRadioButton.Size = new System.Drawing.Size(215, 17);
+            this.workforceIdentityRadioButton.TabIndex = 1;
+            this.workforceIdentityRadioButton.TabStop = true;
+            this.workforceIdentityRadioButton.Text = "Sign in with workforce identity federation";
+            this.workforceIdentityRadioButton.UseVisualStyleBackColor = true;
             // 
             // gaiaRadioButton
             // 
             this.gaiaRadioButton.AutoSize = true;
-            this.gaiaRadioButton.Location = new System.Drawing.Point(16, 20);
+            this.gaiaRadioButton.Location = new System.Drawing.Point(24, 20);
             this.gaiaRadioButton.Name = "gaiaRadioButton";
             this.gaiaRadioButton.Size = new System.Drawing.Size(174, 17);
             this.gaiaRadioButton.TabIndex = 0;
@@ -81,100 +161,48 @@
             this.gaiaRadioButton.Text = "Sign in with my Google account";
             this.gaiaRadioButton.UseVisualStyleBackColor = true;
             // 
-            // workforceIdentityRadioButton
-            // 
-            this.workforceIdentityRadioButton.AutoSize = true;
-            this.workforceIdentityRadioButton.Location = new System.Drawing.Point(16, 53);
-            this.workforceIdentityRadioButton.Name = "workforceIdentityRadioButton";
-            this.workforceIdentityRadioButton.Size = new System.Drawing.Size(165, 17);
-            this.workforceIdentityRadioButton.TabIndex = 1;
-            this.workforceIdentityRadioButton.TabStop = true;
-            this.workforceIdentityRadioButton.Text = "Sign in with workforce identity";
-            this.workforceIdentityRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // wifLocationLabel
-            // 
-            this.wifLocationLabel.AutoSize = true;
-            this.wifLocationLabel.Location = new System.Drawing.Point(33, 83);
-            this.wifLocationLabel.Name = "wifLocationLabel";
-            this.wifLocationLabel.Size = new System.Drawing.Size(51, 13);
-            this.wifLocationLabel.TabIndex = 2;
-            this.wifLocationLabel.Text = "Location:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(100, 80);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(140, 20);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.Text = "global";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(100, 106);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(140, 20);
-            this.textBox2.TabIndex = 5;
-            // 
-            // wifPoolLabel
-            // 
-            this.wifPoolLabel.AutoSize = true;
-            this.wifPoolLabel.Location = new System.Drawing.Point(33, 109);
-            this.wifPoolLabel.Name = "wifPoolLabel";
-            this.wifPoolLabel.Size = new System.Drawing.Size(45, 13);
-            this.wifPoolLabel.TabIndex = 4;
-            this.wifPoolLabel.Text = "Pool ID:";
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(100, 132);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(140, 20);
-            this.textBox3.TabIndex = 7;
-            // 
-            // wifProviderLabel
-            // 
-            this.wifProviderLabel.AutoSize = true;
-            this.wifProviderLabel.Location = new System.Drawing.Point(33, 135);
-            this.wifProviderLabel.Name = "wifProviderLabel";
-            this.wifProviderLabel.Size = new System.Drawing.Size(63, 13);
-            this.wifProviderLabel.TabIndex = 6;
-            this.wifProviderLabel.Text = "Provider ID:";
-            // 
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(129, 254);
+            this.okButton.Location = new System.Drawing.Point(91, 240);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 13;
+            this.okButton.TabIndex = 5;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
             // 
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(210, 254);
+            this.cancelButton.Location = new System.Drawing.Point(172, 240);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 14;
+            this.cancelButton.TabIndex = 6;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
             // SelectIssuerView
             // 
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(304, 293);
+            this.CancelButton = this.cancelButton;
+            this.ClientSize = new System.Drawing.Size(264, 281);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupPnel);
             this.Controls.Add(this.headerLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SelectIssuerView";
-            this.Text = "SelectIssuerView";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.Text = "Sign-in method";
+            this.groupPnel.ResumeLayout(false);
+            this.groupPnel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -183,13 +211,13 @@
         #endregion
 
         private Mvvm.Controls.HeaderLabel headerLabel;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Panel groupPnel;
         private System.Windows.Forms.RadioButton gaiaRadioButton;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox wifProviderIdTextBox;
         private System.Windows.Forms.Label wifProviderLabel;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox wifPoolIdTextBox;
         private System.Windows.Forms.Label wifPoolLabel;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox wifLocationIdTextBox;
         private System.Windows.Forms.Label wifLocationLabel;
         private System.Windows.Forms.RadioButton workforceIdentityRadioButton;
         private System.Windows.Forms.Button okButton;
