@@ -55,7 +55,8 @@ Context-aware access distinguishes between policy definition and policy enforcem
 
     There are multiple ways to configure IAP so that it enforces context-aware access checks:
 
-    *   For VMs that aren't part of a service perimeter, you can use [IAM conditions](#iam-conditions) or 
+    *   For VMs that aren't part of a [VPC service perimeter :octicons-link-external-16:](https://cloud.google.com/vpc-service-controls/docs/service-perimeters), 
+        you can use [IAM conditions](#iam-conditions) or 
         [access bindings](#access-bindings) to 
         require users to satisfy a certain access level.
     *   For VMs that are part of a service perimeter, you can use 
@@ -98,7 +99,8 @@ Using access bindings works best if you want to ensure that context-aware access
 
 ### VPC service control ingress rules
 
-For VMs that are part of a service perimeter, IAP detects whether the user’s workstation is part of the same 
+For VMs that are part of a [VPC service perimeter :octicons-link-external-16:](https://cloud.google.com/vpc-service-controls/docs/service-perimeters),
+IAP detects whether the user’s workstation is part of the same 
 VPC service perimeter. That is the case if any of the following applies:
 
 *   The source IP is the external IP address of a Compute Engine VM.
