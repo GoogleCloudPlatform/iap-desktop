@@ -23,7 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("View code")]
     public partial class NewProfileView : Form, IView<NewProfileViewModel>

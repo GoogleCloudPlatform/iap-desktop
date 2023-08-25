@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.Mvvm.Binding;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     public class NewProfileViewModel : ViewModelBase
     {

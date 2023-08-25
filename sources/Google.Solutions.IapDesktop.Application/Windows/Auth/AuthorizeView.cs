@@ -29,7 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("UI")]
     public partial class AuthorizeView : CompositeForm, IView<AuthorizeViewModel>

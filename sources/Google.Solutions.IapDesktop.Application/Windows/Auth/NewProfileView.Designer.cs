@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     partial class NewProfileView
     {

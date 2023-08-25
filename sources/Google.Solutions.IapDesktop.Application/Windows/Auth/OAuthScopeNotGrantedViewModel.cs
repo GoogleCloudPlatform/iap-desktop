@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
-using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
-    [SkipCodeCoverage("UI")]
-    public partial class OAuthScopeNotGrantedView
-        : Form, IView<OAuthScopeNotGrantedViewModel>
+    public class OAuthScopeNotGrantedViewModel : ViewModelBase
     {
-        public OAuthScopeNotGrantedView()
-        {
-            InitializeComponent();
-        }
-
-        public void Bind(
-            OAuthScopeNotGrantedViewModel viewModel,
-            IBindingContext bindingContext)
-        {
-        }
     }
 }

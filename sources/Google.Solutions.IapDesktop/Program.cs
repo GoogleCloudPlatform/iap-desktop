@@ -43,7 +43,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
-using Google.Solutions.IapDesktop.Application.Windows.Authorization;
+using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Google.Solutions.IapDesktop.Application.Windows.Options;

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Windows.Authorization;
+using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
