@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenGaiaOptionChecked_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsModel();
+            var viewModel = new AuthorizeOptionsViewModel();
 
             viewModel.IsGaiaOptionChecked.Value = true;
 
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenWorkforcePoolOptionChecked_ThenIsOkButtonEnabledReturnsFalse()
         {
-            var viewModel = new AuthorizeOptionsModel();
+            var viewModel = new AuthorizeOptionsViewModel();
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenWorkforcePoolOptionCheckedAndDetailsProvided_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsModel();
+            var viewModel = new AuthorizeOptionsViewModel();
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
             viewModel.WorkforcePoolLocationId.Value = "global";
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorIsNull_ThenIsGaiaOptionCheckedReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsModel()
+            var viewModel = new AuthorizeOptionsViewModel()
             {
                 WorkforcePoolProvider = null
             };
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorSet_ThenIsGaiaOptionCheckedReturnsFalse()
         {
-            var viewModel = new AuthorizeOptionsModel()
+            var viewModel = new AuthorizeOptionsViewModel()
             {
                 WorkforcePoolProvider = SampleProviderLocator
             };
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorIsNull_ThenIsWorkforcePoolOptionCheckedReturnsFalse()
         {
-            var viewModel = new AuthorizeOptionsModel()
+            var viewModel = new AuthorizeOptionsViewModel()
             {
                 WorkforcePoolProvider = null
             };
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorSet_ThenIsWorkforcePoolOptionCheckedReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsModel()
+            var viewModel = new AuthorizeOptionsViewModel()
             {
                 WorkforcePoolProvider = SampleProviderLocator
             };

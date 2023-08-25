@@ -24,9 +24,9 @@ using Google.Solutions.Mvvm.Binding;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
-    public class AuthorizeOptionsModel : ViewModelBase
+    public class AuthorizeOptionsViewModel : ViewModelBase
     {
-        public AuthorizeOptionsModel()
+        public AuthorizeOptionsViewModel()
         {
             this.IsGaiaOptionChecked = ObservableProperty.Build(true);
             this.IsWorkforcePoolOptionChecked = ObservableProperty.Build(false);
