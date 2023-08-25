@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Apis.Auth.Iam;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
+using Moq;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
@@ -31,6 +33,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         private static readonly WorkforcePoolProviderLocator SampleProviderLocator
             = new WorkforcePoolProviderLocator("global", "pool-1", "provider-1");
 
+
+        private static Mock<IRepository<IAccessSettings>> CreateSettingsRepository(
+            WorkforcePoolProviderLocator provider)
+        {
+            var setting = new Mock<IStringSetting>();
+            setting.SetupGet(s => s.StringValue).Returns(provider?.ToString());
+
+            var settings = new Mock<IAccessSettings>();
+            settings.SetupGet(s => s.WorkforcePoolProvider).Returns(setting.Object);
+
+            var repository = new Mock<IRepository<IAccessSettings>>();
+            repository.Setup(r => r.GetSettings()).Returns(settings.Object);
+
+            return repository;
+        }
+
         //---------------------------------------------------------------------
         // IsOkButtonEnabled.
         //---------------------------------------------------------------------
@@ -38,7 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenGaiaOptionChecked_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsViewModel();
+            var repository = CreateSettingsRepository(null);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             viewModel.IsGaiaOptionChecked.Value = true;
 
@@ -48,7 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenWorkforcePoolOptionChecked_ThenIsOkButtonEnabledReturnsFalse()
         {
-            var viewModel = new AuthorizeOptionsViewModel();
+            var repository = CreateSettingsRepository(null);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
 
@@ -58,7 +78,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenWorkforcePoolOptionCheckedAndDetailsProvided_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsViewModel();
+            var repository = CreateSettingsRepository(null);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
             viewModel.WorkforcePoolLocationId.Value = "global";
@@ -69,53 +90,53 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         //---------------------------------------------------------------------
-        // IsGaiaOptionChecked.
+        // Radio buttons: IsGaiaOptionChecked, IsWorkforcePoolOptionChecked.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenLocatorIsNull_ThenIsGaiaOptionCheckedReturnsTrue()
+        public void WhenSettingsDoNotContainWorkforcePoolProvider_ThenRadioButtonsAreSet()
         {
-            var viewModel = new AuthorizeOptionsViewModel()
-            {
-                WorkforcePoolProvider = null
-            };
+            var repository = CreateSettingsRepository(null);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             Assert.IsTrue(viewModel.IsGaiaOptionChecked.Value);
+            Assert.IsFalse(viewModel.IsWorkforcePoolOptionChecked.Value);
         }
 
         [Test]
-        public void WhenLocatorSet_ThenIsGaiaOptionCheckedReturnsFalse()
+        public void WhenSettingsContainWorkforcePoolProvider_ThenRadioButtonsAreSet()
         {
-            var viewModel = new AuthorizeOptionsViewModel()
+            var repository = CreateSettingsRepository(SampleProviderLocator);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object)
             {
                 WorkforcePoolProvider = SampleProviderLocator
             };
 
             Assert.IsFalse(viewModel.IsGaiaOptionChecked.Value);
+            Assert.IsTrue(viewModel.IsWorkforcePoolOptionChecked.Value);
         }
 
         //---------------------------------------------------------------------
-        // IsWorkforcePoolOptionChecked.
+        // Text boxes.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenLocatorIsNull_ThenIsWorkforcePoolOptionCheckedReturnsFalse()
+        public void WhenSettingsDoNotContainWorkforcePoolProvider_ThenTextBoxesAreEmpty()
         {
-            var viewModel = new AuthorizeOptionsViewModel()
-            {
-                WorkforcePoolProvider = null
-            };
+            var repository = CreateSettingsRepository(null);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             Assert.IsFalse(viewModel.IsWorkforcePoolOptionChecked.Value);
+            Assert.IsNull(viewModel.WorkforcePoolLocationId.Value);
+            Assert.IsNull(viewModel.WorkforcePoolId.Value);
+            Assert.IsNull(viewModel.WorkforcePoolProviderId.Value);
         }
 
         [Test]
         public void WhenLocatorSet_ThenIsWorkforcePoolOptionCheckedReturnsTrue()
         {
-            var viewModel = new AuthorizeOptionsViewModel()
-            {
-                WorkforcePoolProvider = SampleProviderLocator
-            };
+            var repository = CreateSettingsRepository(SampleProviderLocator);
+            var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             Assert.IsTrue(viewModel.IsWorkforcePoolOptionChecked.Value);
 

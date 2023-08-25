@@ -265,12 +265,8 @@ namespace Google.Solutions.IapDesktop
                     using (var scopeDialog = serviceProvider
                         .GetDialog<AuthorizeOptionsView, AuthorizeOptionsViewModel>(theme))
                     {
-                        if (scopeDialog.ShowDialog(dialog.ViewModel.View) == DialogResult.OK)
-                        {
-                            // TODO: save
-                        }
+                        scopeDialog.ShowDialog(dialog.ViewModel.View);
                     }
-
                 };
 
                 if (dialog.ShowDialog(null) == DialogResult.OK)

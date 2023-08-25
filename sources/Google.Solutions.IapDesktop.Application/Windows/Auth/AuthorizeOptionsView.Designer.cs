@@ -155,10 +155,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.gaiaRadioButton.AutoSize = true;
             this.gaiaRadioButton.Location = new System.Drawing.Point(24, 20);
             this.gaiaRadioButton.Name = "gaiaRadioButton";
-            this.gaiaRadioButton.Size = new System.Drawing.Size(174, 17);
+            this.gaiaRadioButton.Size = new System.Drawing.Size(208, 17);
             this.gaiaRadioButton.TabIndex = 0;
             this.gaiaRadioButton.TabStop = true;
-            this.gaiaRadioButton.Text = "Sign in with my Google account";
+            this.gaiaRadioButton.Text = "Sign in with a Google account (default)";
             this.gaiaRadioButton.UseVisualStyleBackColor = true;
             // 
             // okButton

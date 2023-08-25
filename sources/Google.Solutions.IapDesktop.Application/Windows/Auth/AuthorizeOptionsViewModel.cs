@@ -20,19 +20,28 @@
 //
 
 using Google.Solutions.Apis.Auth.Iam;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     public class AuthorizeOptionsViewModel : ViewModelBase
     {
-        public AuthorizeOptionsViewModel()
+        public AuthorizeOptionsViewModel(IRepository<IAccessSettings> repository)
         {
-            this.IsGaiaOptionChecked = ObservableProperty.Build(true);
-            this.IsWorkforcePoolOptionChecked = ObservableProperty.Build(false);
-            this.WorkforcePoolLocationId = ObservableProperty.Build(string.Empty);
-            this.WorkforcePoolId = ObservableProperty.Build(string.Empty);
-            this.WorkforcePoolProviderId = ObservableProperty.Build(string.Empty);
+            //
+            // Load current settings from repository.
+            //
+            WorkforcePoolProviderLocator.TryParse(
+                repository.GetSettings().WorkforcePoolProvider.StringValue,
+                out var workforcePoolProvider);
+
+            this.IsGaiaOptionChecked = ObservableProperty.Build(workforcePoolProvider == null);
+            this.IsWorkforcePoolOptionChecked = ObservableProperty.Build(workforcePoolProvider != null);
+            this.WorkforcePoolLocationId = ObservableProperty.Build(workforcePoolProvider?.Location);
+            this.WorkforcePoolId = ObservableProperty.Build(workforcePoolProvider?.Pool);
+            this.WorkforcePoolProviderId = ObservableProperty.Build(workforcePoolProvider?.Provider);
             this.IsOkButtonEnabled = ObservableProperty.Build(
                 this.IsWorkforcePoolOptionChecked,
                 this.WorkforcePoolLocationId,
@@ -51,6 +60,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                             !string.IsNullOrEmpty(poolId) &&
                             !string.IsNullOrEmpty(providerId);
                     }
+                });
+            this.ApplyChanges = ObservableCommand.Build(
+                string.Empty,
+                () =>
+                {
+                    //
+                    // Write back changes to repository.
+                    //
+                    var settings = repository.GetSettings();
+                    settings.WorkforcePoolProvider.Value = this.WorkforcePoolProvider?.ToString();
+                    repository.SetSettings(settings);
                 });
         }
 
@@ -98,6 +118,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Observable commands.
+        //---------------------------------------------------------------------
+
+        public ObservableCommand ApplyChanges { get; }
 
         //---------------------------------------------------------------------
         // Observable "output" properties.

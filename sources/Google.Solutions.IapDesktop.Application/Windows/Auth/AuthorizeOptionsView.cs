@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
@@ -110,6 +111,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
+                bindingContext);
+            this.okButton.BindObservableCommand(
+                viewModel,
+                m => m.ApplyChanges,
                 bindingContext);
         }
     }
