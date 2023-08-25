@@ -26,15 +26,15 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("View code")]
-    public partial class ConfigureAuthorizationView : Form, IView<ConfigureAuthorizationViewModel>
+    public partial class AuthorizeOptionsView : Form, IView<AuthorizeOptionsModel>
     {
-        public ConfigureAuthorizationView()
+        public AuthorizeOptionsView()
         {
             InitializeComponent();
         }
 
         public void Bind(
-            ConfigureAuthorizationViewModel viewModel,
+            AuthorizeOptionsModel viewModel,
             IBindingContext bindingContext)
         {
             //

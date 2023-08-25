@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
-    partial class ConfigureAuthorizationView
+    partial class AuthorizeOptionsView
     {
         /// <summary>
         /// Required designer variable.

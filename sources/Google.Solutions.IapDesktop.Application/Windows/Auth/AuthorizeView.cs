@@ -153,5 +153,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                     t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
         }
+
+        private void optionsToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }
