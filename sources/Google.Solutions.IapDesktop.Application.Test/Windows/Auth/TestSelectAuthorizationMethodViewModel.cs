@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 {
     [TestFixture]
-    public class TestSelectIssuerViewModel
+    public class TestSelectAuthorizationMethodViewModel
     {
         private static readonly WorkforcePoolProviderLocator SampleProviderLocator
             = new WorkforcePoolProviderLocator("global", "pool-1", "provider-1");
@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenGaiaOptionChecked_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new SelectIssuerViewModel();
+            var viewModel = new SelectAuthorizationMethodViewModel();
 
             viewModel.IsGaiaOptionChecked.Value = true;
 
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenWorkforcePoolOptionChecked_ThenIsOkButtonEnabledReturnsFalse()
         {
-            var viewModel = new SelectIssuerViewModel();
+            var viewModel = new SelectAuthorizationMethodViewModel();
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenWorkforcePoolOptionCheckedAndDetailsProvided_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new SelectIssuerViewModel();
+            var viewModel = new SelectAuthorizationMethodViewModel();
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
             viewModel.WorkforcePoolLocationId.Value = "global";
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorIsNull_ThenIsGaiaOptionCheckedReturnsTrue()
         {
-            var viewModel = new SelectIssuerViewModel()
+            var viewModel = new SelectAuthorizationMethodViewModel()
             {
                 WorkforcePoolProvider = null
             };
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorSet_ThenIsGaiaOptionCheckedReturnsFalse()
         {
-            var viewModel = new SelectIssuerViewModel()
+            var viewModel = new SelectAuthorizationMethodViewModel()
             {
                 WorkforcePoolProvider = SampleProviderLocator
             };
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorIsNull_ThenIsWorkforcePoolOptionCheckedReturnsFalse()
         {
-            var viewModel = new SelectIssuerViewModel()
+            var viewModel = new SelectAuthorizationMethodViewModel()
             {
                 WorkforcePoolProvider = null
             };
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public void WhenLocatorSet_ThenIsWorkforcePoolOptionCheckedReturnsTrue()
         {
-            var viewModel = new SelectIssuerViewModel()
+            var viewModel = new SelectAuthorizationMethodViewModel()
             {
                 WorkforcePoolProvider = SampleProviderLocator
             };
