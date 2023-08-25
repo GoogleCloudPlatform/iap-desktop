@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             // Gaia.
             //
-            this.gaiaRadioButton.BindReadonlyObservableProperty(
+            this.gaiaRadioButton.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsGaiaOptionChecked,
@@ -49,8 +49,24 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             // Workforce identity.
             //
-            this.workforceIdentityRadioButton.BindReadonlyObservableProperty(
+            this.workforceIdentityRadioButton.BindObservableProperty(
                 c => c.Checked,
+                viewModel,
+                m => m.IsWorkforcePoolOptionChecked,
+                bindingContext);
+
+            this.wifLocationIdLabel.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsWorkforcePoolOptionChecked,
+                bindingContext);
+            this.wifPoolIdLabel.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsWorkforcePoolOptionChecked,
+                bindingContext);
+            this.wifProviderIdLabel.BindReadonlyObservableProperty(
+                c => c.Enabled,
                 viewModel,
                 m => m.IsWorkforcePoolOptionChecked,
                 bindingContext);

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.signInButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
             this.versionLabel = new System.Windows.Forms.Label();
             this.separatorMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.watermarkPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gradient)).BeginInit();
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.signInWithChromeGuestMenuItem,
             this.signInWithDefaultBrowserMenuItem,
             this.separatorMenuItem,
-            this.optionsToolStripMenuItem});
+            this.showOptionsToolStripMenuItem});
             this.signInMenuStrip.Name = "signInMenuStrip";
             this.signInMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.signInMenuStrip.Size = new System.Drawing.Size(258, 120);
@@ -212,10 +212,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // 
             // optionsToolStripMenuItem
             // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-            this.optionsToolStripMenuItem.Text = "&Options...";
-            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            this.showOptionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.showOptionsToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+            this.showOptionsToolStripMenuItem.Text = "&Options...";
             // 
             // AuthorizeView
             // 
@@ -260,6 +259,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         private System.Windows.Forms.PictureBox watermarkPictureBox;
         private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.ToolStripSeparator separatorMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showOptionsToolStripMenuItem;
     }
 }

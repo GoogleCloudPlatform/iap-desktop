@@ -52,11 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.groupPnel = new System.Windows.Forms.Panel();
             this.wifProviderIdTextBox = new System.Windows.Forms.TextBox();
-            this.wifProviderLabel = new System.Windows.Forms.Label();
+            this.wifProviderIdLabel = new System.Windows.Forms.Label();
             this.wifPoolIdTextBox = new System.Windows.Forms.TextBox();
-            this.wifPoolLabel = new System.Windows.Forms.Label();
+            this.wifPoolIdLabel = new System.Windows.Forms.Label();
             this.wifLocationIdTextBox = new System.Windows.Forms.TextBox();
-            this.wifLocationLabel = new System.Windows.Forms.Label();
+            this.wifLocationIdLabel = new System.Windows.Forms.Label();
             this.workforceIdentityRadioButton = new System.Windows.Forms.RadioButton();
             this.gaiaRadioButton = new System.Windows.Forms.RadioButton();
             this.okButton = new System.Windows.Forms.Button();
@@ -77,11 +77,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // groupPnel
             // 
             this.groupPnel.Controls.Add(this.wifProviderIdTextBox);
-            this.groupPnel.Controls.Add(this.wifProviderLabel);
+            this.groupPnel.Controls.Add(this.wifProviderIdLabel);
             this.groupPnel.Controls.Add(this.wifPoolIdTextBox);
-            this.groupPnel.Controls.Add(this.wifPoolLabel);
+            this.groupPnel.Controls.Add(this.wifPoolIdLabel);
             this.groupPnel.Controls.Add(this.wifLocationIdTextBox);
-            this.groupPnel.Controls.Add(this.wifLocationLabel);
+            this.groupPnel.Controls.Add(this.wifLocationIdLabel);
             this.groupPnel.Controls.Add(this.workforceIdentityRadioButton);
             this.groupPnel.Controls.Add(this.gaiaRadioButton);
             this.groupPnel.Location = new System.Drawing.Point(0, 52);
@@ -97,14 +97,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.wifProviderIdTextBox.Size = new System.Drawing.Size(140, 20);
             this.wifProviderIdTextBox.TabIndex = 4;
             // 
-            // wifProviderLabel
+            // wifProviderIdLabel
             // 
-            this.wifProviderLabel.AutoSize = true;
-            this.wifProviderLabel.Location = new System.Drawing.Point(41, 135);
-            this.wifProviderLabel.Name = "wifProviderLabel";
-            this.wifProviderLabel.Size = new System.Drawing.Size(63, 13);
-            this.wifProviderLabel.TabIndex = 6;
-            this.wifProviderLabel.Text = "Provider ID:";
+            this.wifProviderIdLabel.AutoSize = true;
+            this.wifProviderIdLabel.Location = new System.Drawing.Point(41, 135);
+            this.wifProviderIdLabel.Name = "wifProviderIdLabel";
+            this.wifProviderIdLabel.Size = new System.Drawing.Size(63, 13);
+            this.wifProviderIdLabel.TabIndex = 6;
+            this.wifProviderIdLabel.Text = "Provider ID:";
             // 
             // wifPoolIdTextBox
             // 
@@ -113,14 +113,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.wifPoolIdTextBox.Size = new System.Drawing.Size(140, 20);
             this.wifPoolIdTextBox.TabIndex = 3;
             // 
-            // wifPoolLabel
+            // wifPoolIdLabel
             // 
-            this.wifPoolLabel.AutoSize = true;
-            this.wifPoolLabel.Location = new System.Drawing.Point(41, 109);
-            this.wifPoolLabel.Name = "wifPoolLabel";
-            this.wifPoolLabel.Size = new System.Drawing.Size(45, 13);
-            this.wifPoolLabel.TabIndex = 4;
-            this.wifPoolLabel.Text = "Pool ID:";
+            this.wifPoolIdLabel.AutoSize = true;
+            this.wifPoolIdLabel.Location = new System.Drawing.Point(41, 109);
+            this.wifPoolIdLabel.Name = "wifPoolIdLabel";
+            this.wifPoolIdLabel.Size = new System.Drawing.Size(45, 13);
+            this.wifPoolIdLabel.TabIndex = 4;
+            this.wifPoolIdLabel.Text = "Pool ID:";
             // 
             // wifLocationIdTextBox
             // 
@@ -130,19 +130,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.wifLocationIdTextBox.TabIndex = 2;
             this.wifLocationIdTextBox.Text = "global";
             // 
-            // wifLocationLabel
+            // wifLocationIdLabel
             // 
-            this.wifLocationLabel.AutoSize = true;
-            this.wifLocationLabel.Location = new System.Drawing.Point(41, 83);
-            this.wifLocationLabel.Name = "wifLocationLabel";
-            this.wifLocationLabel.Size = new System.Drawing.Size(65, 13);
-            this.wifLocationLabel.TabIndex = 2;
-            this.wifLocationLabel.Text = "Location ID:";
+            this.wifLocationIdLabel.AutoSize = true;
+            this.wifLocationIdLabel.Location = new System.Drawing.Point(41, 83);
+            this.wifLocationIdLabel.Name = "wifLocationIdLabel";
+            this.wifLocationIdLabel.Size = new System.Drawing.Size(65, 13);
+            this.wifLocationIdLabel.TabIndex = 2;
+            this.wifLocationIdLabel.Text = "Location ID:";
             // 
             // workforceIdentityRadioButton
             // 
             this.workforceIdentityRadioButton.AutoSize = true;
-            this.workforceIdentityRadioButton.Location = new System.Drawing.Point(24, 53);
+            this.workforceIdentityRadioButton.Location = new System.Drawing.Point(24, 48);
             this.workforceIdentityRadioButton.Name = "workforceIdentityRadioButton";
             this.workforceIdentityRadioButton.Size = new System.Drawing.Size(215, 17);
             this.workforceIdentityRadioButton.TabIndex = 1;
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // SelectIssuerView
+            // AuthorizeOptionsView
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -196,10 +196,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "SelectIssuerView";
+            this.Name = "AuthorizeOptionsView";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sign-in method";
             this.groupPnel.ResumeLayout(false);
             this.groupPnel.PerformLayout();
@@ -214,11 +215,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         private System.Windows.Forms.Panel groupPnel;
         private System.Windows.Forms.RadioButton gaiaRadioButton;
         private System.Windows.Forms.TextBox wifProviderIdTextBox;
-        private System.Windows.Forms.Label wifProviderLabel;
+        private System.Windows.Forms.Label wifProviderIdLabel;
         private System.Windows.Forms.TextBox wifPoolIdTextBox;
-        private System.Windows.Forms.Label wifPoolLabel;
+        private System.Windows.Forms.Label wifPoolIdLabel;
         private System.Windows.Forms.TextBox wifLocationIdTextBox;
-        private System.Windows.Forms.Label wifLocationLabel;
+        private System.Windows.Forms.Label wifLocationIdLabel;
         private System.Windows.Forms.RadioButton workforceIdentityRadioButton;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;

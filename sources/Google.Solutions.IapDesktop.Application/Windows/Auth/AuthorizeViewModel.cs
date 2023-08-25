@@ -95,9 +95,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 string.Empty,
                 () => SignInAsync(BrowserPreference.ChromeGuest),
                 this.IsChromeSingnInButtonEnabled);
+            this.ShowOptionsCommand = ObservableCommand.Build(
+                string.Empty,
+                () => this.ShowOptions?.Invoke(this, EventArgs.Empty));
         }
 
-        private protected virtual Profile.Auth.Authorization CreateAuthorization()
+        private protected virtual Authorization CreateAuthorization()
         {
             Debug.Assert(this.Authorization == null);
             Debug.Assert(this.DeviceEnrollment != null);
@@ -159,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                     this.userAgent);
             }
 
-            return new Profile.Auth.Authorization(
+            return new Authorization(
                 client,
                 this.DeviceEnrollment);
         }
@@ -177,6 +180,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         /// An error occurred that might be due to network misconfiguration.
         /// </summary>
         public EventHandler<RecoverableExceptionEventArgs> NetworkError;
+
+        /// <summary>
+        /// User requested to show options.
+        /// </summary>
+        public EventHandler<EventArgs> ShowOptions;
 
         //---------------------------------------------------------------------
         // Input properties.
@@ -229,6 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         public ObservableCommand SignInWithDefaultBrowserCommand { get; }
         public ObservableCommand SignInWithChromeCommand { get; }
         public ObservableCommand SignInWithChromeGuestModeCommand { get; }
+        public ObservableCommand ShowOptionsCommand { get; }
 
         //---------------------------------------------------------------------
         // Sign-in logic.

@@ -260,6 +260,19 @@ namespace Google.Solutions.IapDesktop
                     { }
                 };
 
+                dialog.ViewModel.ShowOptions += (_, args) =>
+                {
+                    using (var scopeDialog = serviceProvider
+                        .GetDialog<AuthorizeOptionsView, AuthorizeOptionsViewModel>(theme))
+                    {
+                        if (scopeDialog.ShowDialog(dialog.ViewModel.View) == DialogResult.OK)
+                        {
+                            // TODO: save
+                        }
+                    }
+
+                };
+
                 if (dialog.ShowDialog(null) == DialogResult.OK)
                 {
                     Debug.Assert(dialog.ViewModel.Authorization != null);
@@ -505,6 +518,8 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
+                preAuthLayer.AddTransient<AuthorizeOptionsView>();
+                preAuthLayer.AddTransient<AuthorizeOptionsViewModel>();
                 preAuthLayer.AddTransient<OAuthScopeNotGrantedView>();
                 preAuthLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 preAuthLayer.AddTransient<PropertiesView>();

@@ -122,6 +122,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 viewModel,
                 m => m.SignInWithChromeGuestModeCommand,
                 bindingContext);
+            this.showOptionsToolStripMenuItem.BindObservableCommand(
+                viewModel,
+                m => m.ShowOptionsCommand,
+                bindingContext);
 
             viewModel.IsAuthorizationComplete.PropertyChanged += (_, __) =>
             {
@@ -152,11 +156,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 .ContinueWith(
                     t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
-        }
-
-        private void optionsToolStripMenuItem_Click(object sender, System.EventArgs e)
-        {
-
         }
     }
 }
