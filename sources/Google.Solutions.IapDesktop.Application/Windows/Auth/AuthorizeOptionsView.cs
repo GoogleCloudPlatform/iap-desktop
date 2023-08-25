@@ -26,7 +26,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("View code")]
-    public partial class AuthorizeOptionsView : Form, IView<AuthorizeOptionsModel>
+    public partial class AuthorizeOptionsView : Form, IView<AuthorizeOptionsViewModel>
     {
         public AuthorizeOptionsView()
         {
@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         }
 
         public void Bind(
-            AuthorizeOptionsModel viewModel,
+            AuthorizeOptionsViewModel viewModel,
             IBindingContext bindingContext)
         {
             //
