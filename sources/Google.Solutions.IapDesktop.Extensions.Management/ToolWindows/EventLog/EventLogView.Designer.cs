@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             // 
             // principalColumn
             // 
-            this.principalColumn.Text = "User";
+            this.principalColumn.Text = "Principal";
             this.principalColumn.Width = 150;
             // 
             // deviceColumn
