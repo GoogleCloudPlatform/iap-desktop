@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // 
             this.headerLabel.AutoSize = true;
             this.headerLabel.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headerLabel.Location = new System.Drawing.Point(70, 34);
+            this.headerLabel.Location = new System.Drawing.Point(78, 34);
             this.headerLabel.Name = "headerLabel";
             this.headerLabel.Size = new System.Drawing.Size(195, 45);
             this.headerLabel.TabIndex = 7;

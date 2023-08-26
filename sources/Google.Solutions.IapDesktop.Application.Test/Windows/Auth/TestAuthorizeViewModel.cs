@@ -349,10 +349,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view,
-                Authorization = authorization
+                View = view
             })
             {
+                viewModel.UseExistingAuthorization(authorization);
                 var tokenResponse = new TokenResponse()
                 {
                     Scope = "email"

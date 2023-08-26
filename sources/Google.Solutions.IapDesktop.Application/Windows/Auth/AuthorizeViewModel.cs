@@ -211,6 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         //---------------------------------------------------------------------
 
         public ObservableProperty<string> WindowTitle { get; }
+
         public ObservableProperty<string> IntroductionText { get; }
 
         public ObservableProperty<string> Version { get; }
@@ -222,6 +223,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         public ObservableProperty<bool> IsCancelButtonVisible { get; }
 
         public ObservableProperty<bool> IsChromeSingnInButtonEnabled { get; }
+
         public ObservableProperty<bool> IsShowOptionsMenuEnabled { get; }
 
         public ObservableProperty<bool> IsAuthorizationComplete { get; }
@@ -235,7 +237,21 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         /// * If set to null, a new Authorization is created.
         /// * If non-null, a reauthorization is performed.
         /// </summary>
-        public IAuthorization Authorization { get; set; }
+        public IAuthorization Authorization { get; private set; }
+
+        /// <summary>
+        /// Reauthorize using an existing authorization object.
+        /// </summary>
+        public void UseExistingAuthorization(IAuthorization authorization)
+        {
+            Debug.Assert(this.Authorization == null);
+
+            this.Authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.WindowTitle.Value = "Session expired";
+            this.IsShowOptionsMenuEnabled.Value = false;
+            this.IntroductionText.Value =
+                "Your session has expired.\nSign in again to continue using IAP Destop.";
+        }
 
         //---------------------------------------------------------------------
         // Observable commands.

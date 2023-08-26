@@ -867,11 +867,8 @@ namespace Google.Solutions.IapDesktop.Windows
             using (var dialog = this.serviceProvider
                 .GetDialog<AuthorizeView, AuthorizeViewModel>(this.themeService.DialogTheme))
             {
-                dialog.ViewModel.WindowTitle.Value = "Session expired";
-                dialog.ViewModel.IsShowOptionsMenuEnabled.Value = false;
-                dialog.ViewModel.IntroductionText.Value =
-                    "Your session has expired.\nSign in again to continue using IAP Destop.";
-                dialog.ViewModel.Authorization = this.serviceProvider.GetService<IAuthorization>();
+                dialog.ViewModel.UseExistingAuthorization(
+                    this.serviceProvider.GetService<IAuthorization>());
                 dialog.ShowDialog(this);
             }
         }
