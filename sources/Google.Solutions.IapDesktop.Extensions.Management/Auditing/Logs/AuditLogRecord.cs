@@ -70,6 +70,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
     {
         [JsonProperty("principalEmail")]
         public string PrincipalEmail { get; set; }
+
+        [JsonProperty("principalSubject")]
+        public string PrincipalSubject { get; set; }
     }
 
     public class StatusInfo

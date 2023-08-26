@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
             Assert.AreEqual(7, e.Status.Code);

@@ -450,5 +450,91 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var r = LogRecord.Deserialize(json);
             Assert.IsFalse(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
         }
+
+        [Test]
+        public void WhenAuthenticatedUsingWorkforceIdentitzFederation_ThenFieldsAreExtracted()
+        {
+            var json = @"
+             {
+              'protoPayload': {
+                '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                'status': {},
+                'authenticationInfo': {
+                  'principalSubject': 'principal://iam.googleapis.com/locations/global/workforcePools/pool-1/subject/subject@example.com'
+                },
+                'requestMetadata': {
+                },
+                'serviceName': 'iap.googleapis.com',
+                'methodName': 'AuthorizeUser',
+                'authorizationInfo': [
+                  {
+                    'resource': 'projects/111/iap_tunnel/zones/asia-southeast1-b/instances/2407816900433110951',
+                    'permission': 'iap.tunnelInstances.accessViaIAP',
+                    'granted': true,
+                    'resourceAttributes': {
+                      'service': 'iap.googleapis.com',
+                      'type': 'iap.googleapis.com/TunnelInstance'
+                    }
+                  }
+                ],
+                'resourceName': '24078',
+                'request': {
+                  '@type': 'type.googleapis.com/cloud.security.gatekeeper.AuthorizeUserRequest',
+                  'httpRequest': {
+                    'url': ''
+                  }
+                },
+                'metadata': {
+                  'oauth_client_id': '',
+                  'unsatisfied_access_levels': [
+                    'accessPolicies/1/accessLevels/level-1'
+                  ],
+                  'device_state': 'Unknown',
+                  'device_id': '',
+                  'request_id': '964'
+                }
+              },
+              'insertId': '1q5np',
+              'resource': {
+                'type': 'gce_instance',
+                'labels': {
+                  'instance_id': '2407816',
+                  'zone': 'asia-southeast1-b',
+                  'project_id': 'project-1'
+                }
+              },
+              'timestamp': '2023-08-25T00:28:09.909737076Z',
+              'severity': 'INFO',
+              'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
+              'operation': {
+                'id': 'ZJHS-F5Y7-C6CN-PK3O-PKRP-DHYX',
+                'producer': 'iap.googleapis.com'
+              },
+              'receiveTimestamp': '2023-08-25T00:28:10.903692392Z'
+            }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+
+            var e = (AuthorizeUserTunnelEvent)r.ToEvent();
+
+            Assert.AreEqual(
+                "principal://iam.googleapis.com/locations/global/workforcePools/pool-1/subject/subject@example.com",
+                e.Principal);
+            Assert.AreEqual(2407816, e.InstanceId);
+            Assert.AreEqual("asia-southeast1-b", e.Zone);
+            Assert.AreEqual("project-1", e.ProjectId);
+            Assert.AreEqual("INFO", e.Severity);
+            Assert.IsNull(e.SourceHost);
+            Assert.IsNull(e.UserAgent);
+            Assert.IsNull(e.DestinationHost);
+            Assert.IsNull(e.DestinationPort);
+
+            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.IsNull(e.DeviceId);
+            Assert.AreEqual("Unknown", e.DeviceState);
+
+            Assert.AreEqual("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent)", e.Message);
+        }
     }
 }

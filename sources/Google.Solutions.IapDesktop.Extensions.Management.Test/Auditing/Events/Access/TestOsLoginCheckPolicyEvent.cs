@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.PrincipalEmail);
+            Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsTrue(e.IsSuccess);
             Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN granted", e.Message);
         }
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.PrincipalEmail);
+            Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsFalse(e.IsSuccess);
             Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN denied", e.Message);
         }
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.PrincipalEmail);
+            Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsFalse(e.IsSuccess);
             Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN denied", e.Message);
         }

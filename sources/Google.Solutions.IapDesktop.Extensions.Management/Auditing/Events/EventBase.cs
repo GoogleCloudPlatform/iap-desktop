@@ -37,18 +37,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 
         public string Severity => this.LogRecord.Severity;
 
-        public string PrincipalEmail => this.LogRecord.ProtoPayload?
-            .AuthenticationInfo?
-            .PrincipalEmail;
+        public string Principal
+        {
+            get
+            {
+                if (this.LogRecord.ProtoPayload?
+                    .AuthenticationInfo?
+                    .PrincipalEmail is string email && email != null)
+                {
+                    //
+                    // 1p principal.
+                    //
+                    return email;
+                }
 
-        public StatusInfo Status => this.LogRecord.ProtoPayload?.Status?.Message != null
-            ? this.LogRecord.ProtoPayload?.Status
-            : null;
+                if (this.LogRecord.ProtoPayload?
+                    .AuthenticationInfo?
+                    .PrincipalSubject is string subject && subject != null)
+                {
+                    //
+                    // 3p principal.
+                    //
+                    return subject;
+                }
 
-        public string SourceHost =>
-            this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
-        public string UserAgent =>
-            this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
+                return null;
+            }
+        }
+
+        public StatusInfo Status
+        {
+            get => this.LogRecord.ProtoPayload?.Status?.Message != null
+                ? this.LogRecord.ProtoPayload?.Status
+                : null;
+        }
+
+        public string SourceHost
+        {
+            get => this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
+        }
+
+        public string UserAgent
+        {
+            get => this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
+        }
 
         public string UserAgentShort
         {
