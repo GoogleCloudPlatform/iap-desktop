@@ -71,9 +71,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // they must be thread-safe.
             //
             this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
+            this.IntroductionText = ObservableProperty.Build(
+                "Sign in to access your \r\nGoogle Cloud VMs.");
             this.Version = ObservableProperty.Build($"Version {install.CurrentVersion}");
+            this.IsShowOptionsMenuEnabled = ObservableProperty.Build(true);
+
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
-            this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
+            this.IsSignOnControlVisible = ObservableProperty.Build(true, this);
             this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
             this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(ChromeBrowser.IsAvailable);
             this.IsAuthorizationComplete = ObservableProperty.Build(false, this);
@@ -97,7 +101,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 this.IsChromeSingnInButtonEnabled);
             this.ShowOptionsCommand = ObservableCommand.Build(
                 string.Empty,
-                () => this.ShowOptions?.Invoke(this, EventArgs.Empty));
+                () => this.ShowOptions?.Invoke(this, EventArgs.Empty),
+                this.IsShowOptionsMenuEnabled);
         }
 
         private protected virtual Authorization CreateAuthorization()
@@ -207,26 +212,46 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
         public ObservableProperty<string> WindowTitle { get; }
 
+        public ObservableProperty<string> IntroductionText { get; }
+
         public ObservableProperty<string> Version { get; }
 
-        public ObservableProperty<bool> IsWaitControlVisible { get; set; }
+        public ObservableProperty<bool> IsWaitControlVisible { get; }
 
-        public ObservableProperty<bool> IsSignOnControlVisible { get; set; }
+        public ObservableProperty<bool> IsSignOnControlVisible { get; }
 
-        public ObservableProperty<bool> IsCancelButtonVisible { get; set; }
+        public ObservableProperty<bool> IsCancelButtonVisible { get; }
 
         public ObservableProperty<bool> IsChromeSingnInButtonEnabled { get; }
+
+        public ObservableProperty<bool> IsShowOptionsMenuEnabled { get; }
 
         public ObservableProperty<bool> IsAuthorizationComplete { get; }
 
         //---------------------------------------------------------------------
-        // Output properties.
+        // Input/output properties.
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Authorization result. Set after a successful authorization.
+        /// Authorization
+        /// * If set to null, a new Authorization is created.
+        /// * If non-null, a reauthorization is performed.
         /// </summary>
         public IAuthorization Authorization { get; private set; }
+
+        /// <summary>
+        /// Reauthorize using an existing authorization object.
+        /// </summary>
+        public void UseExistingAuthorization(IAuthorization authorization)
+        {
+            Debug.Assert(this.Authorization == null);
+
+            this.Authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.WindowTitle.Value = "Session expired";
+            this.IsShowOptionsMenuEnabled.Value = false;
+            this.IntroductionText.Value =
+                "Your session has expired.\nSign in again to continue using IAP Destop.";
+        }
 
         //---------------------------------------------------------------------
         // Observable commands.
@@ -314,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 {
                     try
                     {
-                        Profile.Auth.Authorization authorization;
+                        Authorization authorization;
                         if (this.Authorization == null)
                         {
                             //
@@ -327,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                             //
                             // We're reauthorizing. Don't let the user change issuers.
                             //
-                            authorization = (Profile.Auth.Authorization)this.Authorization;
+                            authorization = (Authorization)this.Authorization;
                         }
 
                         await authorization

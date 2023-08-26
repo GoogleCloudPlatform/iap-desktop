@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task SignInSuccessful()
+        public async Task SignInForInitialAuthorization()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -310,6 +310,65 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(viewModel.Authorization);
+
+                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.IsFalse(viewModel.IsWaitControlVisible.Value);
+                Assert.IsTrue(viewModel.IsAuthorizationComplete.Value);
+            }
+        }
+
+        [Test]
+        public async Task SignInForReauthorization()
+        {
+            IAuthorization authorization;
+            using (var view = new Form())
+            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
+            {
+                View = view
+            })
+            {
+                var tokenResponse = new TokenResponse()
+                {
+                    Scope = "email"
+                };
+
+                viewModel.Client
+                    .Setup(a => a.AuthorizeAsync(
+                        It.IsAny<ICodeReceiver>(),
+                        It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Mock<IOidcSession>().Object);
+
+                await viewModel.SignInWithDefaultBrowserCommand
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                authorization = viewModel.Authorization;
+            }
+
+            // Reauthorize.
+            using (var view = new Form())
+            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
+            {
+                View = view
+            })
+            {
+                viewModel.UseExistingAuthorization(authorization);
+                var tokenResponse = new TokenResponse()
+                {
+                    Scope = "email"
+                };
+
+                viewModel.Client
+                    .Setup(a => a.AuthorizeAsync(
+                        It.IsAny<ICodeReceiver>(),
+                        It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new Mock<IOidcSession>().Object);
+
+                await viewModel.SignInWithDefaultBrowserCommand
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                Assert.AreSame(authorization, viewModel.Authorization);
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);

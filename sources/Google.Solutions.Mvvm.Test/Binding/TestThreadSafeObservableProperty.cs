@@ -36,6 +36,20 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
+        public void InitialValue()
+        {
+            using (var viewModel = new SampleViewModel())
+            using (var form = new Form())
+            {
+                viewModel.View = form;
+
+                var property = ObservableProperty.Build("initial", viewModel);
+
+                Assert.AreEqual("initial", property.Value);
+            }
+        }
+
+        [Test]
         public async Task RaisePropertyChange()
         {
             using (var viewModel = new SampleViewModel())

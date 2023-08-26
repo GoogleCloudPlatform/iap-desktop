@@ -94,8 +94,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         [Test]
         public async Task WhenReauthRequired_ThenReauthConfirmationIsPrompted()
         {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-
             var funcCall = 0;
             var result = await this.jobService
                 .RunAsync(
@@ -119,14 +117,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual("data", result);
 
-            this.jobHost.Verify(h => h.ConfirmReauthorization(), Times.Once);
+            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
 
         [Test]
         public async Task WhenReauthConfirmed_ThenFuncIsRepeated()
         {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-
             var funcCall = 0;
             var result = await this.jobService
                 .RunAsync(
@@ -153,9 +149,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenReauthDenied_ThenTaskCanceledExceptionIsPopagated()
+        public void WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated()
         {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(false);
+            this.jobHost
+                .Setup(h => h.Reauthorize())
+                .Throws(new TaskCanceledException("reauth aborted"));
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
@@ -171,41 +169,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     }).Wait();
             });
 
-            this.jobHost.Verify(h => h.ConfirmReauthorization(), Times.Once);
+            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
-
-        [Test]
-        public void WhenReauthFailed_ThenExceptionIsPropagated()
-        {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authorization
-                .Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ApplicationException());
-
-            ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
-            {
-                this.jobService.RunAsync<string>(
-                    new JobDescription("test"),
-                    token =>
-                    {
-                        throw new TokenResponseException(
-                            new TokenErrorResponse()
-                            {
-                                Error = "invalid_grant"
-                            });
-                    }).Wait();
-            });
-        }
-
-
-
-
 
         [Test]
         public async Task WhenReauthRequired_ThenReauthConfirmationIsPrompted_WithAggregateException()
         {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-
             var funcCall = 0;
             var result = await this.jobService
                 .RunAsync(
@@ -230,14 +199,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual("data", result);
 
-            this.jobHost.Verify(h => h.ConfirmReauthorization(), Times.Once);
+            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
 
         [Test]
         public async Task WhenReauthConfirmed_ThenFuncIsRepeated_WithAggregateException()
         {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-
             var funcCall = 0;
             var result = await this.jobService
                 .RunAsync(
@@ -265,9 +232,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenReauthDenied_ThenTaskCanceledExceptionIsPopagated_WithAggregateException()
+        public void WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated_WithAggregateException()
         {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(false);
+            this.jobHost
+                .Setup(h => h.Reauthorize())
+                .Throws(new TaskCanceledException("reauth aborted"));
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
@@ -284,31 +253,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     }).Wait();
             });
 
-            this.jobHost.Verify(h => h.ConfirmReauthorization(), Times.Once);
-        }
-
-        [Test]
-        public void WhenReauthFailed_ThenExceptionIsPropagated_WithAggregateException()
-        {
-            this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authorization
-                .Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ApplicationException());
-
-            ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
-            {
-                this.jobService.RunAsync<string>(
-                    new JobDescription("test"),
-                    token =>
-                    {
-                        throw new AggregateException(
-                            new TokenResponseException(
-                                new TokenErrorResponse()
-                                {
-                                    Error = "invalid_grant"
-                                }));
-                    }).Wait();
-            });
+            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
     }
 }

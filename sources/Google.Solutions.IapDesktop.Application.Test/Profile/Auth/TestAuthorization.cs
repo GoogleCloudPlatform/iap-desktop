@@ -145,33 +145,5 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             Assert.AreSame(firstSession.Object, authorization.Session);
             Assert.AreEqual(1, eventsRaised);
         }
-
-        //---------------------------------------------------------------------
-        // Reauthorize.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task ReauthorizeRaisesEvent()
-        {
-            var client = CreateClient();
-            client
-                .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
-                .ReturnsAsync(new Mock<IOidcSession>().Object);
-            var authorization = new Authorization(
-                client.Object,
-                new Mock<IDeviceEnrollment>().Object);
-
-            int eventsRaised = 0;
-            authorization.BeforeReauthorize += (_, __) => eventsRaised++;
-
-            await authorization
-                .AuthorizeAsync(BrowserPreference.Default, CancellationToken.None)
-                .ConfigureAwait(false);
-            await authorization
-                .ReauthorizeAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual(1, eventsRaised);
-        }
     }
 }

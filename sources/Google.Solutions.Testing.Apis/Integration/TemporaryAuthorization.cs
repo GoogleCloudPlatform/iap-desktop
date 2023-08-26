@@ -99,11 +99,6 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         public string Username { get; }
 
-        public Task ReauthorizeAsync(CancellationToken token)
-        {
-            throw new NotImplementedException();
-        }
-
         //---------------------------------------------------------------------
         // IOidcSession.
         //---------------------------------------------------------------------

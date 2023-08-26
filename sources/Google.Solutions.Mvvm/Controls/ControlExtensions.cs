@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -44,6 +45,14 @@ namespace Google.Solutions.Mvvm.Controls
                     .SelectMany(child => child.AllControls()));
         }
 
+        public static void CenterHorizontally(
+            this Control control,
+            Form form)
+        {
+            control.Location = new Point(
+                (form.Width - control.Width) / 2,
+                control.Location.Y);
+        }
 
         /// <summary>
         /// Check that tab indexes have been properly assigned.

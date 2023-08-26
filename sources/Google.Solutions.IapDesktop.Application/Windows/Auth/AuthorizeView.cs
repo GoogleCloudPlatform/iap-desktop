@@ -47,6 +47,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // Show the right icon in Alt+Tab.
             //
             this.Icon = Resources.logo;
+
+            this.introLabel.Location = new System.Drawing.Point(0, 116);
+            this.introLabel.Size = new System.Drawing.Size(this.Width, 40);
+            this.signInButton.CenterHorizontally(this);
         }
 
         public void Bind(AuthorizeViewModel viewModel, IBindingContext bindingContext)
@@ -64,6 +68,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 c => c.Text,
                 viewModel,
                 m => m.WindowTitle,
+                bindingContext);
+            this.introLabel.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
+                m => m.IntroductionText,
                 bindingContext);
             this.spinner.BindReadonlyObservableProperty(
                 c => c.Visible,
@@ -144,18 +153,24 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             this.signInButton.NotifyDefault(false);
 
-            //
-            // Try to authorize using saved credentials.
-            //
-            // NB. Wait until handle has been created so that BeginInvoke
-            // calls work properly.
-            //
-            this.HandleCreated += (_, __) => viewModel
-                .TryLoadExistingAuthorizationCommand
-                .ExecuteAsync(CancellationToken.None)
-                .ContinueWith(
-                    t => Debug.Assert(false, "Should never throw an exception"),
-                    TaskContinuationOptions.OnlyOnFaulted);
+            if (viewModel.Authorization == null)
+            {
+                //
+                // There's no authorization object yet, so this isn't a
+                // reauthorization, but an initial authorization.
+                //
+                // Try to authorize using saved credentials.
+                //
+                // NB. Wait until handle has been created so that BeginInvoke
+                // calls work properly.
+                //
+                this.HandleCreated += (_, __) => viewModel
+                    .TryLoadExistingAuthorizationCommand
+                    .ExecuteAsync(CancellationToken.None)
+                    .ContinueWith(
+                        t => Debug.Assert(false, "Should never throw an exception"),
+                        TaskContinuationOptions.OnlyOnFaulted);
+            }
         }
     }
 }
