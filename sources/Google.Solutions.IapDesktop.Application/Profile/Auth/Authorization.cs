@@ -85,12 +85,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Raised before reauthorizations. Subscribers can use this event
-        /// to show a UI and/or modify the browser preference.
-        /// </summary>
-        public event EventHandler<ReauthorizeEventArgs> BeforeReauthorize;
-
-        /// <summary>
         /// Try to authorize using an existing refresh token.
         /// </summary>
         public async Task<bool> TryAuthorizeSilentlyAsync(
@@ -138,28 +132,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             SetOrSpliceSession(newSession);
         }
 
-        public Task ReauthorizeAsync(CancellationToken cancellationToken)
-        {
-            Debug.Assert(this.session != null);
-
-            //
-            // Give the UI a chance to react and decide which browser to use.
-            //
-            var args = new ReauthorizeEventArgs();
-            this.BeforeReauthorize?.Invoke(this, args);
-
-            return AuthorizeAsync(args.BrowserPreference, cancellationToken);
-        }
-
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
-
-        public class ReauthorizeEventArgs : EventArgs
-        {
-            public BrowserPreference BrowserPreference { get; set; } 
-                = BrowserPreference.Default;
-        }
 
         private class BrowserCodeReceiver : LoopbackCodeReceiver 
         {

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
@@ -168,35 +169,31 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             {
                 try
                 {
-                    return await RunWithUserFeedbackAsync(
-                        jobDescription,
-                        jobFunc).ConfigureAwait(true);  // Continue on UI thread.
+                    return await 
+                        RunWithUserFeedbackAsync(
+                            jobDescription,
+                            jobFunc)
+                        .ConfigureAwait(true);  // Continue on UI thread.
                 }
                 catch (Exception e) when (e.IsReauthError())
                 {
+                    //
                     // Reauth required or authorization has been revoked.
+                    //
                     if (attempt >= 1)
                     {
+                        //
                         // Retrying a second time is pointless.
+                        //
                         throw;
-                    }
-                    else if (this.host.ConfirmReauthorization()) // TODO: b/293968777: Remove confirmation call
-                    {
-                        // Reauthorize. This might take a while since the user has to use 
-                        // a browser - show the WaitDialog in the meantime.
-                        await RunWithUserFeedbackAsync(
-                            new JobDescription("Authorizing..."),
-                            async reauthCancellationToken =>
-                            {
-                                await this.authorization
-                                    .ReauthorizeAsync(reauthCancellationToken)
-                                    .ConfigureAwait(true);  // Continue on UI thread.
-                                return default(T);
-                            }).ConfigureAwait(true);        // Continue on UI thread.
                     }
                     else
                     {
-                        throw new TaskCanceledException("Reauthorization aborted");
+                        //
+                        // Request user to reauthorize, then we'll try again.
+                        //
+                        Debug.Assert(!this.host.Invoker.InvokeRequired);
+                        this.host.Reauthorize();
                     }
                 }
             }
@@ -235,12 +232,25 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         ForegroundFeedback,
     }
 
+    /// <summary>
+    /// Interface to implement by a window that controls jobs.
+    /// </summary>
     public interface IJobHost
     {
+        /// <summary>
+        /// Invoker used by window thread.
+        /// </summary>
         ISynchronizeInvoke Invoker { get; }
 
-        bool ConfirmReauthorization();
+        /// <summary>
+        /// Reauthorize, called when a job failed because the
+        /// session expired.
+        /// </summary>
+        void Reauthorize();
 
+        /// <summary>
+        /// Display feedback about a job.
+        /// </summary>
         IJobUserFeedback ShowFeedback(
             JobDescription jobDescription,
             CancellationTokenSource cts);

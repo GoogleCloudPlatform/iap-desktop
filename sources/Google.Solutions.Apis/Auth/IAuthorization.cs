@@ -19,10 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth
 {
@@ -42,11 +39,6 @@ namespace Google.Solutions.Apis.Auth
         /// Curent OIDC session.
         /// </summary>
         IOidcSession Session { get; }
-
-        /// <summary>
-        /// Reauthorize, only intended to be used by jobs.
-        /// </summary>
-        Task ReauthorizeAsync(CancellationToken token);
 
         /// <summary>
         /// Device. This is non-null, but the enrollment might be

@@ -110,7 +110,6 @@ namespace Google.Solutions.Mvvm.Binding
     internal class ThreadSafeObservableProperty<T> : ObservableProperty<T>
     {
         private readonly ViewModelBase viewModel;
-        private T value;
 
         internal ThreadSafeObservableProperty(
             ViewModelBase viewModel,
@@ -142,13 +141,13 @@ namespace Google.Solutions.Mvvm.Binding
                 // detached from the view. Therefore, don't even try to
                 // acuire a lock (which isn't necessary anyway).
                 //
-                return this.value;
+                return base.Value;
             }
             set
             {
                 lock (this.Invoker)
                 {
-                    this.value = value;
+                    base.Value = value;
                     RaisePropertyChange();
                 }
             }
