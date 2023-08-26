@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     partial class AuthorizeView
     {
@@ -67,6 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.gradient = new System.Windows.Forms.PictureBox();
             this.signInButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
             this.versionLabel = new System.Windows.Forms.Label();
+            this.separatorMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.showOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.watermarkPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gradient)).BeginInit();
@@ -98,10 +100,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.signInMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.signInWithChromeMenuItem,
             this.signInWithChromeGuestMenuItem,
-            this.signInWithDefaultBrowserMenuItem});
+            this.signInWithDefaultBrowserMenuItem,
+            this.separatorMenuItem,
+            this.showOptionsToolStripMenuItem});
             this.signInMenuStrip.Name = "signInMenuStrip";
             this.signInMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.signInMenuStrip.Size = new System.Drawing.Size(258, 70);
+            this.signInMenuStrip.Size = new System.Drawing.Size(258, 120);
             // 
             // signInWithChromeMenuItem
             // 
@@ -127,12 +131,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.introLabel.AutoSize = true;
             this.introLabel.BackColor = System.Drawing.Color.Transparent;
             this.introLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.introLabel.Location = new System.Drawing.Point(45, 116);
+            this.introLabel.Location = new System.Drawing.Point(92, 116);
             this.introLabel.Name = "introLabel";
-            this.introLabel.Size = new System.Drawing.Size(248, 51);
+            this.introLabel.Size = new System.Drawing.Size(151, 34);
             this.introLabel.TabIndex = 5;
-            this.introLabel.Text = "Sign in and start using IAP Desktop \r\nto securely connect to your Linux and \r\nWin" +
-    "dows VMs";
+            this.introLabel.Text = "Sign in to access your \r\nGoogle Cloud VMs.";
+            this.introLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // spinner
             // 
@@ -181,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.signInButton.BackColor = System.Drawing.Color.White;
             this.signInButton.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.GoogleSignIn_24;
             this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.signInButton.Location = new System.Drawing.Point(99, 264);
+            this.signInButton.Location = new System.Drawing.Point(99, 240);
             this.signInButton.Menu = this.signInMenuStrip;
             this.signInButton.Name = "signInButton";
             this.signInButton.Size = new System.Drawing.Size(137, 36);
@@ -200,6 +204,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.versionLabel.TabIndex = 9;
             this.versionLabel.Text = "(..)";
             this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // separatorMenuItem
+            // 
+            this.separatorMenuItem.Name = "separatorMenuItem";
+            this.separatorMenuItem.Size = new System.Drawing.Size(254, 6);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.showOptionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.showOptionsToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+            this.showOptionsToolStripMenuItem.Text = "&Options...";
             // 
             // AuthorizeView
             // 
@@ -243,5 +258,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
         private Mvvm.Controls.HeaderLabel headerLabel;
         private System.Windows.Forms.PictureBox watermarkPictureBox;
         private System.Windows.Forms.Label versionLabel;
+        private System.Windows.Forms.ToolStripSeparator separatorMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showOptionsToolStripMenuItem;
     }
 }

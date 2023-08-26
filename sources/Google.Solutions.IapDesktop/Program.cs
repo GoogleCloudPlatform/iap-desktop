@@ -43,7 +43,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
-using Google.Solutions.IapDesktop.Application.Windows.Authorization;
+using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
@@ -258,6 +258,15 @@ namespace Google.Solutions.IapDesktop
                     }
                     catch (OperationCanceledException)
                     { }
+                };
+
+                dialog.ViewModel.ShowOptions += (_, args) =>
+                {
+                    using (var scopeDialog = serviceProvider
+                        .GetDialog<AuthorizeOptionsView, AuthorizeOptionsViewModel>(theme))
+                    {
+                        scopeDialog.ShowDialog(dialog.ViewModel.View);
+                    }
                 };
 
                 if (dialog.ShowDialog(null) == DialogResult.OK)
@@ -505,6 +514,8 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
+                preAuthLayer.AddTransient<AuthorizeOptionsView>();
+                preAuthLayer.AddTransient<AuthorizeOptionsViewModel>();
                 preAuthLayer.AddTransient<OAuthScopeNotGrantedView>();
                 preAuthLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 preAuthLayer.AddTransient<PropertiesView>();

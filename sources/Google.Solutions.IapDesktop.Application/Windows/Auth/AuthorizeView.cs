@@ -29,7 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("UI")]
     public partial class AuthorizeView : CompositeForm, IView<AuthorizeViewModel>
@@ -121,6 +121,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
             this.signInWithChromeGuestMenuItem.BindObservableCommand(
                 viewModel,
                 m => m.SignInWithChromeGuestModeCommand,
+                bindingContext);
+            this.showOptionsToolStripMenuItem.BindObservableCommand(
+                viewModel,
+                m => m.ShowOptionsCommand,
                 bindingContext);
 
             viewModel.IsAuthorizationComplete.PropertyChanged += (_, __) =>

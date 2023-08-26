@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     partial class AccessInfoFlyoutView
     {

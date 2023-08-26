@@ -29,7 +29,7 @@ using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.IapDesktop.Application.Windows.Authorization;
+using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -41,7 +41,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 {
     [Apartment(ApartmentState.STA)]
     [TestFixture]

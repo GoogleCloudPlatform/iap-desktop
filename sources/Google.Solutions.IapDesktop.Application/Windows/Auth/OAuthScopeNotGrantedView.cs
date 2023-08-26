@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,39 +21,23 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
-using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("UI")]
-    public partial class AccessInfoFlyoutView : FlyoutWindow, IView<AccessInfoViewModel>
+    public partial class OAuthScopeNotGrantedView
+        : Form, IView<OAuthScopeNotGrantedViewModel>
     {
-        public AccessInfoFlyoutView()
+        public OAuthScopeNotGrantedView()
         {
             InitializeComponent();
         }
 
         public void Bind(
-            AccessInfoViewModel viewModel,
+            OAuthScopeNotGrantedViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.pscLink.Text = viewModel.PrivateServiceConnectText;
-            this.pscLink.LinkClicked += (_, __) => viewModel.OpenPrivateServiceConnectDetails();
-
-            this.dcaLink.Text = viewModel.DeviceCertificateLinkText;
-            this.dcaLink.LinkClicked += (_, __) => viewModel.OpenDeviceCertificateDetails(this.FlyoutOwner);
-
-            this.closeButton.Click += (_, __) => Close();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            e.Graphics.DrawLine(
-                SystemPens.ControlDark,
-                new Point(0, 28), new Point(this.Width, 28));
         }
     }
 }

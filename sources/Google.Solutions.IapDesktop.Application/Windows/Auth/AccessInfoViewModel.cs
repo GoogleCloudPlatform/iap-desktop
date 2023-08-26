@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Authorization
+namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     public class AccessInfoViewModel : ViewModelBase
     {
