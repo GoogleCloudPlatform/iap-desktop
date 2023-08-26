@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             this.list.BindColumn(1, e => GetInstanceName(e));
             this.list.BindColumn(2, e => e.Severity);
             this.list.BindColumn(3, e => e.Message);
-            this.list.BindColumn(4, e => e.PrincipalEmail);
+            this.list.BindColumn(4, e => e.Principal);
             this.list.BindColumn(5, e => e.DeviceId);
             this.list.BindColumn(6, e => e.DeviceState);
             this.list.BindColumn(7, e => string.Join(", ", e.AccessLevels.Select(l => l.AccessLevel)));

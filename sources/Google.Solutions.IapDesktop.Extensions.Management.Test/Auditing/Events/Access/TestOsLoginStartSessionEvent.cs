@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.PrincipalEmail);
+            Assert.AreEqual("bob@example.com", e.Principal);
             Assert.AreEqual("CHALLENGE_REQUIRED", e.ChallengeStatus);
             Assert.AreEqual("Start OS Login 2FA session for bob@example.com: CHALLENGE_REQUIRED", e.Message);
         }
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("bob@example.com", e.PrincipalEmail);
+            Assert.AreEqual("bob@example.com", e.Principal);
             Assert.AreEqual("NO_AVAILABLE_CHALLENGES", e.ChallengeStatus);
             Assert.AreEqual("Start OS Login 2FA session for bob@example.com: NO_AVAILABLE_CHALLENGES", e.Message);
         }

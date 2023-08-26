@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(20008111111111111, e.InstanceId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(20008111111111111, e.InstanceId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(37848154511111, e.InstanceId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
@@ -319,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(0, e.InstanceId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
@@ -408,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(20008111111111111, e.InstanceId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
