@@ -50,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private void InitializeComponent()
         {
             this.pscBox = new System.Windows.Forms.GroupBox();
+            this.pscLink = new System.Windows.Forms.LinkLabel();
             this.pscProxyNote = new System.Windows.Forms.Label();
             this.pscEndpointLabel = new System.Windows.Forms.Label();
             this.pscEndpointTextBox = new System.Windows.Forms.TextBox();
@@ -62,7 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.connectionBox = new System.Windows.Forms.GroupBox();
             this.connectionPoolSizeLabel = new System.Windows.Forms.Label();
             this.connectionLimitUpDown = new System.Windows.Forms.NumericUpDown();
-            this.pscLink = new System.Windows.Forms.LinkLabel();
             this.pscBox.SuspendLayout();
             this.dcaBox.SuspendLayout();
             this.connectionBox.SuspendLayout();
@@ -78,15 +78,25 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.pscBox.Controls.Add(this.enablePscCheckBox);
             this.pscBox.Location = new System.Drawing.Point(3, 3);
             this.pscBox.Name = "pscBox";
-            this.pscBox.Size = new System.Drawing.Size(336, 164);
+            this.pscBox.Size = new System.Drawing.Size(336, 151);
             this.pscBox.TabIndex = 0;
             this.pscBox.TabStop = false;
             this.pscBox.Text = "Private Service Connect:";
             // 
+            // pscLink
+            // 
+            this.pscLink.AutoSize = true;
+            this.pscLink.Location = new System.Drawing.Point(33, 120);
+            this.pscLink.Name = "pscLink";
+            this.pscLink.Size = new System.Drawing.Size(85, 13);
+            this.pscLink.TabIndex = 9;
+            this.pscLink.TabStop = true;
+            this.pscLink.Text = "More information";
+            // 
             // pscProxyNote
             // 
             this.pscProxyNote.AutoSize = true;
-            this.pscProxyNote.Location = new System.Drawing.Point(32, 93);
+            this.pscProxyNote.Location = new System.Drawing.Point(32, 82);
             this.pscProxyNote.Name = "pscProxyNote";
             this.pscProxyNote.Size = new System.Drawing.Size(261, 26);
             this.pscProxyNote.TabIndex = 3;
@@ -95,15 +105,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // pscEndpointLabel
             // 
             this.pscEndpointLabel.AutoSize = true;
-            this.pscEndpointLabel.Location = new System.Drawing.Point(32, 65);
+            this.pscEndpointLabel.Location = new System.Drawing.Point(32, 54);
             this.pscEndpointLabel.Name = "pscEndpointLabel";
-            this.pscEndpointLabel.Size = new System.Drawing.Size(112, 13);
+            this.pscEndpointLabel.Size = new System.Drawing.Size(116, 13);
             this.pscEndpointLabel.TabIndex = 2;
-            this.pscEndpointLabel.Text = "Address (IP or FQDN):";
+            this.pscEndpointLabel.Text = "Endpoint (IP or FQDN):";
             // 
             // pscEndpointTextBox
             // 
-            this.pscEndpointTextBox.Location = new System.Drawing.Point(154, 61);
+            this.pscEndpointTextBox.Location = new System.Drawing.Point(154, 50);
             this.pscEndpointTextBox.Name = "pscEndpointTextBox";
             this.pscEndpointTextBox.Size = new System.Drawing.Size(153, 20);
             this.pscEndpointTextBox.TabIndex = 2;
@@ -114,9 +124,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.enablePscCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enablePscCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enablePscCheckBox.Name = "enablePscCheckBox";
-            this.enablePscCheckBox.Size = new System.Drawing.Size(301, 30);
+            this.enablePscCheckBox.Size = new System.Drawing.Size(291, 17);
             this.enablePscCheckBox.TabIndex = 1;
-            this.enablePscCheckBox.Text = "Use custom Private Service Connect endpoint to connect \r\nto Google APIs";
+            this.enablePscCheckBox.Text = "Use Private Service Connect to connect to Google APIs";
             this.enablePscCheckBox.UseVisualStyleBackColor = true;
             // 
             // dcaBox
@@ -124,9 +134,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.dcaBox.Controls.Add(this.dcaNote);
             this.dcaBox.Controls.Add(this.secureConnectLink);
             this.dcaBox.Controls.Add(this.enableDcaCheckBox);
-            this.dcaBox.Location = new System.Drawing.Point(4, 173);
+            this.dcaBox.Location = new System.Drawing.Point(4, 160);
             this.dcaBox.Name = "dcaBox";
-            this.dcaBox.Size = new System.Drawing.Size(336, 116);
+            this.dcaBox.Size = new System.Drawing.Size(336, 118);
             this.dcaBox.TabIndex = 1;
             this.dcaBox.TabStop = false;
             this.dcaBox.Text = "BeyondCorp:";
@@ -165,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 373);
+            this.label1.Location = new System.Drawing.Point(16, 360);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(171, 13);
             this.label1.TabIndex = 7;
@@ -175,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             this.connectionBox.Controls.Add(this.connectionPoolSizeLabel);
             this.connectionBox.Controls.Add(this.connectionLimitUpDown);
-            this.connectionBox.Location = new System.Drawing.Point(4, 295);
+            this.connectionBox.Location = new System.Drawing.Point(4, 284);
             this.connectionBox.Name = "connectionBox";
             this.connectionBox.Size = new System.Drawing.Size(336, 60);
             this.connectionBox.TabIndex = 8;
@@ -212,16 +222,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             0,
             0,
             0});
-            // 
-            // pscLink
-            // 
-            this.pscLink.AutoSize = true;
-            this.pscLink.Location = new System.Drawing.Point(33, 131);
-            this.pscLink.Name = "pscLink";
-            this.pscLink.Size = new System.Drawing.Size(85, 13);
-            this.pscLink.TabIndex = 9;
-            this.pscLink.TabStop = true;
-            this.pscLink.Text = "More information";
             // 
             // AccessOptionsSheet
             // 
