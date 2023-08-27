@@ -267,6 +267,25 @@ namespace Google.Solutions.Ssh.Native
                 Debug.Assert(context == IntPtr.Zero);
                 Debug.Assert(session == this.session.Handle.DangerousGetHandle());
 
+                // TODO: libssh2 auto-upgrades from ssh-rsa to ssh-rsa2-* if the server
+                //       support it. Create the signature accordingly.
+                //
+                // From RFC4252:
+                //
+                // The value of 'signature' is a signature by the corresponding private
+                // key over the following data, in the following order:
+                // 
+                //   string     session identifier
+                //   byte       SSH_MSG_USERAUTH_REQUEST
+                //   string     user name
+                //   string     service name
+                //   string     "publickey"
+                //   boolean    TRUE
+                //   string     public key algorithm name
+                //   string     public key to be used for authentication
+                //
+
+
                 //
                 // Copy data to managed buffer and create signature.
                 //
