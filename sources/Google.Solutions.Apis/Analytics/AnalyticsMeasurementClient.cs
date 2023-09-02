@@ -12,6 +12,7 @@ namespace Google.Solutions.Apis.Analytics
     /// Client for the Google Analytics Measurement API.
     /// 
     /// For details, see
+    /// https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference
     /// https://developer.chrome.com/docs/extensions/mv3/tut_analytics/
     /// </summary>
     public interface IAnalyticsMeasurementClient

@@ -38,11 +38,16 @@ namespace Google.Solutions.Apis.Analytics
             // Calculate time (in milliseconds) since the last
             // event was sent. This time is counted as "engagement time".
             //
+            // For details about session tracking, see
+            // https://developers.google.com/analytics/devguides/collection/protocol/ga4/sending-events.
+            //
             var nowMsec = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var timeSinceLastEventMsec =
                 nowMsec - Interlocked.Exchange(ref this.lastEventMsec, nowMsec);
 
-            yield return new KeyValuePair<string, string>("engagement_time_msec", timeSinceLastEventMsec.ToString());
+            yield return new KeyValuePair<string, string>(
+                "engagement_time_msec", 
+                timeSinceLastEventMsec.ToString());
 
             yield return new KeyValuePair<string, string>("session_id", this.Id.ToString());
 
