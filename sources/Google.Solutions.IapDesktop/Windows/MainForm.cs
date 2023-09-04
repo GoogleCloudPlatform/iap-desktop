@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             //
             // Register this window with the binding context so that any
-            // error dialos can use this window as owner.
+            // error dialogs can use this window as owner.
             //
             ((ViewBindingContext)this.bindingContext).SetCurrentMainWindow(this);
 

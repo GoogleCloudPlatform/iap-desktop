@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCommandDisabled_ThenButtonIsDisabled()
+        public void WhenButtonCommandDisabled_ThenButtonIsDisabled()
         {
             var commandAvailable = ObservableProperty.Build(false);
             var command = ObservableCommand.Build(
@@ -77,7 +77,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandAvailable_ThenButtonIsEnabled()
+        public void WhenButtonCommandAvailable_ThenButtonIsEnabled()
         {
             var commandAvailable = ObservableProperty.Build(true);
             var command = ObservableCommand.Build(
@@ -112,7 +112,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandIsExecuting_ThenButtonIsDisabled()
+        public void WhenButtonCommandIsExecuting_ThenButtonIsDisabled()
         {
             var button = new Button();
             var command = ObservableCommand.Build(
@@ -146,7 +146,42 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandThrowsException_ThenContextIsNotified()
+        public void WhenButtonCommandSucceeds_ThenContextIsNotified()
+        {
+            var button = new Button();
+            var command = ObservableCommand.Build(
+                "Command name",
+                () => Task.CompletedTask);
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                form.Controls.Add(button);
+
+                var bindingContext = new Mock<IBindingContext>();
+                button.BindObservableCommand(
+                    viewModel,
+                    m => m.Command,
+                    bindingContext.Object);
+
+                form.Show();
+
+                button.PerformClick();
+
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandExecuted(
+                        It.Is<ICommand>(c => c == command)),
+                    Times.Once);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenButtonCommandThrowsException_ThenContextIsNotified()
         {
             var button = new Button();
             var command = ObservableCommand.Build(
@@ -180,8 +215,9 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Close();
             }
         }
+
         [Test]
-        public void WhenCommandThrowsTaskCancelledException_ThenContextIsNotNotified()
+        public void WhenButtonCommandThrowsTaskCancelledException_ThenContextIsNotNotified()
         {
             var button = new Button();
             var command = ObservableCommand.Build(
@@ -217,7 +253,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandTextNotEmpty_ThenButtonTextIsUpdated()
+        public void WhenButtonCommandTextNotEmpty_ThenButtonTextIsUpdated()
         {
             var button = new Button()
             {
@@ -249,7 +285,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandTextIsNullOrEmpty_ThenButtonTextIsLeftAsIs()
+        public void WhenButtonCommandTextIsNullOrEmpty_ThenButtonTextIsLeftAsIs()
         {
             var button = new Button()
             {
@@ -285,7 +321,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCommandDisabled_ThenToolStripButtonIsDisabled()
+        public void WhenToolStripButtonCommandDisabled_ThenToolStripButtonIsDisabled()
         {
             var commandAvailable = ObservableProperty.Build(false);
             var command = ObservableCommand.Build(
@@ -319,7 +355,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandAvailable_ThenToolStripButtonIsEnabled()
+        public void WhenToolStripButtonCommandAvailable_ThenToolStripButtonIsEnabled()
         {
             var commandAvailable = ObservableProperty.Build(true);
             var command = ObservableCommand.Build(
@@ -356,7 +392,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandIsExecuting_ThenToolStripButtonIsDisabled()
+        public void WhenToolStripButtonCommandIsExecuting_ThenToolStripButtonIsDisabled()
         {
             var button = new ToolStripButton();
             var command = ObservableCommand.Build(
@@ -392,7 +428,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandTextNotEmpty_ThenToolStripButtonTextIsUpdated()
+        public void WhenToolStripButtonCommandTextNotEmpty_ThenToolStripButtonTextIsUpdated()
         {
             var button = new ToolStripButton()
             {
@@ -426,7 +462,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandTextIsNullOrEmpty_ThenToolStripButtonTextIsLeftAsIs()
+        public void WhenToolStripButtonCommandTextIsNullOrEmpty_ThenToolStripButtonTextIsLeftAsIs()
         {
             var button = new ToolStripButton()
             {

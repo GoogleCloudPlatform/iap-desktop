@@ -31,6 +31,11 @@ namespace Google.Solutions.Mvvm.Binding
     public interface IBindingContext
     {
         /// <summary>
+        /// Notify that a command executed successfully.
+        /// </summary>
+        void OnCommandExecuted(ICommand command);
+
+        /// <summary>
         /// Notify that a command failed.
         /// </summary>
         void OnCommandFailed(ICommand command, Exception exception);

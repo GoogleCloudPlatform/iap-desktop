@@ -45,6 +45,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                         .ExecuteAsync(CancellationToken.None)
                         .ConfigureAwait(true);
 
+                    this.bindingContext.OnCommandExecuted(command);
+
                                         if (button.FindForm() is Form form)
                     {
                         //
@@ -106,6 +108,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                     await this.command
                         .ExecuteAsync(CancellationToken.None)
                         .ConfigureAwait(true);
+
+                    this.bindingContext.OnCommandExecuted(command);
 
                                     }
                 catch (Exception e) when (e.IsCancellation())

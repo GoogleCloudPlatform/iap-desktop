@@ -104,11 +104,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             }
         }
 
-        private void OnCommandFailed(IContextCommand<TContext> command, Exception e)
-        {
-            this.bindingContext.OnCommandFailed(command, e);
-        }
-
         public void BindTo(
             ToolStripItemCollection view,
             IBindingContext bindingContext)
@@ -383,6 +378,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                     await this.command
                         .ExecuteAsync(this.container.ContextSource.Context)
                         .ConfigureAwait(true);
+
+                    this.container.bindingContext.OnCommandExecuted(this.command);
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
@@ -390,7 +387,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
                 catch (Exception e)
                 {
-                    this.container.OnCommandFailed(this.command, e);
+                    this.container.bindingContext.OnCommandFailed(this.command, e);
                 }
             }
         }
