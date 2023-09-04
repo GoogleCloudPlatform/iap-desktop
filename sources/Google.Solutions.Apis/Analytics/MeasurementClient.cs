@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Analytics
     /// https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference
     /// https://developer.chrome.com/docs/extensions/mv3/tut_analytics/
     /// </summary>
-    public interface IAnalyticsMeasurementClient : IClient
+    public interface IMeasurementClient : IClient
     {
         /// <summary>
         /// Collect an event.
@@ -49,11 +49,11 @@ namespace Google.Solutions.Apis.Analytics
         Task CollectEventAsync(
             MeasurementSession session,
             string eventName,
-            Dictionary<string, string> parameters,
+            IDictionary<string, string> parameters,
             CancellationToken cancellationToken);
     }
 
-    public class MeasurementClient : IAnalyticsMeasurementClient
+    public class MeasurementClient : IMeasurementClient
     {
         private readonly MeasurementService service;
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Analytics
         public async Task CollectEventAsync(
             MeasurementSession session,
             string eventName,
-            Dictionary<string, string> parameters,
+            IDictionary<string, string> parameters,
             CancellationToken cancellationToken)
         {
             session.ExpectNotNull(nameof(session));
@@ -105,6 +105,7 @@ namespace Google.Solutions.Apis.Analytics
                         {
                             DebugMode = session.DebugMode,
                             ClientId = session.ClientId,
+                            UserId = session.UserId,
                             UserProperties = session
                                 .UserProperties
                                 .EnsureNotNull()
