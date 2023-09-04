@@ -19,36 +19,42 @@
 // under the License.
 //
 
-using System.Diagnostics.Tracing;
+using Google.Solutions.Common.Util;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application
+namespace Google.Solutions.Common.Test.Util
 {
-    /// <summary>
-    /// ETW event source.
-    /// </summary>
-    [EventSource(Name = ProviderName, Guid = ProviderGuid)]
-    internal sealed class ApplicationEventSource : EventSource
+    [TestFixture]
+    public class TestTypeExtensions
     {
-        public const string ProviderName = "Google-IapDesktop-Application";
-        public const string ProviderGuid = "4B23296B-C25A-449C-91F2-897BDABAA1A8";
-
-        public static ApplicationEventSource Log { get; } = new ApplicationEventSource();
-
         //---------------------------------------------------------------------
-        // GUI commands.
+        // FullName.
         //---------------------------------------------------------------------
 
-        [Event(1, Level = EventLevel.Verbose)]
-        public void CommandExecuted(
-            string commandType,
-            string commandText)
-            => WriteEvent(1, commandType, commandText);
+        [Test]
+        public void WhenTypeNotGeneric_ThenFullNameReturnsName()
+        {
+            Assert.AreEqual(
+                typeof(TestTypeExtensions).Name, 
+                typeof(TestTypeExtensions).FullName());
+        }
 
-        [Event(2, Level = EventLevel.Warning)]
-        public void CommandFailed(
-            string commandType,
-            string commandText,
-            string error)
-            => WriteEvent(2, commandType, commandText, error);
+        [Test]
+        public void WhenTypeIsGeneric_ThenFullNameReturnsName()
+        {
+            Assert.AreEqual(
+                "KeyValuePair<String,Int32>",
+                typeof(KeyValuePair<string, int>).FullName());
+        }
+
+        [Test]
+        public void WhenTypeIsNestedGeneric_ThenFullNameReturnsName()
+        {
+            Assert.AreEqual(
+                "KeyValuePair<String,Tuple<String,Int32>>",
+                typeof(KeyValuePair<string, Tuple<string, int>>).FullName());
+        }
     }
 }
