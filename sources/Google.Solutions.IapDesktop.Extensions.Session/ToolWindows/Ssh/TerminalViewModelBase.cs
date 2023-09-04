@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -195,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         {
             // Keep buffer if DEBUG or tracing enabled.
 #if !DEBUG
-            if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (ApplicationTraceSource.Log.Switch.ShouldTrace(TraceEventType.Verbose))
 #endif
             {
                 this.receivedData.Append(args.Data);
@@ -208,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         {
             // Keep buffer if DEBUG or tracing enabled.
 #if !DEBUG
-            if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (ApplicationTraceSource.Log.Switch.ShouldTrace(TraceEventType.Verbose))
 #endif
             {
                 this.sentData.Append(args.Data);
