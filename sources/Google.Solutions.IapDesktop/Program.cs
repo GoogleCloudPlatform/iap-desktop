@@ -515,7 +515,7 @@ namespace Google.Solutions.IapDesktop
                 // Enable telemetry if the user allows it. Do this before
                 // authorization takes place.
                 //
-                preAuthLayer.AddSingleton(new TelemetryCollector(
+                preAuthLayer.AddSingleton<ITelemetryCollector>(new TelemetryCollector(
                     new MeasurementClient(
                         MeasurementClient.CreateEndpoint(),
                         AnalyticsStream.ApiKey,

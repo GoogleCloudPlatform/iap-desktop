@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GeneralOptionsSheet));
             this.updateBox = new System.Windows.Forms.GroupBox();
             this.lastCheckLabel = new System.Windows.Forms.Label();
             this.lastCheckHeaderLabel = new System.Windows.Forms.Label();
@@ -56,8 +57,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.browserIntegrationBox = new System.Windows.Forms.GroupBox();
             this.browserIntegrationLink = new System.Windows.Forms.LinkLabel();
             this.enableBrowserIntegrationCheckBox = new System.Windows.Forms.CheckBox();
+            this.telemetryBox = new System.Windows.Forms.GroupBox();
+            this.telemetryLink = new System.Windows.Forms.LinkLabel();
+            this.enableTelemetryCheckBox = new System.Windows.Forms.CheckBox();
             this.updateBox.SuspendLayout();
             this.browserIntegrationBox.SuspendLayout();
+            this.telemetryBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // updateBox
@@ -113,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // browserIntegrationLink
             // 
             this.browserIntegrationLink.AutoSize = true;
-            this.browserIntegrationLink.Location = new System.Drawing.Point(34, 62);
+            this.browserIntegrationLink.Location = new System.Drawing.Point(31, 62);
             this.browserIntegrationLink.Name = "browserIntegrationLink";
             this.browserIntegrationLink.Size = new System.Drawing.Size(85, 13);
             this.browserIntegrationLink.TabIndex = 2;
@@ -132,10 +137,43 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
     "";
             this.enableBrowserIntegrationCheckBox.UseVisualStyleBackColor = true;
             // 
+            // telemetryBox
+            // 
+            this.telemetryBox.Controls.Add(this.telemetryLink);
+            this.telemetryBox.Controls.Add(this.enableTelemetryCheckBox);
+            this.telemetryBox.Location = new System.Drawing.Point(4, 188);
+            this.telemetryBox.Name = "telemetryBox";
+            this.telemetryBox.Size = new System.Drawing.Size(336, 152);
+            this.telemetryBox.TabIndex = 3;
+            this.telemetryBox.TabStop = false;
+            this.telemetryBox.Text = "Data sharing:";
+            // 
+            // telemetryLink
+            // 
+            this.telemetryLink.AutoSize = true;
+            this.telemetryLink.Location = new System.Drawing.Point(31, 125);
+            this.telemetryLink.Name = "telemetryLink";
+            this.telemetryLink.Size = new System.Drawing.Size(85, 13);
+            this.telemetryLink.TabIndex = 2;
+            this.telemetryLink.TabStop = true;
+            this.telemetryLink.Text = "More information";
+            // 
+            // enableTelemetryCheckBox
+            // 
+            this.enableTelemetryCheckBox.AutoSize = true;
+            this.enableTelemetryCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.enableTelemetryCheckBox.Location = new System.Drawing.Point(16, 24);
+            this.enableTelemetryCheckBox.Name = "enableTelemetryCheckBox";
+            this.enableTelemetryCheckBox.Size = new System.Drawing.Size(303, 95);
+            this.enableTelemetryCheckBox.TabIndex = 1;
+            this.enableTelemetryCheckBox.Text = resources.GetString("enableTelemetryCheckBox.Text");
+            this.enableTelemetryCheckBox.UseVisualStyleBackColor = true;
+            // 
             // GeneralOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.telemetryBox);
             this.Controls.Add(this.browserIntegrationBox);
             this.Controls.Add(this.updateBox);
             this.Name = "GeneralOptionsSheet";
@@ -144,6 +182,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.updateBox.PerformLayout();
             this.browserIntegrationBox.ResumeLayout(false);
             this.browserIntegrationBox.PerformLayout();
+            this.telemetryBox.ResumeLayout(false);
+            this.telemetryBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -157,5 +197,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private System.Windows.Forms.GroupBox browserIntegrationBox;
         private System.Windows.Forms.CheckBox enableBrowserIntegrationCheckBox;
         private System.Windows.Forms.LinkLabel browserIntegrationLink;
+        private System.Windows.Forms.GroupBox telemetryBox;
+        private System.Windows.Forms.LinkLabel telemetryLink;
+        private System.Windows.Forms.CheckBox enableTelemetryCheckBox;
     }
 }

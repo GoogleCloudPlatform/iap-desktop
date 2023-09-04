@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
         public delegate bool QueueUserWorkItem(WaitCallback callback);
 
-        public TelemetryCollector(
+        internal TelemetryCollector(
             IMeasurementClient client,
             IInstall install,
             QueueUserWorkItem queueUserWorkItem)
