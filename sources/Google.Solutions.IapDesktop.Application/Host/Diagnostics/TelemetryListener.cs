@@ -1,7 +1,27 @@
-﻿using Google.Solutions.Apis.Analytics;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Apis.Analytics;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
@@ -14,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
     /// Listens to selected ETW events and reports them as
     /// Measurements to Google Analytics.
     /// </summary>
-    public class TelemetryListener : EventListener // TODO: test
+    public class TelemetryListener : EventListener 
     {
         private bool enabled;
         private readonly MeasurementSession session;
@@ -32,6 +52,17 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             this.queueUserWorkItem = queueUserWorkItem;
             install.ExpectNotNull(nameof(install));
 
+            //
+            // Create a new session and associate all subsequent
+            // measurements with that session.
+            //
+            // To identify "returning users", we use the unique ID
+            // of the installation as client ID. Note that:
+            //
+            // *  The ID is always the same for this user/machine.
+            // *  The ID is not associated with a user's Google identity
+            //    in any way, so telemetry data can't be de-anonymized later.
+            // 
             this.session = new MeasurementSession(install.UniqueId);
         }
 
@@ -47,10 +78,17 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
         private void Collect(
             string eventName,
-            IDictionary<string, string> parameters)
+            EventWrittenEventArgs eventData)
         {
+            var parameters = eventData.PayloadNames
+                .Zip(
+                    eventData.Payload,
+                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString()))
+                .ToDictionary();
+
             //
-            // Force call to be performed on a thread pool thread.
+            // Force call to be performed on a thread pool thread so that we never
+            // block the caller.
             //
             this.queueUserWorkItem(_ =>
             {
@@ -98,14 +136,12 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             {
                 switch (eventData.EventId)
                 {
-                    case 1:// TODO: use constant
-                        Collect(
-                            "app_command",
-                            eventData.PayloadNames
-                                .Zip(
-                                    eventData.Payload, 
-                                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString()))
-                                .ToDictionary());
+                    case ApplicationEventSource.CommandExecutedId:
+                        Collect("app_cmd_executed", eventData);
+                        break;
+
+                    case ApplicationEventSource.CommandFailedId:
+                        Collect("app_cmd_failed", eventData);
                         break;
                 }
             }

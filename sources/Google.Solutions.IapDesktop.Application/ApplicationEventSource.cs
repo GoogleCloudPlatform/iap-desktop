@@ -38,17 +38,20 @@ namespace Google.Solutions.IapDesktop.Application
         // GUI commands.
         //---------------------------------------------------------------------
 
-        [Event(1, Level = EventLevel.Verbose)]
+        public const int CommandExecutedId = 1;
+        public const int CommandFailedId = 2;
+
+        [Event(CommandExecutedId, Level = EventLevel.Verbose)]
         public void CommandExecuted(
             string commandType,
             string commandText)
-            => WriteEvent(1, commandType, commandText);
+            => WriteEvent(CommandExecutedId, commandType, commandText);
 
-        [Event(2, Level = EventLevel.Warning)]
+        [Event(CommandFailedId, Level = EventLevel.Warning)]
         public void CommandFailed(
             string commandType,
             string commandText,
             string error)
-            => WriteEvent(2, commandType, commandText, error);
+            => WriteEvent(CommandFailedId, commandType, commandText, error);
     }
 }
