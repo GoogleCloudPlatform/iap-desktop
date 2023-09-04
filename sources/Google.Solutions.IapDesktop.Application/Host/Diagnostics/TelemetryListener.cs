@@ -14,20 +14,35 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
     /// Listens to selected ETW events and reports them as
     /// Measurements to Google Analytics.
     /// </summary>
-    internal class TelemetryListener : EventListener
+    public class TelemetryListener : EventListener // TODO: test
     {
         private bool enabled;
         private readonly MeasurementSession session;
         private readonly IMeasurementClient client;
+        private readonly QueueUserWorkItem queueUserWorkItem;
+
+        public delegate bool QueueUserWorkItem(WaitCallback callback);
+
+        public TelemetryListener(
+            IMeasurementClient client,
+            IInstall install,
+            QueueUserWorkItem queueUserWorkItem)
+        {
+            this.client = client.ExpectNotNull(nameof(client));
+            this.queueUserWorkItem = queueUserWorkItem;
+            install.ExpectNotNull(nameof(install));
+
+            this.session = new MeasurementSession(install.UniqueId);
+        }
 
         public TelemetryListener(
             IMeasurementClient client,
             IInstall install)
+            : this(
+                  client,
+                  install,
+                  ThreadPool.QueueUserWorkItem)
         {
-            this.client = client.ExpectNotNull(nameof(client));
-            install.ExpectNotNull(nameof(install));
-
-            this.session = new MeasurementSession(install.UniqueId);
         }
 
         private void Collect(
@@ -37,22 +52,17 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             //
             // Force call to be performed on a thread pool thread.
             //
-            _ = Task.Run(async () =>
+            this.queueUserWorkItem(_ =>
             {
-                try
-                {
-                    await this.client
-                        .CollectEventAsync(
-                            this.session,
-                            eventName,
-                            parameters,
-                            CancellationToken.None)
-                        .ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    ApplicationTraceSource.Log.TraceError(e);
-                }
+                _ = this.client
+                    .CollectEventAsync(
+                        this.session,
+                        eventName,
+                        parameters,
+                        CancellationToken.None)
+                    .ContinueWith(
+                        t => ApplicationTraceSource.Log.TraceError(t.Exception),
+                        TaskContinuationOptions.NotOnFaulted);
             });
         }
 
@@ -80,6 +90,10 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
                 return;
             }
 
+            //
+            // Relay relevant events.
+            //
+
             if (eventData.EventSource == ApplicationEventSource.Log)
             {
                 switch (eventData.EventId)
@@ -88,7 +102,9 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
                         Collect(
                             "app_command",
                             eventData.PayloadNames
-                                .Zip(eventData.Payload, (n, v) => new KeyValuePair<string, string>(n, v?.ToString()))
+                                .Zip(
+                                    eventData.Payload, 
+                                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString()))
                                 .ToDictionary());
                         break;
                 }

@@ -36,6 +36,7 @@ using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -500,8 +501,8 @@ namespace Google.Solutions.IapDesktop
                     ServicePointManager.DefaultConnectionLimit
                         = accessSettings.ConnectionLimit.IntValue;
                 }
-                preAuthLayer.AddSingleton(serviceRoute);
 
+                preAuthLayer.AddSingleton(serviceRoute);
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(WorkforcePoolClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(serviceRoute));
@@ -509,6 +510,8 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(IapClient.CreateEndpoint(serviceRoute));
+
+                // TODO: Check settings, enable TelemetryListener
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
