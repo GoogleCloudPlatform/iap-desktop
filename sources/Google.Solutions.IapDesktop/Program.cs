@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
-            ApiTraceSources.Default,
+            ApiTraceSource.Log,
             PlatformTraceSources.Default,
             CommonTraceSources.Default,
             IapTraceSources.Default,

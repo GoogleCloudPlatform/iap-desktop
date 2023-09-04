@@ -19,19 +19,18 @@
 // under the License.
 //
 
-
 using Google.Solutions.Apis.Diagnostics;
 using System.Diagnostics;
 
 namespace Google.Solutions.Apis
 {
-    public static class ApiTraceSources
+    public static class ApiTraceSource
     {
-        public static readonly TraceSource Default = new TraceSource(typeof(ApplicationContext).Namespace);
+        public static readonly TraceSource Log = new TraceSource(typeof(ApplicationContext).Namespace);
 
-        static ApiTraceSources()
+        static ApiTraceSource()
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Default));
+            ApplicationContext.RegisterLogger(new TraceSourceLogger(Log));
         }
     }
 }

@@ -220,7 +220,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             }
             catch (Exception e)
             {
-                ApiTraceSources.Default.TraceWarning(
+                ApiTraceSource.Log.TraceWarning(
                     "Refreshing the stored token failed: {0}", e.FullMessage());
 
                 //

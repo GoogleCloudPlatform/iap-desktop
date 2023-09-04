@@ -109,13 +109,13 @@ namespace Google.Solutions.Apis.Auth
 
             using (var listener = new HttpListener())
             {
-                ApiTraceSources.Default.TraceVerbose(
+                ApiTraceSource.Log.TraceVerbose(
                     "Start listener for {0}...", this.RedirectUri);
 
                 listener.Prefixes.Add(this.RedirectUri);
                 listener.Start();
 
-                ApiTraceSources.Default.TraceVerbose(
+                ApiTraceSource.Log.TraceVerbose(
                     "Open a browser for {0}...", authorizationUrl);
 
                 OpenBrowser(authorizationUrl);
@@ -147,7 +147,7 @@ namespace Google.Solutions.Apis.Auth
                     }
                     catch (Exception e)
                     {
-                        ApiTraceSources.Default.TraceError(e);
+                        ApiTraceSource.Log.TraceError(e);
                         throw;
                     }
                 }

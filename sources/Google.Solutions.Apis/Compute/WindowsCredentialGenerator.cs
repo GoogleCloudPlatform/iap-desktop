@@ -111,7 +111,7 @@ namespace Google.Solutions.Apis.Compute
             UserFlags userType,
             CancellationToken token)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(instanceRef, username))
             using (var rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
@@ -153,14 +153,14 @@ namespace Google.Solutions.Apis.Compute
                 }
                 catch (ResourceNotFoundException e)
                 {
-                    ApiTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
+                    ApiTraceSource.Log.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new WindowsCredentialCreationFailedException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (ResourceAccessDeniedException e)
                 {
-                    ApiTraceSources.Default.TraceVerbose(
+                    ApiTraceSource.Log.TraceVerbose(
                         "Setting request payload metadata failed with 403: {0}",
                         e.FullMessage());
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.Apis.Compute
                 }
                 catch (GoogleApiException e) when (e.IsBadRequest())
                 {
-                    ApiTraceSources.Default.TraceVerbose(
+                    ApiTraceSource.Log.TraceVerbose(
                         "Setting request payload metadata failed with 400: {0} ({1})",
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -211,7 +211,7 @@ namespace Google.Solutions.Apis.Compute
                     var logBuffer = new StringBuilder(64 * 1024);
                     while (true)
                     {
-                        ApiTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
+                        ApiTraceSource.Log.TraceVerbose("Waiting for agent to supply response...");
 
                         token.ThrowIfCancellationRequested();
 
@@ -286,7 +286,7 @@ namespace Google.Solutions.Apis.Compute
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {
-                        ApiTraceSources.Default.TraceError(e);
+                        ApiTraceSource.Log.TraceError(e);
 
                         //
                         // This task was cancelled because of a timeout, not because

@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Crm
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -109,7 +109,7 @@ namespace Google.Solutions.Apis.Crm
             int? maxResults,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(filter))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(filter))
             {
                 var request = new ProjectsResource.ListRequest(this.service)
                 {
@@ -150,7 +150,7 @@ namespace Google.Solutions.Apis.Crm
                     .EnsureNotNull()
                     .Where(p => p.LifecycleState == "ACTIVE");
 
-                ApiTraceSources.Default.TraceVerbose(
+                ApiTraceSource.Log.TraceVerbose(
                     "Found {0} projects", activeProjects.Count());
 
                 return new FilteredProjectList(activeProjects, truncated);
@@ -162,7 +162,7 @@ namespace Google.Solutions.Apis.Crm
             string permission,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(permission))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(permission))
             {
                 var response = await this.service.Projects.TestIamPermissions(
                         new TestIamPermissionsRequest()

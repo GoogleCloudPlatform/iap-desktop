@@ -36,7 +36,7 @@ namespace Google.Solutions.Testing.Application.Test
             {
                 CommonTraceSources.Default,
                 IapTraceSources.Default,
-                ApiTraceSources.Default
+                ApiTraceSource.Log
             });
     }
 }

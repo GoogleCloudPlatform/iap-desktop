@@ -42,7 +42,7 @@ namespace Google.Solutions.Apis.Client
             var directions = endpoint.GetDirections(
                 authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
-            ApiTraceSources.Default.TraceInformation(
+            ApiTraceSource.Log.TraceInformation(
                 "Using endpoint {0}",
                 directions);
 
