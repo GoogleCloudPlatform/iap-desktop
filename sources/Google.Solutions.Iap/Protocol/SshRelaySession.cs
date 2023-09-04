@@ -70,9 +70,9 @@ namespace Google.Solutions.Iap.Protocol
 
         private void TraceVerbose(string message)
         {
-            if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (IapTraceSource.Log.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                IapTraceSources.Default.TraceVerbose($"{this}: {message}");
+                IapTraceSource.Log.TraceVerbose($"{this}: {message}");
             }
         }
 
@@ -301,7 +301,7 @@ namespace Google.Solutions.Iap.Protocol
                     }
                     catch (Exception e)
                     {
-                        IapTraceSources.Default.TraceError(e);
+                        IapTraceSource.Log.TraceError(e);
                     }
 
                     try
@@ -310,7 +310,7 @@ namespace Google.Solutions.Iap.Protocol
                     }
                     catch (Exception e)
                     {
-                        IapTraceSources.Default.TraceError(e);
+                        IapTraceSource.Log.TraceError(e);
                     }
 
                     this.connection = null;
@@ -345,7 +345,7 @@ namespace Google.Solutions.Iap.Protocol
                 }
                 catch (WebSocketStreamClosedByServerException e)
                 {
-                    IapTraceSources.Default.TraceError(e);
+                    IapTraceSource.Log.TraceError(e);
 
                     switch ((SshRelayCloseCode)e.CloseStatus)
                     {

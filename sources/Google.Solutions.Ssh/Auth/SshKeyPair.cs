@@ -60,7 +60,7 @@ namespace Google.Solutions.Ssh.Auth
             bool createNewIfNotExists,
             IntPtr parentWindowHandle)
         {
-            using (SshTraceSources.Default.TraceMethod()
+            using (SshTraceSource.Log.TraceMethod()
                 .WithParameters(name, provider.Provider, algorithm.Algorithm, keySize))
             {
                 //
@@ -99,7 +99,7 @@ namespace Google.Solutions.Ssh.Auth
 
                     }
 
-                    SshTraceSources.Default.TraceInformation(
+                    SshTraceSource.Log.TraceInformation(
                         "Found existing CNG key {0} in {1}", name, key.Provider.Provider);
 
                     return key;
@@ -150,7 +150,7 @@ namespace Google.Solutions.Ssh.Auth
 
                         Debug.Assert(key.KeySize == keySize);
 
-                        SshTraceSources.Default.TraceInformation(
+                        SshTraceSource.Log.TraceInformation(
                             "Created new CNG key {0} in {1}", name, provider.Provider);
 
                         return key;
@@ -264,7 +264,7 @@ namespace Google.Solutions.Ssh.Auth
         /// </summary>
         public static void DeletePersistentKeyPair(string name)
         {
-            using (SshTraceSources.Default.TraceMethod().WithParameters(name))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(name))
             {
                 if (CngKey.Exists(name))
                 {

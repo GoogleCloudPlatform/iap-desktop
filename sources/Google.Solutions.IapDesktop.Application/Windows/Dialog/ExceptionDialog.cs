@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         {
             Debug.Assert(!(parent is Control control) || !control.InvokeRequired);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, message, details))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(caption, message, details))
             {
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
                 {
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 }
                 catch (COMException e)
                 {
-                    ApplicationTraceSources.Default.TraceError(e);
+                    ApplicationTraceSource.Log.TraceError(e);
 
                     //
                     // TaskDialogIndirect can fail spuriously, typically with a 
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             e = e.Unwrap();
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, e))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(caption, e))
             {
                 var details = new StringBuilder();
                 var message = string.Empty;
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     message = e.Message;
                 }
 
-                ApplicationTraceSources.Default.TraceError(
+                ApplicationTraceSource.Log.TraceError(
                     "Exception {0} ({1}): {2}",
                     e.GetType().Name,
                     caption,

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 
         public async Task<TModel> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(url))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(url))
             {
                 return await this.client
                     .GetAsync<TModel>(url.ToString(), null, cancellationToken)

@@ -56,7 +56,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
                     deviceEnrollment,
                     userAgent);
 
-                ApiTraceSources.Default.TraceInformation(
+                ApiTraceSource.Log.TraceInformation(
                     "Using endpoint {0}",
                     directions);
             }

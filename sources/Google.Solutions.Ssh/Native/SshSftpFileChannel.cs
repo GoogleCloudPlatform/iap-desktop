@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh.Native
             this.fileHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(buffer, nameof(buffer));
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var bytesRead = UnsafeNativeMethods.libssh2_sftp_read(
                     this.fileHandle,
@@ -95,7 +95,7 @@ namespace Google.Solutions.Ssh.Native
 
             Debug.Assert(length <= buffer.Length);
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(length))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(length))
             {
                 //
                 // NB. libssh2 doesn't guarantee that all data is written
@@ -118,7 +118,7 @@ namespace Google.Solutions.Ssh.Native
                         {
                             totalBytesWritten += bytesWritten;
 
-                            SshTraceSources.Default.TraceVerbose(
+                            SshTraceSource.Log.TraceVerbose(
                                 "SFTP wrote {0} bytes, {1} left",
                                 bytesWritten,
                                 length - totalBytesWritten);
@@ -126,14 +126,14 @@ namespace Google.Solutions.Ssh.Native
 
                         if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
                         {
-                            SshTraceSources.Default.TraceVerbose(
+                            SshTraceSource.Log.TraceVerbose(
                                 "SFTP write timed out after writing {0} bytes, retrying",
                                 totalBytesWritten);
                             continue;
                         }
                         else if (bytesWritten < 0)
                         {
-                            SshTraceSources.Default.TraceWarning(
+                            SshTraceSource.Log.TraceWarning(
                                 "SFTP write failed after {0} bytes",
                                 totalBytesWritten);
 

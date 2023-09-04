@@ -111,7 +111,7 @@ namespace Google.Solutions.Apis.Compute
             var gaiaSession = this.authorization.Session as IGaiaOidcSession
                 ?? throw new NotSupportedForWorkloadIdentityException();
 
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(project))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
@@ -181,7 +181,7 @@ namespace Google.Solutions.Apis.Compute
             ProjectLocator project,
             CancellationToken token)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(project))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 var gaiaSession = this.authorization.Session as IGaiaOidcSession 
                     ?? throw new NotSupportedForWorkloadIdentityException();
@@ -211,7 +211,7 @@ namespace Google.Solutions.Apis.Compute
             string fingerprint,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(fingerprint))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(fingerprint))
             {
                 var gaiaSession = this.authorization.Session as IGaiaOidcSession
                     ?? throw new NotSupportedForWorkloadIdentityException();

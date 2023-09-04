@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             ushort maxCount,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var releases = await this.restAdapter
                     .GetAsync<List<Release>>(
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         public async Task<IGitHubRelease> FindLatestReleaseAsync(
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var latestRelease = await this.restAdapter
                     .GetAsync<Release>(
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
                 }
                 else
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApplicationTraceSource.Log.TraceVerbose(
                         "Found new release: {0}", latestRelease.TagName);
 
                     //

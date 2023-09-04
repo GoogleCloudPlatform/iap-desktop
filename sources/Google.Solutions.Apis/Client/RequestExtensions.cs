@@ -101,7 +101,7 @@ namespace Google.Solutions.Apis.Client
                     //
                     if (retries < backOff.MaxNumOfRetries)
                     {
-                        CommonTraceSources.Default.TraceWarning(
+                        CommonTraceSource.Log.TraceWarning(
                             "Too many requests - backing of and retrying...", retries);
 
                         retries++;
@@ -114,7 +114,7 @@ namespace Google.Solutions.Apis.Client
                         //
                         // Retried too often already.
                         //
-                        CommonTraceSources.Default.TraceWarning("Giving up after {0} retries", retries);
+                        CommonTraceSource.Log.TraceWarning("Giving up after {0} retries", retries);
                         throw;
                     }
                 }
@@ -162,7 +162,7 @@ namespace Google.Solutions.Apis.Client
                                 .ToList()
                             : NoErrors;
 
-                        CommonTraceSources.Default.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
+                        CommonTraceSource.Log.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
 
                         throw new GoogleApiException(
                             "ComputeEngine",
@@ -178,7 +178,7 @@ namespace Google.Solutions.Apis.Client
                     }
                     else
                     {
-                        CommonTraceSources.Default.TraceVerbose("Operation completed");
+                        CommonTraceSource.Log.TraceVerbose("Operation completed");
                         return;
                     }
                 }

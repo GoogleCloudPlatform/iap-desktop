@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             CancellationToken cancellationToken)
             where TMessage : MessageBase
         {
-            using (ApplicationTraceSources.Default.TraceMethod()
+            using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(messageType))
             using (var serialPortStream = operation
                 .ComputeClient
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                 var logBuffer = new StringBuilder(64 * 1024);
                 while (true)
                 {
-                    ApplicationTraceSources.Default.TraceVerbose("Waiting for VM response...");
+                    ApplicationTraceSource.Log.TraceVerbose("Waiting for VM response...");
 
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             CancellationToken cancellationToken)
         {
 
-            using (ApplicationTraceSources.Default.TraceMethod()
+            using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(instance, domain, newComputerName))
             {
                 using (var operation = new StartupScriptOperation(

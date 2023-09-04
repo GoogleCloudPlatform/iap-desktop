@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
         {
             projectIds.ExpectNotNull(nameof(projectIds));
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 string.Join(", ", projectIds),
                 startTime))
             {

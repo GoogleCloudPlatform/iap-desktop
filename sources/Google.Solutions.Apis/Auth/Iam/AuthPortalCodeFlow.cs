@@ -92,7 +92,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                         userAgent),
                     new AuthenticationHeaderValue("Basic", clientSecretAuth));
 
-                ApiTraceSources.Default.TraceInformation(
+                ApiTraceSource.Log.TraceInformation(
                     "Using endpoint {0} and client {1}",
                     directions,
                     clientSecrets.ClientId);

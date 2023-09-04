@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
             catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
             {
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "Setting request payload metadata failed with 403: {0} ({1})",
                     e.Message,
                     e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
             catch (GoogleApiException e) when (e.IsBadRequest())
             {
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "Setting request payload metadata failed with 400: {0} ({1})",
                     e.Message,
                     e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -417,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // The key is there already, so we are all set.
                 //
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "Existing SSH key found for {0}",
                     authorizedKeyPair.Username);
             }
@@ -427,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 // Key not known yet, so we have to push it to
                 // the metadata.
                 //
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "Pushing new SSH key for {0}",
                     authorizedKeyPair.Username);
 

@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         {
             instance.ExpectNotNull(nameof(instance));
 
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(instance, type))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(instance, type))
             {
                 var address = await this.addressResolver
                     .GetAddressAsync(

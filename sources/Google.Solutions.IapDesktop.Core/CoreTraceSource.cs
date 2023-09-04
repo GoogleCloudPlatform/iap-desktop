@@ -23,8 +23,8 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Core
 {
-    public static class CoreTraceSources
+    public static class CoreTraceSource
     {
-        public static readonly TraceSource Default = new TraceSource(typeof(CoreTraceSources).Namespace);
+        public static readonly TraceSource Log = new TraceSource(typeof(CoreTraceSource).Namespace);
     }
 }

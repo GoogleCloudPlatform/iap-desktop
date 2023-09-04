@@ -83,14 +83,14 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             {
                 // There was a selection change while the window was hidden
                 // and we were ignoring updates. 
-                ApplicationTraceSources.Default.TraceVerbose("Reapplying ignored selection change");
+                ApplicationTraceSource.Log.TraceVerbose("Reapplying ignored selection change");
                 OnProjectExplorerNodeSelected(this.ignoredNode);
             }
         }
 
         protected void OnProjectExplorerNodeSelected(IProjectModelNode node)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node, this.IsUserVisible))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node, this.IsUserVisible))
             {
                 if (!this.IsUserVisible)
                 {
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     // do not bother updating it immediately. 
                     this.ignoredNode = node;
 
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApplicationTraceSource.Log.TraceVerbose(
                         "Ignoring switch to {0} because window is not visible", node);
 
                     return;

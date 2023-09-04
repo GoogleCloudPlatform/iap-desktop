@@ -74,7 +74,7 @@ namespace Google.Solutions.Apis.Compute
                         //
                         // That's enough, give up.
                         //
-                        CommonTraceSources.Default.TraceWarning(
+                        CommonTraceSource.Log.TraceWarning(
                             "SetMetadata failed with {0} (code error {1})", e.Message,
                             e.Error?.Code);
 
@@ -87,7 +87,7 @@ namespace Google.Solutions.Apis.Compute
                         // in patallel. 
 
                         var backoff = 100;
-                        CommonTraceSources.Default.TraceWarning(
+                        CommonTraceSource.Log.TraceWarning(
                             "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
                             e.Error?.Code,
                             backoff);
@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Compute
                     }
                     else
                     {
-                        CommonTraceSources.Default.TraceWarning(
+                        CommonTraceSource.Log.TraceWarning(
                             "Setting metadata failed {0} (code error {1})", e.Message,
                             e.Error?.Code);
 
@@ -120,7 +120,7 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken token,
             uint maxAttempts = DefaultAttempts)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (CommonTraceSource.Log.TraceMethod().WithParameters(projectId))
             {
                 await UpdateMetadataAsync(
                         async () =>
@@ -206,7 +206,7 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken token,
             uint maxAttempts = DefaultAttempts)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef))
+            using (CommonTraceSource.Log.TraceMethod().WithParameters(instanceRef))
             {
                 await UpdateMetadataAsync(
                         async () =>

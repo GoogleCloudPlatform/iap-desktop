@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         private async Task<CloudNode> LoadProjectsAsync(
             CancellationToken token)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithoutParameters())
+            using (CoreTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var accessibleProjects = new List<ProjectNode>();
 
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                             true,
                             project.Name));
 
-                        CoreTraceSources.Default.TraceVerbose(
+                        CoreTraceSource.Log.TraceVerbose(
                             "Successfully loaded project {0}", task.Key);
                     }
                     catch (Exception e) when (e.IsReauthError())
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                             false,
                             null));
 
-                        CoreTraceSources.Default.TraceError(
+                        CoreTraceSource.Log.TraceError(
                             "Failed to load project {0}: {1}",
                             task.Key,
                             e);
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             ProjectLocator project,
             CancellationToken token)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithoutParameters())
+            using (CoreTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var instances = await this.computeClient
                     .ListInstancesAsync(project.ProjectId, token)
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             InstanceControlCommand command,
             CancellationToken cancellationToken)
         {
-            using (CoreTraceSources.Default.TraceMethod()
+            using (CoreTraceSource.Log.TraceMethod()
                 .WithParameters(instance, command))
             {
                 await this.computeClient.ControlInstanceAsync(
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
         public async Task AddProjectAsync(ProjectLocator project)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(project))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 this.projectRepository.AddProject(project);
 
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
         public async Task RemoveProjectAsync(ProjectLocator project)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(project))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 this.projectRepository.RemoveProject(project);
 
@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             bool forceReload,
             CancellationToken token)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(project, forceReload))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(project, forceReload))
             {
                 IReadOnlyCollection<IProjectModelZoneNode> zones = null;
                 using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             CancellationToken token)
         {
 
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(locator))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(locator))
             {
                 if (locator is ProjectLocator projectLocator)
                 {
@@ -505,7 +505,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             ResourceLocator locator,
             CancellationToken token)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(locator))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(locator))
             {
                 IProjectModelNode node;
                 if (locator != null)

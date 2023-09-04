@@ -88,7 +88,7 @@ namespace Google.Solutions.Platform.Dispatch
             }
             catch (Exception e)
             {
-                PlatformTraceSources.Default.TraceError(e);
+                PlatformTraceSource.Log.TraceError(e);
                 process.Terminate(ExitCodeForFailedProcessCreation);
                 process.Dispose();
                 throw;
@@ -105,7 +105,7 @@ namespace Google.Solutions.Platform.Dispatch
         {
             executable.ExpectNotEmpty(nameof(executable));
 
-            using (PlatformTraceSources.Default.TraceMethod()
+            using (PlatformTraceSource.Log.TraceMethod()
                 .WithParameters(executable, arguments))
             {
                 var startupInfo = new NativeMethods.STARTUPINFO()
@@ -149,7 +149,7 @@ namespace Google.Solutions.Platform.Dispatch
             executable.ExpectNotEmpty(nameof(executable));
             credential.ExpectNotNull(nameof(credential));
 
-            using (PlatformTraceSources.Default.TraceMethod()
+            using (PlatformTraceSource.Log.TraceMethod()
                 .WithParameters(executable, arguments, flags, credential.UserName))
             {
                 Debug.Assert(

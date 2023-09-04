@@ -50,7 +50,7 @@ namespace Google.Solutions.Iap.Net
 
                     try
                     {
-                        IapTraceSources.Default.TraceVerbose(
+                        IapTraceSource.Log.TraceVerbose(
                             "NetworkStream [{0} > {1}]: Reading...",
                             readStream,
                             writeStream);
@@ -63,7 +63,7 @@ namespace Google.Solutions.Iap.Net
 
                         if (bytesRead > 0)
                         {
-                            IapTraceSources.Default.TraceVerbose(
+                            IapTraceSource.Log.TraceVerbose(
                                 "NetworkStream [{0} > {1}]: Relaying {2} bytes",
                                 readStream,
                                 writeStream,
@@ -73,7 +73,7 @@ namespace Google.Solutions.Iap.Net
                         }
                         else
                         {
-                            IapTraceSources.Default.TraceVerbose(
+                            IapTraceSource.Log.TraceVerbose(
                                 "NetworkStream [{0} > {1}]: gracefully closed connection",
                                 readStream,
                                 writeStream);
@@ -86,7 +86,7 @@ namespace Google.Solutions.Iap.Net
                     }
                     catch (NetworkStreamClosedException e)
                     {
-                        IapTraceSources.Default.TraceWarning(
+                        IapTraceSource.Log.TraceWarning(
                             "NetworkStream [{0} > {1}]: forcefully closed connection: {2}",
                             readStream,
                             writeStream,
@@ -99,7 +99,7 @@ namespace Google.Solutions.Iap.Net
                     }
                     catch (Exception e)
                     {
-                        IapTraceSources.Default.TraceWarning(
+                        IapTraceSource.Log.TraceWarning(
                             "NetworkStream [{0} > {1}]: Caught unhandled exception: {2} {3}",
                             readStream,
                             writeStream,

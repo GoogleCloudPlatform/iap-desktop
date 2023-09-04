@@ -207,7 +207,7 @@ namespace Google.Solutions.Ssh
             // Therefore, all libssh2 operations are performed by this one thead.
             //
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 try
                 {
@@ -221,7 +221,7 @@ namespace Google.Solutions.Ssh
                                 LIBSSH2_TRACE.AUTH |
                                 LIBSSH2_TRACE.KEX |
                                 LIBSSH2_TRACE.SFTP,
-                            SshTraceSources.Default.TraceVerbose);
+                            SshTraceSource.Log.TraceVerbose);
 
                         if (!string.IsNullOrEmpty(this.Banner))
                         {
@@ -382,7 +382,7 @@ namespace Google.Solutions.Ssh
                                     }
                                     catch (Exception e)
                                     {
-                                        SshTraceSources.Default.TraceError(
+                                        SshTraceSource.Log.TraceError(
                                             "Socket I/O failed for {0}: {1}",
                                             Thread.CurrentThread.Name,
                                             e);
@@ -409,7 +409,7 @@ namespace Google.Solutions.Ssh
                 }
                 catch (Exception e)
                 {
-                    SshTraceSources.Default.TraceError(
+                    SshTraceSource.Log.TraceError(
                         "Connection failed for {0}: {1}",
                         Thread.CurrentThread.Name,
                         e);

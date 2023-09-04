@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
             SshKeyType keyType,
             IAuthorization authorization)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(keyType))
             {
                 SshKeyPair.DeletePersistentKeyPair(
                     CreateKeyName(authorization, keyType, Provider));
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
             bool createNewIfNotExists,
             IWin32Window window)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(keyType))
             {
                 return SshKeyPair.OpenPersistentKeyPair(
                     CreateKeyName(authorization, keyType, Provider),

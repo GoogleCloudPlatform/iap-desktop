@@ -45,7 +45,7 @@ namespace Google.Solutions.Platform.Cryptography
         internal void AddUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (PlatformTraceSources.Default.TraceMethod().WithoutParameters())
+            using (PlatformTraceSource.Log.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -55,7 +55,7 @@ namespace Google.Solutions.Platform.Cryptography
         internal void RemoveUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (PlatformTraceSources.Default.TraceMethod().WithoutParameters())
+            using (PlatformTraceSource.Log.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -69,7 +69,7 @@ namespace Google.Solutions.Platform.Cryptography
         {
             filter.ExpectNotNull(nameof(filter));
 
-            using (PlatformTraceSources.Default.TraceMethod().WithParameters(storeLocation))
+            using (PlatformTraceSource.Log.TraceMethod().WithParameters(storeLocation))
             using (var store = new X509Store(StoreName.My, storeLocation))
             {
                 store.Open(OpenFlags.ReadOnly);

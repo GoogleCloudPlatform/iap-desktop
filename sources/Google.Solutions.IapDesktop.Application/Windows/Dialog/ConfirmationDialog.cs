@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string title)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, message))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(caption, message))
             {
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
                 {

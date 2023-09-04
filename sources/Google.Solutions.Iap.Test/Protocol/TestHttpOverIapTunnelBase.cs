@@ -139,7 +139,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                     if (response.IsComplete)
                     {
-                        IapTraceSources.Default.TraceVerbose("Got full response");
+                        IapTraceSource.Log.TraceVerbose("Got full response");
                         break;
                     }
                 }

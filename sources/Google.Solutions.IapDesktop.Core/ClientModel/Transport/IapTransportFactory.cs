@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     //
                     // Found matching tunnel, and it looks okay.
                     //
-                    CoreTraceSources.Default.TraceInformation(
+                    CoreTraceSource.Log.TraceInformation(
                         "Using pooled tunnel for {0}", profile);
 
                     tunnelTask = tunnelTask.ContinueWith(t =>
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 }
                 else
                 {
-                    CoreTraceSources.Default.TraceInformation(
+                    CoreTraceSource.Log.TraceInformation(
                         "Creating new tunnel for {0}", profile);
 
                     tunnelTask = this.tunnelFactory.CreateTunnelAsync(
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
         protected virtual void OnTunnelCreated(IapTunnel tunnel)
         {
-            CoreTraceSources.Default.TraceVerbose(
+            CoreTraceSource.Log.TraceVerbose(
                 "Created tunnel for {0}", tunnel.Details);
 
             this.eventQueue.Publish(new TunnelEvents.TunnelCreated());
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
         protected virtual void OnTunnelClosed(IapTunnel tunnel)
         {
-            CoreTraceSources.Default.TraceVerbose(
+            CoreTraceSource.Log.TraceVerbose(
                 "Closed tunnel for {0}", tunnel.Details);
 
             this.eventQueue.Publish(new TunnelEvents.TunnelClosed());
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             TimeSpan probeTimeout,
             CancellationToken cancellationToken)
         {
-            using (CoreTraceSources.Default.TraceMethod().WithParameters(targetInstance, protocol))
+            using (CoreTraceSource.Log.TraceMethod().WithParameters(targetInstance, protocol))
             {
                 var profile = new IapTunnel.Profile(
                     protocol,

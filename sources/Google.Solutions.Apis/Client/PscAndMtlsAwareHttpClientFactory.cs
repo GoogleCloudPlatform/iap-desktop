@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Client
     /// PSC-style Host headers if needed.
     /// </summary>
     internal class PscAndMtlsAwareHttpClientFactory 
-        : IHttpClientFactory, IHttpExecuteInterceptor
+        : IHttpClientFactory, IHttpExecuteInterceptor, IHttpUnsuccessfulResponseHandler
     {
         private readonly ServiceEndpointDirections directions;
         private readonly IDeviceEnrollment deviceEnrollment;
@@ -78,6 +78,7 @@ namespace Google.Solutions.Apis.Client
             var httpClient = factory.CreateHttpClient(args);
 
             httpClient.MessageHandler.AddExecuteInterceptor(this);
+            httpClient.MessageHandler.AddUnsuccessfulResponseHandler(this);
 
             return httpClient;
         }
@@ -102,7 +103,23 @@ namespace Google.Solutions.Apis.Client
                 request.Headers.Host = this.directions.Host;
             }
 
+            ApiEventSource.Log.HttpRequestInitiated(
+                request.Method.ToString(),
+                request.RequestUri.ToString(),
+                this.directions.Type.ToString(),
+                this.directions.Host);
+
             return Task.CompletedTask;
+        }
+
+        public Task<bool> HandleResponseAsync(HandleUnsuccessfulResponseArgs args)
+        {
+            ApiEventSource.Log.HttpRequestFailed(
+                args.Request.Method.ToString(),
+                args.Request.RequestUri.ToString(),
+                (int)args.Response.StatusCode);
+
+            return Task.FromResult(false);
         }
 
         /// <summary>
@@ -133,7 +150,7 @@ namespace Google.Solutions.Apis.Client
                 {
                     handler.UseProxy = false;
 
-                    ApiTraceSources.Default.TraceVerbose(
+                    ApiTraceSource.Log.TraceVerbose(
                         "Bypassing proxy for for endpoint {0} (Host:{1})",
                         this.directions.BaseUri,
                         this.directions.Host);
@@ -148,7 +165,7 @@ namespace Google.Solutions.Apis.Client
                     var added = handler.TryAddClientCertificate(this.deviceEnrollment.Certificate);
                     Debug.Assert(added);
 
-                    ApiTraceSources.Default.TraceVerbose(
+                    ApiTraceSource.Log.TraceVerbose(
                         "Using client certificate {0} for endpoint {1} (Host:{2})",
                         this.deviceEnrollment.Certificate,
                         this.directions.BaseUri,

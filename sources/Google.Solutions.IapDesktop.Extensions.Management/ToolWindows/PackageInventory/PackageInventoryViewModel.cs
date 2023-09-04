@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
             IProjectModelNode node,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
                 try
                 {

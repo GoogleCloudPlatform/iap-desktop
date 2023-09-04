@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
             }
 
             Debug.Assert(this.TailCancellationTokenSource == null);
-            ApplicationTraceSources.Default.TraceVerbose("Start tailing");
+            ApplicationTraceSource.Log.TraceVerbose("Start tailing");
 
             this.TailCancellationTokenSource = new CancellationTokenSource();
             this.Model.TailAsync(
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         {
             if (this.TailCancellationTokenSource != null)
             {
-                ApplicationTraceSources.Default.TraceVerbose("Stop tailing");
+                ApplicationTraceSource.Log.TraceVerbose("Stop tailing");
                 this.TailCancellationTokenSource.Cancel();
                 this.TailCancellationTokenSource = null;
             }
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         {
             Debug.Assert(this.SerialPortNumber != 0);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
                 if (node is IProjectModelInstanceNode vmNode && vmNode.IsRunning)
                 {
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         {
             Debug.Assert(this.SerialPortNumber != 0);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.Model, cached))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(this.Model, cached))
             {
                 // Stop tailing the old model.
                 this.IsTailBlocked = true;

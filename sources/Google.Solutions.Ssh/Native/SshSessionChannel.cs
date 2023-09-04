@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
                 {
                     // 
                     // NB. This call does not cause network traffic and therefore
@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
                 {
                     // 
                     // NB. This call does not cause network traffic and therefore

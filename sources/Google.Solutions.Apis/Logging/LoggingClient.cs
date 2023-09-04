@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Logging
             ReadPageCallback readPageCallback,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(filter))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(filter))
             {
                 var backoff = new ExponentialBackOff(initialBackOff, MaxRetries);
                 var request = new ListLogEntriesRequest()

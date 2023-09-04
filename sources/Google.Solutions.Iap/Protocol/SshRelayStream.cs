@@ -50,9 +50,9 @@ namespace Google.Solutions.Iap.Protocol
 
         private void TraceVerbose(string message)
         {
-            if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (IapTraceSource.Log.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                IapTraceSources.Default.TraceVerbose($"{this.session}: {message}");
+                IapTraceSource.Log.TraceVerbose($"{this.session}: {message}");
             }
         }
 

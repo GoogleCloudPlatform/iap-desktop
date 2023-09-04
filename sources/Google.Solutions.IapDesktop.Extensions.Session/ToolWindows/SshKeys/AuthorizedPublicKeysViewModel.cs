@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             IProjectModelNode node,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
                 try
                 {

@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         protected void EnterFullscreen(bool allScreens)
         {
-            using (ApplicationTraceSources.Default.TraceMethod()
+            using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(allScreens))
             {
                 if (IsFullscreen)
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         protected void LeaveFullScreen()
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (!IsFullscreen)
                 {

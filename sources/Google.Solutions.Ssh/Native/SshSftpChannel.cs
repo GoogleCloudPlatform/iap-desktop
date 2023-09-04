@@ -57,7 +57,7 @@ namespace Google.Solutions.Ssh.Native
 
             var files = new LinkedList<SshSftpFileInfo>();
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(path))
             using (var dirHandle = UnsafeNativeMethods.libssh2_sftp_open_ex(
                 this.channelHandle,
                 path,
@@ -122,7 +122,7 @@ namespace Google.Solutions.Ssh.Native
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(path, nameof(path));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(path))
             {
                 try
                 {
@@ -151,7 +151,7 @@ namespace Google.Solutions.Ssh.Native
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(path, nameof(path));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(path))
             {
                 try
                 {
@@ -182,7 +182,7 @@ namespace Google.Solutions.Ssh.Native
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(path, nameof(path));
 
-            using (SshTraceSources.Default.TraceMethod()
+            using (SshTraceSource.Log.TraceMethod()
                 .WithParameters(path, flags, mode))
             {
                 try
@@ -217,7 +217,7 @@ namespace Google.Solutions.Ssh.Native
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(path, nameof(path));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(path))
             {
                 try
                 {

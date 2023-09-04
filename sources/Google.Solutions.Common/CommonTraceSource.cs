@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,13 +19,12 @@
 // under the License.
 //
 
-
 using System.Diagnostics;
 
-namespace Google.Solutions.Platform
+namespace Google.Solutions.Common
 {
-    public static class PlatformTraceSources
+    public static class CommonTraceSource
     {
-        public static readonly TraceSource Default = new TraceSource(typeof(PlatformTraceSources).Namespace);
+        public static readonly TraceSource Log = new TraceSource(typeof(CommonTraceSource).Namespace);
     }
 }

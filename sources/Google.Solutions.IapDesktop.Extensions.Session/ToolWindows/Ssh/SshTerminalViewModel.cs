@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(exception))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(exception))
             {
                 if (this.ConnectionStatus == Status.Connected &&
                     errorType == TerminalErrorType.ConnectionLost)
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             Debug.Assert(this.View != null);
             Debug.Assert(this.ViewInvoker != null);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 //
                 // Disconnect previous session, if any.
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 }
                 catch (Exception e)
                 {
-                    ApplicationTraceSources.Default.TraceError(e);
+                    ApplicationTraceSource.Log.TraceError(e);
 
                     await OnConnectionFailed(new ConnectionErrorEventArgs(e))
                         .ConfigureAwait(true);
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         public override async Task DisconnectAsync()
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (this.sshChannel != null)
                 {
@@ -340,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         public override async Task ResizeTerminal(TerminalSize newSize)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(newSize))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(newSize))
             {
                 if (this.sshChannel != null)
                 {
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 return false;
             }
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             using (var fsChannel = await this.sshChannel.Connection
                 .OpenFileSystemAsync()
                 .ConfigureAwait(true))
@@ -488,7 +488,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 return false;
             }
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(files))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(files))
             using (var fsChannel = await this.sshChannel.Connection
                 .OpenFileSystemAsync()
                 .ConfigureAwait(true))

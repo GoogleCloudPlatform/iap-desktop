@@ -81,7 +81,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
                     this.session.Handle);
@@ -105,7 +105,7 @@ namespace Google.Solutions.Ssh.Native
                 throw new ArgumentException(nameof(methodType));
             }
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(methodType))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(methodType))
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
                     this.session.Handle,
@@ -135,7 +135,7 @@ namespace Google.Solutions.Ssh.Native
                 throw new ArgumentException(nameof(hashType));
             }
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(hashType))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(hashType))
             {
                 var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
                     this.session.Handle,
@@ -158,7 +158,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
                     this.session.Handle,
@@ -182,7 +182,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
                     this.session.Handle,
@@ -208,7 +208,7 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
                 {
                     this.session.Handle.CheckCurrentThreadOwnsHandle();
 
@@ -222,7 +222,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(username))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(username))
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_userauth_list(
                     this.session.Handle,
@@ -326,7 +326,7 @@ namespace Google.Solutions.Ssh.Native
                         prompts[i].TextLength,
                         Encoding.UTF8);
 
-                    SshTraceSources.Default.TraceVerbose("Keyboard/interactive prompt: {0}", promptText);
+                    SshTraceSource.Log.TraceVerbose("Keyboard/interactive prompt: {0}", promptText);
 
                     //
                     // NB. Name and instruction aren't used by OS Login,
@@ -343,7 +343,7 @@ namespace Google.Solutions.Ssh.Native
                     }
                     catch (Exception e)
                     {
-                        SshTraceSources.Default.TraceError(
+                        SshTraceSource.Log.TraceError(
                             "Authentication callback threw exception", e);
 
                         //
@@ -381,7 +381,7 @@ namespace Google.Solutions.Ssh.Native
                     responses);
             }
 
-            using (SshTraceSources.Default.TraceMethod()
+            using (SshTraceSource.Log.TraceMethod()
                 .WithParameters(authenticator.Username))
             {
                 //
@@ -400,7 +400,7 @@ namespace Google.Solutions.Ssh.Native
 
                 if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED)
                 {
-                    SshTraceSources.Default.TraceVerbose(
+                    SshTraceSource.Log.TraceVerbose(
                         "Server responded that public key is unverified, " +
                         "trying keyboard/interactive auth for MFA challenges");
 

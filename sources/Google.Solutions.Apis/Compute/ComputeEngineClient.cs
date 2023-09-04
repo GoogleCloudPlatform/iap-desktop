@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Compute
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -106,7 +106,7 @@ namespace Google.Solutions.Apis.Compute
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -127,7 +127,7 @@ namespace Google.Solutions.Apis.Compute
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Instances);
 
-                    ApiTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
+                    ApiTraceSource.Log.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
                 }
@@ -154,7 +154,7 @@ namespace Google.Solutions.Apis.Compute
             ZoneLocator zoneLocator,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(zoneLocator))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(zoneLocator))
             {
                 try
                 {
@@ -171,7 +171,7 @@ namespace Google.Solutions.Apis.Compute
                             cancellationToken)
                         .ConfigureAwait(false);
 
-                    ApiTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
+                    ApiTraceSource.Log.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
                 }
@@ -198,7 +198,7 @@ namespace Google.Solutions.Apis.Compute
             InstanceLocator instance,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(instance))
             {
                 try
                 {
@@ -235,7 +235,7 @@ namespace Google.Solutions.Apis.Compute
             string queryPath,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(instance))
             {
                 try
                 {
@@ -272,7 +272,7 @@ namespace Google.Solutions.Apis.Compute
             InstanceLocator instanceRef,
             ushort portNumber)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(instanceRef))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(instanceRef))
             {
                 return new SerialPortReader(
                     this.service.Instances,
@@ -290,7 +290,7 @@ namespace Google.Solutions.Apis.Compute
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(instance))
             {
                 try
                 {
@@ -327,7 +327,7 @@ namespace Google.Solutions.Apis.Compute
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -365,7 +365,7 @@ namespace Google.Solutions.Apis.Compute
             InstanceLocator instanceLocator,
             string permission)
         {
-            using (ApiTraceSources.Default.TraceMethod().WithParameters(permission))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(permission))
             {
                 try
                 {
@@ -390,7 +390,7 @@ namespace Google.Solutions.Apis.Compute
                     // permission. Fail open if the caller does not have that
                     // permission.
                     //
-                    ApiTraceSources.Default.TraceWarning(
+                    ApiTraceSource.Log.TraceWarning(
                         "Permission check failed because caller does not have " +
                         "the permission to test permissions");
                     return true;
@@ -407,7 +407,7 @@ namespace Google.Solutions.Apis.Compute
            InstanceControlCommand command,
            CancellationToken cancellationToken)
         {
-            using (ApiTraceSources.Default.TraceMethod()
+            using (ApiTraceSource.Log.TraceMethod()
                 .WithParameters(instance, command))
             {
                 try

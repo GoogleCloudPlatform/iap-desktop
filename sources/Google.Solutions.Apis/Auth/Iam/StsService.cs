@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         {
             request.ExpectNotNull(nameof(request));
 
-            using (ApiTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
             using (var httpRequest = new HttpRequestMessage(
                 HttpMethod.Post,
                 new Uri(new Uri(this.BaseUri), "/v1/introspect"))

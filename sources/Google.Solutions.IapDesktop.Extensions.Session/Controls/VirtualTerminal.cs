@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // Forward all logs to common trace source so that they
             // can be controlled using the UI.
             //
-            this.controller.Trace.ForwardTo(ApplicationTraceSources.Default);
+            this.controller.Trace.ForwardTo(ApplicationTraceSource.Log);
 
             //
             // Use double-buffering to reduce flicker - unless we're in an

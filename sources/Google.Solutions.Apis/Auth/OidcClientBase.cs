@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Google.Solutions.Apis.Auth
 {
@@ -85,14 +86,14 @@ namespace Google.Solutions.Apis.Auth
         {
             if (this.store.TryRead(out var offlineCredential))
             {
-                ApiTraceSources.Default.TraceVerbose(
+                ApiTraceSource.Log.TraceVerbose(
                     "Attempting authorization using offline credential...");
 
                 Debug.Assert(offlineCredential.RefreshToken != null);
 
                 if (offlineCredential.Issuer != this.Registration.Issuer)
                 {
-                    ApiTraceSources.Default.TraceWarning(
+                    ApiTraceSource.Log.TraceWarning(
                         "Found offline credential from wrong issuer: {0}",
                         offlineCredential.Issuer);
                     return null;
@@ -114,7 +115,9 @@ namespace Google.Solutions.Apis.Auth
                     //
                     this.store.Write(session.OfflineCredential);
 
-                    ApiTraceSources.Default.TraceVerbose(
+                    ApiEventSource.Log.OfflineCredentialActivated(
+                        this.Registration.Issuer.ToString());
+                    ApiTraceSource.Log.TraceVerbose(
                         "Activating offline credential succeeded.");
 
                     return session;
@@ -130,7 +133,10 @@ namespace Google.Solutions.Apis.Auth
                     // we don't clear the store.
                     //
 
-                    ApiTraceSources.Default.TraceWarning(
+                    ApiEventSource.Log.OfflineCredentialActivationFailed(
+                        this.Registration.Issuer.ToString(),
+                        e.FullMessage());
+                    ApiTraceSource.Log.TraceWarning(
                         "Activating offline credential failed: {0}", 
                         e.FullMessage());
 
@@ -179,7 +185,9 @@ namespace Google.Solutions.Apis.Auth
                 //
                 this.store.Write(session.OfflineCredential);
 
-                ApiTraceSources.Default.TraceVerbose(
+                ApiEventSource.Log.Authorized(
+                    this.Registration.Issuer.ToString());
+                ApiTraceSource.Log.TraceVerbose(
                     "Browser-based authorization succeeded.");
 
                 return session;

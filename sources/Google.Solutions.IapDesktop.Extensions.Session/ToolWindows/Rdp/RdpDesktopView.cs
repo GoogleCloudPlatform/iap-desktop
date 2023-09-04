@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private async Task ShowErrorAndClose(string caption, Exception e)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
                 // Make sure we're not fullscreen anymore.
                 LeaveFullScreen();
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             Debug.Assert(this.rdpClient == null, "Not initialized yet");
             Debug.Assert(this.viewModel != null, "View bound");
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 this.viewModel.Server,
                 this.viewModel.Port,
                 this.viewModel.Parameters.ConnectionTimeout))
@@ -432,7 +432,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 UpdateLayout(LayoutMode.Wait);
 
@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting ||
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.currentConnectionSize, size))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(this.currentConnectionSize, size))
             {
                 //
                 // Only resize if the size really changed, otherwise we put unnecessary
@@ -487,7 +487,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                         }
                         catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
                         {
-                            ApplicationTraceSources.Default.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
+                            ApplicationTraceSource.Log.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
 
                             //
                             // Revert to classic, reconnect-based resizing.
@@ -523,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     // During an unorderly disconnect, it's possible that we
                     // get an exception here, cf. b/251163460.
                     //
-                    ApplicationTraceSources.Default.TraceError(e);
+                    ApplicationTraceSource.Log.TraceError(e);
                     return false;
                 }
             }
@@ -548,7 +548,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     // During an unorderly disconnect, it's possible that we
                     // get an exception here, cf. b/251163460.
                     //
-                    ApplicationTraceSources.Default.TraceError(e);
+                    ApplicationTraceSource.Log.TraceError(e);
                     return false;
                 }
             }
@@ -562,7 +562,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 this.autoResize, this.currentConnectionSize, this.Size))
             {
                 if (this.Size.Width == 0 || this.Size.Height == 0)
@@ -606,11 +606,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private async void RemoteDesktopPane_FormClosing(object sender, FormClosingEventArgs args)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (this.IsConnecting)
                 {
-                    ApplicationTraceSources.Default.TraceVerbose(
+                    ApplicationTraceSource.Log.TraceVerbose(
                         "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
 
                     args.Cancel = true;
@@ -624,7 +624,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 {
                     try
                     {
-                        ApplicationTraceSources.Default.TraceVerbose(
+                        ApplicationTraceSource.Log.TraceVerbose(
                             "RemoteDesktopPane: Disconnecting because form is closing");
 
                         // NB. This does not trigger an OnDisconnected event.
@@ -632,7 +632,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     }
                     catch (Exception e)
                     {
-                        ApplicationTraceSources.Default.TraceVerbose(
+                        ApplicationTraceSource.Log.TraceVerbose(
                             "RemoteDesktopPane: Disconnecting failed");
 
                         this.exceptionDialog.Show(this, "Disconnecting failed", e);
@@ -653,7 +653,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.autoResize);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.autoResize))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(this.autoResize))
             {
                 if (!this.Visible)
                 {
@@ -714,7 +714,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 args.discReason,
                 this.rdpClient.GetErrorDescription((uint)args.discReason, 0));
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
                 LeaveFullScreen();
 
@@ -754,7 +754,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             this.viewModel.State.Value = RdpViewModel.ConnectionState.Connected;
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.rdpClient.ConnectedStatusText))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(this.rdpClient.ConnectedStatusText))
             {
                 Debug.Assert(this.connecting, "Connecting flag must have been set");
 
@@ -776,7 +776,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             { }
         }
 
@@ -784,7 +784,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 this.AuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
             }
@@ -794,7 +794,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(args.warningCode))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.warningCode))
             { }
         }
 
@@ -807,13 +807,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var e = new RdpDisconnectedException(
                     args.disconnectReason,
                     this.rdpClient.GetErrorDescription((uint)args.disconnectReason, 0));
 
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "Reconnect attempt {0}/{1} - {2} - {3}",
                     args.attemptCount,
                     args.maxAttemptCount,
@@ -829,7 +829,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (this.connecting)
                 {
@@ -848,7 +848,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 //
                 // Release focus and move it to the panel, which ensures
@@ -867,7 +867,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.autoResize))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(this.autoResize))
             { }
         }
 
@@ -875,7 +875,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             object sender,
             IMsTscAxEvents_OnServiceMessageReceivedEvent e)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.serviceMessage))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.serviceMessage))
             { }
         }
 
@@ -885,7 +885,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.ConnectionLost ||
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.Connecting);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 try
                 {
@@ -931,7 +931,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private void rdpClient_OnRequestContainerMinimize(object sender, EventArgs e)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 MinimizeWindow();
             }
@@ -947,7 +947,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.Connected ||
                 this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(mode))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(mode))
             {
                 if (this.IsConnecting)
                 {
@@ -955,7 +955,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     return false;
                 }
 
-                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to {0}", mode);
+                ApplicationTraceSource.Log.TraceVerbose("Setting full screen mode to {0}", mode);
 
                 //
                 // Request full screen - this causes OnRequestGoFullScreen
@@ -972,7 +972,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 SendKeys(
                     Keys.ControlKey,
@@ -985,7 +985,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 SendKeys(
                     Keys.ControlKey,
@@ -998,7 +998,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             Debug.Assert(this.viewModel.State.Value == RdpViewModel.ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 this.rdpClient.Focus();
 

@@ -102,7 +102,7 @@ namespace Google.Solutions.Iap
             Uri requestUri,
             CancellationToken token)
         {
-            IapTraceSources.Default.TraceVerbose("Connecting to... {0}", requestUri);
+            IapTraceSource.Log.TraceVerbose("Connecting to... {0}", requestUri);
 
             //
             // Configure web socket.
@@ -152,7 +152,7 @@ namespace Google.Solutions.Iap
                 //
                 websocket.Options.Proxy = null;
 
-                IapTraceSources.Default.TraceVerbose(
+                IapTraceSource.Log.TraceVerbose(
                     "Bypassing proxy for for endpoint {0} (Host:{1})",
                     requestUri,
                     this.endpointDirections.Host);
@@ -170,7 +170,7 @@ namespace Google.Solutions.Iap
             }
             catch (ArgumentException)
             {
-                IapTraceSources.Default.TraceWarning("Failed to set User-Agent header");
+                IapTraceSource.Log.TraceWarning("Failed to set User-Agent header");
             }
 
             if (this.endpointDirections.UseClientCertificate)
