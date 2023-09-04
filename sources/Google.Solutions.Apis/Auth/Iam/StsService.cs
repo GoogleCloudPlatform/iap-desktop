@@ -56,7 +56,8 @@ namespace Google.Solutions.Apis.Auth.Iam
 
         public override string Name => "sts";
 
-        public override string BaseUri => base.BaseUriOverride ?? "https://sts.googleapis.com/";
+        public override string BaseUri
+            => base.BaseUriOverride ?? "https://sts.googleapis.com/";
 
         public override string BasePath => "/";
 
@@ -92,9 +93,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                 }
 
                 using (var response = await this.HttpClient
-                    .SendAsync(
-                        httpRequest,
-                        cancellationToken)
+                    .SendAsync(httpRequest, cancellationToken)
                     .ConfigureAwait(false))
                 {
                     var stream = await response.Content
@@ -122,7 +121,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         }
 
         //---------------------------------------------------------------------
-        // Data classes.
+        // Request/response classes.
         //---------------------------------------------------------------------
 
         /// <summary>
