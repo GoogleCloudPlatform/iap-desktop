@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Analytics;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
@@ -466,14 +467,13 @@ namespace Google.Solutions.IapDesktop
                 //
                 // NB. Until now, no network connections have been made.
                 //
+                var appSettings = appSettingsRepository.GetSettings();
                 try
                 {
-                    var settings = appSettingsRepository.GetSettings();
-
                     //
                     // Activate proxy settings based on app settings.
                     //
-                    preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(settings);
+                    preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
                 }
                 catch (Exception)
                 {
@@ -511,7 +511,19 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(IapClient.CreateEndpoint(serviceRoute));
 
-                // TODO: Check settings, enable TelemetryListener
+                //
+                // Enable telemetry if the user allows it. Do this before
+                // authorization takes place.
+                //
+                preAuthLayer.AddSingleton(new TelemetryCollector(
+                    new MeasurementClient(
+                        MeasurementClient.CreateEndpoint(),
+                        AnalyticsStream.ApiKey,
+                        AnalyticsStream.MeasurementId),
+                    install)
+                {
+                    Enabled = appSettings.IsTelemetryEnabled.BoolValue
+                });
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
         public void WhenDisabled_ThenEventsAreNotCollected()
         {
             var client = new Mock<IMeasurementClient>();
-            var listener = new TelemetryListener(
+            var listener = new TelemetryCollector(
                 client.Object,
                 CreateInstall().Object,
                 SynchronousQueueUserWorkItem);
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
         public void WhenEnabled_ThenEventsAreCollected()
         {
             var client = new Mock<IMeasurementClient>();
-            var listener = new TelemetryListener(
+            var listener = new TelemetryCollector(
                 client.Object,
                 CreateInstall().Object,
                 SynchronousQueueUserWorkItem);

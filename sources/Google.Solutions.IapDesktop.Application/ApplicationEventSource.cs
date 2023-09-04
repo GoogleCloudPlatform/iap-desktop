@@ -41,17 +41,17 @@ namespace Google.Solutions.IapDesktop.Application
         public const int CommandExecutedId = 1;
         public const int CommandFailedId = 2;
 
-        [Event(CommandExecutedId, Level = EventLevel.Verbose)]
+        [Event(CommandExecutedId, Level = EventLevel.Informational)]
         public void CommandExecuted(
-            string commandType,
-            string commandText)
-            => WriteEvent(CommandExecutedId, commandType, commandText);
+            string command,
+            string text)
+            => WriteEvent(CommandExecutedId, command, text);
 
         [Event(CommandFailedId, Level = EventLevel.Warning)]
         public void CommandFailed(
-            string commandType,
-            string commandText,
+            string command,
+            string text,
             string error)
-            => WriteEvent(CommandFailedId, commandType, commandText, error);
+            => WriteEvent(CommandFailedId, command, text, error);
     }
 }

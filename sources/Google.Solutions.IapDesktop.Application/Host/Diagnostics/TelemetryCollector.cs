@@ -34,7 +34,15 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
     /// Listens to selected ETW events and reports them as
     /// Measurements to Google Analytics.
     /// </summary>
-    public class TelemetryListener : EventListener 
+    public interface ITelemetryCollector
+    {
+        /// <summary>
+        /// Enable or disable telemetry collection.
+        /// </summary>
+        bool Enabled { get; set; }
+    }
+
+    public class TelemetryCollector : EventListener, ITelemetryCollector
     {
         private bool enabled;
         private readonly MeasurementSession session;
@@ -43,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
         public delegate bool QueueUserWorkItem(WaitCallback callback);
 
-        public TelemetryListener(
+        public TelemetryCollector(
             IMeasurementClient client,
             IInstall install,
             QueueUserWorkItem queueUserWorkItem)
@@ -66,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             this.session = new MeasurementSession(install.UniqueId);
         }
 
-        public TelemetryListener(
+        public TelemetryCollector(
             IMeasurementClient client,
             IInstall install)
             : this(
@@ -114,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
                     //
                     // Make sure the source is enabled.
                     //
-                    EnableEvents(ApplicationEventSource.Log, EventLevel.Verbose); // TODO: use keyword
+                    EnableEvents(ApplicationEventSource.Log, EventLevel.Informational);
                 }
 
                 this.enabled = value;
