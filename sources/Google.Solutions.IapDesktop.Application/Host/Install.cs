@@ -26,8 +26,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
@@ -65,6 +66,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Base directory.
         /// </summary>
         string BaseDirectory { get; }
+
+        /// <summary>
+        /// Unique ID for this installation.
+        /// </summary>
+        string UniqueId { get; }
     }
 
     public class Install : IInstall
@@ -76,6 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public const string DefaultBaseKeyPath = @"Software\Google\IapDesktop";
 
         private static readonly Version assemblyVersion;
+        private static readonly string uniqueId;
 
         //---------------------------------------------------------------------
         // Static properties (based on assembly metadata).
@@ -93,6 +100,27 @@ namespace Google.Solutions.IapDesktop.Application.Host
             assemblyVersion = typeof(Install).Assembly.GetName().Version;
             UserAgent = new UserAgent("IAP-Desktop", assemblyVersion);
             IsExecutingTests = Assembly.GetEntryAssembly() == null;
+
+            using (var hklm = RegistryKey.OpenBaseKey(
+                RegistryHive.LocalMachine,
+                RegistryView.Default))
+            using (var crptoKey = hklm.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography"))
+            {
+                //
+                // Read the machine GUID. This is unique ID that's generated
+                // during Windows setup.
+                //
+                var machineGuid = (string)crptoKey?.GetValue("MachineGuid") ?? string.Empty;
+
+                //
+                // Create a hash and use the first few bytes as unique ID.
+                //
+                using (var hash = new SHA256Managed())
+                {
+                    uniqueId = Convert.ToBase64String(
+                        hash.ComputeHash(Encoding.UTF8.GetBytes(machineGuid)), 0, 12);
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -100,6 +128,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
         //---------------------------------------------------------------------
 
         public Version CurrentVersion => assemblyVersion;
+
+        public string UniqueId => uniqueId;
 
         public string BaseKeyPath { get; }
 

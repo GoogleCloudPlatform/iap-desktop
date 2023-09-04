@@ -29,7 +29,7 @@ namespace Google.Solutions.Apis
     [EventSource(Name = ProviderName, Guid = ProviderGuid)]
     internal sealed class ApiEventSource : EventSource
     {
-        public const string ProviderName = "Google-Solutions-Api";
+        public const string ProviderName = "Google-Solutions-Apis";
         public const string ProviderGuid = "EC3585B8-5C28-42AE-8CE7-D76CB00303C6";
 
         public static ApiEventSource Log { get; } = new ApiEventSource();
@@ -51,11 +51,7 @@ namespace Google.Solutions.Apis
             string method,
             string requestUri,
             int statusCode)
-            => WriteEvent(
-                2, 
-                method, 
-                requestUri, 
-                statusCode);
+            => WriteEvent(2, method, requestUri, statusCode);
 
         //---------------------------------------------------------------------
         // Auth

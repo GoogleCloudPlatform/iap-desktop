@@ -74,6 +74,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         //---------------------------------------------------------------------
+        // UniqueId.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void UniqueId()
+        {
+            var install = new Install(TestBaseKeyPath);
+            Assert.IsNotNull(install.UniqueId);
+            Assert.AreEqual(16, install.UniqueId.Length);
+
+            Assert.AreEqual(
+                install.UniqueId,
+                new Install(TestBaseKeyPath).UniqueId);
+        }
+
+        //---------------------------------------------------------------------
         // BaseKeyPath.
         //---------------------------------------------------------------------
 
