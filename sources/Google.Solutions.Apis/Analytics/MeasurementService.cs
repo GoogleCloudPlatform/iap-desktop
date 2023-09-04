@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Analytics
             var path = $"{prefix}mp/collect?" +
                 $"api_secret={this.apiSecret}&measurement_id={this.measurementId}";
 
-            using (ApiTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
             using (var httpRequest = new HttpRequestMessage(
                 HttpMethod.Post,
                 new Uri(new Uri(this.BaseUri), path))
