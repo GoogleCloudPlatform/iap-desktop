@@ -19,32 +19,35 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Binding.Commands;
-using System;
-using System.ComponentModel;
 
-namespace Google.Solutions.Mvvm.Binding
+using System;
+using System.Linq;
+using System.Text;
+
+namespace Google.Solutions.Common.Util
 {
-    /// <summary>
-    /// Context for MVVM binding operations.
-    /// </summary>
-    public interface IBindingContext
+    public static class TypeExtensions
     {
         /// <summary>
-        /// Notify that a command executed successfully.
+        /// Return the full type name in angle-bracket notation.
         /// </summary>
-        void OnCommandExecuted(ICommand command);
+        public static string FullName(this Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                return type.Name;
+            }
 
-        /// <summary>
-        /// Notify that a command failed.
-        /// </summary>
-        void OnCommandFailed(ICommand command, Exception exception);
+            var name = new StringBuilder();
+            name.Append(type.Name.Substring(0, type.Name.IndexOf('`')));
+            name.Append('<');
 
-        /// <summary>
-        /// Notify that a new binding has been created. Implementing
-        /// classes should dispose the binding when it's no longer needed,
-        /// for example by tying them to the lifecycle of the control.
-        /// </summary>
-        void OnBindingCreated(IComponent control, IDisposable binding);
+            name.Append(string.Join(
+                ",", 
+                type.GetGenericArguments().Select(t => t.FullName())));
+
+            name.Append('>');
+            return name.ToString();
+        }
     }
 }

@@ -68,10 +68,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         public void OnCommandFailed(ICommand command, Exception exception)
         {
             Debug.Assert(this.errorReportingOwner != null);
+
+            ApplicationEventSource.Log.CommandFailed(
+                command.GetType().FullName(),
+                command.Text.Replace("&", string.Empty),
+                exception.FullMessage());
+
             this.exceptionDialog.Show(
                 this.errorReportingOwner,
                 $"{command.ActivityText} failed",
                 exception);
+        }
+
+        public void OnCommandExecuted(ICommand command)
+        {
+            ApplicationEventSource.Log.CommandExecuted(
+                command.GetType().FullName(),
+                command.Text.Replace("&", string.Empty));
         }
     }
 }

@@ -19,21 +19,19 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
-using System;
 using System.Diagnostics.Tracing;
-using System.Net;
-using System.Net.Http;
 
 namespace Google.Solutions.Apis
 {
     /// <summary>
     /// ETW event source.
     /// </summary>
-    [EventSource(Name = "Google-Solutions-Api", Guid = "EC3585B8-5C28-42AE-8CE7-D76CB00303C6")]
-    public sealed class ApiEventSource : EventSource
+    [EventSource(Name = ProviderName, Guid = ProviderGuid)]
+    internal sealed class ApiEventSource : EventSource
     {
+        public const string ProviderName = "Google-Solutions-Api";
+        public const string ProviderGuid = "EC3585B8-5C28-42AE-8CE7-D76CB00303C6";
+
         public static ApiEventSource Log { get; } = new ApiEventSource();
 
         //---------------------------------------------------------------------
