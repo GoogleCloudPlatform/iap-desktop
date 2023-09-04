@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 throw new ArgumentException(nameof(validity));
             }
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 //
                 // If OS Login is enabled for a project, we have to use
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public async Task<IEnumerable<IAuthorizedPublicKey>> ListAuthorizedKeysAsync(
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 //
                 // NB. The OS Login profile (in particular, the username
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             CancellationToken cancellationToken)
         {
             Debug.Assert(key is AuthorizedPublicKey);
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(key))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(key))
             {
                 await this.adapter.DeleteSshPublicKeyAsync(
                         ((AuthorizedPublicKey)key).Fingerprint,

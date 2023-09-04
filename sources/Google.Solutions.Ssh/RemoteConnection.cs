@@ -235,7 +235,7 @@ namespace Google.Solutions.Ssh
 
             if (exception != null)
             {
-                SshTraceSources.Default.TraceError(exception);
+                SshTraceSource.Log.TraceError(exception);
                 throw exception;
             }
             else
@@ -391,7 +391,7 @@ namespace Google.Solutions.Ssh
                     // NB. This is non-fatal - we're tearing down the 
                     // connection anyway.
                     //
-                    SshTraceSources.Default.TraceError(
+                    SshTraceSource.Log.TraceError(
                         "Closing connection failed for {0}: {1}",
                         Thread.CurrentThread.Name,
                         e);

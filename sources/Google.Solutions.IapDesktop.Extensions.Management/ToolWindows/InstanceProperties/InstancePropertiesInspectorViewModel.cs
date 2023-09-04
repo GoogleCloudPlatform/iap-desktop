@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             IProjectModelNode node,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
                 if (node is IProjectModelInstanceNode vmNode)
                 {
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         protected override void ApplyModel(bool cached)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.Model, cached))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(this.Model, cached))
             {
                 if (this.Model == null)
                 {

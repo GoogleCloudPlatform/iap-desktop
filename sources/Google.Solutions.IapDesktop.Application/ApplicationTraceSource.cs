@@ -21,10 +21,10 @@
 
 using System.Diagnostics;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Application
 {
-    public static class CommonTraceSources
+    public static class ApplicationTraceSource
     {
-        public static readonly TraceSource Default = new TraceSource(typeof(CommonTraceSources).Namespace);
+        public static readonly TraceSource Log = new TraceSource(typeof(ApplicationTraceSource).Namespace);
     }
 }

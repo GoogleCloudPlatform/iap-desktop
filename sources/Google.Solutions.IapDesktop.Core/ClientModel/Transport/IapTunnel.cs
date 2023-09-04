@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 TimeSpan probeTimeout,
                 CancellationToken cancellationToken)
             {
-                using (CoreTraceSources.Default.TraceMethod().WithParameters(profile))
+                using (CoreTraceSource.Log.TraceMethod().WithParameters(profile))
                 {
                     if (profile.LocalEndpoint != null &&
                         profile.LocalEndpoint.Address != IPAddress.Loopback)

@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             IProjectModelNode node,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
                 IEnumerable<ulong> instanceIdFilter;
                 IEnumerable<string> zonesFilter;

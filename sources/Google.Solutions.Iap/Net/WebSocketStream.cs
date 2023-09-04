@@ -131,7 +131,7 @@ namespace Google.Solutions.Iap.Net
                 WebSocketReceiveResult result;
                 do
                 {
-                    IapTraceSources.Default.TraceVerbose(
+                    IapTraceSource.Log.TraceVerbose(
                         "WebSocketStream: begin ReadAsync()... [socket: {0}]",
                         this.socket.State);
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.Iap.Net
 
                     Debug.Assert(bytesReceived + bytesLeftInBuffer == count);
 
-                    IapTraceSources.Default.TraceVerbose(
+                    IapTraceSource.Log.TraceVerbose(
                         "WebSocketStream: end ReadAsync() - {0} bytes read [socket: {1}]",
                         result.Count,
                         this.socket.State);
@@ -159,7 +159,7 @@ namespace Google.Solutions.Iap.Net
                 {
                     Debug.Assert(bytesReceived == 0);
 
-                    IapTraceSources.Default.TraceVerbose(
+                    IapTraceSource.Log.TraceVerbose(
                         "WebSocketStream: Connection closed by server: {0}",
                         result.CloseStatus);
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.Iap.Net
                 IsSocketError(e, SocketError.ConnectionAborted) ||
                 IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSources.Default.TraceVerbose("WebSocketStream.Read: connection aborted - {0}", e);
+                IapTraceSource.Log.TraceVerbose("WebSocketStream.Read: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
                     (WebSocketCloseStatus)1006, // Abnormal closure
@@ -204,7 +204,7 @@ namespace Google.Solutions.Iap.Net
 
             try
             {
-                IapTraceSources.Default.TraceVerbose(
+                IapTraceSource.Log.TraceVerbose(
                     "WebSocketStream: begin WriteAsync({0} bytes)... [socket: {1}]",
                     count,
                     this.socket.State);
@@ -216,7 +216,7 @@ namespace Google.Solutions.Iap.Net
                         cancellationToken)
                     .ConfigureAwait(false);
 
-                IapTraceSources.Default.TraceVerbose(
+                IapTraceSource.Log.TraceVerbose(
                     "WebSocketStream: end WriteAsync()... [socket: {0}]",
                     this.socket.State);
             }
@@ -224,7 +224,7 @@ namespace Google.Solutions.Iap.Net
                 IsSocketError(e, SocketError.ConnectionAborted) ||
                 IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSources.Default.TraceVerbose("WebSocketStream.Write: connection aborted - {0}", e);
+                IapTraceSource.Log.TraceVerbose("WebSocketStream.Write: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
                     (WebSocketCloseStatus)1006, // Abnormal closure

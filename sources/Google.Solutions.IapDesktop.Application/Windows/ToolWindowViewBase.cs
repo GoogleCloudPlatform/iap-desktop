@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 }
                 catch (Exception e)
                 {
-                    ApplicationTraceSources.Default.TraceWarning(
+                    ApplicationTraceSource.Log.TraceWarning(
                         "Saving tool window state failed: {0}", e.Message);
                 }
             };

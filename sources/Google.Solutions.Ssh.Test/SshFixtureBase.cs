@@ -44,8 +44,8 @@ namespace Google.Solutions.Ssh.Test
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
             {
-                CommonTraceSources.Default,
-                SshTraceSources.Default
+                CommonTraceSource.Log,
+                SshTraceSource.Log
             });
 
         //---------------------------------------------------------------------

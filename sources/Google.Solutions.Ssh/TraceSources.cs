@@ -23,8 +23,8 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Ssh
 {
-    public static class SshTraceSources
+    public static class SshTraceSource
     {
-        public static readonly TraceSource Default = new TraceSource(typeof(SshTraceSources).Namespace);
+        public static readonly TraceSource Log = new TraceSource(typeof(SshTraceSource).Namespace);
     }
 }

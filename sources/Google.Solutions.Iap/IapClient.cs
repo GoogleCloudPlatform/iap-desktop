@@ -106,7 +106,7 @@ namespace Google.Solutions.Iap
                 //
                 clientCertificate = this.authorization.DeviceEnrollment.Certificate;
 
-                IapTraceSources.Default.TraceInformation(
+                IapTraceSource.Log.TraceInformation(
                     "Using client certificate {0}", clientCertificate);
             }
 

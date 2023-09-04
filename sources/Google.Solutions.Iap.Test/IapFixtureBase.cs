@@ -32,8 +32,8 @@ namespace Google.Solutions.Iap.Test
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
             {
-                CommonTraceSources.Default,
-                IapTraceSources.Default
+                CommonTraceSource.Log,
+                IapTraceSource.Log
             });
     }
 }

@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
             if (deviceCertificate != null)
             {
-                ApplicationTraceSources.Default.TraceInformation(
+                ApplicationTraceSource.Log.TraceInformation(
                     "Device certificate found: {0}",
                     deviceCertificate.Subject);
 

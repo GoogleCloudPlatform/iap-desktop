@@ -94,7 +94,7 @@ namespace Google.Solutions.Ssh.Native
 
         public static string GetVersion(Version requiredVersion)
         {
-            using (SshTraceSources.Default.TraceMethod().WithParameters(requiredVersion))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(requiredVersion))
             {
                 var requiredVersionEncoded =
                     (requiredVersion.Major << 16) |
@@ -161,7 +161,7 @@ namespace Google.Solutions.Ssh.Native
                 throw new ArgumentException(nameof(methodType));
             }
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(methodType))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(methodType))
             {
                 var count = UnsafeNativeMethods.libssh2_session_supported_algs(
                     this.sessionHandle,
@@ -210,7 +210,7 @@ namespace Google.Solutions.Ssh.Native
             }
 
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(
+            using (SshTraceSource.Log.TraceMethod().WithParameters(
                 methodType,
                 methods))
             {
@@ -242,7 +242,7 @@ namespace Google.Solutions.Ssh.Native
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(banner, nameof(banner));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(banner))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(banner))
             {
                 UnsafeNativeMethods.libssh2_session_banner_set(
                     this.sessionHandle,
@@ -263,7 +263,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
                 {
                     var millis = UnsafeNativeMethods.libssh2_session_get_timeout(
                         this.sessionHandle);
@@ -272,7 +272,7 @@ namespace Google.Solutions.Ssh.Native
             }
             set
             {
-                using (SshTraceSources.Default.TraceMethod().WithParameters(value))
+                using (SshTraceSource.Log.TraceMethod().WithParameters(value))
                 {
                     this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
@@ -297,7 +297,7 @@ namespace Google.Solutions.Ssh.Native
             bool wantServerResponse,
             TimeSpan interval)
         {
-            using (SshTraceSources.Default.TraceMethod().WithParameters(
+            using (SshTraceSource.Log.TraceMethod().WithParameters(
                 wantServerResponse,
                 interval))
             {
@@ -312,7 +312,7 @@ namespace Google.Solutions.Ssh.Native
         {
             if (DateTime.Now > this.nextKeepaliveDueTime)
             {
-                SshTraceSources.Default.TraceVerbose("Sending keepalive");
+                SshTraceSource.Log.TraceVerbose("Sending keepalive");
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_keepalive_send(
                     this.sessionHandle,
@@ -337,7 +337,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(remoteEndpoint))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(remoteEndpoint))
             {
                 var socket = new Socket(
                     AddressFamily.InterNetwork,
@@ -418,7 +418,7 @@ namespace Google.Solutions.Ssh.Native
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(handler, nameof(handler));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(mask))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(mask))
             {
                 // Store this delegate in a field to prevent it from being
                 // garbage collected. Otherwise callbacks will suddenly

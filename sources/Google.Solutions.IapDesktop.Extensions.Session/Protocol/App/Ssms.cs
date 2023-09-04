@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 
             if (hr != HRESULT.S_FALSE || bufferSize == 0)
             {
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "The file extension {0} is not associated with any " +
                     "executable, SSMS doesn't seem to be installed (HR: {1})",
                     SsmsFileExtension,
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 ref bufferSize);
             if (hr.Failed())
             {
-                ApplicationTraceSources.Default.TraceError(
+                ApplicationTraceSource.Log.TraceError(
                     "Reading file association data failed: {0}", hr);
 
                 ssms = null;
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             if (!executablePath.EndsWith("ssms.exe", StringComparison.OrdinalIgnoreCase) ||
                 !File.Exists(executablePath))
             {
-                ApplicationTraceSources.Default.TraceInformation(
+                ApplicationTraceSource.Log.TraceInformation(
                     "The file extension {0} is associated with {1}, " +
                     "which is not a valid path to ssms.exe",
                     SsmsFileExtension,

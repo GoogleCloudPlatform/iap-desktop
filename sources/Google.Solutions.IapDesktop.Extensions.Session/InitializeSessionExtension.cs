@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 {
                     try
                     {
-                        ApplicationTraceSources.Default.TraceInformation(
+                        ApplicationTraceSource.Log.TraceInformation(
                             "Loading protocol configuration from {0}...", file.Name);
 
                         var protocol = await AppProtocolConfigurationFile
@@ -174,9 +174,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     }
                     catch (Exception e)
                     {
-                        ApplicationTraceSources.Default.TraceError(
+                        ApplicationTraceSource.Log.TraceError(
                             "Loading protocol configuration from {0} failed", file.Name);
-                        ApplicationTraceSources.Default.TraceError(e);
+                        ApplicationTraceSource.Log.TraceError(e);
 
                         throw;
                     }

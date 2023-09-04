@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             IEnumerable<string> bypassList,
             ICredentials credentials)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 proxyAddress,
                 credentials != null ? "(credentials)" : null))
             {
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             Uri pacAddress,
             ICredentials credentials)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 pacAddress,
                 credentials != null ? "(credentials)" : null))
             {
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 
         public void ActivateSystemProxySettings()
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 lock (this.configLock)
                 {

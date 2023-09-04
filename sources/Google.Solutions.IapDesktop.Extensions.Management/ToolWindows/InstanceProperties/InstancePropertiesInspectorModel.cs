@@ -408,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             catch (Exception e) when (e.Unwrap() is GoogleApiException apiEx &&
                 apiEx.IsConstraintViolation())
             {
-                ApplicationTraceSources.Default.TraceWarning(
+                ApplicationTraceSource.Log.TraceWarning(
                     "Failed to load OS inventory data: {0}", e);
 
                 // Proceed with empty data.

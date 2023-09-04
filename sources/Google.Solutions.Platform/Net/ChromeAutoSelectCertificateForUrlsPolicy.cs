@@ -119,7 +119,7 @@ namespace Google.Solutions.Platform.Net
                             //
                             // Malformed entry, ignore.
                             //
-                            PlatformTraceSources.Default.TraceVerbose(
+                            PlatformTraceSource.Log.TraceVerbose(
                                 "Encountered malformed AutoSelectCertificateForUrls policy entry '{0}': {1}",
                                 value,
                                 e.Message);

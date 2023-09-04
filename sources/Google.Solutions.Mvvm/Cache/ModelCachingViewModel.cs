@@ -73,7 +73,7 @@ namespace Google.Solutions.Mvvm.Cache
                     // Another asynchronous load/bind operation is ongoing.
                     // Cancel that one because we won't need its result.
 
-                    CommonTraceSources.Default.TraceVerbose("Cancelling previous model load task");
+                    CommonTraceSource.Log.TraceVerbose("Cancelling previous model load task");
                     this.tokenSourceForCurrentTask.Cancel();
                     this.tokenSourceForCurrentTask = null;
                 }
@@ -91,7 +91,7 @@ namespace Google.Solutions.Mvvm.Cache
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
-                    CommonTraceSources.Default.TraceVerbose("Model load cancelled");
+                    CommonTraceSource.Log.TraceVerbose("Model load cancelled");
                 }
             }
         }

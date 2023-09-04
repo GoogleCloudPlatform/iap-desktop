@@ -31,7 +31,7 @@ namespace Google.Solutions.Common.Test
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
             {
-                CommonTraceSources.Default,
+                CommonTraceSource.Log,
             });
     }
 }

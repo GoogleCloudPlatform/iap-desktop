@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             bool failIfGuardKeyFound,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod()
+            using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(string.Join(", ", keysToReplace)))
             {
                 List<Metadata.ItemsData> oldItems = null;

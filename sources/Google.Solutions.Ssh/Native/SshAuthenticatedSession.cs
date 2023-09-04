@@ -59,7 +59,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.Session.Handle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(mode))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(mode))
             {
                 LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_channel_open_ex(
@@ -125,7 +125,7 @@ namespace Google.Solutions.Ssh.Native
                     // and carry on.
                     //
 
-                    SshTraceSources.Default.TraceWarning(
+                    SshTraceSource.Log.TraceWarning(
                         "Environment variable {0} was rejected by server: {1}",
                         environmentVariable.Name,
                         result);
@@ -146,7 +146,7 @@ namespace Google.Solutions.Ssh.Native
             this.Session.Handle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(term, nameof(term));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(
+            using (SshTraceSource.Log.TraceMethod().WithParameters(
                 term,
                 widthInChars,
                 heightInChars))
@@ -211,7 +211,7 @@ namespace Google.Solutions.Ssh.Native
         /// </summary>
         public SshSftpChannel OpenSftpChannel()
         {
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var channelHandle = UnsafeNativeMethods.libssh2_sftp_init(
                     this.Session.Handle);

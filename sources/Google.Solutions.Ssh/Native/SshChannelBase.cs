@@ -64,7 +64,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
                 {
                     return UnsafeNativeMethods.libssh2_channel_eof(
                         this.ChannelHandle) == 1;
@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Native
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(buffer, nameof(buffer));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(streamId))
             {
                 if (this.IsEndOfStream)
                 {
@@ -112,7 +112,7 @@ namespace Google.Solutions.Ssh.Native
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(buffer, nameof(buffer));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(streamId))
             {
                 Debug.Assert(!this.closedForWriting);
 
@@ -137,7 +137,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
                     this.ChannelHandle);
@@ -153,7 +153,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 // Avoid closing more than once.
                 if (!this.closedForWriting)

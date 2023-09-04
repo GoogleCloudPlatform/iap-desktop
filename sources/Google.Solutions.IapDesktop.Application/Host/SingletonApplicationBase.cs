@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             catch (IOException e)
             {
-                ApplicationTraceSources.Default.TraceError(
+                ApplicationTraceSource.Log.TraceError(
                     "Singleton: Failed to communicate with mutex owner ({0})",
                     e.Message);
 
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             catch (UnauthorizedAccessException)
             {
-                ApplicationTraceSources.Default.TraceError(
+                ApplicationTraceSource.Log.TraceError(
                     "Singleton: Failed to access mutex");
 
                 //
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     //
                     // Back off and retry.
                     //
-                    ApplicationTraceSources.Default.TraceWarning(
+                    ApplicationTraceSource.Log.TraceWarning(
                         "Pipe {0} is busy, retrying", this.PipeName);
 
                     await Task.Delay(500);

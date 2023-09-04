@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Client
             ICredential credential,
             CancellationToken cancellationToken)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(url))
+            using (CommonTraceSource.Log.TraceMethod().WithParameters(url))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 if (this.UserAgent != null)

@@ -86,15 +86,15 @@ namespace Google.Solutions.IapDesktop
 
         private static bool tracingEnabled = false;
 
-        private static readonly TraceSource[] Traces = new[]
+        private static readonly TraceSource[] TraceSources = new[]
         {
             ApiTraceSource.Log,
-            PlatformTraceSources.Default,
-            CommonTraceSources.Default,
-            IapTraceSources.Default,
-            SshTraceSources.Default,
-            ApplicationTraceSources.Default,
-            CoreTraceSources.Default,
+            PlatformTraceSource.Log,
+            CommonTraceSource.Log,
+            IapTraceSource.Log,
+            SshTraceSource.Log,
+            ApplicationTraceSource.Log,
+            CoreTraceSource.Log,
         };
 
         public static string LogFile =>
@@ -122,23 +122,23 @@ namespace Google.Solutions.IapDesktop
                     Directory.CreateDirectory(new FileInfo(logFilePath).DirectoryName);
                     var logListener = new TextWriterTraceListener(logFilePath);
 
-                    foreach (var trace in Traces)
+                    foreach (var trace in TraceSources)
                     {
                         trace.Listeners.Add(new DefaultTraceListener());
                         trace.Listeners.Add(logListener);
-                        trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                        trace.Switch.Level = SourceLevels.Verbose;
                     }
                 }
                 else
                 {
-                    foreach (var trace in Traces)
+                    foreach (var trace in TraceSources)
                     {
                         foreach (var listener in trace.Listeners.Cast<TraceListener>())
                         {
                             listener.Flush();
                         }
 
-                        trace.Switch.Level = System.Diagnostics.SourceLevels.Off;
+                        trace.Switch.Level = SourceLevels.Off;
                     }
                 }
             }
@@ -323,11 +323,11 @@ namespace Google.Solutions.IapDesktop
             }
             catch (Exception e)
             {
-                ApplicationTraceSources.Default.TraceError(e);
+                ApplicationTraceSource.Log.TraceError(e);
             }
 
 #if DEBUG
-            ApplicationTraceSources.Default.Switch.Level = SourceLevels.Verbose;
+            ApplicationTraceSource.Log.Switch.Level = SourceLevels.Verbose;
             //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
 #endif
 
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop
             }
             catch (InvalidOperationException e)
             {
-                ApplicationTraceSources.Default.TraceWarning(
+                ApplicationTraceSource.Log.TraceWarning(
                     "Installing UnrestrictUserAgentHeader patch failed: {0}", e);
             }
 
@@ -373,7 +373,7 @@ namespace Google.Solutions.IapDesktop
             }
             catch (Exception e)
             {
-                ApplicationTraceSources.Default.TraceWarning(
+                ApplicationTraceSource.Log.TraceWarning(
                     "Installing SetUsernameAsHostHeaderForWssRequests patch failed: {0}", e);
             }
 

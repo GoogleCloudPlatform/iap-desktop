@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Precondition.ExpectNotNull(instance, nameof(instance));
             Precondition.ExpectNotNull(key, nameof(key));
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(instance))
             {
                 var metdataKeyProcessor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
                         this.computeClient,
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 var osLoginEnabled = metdataKeyProcessor.IsOsLoginEnabled;
 
-                ApplicationTraceSources.Default.TraceVerbose(
+                ApplicationTraceSource.Log.TraceVerbose(
                     "OS Login status for {0}: {1}", instance, osLoginEnabled);
 
                 if (osLoginEnabled)

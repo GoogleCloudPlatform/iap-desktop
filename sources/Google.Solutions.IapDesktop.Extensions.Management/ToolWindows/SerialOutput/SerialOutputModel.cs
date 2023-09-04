@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         {
             return Task.Run(async () =>
             {
-                ApplicationTraceSources.Default.TraceVerbose("Start polling serial output");
+                ApplicationTraceSource.Log.TraceVerbose("Start polling serial output");
 
                 var exceptionCaught = false;
                 while (!exceptionCaught)
@@ -97,14 +97,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                     // Check if we can continue to tail.
                     if (token.IsCancellationRequested)
                     {
-                        ApplicationTraceSources.Default.TraceVerbose("Stop polling serial output");
+                        ApplicationTraceSource.Log.TraceVerbose("Stop polling serial output");
                         break;
                     }
 
                     string newOutput;
                     try
                     {
-                        ApplicationTraceSources.Default.TraceVerbose("Polling serial output...");
+                        ApplicationTraceSource.Log.TraceVerbose("Polling serial output...");
                         newOutput = await ReadAndBufferAsync(token).ConfigureAwait(false);
                     }
                     catch (TokenResponseException e)
