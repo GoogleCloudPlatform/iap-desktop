@@ -20,6 +20,7 @@
 //
 
 using System.Diagnostics.Tracing;
+using System.Security.Policy;
 
 namespace Google.Solutions.Apis
 {
@@ -27,7 +28,7 @@ namespace Google.Solutions.Apis
     /// ETW event source.
     /// </summary>
     [EventSource(Name = ProviderName, Guid = ProviderGuid)]
-    internal sealed class ApiEventSource : EventSource
+    public sealed class ApiEventSource : EventSource
     {
         public const string ProviderName = "Google-Solutions-Apis";
         public const string ProviderGuid = "EC3585B8-5C28-42AE-8CE7-D76CB00303C6";
@@ -39,7 +40,7 @@ namespace Google.Solutions.Apis
         //---------------------------------------------------------------------
 
         [Event(1, Level = EventLevel.Verbose)]
-        public void HttpRequestInitiated(
+        internal void HttpRequestInitiated(
             string method,
             string requestUri,
             string endpointType,
@@ -47,7 +48,7 @@ namespace Google.Solutions.Apis
             => WriteEvent(1, method, requestUri, endpointType, pscEndpoint);
 
         [Event(2, Level = EventLevel.Warning)]
-        public void HttpRequestFailed(
+        internal void HttpRequestFailed(
             string method,
             string requestUri,
             int statusCode)
@@ -57,19 +58,23 @@ namespace Google.Solutions.Apis
         // Auth
         //---------------------------------------------------------------------
 
-        [Event(100, Level = EventLevel.Informational)]
-        public void OfflineCredentialActivated(
-            string issuer)
-            => WriteEvent(100, issuer);
+        public const int OfflineCredentialActivatedId = 100;
+        public const int OfflineCredentialActivationFailedId = 101;
+        public const int AuthorizedId = 102;
 
-        [Event(101, Level = EventLevel.Warning)]
-        public void OfflineCredentialActivationFailed(
+        [Event(OfflineCredentialActivatedId, Level = EventLevel.Informational)]
+        internal void OfflineCredentialActivated(
+            string issuer)
+            => WriteEvent(OfflineCredentialActivatedId, issuer);
+
+        [Event(OfflineCredentialActivationFailedId, Level = EventLevel.Warning)]
+        internal void OfflineCredentialActivationFailed(
             string issuer,
             string error)
-            => WriteEvent(101, issuer, error);
+            => WriteEvent(OfflineCredentialActivationFailedId, issuer, error);
 
-        [Event(102, Level = EventLevel.Informational)]
-        public void Authorized(string issuer)
-            => WriteEvent(102, issuer);
+        [Event(AuthorizedId, Level = EventLevel.Informational)]
+        internal void Authorized(string issuer)
+            => WriteEvent(AuthorizedId, issuer);
     }
 }

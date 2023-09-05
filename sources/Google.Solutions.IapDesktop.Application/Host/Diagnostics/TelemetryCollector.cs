@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Analytics;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -122,6 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
                     //
                     // Make sure the source is enabled.
                     //
+                    EnableEvents(ApiEventSource.Log, EventLevel.Informational);
                     EnableEvents(ApplicationEventSource.Log, EventLevel.Informational);
                 }
 
@@ -139,6 +141,9 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             //
             // Relay relevant events.
             //
+            // NB. When adding new events, consider the requirements in
+            // https://support.google.com/analytics/answer/12229021
+            //
 
             if (eventData.EventSource == ApplicationEventSource.Log)
             {
@@ -150,6 +155,23 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
                     case ApplicationEventSource.CommandFailedId:
                         Collect("app_cmd_failed", eventData);
+                        break;
+                }
+            }
+            else if (eventData.EventSource == ApiEventSource.Log)
+            {
+                switch (eventData.EventId)
+                {
+                    case ApiEventSource.OfflineCredentialActivatedId:
+                        Collect("app_auth_offline", eventData);
+                        break;
+
+                    case ApiEventSource.OfflineCredentialActivationFailedId:
+                        Collect("app_auth_offline_failed", eventData);
+                        break;
+
+                    case ApiEventSource.AuthorizedId:
+                        Collect("app_auth", eventData);
                         break;
                 }
             }

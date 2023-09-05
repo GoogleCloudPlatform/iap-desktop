@@ -42,13 +42,13 @@ namespace Google.Solutions.IapDesktop.Application
         public const int CommandFailedId = 2;
 
         [Event(CommandExecutedId, Level = EventLevel.Informational)]
-        public void CommandExecuted(
+        internal void CommandExecuted(
             string command,
             string text)
             => WriteEvent(CommandExecutedId, command, text);
 
         [Event(CommandFailedId, Level = EventLevel.Warning)]
-        public void CommandFailed(
+        internal void CommandFailed(
             string command,
             string text,
             string error)

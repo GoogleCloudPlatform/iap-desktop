@@ -518,6 +518,7 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton<ITelemetryCollector>(new TelemetryCollector(
                     new MeasurementClient(
                         MeasurementClient.CreateEndpoint(),
+                        Install.UserAgent,
                         AnalyticsStream.ApiKey,
                         AnalyticsStream.MeasurementId),
                     install)

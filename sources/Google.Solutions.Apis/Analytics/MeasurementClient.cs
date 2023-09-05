@@ -59,6 +59,7 @@ namespace Google.Solutions.Apis.Analytics
 
         public MeasurementClient(
             ServiceEndpoint<MeasurementClient> endpoint,
+            UserAgent userAgent,
             string apiSecret, 
             string measurementId)
         {
@@ -66,7 +67,8 @@ namespace Google.Solutions.Apis.Analytics
             this.service = new MeasurementService(new MeasurementService.Initializer()
             {
                 ApiKey = apiSecret.ExpectNotEmpty(nameof(apiSecret)),
-                MeasurementId = measurementId.ExpectNotEmpty(nameof(measurementId))
+                MeasurementId = measurementId.ExpectNotEmpty(nameof(measurementId)),
+                ApplicationName = userAgent.ToApplicationName()
             });
         }
 
