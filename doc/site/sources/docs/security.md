@@ -1,8 +1,8 @@
 # Privacy & security
 
-## Usage of Google APIs
+## Google APIs
 
-IAP Desktop accesses Google Cloud Platform to:
+IAP Desktop accesses Google Cloud Platform APIs to perform functions such as the following:
 
 * establish [Cloud IAP TCP tunnels  :octicons-link-external-16:](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to VM instances
 * list VMs and obtain metadata and logs for VM instances  
@@ -22,7 +22,21 @@ Periodically, IAP Desktop accesses the [GitHub API :octicons-link-external-16:](
 for updates. After an upgrade, IAP Desktop also queries the GitHub API to download release notes.
 
 IAP Desktop does not intentionally disclose or transmit any data to APIs other than the
-ones listed above. 
+ones listed on this page. 
+
+## Usage data
+
+By default, IAP Desktop _does not_ collect or share usage data. You can help Google improve and prioritize 
+features and improvements by enabling data sharing under **Tools > Options > Data sharing**.
+You can enable or disable data sharing at any time.
+
+When you enable data sharing, IAP Desktop periodically sends anonymous usage data to the 
+[Google Analytics Measurement API :octicons-link-external-16:](https://developers.google.com/analytics/devguides/collection/protocol/ga4).
+Usage data includes information about which menu commands you use, any errors that occured,
+and similar information.
+
+Usage data doesn't include personal information and isn't associated with your Google account.
+
 
 ## Credential storage
 
