@@ -117,4 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="enableTelemetryCheckBox.Text" xml:space="preserve">
+    <value>Share anonymous usage data to help Google improve and 
+prioritize features.
+
+Usage data includes information about which menu
+commands you use, any errors that occured, and 
+similar information. Usage data doesn't include personal 
+information and isn't associated with your Google account.</value>
+  </data>
 </root>

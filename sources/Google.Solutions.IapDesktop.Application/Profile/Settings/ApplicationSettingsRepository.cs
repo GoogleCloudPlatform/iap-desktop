@@ -38,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         IIntSetting MainWindowHeight { get; }
         IIntSetting MainWindowWidth { get; }
         IBoolSetting IsUpdateCheckEnabled { get; }
+        IBoolSetting IsTelemetryEnabled { get; }
         ILongSetting LastUpdateCheck { get; }
         IBoolSetting IsPreviewFeatureSetEnabled { get; }
         IStringSetting ProxyUrl { get; }
@@ -91,6 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public IBoolSetting IsUpdateCheckEnabled { get; private set; }
 
+            public IBoolSetting IsTelemetryEnabled { get; private set; }
+
             public ILongSetting LastUpdateCheck { get; private set; }
 
             public IBoolSetting IsPreviewFeatureSetEnabled { get; private set; }
@@ -113,6 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.MainWindowHeight,
                 this.MainWindowWidth,
                 this.IsUpdateCheckEnabled,
+                this.IsTelemetryEnabled,
                 this.LastUpdateCheck,
                 this.IsUpdateCheckEnabled,
                 this.ProxyUrl,
@@ -153,6 +157,15 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             null,
                             null,
                             true,
+                            settingsKey)
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    IsTelemetryEnabled = RegistryBoolSetting.FromKey(
+                            "IsTelemetryEnabled",
+                            "IsTelemetryEnabled",
+                            null,
+                            null,
+                            false,
                             settingsKey)
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),

@@ -88,5 +88,11 @@ namespace Google.Solutions.Common.Util
             return collection.Cast<string>()
                 .Select(key => new KeyValuePair<string, string>(key, collection[key]));
         }
+
+        public static IDictionary<K, V> ToDictionary<K, V>(
+            this IEnumerable<KeyValuePair<K, V>> entries)
+        {
+            return entries.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
     }
 }

@@ -81,6 +81,10 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         public static readonly IHelpTopic AppProtocols = new HelpTopic(
             "App protocols",
             $"https://googlecloudplatform.github.io/iap-desktop/client-application-configuration/?{GaParameters}");
+        
+        public static readonly IHelpTopic Privacy = new HelpTopic(
+            "Privacy",
+            $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}");
     }
 
     public class HelpAdapter

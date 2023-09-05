@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Analytics;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace Google.Solutions.Apis.Test.Analytics
 
             var client = new MeasurementClient(
                 MeasurementClient.CreateEndpoint(),
+                TestProject.UserAgent,
                 "invalid-secret",
                 "invalid-id");
 

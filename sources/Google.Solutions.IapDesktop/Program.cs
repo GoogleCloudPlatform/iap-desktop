@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Analytics;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
@@ -36,6 +37,7 @@ using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -465,14 +467,13 @@ namespace Google.Solutions.IapDesktop
                 //
                 // NB. Until now, no network connections have been made.
                 //
+                var appSettings = appSettingsRepository.GetSettings();
                 try
                 {
-                    var settings = appSettingsRepository.GetSettings();
-
                     //
                     // Activate proxy settings based on app settings.
                     //
-                    preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(settings);
+                    preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
                 }
                 catch (Exception)
                 {
@@ -500,8 +501,8 @@ namespace Google.Solutions.IapDesktop
                     ServicePointManager.DefaultConnectionLimit
                         = accessSettings.ConnectionLimit.IntValue;
                 }
-                preAuthLayer.AddSingleton(serviceRoute);
 
+                preAuthLayer.AddSingleton(serviceRoute);
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(WorkforcePoolClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(ResourceManagerClient.CreateEndpoint(serviceRoute));
@@ -509,6 +510,21 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(OsLoginClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(LoggingClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(IapClient.CreateEndpoint(serviceRoute));
+
+                //
+                // Enable telemetry if the user allows it. Do this before
+                // authorization takes place.
+                //
+                preAuthLayer.AddSingleton<ITelemetryCollector>(new TelemetryCollector(
+                    new MeasurementClient(
+                        MeasurementClient.CreateEndpoint(),
+                        Install.UserAgent,
+                        AnalyticsStream.ApiKey,
+                        AnalyticsStream.MeasurementId),
+                    install)
+                {
+                    Enabled = appSettings.IsTelemetryEnabled.BoolValue
+                });
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();

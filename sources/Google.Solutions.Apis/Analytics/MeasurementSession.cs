@@ -39,9 +39,15 @@ namespace Google.Solutions.Apis.Analytics
         public Guid Id { get; }
 
         /// <summary>
-        /// Client ID, uniquely identifies this installation.
+        /// Client ID, uniquely identifies the device/client.
         /// </summary>
         public string ClientId { get; }
+
+        /// <summary>
+        /// Client ID, uniquely identifies the user, potentially across
+        /// multiple devices.
+        /// </summary>
+        public string UserId { get; set; }
 
         /// <summary>
         /// Custom properties about the user, optional.

@@ -32,6 +32,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -43,11 +44,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
         private Mock<IBrowserProtocolRegistry> protocolRegistryMock;
+        private Mock<ITelemetryCollector> telemetryCollectorMock;
 
         [SetUp]
         public void SetUp()
         {
             this.protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
+            this.telemetryCollectorMock = new Mock<ITelemetryCollector>();
         }
 
         private IRepository<IApplicationSettings> CreateSettingsRepository(
@@ -81,6 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.IsTrue(viewModel.IsUpdateCheckEnabled.Value);
@@ -98,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
@@ -120,6 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
@@ -137,6 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
             viewModel.IsUpdateCheckEnabled.Value = false;
 
@@ -153,6 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
@@ -169,6 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.AreEqual("never", viewModel.LastUpdateCheck);
@@ -185,6 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
@@ -201,6 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
@@ -218,6 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
             viewModel.IsBrowserIntegrationEnabled.Value = true;
 
@@ -237,6 +249,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
                 new HelpAdapter());
             viewModel.IsBrowserIntegrationEnabled.Value = false;
 
@@ -245,6 +258,133 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             this.protocolRegistryMock.Verify(r => r.Unregister(
                     It.Is<string>(s => s == IapRdpUrl.Scheme)),
                 Times.Once);
+        }
+
+
+        //---------------------------------------------------------------------
+        // Telemetry.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingEnabled_ThenIsTelemetryEnabledIsTrue()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsTelemetryEnabled.BoolValue = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
+                new HelpAdapter());
+
+            Assert.IsTrue(viewModel.IsTelemetryEnabled.Value);
+            Assert.IsTrue(viewModel.IsTelemetryEditable.Value);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenIsTelemetryEnabledIsTrue()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsTelemetryEnabled.BoolValue = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
+                new HelpAdapter());
+
+            Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
+            Assert.IsTrue(viewModel.IsTelemetryEditable.Value);
+        }
+
+        [Test]
+        public void WhenSettingDisabledByPolicy_ThenIsTelemetryEditableIsFalse()
+        {
+            var settingsRepository = CreateSettingsRepository(
+                new Dictionary<string, object>
+                {
+                    { "IsTelemetryEnabled", 0 }
+                });
+
+            var settings = settingsRepository.GetSettings();
+            settings.IsTelemetryEnabled.BoolValue = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
+                new HelpAdapter());
+
+            Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
+            Assert.IsFalse(viewModel.IsTelemetryEditable.Value);
+        }
+
+        [Test]
+        public async Task WhenEnablingTelemetry_ThenChangeIsApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsTelemetryEnabled.BoolValue = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
+                new HelpAdapter());
+            viewModel.IsTelemetryEnabled.Value = true;
+
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.IsTrue(settings.IsTelemetryEnabled.BoolValue);
+
+            this.telemetryCollectorMock.VerifySet(t => t.Enabled = true, Times.Once);
+        }
+
+        [Test]
+        public async Task WhenDisablingTelemetry_ThenChangeIsApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsTelemetryEnabled.BoolValue = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
+                new HelpAdapter());
+            viewModel.IsTelemetryEnabled.Value = false;
+
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsTelemetryEnabled.BoolValue);
+
+            this.telemetryCollectorMock.VerifySet(t => t.Enabled = false, Times.Once);
+        }
+
+        [Test]
+        public void WhenTelemetryChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                this.telemetryCollectorMock.Object,
+                new HelpAdapter());
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+
+            viewModel.IsTelemetryEnabled.Value = !viewModel.IsTelemetryEnabled.Value;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
     }
 }

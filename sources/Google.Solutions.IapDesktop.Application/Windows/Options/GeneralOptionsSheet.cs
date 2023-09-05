@@ -43,12 +43,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         {
             var viewModel = (GeneralOptionsViewModel)viewModelBase;
 
+            //
+            // Update check.
+            //
             this.updateBox.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsUpdateCheckEditable,
                 bindingContext);
-
             this.enableUpdateCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
@@ -59,15 +61,36 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 viewModel,
                 m => m.LastUpdateCheck,
                 bindingContext);
+
+            //
+            // Browser integration.
+            //
             this.enableBrowserIntegrationCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsBrowserIntegrationEnabled,
                 bindingContext);
-
             this.browserIntegrationLink.BindObservableCommand(
                 viewModel,
                 m => m.OpenBrowserIntegrationHelp,
+                bindingContext);
+
+            //
+            // Telemetry.
+            //
+            this.telemetryBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsTelemetryEditable,
+                bindingContext);
+            this.enableTelemetryCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsTelemetryEnabled,
+                bindingContext);
+            this.telemetryLink.BindObservableCommand(
+                viewModel,
+                m => m.OpenTelemetryHelp,
                 bindingContext);
         }
     }

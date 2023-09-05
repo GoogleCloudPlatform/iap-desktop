@@ -132,6 +132,9 @@ namespace Google.Solutions.Apis.Analytics
             [JsonProperty("client_id")]
             public string ClientId { get; set; }
 
+            [JsonProperty("user_id")]
+            public string UserId { get; set; }
+
             [JsonProperty("user_properties")]
             public IDictionary<string, PropertySection> UserProperties { get; set; }
 
