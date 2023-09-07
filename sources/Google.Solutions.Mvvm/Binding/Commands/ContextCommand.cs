@@ -31,6 +31,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     /// </summary>
     public class ContextCommand<TContext> : CommandBase, IContextCommand<TContext>
     {
+        private string id;
         private readonly Func<TContext, Task> executeFunc;
         private readonly Func<TContext, CommandState> queryStateFunc;
 
@@ -59,8 +60,16 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         {
         }
 
+        public new string Id 
+        {
+            get => this.id ?? base.Id;
+            set => this.id = value;
+        }
+
         public Image Image { get; set; }
+        
         public Keys ShortcutKeys { get; set; }
+
         public bool IsDefault { get; set; }
 
         public Task ExecuteAsync(TContext context)

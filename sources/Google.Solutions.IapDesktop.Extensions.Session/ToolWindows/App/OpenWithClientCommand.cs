@@ -31,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -179,6 +180,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
+
+        public override string Id
+        {
+            get => $"OpenWithClient.{this.contextFactory.Protocol.Name.Split(' ').FirstOrDefault()}";
+        }
 
         protected override bool IsAvailable(IProjectModelNode context)
         {

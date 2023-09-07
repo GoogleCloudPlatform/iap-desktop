@@ -299,6 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentialsAsync)
                 {
+                    Id = "GenerateWindowsCredentials",
                     Image = Resources.AddCredentials_16,
                     ActivityText = "Generating Windows logon credentials"
                 },
@@ -310,6 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentialsAsync)
                 {
+                    Id = "GenerateWindowsCredentials",
                     Image = Resources.AddCredentials_16,
                     ActivityText = "Generating Windows logon credentials"
                 });
