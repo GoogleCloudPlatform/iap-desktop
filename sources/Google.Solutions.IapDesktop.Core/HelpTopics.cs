@@ -29,11 +29,11 @@ namespace Google.Solutions.IapDesktop.Core
 
         public static readonly IHelpTopic IapAccess = new HelpTopic(
             "Configuring access to Cloud IAP",
-            "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
+            $"https://googlecloudplatform.github.io/iap-desktop/setup-iap/?{GaParameters}");
 
         public static readonly IHelpTopic CreateIapFirewallRule = new HelpTopic(
             "Creating a firewall rule for Cloud IAP",
-            "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
+            $"https://googlecloudplatform.github.io/iap-desktop/setup-iap/?{GaParameters}");
 
         public static readonly IHelpTopic ProxyConfiguration = new HelpTopic(
             "Proxy Configuration",
