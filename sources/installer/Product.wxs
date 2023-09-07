@@ -368,7 +368,7 @@
                   Id="FileLogsStartTracePs1"
                   Name="start-trace.ps1"
                   DiskId="1"
-                  Source="$(var.BASEDIR)\start-trace.ps1"
+                  Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\start-trace.ps1"
                   Vital="yes"/>
                 
                 <RemoveFolder Id="DirLogs" On="uninstall"/>
