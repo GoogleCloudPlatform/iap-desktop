@@ -358,12 +358,17 @@
                   KeyPath="yes"
                   Value="1" />
 
-                <!-- Place a readme.txt in the folder so that it's not empty -->
                 <File
                   Id="FileLogsReadme"
                   Name="Readme.txt"
                   DiskId="1"
                   Source="$(var.BASEDIR)\LogsReadme.txt"
+                  Vital="yes"/>
+                <File
+                  Id="FileLogsStartTracePs1"
+                  Name="start-trace.ps1"
+                  DiskId="1"
+                  Source="$(var.BASEDIR)\start-trace.ps1"
                   Vital="yes"/>
                 
                 <RemoveFolder Id="DirLogs" On="uninstall"/>

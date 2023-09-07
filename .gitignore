@@ -95,3 +95,4 @@ NuGet.config
 
 .vstheme.gz
 launchSettings.json
+*.etl
