@@ -193,6 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => UnloadProjectsAsync())
                 {
+                    Id = "UnloadProject",
                     ActivityText = "Unloading projects"
                 });
             this.contextMenuCommands.AddCommand(
@@ -203,6 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.RefreshSelectedNodeAsync())
                 {
+                    Id = "RefreshProject",
                     Image = Resources.Refresh_16,
                     ActivityText = "Refreshing project"
                 });
@@ -214,6 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.RefreshAsync(false))
                 {
+                    Id = "RefeshAllProjects",
                     Image = Resources.Refresh_16,
                     ActivityText = "Refreshing project"
                 });
@@ -225,6 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.UnloadSelectedProjectAsync())
                 {
+                    Id = "UnloadProject",
                     ActivityText = "Unloading project"
                 });
 
@@ -237,6 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.OpenInCloudConsole())
                 {
+                    Id = "OpenCloudConsole",
                     ActivityText = "Opening Cloud Console"
                 });
             this.contextMenuCommands.AddCommand(
@@ -249,6 +254,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                         () => this.viewModel.ConfigureIapAccess(),
                         "Opening Cloud Console"))
                 {
+                    Id = "ConfigureIapAccess",
                     ActivityText = "Opening Cloud Console"
                 });
             this.contextMenuCommands.AddSeparator();

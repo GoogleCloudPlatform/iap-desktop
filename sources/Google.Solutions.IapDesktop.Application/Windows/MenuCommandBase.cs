@@ -129,6 +129,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             this.isEnabledFunc = isEnabledFunc.ExpectNotNull(nameof(isEnabledFunc));
         }
 
+        public override string Id
+        {
+            get => $"OpenToolWindow.{typeof(TView).Name}";
+        }
+
         public override Task ExecuteAsync(TContext context)
         {
             Debug.Assert(IsAvailable(context) && IsEnabled(context));

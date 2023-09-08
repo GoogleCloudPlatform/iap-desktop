@@ -61,6 +61,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             this.executeFunc = executeFunc;
         }
 
+        public override string Id => null;
+
         public IObservableProperty<bool> CanExecute { get; }
 
         public Task ExecuteAsync(CancellationToken cancellationToken)
@@ -88,6 +90,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 executeFunc,
                 canExecute ?? ObservableProperty.Build(true));
         }
+
         public static ObservableCommand Build(
             string text,
             Func<Task> executeFunc,

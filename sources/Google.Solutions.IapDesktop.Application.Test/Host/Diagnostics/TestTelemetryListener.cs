@@ -62,9 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
             listener.Enabled = false;
             listener.Enabled = false;
 
-            ApplicationEventSource.Log.CommandExecuted(
-                "test-command",
-                "Test command");
+            ApplicationEventSource.Log.CommandExecuted("test-command");
 
             client.Verify(
                 c => c.CollectEventAsync(
@@ -88,9 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
             listener.Enabled = true;
             listener.Enabled = true;
 
-            ApplicationEventSource.Log.CommandExecuted(
-                "test-command",
-                "Test command");
+            ApplicationEventSource.Log.CommandExecuted("test-command");
 
             client.Verify(
                 c => c.CollectEventAsync(

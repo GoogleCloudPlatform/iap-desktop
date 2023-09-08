@@ -121,6 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 this.serviceProvider = serviceProvider;
             }
 
+            public override string Id
+            {
+                get => $"ControlInstance.{this.controlCommand}";
+            }
+
             protected override bool IsAvailable(IProjectModelNode context)
             {
                 return context is IProjectModelInstanceNode;
@@ -152,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 }
             }
 
-            public async override Task ExecuteAsync(IProjectModelNode context)
+            public override async Task ExecuteAsync(IProjectModelNode context)
             {
                 var instanceNode = (IProjectModelInstanceNode)context;
                 var instance = instanceNode.Instance;

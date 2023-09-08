@@ -52,6 +52,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         [MenuCommand(typeof(SampleMenu))]
         internal class NotContextCommand : IMenuCommand<SampleMenu>
         {
+            public string Id => throw new NotImplementedException();
+
             public string Text => throw new NotImplementedException();
 
             public string ActivityText => throw new NotImplementedException();

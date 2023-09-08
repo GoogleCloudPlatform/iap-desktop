@@ -28,14 +28,18 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     public interface ICommand
     {
         /// <summary>
-        /// Caption for command.
+        /// ID, used for tracing.
+        /// </summary>
+        string Id { get; }
+
+        /// <summary>
+        /// Caption, shown in UI.
         /// </summary>
         string Text { get; }
 
         /// <summary>
-        /// Caption when command is executing.
+        /// Caption when command is executing, shown in error dialogs.
         /// </summary>
         string ActivityText { get; }
     }
-
 }

@@ -30,6 +30,11 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     {
         private string activityText;
 
+        public virtual string Id
+        {
+            get => GetType().Name;
+        }
+
         public string Text { get; protected set; }
 
         public string ActivityText
