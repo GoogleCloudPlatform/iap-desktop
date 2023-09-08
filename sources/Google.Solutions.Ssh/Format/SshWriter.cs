@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Format;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
@@ -73,12 +74,8 @@ namespace Google.Solutions.Ssh.Format
             // example: the value 699921578(0x29b7f4aa) is stored as 29 b7 f4
             // aa.
             //
-            var bytes = BitConverter.GetBytes(i);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
-
+            var bytes = new byte[4];
+            BigEndian.EncodeUInt32(i, bytes, 0);
             this.stream.Write(bytes, 0, 4);
         }
 
@@ -88,12 +85,9 @@ namespace Google.Solutions.Ssh.Format
             // Represents a 64 - bit unsigned integer.  Stored as eight bytes in
             // the order of decreasing significance(network byte order).
             //
-            var bytes = BitConverter.GetBytes(i);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
 
+            var bytes = new byte[8];
+            BigEndian.EncodeUInt64(i, bytes, 0);
             this.stream.Write(bytes, 0, 8);
         }
 

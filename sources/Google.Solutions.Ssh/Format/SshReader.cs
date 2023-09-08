@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Format;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
@@ -79,19 +80,14 @@ namespace Google.Solutions.Ssh.Format
         {
             //
             // Represents a 32 - bit unsigned integer.  Stored as four bytes in the
-            // order of decreasing significance(network byte order).For
-            // example: the value 699921578(0x29b7f4aa) is stored as 29 b7 f4
+            // order of decreasing significance (network byte order).For
+            // example: the value 699921578 (0x29b7f4aa) is stored as 29 b7 f4
             // aa.
             //
             var buffer = new byte[4];
             if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
             {
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(buffer);
-                }
-
-                return BitConverter.ToUInt32(buffer, 0);
+                return BigEndian.DecodeUInt32(buffer, 0);
             }
             else
             {
@@ -103,17 +99,12 @@ namespace Google.Solutions.Ssh.Format
         {
             //
             // Represents a 64 - bit unsigned integer.  Stored as eight bytes in
-            // the order of decreasing significance(network byte order).
+            // the order of decreasing significance (network byte order).
             //
             var buffer = new byte[8];
             if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
             {
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(buffer);
-                }
-
-                return BitConverter.ToUInt64(buffer, 0);
+                return BigEndian.DecodeUInt64(buffer, 0);
             }
             else
             {
@@ -141,7 +132,7 @@ namespace Google.Solutions.Ssh.Format
             // Arbitrary length binary string.Strings are allowed to contain
             // arbitrary binary data, including null characters and 8 - bit
             // characters.They are stored as a uint32 containing its length
-            // (number of bytes that follow) and zero(= empty string) or more
+            // (number of bytes that follow) and zero (= empty string) or more
             // bytes that are the value of the string.Terminating null
             // characters are not used.
             // 
@@ -151,7 +142,7 @@ namespace Google.Solutions.Ssh.Format
             // 
             // NOT normally be stored in the string.  For example: the US-ASCII
             // 
-            // string "testing" is represented as 00 00 00 07 t e s t i n g.The
+            // string "testing" is represented as 00 00 00 07 t e s t i n g. The
             // UTF-8 mapping does not alter the encoding of US-ASCII characters.
             //
             return Encoding.ASCII.GetString(ReadByteString());
