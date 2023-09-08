@@ -68,15 +68,6 @@ namespace Google.Solutions.Ssh.Test
             Assert.AreEqual(0, HandleTable.HandleCount);
         }
 
-        [OneTimeTearDown]
-        public void CloseCachedAuthenticators()
-        {
-            foreach (var authenticator in cachedAuthenticators.Values)
-            {
-                authenticator.KeyPair.Dispose();
-            }
-        }
-
         //---------------------------------------------------------------------
         // Helper methods.
         //---------------------------------------------------------------------
