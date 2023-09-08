@@ -41,6 +41,9 @@ namespace Google.Solutions.Ssh.Test
 {
     public abstract class SshFixtureBase : FixtureBase
     {
+        private static readonly IDictionary<string, ISshAuthenticator> cachedAuthenticators =
+            new Dictionary<string, ISshAuthenticator>();
+
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
             {
@@ -63,6 +66,15 @@ namespace Google.Solutions.Ssh.Test
         {
             HandleTable.DumpOpenHandles();
             Assert.AreEqual(0, HandleTable.HandleCount);
+        }
+
+        [OneTimeTearDown]
+        public void CloseCachedAuthenticators()
+        {
+            foreach (var authenticator in cachedAuthenticators.Values)
+            {
+                authenticator.KeyPair.Dispose();
+            }
         }
 
         //---------------------------------------------------------------------
@@ -120,9 +132,6 @@ namespace Google.Solutions.Ssh.Test
                 22);
         }
 
-        private static readonly IDictionary<string, ISshAuthenticator> cachedAuthenticators =
-            new Dictionary<string, ISshAuthenticator>();
-
         /// <summary>
         /// Create an authenticator for a given key type, minimizing
         /// server rountrips.
@@ -149,7 +158,7 @@ namespace Google.Solutions.Ssh.Test
                         k => SshKeyPair.NewEphemeralKeyPair(k));
 
                 var metadataEntry = string.Join("\n", keysByType.Values.Select(
-                    k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
+                    k => $"{username}:{k.Algorithm} {k.PublicKeyString} {username}"));
 
                 using (var service = TestProject.CreateComputeService())
                 {
