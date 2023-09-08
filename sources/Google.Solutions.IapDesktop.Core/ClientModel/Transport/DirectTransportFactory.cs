@@ -80,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
                 return new Transport(
                     protocol,
-                    new IPEndPoint(address, port));
+                    new IPEndPoint(address, port),
+                    instance);
             }
         }
 
@@ -90,10 +91,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
         private class Transport : DisposableBase, ITransport
         {
-            public Transport(IProtocol protocol, IPEndPoint endpoint)
+            public Transport(
+                IProtocol protocol, 
+                IPEndPoint endpoint,
+                InstanceLocator target)
             {
                 this.Protocol = protocol.ExpectNotNull(nameof(protocol));
                 this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
+                this.Target = target.ExpectNotNull(nameof(target));
             }
 
             //-----------------------------------------------------------------
@@ -103,6 +108,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public IProtocol Protocol { get; }
 
             public IPEndPoint Endpoint { get; }
+
+            public ResourceLocator Target { get; }
         }
     }
 }

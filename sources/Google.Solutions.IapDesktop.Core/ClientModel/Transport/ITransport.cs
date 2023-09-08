@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System;
 using System.Net;
@@ -37,5 +38,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// be a localhost endpoint.
         /// </summary>
         IPEndPoint Endpoint { get; }
+
+        /// <summary>
+        /// Target instance or destination group.
+        /// </summary>
+        ResourceLocator Target { get; }
     }
 }

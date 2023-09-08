@@ -39,12 +39,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         public IProtocol Protocol { get; }
 
+        public ResourceLocator Target { get; }
+
         public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
 
-        private IapTransport(IapTunnel tunnel, IProtocol protocol)
+        
+        private IapTransport(
+            IapTunnel tunnel, 
+            IProtocol protocol,
+            InstanceLocator target)
         {
             this.Tunnel = tunnel;
             this.Protocol = protocol;
+            this.Target = target;
         }
 
         public static IapTransport ForRdp(
@@ -77,7 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     listener,
                     profile,
                     IapTunnelFlags.None),
-                RdpProtocol.Protocol);
+                RdpProtocol.Protocol,
+                instance);
         }
 
         protected override void Dispose(bool disposing)

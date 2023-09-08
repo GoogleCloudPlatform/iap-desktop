@@ -275,7 +275,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
                     return new Transport(
                         tunnel,
-                        protocol);
+                        protocol,
+                        targetInstance);
                 }
                 catch (SshRelayDeniedException e)
                 {
@@ -323,10 +324,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             internal Transport(
                 IapTunnel relay,
-                IProtocol protocol)
+                IProtocol protocol,
+                InstanceLocator target)
             {
                 this.Tunnel = relay.ExpectNotNull(nameof(relay));
                 this.Protocol = protocol.ExpectNotNull(nameof(protocol));
+                this.Target = target.ExpectNotNull(nameof(target));
             }
 
             //-----------------------------------------------------------------
@@ -336,6 +339,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             public IProtocol Protocol { get; }
 
             public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
+
+            public ResourceLocator Target { get; } //TODO: test
 
             //-----------------------------------------------------------------
             // DisposableBase.

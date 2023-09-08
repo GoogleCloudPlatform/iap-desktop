@@ -20,6 +20,7 @@
 //
 
 
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
@@ -33,6 +34,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
     [TestFixture]
     public class TestSsmsClient
     {
+        private static readonly InstanceLocator SampleInstance
+            = new InstanceLocator("project-1", "zone-1", "instance-1");
+
         //---------------------------------------------------------------------
         // Properties.
         //---------------------------------------------------------------------
@@ -60,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             [Values("", " ", null)] string emptyish)
         {
             var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Target).Returns(SampleInstance);
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
@@ -72,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.AreEqual(
-                "-S 127.0.0.2,11443 -U sa",
+                "-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U sa",
                 client.FormatArguments(transport.Object, parameters));
         }
 
@@ -80,6 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public void WhenNlaDisabledAndUsernameSet_ThenFormatArgumentsReturnsStringForSqlAuth()
         {
             var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Target).Returns(SampleInstance);
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
@@ -92,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.AreEqual(
-                "-S 127.0.0.2,11443 -U \"username\"",
+                "-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U \"username\"",
                 client.FormatArguments(transport.Object, parameters));
         }
 
@@ -101,6 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             [Values("user\"", "''")] string username)
         {
             var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Target).Returns(SampleInstance);
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
@@ -120,6 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public void WhenNlaEnabled_ThenFormatArgumentsReturnsStringForWindowsAuth()
         {
             var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Target).Returns(SampleInstance);
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
@@ -131,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.AreEqual(
-                "-S 127.0.0.2,11443 -E",
+                "-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -E",
                 client.FormatArguments(transport.Object, parameters));
         }
     }

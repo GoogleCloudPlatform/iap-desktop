@@ -70,6 +70,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 Assert.AreSame(protocol.Object, transport.Protocol);
                 Assert.AreSame(address, transport.Endpoint.Address);
                 Assert.AreEqual(22, transport.Endpoint.Port);
+                Assert.AreSame(SampleInstance, transport.Target);
             }
         }
     }
