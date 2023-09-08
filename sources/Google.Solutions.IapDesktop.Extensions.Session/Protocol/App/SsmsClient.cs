@@ -19,6 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using System;
@@ -119,8 +122,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             // to pass a "human readable" name of the VM to SSMS so that it's easier
             // to recognize the server in Object Explorer.
             // 
+            string instancePart;
+            if (transport.Target is InstanceLocator instance)
+            {
+                instancePart = new InternalDnsName.ZonalName(instance).Name;
+            }
+            else
+            {
+                instancePart = transport.Target.Name;
+            }
+
             var endpoint = transport.Endpoint;
-            return $"-S {endpoint.Address}\\{transport.Target.Name},{endpoint.Port} {authFlag}";
+            return $"-S {endpoint.Address}\\{instancePart},{endpoint.Port} {authFlag}";
         }
     }
 }
