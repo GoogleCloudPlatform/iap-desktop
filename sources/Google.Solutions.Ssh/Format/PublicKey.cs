@@ -27,7 +27,7 @@ namespace Google.Solutions.Ssh.Format
     /// <summary>
     /// An SSH public key.
     /// </summary>
-    public abstract class PublicKey // TODO: Test
+    public abstract class PublicKey
     {
         /// <summary>
         /// Algorithm such as rsa-ssh.
@@ -51,15 +51,16 @@ namespace Google.Solutions.Ssh.Format
             if (format == Format.OpenSsh)
             {
                 // 
-                // OpenSSH public keys [...] are formatted as a single line
-                // of text consisting of the public key algorithm name
-                // followed by a base64-encoded key blob.
+                // Format as defined in the OpenSSH PROTOCOL file:
                 //
-                // The public key blob(before base64 encoding) is the same
-                // format used for the encoding of public keys sent on the wire
-                // [...].
+                //   OpenSSH public keys [...] are formatted as a single line
+                //   of text consisting of the public key algorithm name
+                //   followed by a base64-encoded key blob.
+                //   
+                //   The public key blob (before base64 encoding) is the same
+                //   format used for the encoding of public keys sent on the wire
+                //   [...].
                 //
-                // Cf. OpenSSH PROTOCOL file.
                 //
                 return $"{this.Algorithm} {Convert.ToBase64String(this.Value)}";
             }
