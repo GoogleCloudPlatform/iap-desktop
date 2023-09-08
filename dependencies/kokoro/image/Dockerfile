@@ -33,7 +33,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 #
 COPY --from=desktop \Windows\System32\mstscax.dll           \Windows\System32\
 COPY --from=desktop \Windows\System32\msacm32.dll           \Windows\System32\
-COPY --from=desktop \Windows\System32\en-US\mstscax.dll.mui \Windows\System32\
+COPY --from=desktop \Windows\System32\en-US\mstscax.dll.mui \Windows\System32\en-US\
 
 COPY --from=desktop \Windows\SysWOW64\mstscax.dll           \Windows\SysWOW64\
 COPY --from=desktop \Windows\SysWOW64\msacm32.dll           \Windows\SysWOW64\
