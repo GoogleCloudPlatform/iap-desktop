@@ -106,8 +106,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 authFlag = "-U sa";
             }
 
+            //
+            // NB. SSMS uses the notation `host,port` instead of the more common
+            // notation `host:port`.
+            //
+            // In case there is more than one SQL Server instance running on the
+            // host, the port number uniquely identifies one of them. Therefore,
+            // adding an instance name (like `host\instance,port`) isn't necessary 
+            // and if we do anyway, SSMS ignores it.
+            //
+            // We take advantage of this behavior here by using the `\instance` part
+            // to pass a "human readable" name of the VM to SSMS so that it's easier
+            // to recognize the server in Object Explorer.
+            // 
             var endpoint = transport.Endpoint;
-            return $"-S {endpoint.Address},{endpoint.Port} {authFlag}";
+            return $"-S {endpoint.Address}\\{transport.Target.Name},{endpoint.Port} {authFlag}";
         }
     }
 }
