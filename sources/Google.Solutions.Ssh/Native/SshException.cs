@@ -24,13 +24,6 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Ssh.Native
 {
-    public class SshException : Exception
-    {
-        public SshException(string message) : base(message)
-        {
-        }
-    }
-
     public class SshNativeException : SshException
     {
         public LIBSSH2_ERROR ErrorCode { get; }
