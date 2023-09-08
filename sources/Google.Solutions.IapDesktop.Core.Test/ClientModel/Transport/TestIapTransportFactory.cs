@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
@@ -526,7 +527,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             var transport = new IapTransportFactory.Transport(
                 tunnel,
-                protocol.Object);
+                protocol.Object,
+                SampleInstance);
 
             // Dispose once, closing the tunnel.
             transport.Dispose();
@@ -535,6 +537,39 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             // Dispose again.
             transport.Dispose();
             Assert.AreEqual(1, tunnelClosedEvents);
+        }
+
+        [Test]
+        public async Task WhenTunnelCreated_ThenCreateTransportReturnsTransport()
+        {
+            var validProfile = CreateTunnelProfile(SampleInstance, 22);
+            var tunnelFactory = CreateTunnelFactory();
+            tunnelFactory
+                .Setup(f => f.CreateTunnelAsync(
+                    validProfile,
+                    It.IsAny<TimeSpan>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(CreateTunnel(validProfile));
+
+            var factory = new IapTransportFactory(
+                new Mock<IEventQueue>().Object,
+                tunnelFactory.Object);
+
+            using (var transport = await factory
+                .CreateTransportAsync(
+                    validProfile.Protocol,
+                    validProfile.Policy,
+                    validProfile.TargetInstance,
+                    validProfile.TargetPort,
+                    validProfile.LocalEndpoint,
+                    SampleTimeout,
+                    CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                Assert.AreSame(validProfile.Protocol, transport.Protocol);
+                Assert.AreSame(IPAddress.Loopback, transport.Endpoint.Address);
+                Assert.AreSame(SampleInstance, transport.Target);
+            }
         }
     }
 }
