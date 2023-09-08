@@ -182,11 +182,12 @@ namespace Google.Solutions.Ssh.Format
             {
                 this.stream.Flush();
             }
+
+            this.stream.Dispose();
         }
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }

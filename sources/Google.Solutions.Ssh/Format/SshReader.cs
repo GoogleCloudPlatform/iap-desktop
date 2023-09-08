@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh.Format
     /// <summary>
     /// Reader for SSH-structured data, see RFC4251 section 5.
     /// </summary>
-    internal class SshReader
+    internal class SshReader : IDisposable
     {
         private readonly Stream stream;
 
@@ -193,6 +193,21 @@ namespace Google.Solutions.Ssh.Format
                     throw new EndOfStreamException();
                 }
             }
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        protected virtual void Dispose(bool disposing)
+        {
+            this.stream.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
