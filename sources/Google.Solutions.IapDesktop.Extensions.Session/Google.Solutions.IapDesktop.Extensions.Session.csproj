@@ -229,11 +229,14 @@
   <ItemGroup>
     <None Remove="Properties\DefaultAppProtocols\chrome-80.iapc" />
     <None Remove="Properties\DefaultAppProtocols\chrome-8080.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\mysql-8.0.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\mysql-8.1.iapc" />
     <None Remove="Properties\DefaultAppProtocols\mysql.iapc" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-80.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-8080.iapc" />
-    <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-8.0.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-8.1.iapc" />
   </ItemGroup>
 </Project>
