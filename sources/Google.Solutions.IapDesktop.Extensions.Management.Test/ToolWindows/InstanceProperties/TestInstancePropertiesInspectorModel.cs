@@ -124,7 +124,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var project = new Project();
             var instance = new Instance();
 
-            var model = new InstancePropertiesInspectorModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(
+                SampleLocator,
+                project, 
+                instance, 
+                null);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsInventory);
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
             Assert.AreEqual(FeatureFlag.Disabled, model.SerialPortAccess);
@@ -135,6 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         public void WhenGuestOsFieldsAreNull_ThenDefaultsAreApplied()
         {
             var model = new InstancePropertiesInspectorModel(
+                SampleLocator,
                 new Project(),
                 new Instance(),
                 new GuestOsInfo(
@@ -218,7 +223,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 }
             };
 
-            var model = new InstancePropertiesInspectorModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(
+                SampleLocator, 
+                project, 
+                instance, 
+                null);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin2FA);
             Assert.AreEqual(FeatureFlag.Enabled, model.BlockProjectSshKeys);
@@ -254,9 +263,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 }
             };
 
-            var model = new InstancePropertiesInspectorModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(
+                SampleLocator, 
+                project, 
+                instance, 
+                null);
             Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
             Assert.AreEqual(FeatureFlag.Enabled, model.OsLoginWithSecurityKey);
+        }
+
+        [Test]
+        public void InternalZonalDnsName()
+        {
+            var project = new Project();
+            var instance = new Instance();
+
+            var model = new InstancePropertiesInspectorModel(
+                SampleLocator,
+                project,
+                instance,
+                null);
+            Assert.AreEqual(
+                new InternalDnsName.ZonalName(SampleLocator).Name,
+                model.InternalZonalDnsName);
         }
     }
 }

@@ -65,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         }
 
         internal InstancePropertiesInspectorModel(
+            InstanceLocator instance,
             Project projectDetails,
             Instance instanceDetails,
             GuestOsInfo guestOsInfo)
@@ -120,6 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                 : null;
             this.InternalIp = this.instanceDetails.PrimaryInternalAddress()?.ToString();
             this.ExternalIp = this.instanceDetails.PublicAddress()?.ToString();
+            this.InternalZonalDnsName = new InternalDnsName.ZonalName(instance).Name;
 
             //
             // Scheduling.
@@ -255,6 +257,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Description("The VM's external IP address, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#externaladdresses")]
         public string ExternalIp { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Network)]
+        [DisplayName("Internal DNS name")]
+        [Description("Internal zonal DNS name, see " +
+                     "https://cloud.google.com/compute/docs/internal-dns#about_internal_dns")]
+        public string InternalZonalDnsName { get; }
 
         //---------------------------------------------------------------------
         // Scheduling.
@@ -416,6 +425,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             }
 
             return new InstancePropertiesInspectorModel(
+                instanceLocator,
                 project,
                 instance,
                 osInfo);
