@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 {
                     keyPairWarning =
                         "Some Linux distributions also no longer support the " +
-                        $"'{this.AuthorizedKey.KeyPair.Type}' algorithm that you're " +
+                        $"'{this.AuthorizedKey.KeyPair.Algorithm}' algorithm that you're " +
                         "currently using for SSH authentication. To use a more modern " +
                         "algorithm, go to Tools > Options > SSH and " +
                         "configure IAP Desktop to use ECDSA instead of RSA.";

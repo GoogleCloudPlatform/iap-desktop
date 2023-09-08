@@ -60,7 +60,7 @@ namespace Google.Solutions.Ssh.Auth
                 //
                 var parameters = this.key.ExportParameters(false);
 
-                writer.WriteString(this.Type);
+                writer.WriteString(this.Algorithm);
                 writer.WriteMultiPrecisionInteger(parameters.Exponent);
                 writer.WriteMultiPrecisionInteger(parameters.Modulus);
                 writer.Flush();
@@ -71,7 +71,7 @@ namespace Google.Solutions.Ssh.Auth
 
         public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
 
-        public string Type => "ssh-rsa";
+        public string Algorithm => "ssh-rsa";
 
         public uint KeySize => (uint)this.key.KeySize;
 

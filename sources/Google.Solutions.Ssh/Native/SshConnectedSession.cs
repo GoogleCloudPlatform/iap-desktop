@@ -265,16 +265,27 @@ namespace Google.Solutions.Ssh.Native
                 //
                 // Read the challenge.
                 //
-                // NB. As of v1.11, libssh2 auto-upgrades from ssh-rsa to ssh-rsa2-*
-                // if the server supports it. We must react to that by using the
-                // right hash algorithm.
-                //
                 var challengeBuffer = new byte[challengeLength.ToInt32()];
                 Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
                 var challenge = new PublicKeyAuthenticationChallenge(challengeBuffer);
 
-                // TODO: Sign using right hash
+                //
+                // As of v1.11, libssh2 may attempt to auto-upgrade
+                // from ssh-rsa to ssh-rsa2-*.
+                //
+                if (challenge.Algorithm != authenticator.KeyPair.Algorithm)
+                {
+                    signatureLength = IntPtr.Zero;
+                    signaturePtr = IntPtr.Zero;
+
+                    //
+                    // Reject and request a retry with the algorithm we
+                    // requested.
+                    //
+                    return (int)LIBSSH2_ERROR.ALGO_UNSUPPORTED;
+                }
+
                 var signature = authenticator.KeyPair.SignData(challengeBuffer);
 
                 //
