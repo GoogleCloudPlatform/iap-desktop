@@ -29,9 +29,9 @@ namespace Google.Solutions.Ssh.Cryptography
     /// Challenge sent by server that the client must create
     /// a signature for.
     /// </summary>
-    internal struct PublicKeyAuthenticationChallenge
+    internal struct AuthenticationChallenge
     {
-        public PublicKeyAuthenticationChallenge(byte[] value)
+        public AuthenticationChallenge(byte[] value)
         {
             this.Value = value.ExpectNotNull(nameof(value));
 

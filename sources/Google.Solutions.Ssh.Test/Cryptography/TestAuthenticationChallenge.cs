@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
 using System;
@@ -26,7 +27,7 @@ using System;
 namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
-    public class TestPublicKeyAuthenticationChallenge
+    public class TestAuthenticationChallenge
     {
         [Test]
         public void Decode()
@@ -45,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 "W+r+/Us0iPG+jgWQO27TUROaFkeiX/epRXYAmT68w6uTU4CCv9oXY93mKN" +
                 "xn839ZTP+RzKaVZytKQLuCkh3u0Re8xZl0JM+pAQ==");
 
-            var challenge = new PublicKeyAuthenticationChallenge(challengeBlob);
+            var challenge = new AuthenticationChallenge(challengeBlob);
 
             Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
             Assert.AreEqual("ssh-connection", challenge.Service);
