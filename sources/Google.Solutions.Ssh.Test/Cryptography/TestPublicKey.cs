@@ -35,7 +35,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 this.Value = value;
             }
 
-            public override string Algorithm => "sample";
+            public override string Type => "sample";
 
             public override byte[] Value { get; }
         }

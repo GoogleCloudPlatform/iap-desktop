@@ -30,9 +30,9 @@ namespace Google.Solutions.Ssh.Cryptography
     public abstract class PublicKey
     {
         /// <summary>
-        /// Algorithm such as rsa-ssh.
+        /// Key type, such as rsa-ssh.
         /// </summary>
-        public abstract string Algorithm { get; }
+        public abstract string Type { get; }
 
         /// <summary>
         /// Wire format of public key as defined in:
@@ -62,7 +62,7 @@ namespace Google.Solutions.Ssh.Cryptography
                 //   [...].
                 //
                 //
-                return $"{this.Algorithm} {Convert.ToBase64String(this.Value)}";
+                return $"{this.Type} {Convert.ToBase64String(this.Value)}";
             }
             else
             {
