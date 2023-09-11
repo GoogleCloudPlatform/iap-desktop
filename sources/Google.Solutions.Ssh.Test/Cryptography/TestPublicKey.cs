@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Ssh.Format;
+using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Ssh.Test.Format
+namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
     public class TestPublicKey
@@ -64,7 +64,7 @@ namespace Google.Solutions.Ssh.Test.Format
             Assert.AreEqual(
                 "---- BEGIN SSH2 PUBLIC KEY ----\r\n" +
                 "ABCD\r\n" +
-                "---- END SSH2 PUBLIC KEY ----\r\n", 
+                "---- END SSH2 PUBLIC KEY ----\r\n",
                 key.ToString(PublicKey.Format.Ssh2));
         }
     }

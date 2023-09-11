@@ -22,7 +22,7 @@
 using System;
 using System.Text;
 
-namespace Google.Solutions.Ssh.Format
+namespace Google.Solutions.Ssh.Cryptography
 {
     /// <summary>
     /// An SSH public key.
