@@ -19,11 +19,19 @@
 // under the License.
 //
 
+using System;
+
 namespace Google.Solutions.Ssh.Format
 {
     public class SshFormatException : SshException
     {
-        internal SshFormatException(string message) : base(message)
+        internal SshFormatException(string message) 
+            : base(message)
+        {
+        }
+
+        internal SshFormatException(string message, Exception inner) 
+            : base(message, inner)
         {
         }
     }

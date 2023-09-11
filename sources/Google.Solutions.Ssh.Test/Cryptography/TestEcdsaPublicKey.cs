@@ -21,33 +21,50 @@
 
 using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
-using System;
 using System.IO;
-using System.Linq;
+using System;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
-    public class TestRsaPublicKey
+    public class TestEcdsaPublicKey
     {
-        private const string SampleKey =
-            "AAAAB3NzaC1yc2EAAAADAQABAAAAgQCrt1m7xe5Rd8DlltVnwx17WTt" +
-            "m2HCpvGsHCRo/BDlKso5YleTqoHPXYVz0Z8UXmUX14qgnRScySBYVSXqYYdh6j7" +
-            "ZPlI3ehrZ2vn0WEJSvcB/gi+VrcNfVEvvn2EFOip1fXZxFcdVhvhZp5HRTUzzKx" +
-            "spcMRM9OvY+qgJIveT7cw==";
 
         //---------------------------------------------------------------------
         // Type.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Type()
+        public void TypeNistp256()
         {
-            using (var key = new RSACng())
-            using (var publicKey = new RsaPublicKey(key))
+            
+            using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
+            using (var publicKey = new EcdsaPublicKey(key))
             {
-                Assert.AreEqual("ssh-rsa", publicKey.Type);
+                Assert.AreEqual("ecdsa-sha2-nistp256", publicKey.Type);
+            }
+        }
+
+        [Test]
+        public void TypeNistp384()
+        {
+
+            using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP384)))
+            using (var publicKey = new EcdsaPublicKey(key))
+            {
+                Assert.AreEqual("ecdsa-sha2-nistp384", publicKey.Type);
+            }
+        }
+
+        [Test]
+        public void TypeNistp521()
+        {
+
+            using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP521)))
+            using (var publicKey = new EcdsaPublicKey(key))
+            {
+                Assert.AreEqual("ecdsa-sha2-nistp521", publicKey.Type);
             }
         }
 
@@ -58,28 +75,19 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void WhenDecodedAndEncoded_ThenValueIsEqual()
         {
-            using (var key = new RSACng())
-            using (var publicKey = new RsaPublicKey(key))
-            using (var reencodedPublicKey = new RsaPublicKey(publicKey.Value))
-            {
-                CollectionAssert.AreEqual(publicKey.Value, reencodedPublicKey.Value);
-            }
+            Assert.Fail("NIY");
         }
 
         [Test]
         public void WhenKeyValid_ThenCtorSucceeds()
         {
-            using (var publicKey = new RsaPublicKey(Convert.FromBase64String(SampleKey)))
-            {
-            }
+            Assert.Fail("NIY");
         }
 
         [Test]
         public void WhenKeyTruncated_ThenConstructorThrowsException()
         {
-            Assert.Throws<EndOfStreamException>(
-                () => new RsaPublicKey(
-                    Convert.FromBase64String(SampleKey).Take(60).ToArray()));
+            Assert.Fail("NIY");
         }
     }
 }

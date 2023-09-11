@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Cryptography
         // NB. The key type is always "rsa-ssh", although
         // the algorithm might be rsa-sha2-256 or rsa-sha2-512.
         // 
-        private const string RsaType = "rsa-ssh";
+        private const string RsaType = "ssh-rsa";
 
         private readonly RSA key;
 
@@ -71,12 +71,13 @@ namespace Google.Solutions.Ssh.Cryptography
                 {
                     this.key.ImportParameters(new RSAParameters()
                     {
-                        P = exponent,
-                        Q = modulus
+                        Exponent = exponent,
+                        Modulus = modulus
                     });
                 }
                 catch (CryptographicException e)
                 {
+                    this.key.Dispose();
                     throw new SshFormatException(
                         "The key contains malformed parameters", e);
                 }
