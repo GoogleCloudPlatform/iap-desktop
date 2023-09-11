@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
                         project,
-                        key.Algorithm,
+                        key.Type,
                         key.PublicKeyString,
                         validity,
                         token)

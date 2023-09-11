@@ -274,7 +274,7 @@ namespace Google.Solutions.Ssh.Native
                 // As of v1.11, libssh2 may attempt to auto-upgrade
                 // from ssh-rsa to ssh-rsa2-*.
                 //
-                if (challenge.Algorithm != authenticator.KeyPair.Algorithm)
+                if (challenge.Algorithm != authenticator.KeyPair.Type)
                 {
                     signatureLength = IntPtr.Zero;
                     signaturePtr = IntPtr.Zero;

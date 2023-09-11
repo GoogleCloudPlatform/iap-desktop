@@ -149,7 +149,7 @@ namespace Google.Solutions.Ssh.Test
                         k => SshKeyPair.NewEphemeralKeyPair(k));
 
                 var metadataEntry = string.Join("\n", keysByType.Values.Select(
-                    k => $"{username}:{k.Algorithm} {k.PublicKeyString} {username}"));
+                    k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
 
                 using (var service = TestProject.CreateComputeService())
                 {

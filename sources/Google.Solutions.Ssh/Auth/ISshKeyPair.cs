@@ -30,9 +30,9 @@ namespace Google.Solutions.Ssh.Auth
     public interface ISshKeyPair : IDisposable
     {
         /// <summary>
-        /// Algorithm (for ex, 'ssh-rsa').
+        /// Key type (for ex, 'ssh-rsa').
         /// </summary>
-        string Algorithm { get; }
+        string Type { get; }
 
         /// <summary>
         /// Return public key in SSH format.

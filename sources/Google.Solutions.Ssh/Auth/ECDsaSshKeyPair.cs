@@ -95,7 +95,7 @@ namespace Google.Solutions.Ssh.Auth
                 // Encode public key according to RFC5656 section 3.1.
                 //
 
-                writer.WriteString(this.Algorithm);
+                writer.WriteString(this.Type);
                 writer.WriteString("nistp" + this.key.KeySize);
                 writer.WriteString(this.key.EncodePublicKey());
                 writer.Flush();
@@ -106,7 +106,7 @@ namespace Google.Solutions.Ssh.Auth
 
         public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
 
-        public string Algorithm => "ecdsa-sha2-nistp" + this.key.KeySize;
+        public string Type => "ecdsa-sha2-nistp" + this.key.KeySize;
 
         public uint KeySize => (uint)this.key.KeySize;
 

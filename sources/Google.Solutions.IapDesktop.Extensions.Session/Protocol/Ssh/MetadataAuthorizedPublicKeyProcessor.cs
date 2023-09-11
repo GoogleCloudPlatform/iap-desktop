@@ -399,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             var metadataKey = new ManagedMetadataAuthorizedPublicKey(
                 authorizedKeyPair.Username,
-                key.Algorithm,
+                key.Type,
                 key.PublicKeyString,
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     authorization.Session.Username,
