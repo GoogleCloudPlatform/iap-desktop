@@ -41,6 +41,9 @@ namespace Google.Solutions.Ssh.Test
 {
     public abstract class SshFixtureBase : FixtureBase
     {
+        private static readonly IDictionary<string, ISshAuthenticator> cachedAuthenticators =
+            new Dictionary<string, ISshAuthenticator>();
+
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
             {
@@ -119,9 +122,6 @@ namespace Google.Solutions.Ssh.Test
                     .ConfigureAwait(false),
                 22);
         }
-
-        private static readonly IDictionary<string, ISshAuthenticator> cachedAuthenticators =
-            new Dictionary<string, ISshAuthenticator>();
 
         /// <summary>
         /// Create an authenticator for a given key type, minimizing

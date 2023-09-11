@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Ssh.Format;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -250,36 +251,47 @@ namespace Google.Solutions.Ssh.Native
 
             Exception interactiveCallbackException = null;
 
-            //
-            // NB. The callbacks are sparsely documented in the libssh2 sources
-            // and docs. For sample usage, the Guacamole sources can be helpful, cf.
-            // https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/ssh.c#L335
-            //
-
             int Sign(
                 IntPtr session,
                 out IntPtr signaturePtr,
                 out IntPtr signatureLength,
-                IntPtr dataPtr,
-                IntPtr dataLength,
+                IntPtr challengePtr,
+                IntPtr challengeLength,
                 IntPtr context)
             {
                 Debug.Assert(context == IntPtr.Zero);
                 Debug.Assert(session == this.session.Handle.DangerousGetHandle());
 
                 //
-                // Copy data to managed buffer and create signature.
+                // Read the challenge.
                 //
-                var data = new byte[dataLength.ToInt32()];
-                Marshal.Copy(dataPtr, data, 0, data.Length);
+                var challengeBuffer = new byte[challengeLength.ToInt32()];
+                Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
-                var signature = authenticator.KeyPair.SignData(data);
+                var challenge = new PublicKeyAuthenticationChallenge(challengeBuffer);
+
+                //
+                // As of v1.11, libssh2 may attempt to auto-upgrade
+                // from ssh-rsa to ssh-rsa2-*.
+                //
+                if (challenge.Algorithm != authenticator.KeyPair.Type)
+                {
+                    signatureLength = IntPtr.Zero;
+                    signaturePtr = IntPtr.Zero;
+
+                    //
+                    // Reject and request a retry with the algorithm we
+                    // requested.
+                    //
+                    return (int)LIBSSH2_ERROR.ALGO_UNSUPPORTED;
+                }
+
+                var signature = authenticator.KeyPair.SignData(challengeBuffer);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
                 // the allocator specified in libssh2_session_init_ex.
                 //
-
                 signatureLength = new IntPtr(signature.Length);
                 signaturePtr = SshSession.Alloc(signatureLength, IntPtr.Zero);
                 Marshal.Copy(signature, 0, signaturePtr, signature.Length);
