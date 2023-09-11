@@ -20,9 +20,10 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Ssh.Format;
 using System.IO;
 
-namespace Google.Solutions.Ssh.Format
+namespace Google.Solutions.Ssh.Cryptography
 {
     /// <summary>
     /// Challenge sent by server that the client must create
@@ -53,7 +54,7 @@ namespace Google.Solutions.Ssh.Format
             using (var reader = new SshReader(new MemoryStream(value)))
             {
                 this.SessionId = reader.ReadString();
-                
+
                 var code = reader.ReadByte();
                 if (code != (byte)MessageCodes.SSH_MSG_USERAUTH_REQUEST)
                 {
@@ -63,7 +64,7 @@ namespace Google.Solutions.Ssh.Format
 
                 this.Username = reader.ReadString();
                 this.Service = reader.ReadString();
-                
+
                 var type = reader.ReadString();
                 if (type != "publickey")
                 {
@@ -106,6 +107,6 @@ namespace Google.Solutions.Ssh.Format
         /// <summary>
         /// Encoded public key.
         /// </summary>
-        public string PublicKey { get; private set;}
+        public string PublicKey { get; private set; }
     }
 }

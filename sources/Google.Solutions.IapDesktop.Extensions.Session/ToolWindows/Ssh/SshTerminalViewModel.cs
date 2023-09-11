@@ -34,7 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;

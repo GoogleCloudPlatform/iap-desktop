@@ -23,7 +23,7 @@ using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Ssh.Test.Format
+namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
     public class TestPublicKeyAuthenticationChallenge

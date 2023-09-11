@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;

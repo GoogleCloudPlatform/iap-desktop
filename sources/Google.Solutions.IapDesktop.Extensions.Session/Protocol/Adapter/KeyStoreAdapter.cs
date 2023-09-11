@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Security.Cryptography;
 using System.Text;

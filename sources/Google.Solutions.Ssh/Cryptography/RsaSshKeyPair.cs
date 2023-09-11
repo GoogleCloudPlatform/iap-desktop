@@ -25,7 +25,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh.Auth
+namespace Google.Solutions.Ssh.Cryptography
 {
     public sealed class RsaSshKeyPair : DisposableBase, ISshKeyPair
     {

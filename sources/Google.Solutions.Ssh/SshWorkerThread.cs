@@ -23,7 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.ComponentModel;
