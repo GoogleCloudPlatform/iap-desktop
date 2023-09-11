@@ -234,17 +234,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
-                var keyPairWarning = string.Empty;
-                if (this.AuthorizedKey.KeyPair is RsaSshKeyPair)
-                {
-                    keyPairWarning =
-                        "Some Linux distributions also no longer support the " +
-                        $"'{this.AuthorizedKey.KeyPair.Type}' algorithm that you're " +
-                        "currently using for SSH authentication. To use a more modern " +
-                        "algorithm, go to Tools > Options > SSH and " +
-                        "configure IAP Desktop to use ECDSA instead of RSA.";
-                }
-
                 if (this.AuthorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                 {
                     throw new OsLoginAuthenticationFailedException(
@@ -252,8 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                         "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
                         " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" +
                         " 2. 'Service Account User' (if the VM uses a service account)\n" +
-                        " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization)\n\n" +
-                        keyPairWarning,
+                        " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization)",
                         e,
                         HelpTopics.GrantingOsLoginRoles);
                 }
@@ -261,8 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 {
                     throw new MetadataKeyAuthenticationFailedException(
                         "Authentication failed. Verify that the Compute Engine guest environment " +
-                        "is installed on the VM and that the agent is running.\n\n" +
-                        keyPairWarning,
+                        "is installed on the VM and that the agent is running.",
                         e,
                         HelpTopics.ManagingMetadataAuthorizedKeys);
                 }
