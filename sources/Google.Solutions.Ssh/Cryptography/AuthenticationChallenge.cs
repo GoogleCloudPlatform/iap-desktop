@@ -29,9 +29,9 @@ namespace Google.Solutions.Ssh.Cryptography
     /// Challenge sent by server that the client must create
     /// a signature for.
     /// </summary>
-    internal struct AuthenticationChallenge
+    public struct AuthenticationChallenge
     {
-        public AuthenticationChallenge(byte[] value)
+        internal AuthenticationChallenge(byte[] value)
         {
             this.Value = value.ExpectNotNull(nameof(value));
 
@@ -75,7 +75,11 @@ namespace Google.Solutions.Ssh.Cryptography
                 reader.ReadBoolean();
 
                 this.Algorithm = reader.ReadString();
-                this.PublicKey = reader.ReadString();
+
+                //
+                // We can stop here, there's no need to read and decode
+                // the public key.
+                //
             }
         }
 
@@ -103,10 +107,5 @@ namespace Google.Solutions.Ssh.Cryptography
         /// Algorithm such as 'rsa-sha2-512'.
         /// </summary>
         public string Algorithm { get; private set; }
-
-        /// <summary>
-        /// Encoded public key.
-        /// </summary>
-        public string PublicKey { get; private set; }
     }
 }

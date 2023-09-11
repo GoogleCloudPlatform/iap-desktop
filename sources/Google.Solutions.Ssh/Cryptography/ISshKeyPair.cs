@@ -45,9 +45,9 @@ namespace Google.Solutions.Ssh.Cryptography
         string PublicKeyString { get; }
 
         /// <summary>
-        /// Sign data and return signature in SSH format.
+        /// Sign an authentication challenge.
         /// </summary>
-        byte[] SignData(byte[] data);
+        byte[] Sign(AuthenticationChallenge challenge);
 
         /// <summary>
         /// Size of underlying key.
