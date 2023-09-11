@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -39,6 +39,10 @@ namespace Google.Solutions.Ssh.Test.Cryptography
 
             public override byte[] Value { get; }
         }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
         [Test]
         public void ToStringReturnsOpenSshFormat()

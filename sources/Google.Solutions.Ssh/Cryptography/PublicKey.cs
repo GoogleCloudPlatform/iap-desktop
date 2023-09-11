@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using System;
 using System.Text;
 
@@ -27,7 +28,7 @@ namespace Google.Solutions.Ssh.Cryptography
     /// <summary>
     /// An SSH public key.
     /// </summary>
-    public abstract class PublicKey
+    public abstract class PublicKey : DisposableBase
     {
         /// <summary>
         /// Key type, such as rsa-ssh.
@@ -70,9 +71,9 @@ namespace Google.Solutions.Ssh.Cryptography
                 // Format as defiend in RFC 4716.
                 //
                 return new StringBuilder()
-                    .AppendLine("---- BEGIN SSH2 PUBLIC KEY ----")
+                    .AppendLine(Ssh2FileFormat.Header)
                     .AppendLine(Convert.ToBase64String(this.Value))
-                    .AppendLine("---- END SSH2 PUBLIC KEY ----")
+                    .AppendLine(Ssh2FileFormat.Footer)
                     .ToString();
             }
         }
@@ -93,6 +94,12 @@ namespace Google.Solutions.Ssh.Cryptography
             /// Multi-line format as defiend in RFC 4716.
             /// </summary>
             Ssh2
+        }
+
+        protected static class Ssh2FileFormat
+        {
+            internal const string Header = "---- BEGIN SSH2 PUBLIC KEY ----";
+            internal const string Footer = "---- END SSH2 PUBLIC KEY ----";
         }
     }
 }
