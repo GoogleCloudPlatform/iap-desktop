@@ -24,7 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

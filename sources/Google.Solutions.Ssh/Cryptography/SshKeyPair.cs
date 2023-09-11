@@ -25,7 +25,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh.Auth
+namespace Google.Solutions.Ssh.Cryptography
 {
     public enum SshKeyType : int
     {

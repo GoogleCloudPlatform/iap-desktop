@@ -40,7 +40,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;

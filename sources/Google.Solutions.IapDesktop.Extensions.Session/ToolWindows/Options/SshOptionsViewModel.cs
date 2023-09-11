@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

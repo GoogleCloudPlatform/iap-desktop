@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;

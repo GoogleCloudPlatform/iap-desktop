@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.Ssh.Test.Auth
+namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
     public class TestRsaSshKeyPair

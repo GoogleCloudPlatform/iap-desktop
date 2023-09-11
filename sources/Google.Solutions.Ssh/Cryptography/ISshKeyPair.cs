@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.Ssh.Auth
+namespace Google.Solutions.Ssh.Cryptography
 {
     /// <summary>
     /// Public/private key pair that can be used for public key 

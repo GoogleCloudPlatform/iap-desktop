@@ -22,7 +22,7 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
 using System.Linq;

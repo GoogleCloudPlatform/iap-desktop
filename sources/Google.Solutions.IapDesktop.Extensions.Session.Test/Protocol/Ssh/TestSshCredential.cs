@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
-using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Cryptography;
 using Moq;
 using NUnit.Framework;
 

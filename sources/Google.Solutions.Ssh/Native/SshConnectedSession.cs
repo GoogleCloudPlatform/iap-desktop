@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
 using System;
 using System.Diagnostics;
@@ -268,7 +269,7 @@ namespace Google.Solutions.Ssh.Native
                 var challengeBuffer = new byte[challengeLength.ToInt32()];
                 Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
-                var challenge = new PublicKeyAuthenticationChallenge(challengeBuffer);
+                var challenge = new AuthenticationChallenge(challengeBuffer);
 
                 //
                 // As of v1.11, libssh2 may attempt to auto-upgrade

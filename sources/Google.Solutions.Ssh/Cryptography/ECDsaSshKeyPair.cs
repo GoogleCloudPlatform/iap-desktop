@@ -20,14 +20,13 @@
 //
 
 using Google.Solutions.Common.Runtime;
-using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh.Auth
+namespace Google.Solutions.Ssh.Cryptography
 {
     public sealed class ECDsaSshKeyPair : DisposableBase, ISshKeyPair
     {
