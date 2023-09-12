@@ -109,8 +109,10 @@ namespace Google.Solutions.Ssh.Cryptography
 
         public uint KeySize => (uint)this.key.KeySize;
 
-        public byte[] SignData(byte[] data)
+        public byte[] Sign(AuthenticationChallenge challenge)
         {
+            Debug.Assert(challenge.Algorithm == this.Type);
+
             //
             // NB. The signature returned by CNG is formatted according to
             // ISO/IEC 7816-8 / IEEE P1363. This is not the format SSH uses.
@@ -120,7 +122,7 @@ namespace Google.Solutions.Ssh.Cryptography
             //
             var signature = ECDsaSignature.FromIeee1363(
                 this.key.SignData(
-                    data,
+                    challenge.Value,
                     this.HashAlgorithm));
 
             return signature.ToSshBlob();

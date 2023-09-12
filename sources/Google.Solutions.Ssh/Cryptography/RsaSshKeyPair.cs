@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Ssh.Format;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -75,16 +77,47 @@ namespace Google.Solutions.Ssh.Cryptography
 
         public uint KeySize => (uint)this.key.KeySize;
 
-        public byte[] SignData(byte[] data)
+        public byte[] Sign(AuthenticationChallenge challenge)
         {
             //
-            // NB. Since we are using RSA, signing always needs to use
-            // SHA-1 and PKCS#1, 
-            // cf. https://tools.ietf.org/html/rfc4253#section-6.6
+            // NB. Before RFC 8332 (Use of RSA Keys with SHA-256 and SHA-512),
+            // authenticating with an "rsa-ssh" key implied using SHA-1 and
+            // PKCS#1 to create signatures.
             //
+            // As of RFC 8332, we have to consider algorithm upgrades. If we
+            // attempt to authenticate using an "rsa-ssh" key, the server is
+            // likely to challenge us for an rsa-sha2-256 or rsa-sha2-512 signature.
+            //
+            // To find out what hash algorithm we need to use, we have to
+            // inspect the (decoded) challenge.
+            //
+
+            HashAlgorithmName hashAlgorithm;
+            switch (challenge.Algorithm)
+            {
+                case "ssh-rsa":
+                    hashAlgorithm = HashAlgorithmName.SHA1;
+                    break;
+
+                case "rsa-sha2-256":
+                    hashAlgorithm = HashAlgorithmName.SHA256;
+                    break;
+
+                case "rsa-sha2-512":
+                    hashAlgorithm = HashAlgorithmName.SHA512;
+                    break;
+
+                default:
+                    SshTraceSource.Log.TraceWarning(
+                        "Received challenge for unrecognized algorithm {0}", 
+                        challenge.Algorithm);
+
+                    throw new ArgumentException("Unrecognized algorithm: " + challenge.Algorithm);
+            }
+
             return this.key.SignData(
-                data,
-                HashAlgorithmName.SHA1,
+                challenge.Value,
+                hashAlgorithm,
                 RSASignaturePadding.Pkcs1);
         }
 

@@ -270,24 +270,7 @@ namespace Google.Solutions.Ssh.Native
                 Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
                 var challenge = new AuthenticationChallenge(challengeBuffer);
-
-                //
-                // As of v1.11, libssh2 may attempt to auto-upgrade
-                // from ssh-rsa to ssh-rsa2-*.
-                //
-                if (challenge.Algorithm != authenticator.KeyPair.Type)
-                {
-                    signatureLength = IntPtr.Zero;
-                    signaturePtr = IntPtr.Zero;
-
-                    //
-                    // Reject and request a retry with the algorithm we
-                    // requested.
-                    //
-                    return (int)LIBSSH2_ERROR.ALGO_UNSUPPORTED;
-                }
-
-                var signature = authenticator.KeyPair.SignData(challengeBuffer);
+                var signature = authenticator.KeyPair.Sign(challenge);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
