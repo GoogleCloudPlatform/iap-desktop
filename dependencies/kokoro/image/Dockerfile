@@ -21,25 +21,11 @@
 # under the License.
 #
 
-FROM mcr.microsoft.com/windows:ltsc2019-amd64 AS desktop
-
-FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
-
 #
-# Install missing Terminal Server components from desktop image. 
+# Use full Windows image because the Server Core image doesn't
+# contain the Terminal Server components (mstscax.dll etc).
 #
-# NB. We could use the Desktop image instead, but using the Server Core image
-# helps make better use of Kokoro image cache.
-#
-COPY --from=desktop \Windows\System32\mstscax.dll           \Windows\System32\
-COPY --from=desktop \Windows\System32\msacm32.dll           \Windows\System32\
-COPY --from=desktop \Windows\System32\en-US\mstscax.dll.mui \Windows\System32\en-US\
-
-COPY --from=desktop \Windows\SysWOW64\mstscax.dll           \Windows\SysWOW64\
-COPY --from=desktop \Windows\SysWOW64\msacm32.dll           \Windows\SysWOW64\
-
-RUN c:\Windows\System32\regsvr32.exe c:\Windows\System32\mstscax.dll /s
-RUN c:\Windows\SysWOW64\regsvr32.exe c:\Windows\SysWOW64\mstscax.dll /s
+FROM mcr.microsoft.com/windows:ltsc2019-amd64
 
 #
 # Install VS components, adapted from 
