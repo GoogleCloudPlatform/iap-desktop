@@ -1,8 +1,8 @@
 # Dependencies
 
-This folder contains scripts and configuration to build
+This folder contains scripts and configuration files to build
 dependencies requires by IAP Desktop. The dependencies
-are built into NuGet packages and published to a NuGet feed.
+are built into NuGet packages and published to a local NuGet feed.
 
 ## Building
 
@@ -10,9 +10,12 @@ Building the dependencies requires:
 
 * Visual Studio 2019 with C# and C++ support or the equivalent components
   from the Windows SDK
-* Internet access to download dependencies  
+* Internet access to download dependencies
 
-Steps to build the dependencies requires:
+The folder contains a `Dockerfile` for building a Windows container
+that meets these prerequisites.
+
+To build the dependencies, do the following:
 
 1. Open a command prompt (`cmd.exe`)
 1. Build dependency packages:
