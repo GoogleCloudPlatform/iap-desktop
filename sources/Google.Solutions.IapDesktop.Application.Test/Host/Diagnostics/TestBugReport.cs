@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
         [Test]
         public void WhenExceptionIsNull_ThenToStringContainsVersionDetails()
         {
-            var report = new BugReport();
+            var report = new BugReport(GetType(), new Exception());
 
             StringAssert.Contains(Environment.OSVersion.ToString(), report.ToString());
         }
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
         public void WhenExceptionIsNotNull_ThenToStringContainsNestedExceptionDetails()
         {
             var ex = new ApplicationException("outer", new NullReferenceException("inner"));
-            var report = new BugReport(ex);
+            var report = new BugReport(GetType(), ex);
 
             StringAssert.Contains("outer", report.ToString());
             StringAssert.Contains("inner", report.ToString());
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
                     new ApplicationException("inner#1"),
                     new ApplicationException("inner#2")
                 });
-            var report = new BugReport(ex);
+            var report = new BugReport(GetType(), ex);
 
             StringAssert.Contains("inner#1", report.ToString());
             StringAssert.Contains("inner#2", report.ToString());

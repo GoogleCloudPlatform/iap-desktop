@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     message,
                     details.ToString(),
                     (e as IExceptionWithHelpTopic)?.Help,
-                    ShouldShowBugReportLink(e) ? new BugReport(e) : null);
+                    ShouldShowBugReportLink(e) ? new BugReport(GetType(), e) : null);
             }
         }
     }

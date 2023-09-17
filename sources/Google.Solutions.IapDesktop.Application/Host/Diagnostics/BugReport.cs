@@ -29,13 +29,18 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
     public class BugReport
     {
         private readonly Exception exception;
+        private readonly Type source;
 
-        public BugReport() : this(null)
+        public BugReport()
+            : this(null, null)
         {
         }
 
-        public BugReport(Exception exception)
+        public BugReport(
+            Type source,
+            Exception exception)
         {
+            this.source = source;
             this.exception = exception;
         }
 
@@ -62,6 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             var cpuArchitecture = Assembly.GetEntryAssembly()?.GetName().ProcessorArchitecture.ToString() ?? "unknown";
             var processBitness = Environment.Is64BitProcess ? 64 : 32;
 
+            text.Append($"Source: {this.source?.Name ?? string.Empty}\n");
             text.Append($"Installed version: {GetType().Assembly.GetName().Version}\n");
             text.Append($"Runtime Version: {ClrVersion.Version}\n");
             text.Append($"OS Version: {Environment.OSVersion}\n");
