@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Drawing;
@@ -32,7 +33,36 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     /// </summary>
     internal class UsernameDialog : CompositeForm
     {
+        /// <summary>
+        /// Validate user input.
+        /// </summary>
+        public delegate void ValidateInputCallback(
+            string input,
+            out bool valid,
+            out string warning);
+
+        private static void DefaultValidateInput(
+            string input,
+            out bool valid,
+            out string warning)
+        {
+            valid = !string.IsNullOrEmpty(input);
+            warning = null;
+        }
+
+        private ValidateInputCallback validateInput = DefaultValidateInput;
+
         public string Username { get; private set; }
+
+        public ValidateInputCallback ValidateInput
+        {
+            get => this.validateInput;
+            set
+            {
+                value.ExpectNotNull(nameof(value));
+                this.validateInput = value;
+            }
+        }
 
         public UsernameDialog(string caption, string message)
         {
@@ -106,14 +136,29 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             };
             this.Controls.Add(usernameTextBox);
 
+            var warningLabel = new Label()
+            {
+                Location = new Point(24, 136),
+                Size = new Size(296, 20),
+                AutoSize = false,
+                ForeColor = Color.Red
+            };
+            this.Controls.Add(warningLabel);
+
             usernameTextBox.HandleCreated += (_, __) =>
             {
                 usernameTextBox.SetCueBanner("User name", true);
             };
+
             usernameTextBox.TextChanged += (_, __) =>
             {
                 this.Username = usernameTextBox.Text;
-                okButton.Enabled = !string.IsNullOrWhiteSpace(usernameTextBox.Text);
+
+                this.validateInput(usernameTextBox.Text, out var valid, out var warning);
+
+                okButton.Enabled = valid;
+                warningLabel.Visible = !valid;
+                warningLabel.Text = warning ?? string.Empty;
             };
         }
 
