@@ -387,7 +387,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
                 catch (Exception e)
                 {
-                    this.container.bindingContext.OnCommandFailed(this.command, e);
+                    this.container.bindingContext.OnCommandFailed(null, this.command, e);
                 }
             }
         }

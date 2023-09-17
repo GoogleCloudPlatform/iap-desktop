@@ -65,9 +65,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             Debug.WriteLine($"Binding added for {control.GetType().Name} ({control})");
         }
 
-        public void OnCommandFailed(ICommand command, Exception exception)
+        public void OnCommandFailed(
+            IWin32Window window,
+            ICommand command,
+            Exception exception)
         {
             Debug.Assert(this.errorReportingOwner != null);
+
+            //
+            // NB. We might not know the parent window if this is
+            // a menu command. 
+            //
+            var parent = window ?? this.errorReportingOwner;
 
             ApplicationEventSource.Log.CommandFailed(
                 command.Id,
@@ -75,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 exception.FullMessage());
 
             this.exceptionDialog.Show(
-                this.errorReportingOwner,
+                parent,
                 $"{command.ActivityText} failed",
                 exception);
         }

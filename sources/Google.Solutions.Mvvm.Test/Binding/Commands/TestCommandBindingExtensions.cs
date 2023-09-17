@@ -208,6 +208,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
+                        null,
                         It.Is<ICommand>(c => c == command),
                         It.IsAny<ArgumentException>()),
                     Times.Once);
@@ -244,6 +245,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
+                        null,
                         It.Is<ICommand>(c => c == command),
                         It.IsAny<TaskCanceledException>()),
                     Times.Never);

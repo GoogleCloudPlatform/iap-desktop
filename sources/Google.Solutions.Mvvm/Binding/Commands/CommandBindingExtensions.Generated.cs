@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             private IObservableCommand command;
             private readonly Control button;
 
-            private async void OnClickAsync(object _, EventArgs __)
+            private async void OnClickAsync(object sender, EventArgs __)
             {
                 button.Enabled = false;
                 try
@@ -69,7 +69,10 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
                 catch (Exception e)
                 {
-                    this.bindingContext.OnCommandFailed(command, e);
+                    this.bindingContext.OnCommandFailed(
+                        (sender as Control)?.FindForm(),
+                        command, 
+                        e);
                 }
                 finally
                 {
@@ -100,7 +103,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             private IObservableCommand command;
             private readonly ToolStripItem button;
 
-            private async void OnClickAsync(object _, EventArgs __)
+            private async void OnClickAsync(object sender, EventArgs __)
             {
                 button.Enabled = false;
                 try
@@ -118,7 +121,10 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
                 catch (Exception e)
                 {
-                    this.bindingContext.OnCommandFailed(command, e);
+                    this.bindingContext.OnCommandFailed(
+                        (sender as Control)?.FindForm(),
+                        command, 
+                        e);
                 }
                 finally
                 {

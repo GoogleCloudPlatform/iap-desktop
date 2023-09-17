@@ -408,6 +408,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
+                        null,
                         It.IsAny<ICommand>(),
                         It.IsAny<ArgumentException>()),
                     Times.Once);
@@ -436,6 +437,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
+                        null,
                         It.IsAny<ICommand>(),
                         It.IsAny<Exception>()),
                     Times.Never);
@@ -454,6 +456,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 Exception exception = null;
                 bindingContext.Setup(
                     ctx => ctx.OnCommandFailed(
+                        null,
                         It.IsAny<ICommand>(),
                         It.IsAny<Exception>()))
                     .Callback<ICommand, Exception>((c, e) => exception = e);
@@ -509,6 +512,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
+                        null,
                         It.IsAny<ICommand>(),
                         It.IsAny<Exception>()),
                     Times.Never);
