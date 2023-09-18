@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string message, 
             out string username)
         {
-            using (var dialog = new UsernameDialog(caption, message))
+            using (var dialog = new SystemInputDialog("Security", caption, message))
             {
                 try
                 {
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 { }
 
                 var result = dialog.ShowDialog(owner);
-                username = dialog.Username;
+                username = dialog.Value;
                 return result;
             }
         }

@@ -29,18 +29,10 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 {
     /// <summary>
-    /// CredUI-style dialog for collecting a username.
+    /// System-style input dialog.
     /// </summary>
-    internal class UsernameDialog : CompositeForm
+    internal class SystemInputDialog : CompositeForm
     {
-        /// <summary>
-        /// Validate user input.
-        /// </summary>
-        public delegate void ValidateInputCallback(
-            string input,
-            out bool valid,
-            out string warning);
-
         private static void DefaultValidateInput(
             string input,
             out bool valid,
@@ -52,8 +44,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
         private ValidateInputCallback validateInput = DefaultValidateInput;
 
-        public string Username { get; private set; }
+        /// <summary>
+        /// Value provided by user.
+        /// </summary>
+        public string Value { get; private set; }
 
+        /// <summary>
+        /// Validation callback, optional.
+        /// </summary>
         public ValidateInputCallback ValidateInput
         {
             get => this.validateInput;
@@ -64,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             }
         }
 
-        public UsernameDialog(string caption, string message)
+        public SystemInputDialog(string title, string caption, string message)
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterParent;
@@ -78,10 +76,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             //
             this.Controls.Add(new Label()
             {
-                Text = "Security",
+                Text = title,
                 Location = new Point(24, 12),
                 AutoSize = false,
-                Size = new Size(60, 20),
+                Size = new Size(this.Width - 50, 20),
             });
             this.Controls.Add(new HeaderLabel()
             {
@@ -152,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             usernameTextBox.TextChanged += (_, __) =>
             {
-                this.Username = usernameTextBox.Text;
+                this.Value = usernameTextBox.Text;
 
                 this.validateInput(usernameTextBox.Text, out var valid, out var warning);
 
