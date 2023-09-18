@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.processFactory,
                         this.settingsService);
 
-                    yield return new OpenWithClientCommand(
+                    yield return new ConnectAppProtocolAndOpenClientCommand(
                         this.ownerWindow,
                         this.jobService,
                         factory,
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         //
                         // Add anther "as user..." command.
                         //
-                        yield return new OpenWithClientCommand(
+                        yield return new ConnectAppProtocolAndOpenClientCommand(
                             this.ownerWindow,
                             this.jobService,
                             factory,
