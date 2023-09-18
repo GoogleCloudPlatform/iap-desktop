@@ -92,7 +92,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(new Mock<IAppProtocolClient>().Object, null),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -115,7 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             Assert.AreEqual(
                 CommandState.Disabled,
@@ -136,7 +138,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             Assert.IsNull(command.Image);
         }
@@ -151,7 +154,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             Assert.IsNotNull(command.Image);
         }
@@ -174,7 +178,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 CreateFactory(
                     client.Object,
                     InstanceConnectionSettings.CreateNew(SampleLocator)),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             var context = await command
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
@@ -202,7 +207,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             var context = await command
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
@@ -237,7 +243,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
-                dialog.Object);
+                dialog.Object,
+                new Mock<INotifyDialog>().Object);
 
             var context = await command
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
@@ -274,6 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
                 dialog.Object,
+                new Mock<INotifyDialog>().Object,
                 true);
 
             var context = await command
@@ -309,7 +317,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
-                dialog.Object);
+                dialog.Object,
+                new Mock<INotifyDialog>().Object);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => command
@@ -338,7 +347,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             var context = await command
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
@@ -376,7 +386,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
-                dialog.Object);
+                dialog.Object,
+                new Mock<INotifyDialog>().Object);
 
             var context = await command
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
@@ -417,6 +428,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
                 dialog.Object,
+                new Mock<INotifyDialog>().Object,
                 true);
 
             var context = await command
@@ -454,7 +466,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
-                dialog.Object);
+                dialog.Object,
+                new Mock<INotifyDialog>().Object);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => command
@@ -500,7 +513,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 factory,
-                new Mock<ICredentialDialog>().Object);
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
 
             await command
                 .ExecuteAsync(CreateInstanceNode())

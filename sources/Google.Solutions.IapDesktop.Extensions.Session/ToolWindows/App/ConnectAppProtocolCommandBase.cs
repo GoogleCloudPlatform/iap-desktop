@@ -22,6 +22,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using System;
@@ -33,13 +34,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
     internal abstract class ConnectAppProtocolCommandBase : MenuCommandBase<IProjectModelNode>
     {
         private readonly IJobService jobService;
+        private readonly INotifyDialog notifyDialog;
 
-        public ConnectAppProtocolCommandBase(
+        protected ConnectAppProtocolCommandBase(
             string text,
-            IJobService jobService)
+            IJobService jobService,
+            INotifyDialog notifyDialog)
             : base(text)
         {
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
+            this.notifyDialog = notifyDialog.ExpectNotNull(nameof(notifyDialog));
         }
 
         protected internal abstract Task<AppProtocolContext> CreateContextAsync(
@@ -92,8 +96,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             }
             else
             {
-                // TODO: connect & show toast.
-                throw new NotImplementedException("Client cannot be launched");
+                this.notifyDialog.ShowBaloon(
+                    $"Connected to {node.DisplayName}",
+                    $"Local endpoint: {transport.Endpoint}");
             }
         }
     }

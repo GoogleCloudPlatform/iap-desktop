@@ -86,10 +86,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IJobService jobService,
             AppProtocolContextFactory contextFactory,
             ICredentialDialog credentialDialog,
+            INotifyDialog notifyDialog,
             bool forceCredentialPrompt = false)
             : base(
                   $"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}", 
-                  jobService)
+                  jobService,
+                  notifyDialog)
         {
 
             Debug.Assert(contextFactory.Protocol.Client != null);

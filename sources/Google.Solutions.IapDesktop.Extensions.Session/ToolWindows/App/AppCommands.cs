@@ -46,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         private readonly IWin32ProcessFactory processFactory;
         private readonly IConnectionSettingsService settingsService;
         private readonly ICredentialDialog credentialDialog;
+        private readonly INotifyDialog notifyDialog;
 
         public AppCommands(
             IWin32Window ownerWindow,
@@ -54,7 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory,
             IConnectionSettingsService settingsService,
-            ICredentialDialog credentialDialog)
+            ICredentialDialog credentialDialog,
+            INotifyDialog notifyDialog)
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
@@ -65,6 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
 
             this.ConnectWithContextCommand = new ConnectWithAppCommand();
+            this.notifyDialog = notifyDialog;   
         }
 
         //---------------------------------------------------------------------
@@ -94,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.jobService,
                         factory,
                         this.credentialDialog,
+                        this.notifyDialog,
                         false);
 
                     if (protocol.Client.IsNetworkLevelAuthenticationSupported)
@@ -106,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                             this.jobService,
                             factory,
                             this.credentialDialog,
+                            this.notifyDialog,
                             true);
                     }
                 }

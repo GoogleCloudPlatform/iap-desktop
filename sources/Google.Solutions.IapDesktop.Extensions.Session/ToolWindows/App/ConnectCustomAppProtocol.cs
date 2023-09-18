@@ -1,5 +1,6 @@
 ﻿using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -20,8 +21,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             string text,
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory, 
-            IJobService jobService) 
-            : base(text, jobService)
+            IJobService jobService,
+            INotifyDialog notifyDialog) 
+            : base(text, jobService, notifyDialog)
         {
             this.transportFactory = transportFactory.ExpectNotNull(nameof(transportFactory));
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));

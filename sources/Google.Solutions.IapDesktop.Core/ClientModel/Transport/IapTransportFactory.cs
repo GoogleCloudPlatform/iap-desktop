@@ -340,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
 
-            public ResourceLocator Target { get; } //TODO: test
+            public ResourceLocator Target { get; }
 
             //-----------------------------------------------------------------
             // DisposableBase.

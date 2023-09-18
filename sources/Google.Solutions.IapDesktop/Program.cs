@@ -412,6 +412,7 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<IInputDialog, InputDialog>();
                 preAuthLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
                 preAuthLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
+                preAuthLayer.AddTransient<INotifyDialog, NotifyDialog>();
 
                 preAuthLayer.AddSingleton<IExternalRestAdapter, ExternalRestAdapter>();
                 preAuthLayer.AddTransient<HelpAdapter>();
