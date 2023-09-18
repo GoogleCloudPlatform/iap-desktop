@@ -155,3 +155,9 @@ RUN Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { `
     $Gateway = (Get-NetRoute | Where { $_.DestinationPrefix -eq \"0.0.0.0/0\" } | Sort-Object RouteMetric | Select NextHop).NextHop; `
     $IfIndex = (Get-NetAdapter -InterfaceDescription \"Hyper-V Virtual Ethernet*\" | Sort-Object | Select ifIndex).ifIndex; `
     New-NetRoute -DestinationPrefix 169.254.169.254/32 -InterfaceIndex $IfIndex -NextHop $Gateway
+
+# Restore default shell for Windows containers.
+SHELL ["cmd.exe", "/s", "/c"]
+
+# Default to PowerShell if no other command specified.
+CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
