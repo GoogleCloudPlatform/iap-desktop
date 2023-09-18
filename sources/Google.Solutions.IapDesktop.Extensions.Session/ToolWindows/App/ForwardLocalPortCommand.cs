@@ -13,14 +13,14 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
-    internal class ConnectCustomAppProtocol : ConnectAppProtocolCommandBase
+    internal class ForwardLocalPortCommand : ConnectAppProtocolCommandBase
     {
         private readonly IWin32Window ownerWindow;
         private readonly IInputDialog inputDialog;
         private readonly IIapTransportFactory transportFactory;
         private readonly IWin32ProcessFactory processFactory;
         
-        public ConnectCustomAppProtocol(
+        public ForwardLocalPortCommand(
             IWin32Window ownerWindow,
             string text,
             IIapTransportFactory transportFactory,
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         Title = $"Connect to {instance.DisplayName}",
                         Caption = "Forward local port",
                         Message = $"Allocate a local port and forward it to {instance.DisplayName}",
-                        Cue = "Remote port number",
+                        Cue = $"Port number on {instance.DisplayName}",
                         Validate = validatePortNumber
                     },
                     out var remotePortString) != DialogResult.OK ||
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             // the usual factory.
             //
             var protocol = new AppProtocol(
-                $"Ephemeral (port {remotePort})",
+                $"Port forwarding",
                 Array.Empty<ITrait>(),
                 remotePort,
                 null,

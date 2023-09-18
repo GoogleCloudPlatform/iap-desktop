@@ -30,29 +30,33 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// <summary>
         /// Show baloon in task bar.
         /// </summary>
-        void ShowBaloon(
+        void ShowBalloon(
             string title,
             string message);
     }
 
     public class NotifyDialog : INotifyDialog
     {
-        public void ShowBaloon(string title, string message)
+        public void ShowBalloon(string title, string message)
         { 
             title.ExpectNotEmpty(nameof(title));
             message.ExpectNotEmpty(nameof(message));
 
-            using (var icon = new NotifyIcon()
+            var baloon = new NotifyIcon()
             {
                 Visible = true,
                 Icon = Resources.logo,
                 BalloonTipIcon = ToolTipIcon.None,
                 BalloonTipTitle = title,
                 BalloonTipText = message
-            })
-            {
-                icon.ShowBalloonTip(3000);
-            }
+            };
+
+            //
+            // NB. If we call Dispose before the timeout
+            // elapses, the baloon shows an ugly header. 
+            //
+            baloon.BalloonTipClosed += (_, __) => baloon.Dispose();
+            baloon.ShowBalloonTip(3000);
         }
     }
 }

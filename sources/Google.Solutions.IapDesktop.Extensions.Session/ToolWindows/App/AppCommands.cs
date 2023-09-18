@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.processFactory,
                         this.settingsService);
 
-                    yield return new ConnectAppProtocolAndOpenClientCommand(
+                    yield return new OpenWithClientCommand(
                         this.ownerWindow,
                         this.jobService,
                         factory,
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         //
                         // Add anther "as user..." command.
                         //
-                        yield return new ConnectAppProtocolAndOpenClientCommand(
+                        yield return new OpenWithClientCommand(
                             this.ownerWindow,
                             this.jobService,
                             factory,
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     }
                 }
 
-                yield return new ConnectCustomAppProtocol(
+                yield return new ForwardLocalPortCommand(
                     this.ownerWindow,
                     "Forward &local port...",
                     this.transportFactory,

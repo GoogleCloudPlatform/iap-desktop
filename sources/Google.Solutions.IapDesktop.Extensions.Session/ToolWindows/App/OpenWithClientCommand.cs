@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
     /// <summary>
     /// Connect an AppProtocol and open the client.
     /// </summary>
-    internal class ConnectAppProtocolAndOpenClientCommand : ConnectAppProtocolCommandBase
+    internal class OpenWithClientCommand : ConnectAppProtocolCommandBase
     {
         private readonly IWin32Window ownerWindow;
         private readonly ICredentialDialog credentialDialog;
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             return null;
         }
 
-        public ConnectAppProtocolAndOpenClientCommand(
+        public OpenWithClientCommand(
             IWin32Window ownerWindow,
             IJobService jobService,
             AppProtocolContextFactory contextFactory,

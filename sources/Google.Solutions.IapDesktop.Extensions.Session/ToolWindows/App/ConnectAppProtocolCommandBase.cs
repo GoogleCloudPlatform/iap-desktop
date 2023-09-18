@@ -96,10 +96,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             }
             else
             {
-                this.notifyDialog.ShowBaloon(
-                    $"Connected to {node.DisplayName}",
-                    $"Local endpoint: {transport.Endpoint}\n\n" +
-                    $"Use the Active IAP Tunnels to view details.");
+                //
+                // There's no app to launch, just notify the user
+                // about the forwarded port.
+                //
+                this.notifyDialog.ShowBalloon(
+                    $"Port {transport.Endpoint.Port} forwarded to {transport.Target.Name}",
+                    $"Use any client application and connect to {transport.Endpoint}");
+
+                //
+                // Prevent the GC from reclaiming the transport and closing
+                // the underlying tunnels.
+                //
+                GC.SuppressFinalize(transport);
             }
         }
     }
