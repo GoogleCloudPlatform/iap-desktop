@@ -36,6 +36,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
+    /// <summary>
+    /// Connect an AppProtocol and open the client.
+    /// </summary>
     internal class ConnectAppProtocolAndOpenClientCommand : ConnectAppProtocolCommandBase
     {
         private readonly IWin32Window ownerWindow;

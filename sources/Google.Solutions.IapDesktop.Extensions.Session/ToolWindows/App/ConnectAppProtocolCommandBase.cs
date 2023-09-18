@@ -92,6 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             }
             else
             {
+                // TODO: connect & show toast.
                 throw new NotImplementedException("Client cannot be launched");
             }
         }
