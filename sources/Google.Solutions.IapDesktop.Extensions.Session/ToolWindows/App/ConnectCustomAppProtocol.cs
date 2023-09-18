@@ -9,22 +9,29 @@ using Google.Solutions.Platform.Dispatch;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
     internal class ConnectCustomAppProtocol : ConnectAppProtocolCommandBase
     {
+        private readonly IWin32Window ownerWindow;
+        private readonly IInputDialog inputDialog;
         private readonly IIapTransportFactory transportFactory;
         private readonly IWin32ProcessFactory processFactory;
-
+        
         public ConnectCustomAppProtocol(
+            IWin32Window ownerWindow,
             string text,
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory, 
             IJobService jobService,
+            IInputDialog inputDialog,
             INotifyDialog notifyDialog) 
             : base(text, jobService, notifyDialog)
         {
+            this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
+            this.inputDialog = inputDialog.ExpectNotNull(nameof(inputDialog));
             this.transportFactory = transportFactory.ExpectNotNull(nameof(transportFactory));
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
         }
@@ -47,19 +54,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IProjectModelInstanceNode instance, 
             CancellationToken cancellationToken)
         {
+            //
+            // We don't have a protocol, so we need to create on on the
+            // fly based on user input.
+            //
+            void validatePortNumber(
+                string input,
+                out bool valid,
+                out string warning)
+            {
+                valid = ushort.TryParse(input, out var portNumber) && portNumber > 0;
+                warning = string.IsNullOrEmpty(input) || valid
+                    ? string.Empty
+                    : $"Enter a port number between 1 and {ushort.MaxValue}";
+            }
 
-            // TODO: input dialog
-
-            ushort port = 123;
+            if (this.inputDialog.Prompt(
+                    this.ownerWindow,
+                    new InputDialogParameters()
+                    {
+                        Title = $"Connect to {instance.DisplayName}",
+                        Caption = "Forward local port",
+                        Message = $"Allocate a local port and forward it to {instance.DisplayName}",
+                        Cue = "Remote port number",
+                        Validate = validatePortNumber
+                    },
+                    out var remotePortString) != DialogResult.OK ||
+                !ushort.TryParse(remotePortString, out var remotePort))
+            {
+                throw new TaskCanceledException();
+            }
 
             //
-            // Create an ephermeral protocol and context, bypassing
+            // Create an ephemeral protocol and context, bypassing
             // the usual factory.
             //
             var protocol = new AppProtocol(
-                $"Ephemeral (port {port})",
+                $"Ephemeral (port {remotePort})",
                 Array.Empty<ITrait>(),
-                port,
+                remotePort,
                 null,
                 null);
 

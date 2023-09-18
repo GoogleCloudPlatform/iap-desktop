@@ -98,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             {
                 this.notifyDialog.ShowBaloon(
                     $"Connected to {node.DisplayName}",
-                    $"Local endpoint: {transport.Endpoint}");
+                    $"Local endpoint: {transport.Endpoint}\n\n" +
+                    $"Use the Active IAP Tunnels to view details.");
             }
         }
     }

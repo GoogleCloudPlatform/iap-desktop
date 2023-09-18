@@ -55,6 +55,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public string Message { get; set; }
 
         /// <summary>
+        /// Cue to show in input field.
+        /// </summary>
+        public string Cue { get; set; }
+
+        /// <summary>
         /// Callback for validating input.
         /// </summary>
         public ValidationCallback Validate { get; set; }
@@ -99,6 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 parameters.Message))
             {
                 dialog.ValidateInput = parameters.Validate;
+                dialog.Cue = parameters.Cue;
 
                 try
                 {

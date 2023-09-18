@@ -62,6 +62,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             }
         }
 
+        /// <summary>
+        /// Cue to show in text box.
+        /// </summary>
+        public string Cue { get; set; }
+
         public SystemInputDialog(string title, string caption, string message)
         {
             this.FormBorderStyle = FormBorderStyle.None;
@@ -127,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             //
             var usernameTextBox = new TextBox()
             {
-                Location = new Point(24, 112),
+                Location = new Point(24 + 2, 112),
                 Size = new Size(296, 30),
                 TabIndex = 0,
                 MaxLength = 64,
@@ -145,7 +150,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             usernameTextBox.HandleCreated += (_, __) =>
             {
-                usernameTextBox.SetCueBanner("User name", true);
+                if (!string.IsNullOrEmpty(this.Cue))
+                {
+                    usernameTextBox.SetCueBanner(this.Cue, true);
+                }
             };
 
             usernameTextBox.TextChanged += (_, __) =>

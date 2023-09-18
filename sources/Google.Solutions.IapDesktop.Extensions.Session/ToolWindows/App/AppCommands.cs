@@ -46,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         private readonly IWin32ProcessFactory processFactory;
         private readonly IConnectionSettingsService settingsService;
         private readonly ICredentialDialog credentialDialog;
+        private readonly IInputDialog inputDialog;
         private readonly INotifyDialog notifyDialog;
 
         public AppCommands(
@@ -56,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IWin32ProcessFactory processFactory,
             IConnectionSettingsService settingsService,
             ICredentialDialog credentialDialog,
+            IInputDialog inputDialog,
             INotifyDialog notifyDialog)
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
@@ -65,9 +67,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
+            this.inputDialog = inputDialog.ExpectNotNull(nameof(inputDialog));
+            this.notifyDialog = notifyDialog.ExpectNotNull(nameof(notifyDialog));
 
             this.ConnectWithContextCommand = new ConnectWithAppCommand();
-            this.notifyDialog = notifyDialog;   
         }
 
         //---------------------------------------------------------------------
@@ -114,6 +117,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                             true);
                     }
                 }
+
+                yield return new ConnectCustomAppProtocol(
+                    this.ownerWindow,
+                    "Forward &local port...",
+                    this.transportFactory,
+                    this.processFactory,
+                    this.jobService,
+                    this.inputDialog,
+                    this.notifyDialog);
             }
         }
 
