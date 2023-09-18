@@ -57,12 +57,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
             if (dialog.Prompt(
                 null,
-                new InputDialog.InputDialogParameters()
+                new InputDialogParameters()
                 {
                     Title = "This is the title",
                     Caption = "This is the caption",
                     Message = "Enter a number",
-                    ValidateInput = validate
+                    Validate = validate
                 },
                 out var input) == DialogResult.OK)
             {
