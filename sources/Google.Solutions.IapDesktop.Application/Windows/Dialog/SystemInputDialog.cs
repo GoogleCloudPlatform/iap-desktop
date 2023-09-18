@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             warning = null;
         }
 
-        private ValidateInputCallback validateInput = DefaultValidateInput;
+        private InputDialogParameters.ValidationCallback validateInput = DefaultValidateInput;
 
         /// <summary>
         /// Value provided by user.
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// <summary>
         /// Validation callback, optional.
         /// </summary>
-        public ValidateInputCallback ValidateInput
+        public InputDialogParameters.ValidationCallback ValidateInput
         {
             get => this.validateInput;
             set

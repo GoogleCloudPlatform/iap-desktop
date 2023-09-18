@@ -29,7 +29,54 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     /// <summary>
     /// Generic input dialog.
     /// </summary>
-    public class InputDialog
+    public interface IInputDialog
+    {
+        DialogResult Prompt(
+            IWin32Window owner,
+            InputDialogParameters parameters,
+            out string input);
+    }
+
+    public struct InputDialogParameters
+    {
+        /// <summary>
+        /// Dialog title.
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Caption to show in dialog.
+        /// </summary>
+        public string Caption { get; set; }
+
+        /// <summary>
+        /// Message to show in dialog.
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Callback for validating input.
+        /// </summary>
+        public ValidationCallback Validate { get; set; }
+
+        internal void ExpectValid()
+        {
+            this.Title.ExpectNotNull(nameof(this.Title));
+            this.Caption.ExpectNotNull(nameof(this.Caption));
+            this.Message.ExpectNotNull(nameof(this.Message));
+            this.Validate.ExpectNotNull(nameof(this.Validate));
+        }
+
+        /// <summary>
+        /// Validate user input.
+        /// </summary>
+        public delegate void ValidationCallback(
+            string input,
+            out bool valid,
+            out string warning);
+    }
+
+    public class InputDialog : IInputDialog
     {
         private readonly Service<IThemeService> themeService;
 
@@ -51,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 parameters.Caption,
                 parameters.Message))
             {
-                dialog.ValidateInput = parameters.ValidateInput;
+                dialog.ValidateInput = parameters.Validate;
 
                 try
                 {
@@ -68,44 +115,5 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 return result;
             }
         }
-
-        public struct InputDialogParameters
-        {
-            /// <summary>
-            /// Dialog title.
-            /// </summary>
-            public string Title { get; set; }
-
-            /// <summary>
-            /// Caption to show in dialog.
-            /// </summary>
-            public string Caption { get; set; }
-
-            /// <summary>
-            /// Message to show in dialog.
-            /// </summary>
-            public string Message { get; set; }
-
-            /// <summary>
-            /// Callback for validating input.
-            /// </summary>
-            public ValidateInputCallback ValidateInput { get; set; }
-
-            internal void ExpectValid ()
-            {
-                this.Title.ExpectNotNull(nameof(Title));
-                this.Caption.ExpectNotNull(nameof(Caption));
-                this.Message.ExpectNotNull(nameof(Message));
-                this.ValidateInput.ExpectNotNull(nameof(ValidateInput));
-            }
-        }
     }
-
-    /// <summary>
-    /// Validate user input.
-    /// </summary>
-    public delegate void ValidateInputCallback(
-        string input,
-        out bool valid,
-        out string warning);
 }
