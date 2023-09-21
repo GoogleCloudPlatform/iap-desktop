@@ -113,8 +113,7 @@ SHELL ["powershell", "-NoLogo", "-ExecutionPolicy", "Bypass", "-Command", "$Erro
 #
 # Initialize Kokoro environment.
 #
-RUN setx /M CYGWIN winsymlinks:native `
-    ; setx /M HOME C:\Users\ContainerAdministrator\ `
+RUN setx /M HOME C:\Users\ContainerAdministrator\ `
     ; setx /M HOMEDRIVE C: `
     ; setx /M HOMEPATH \Users\ContainerAdministrator\ `
     ; setx /M KOKORO_POSIX_ROOT /tmpfs `
@@ -146,6 +145,16 @@ RUN Add-Type -AssemblyName "System.IO.Compression.FileSystem"; `
     [Environment]::SetEnvironmentVariable(\"PATH\", $OldPath + \";${ExtractedPackage}\bin\", \"Machine\"); `
     $env:PATH = [Environment]::GetEnvironmentVariable('PATH', 'Machine'); `
     gcloud components install gsutil
+
+#
+# Install cygwin and packages
+#
+RUN setx /M CYGWIN "winsymlinks:lnk"
+RUN Invoke-WebRequest 'https://cygwin.com/setup-x86_64.exe' -OutFile $env:TEMP/cygwin_setup.exe -UseBasicParsing; `
+    Start-Process "$env:TEMP/cygwin_setup.exe" -ArgumentList '-X', '--quiet-mode', '--root', 'C:\Cygwin64', '--site', 'http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/circa/64bit/2022/11/23/063529' -Wait -NoNewWindow; `
+    Remove-Item $env:TEMP/cygwin_setup.exe; `
+    $OldPath = [Environment]::GetEnvironmentVariable(\"PATH\", \"Machine\"); `
+    [Environment]::SetEnvironmentVariable(\"PATH\", $OldPath + \";C:\Cygwin64\bin\", \"Machine\");
 
 #
 # Make the metadata server on the VM accessible inside docker.
