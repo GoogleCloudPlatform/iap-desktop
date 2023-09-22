@@ -104,6 +104,11 @@ namespace Google.Solutions.Platform.Security
         [Test]
         public void WhenFileIsMalicious_ThenScanThrowsException()
         {
+            if (UserEnvironment.IsServer)
+            {
+                Assert.Inconclusive("This test requires Windows Defender and a client OS");
+            }
+
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, Eicar);
 

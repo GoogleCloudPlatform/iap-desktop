@@ -29,11 +29,11 @@ namespace Google.Solutions.Platform.Test.Net
     public class TestTcpTable
     {
         [Test]
-        public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForNetlogon()
+        public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForRpcss()
         {
             var netlogonListeningPorts = TcpTable.GetTcpTable2()
                 .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)
-                .Where(r => r.LocalEndpoint.Port == 445);
+                .Where(r => r.LocalEndpoint.Port == 135);
             Assert.AreEqual(1, netlogonListeningPorts.Count());
         }
     }

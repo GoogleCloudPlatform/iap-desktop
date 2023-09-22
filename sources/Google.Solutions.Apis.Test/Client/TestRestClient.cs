@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Client
 
         [Test]
         [Ignore("Unreliable in CI")]
-        public void WhenUrReturns404_ThenHttpExceptionIsThrown()
+        public void WhenUrlReturns404_ThenHttpExceptionIsThrown()
         {
             var client = new RestClient(userAgent);
 
