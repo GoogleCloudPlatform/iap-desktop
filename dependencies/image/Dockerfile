@@ -91,12 +91,12 @@ RUN `
     && powershell Remove-Item -Force -Recurse "%TEMP%\*" `
     && rmdir /S /Q "%ProgramData%\Package Cache"
 
+#
+# Install git.
+#
 ENV chocolateyVersion=1.4.0
 RUN powershell -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
 RUN choco install git -y --no-progress
-
-#TODO: add gcloud
-#TODO: add cygwin?
 
 #
 # Set PATH.
@@ -108,15 +108,65 @@ RUN powershell setx /M PATH $(${Env:PATH} `
     + \";${Env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\" `
     + \";${Env:ProgramFiles(x86)}\Microsoft SDKs\ClickOnce\SignTool\")
 
+SHELL ["powershell", "-NoLogo", "-ExecutionPolicy", "Bypass", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
 #
 # Initialize Kokoro environment.
 #
-RUN setx /M CYGWIN winsymlinks:native `
-    && setx /M HOME C:\Users\ContainerAdministrator\ `
-    && setx /M HOMEDRIVE C: `
-    && setx /M HOMEPATH \Users\ContainerAdministrator\ `
-    && setx /M KOKORO_POSIX_ROOT /tmpfs `
-    && setx /M KOKORO_ROOT C:\tmpfs\ `
-    && setx /M SHELL /bin/bash
+RUN setx /M HOME C:\Users\ContainerAdministrator\ `
+    ; setx /M HOMEDRIVE C: `
+    ; setx /M HOMEPATH \Users\ContainerAdministrator\ `
+    ; setx /M KOKORO_POSIX_ROOT /tmpfs `
+    ; setx /M KOKORO_ROOT C:\tmpfs\ `
+    ; setx /M SHELL /bin/bash
 	
-SHELL ["powershell", "-NoLogo", "-ExecutionPolicy", "Bypass", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+#
+# Install Python 3.
+#
+RUN Invoke-WebRequest 'https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe' `
+        -OutFile $env:TEMP/python_install.exe -UseBasicParsing; `
+    Start-Process $env:TEMP/python_install.exe -ArgumentList "/quiet", "/log", "$env:TEMP/python_install_log.txt", `
+        "InstallAllUsers=1", "PrependPath=1" -wait; `
+    Remove-Item $env:TEMP/python_install.exe; `
+    Remove-Item $env:TEMP/python_install_log.txt
+	
+#
+# Install gcloud.
+#
+RUN Add-Type -AssemblyName "System.IO.Compression.FileSystem"; `
+    $DownloadUrl = \"https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-396.0.0-windows-x86_64.zip\"; `
+    $Package = \"$env:TEMP/gcloud.zip\"; `
+    $ExtractedPackage = \"c:/google-cloud-sdk\"; `
+    (New-Object Net.WebClient).DownloadFile($DownloadUrl, $Package); `
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($Package, \"c:/\"); `
+    Start-Process cmd.exe -ArgumentList "/c", "/s", "$ExtractedPackage/install.bat", "-q" -wait; `
+    Remove-Item $Package; `
+    $OldPath = [Environment]::GetEnvironmentVariable(\"PATH\", \"Machine\"); `
+    [Environment]::SetEnvironmentVariable(\"PATH\", $OldPath + \";${ExtractedPackage}\bin\", \"Machine\"); `
+    $env:PATH = [Environment]::GetEnvironmentVariable('PATH', 'Machine'); `
+    gcloud components install gsutil
+
+#
+# Install cygwin and packages
+#
+RUN setx /M CYGWIN "winsymlinks:lnk"
+RUN Invoke-WebRequest 'https://cygwin.com/setup-x86_64.exe' -OutFile $env:TEMP/cygwin_setup.exe -UseBasicParsing; `
+    Start-Process "$env:TEMP/cygwin_setup.exe" -ArgumentList '-X', '--quiet-mode', '--root', 'C:\Cygwin64', '--site', 'http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/circa/64bit/2022/11/23/063529' -Wait -NoNewWindow; `
+    Remove-Item $env:TEMP/cygwin_setup.exe; `
+    $OldPath = [Environment]::GetEnvironmentVariable(\"PATH\", \"Machine\"); `
+    [Environment]::SetEnvironmentVariable(\"PATH\", $OldPath + \";C:\Cygwin64\bin\", \"Machine\");
+
+#
+# Make the metadata server on the VM accessible inside docker.
+#
+RUN Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { `
+        & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1460 store=persistent }; `
+    $Gateway = (Get-NetRoute | Where { $_.DestinationPrefix -eq \"0.0.0.0/0\" } | Sort-Object RouteMetric | Select NextHop).NextHop; `
+    $IfIndex = (Get-NetAdapter -InterfaceDescription \"Hyper-V Virtual Ethernet*\" | Sort-Object | Select ifIndex).ifIndex; `
+    New-NetRoute -DestinationPrefix 169.254.169.254/32 -InterfaceIndex $IfIndex -NextHop $Gateway
+
+# Restore default shell for Windows containers.
+SHELL ["cmd.exe", "/s", "/c"]
+
+# Default to PowerShell if no other command specified.
+CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
