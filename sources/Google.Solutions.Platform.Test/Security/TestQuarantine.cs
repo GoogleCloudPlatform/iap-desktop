@@ -104,9 +104,9 @@ namespace Google.Solutions.Platform.Security
         [Test]
         public void WhenFileIsMalicious_ThenScanThrowsException()
         {
-            if (UserEnvironment.IsServer)
+            if (!Environment.UserInteractive)
             {
-                Assert.Inconclusive("This test requires Windows Defender and a client OS");
+                Assert.Inconclusive("This test requires an interactive session");
             }
 
             var filePath = Path.GetTempFileName();

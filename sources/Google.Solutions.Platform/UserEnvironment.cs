@@ -107,18 +107,8 @@ namespace Google.Solutions.Platform
             return false;
         }
 
-        internal static bool IsServer
-        {
-            get => NativeMethods.IsOS(NativeMethods.OS_ANYSERVER);
-        }
-
         private static class NativeMethods
         {
-            public const int OS_ANYSERVER = 29;
-
-            [DllImport("shlwapi.dll", SetLastError = true, EntryPoint = "#437")]
-            public static extern bool IsOS(int os);
-
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
             public static extern int ExpandEnvironmentStrings(
                 [MarshalAs(UnmanagedType.LPTStr)] string source,
