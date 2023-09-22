@@ -52,13 +52,13 @@ namespace Google.Solutions.Common.Threading
                 "Context does not support copying");
         }
 
-        public override void Send(SendOrPostCallback d, object state)
+        public override void Send(SendOrPostCallback d, object? state)
         {
             throw new NotImplementedException(
                 "Context does not support synchronous execution");
         }
 
-        public override void Post(SendOrPostCallback callback, object state)
+        public override void Post(SendOrPostCallback callback, object? state)
         {
             lock (this.backlog)
             {
@@ -162,12 +162,12 @@ namespace Google.Solutions.Common.Threading
         {
             private readonly ExecutionContext executionContext;
             private readonly SendOrPostCallback callback;
-            private readonly object state;
+            private readonly object? state;
 
             public QueuedCallback(
                 ExecutionContext executionContext,
                 SendOrPostCallback callback,
-                object state)
+                object? state)
             {
                 this.executionContext = executionContext.ExpectNotNull(nameof(executionContext));
                 this.callback = callback.ExpectNotNull(nameof(callback));

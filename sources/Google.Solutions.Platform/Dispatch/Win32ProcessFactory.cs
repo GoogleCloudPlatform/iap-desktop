@@ -101,7 +101,7 @@ namespace Google.Solutions.Platform.Dispatch
 
         public IWin32Process CreateProcess(
             string executable,
-            string arguments)
+            string? arguments)
         {
             executable.ExpectNotEmpty(nameof(executable));
 
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Dispatch
 
         public IWin32Process CreateProcessAsUser(
             string executable,
-            string arguments,
+            string? arguments,
             LogonFlags flags,
             NetworkCredential credential)
         {
@@ -248,28 +248,28 @@ namespace Google.Solutions.Platform.Dispatch
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool CreateProcess(
-                string lpApplicationName,
+                string? lpApplicationName,
                 string lpCommandLine,
                 IntPtr lpProcessAttributes,
                 IntPtr lpThreadAttributes,
                 bool bInheritHandles,
                 uint dwCreationFlags,
                 IntPtr lpEnvironment,
-                string lpCurrentDirectory,
+                string? lpCurrentDirectory,
                 [In] ref STARTUPINFO lpStartupInfo,
                 out PROCESS_INFORMATION lpProcessInformation);
 
             [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             public static extern bool CreateProcessWithLogonW(
                 string userName,
-                string domain,
+                string? domain,
                 string password,
                 LogonFlags logonFlags,
-                string applicationName,
+                string? applicationName,
                 string commandLine,
                 uint dwCreationFlags,
                 IntPtr environment,
-                string currentDirectory,
+                string? currentDirectory,
                 [In] ref STARTUPINFO lpStartupInfo,
                 out PROCESS_INFORMATION lpProcessInformation);
         }

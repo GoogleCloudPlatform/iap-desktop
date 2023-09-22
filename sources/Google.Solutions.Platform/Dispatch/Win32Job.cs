@@ -249,7 +249,7 @@ namespace Google.Solutions.Platform.Dispatch
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern SafeJobHandle CreateJobObject(
                 [In] ref SECURITY_ATTRIBUTES lpJobAttributes,
-                string lpName);
+                string? lpName);
 
             [DllImport("kernel32.dll")]
             internal static extern bool SetInformationJobObject(

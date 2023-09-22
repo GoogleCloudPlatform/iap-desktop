@@ -49,6 +49,9 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsFalse(ChromeCertificateSelector.TryParse(
                 "{asd'",
                 out var _));
+            Assert.IsFalse(ChromeCertificateSelector.TryParse(
+               "",
+               out var _));
         }
 
         //---------------------------------------------------------------------
@@ -64,7 +67,8 @@ namespace Google.Solutions.Platform.Test.Net
                     'filter':{}
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -82,7 +86,8 @@ namespace Google.Solutions.Platform.Test.Net
                 @"{
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector!);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -102,7 +107,8 @@ namespace Google.Solutions.Platform.Test.Net
                     'filter':{}
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -130,7 +136,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNotNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -165,7 +172,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNotNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -198,7 +206,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNotNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
 
@@ -226,7 +235,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
 
@@ -261,7 +271,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
 
@@ -293,7 +304,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
             Assert.IsNotNull(selector.Filter.Thumbprint);
@@ -325,7 +337,8 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNotNull(selector);
+            Assert.IsNotNull(selector!.Pattern);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
             Assert.IsNotNull(selector.Filter.Thumbprint);

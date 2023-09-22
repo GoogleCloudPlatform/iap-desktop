@@ -23,6 +23,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
+
 namespace Google.Solutions.Common.Threading
 {
     /// <summary>

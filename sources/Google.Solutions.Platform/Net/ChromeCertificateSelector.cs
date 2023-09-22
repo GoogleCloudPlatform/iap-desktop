@@ -48,18 +48,18 @@ namespace Google.Solutions.Platform.Net
             this.Filter = filter ?? new CertificateFilter();
         }
 
-        public static ChromeCertificateSelector Parse(string json)
+        public static ChromeCertificateSelector? Parse(string json)
         {
             Precondition.ExpectNotEmpty(json, nameof(json));
             return JsonConvert.DeserializeObject<ChromeCertificateSelector>(json);
         }
 
-        public static bool TryParse(string json, out ChromeCertificateSelector selector)
+        public static bool TryParse(string json, out ChromeCertificateSelector? selector)
         {
             try
             {
                 selector = Parse(json);
-                return true;
+                return selector != null;
             }
             catch
             {
@@ -72,7 +72,7 @@ namespace Google.Solutions.Platform.Net
             Uri uri,
             X500DistinguishedName issuer,
             X500DistinguishedName subject,
-            string thumbprint)
+            string? thumbprint)
         {
             return
                 this.Pattern.IsMatch(uri) &&
@@ -99,9 +99,9 @@ namespace Google.Solutions.Platform.Net
         {
             [JsonConstructor]
             public CertificateFilter(
-                [JsonProperty("ISSUER")] DistinguishedNameFilter issuer,
-                [JsonProperty("SUBJECT")] DistinguishedNameFilter subject,
-                [JsonProperty("THUMBPRINT")] string thumbprint)
+                [JsonProperty("ISSUER")] DistinguishedNameFilter? issuer,
+                [JsonProperty("SUBJECT")] DistinguishedNameFilter? subject,
+                [JsonProperty("THUMBPRINT")] string? thumbprint)
             {
                 this.Issuer = issuer;
                 this.Subject = subject;
@@ -113,23 +113,23 @@ namespace Google.Solutions.Platform.Net
             }
 
             [JsonProperty("ISSUER")]
-            public DistinguishedNameFilter Issuer { get; }
+            public DistinguishedNameFilter? Issuer { get; }
 
             [JsonProperty("SUBJECT")]
-            public DistinguishedNameFilter Subject { get; }
+            public DistinguishedNameFilter? Subject { get; }
 
             [JsonProperty("THUMBPRINT")]
-            public string Thumbprint { get; }
+            public string? Thumbprint { get; }
         }
 
         public class DistinguishedNameFilter
         {
             [JsonConstructor]
             public DistinguishedNameFilter(
-                [JsonProperty("CN")] string commonName,
-                [JsonProperty("L")] string location,
-                [JsonProperty("O")] string organization,
-                [JsonProperty("OU")] string orgUnit)
+                [JsonProperty("CN")] string? commonName,
+                [JsonProperty("L")] string? location,
+                [JsonProperty("O")] string? organization,
+                [JsonProperty("OU")] string? orgUnit)
             {
                 this.CommonName = commonName;
                 this.Location = location;
@@ -138,16 +138,16 @@ namespace Google.Solutions.Platform.Net
             }
 
             [JsonProperty("CN")]
-            public string CommonName { get; }
+            public string? CommonName { get; }
 
             [JsonProperty("L")]
-            public string Location { get; }
+            public string? Location { get; }
 
             [JsonProperty("O")]
-            public string Organization { get; }
+            public string? Organization { get; }
 
             [JsonProperty("OU")]
-            public string OrgUnit { get; }
+            public string? OrgUnit { get; }
 
             public bool IsMatch(X500DistinguishedName dn)
             {

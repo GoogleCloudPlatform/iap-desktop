@@ -88,7 +88,7 @@ namespace Google.Solutions.Platform.Net
             /// <summary>
             /// Add entries from a specific group policy key.
             /// </summary>
-            public Builder AddGroupPolicy(RegistryKey registryKey)
+            public Builder AddGroupPolicy(RegistryKey? registryKey)
             {
                 if (registryKey == null)
                 {
@@ -112,7 +112,11 @@ namespace Google.Solutions.Platform.Net
                     {
                         try
                         {
-                            this.entries.AddLast(ChromeCertificateSelector.Parse(value));
+                            var selector = ChromeCertificateSelector.Parse(value);
+                            if (selector != null)
+                            {
+                                this.entries.AddLast(selector);
+                            }
                         }
                         catch (JsonException e)
                         {

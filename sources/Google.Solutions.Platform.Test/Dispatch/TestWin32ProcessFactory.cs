@@ -34,7 +34,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
         private class Win32ProcessFactoryWithEvent : Win32ProcessFactory
         {
-            public event EventHandler<IWin32Process> ProcessCreated;
+            public event EventHandler<IWin32Process>? ProcessCreated;
 
             protected override void OnProcessCreated(IWin32Process process)
             {
@@ -73,7 +73,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         public void WhenOnProcessCreatedFails_ThenCreateProcessDisposesProcess()
         {
             var factory = new Win32ProcessFactoryWithEvent();
-            IWin32Process createdProcess = null;
+            IWin32Process? createdProcess = null;
             factory.ProcessCreated += (_, p) =>
             {
                 createdProcess = p;
@@ -83,7 +83,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
             Assert.Throws<InvalidOperationException>(
                 () => factory.CreateProcess(CmdExe, null));
 
-            Assert.IsTrue(((Win32Process)createdProcess).IsDisposed);
+            Assert.IsNotNull(createdProcess);
+            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
         }
 
         //---------------------------------------------------------------------
@@ -162,7 +163,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         public void WhenOnProcessCreatedFails_ThenCreateProcessAsUserDisposesProcess()
         {
             var factory = new Win32ProcessFactoryWithEvent();
-            IWin32Process createdProcess = null;
+            IWin32Process? createdProcess = null;
             factory.ProcessCreated += (_, p) =>
             {
                 createdProcess = p;
@@ -176,7 +177,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     LogonFlags.NetCredentialsOnly,
                     new NetworkCredential("user", "invalid", "domain")));
 
-            Assert.IsTrue(((Win32Process)createdProcess).IsDisposed);
+            Assert.IsNotNull(createdProcess);
+            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
         }
     }
 }

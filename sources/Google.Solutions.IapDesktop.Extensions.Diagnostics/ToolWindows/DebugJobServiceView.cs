@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -38,6 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             InitializeComponent();
         }
 
+        [SuppressMessage("Usage", "VSTHRD101:Avoid unsupported async delegates", Justification = "")]
         public void Bind(
             DebugJobServiceViewModel viewModel,
             IBindingContext bindingContext)

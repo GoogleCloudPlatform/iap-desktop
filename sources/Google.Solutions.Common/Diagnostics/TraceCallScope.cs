@@ -48,7 +48,7 @@ namespace Google.Solutions.Common.Diagnostics
             return this;
         }
 
-        public TraceCallScope WithParameters(params object[] args)
+        public TraceCallScope WithParameters(params object?[] args)
         {
             if (this.source.Switch.ShouldTrace(TraceEventType.Verbose))
             {

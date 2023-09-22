@@ -83,9 +83,9 @@ namespace Google.Solutions.Platform.Security
             Guid clientGuid)
         {
             filePath.ExpectNotNull(nameof(filePath));
+            source.ExpectNotNull(nameof(source));
 
-            Debug.Assert(source == null ||
-                source == DefaultSource ||
+            Debug.Assert(source == DefaultSource ||
                 source.Scheme.StartsWith("http") ||
                 source.Scheme == "file");
 
