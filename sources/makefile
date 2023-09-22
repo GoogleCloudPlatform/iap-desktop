@@ -101,7 +101,7 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): themes Google.Solutions.IapDesktop\OAuthCl
 	@echo "========================================================"
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
-
+    
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);Version=$(BINARY_VERSION)
 	
 !if ( "$(SKIP_ASSEMBLY_BUILD)" == "" ) 
@@ -109,7 +109,9 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Creating staging area for installer              ==="
 	@echo "========================================================"
-	
+    
+    if not exist $(MAKEDIR)\installer\obj \
+        md $(MAKEDIR)\installer\obj
     if not exist $(MAKEDIR)\installer\obj\$(PLATFORM) \
         md $(MAKEDIR)\installer\obj\$(PLATFORM)
     if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION) \
@@ -206,6 +208,8 @@ $(POLICIES_PACKAGE):
 	@echo "=== Packaging policy templates                       ==="
 	@echo "========================================================"
 
+	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies \
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies
 	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us \
 		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us
 
