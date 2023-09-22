@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,22 +19,19 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Net;
 using NUnit.Framework;
-using System.Linq;
+using System;
 
-namespace Google.Solutions.Platform.Test.Net
+namespace Google.Solutions.IapDesktop.Application.Test
 {
-    [TestFixture]
-    public class TestTcpTable
+    /// <summary>
+    /// Annotation for test fixtures that use or modify the
+    /// system proxy autoconfiguration settings.
+    /// </summary>
+    public class ProxyAutoconfigTestAttribute : CategoryAttribute
     {
-        [Test]
-        public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForRpcss()
+        public ProxyAutoconfigTestAttribute() : base("ProxyAutoconfigTest")
         {
-            var netlogonListeningPorts = TcpTable.GetTcpTable2()
-                .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)
-                .Where(r => r.LocalEndpoint.Port == 135);
-            Assert.AreEqual(1, netlogonListeningPorts.Count());
         }
     }
 }

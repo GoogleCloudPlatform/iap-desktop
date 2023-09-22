@@ -24,8 +24,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Testing.Apis.Integration
 {
     /// <summary>
-    /// Annotation for test fixtures that use cloud resources
-    /// such as VM instances.
+    /// Annotation for test fixtures that require user interaction.
     /// </summary>
     public class InteractiveTestAttribute : CategoryAttribute
     {

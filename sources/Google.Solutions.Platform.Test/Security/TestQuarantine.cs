@@ -104,6 +104,11 @@ namespace Google.Solutions.Platform.Security
         [Test]
         public void WhenFileIsMalicious_ThenScanThrowsException()
         {
+            if (!Environment.UserInteractive)
+            {
+                Assert.Inconclusive("This test requires an interactive session");
+            }
+
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, Eicar);
 

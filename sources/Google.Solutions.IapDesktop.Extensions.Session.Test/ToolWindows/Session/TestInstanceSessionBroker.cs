@@ -109,6 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
+        [RdpTest]
         public async Task WhenRdpSessionExists_ThenTryActivateSucceeds(
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)

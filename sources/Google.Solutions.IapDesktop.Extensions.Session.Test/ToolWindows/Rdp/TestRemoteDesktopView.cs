@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 {
     [TestFixture]
     [UsesCloudResources]
+    [RdpTest]
     public class TestRemoteDesktopView : WindowTestFixtureBase
     {
         //

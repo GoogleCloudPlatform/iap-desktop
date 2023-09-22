@@ -110,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         }
 
         [Test]
+        [ProxyAutoconfigTest]
         public async Task WhenUsingProxyAutoConfigWithoutCredentials_ThenRequestsAreSentToProxy()
         {
             using (var proxy = new InProcessHttpProxy())
@@ -140,6 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         }
 
         [Test]
+        [ProxyAutoconfigTest]
         public async Task WhenUsingProxyAutoConfigWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
