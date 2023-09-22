@@ -208,7 +208,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
-                        null,
+                        form,
                         It.Is<ICommand>(c => c == command),
                         It.IsAny<ArgumentException>()),
                     Times.Once);

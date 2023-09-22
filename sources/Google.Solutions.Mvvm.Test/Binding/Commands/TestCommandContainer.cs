@@ -459,7 +459,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                         null,
                         It.IsAny<ICommand>(),
                         It.IsAny<Exception>()))
-                    .Callback<ICommand, Exception>((c, e) => exception = e);
+                    .Callback<IWin32Window, ICommand, Exception>((w, c, e) => exception = e);
 
                 container.AddCommand(
                     new ContextCommand<string>(
