@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Drawing;
@@ -28,13 +29,45 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 {
     /// <summary>
-    /// CredUI-style dialog for collecting a username.
+    /// System-style input dialog.
     /// </summary>
-    internal class UsernameDialog : CompositeForm
+    internal class SystemInputDialog : CompositeForm
     {
-        public string Username { get; private set; }
+        private static void DefaultValidateInput(
+            string input,
+            out bool valid,
+            out string warning)
+        {
+            valid = !string.IsNullOrEmpty(input);
+            warning = null;
+        }
 
-        public UsernameDialog(string caption, string message)
+        private InputDialogParameters.ValidationCallback validateInput = DefaultValidateInput;
+
+        /// <summary>
+        /// Value provided by user.
+        /// </summary>
+        public string Value { get; private set; }
+
+        /// <summary>
+        /// Validation callback, optional.
+        /// </summary>
+        public InputDialogParameters.ValidationCallback ValidateInput
+        {
+            get => this.validateInput;
+            set
+            {
+                value.ExpectNotNull(nameof(value));
+                this.validateInput = value;
+            }
+        }
+
+        /// <summary>
+        /// Cue to show in text box.
+        /// </summary>
+        public string Cue { get; set; }
+
+        public SystemInputDialog(string title, string caption, string message)
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterParent;
@@ -48,10 +81,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             //
             this.Controls.Add(new Label()
             {
-                Text = "Security",
+                Text = title,
                 Location = new Point(24, 12),
                 AutoSize = false,
-                Size = new Size(60, 20),
+                Size = new Size(this.Width - 50, 20),
             });
             this.Controls.Add(new HeaderLabel()
             {
@@ -99,21 +132,39 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             //
             var usernameTextBox = new TextBox()
             {
-                Location = new Point(24, 112),
+                Location = new Point(24 + 2, 112),
                 Size = new Size(296, 30),
                 TabIndex = 0,
                 MaxLength = 64,
             };
             this.Controls.Add(usernameTextBox);
 
+            var warningLabel = new Label()
+            {
+                Location = new Point(24, 136),
+                Size = new Size(296, 20),
+                AutoSize = false,
+                ForeColor = Color.Red
+            };
+            this.Controls.Add(warningLabel);
+
             usernameTextBox.HandleCreated += (_, __) =>
             {
-                usernameTextBox.SetCueBanner("User name", true);
+                if (!string.IsNullOrEmpty(this.Cue))
+                {
+                    usernameTextBox.SetCueBanner(this.Cue, true);
+                }
             };
+
             usernameTextBox.TextChanged += (_, __) =>
             {
-                this.Username = usernameTextBox.Text;
-                okButton.Enabled = !string.IsNullOrWhiteSpace(usernameTextBox.Text);
+                this.Value = usernameTextBox.Text;
+
+                this.validateInput(usernameTextBox.Text, out var valid, out var warning);
+
+                okButton.Enabled = valid;
+                warningLabel.Visible = !valid;
+                warningLabel.Text = warning ?? string.Empty;
             };
         }
 

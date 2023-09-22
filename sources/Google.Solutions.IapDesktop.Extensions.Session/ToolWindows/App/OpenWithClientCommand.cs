@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -27,7 +26,6 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.Mvvm.Shell;
-using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -35,12 +33,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 {
-    internal class OpenWithClientCommand : MenuCommandBase<IProjectModelNode>
+    /// <summary>
+    /// Connect an AppProtocol and open the client.
+    /// </summary>
+    internal class OpenWithClientCommand : ConnectAppProtocolCommandBase
     {
         private readonly IWin32Window ownerWindow;
-        private readonly IJobService jobService;
         private readonly ICredentialDialog credentialDialog;
         private readonly AppProtocolContextFactory contextFactory;
         private readonly bool forceCredentialPrompt;
@@ -85,14 +86,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IJobService jobService,
             AppProtocolContextFactory contextFactory,
             ICredentialDialog credentialDialog,
+            INotifyDialog notifyDialog,
             bool forceCredentialPrompt = false)
-            : base($"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}")
+            : base(
+                  $"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}", 
+                  jobService,
+                  notifyDialog)
         {
 
             Debug.Assert(contextFactory.Protocol.Client != null);
 
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
-            this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.contextFactory = contextFactory.ExpectNotNull(nameof(contextFactory));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
             this.forceCredentialPrompt = forceCredentialPrompt;
@@ -100,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.Image = CreateIcon(contextFactory.Protocol);
         }
 
-        internal async Task<AppProtocolContext> CreateContextAsync(
+        protected internal override async Task<AppProtocolContext> CreateContextAsync(
             IProjectModelInstanceNode instance,
             CancellationToken cancellationToken)
         {
@@ -183,12 +187,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
         public override string Id
         {
-            get => $"OpenWithClient.{this.contextFactory.Protocol.Name.Split(' ').FirstOrDefault()}";
-        }
-
-        protected override bool IsAvailable(IProjectModelNode context)
-        {
-            return context is IProjectModelInstanceNode;
+            get => 
+                "ConnectAppProtocolAndOpenClientCommand." +
+                $"{this.contextFactory.Protocol.Name.Split(' ').FirstOrDefault()}";
         }
 
         protected override bool IsEnabled(IProjectModelNode context)
@@ -196,47 +197,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             return this.contextFactory
                 .Protocol
                 .IsAvailable((IProjectModelInstanceNode)context);
-        }
-
-        public override async Task ExecuteAsync(IProjectModelNode node)
-        {
-            var instance = (IProjectModelInstanceNode)node;
-
-            var context = await CreateContextAsync(instance, CancellationToken.None)
-                .ConfigureAwait(true);
-
-            //
-            // Connect a transport. This can take a bit, so do it in a job.
-            //
-            var transport = await this.jobService
-                .RunAsync(
-                    new JobDescription(
-                        $"Connecting to {instance.Instance.Name}...",
-                        JobUserFeedbackType.BackgroundFeedback),
-                    cancellationToken => context.ConnectTransportAsync(cancellationToken))
-                .ConfigureAwait(false);
-
-            if (context.CanLaunchClient)
-            {
-                var process = context.LaunchClient(transport);
-                process.Resume();
-
-                //
-                // Client app launched successfully. Keep the transport
-                // open until the app is closed, but don't await.
-                //
-                _ = process
-                    .WaitAsync(TimeSpan.MaxValue, CancellationToken.None)
-                    .ContinueWith(_ =>
-                    {
-                        transport.Dispose();
-                        process.Dispose();
-                    });
-            }
-            else
-            {
-                throw new NotImplementedException("Client cannot be launched");
-            }
         }
     }
 }

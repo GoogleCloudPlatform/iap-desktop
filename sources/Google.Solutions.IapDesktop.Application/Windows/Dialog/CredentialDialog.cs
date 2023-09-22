@@ -173,12 +173,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         }
 
         public DialogResult PromptForUsername(
-            IWin32Window owner, 
-            string caption, 
-            string message, 
+            IWin32Window owner,
+            string caption,
+            string message,
             out string username)
         {
-            using (var dialog = new UsernameDialog(caption, message))
+            using (var dialog = new SystemInputDialog("Security", caption, message)
+            {
+                Cue = "User name"
+            })
             {
                 try
                 {
@@ -191,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 { }
 
                 var result = dialog.ShowDialog(owner);
-                username = dialog.Username;
+                username = dialog.Value;
                 return result;
             }
         }

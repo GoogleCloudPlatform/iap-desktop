@@ -46,6 +46,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         private readonly IWin32ProcessFactory processFactory;
         private readonly IConnectionSettingsService settingsService;
         private readonly ICredentialDialog credentialDialog;
+        private readonly IInputDialog inputDialog;
+        private readonly INotifyDialog notifyDialog;
 
         public AppCommands(
             IWin32Window ownerWindow,
@@ -54,7 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             IIapTransportFactory transportFactory,
             IWin32ProcessFactory processFactory,
             IConnectionSettingsService settingsService,
-            ICredentialDialog credentialDialog)
+            ICredentialDialog credentialDialog,
+            IInputDialog inputDialog,
+            INotifyDialog notifyDialog)
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
@@ -63,6 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.credentialDialog = credentialDialog.ExpectNotNull(nameof(credentialDialog));
+            this.inputDialog = inputDialog.ExpectNotNull(nameof(inputDialog));
+            this.notifyDialog = notifyDialog.ExpectNotNull(nameof(notifyDialog));
 
             this.ConnectWithContextCommand = new ConnectWithAppCommand();
         }
@@ -94,6 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.jobService,
                         factory,
                         this.credentialDialog,
+                        this.notifyDialog,
                         false);
 
                     if (protocol.Client.IsNetworkLevelAuthenticationSupported)
@@ -106,9 +113,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                             this.jobService,
                             factory,
                             this.credentialDialog,
+                            this.notifyDialog,
                             true);
                     }
                 }
+
+                yield return new ForwardLocalPortCommand(
+                    this.ownerWindow,
+                    "Forward &local port...",
+                    this.transportFactory,
+                    this.processFactory,
+                    this.jobService,
+                    this.inputDialog,
+                    this.notifyDialog);
             }
         }
 
