@@ -125,6 +125,8 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.ps1 \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.cmd \
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 !endif
 
 $(INSTALLER_PACKAGE).wixobj: \
