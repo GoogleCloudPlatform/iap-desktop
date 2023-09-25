@@ -208,6 +208,15 @@ namespace Google.Solutions.Apis.Compute
                         instance.Name).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
+                catch (GoogleApiException e) when (e.IsAccessDeniedByVpcServiceControlPolicy())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "Your organization's VPC service control policy doesn't permit " +
+                            $"access to VM instance {instance.Name} in project {instance.ProjectId}.\n\n" +
+                            $"Unique ID: {e.VpcServiceControlTroubleshootingId()}",
+                        e.VpcServiceControlTroubleshootingLink() ?? HelpTopics.ProjectAccessControl,
+                        e);
+                }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
