@@ -40,10 +40,10 @@ namespace Google.Solutions.Apis.Test
                     ErrorResponseContent = @"{
                       'error': {
                         'code': 403,
-                        'message': 'Request is prohibited by organization's policy. vpcServiceControlsUniqueIdentifier: ID123',
+                        'message': 'Request is prohibited by organizations policy. vpcServiceControlsUniqueIdentifier: ID123',
                         'errors': [
                           {
-                            'message': 'Request is prohibited by organization's policy. vpcServiceControlsUniqueIdentifier: ID123',
+                            'message': 'Request is prohibited by organizations policy. vpcServiceControlsUniqueIdentifier: ID123',
                             'domain': 'global',
                             'reason': 'forbidden'
                           }
@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Test
                 }
             };
 
-            Assert.AreEqual("ID123", e.VpcServiceControlTroubleshootingId());
+            Assert.IsNull(e.VpcServiceControlTroubleshootingId());
         }
     }
 }
