@@ -977,7 +977,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = projects[0];
             viewModel.ConfigureIapAccess();
 
-            this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
+            this.cloudConsoleServiceMock.Verify(c => c.OpenIapSecurity(
                 It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
@@ -1000,7 +1000,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = zones[0];
             viewModel.ConfigureIapAccess();
 
-            this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
+            this.cloudConsoleServiceMock.Verify(c => c.OpenIapSecurity(
                 It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
@@ -1018,7 +1018,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = instances[0];
             viewModel.ConfigureIapAccess();
 
-            this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
+            this.cloudConsoleServiceMock.Verify(c => c.OpenIapSecurity(
                 It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }

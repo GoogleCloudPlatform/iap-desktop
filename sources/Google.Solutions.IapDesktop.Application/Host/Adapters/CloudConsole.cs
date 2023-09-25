@@ -34,11 +34,34 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
     public interface ICloudConsole
     {
-        void ConfigureIapAccess(string projectId);
+        /// <summary>
+        /// Open IAP-TCP security page.
+        /// </summary>
+        void OpenIapSecurity(string projectId);
+
+        /// <summary>
+        /// Open instance details page.
+        /// </summary>
         void OpenInstanceDetails(InstanceLocator instance);
+
+        /// <summary>
+        /// Open instance overview page.
+        /// </summary>
         void OpenInstanceList(ProjectLocator project);
+        
+        /// <summary>
+        /// Open instance overview page.
+        /// </summary>
         void OpenInstanceList(ZoneLocator zone);
+
+        /// <summary>
+        /// Open Logs viewer.
+        /// </summary>
         void OpenLogs(IProjectModelNode node);
+
+        /// <summary>
+        /// Open log entry.
+        /// </summary>
         void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
     }
 
@@ -162,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
                     $"timestamp<=\"{timestamp:o}\"");
         }
 
-        public void ConfigureIapAccess(string projectId)
+        public void OpenIapSecurity(string projectId)
         {
             Open($"/security/iap?tab=ssh-tcp-resources&project={projectId}");
         }

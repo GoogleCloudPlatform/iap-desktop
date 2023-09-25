@@ -478,17 +478,17 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         {
             if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(
+                this.cloudConsoleService.OpenIapSecurity(
                     vmInstanceNode.InstanceNode.Instance.ProjectId);
             }
             else if (this.SelectedNode is ZoneViewModelNode zoneNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(
+                this.cloudConsoleService.OpenIapSecurity(
                     zoneNode.ZoneNode.Zone.ProjectId);
             }
             else if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(
+                this.cloudConsoleService.OpenIapSecurity(
                     projectNode.ProjectNode.Project.Name);
             }
         }
