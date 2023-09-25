@@ -38,8 +38,8 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestResourceMetadataExtensions : CommonFixtureBase
     {
-        private InstancesResource instancesResource;
-        private ProjectsResource projectsResource;
+        private InstancesResource? instancesResource;
+        private ProjectsResource? projectsResource;
 
         [SetUp]
         public void SetUp()

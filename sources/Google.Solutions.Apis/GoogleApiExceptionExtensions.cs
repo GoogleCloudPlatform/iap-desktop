@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis
         /// Extract VPC SC troubleshooting ID.
         /// </summary>
         /// <returns>ID or null</returns>
-        public static string VpcServiceControlTroubleshootingId(this GoogleApiException e)
+        public static string? VpcServiceControlTroubleshootingId(this GoogleApiException e)
         {
             var rawJson = e.Error?.ErrorResponseContent;
             if (string.IsNullOrWhiteSpace(rawJson))
@@ -99,7 +99,7 @@ namespace Google.Solutions.Apis
             }
         }
 
-        public static HelpTopic VpcServiceControlTroubleshootingLink(this GoogleApiException e)
+        public static HelpTopic? VpcServiceControlTroubleshootingLink(this GoogleApiException e)
         {
             if (e.VpcServiceControlTroubleshootingId() is var id && id != null)
             {

@@ -65,6 +65,6 @@ namespace Google.Solutions.Apis.Locator
             this.Name = resourceName;
         }
 
-        public abstract bool Equals(ResourceLocator other);
+        public abstract bool Equals(ResourceLocator? other);
     }
 }

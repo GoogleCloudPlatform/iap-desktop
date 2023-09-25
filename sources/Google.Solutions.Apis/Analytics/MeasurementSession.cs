@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Analytics
         /// Client ID, uniquely identifies the user, potentially across
         /// multiple devices.
         /// </summary>
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         /// <summary>
         /// Custom properties about the user, optional.

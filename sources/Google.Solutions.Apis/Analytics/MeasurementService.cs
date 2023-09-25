@@ -120,7 +120,7 @@ namespace Google.Solutions.Apis.Analytics
             /// <summary>
             /// Measurement ID for stream.
             /// </summary>
-            public string MeasurementId { get; set; }
+            public string? MeasurementId { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -130,16 +130,16 @@ namespace Google.Solutions.Apis.Analytics
         public class MeasurementRequest
         {
             [JsonProperty("client_id")]
-            public string ClientId { get; set; }
+            public string? ClientId { get; set; }
 
             [JsonProperty("user_id")]
-            public string UserId { get; set; }
+            public string? UserId { get; set; }
 
             [JsonProperty("user_properties")]
-            public IDictionary<string, PropertySection> UserProperties { get; set; }
+            public IDictionary<string, PropertySection>? UserProperties { get; set; }
 
             [JsonProperty("events")]
-            public IList<EventSection> Events { get; set; }
+            public IList<EventSection>? Events { get; set; }
 
             [JsonIgnore]
             public bool DebugMode { get; set; }
@@ -192,10 +192,10 @@ namespace Google.Solutions.Apis.Analytics
         public class EventSection
         {
             [JsonProperty("name")]
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
             [JsonProperty("params")]
-            public IDictionary<string, string> Parameters { get; set; }
+            public IDictionary<string, string>? Parameters { get; set; }
         }
     }
 }

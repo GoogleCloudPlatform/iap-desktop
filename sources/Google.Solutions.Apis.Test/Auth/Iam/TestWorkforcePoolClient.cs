@@ -59,14 +59,14 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         private class OfflineStore : IOidcOfflineCredentialStore
         {
-            public OidcOfflineCredential StoredCredential { get; set; }
+            public OidcOfflineCredential? StoredCredential { get; set; }
 
             public void Clear()
             {
                 this.StoredCredential = null;
             }
 
-            public bool TryRead(out OidcOfflineCredential credential)
+            public bool TryRead(out OidcOfflineCredential? credential)
             {
                 credential = this.StoredCredential;
                 return credential != null;
@@ -310,7 +310,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual("SUBJECT", session.Username);
+            Assert.AreEqual("SUBJECT", session!.Username);
             Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
             Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
 

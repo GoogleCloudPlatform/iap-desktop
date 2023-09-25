@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract IServiceEndpoint Endpoint { get; }
 
-        public async Task<IOidcSession> TryAuthorizeSilentlyAsync(
+        public async Task<IOidcSession?> TryAuthorizeSilentlyAsync(
             CancellationToken cancellationToken)
         {
             if (this.store.TryRead(out var offlineCredential))
@@ -89,7 +89,7 @@ namespace Google.Solutions.Apis.Auth
                 ApiTraceSource.Log.TraceVerbose(
                     "Attempting authorization using offline credential...");
 
-                Debug.Assert(offlineCredential.RefreshToken != null);
+                Debug.Assert(offlineCredential!.RefreshToken != null);
 
                 if (offlineCredential.Issuer != this.Registration.Issuer)
                 {

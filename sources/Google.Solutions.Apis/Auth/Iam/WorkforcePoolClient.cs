@@ -74,7 +74,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         }
 
         public static ServiceEndpoint<WorkforcePoolClient> CreateEndpoint(
-            ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<WorkforcePoolClient>(
                 route ?? ServiceRoute.Public,

@@ -129,19 +129,19 @@ namespace Google.Solutions.Apis.Auth.Iam
         /// </summary>
         public class IntrospectTokenRequest
         {
-            public ClientSecrets ClientCredentials { get; set; }
+            public ClientSecrets? ClientCredentials { get; set; }
 
             /// <summary>
             /// Required. The OAuth 2.0 security token issued by the Security Token Service API.
             /// </summary>
             [RequestParameter("token")]
-            public string Token { get; set; }
+            public string? Token { get; set; }
 
             /// <summary>
             /// Optional. The type of the given token. 
             /// </summary>
             [RequestParameter("token_type_hint")]
-            public string TokenTypeHint { get; set; }
+            public string? TokenTypeHint { get; set; }
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             /// the provided token.
             /// </summary>
             [JsonProperty("client_id")]
-            public string ClientId { get; set; }
+            public string? ClientId { get; set; }
 
             /// <summary>
             /// The expiration timestamp.
@@ -179,25 +179,25 @@ namespace Google.Solutions.Apis.Auth.Iam
             /// The issuer of the provided token.
             /// </summary>        
             [JsonProperty("iss")]
-            public string Iss { get; set; }
+            public string? Iss { get; set; }
 
             /// <summary>
             /// A list of scopes associated with the provided token.
             /// </summary>
             [JsonProperty("scope")]
-            public string Scope { get; set; }
+            public string? Scope { get; set; }
 
             /// <summary>
             /// The unique user ID associated with the provided token. 
             /// </summary>
             [JsonProperty("sub")]
-            public string Sub { get; set; }
+            public string? Sub { get; set; }
 
             /// <summary>
             /// The human-readable identifier for the token principal subject.
             /// </summary>
             [JsonProperty("username")]
-            public string Username { get; set; }
+            public string? Username { get; set; }
         }
 
         public static class TokenTypes

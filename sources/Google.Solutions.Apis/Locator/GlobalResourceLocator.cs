@@ -73,24 +73,24 @@ namespace Google.Solutions.Apis.Locator
                 return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
             }
 
-            public bool Equals(ImageLocator other)
+            public bool Equals(ImageLocator? other)
             {
                 return other is object &&
                     this.Name == other.Name &&
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator other)
+            public override bool Equals(ResourceLocator? other)
             {
                 return other is ImageLocator locator && Equals(locator);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is ImageLocator locator && Equals(locator);
             }
 
-            public static bool operator ==(ImageLocator obj1, ImageLocator obj2)
+            public static bool operator ==(ImageLocator? obj1, ImageLocator? obj2)
             {
                 if (obj1 is null)
                 {
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Locator
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(ImageLocator obj1, ImageLocator obj2)
+            public static bool operator !=(ImageLocator? obj1, ImageLocator? obj2)
             {
                 return !(obj1 == obj2);
             }
@@ -153,24 +153,24 @@ namespace Google.Solutions.Apis.Locator
                 return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
             }
 
-            public bool Equals(LicenseLocator other)
+            public bool Equals(LicenseLocator? other)
             {
                 return other is object &&
                     this.Name == other.Name &&
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator other)
+            public override bool Equals(ResourceLocator? other)
             {
                 return other is LicenseLocator locator && Equals(locator);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is LicenseLocator locator && Equals(locator);
             }
 
-            public static bool operator ==(LicenseLocator obj1, LicenseLocator obj2)
+            public static bool operator ==(LicenseLocator? obj1, LicenseLocator? obj2)
             {
                 if (obj1 is null)
                 {
@@ -180,7 +180,7 @@ namespace Google.Solutions.Apis.Locator
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(LicenseLocator obj1, LicenseLocator obj2)
+            public static bool operator !=(LicenseLocator? obj1, LicenseLocator? obj2)
             {
                 return !(obj1 == obj2);
             }

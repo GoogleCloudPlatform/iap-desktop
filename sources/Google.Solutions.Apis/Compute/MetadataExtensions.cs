@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Compute
         // Extension methods for reading metadata.
         //---------------------------------------------------------------------
 
-        public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
+        public static Metadata.ItemsData? GetItem(this Metadata? metadata, string key)
         {
             return metadata?.Items
                 .EnsureNotNull()
@@ -82,12 +82,12 @@ namespace Google.Solutions.Apis.Compute
                     item.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
         }
 
-        public static string GetValue(this Metadata metadata, string key)
+        public static string? GetValue(this Metadata? metadata, string key)
         {
             return GetItem(metadata, key)?.Value;
         }
 
-        public static bool? GetFlag(this Metadata metadata, string flag)
+        public static bool? GetFlag(this Metadata? metadata, string flag)
         {
             var value = metadata?.GetValue(flag);
 

@@ -69,19 +69,19 @@ namespace Google.Solutions.Apis.Locator
             return $"accessPolicies/{this.AccessPolicy}/accessLevels/{this.AccessLevel}";
         }
 
-        public bool Equals(AccessLevelLocator other)
+        public bool Equals(AccessLevelLocator? other)
         {
             return other is object &&
                 this.AccessPolicy == other.AccessPolicy &&
                 this.AccessLevel == other.AccessLevel;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is AccessLevelLocator locator && Equals(locator);
         }
 
-        public static bool operator ==(AccessLevelLocator obj1, AccessLevelLocator obj2)
+        public static bool operator ==(AccessLevelLocator? obj1, AccessLevelLocator? obj2)
         {
             if (obj1 is null)
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Locator
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(AccessLevelLocator obj1, AccessLevelLocator obj2)
+        public static bool operator !=(AccessLevelLocator? obj1, AccessLevelLocator? obj2)
         {
             return !(obj1 == obj2);
         }

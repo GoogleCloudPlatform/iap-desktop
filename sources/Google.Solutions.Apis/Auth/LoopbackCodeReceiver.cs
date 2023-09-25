@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Auth
     /// </summary>
     public class LoopbackCodeReceiver : ICodeReceiver
     {
-        private string redirectUri;
+        private string? redirectUri;
         private readonly string path;
         private readonly string responseHtml;
 

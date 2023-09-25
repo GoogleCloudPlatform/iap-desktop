@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
         public static bool TryDecode(
             string token,
-            out UnverifiedGaiaJsonWebToken result)
+            out UnverifiedGaiaJsonWebToken? result)
         {
             try
             {

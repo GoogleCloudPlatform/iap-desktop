@@ -229,7 +229,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void WhenMetadataIsNull_ThenGetFlagReturnsNull()
         {
-            Assert.IsNull(MetadataExtensions.GetFlag((Metadata)null, "flag"));
+            Assert.IsNull(MetadataExtensions.GetFlag((Metadata?)null, "flag"));
         }
 
         [Test]

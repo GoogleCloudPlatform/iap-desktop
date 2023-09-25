@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
-            OidcOfflineCredential offlineCredential = null;
+            OidcOfflineCredential? offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
             var client = new SampleClient(store.Object);
@@ -166,7 +166,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
-            OidcOfflineCredential offlineCredential = null;
+            OidcOfflineCredential? offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
             var client = new SampleClient(store.Object)

@@ -64,14 +64,14 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
         private class OfflineStore : IOidcOfflineCredentialStore
         {
-            public OidcOfflineCredential StoredCredential { get; set; }
+            public OidcOfflineCredential? StoredCredential { get; set; }
 
             public void Clear()
             {
                 this.StoredCredential = null;
             }
 
-            public bool TryRead(out OidcOfflineCredential credential)
+            public bool TryRead(out OidcOfflineCredential? credential)
             {
                 credential = this.StoredCredential;
                 return credential != null;
@@ -290,7 +290,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
         private class FailingCodeReceiver : ICodeReceiver
         {
-            public AuthorizationCodeRequestUrl RequestUrl;
+            public AuthorizationCodeRequestUrl? RequestUrl;
 
             public string RedirectUri => "http://localhost/";
 

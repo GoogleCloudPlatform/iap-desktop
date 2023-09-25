@@ -70,11 +70,6 @@ namespace Google.Solutions.Apis.Client
         public UserAgent UserAgent { get; }
 
         /// <summary>
-        /// Certificate for mTLS.
-        /// </summary>
-        public X509Certificate2 ClientCertificate { get; }
-
-        /// <summary>
         /// Perform a GET request.
         /// </summary>
         public Task<TModel> GetAsync<TModel>(

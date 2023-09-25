@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Logging
         }
 
         public static ServiceEndpoint<LoggingClient> CreateEndpoint(
-            ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<LoggingClient>(
                 route ?? ServiceRoute.Public,
@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Logging
 
                 try
                 {
-                    string nextPageToken = null;
+                    string? nextPageToken = null;
                     do
                     {
                         request.PageToken = nextPageToken;

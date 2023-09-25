@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis
 
     public class ResourceAccessDeniedException : ClientException, IExceptionWithHelpTopic
     {
-        public IHelpTopic Help { get; }
+        public IHelpTopic? Help { get; }
 
         public ResourceAccessDeniedException(
             string message,

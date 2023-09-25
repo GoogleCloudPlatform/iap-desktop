@@ -67,24 +67,24 @@ namespace Google.Solutions.Apis.Locator
             return $"projects/{this.ProjectId}/{this.ResourceType}/{this.Name}";
         }
 
-        public bool Equals(ZoneLocator other)
+        public bool Equals(ZoneLocator? other)
         {
             return other is object &&
                 this.Name == other.Name &&
                 this.ProjectId == other.ProjectId;
         }
 
-        public override bool Equals(ResourceLocator obj)
+        public override bool Equals(ResourceLocator? obj)
         {
             return obj is ZoneLocator locator && Equals(locator);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is ZoneLocator locator && Equals(locator);
         }
 
-        public static bool operator ==(ZoneLocator obj1, ZoneLocator obj2)
+        public static bool operator ==(ZoneLocator? obj1, ZoneLocator? obj2)
         {
             if (obj1 is null)
             {
@@ -94,7 +94,7 @@ namespace Google.Solutions.Apis.Locator
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(ZoneLocator obj1, ZoneLocator obj2)
+        public static bool operator !=(ZoneLocator? obj1, ZoneLocator? obj2)
         {
             return !(obj1 == obj2);
         }

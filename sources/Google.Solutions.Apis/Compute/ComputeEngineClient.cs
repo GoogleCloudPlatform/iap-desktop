@@ -247,7 +247,7 @@ namespace Google.Solutions.Apis.Compute
         // Guest attributes.
         //---------------------------------------------------------------------
 
-        public async Task<GuestAttributes> GetGuestAttributesAsync(
+        public async Task<GuestAttributes?> GetGuestAttributesAsync(
             InstanceLocator instance,
             string queryPath,
             CancellationToken cancellationToken)
