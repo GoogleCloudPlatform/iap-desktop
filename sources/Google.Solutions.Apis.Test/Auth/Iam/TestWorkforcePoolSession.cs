@@ -59,6 +59,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("rt", "at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
             Assert.Throws<ArgumentException>(
@@ -70,6 +71,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("old-rt", "old-at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
             Assert.AreEqual("old-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
@@ -78,6 +80,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
             var newSession = new WorkforcePoolSession(
                 CreateUserCredential("new-rt", "new-at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
             session.Splice(newSession);
@@ -95,6 +98,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("rt", "at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
             bool eventRaised = false;
@@ -102,6 +106,25 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             session.Terminate();
 
             Assert.IsTrue(eventRaised);
+        }
+
+        //---------------------------------------------------------------------
+        // CreateDomainSpecificServiceUri.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void CreateDomainSpecificServiceUri()
+        {
+            var session = new WorkforcePoolSession(
+                CreateUserCredential("rt", "at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
+                new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
+
+            Assert.AreEqual(
+                new Uri("https://auth.cloud.google/signin/locations/global/workforcePools/pool-1/providers/provider-1" +
+                    "?continueUrl=https:%2F%2Fconsole.cloud.google%2F"),
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google/")));
+
         }
     }
 }

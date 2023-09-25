@@ -140,6 +140,7 @@ namespace Google.Solutions.Apis.Auth.Iam
 
             var session =  new WorkforcePoolSession(
                 apiCredential,
+                this.provider,
                 WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
 
             session.Terminated += (_, __) => ClearOfflineCredentialStore();

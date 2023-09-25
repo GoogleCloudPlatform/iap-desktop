@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         private readonly IJobService jobService;
         private readonly IProjectWorkspace workspace;
         private readonly IGlobalSessionBroker sessionBroker;
-        private readonly ICloudConsoleAdapter cloudConsoleService;
+        private readonly ICloudConsole cloudConsoleService;
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectWorkspace workspace,
-            ICloudConsoleAdapter cloudConsoleService)
+            ICloudConsole cloudConsoleService)
         {
             this.settings = settings;
             this.jobService = jobService;
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectWorkspace workspace,
-            ICloudConsoleAdapter cloudConsoleService)
+            ICloudConsole cloudConsoleService)
             : this(
                 new ProjectExplorerSettings(
                     settingsRepository,
@@ -478,17 +478,17 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         {
             if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(
+                this.cloudConsoleService.OpenIapSecurity(
                     vmInstanceNode.InstanceNode.Instance.ProjectId);
             }
             else if (this.SelectedNode is ZoneViewModelNode zoneNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(
+                this.cloudConsoleService.OpenIapSecurity(
                     zoneNode.ZoneNode.Zone.ProjectId);
             }
             else if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(
+                this.cloudConsoleService.OpenIapSecurity(
                     projectNode.ProjectNode.Project.Name);
             }
         }

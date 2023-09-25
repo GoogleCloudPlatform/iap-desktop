@@ -96,7 +96,12 @@ namespace Google.Solutions.Platform.Net
                 {
                     UseShellExecute = true,
                     Verb = "open",
-                    FileName = address.ToString()
+
+                    //
+                    // NB. Use AbsoluteUri instead of ToString because AbsoluteUri
+                    // messes with URL encoding to make URIs "more readable".
+                    //
+                    FileName = address.AbsoluteUri
                 }))
                 { };
             }

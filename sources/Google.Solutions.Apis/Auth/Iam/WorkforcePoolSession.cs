@@ -21,7 +21,9 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,13 +36,16 @@ namespace Google.Solutions.Apis.Auth.Iam
     /// </summary>
     internal class WorkforcePoolSession : OidcSessionBase
     {
+        private readonly WorkforcePoolProviderLocator provider;
         private readonly WorkforcePoolIdentity identity;
 
         public WorkforcePoolSession(
-            UserCredential apiCredential, 
+            UserCredential apiCredential,
+            WorkforcePoolProviderLocator provider,
             WorkforcePoolIdentity identity)
             : base(apiCredential)
         {
+            this.provider = provider.ExpectNotNull(nameof(provider));
             this.identity = identity.ExpectNotNull(nameof(identity));
         }
 
@@ -80,6 +85,15 @@ namespace Google.Solutions.Apis.Auth.Iam
             // STS grants can't be revoked.
             //
             throw new NotSupportedForWorkloadIdentityException();
+        }
+
+        public override Uri CreateDomainSpecificServiceUri(Uri target)
+        {
+            //
+            // Sign-in using the same provider.
+            //
+            return new Uri($"https://auth.cloud.google/signin/{this.provider}" +
+                $"?continueUrl={WebUtility.UrlEncode(target.ToString())}");
         }
     }
 }

@@ -67,5 +67,11 @@ namespace Google.Solutions.Apis.Auth
         /// Revoke the underlying OAuth grant.
         /// </summary>
         Task RevokeGrantAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Create a domain-service service URI that signs in the user
+        /// and redirects to the target.
+        /// </summary>
+        Uri CreateDomainSpecificServiceUri(Uri target);
     }
 }

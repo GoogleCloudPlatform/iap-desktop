@@ -125,6 +125,11 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
         }
 
+        public Uri CreateDomainSpecificServiceUri(Uri target)
+        {
+            return target;
+        }
+
         //---------------------------------------------------------------------
         // IGaiaOidcSession.
         //---------------------------------------------------------------------
