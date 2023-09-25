@@ -365,10 +365,16 @@
                   Source="$(var.BASEDIR)\LogsReadme.txt"
                   Vital="yes"/>
                 <File
-                  Id="FileLogsStartTracePs1"
-                  Name="start-trace.ps1"
+                  Id="FileLogsDiagnosePs1"
+                  Name="diagnose.ps1"
                   DiskId="1"
-                  Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\start-trace.ps1"
+                  Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\diagnose.ps1"
+                  Vital="yes"/>
+                <File
+                  Id="FileLogsDiagnoseCmd"
+                  Name="diagnose.cmd"
+                  DiskId="1"
+                  Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\diagnose.cmd"
                   Vital="yes"/>
                 
                 <RemoveFolder Id="DirLogs" On="uninstall"/>
