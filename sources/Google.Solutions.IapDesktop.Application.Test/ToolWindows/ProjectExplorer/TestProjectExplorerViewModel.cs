@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
         private Mock<IComputeEngineClient> computeClientMock;
         private Mock<IResourceManagerClient> resourceManagerAdapterMock;
-        private Mock<ICloudConsoleAdapter> cloudConsoleServiceMock;
+        private Mock<ICloudConsole> cloudConsoleServiceMock;
         private Mock<IEventQueue> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
         private IProjectExplorerSettings projectExplorerSettings;
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     SampleLinuxInstanceInZone1
                 });
 
-            this.cloudConsoleServiceMock = new Mock<ICloudConsoleAdapter>();
+            this.cloudConsoleServiceMock = new Mock<ICloudConsole>();
             this.eventServiceMock = new Mock<IEventQueue>();
             this.sessionBrokerMock = new Mock<IGlobalSessionBroker>();
         }

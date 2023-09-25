@@ -21,9 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Platform.Net;
 using System;
@@ -33,7 +31,7 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 {
-    public interface ICloudConsoleAdapter
+    public interface ICloudConsole
     {
         void ConfigureIapAccess(string projectId);
         void OpenInstanceDetails(InstanceLocator instance);
@@ -43,12 +41,11 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
     }
 
-    [SkipCodeCoverage("UI code")]
-    public class CloudConsoleAdapter : ICloudConsoleAdapter
+    public class CloudConsole : ICloudConsole // TODO: Test
     {
         private readonly Uri baseUri;
 
-        public CloudConsoleAdapter(IAuthorization authorization)
+        public CloudConsole(IAuthorization authorization)
         {
             if (authorization.Session is IGaiaOidcSession)
             {
@@ -63,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             }
             else
             {
+                // https://auth.cloud.google/signin/locations/global/workforcePools/ntdev-azuread/providers/ntdev-azuread-oidc-2?continueUrl=https://console.cloud.google/
                 this.baseUri = new Uri("https://console.cloud.google/");
             }
         }

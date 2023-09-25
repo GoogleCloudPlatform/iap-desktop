@@ -418,7 +418,6 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<HelpAdapter>();
                 preAuthLayer.AddTransient<IGithubAdapter, GithubAdapter>();
                 preAuthLayer.AddTransient<BuganizerAdapter>();
-                preAuthLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 preAuthLayer.AddSingleton<ProtocolRegistry>();
@@ -583,6 +582,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
+                mainLayer.AddTransient<ICloudConsole, CloudConsole>();
                 mainLayer.AddTransient<IUpdateCheck, UpdateCheck>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();

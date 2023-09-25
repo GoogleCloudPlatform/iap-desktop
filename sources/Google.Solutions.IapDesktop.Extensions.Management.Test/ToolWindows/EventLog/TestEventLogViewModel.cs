@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         public void SetUp()
         {
             var registry = new ServiceRegistry();
-            registry.AddMock<ICloudConsoleAdapter>();
+            registry.AddMock<ICloudConsole>();
 
             this.jobServiceMock = new JobServiceMock();
             registry.AddSingleton<IJobService>(this.jobServiceMock);
