@@ -114,6 +114,7 @@ nav:
     - Configuration:
         - 'Proxy configuration': 'proxy-configuration.md'
         - 'Client application configuration': 'client-application-configuration.md'
+        - 'Group policies': 'group-policy-reference.md'
     - 'Privacy & security': 'security.md'
   - GitHub: https://github.com/GoogleCloudPlatform/iap-desktop
     
