@@ -19,6 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -37,41 +40,69 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         void OpenInstanceList(ProjectLocator project);
         void OpenInstanceList(ZoneLocator zone);
         void OpenLogs(IProjectModelNode node);
-        void OpenMyAccount();
         void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
     }
 
     [SkipCodeCoverage("UI code")]
     public class CloudConsoleAdapter : ICloudConsoleAdapter
     {
+        private readonly Uri baseUri;
+
+        public CloudConsoleAdapter(IAuthorization authorization)
+        {
+            if (authorization.Session is IGaiaOidcSession)
+            {
+                if (authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                {
+                    this.baseUri = new Uri("https://console-secure.cloud.google.com/");
+                }
+                else
+                {
+                    this.baseUri = new Uri("https://console.cloud.google.com/");
+                }
+            }
+            else
+            {
+                this.baseUri = new Uri("https://console.cloud.google/");
+            }
+        }
+
+
         public void OpenInstanceDetails(InstanceLocator instance)
         {
             Browser.Default.Navigate(
-                "https://console.cloud.google.com/compute/instancesDetail/zones/" +
-                $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
+                new Uri(
+                    this.baseUri, 
+                    "/compute/instancesDetail/zones/" +
+                        $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}"));
         }
 
         public void OpenInstanceList(ProjectLocator project)
         {
             Browser.Default.Navigate(
-                "https://console.cloud.google.com/compute/instances" +
-                $"?project={project.ProjectId}");
+                new Uri(
+                    this.baseUri,
+                    $"/compute/instances?project={project.ProjectId}"));
         }
 
         public void OpenInstanceList(ZoneLocator zone)
         {
             var query = "[{\"k\":\"zoneForFilter\",\"v\":\"" + zone.Name + "\"}]";
+
             Browser.Default.Navigate(
-                "https://console.cloud.google.com/compute/instances" +
-                $"?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}");
+                new Uri(
+                    this.baseUri,
+                    $"/compute/instances?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}"));
         }
 
         private void OpenLogs(string projectId, string query)
         {
             Browser.Default.Navigate(
-                "https://console.cloud.google.com/logs/query;" +
-                $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
-                $"project={projectId}");
+                new Uri(
+                    this.baseUri,
+                    "/logs/query;" +
+                        $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
+                        $"project={projectId}"));
         }
 
         public void OpenLogs(IProjectModelNode node)
@@ -110,13 +141,9 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         public void ConfigureIapAccess(string projectId)
         {
             Browser.Default.Navigate(
-                $"https://console.cloud.google.com/security/iap?tab=ssh-tcp-resources&project={projectId}");
-        }
-
-        public void OpenMyAccount()
-        {
-            Browser.Default.Navigate(
-                "https://myaccount.google.com/security");
+                new Uri(
+                    this.baseUri,
+                    $"/security/iap?tab=ssh-tcp-resources&project={projectId}"));
         }
     }
 }
