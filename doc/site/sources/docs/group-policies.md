@@ -40,6 +40,8 @@ You can use a group policy object (GPO) to configure policies for IAP Desktop. P
 precendence of user settings: When you configure a policy, users can't change the respectice
 setting anymore. 
 
+For a full list of settings that you can control using group policies, see [Group policy reference](group-policy-reference.md).
+
 To configure policies, you first have to install the IAP Desktop Policy Templates:
 
 1.  Download the `PolicyTemplates` package from the [downloads page](https://github.com/GoogleCloudPlatform/iap-desktop/releases).

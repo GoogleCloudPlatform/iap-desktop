@@ -15,8 +15,9 @@ By default, IAP Desktop connects to your Google Cloud resources via the public i
 ![Connect via public internet](images/connect-via-internet.png)
 
 If you've configured Windows to use a proxy server for HTTPS connections, then 
-IAP Desktop automatically applies these settings. Alternatively, you can also
-[configure proxy settings manually](proxy-configuration.md).
+IAP Desktop automatically applies these settings. Alternatively, you can
+[configure proxy settings manually](proxy-configuration.md) or 
+using [a group policy](group-policies.md).
 
 
 ## Connect through Private Service Connect
@@ -33,7 +34,7 @@ you can optionally let IAP Desktop connect to Google Cloud APIs through
 ![Connect through Private Service Connect](images/connect-via-psc.png)
 
 When you use PSC, connections to Google Cloud APIs traverse your Cloud Interconnect/VPN link
-and bypass local proxy servers.
+and bypass local proxy servers. You don't need to create any custom DNS records.
 
 To configure PSC, do the following:
 
@@ -45,7 +46,9 @@ To configure PSC, do the following:
         you can enter the DNS name `www-ENDPOINT.p.googleapis.com` where `ENDPOINT` is the name of the 
         PSC endpoint that you created earlier.
         
-You don't need to create any custom DNS records.
+Alternatively, you can use [a group policy](group-policies.md) to configure Private Service Connect
+for mulitple users and workstations.
+
         
 !!! note
 
