@@ -194,5 +194,47 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 Times.Once);
             Assert.IsTrue(eventRaised);
         }
+
+        //---------------------------------------------------------------------
+        // CreateDomainSpecificServiceUri.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenHdSet_ThenCreateDomainSpecificServiceUriReturnsUri()
+        {
+            var idToken = new UnverifiedGaiaJsonWebToken(
+                new GoogleJsonWebSignature.Header(),
+                new GoogleJsonWebSignature.Payload()
+                {
+                    Email = "x@example.com",
+                    HostedDomain = "example.com"
+                });
+            var session = new GaiaOidcSession(
+                CreateUserCredential("rt", "at", idToken),
+                idToken);
+
+            Assert.AreEqual(
+                new Uri("https://www.google.com/a/example.com/ServiceLogin" +
+                    "?continue=https:%2F%2Fconsole.cloud.google.com%2F"),
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")));
+        }
+
+        [Test]
+        public void WhenHdNotSet_ThenCreateDomainSpecificServiceUriReturnsUri()
+        {
+            var idToken = new UnverifiedGaiaJsonWebToken(
+                new GoogleJsonWebSignature.Header(),
+                new GoogleJsonWebSignature.Payload()
+                {
+                    Email = "x@example.com"
+                });
+            var session = new GaiaOidcSession(
+                CreateUserCredential("rt", "at", idToken),
+                idToken);
+
+            Assert.AreEqual(
+                new Uri("https://console.cloud.google.com/"),
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")));
+        }
     }
 }

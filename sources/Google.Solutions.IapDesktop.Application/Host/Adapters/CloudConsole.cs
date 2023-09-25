@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Platform.Net;
 using System;
@@ -43,64 +44,89 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 
     public class CloudConsole : ICloudConsole // TODO: Test
     {
-        private readonly Uri baseUri;
+        private readonly IAuthorization authorization;
+        private readonly IBrowser browser;
+
+        internal CloudConsole(IAuthorization authorization, IBrowser browser)
+        {
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.browser = browser.ExpectNotNull(nameof(browser));
+        }
 
         public CloudConsole(IAuthorization authorization)
+            : this(authorization, Browser.Default)
         {
-            if (authorization.Session is IGaiaOidcSession)
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+        }
+
+        private Uri BaseUri
+        {
+            get
             {
-                if (authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                if (this.authorization.Session is IGaiaOidcSession)
                 {
-                    this.baseUri = new Uri("https://console-secure.cloud.google.com/");
+                    if (this.authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                    {
+                        return new Uri("https://console-secure.cloud.google.com/");
+                    }
+                    else
+                    {
+                        return new Uri("https://console.cloud.google.com/");
+                    }
                 }
                 else
                 {
-                    this.baseUri = new Uri("https://console.cloud.google.com/");
+                    return new Uri("https://console.cloud.google/");
                 }
-            }
-            else
-            {
-                // https://auth.cloud.google/signin/locations/global/workforcePools/ntdev-azuread/providers/ntdev-azuread-oidc-2?continueUrl=https://console.cloud.google/
-                this.baseUri = new Uri("https://console.cloud.google/");
             }
         }
 
+        private void Open(string path)
+        {
+            var rawUri = new Uri(this.BaseUri, path);
+
+            //
+            // The user might not have an active browser session.
+            //
+            // Create a domain-specific URI to expedite the sign-in process.
+            // This is primarily relevant for workforce identity users because
+            // they might otherwise be prompted for their (difficult to remember)
+            // provider name.
+            //
+            var domainSpecificUri = this.authorization
+                .Session
+                .CreateDomainSpecificServiceUri(rawUri);
+
+            this.browser.Navigate(domainSpecificUri);
+        }
+
+        //---------------------------------------------------------------------
+        // ICloudConsole.
+        //---------------------------------------------------------------------
 
         public void OpenInstanceDetails(InstanceLocator instance)
         {
-            Browser.Default.Navigate(
-                new Uri(
-                    this.baseUri, 
-                    "/compute/instancesDetail/zones/" +
-                        $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}"));
+            Open("/compute/instancesDetail/zones/" +
+                 $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
         public void OpenInstanceList(ProjectLocator project)
         {
-            Browser.Default.Navigate(
-                new Uri(
-                    this.baseUri,
-                    $"/compute/instances?project={project.ProjectId}"));
+            Open($"/compute/instances?project={project.ProjectId}");
         }
 
         public void OpenInstanceList(ZoneLocator zone)
         {
             var query = "[{\"k\":\"zoneForFilter\",\"v\":\"" + zone.Name + "\"}]";
 
-            Browser.Default.Navigate(
-                new Uri(
-                    this.baseUri,
-                    $"/compute/instances?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}"));
+            Open($"/compute/instances?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}");
         }
 
         private void OpenLogs(string projectId, string query)
         {
-            Browser.Default.Navigate(
-                new Uri(
-                    this.baseUri,
-                    "/logs/query;" +
-                        $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
-                        $"project={projectId}"));
+            Open("/logs/query;" +
+                $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
+                $"project={projectId}");
         }
 
         public void OpenLogs(IProjectModelNode node)
@@ -138,10 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 
         public void ConfigureIapAccess(string projectId)
         {
-            Browser.Default.Navigate(
-                new Uri(
-                    this.baseUri,
-                    $"/security/iap?tab=ssh-tcp-resources&project={projectId}"));
+            Open($"/security/iap?tab=ssh-tcp-resources&project={projectId}");
         }
     }
 }

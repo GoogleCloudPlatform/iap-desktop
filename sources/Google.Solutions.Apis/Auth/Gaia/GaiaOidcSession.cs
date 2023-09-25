@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -104,6 +105,25 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 .ConfigureAwait(false);
 
             Terminate();
+        }
+
+        public override Uri CreateDomainSpecificServiceUri(Uri target)
+        {
+            if (!string.IsNullOrEmpty(this.HostedDomain))
+            {
+                //
+                // Sign in using same domain.
+                //
+                return new Uri($"https://www.google.com/a/{this.HostedDomain}/ServiceLogin" +
+                    $"?continue={WebUtility.UrlEncode(target.ToString())}");
+            }
+            else
+            {
+                //
+                // Unmanaged user account, just use the normal URL.
+                //
+                return target;
+            }
         }
     }
 }

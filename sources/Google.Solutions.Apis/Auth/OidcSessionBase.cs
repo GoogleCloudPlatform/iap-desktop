@@ -93,5 +93,7 @@ namespace Google.Solutions.Apis.Auth
             // NB. The client handles the actual termination.
             //
         }
+
+        public abstract Uri CreateDomainSpecificServiceUri(Uri target);
     }
 }
