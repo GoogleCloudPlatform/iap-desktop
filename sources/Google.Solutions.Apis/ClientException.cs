@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Diagnostics;
 using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.Apis
 {
@@ -62,6 +63,19 @@ namespace Google.Solutions.Apis
             : base(message, inner)
         {
             this.Help = helpTopic;
+        }
+    }
+
+    public class ResourceAccessDeniedByVpcScPolicyException : ResourceAccessDeniedException
+    {
+        public ResourceAccessDeniedByVpcScPolicyException(GoogleApiException e)
+            : base("Your organization's VPC service control policy doesn't permit " +
+                    "access to this resource.\n\n" +
+                    $"Unique ID: {e.VpcServiceControlTroubleshootingId()}",
+                e.VpcServiceControlTroubleshootingLink() ?? HelpTopics.ProjectAccessControl,
+                e)
+        {
+            Debug.Assert(e.IsAccessDeniedByVpcServiceControlPolicy());
         }
     }
 }
