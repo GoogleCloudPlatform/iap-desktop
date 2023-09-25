@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -109,7 +110,7 @@ namespace Google.Solutions.Apis.Compute
             Debug.Assert(!keyType.Contains(' '));
 
             var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                ?? throw new NotSupportedForWorkloadIdentityException();
+                ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
 
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
@@ -183,8 +184,8 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession 
-                    ?? throw new NotSupportedForWorkloadIdentityException();
+                var gaiaSession = this.authorization.Session as IGaiaOidcSession
+                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
 
                 var request = this.service.Users.GetLoginProfile(
                     $"users/{gaiaSession.Email}");
@@ -214,7 +215,7 @@ namespace Google.Solutions.Apis.Compute
             using (ApiTraceSource.Log.TraceMethod().WithParameters(fingerprint))
             {
                 var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new NotSupportedForWorkloadIdentityException();
+                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
 
                 try
                 {
@@ -235,6 +236,17 @@ namespace Google.Solutions.Apis.Compute
                         e);
                 }
             }
+        }
+    }
+
+    internal class OsLoginNotSupportedForWorkloadIdentityException :
+        NotSupportedForWorkloadIdentityException, IExceptionWithHelpTopic
+    {
+        public OsLoginNotSupportedForWorkloadIdentityException() 
+            : base(
+                    "This project or VM instance uses OS Login, but OS Login is " +
+                    "currently not supported by workforce identity federation.")
+        {
         }
     }
 }

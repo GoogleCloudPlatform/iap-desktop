@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 CreateNonGaiaAuthorization(),
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<NotSupportedForWorkloadIdentityException>(
+            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
                 () => client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     "ssh-rsa",
@@ -137,7 +137,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 CreateNonGaiaAuthorization(),
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<NotSupportedForWorkloadIdentityException>(
+            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
                 () => client.GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
@@ -191,7 +191,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 CreateNonGaiaAuthorization(),
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<NotSupportedForWorkloadIdentityException>(
+            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
                 () => client.DeleteSshPublicKeyAsync(
                     "fingerprint",
                     CancellationToken.None).Wait());
