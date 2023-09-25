@@ -184,7 +184,7 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession 
+                var gaiaSession = this.authorization.Session as IGaiaOidcSession
                     ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
 
                 var request = this.service.Users.GetLoginProfile(
@@ -237,16 +237,16 @@ namespace Google.Solutions.Apis.Compute
                 }
             }
         }
+    }
 
-        internal class OsLoginNotSupportedForWorkloadIdentityException :
-            NotSupportedForWorkloadIdentityException, IExceptionWithHelpTopic
+    internal class OsLoginNotSupportedForWorkloadIdentityException :
+        NotSupportedForWorkloadIdentityException, IExceptionWithHelpTopic
+    {
+        public OsLoginNotSupportedForWorkloadIdentityException() 
+            : base(
+                    "This project or VM instance uses OS Login, but OS Login is " +
+                    "currently not supported by workforce identity federation.")
         {
-            public OsLoginNotSupportedForWorkloadIdentityException() 
-                : base(
-                      "This project or VM instance uses OS Login, but OS Login is " +
-                      "currently not supported by workforce identity federation.")
-            {
-            }
         }
     }
 }
