@@ -81,6 +81,10 @@ namespace Google.Solutions.Apis.Compute
                         .Get(projectId).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
+                catch (GoogleApiException e) when (e.IsAccessDeniedByVpcServiceControlPolicy())
+                {
+                    throw new ResourceAccessDeniedByVpcScPolicyException(e);
+                }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
@@ -102,6 +106,7 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
         // Instances.
         //---------------------------------------------------------------------
+
         public async Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken)
@@ -130,6 +135,10 @@ namespace Google.Solutions.Apis.Compute
                     ApiTraceSource.Log.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
+                }
+                catch (GoogleApiException e) when (e.IsAccessDeniedByVpcServiceControlPolicy())
+                {
+                    throw new ResourceAccessDeniedByVpcScPolicyException(e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
@@ -175,6 +184,10 @@ namespace Google.Solutions.Apis.Compute
 
                     return result;
                 }
+                catch (GoogleApiException e) when (e.IsAccessDeniedByVpcServiceControlPolicy())
+                {
+                    throw new ResourceAccessDeniedByVpcScPolicyException(e);
+                }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
@@ -210,12 +223,7 @@ namespace Google.Solutions.Apis.Compute
                 }
                 catch (GoogleApiException e) when (e.IsAccessDeniedByVpcServiceControlPolicy())
                 {
-                    throw new ResourceAccessDeniedException(
-                        "Your organization's VPC service control policy doesn't permit " +
-                            $"access to VM instance {instance.Name} in project {instance.ProjectId}.\n\n" +
-                            $"Unique ID: {e.VpcServiceControlTroubleshootingId()}",
-                        e.VpcServiceControlTroubleshootingLink() ?? HelpTopics.ProjectAccessControl,
-                        e);
+                    throw new ResourceAccessDeniedByVpcScPolicyException(e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
