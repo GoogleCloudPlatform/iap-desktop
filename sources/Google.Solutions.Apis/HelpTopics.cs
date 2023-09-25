@@ -40,5 +40,9 @@ namespace Google.Solutions.Apis
         public static readonly IHelpTopic ManagingOsLogin = new HelpTopic(
             "Managing OS Login",
             "https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org");
+
+        public static readonly IHelpTopic WorkforceIdentityLimitations = new HelpTopic(
+            "Workforce identity federation: supported products and limitations",
+            "https://cloud.google.com/iam/docs/federated-identity-supported-services");
     }
 }

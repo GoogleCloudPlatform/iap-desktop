@@ -19,12 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Diagnostics;
 using System;
 
 namespace Google.Solutions.Apis.Auth.Iam
 {
-    internal class NotSupportedForWorkloadIdentityException : NotSupportedException
+    internal class NotSupportedForWorkloadIdentityException 
+        : NotSupportedException, IExceptionWithHelpTopic
     {
+        public IHelpTopic Help => HelpTopics.WorkforceIdentityLimitations;
+
         public NotSupportedForWorkloadIdentityException()
             : base("This feature is not supported with Workload Identity")
         {
