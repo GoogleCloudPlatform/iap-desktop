@@ -57,6 +57,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
+using Google.Solutions.Mvvm;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Diagnostics;
@@ -354,6 +355,14 @@ namespace Google.Solutions.IapDesktop
             {
                 ApplicationTraceSource.Log.TraceWarning(
                     "Installing SetUsernameAsHostHeaderForWssRequests patch failed: {0}", e);
+            }
+
+            if (this.commandLineOptions.IsHighDpiEnabled)
+            {
+                if (!ApplicationExtensions.SetHighDpiMode(HighDpiMode.PerMonitorV2))
+                {
+                    ApplicationTraceSource.Log.TraceWarning("Enabling High-DPI mode failed");
+                }
             }
 
             System.Windows.Forms.Application.EnableVisualStyles();
