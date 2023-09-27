@@ -67,6 +67,11 @@ namespace Google.Solutions.Mvvm
                     throw new ArgumentException(nameof(highDpiMode));
             };
 
+            //
+            // NB. When enabling High DPI mode programmatically, WinForms won't
+            // fire DpiChanged events.
+            //
+
             return NativeMethods.SetProcessDpiAwarenessContext(mode);
         }
 
