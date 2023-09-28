@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(url))
             {
                 return await this.client
-                    .GetAsync<TModel>(url.ToString(), null, cancellationToken)
+                    .GetAsync<TModel>(url.ToString(), cancellationToken)
                     .ConfigureAwait(false);
             }
         }

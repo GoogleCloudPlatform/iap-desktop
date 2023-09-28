@@ -72,18 +72,8 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Perform a GET request.
         /// </summary>
-        public Task<TModel?> GetAsync<TModel>(
-            string url,
-            CancellationToken cancellationToken)
-            where TModel : class
-            => GetAsync<TModel>(url, null, cancellationToken);
-
-        /// <summary>
-        /// Perform an authenticated GET request.
-        /// </summary>
         public async Task<TModel?> GetAsync<TModel>(
             string url,
-            ICredential? credential,
             CancellationToken cancellationToken)
             where TModel : class
         {
@@ -93,16 +83,6 @@ namespace Google.Solutions.Apis.Client
                 if (this.UserAgent != null)
                 {
                     request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
-                }
-
-                if (credential != null)
-                {
-                    var accessToken = await credential.GetAccessTokenForRequestAsync(
-                        null,
-                        cancellationToken).ConfigureAwait(false);
-                    request.Headers.Authorization = new AuthenticationHeaderValue(
-                        "Bearer",
-                        accessToken);
                 }
 
                 try
