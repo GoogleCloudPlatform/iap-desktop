@@ -110,6 +110,11 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             private protected override Task<StsService.IntrospectTokenResponse> IntrospectTokenAsync(
                 StsService.IntrospectTokenRequest request, CancellationToken cancellationToken)
             {
+                if (this.IntrospectTokenResponse == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 return Task.FromResult(this.IntrospectTokenResponse);
             }
         }
@@ -274,7 +279,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             {
                 StoredCredential = new OidcOfflineCredential(
                     OidcIssuer.Sts,
-                    null,
+                    "scope",
                     "refresh-token",
                     null)
             };

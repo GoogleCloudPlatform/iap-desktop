@@ -93,7 +93,7 @@ namespace Google.Solutions.Apis.Analytics
         public async Task CollectEventAsync(
             MeasurementSession session,
             string eventName,
-            IDictionary<string, string> parameters,
+            IDictionary<string, string>? parameters,
             CancellationToken cancellationToken)
         {
             session.ExpectNotNull(nameof(session));

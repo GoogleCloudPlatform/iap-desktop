@@ -415,7 +415,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 .ConfigureAwait(false))
             { }
 
-            await invoker.AwaitPendingInvocations();
+            await invoker.AwaitPendingInvocationsAsync();
 
             Assert.AreEqual(1, poolSizeWhenCreated);
             Assert.AreEqual(0, poolSizeWhenClosed);
