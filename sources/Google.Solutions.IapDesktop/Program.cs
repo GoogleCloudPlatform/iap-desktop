@@ -359,6 +359,24 @@ namespace Google.Solutions.IapDesktop
 
             if (this.commandLineOptions.IsHighDpiEnabled)
             {
+                //
+                // Enable High-DPI mode. This takes the DPI level of the primary
+                // monitor and causes windows/controls to be scaled appropriately.
+                //
+                // NB. When moving a window to a different screen, Windows delivers
+                // a WM_DPICHANGE message. For now, we don't react to these messages
+                // and maintain the DPI level of the primary monitor, even when moved
+                // to a different monitor. This is for 2 reasons:
+                //
+                //  * DockPanelSuite supports High-DPI, but has limited support
+                //    for reacting to DPI-change events.
+                //  * It reduces overall complexity.
+                //
+                // NB. Setting the High DPI mode programmatically (instead of using the
+                // app manifest or app.config) does *not* cause Winforms to deliver
+                // DPI change events. This implicitly means that DockPanelSuite won't
+                // even try to re-scale.
+                //
                 if (!ApplicationExtensions.SetHighDpiMode(HighDpiMode.PerMonitorV2))
                 {
                     ApplicationTraceSource.Log.TraceWarning("Enabling High-DPI mode failed");
