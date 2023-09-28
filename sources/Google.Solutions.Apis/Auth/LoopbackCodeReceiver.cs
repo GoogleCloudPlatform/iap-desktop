@@ -86,7 +86,8 @@ namespace Google.Solutions.Apis.Auth
         {
             get
             {
-                if (string.IsNullOrEmpty(this.redirectUri))
+                if (this.redirectUri == null || 
+                    string.IsNullOrEmpty(this.redirectUri))
                 {
                     var port = GetRandomUnusedPort();
                     this.redirectUri = new UriBuilder()

@@ -122,7 +122,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             }
 
             [RequestParameter("provider_name", RequestParameterType.Query)]
-            public string ProviderName { get; set; }
+            public string? ProviderName { get; set; }
         }
 
         private class AuthenticatedClientFactory : IHttpClientFactory

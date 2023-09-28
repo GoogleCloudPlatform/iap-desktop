@@ -245,9 +245,11 @@ namespace Google.Solutions.Apis.Compute
                         }
 
                         var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
-                        if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
+                        if (responsePayload == null ||
+                            !string.IsNullOrEmpty(responsePayload.ErrorMessage))
                         {
-                            throw new WindowsCredentialCreationFailedException(responsePayload.ErrorMessage);
+                            throw new WindowsCredentialCreationFailedException(
+                                responsePayload?.ErrorMessage ?? "The response is empty");
                         }
 
                         var password = rsa.Decrypt(
@@ -325,37 +327,37 @@ namespace Google.Solutions.Apis.Compute
         internal class RequestPayload
         {
             [JsonProperty("userName")]
-            public string Username { get; set; }
+            public string? Username { get; set; }
 
             [JsonProperty("email")]
-            public string Email { get; set; }
+            public string? Email { get; set; }
 
             [JsonProperty("expireOn")]
-            public DateTime ExpireOn { get; set; }
+            public DateTime? ExpireOn { get; set; }
 
             [JsonProperty("modulus")]
-            public string Modulus { get; set; }
+            public string? Modulus { get; set; }
 
             [JsonProperty("exponent")]
-            public string Exponent { get; set; }
+            public string? Exponent { get; set; }
 
             [JsonProperty("addToAdministrators")]
-            public bool AddToAdministrators { get; set; }
+            public bool? AddToAdministrators { get; set; }
         }
 
         internal class ResponsePayload
         {
             [JsonProperty("encryptedPassword")]
-            public string EncryptedPassword { get; set; }
+            public string? EncryptedPassword { get; set; }
 
             [JsonProperty("errorMessage")]
-            public string ErrorMessage { get; set; }
+            public string? ErrorMessage { get; set; }
         }
     }
 
     public class WindowsCredentialCreationFailedException : Exception, IExceptionWithHelpTopic
     {
-        public IHelpTopic Help { get; }
+        public IHelpTopic? Help { get; }
 
         public WindowsCredentialCreationFailedException(string message) : base(message)
         {

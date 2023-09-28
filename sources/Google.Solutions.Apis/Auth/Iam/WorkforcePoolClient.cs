@@ -127,7 +127,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            if (tokenInfo.Active != true)
+            if (tokenInfo.Active != true || tokenInfo.Username == null)
             {
                 throw new AuthorizationFailedException(
                     "Authorization failed because the access token could " +
@@ -152,7 +152,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         //---------------------------------------------------------------------
 
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
-            OidcOfflineCredential offlineCredential, 
+            OidcOfflineCredential? offlineCredential, 
             ICodeReceiver codeReceiver, 
             CancellationToken cancellationToken)
         {

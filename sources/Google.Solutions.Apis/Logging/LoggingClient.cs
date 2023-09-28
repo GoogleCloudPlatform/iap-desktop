@@ -53,7 +53,7 @@ namespace Google.Solutions.Apis.Logging
     /// Read a page of results.
     /// </summary>
     /// <returns>next page token</returns>
-    public delegate string ReadPageCallback(Stream stream);
+    public delegate string? ReadPageCallback(Stream stream);
 
     public class LoggingClient : ApiClientBase, ILoggingClient
     {

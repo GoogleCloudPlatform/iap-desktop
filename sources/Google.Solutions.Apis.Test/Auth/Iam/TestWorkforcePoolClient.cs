@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         private class WorkforcePoolClientWithMockFlow : WorkforcePoolClient
         {
             public Mock<IAuthorizationCodeFlow> Flow = new Mock<IAuthorizationCodeFlow>();
-            public StsService.IntrospectTokenResponse IntrospectTokenResponse = null;
+            public StsService.IntrospectTokenResponse? IntrospectTokenResponse = null;
 
             public WorkforcePoolClientWithMockFlow(
                 IDeviceEnrollment deviceEnrollment,

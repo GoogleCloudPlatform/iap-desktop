@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
@@ -361,9 +362,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
+            Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
                 Scopes.Cloud,
-                codeReceiver.RequestUrl.Scope,
+                codeReceiver.RequestUrl!.Scope,
                 "Minimal flow");
             StringAssert.Contains(
                 "login_hint=x%40example.com",
@@ -400,9 +402,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
+            Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
                 $"{Scopes.Cloud} {Scopes.Email}",
-                codeReceiver.RequestUrl.Scope,
+                codeReceiver.RequestUrl!.Scope,
                 "Normal flow");
         }
 
@@ -428,9 +431,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
+            Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
                 $"{Scopes.Cloud} {Scopes.Email}",
-                codeReceiver.RequestUrl.Scope,
+                codeReceiver.RequestUrl!.Scope,
                 "Normal flow");
         }
 
@@ -452,9 +456,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
 
+            Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
                 $"{Scopes.Cloud} {Scopes.Email}",
-                codeReceiver.RequestUrl.Scope,
+                codeReceiver.RequestUrl!.Scope,
                 "Normal flow");
         }
 
@@ -679,7 +684,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual(SampleIdToken.Payload.Email, session.Username);
+            Assert.AreEqual(SampleIdToken.Payload.Email, session!.Username);
             Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
             Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
 

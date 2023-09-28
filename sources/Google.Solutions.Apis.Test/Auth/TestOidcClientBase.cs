@@ -46,8 +46,8 @@ namespace Google.Solutions.Apis.Test.Auth
             {
             }
 
-            public Func<IOidcSession> ActivateOfflineCredential;
-            public Func<IOidcSession> AuthorizeWithBrowser;
+            public Func<IOidcSession>? ActivateOfflineCredential;
+            public Func<IOidcSession>? AuthorizeWithBrowser;
 
             public override IServiceEndpoint Endpoint => throw new System.NotImplementedException();
 
@@ -55,14 +55,24 @@ namespace Google.Solutions.Apis.Test.Auth
                 OidcOfflineCredential offlineCredential,
                 CancellationToken cancellationToken)
             {
+                if (this.ActivateOfflineCredential == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 return Task.FromResult(this.ActivateOfflineCredential());
             }
 
             protected override Task<IOidcSession> AuthorizeWithBrowserAsync(
-                OidcOfflineCredential offlineCredential,
+                OidcOfflineCredential? offlineCredential,
                 ICodeReceiver codeReceiver,
                 CancellationToken cancellationToken)
             {
+                if (this.AuthorizeWithBrowser == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 return Task.FromResult(this.AuthorizeWithBrowser());
             }
         }

@@ -71,7 +71,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER",
                 out var locator));
 
-            Assert.AreEqual("LOCATION", locator.Location);
+            Assert.IsNotNull(locator);
+            Assert.AreEqual("LOCATION", locator!.Location);
             Assert.AreEqual("POOL", locator.Pool);
             Assert.AreEqual("PROVIDER", locator.Provider);
         }
@@ -114,7 +115,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var locator = WorkforcePoolProviderLocator.Parse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER");
 
-            Assert.AreEqual("LOCATION", locator.Location);
+            Assert.IsNotNull(locator);
+            Assert.AreEqual("LOCATION", locator!.Location);
             Assert.AreEqual("POOL", locator.Pool);
             Assert.AreEqual("PROVIDER", locator.Provider);
         }
