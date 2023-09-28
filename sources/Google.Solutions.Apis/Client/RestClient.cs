@@ -72,18 +72,20 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Perform a GET request.
         /// </summary>
-        public Task<TModel> GetAsync<TModel>(
+        public Task<TModel?> GetAsync<TModel>(
             string url,
             CancellationToken cancellationToken)
+            where TModel : class
             => GetAsync<TModel>(url, null, cancellationToken);
 
         /// <summary>
         /// Perform an authenticated GET request.
         /// </summary>
-        public async Task<TModel> GetAsync<TModel>(
+        public async Task<TModel?> GetAsync<TModel>(
             string url,
-            ICredential credential,
+            ICredential? credential,
             CancellationToken cancellationToken)
+            where TModel : class
         {
             using (CommonTraceSource.Log.TraceMethod().WithParameters(url))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))

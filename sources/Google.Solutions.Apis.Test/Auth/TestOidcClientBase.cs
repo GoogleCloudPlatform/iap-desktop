@@ -199,7 +199,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             // Wrong offline credential.
             var store = new Mock<IOidcOfflineCredentialStore>();
-            var offlineCredential = new OidcOfflineCredential(OidcIssuer.Sts, null, "rt", null);
+            var offlineCredential = new OidcOfflineCredential(OidcIssuer.Sts, "scope", "rt", null);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             var client = new SampleClient(store.Object)

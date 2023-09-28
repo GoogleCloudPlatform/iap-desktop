@@ -620,7 +620,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             {
                 StoredCredential = new OidcOfflineCredential(
                     OidcIssuer.Gaia,
-                    null,
+                    "scope",
                     "refresh-token",
                     null)
             };
@@ -654,7 +654,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             {
                 StoredCredential = new OidcOfflineCredential(
                     OidcIssuer.Gaia,
-                    null,
+                    "scope",
                     "refresh-token",
                     null)
             };

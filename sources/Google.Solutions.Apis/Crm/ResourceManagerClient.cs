@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Crm
         }
 
         public static ServiceEndpoint<ResourceManagerClient> CreateEndpoint(
-            ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<ResourceManagerClient>(
                 route ?? ServiceRoute.Public,
