@@ -244,7 +244,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             {
                 StoredCredential = new OidcOfflineCredential(
                     OidcIssuer.Sts,
-                    null,
+                    "scope",
                     "refresh-token",
                     null)
             };

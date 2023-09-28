@@ -68,16 +68,20 @@ namespace Google.Solutions.Apis.Compute
                 ApiTraceSource.Log.TraceVerbose(
                     "Read {0} chars from serial port [start={1}, next={2}]",
                     output.Contents == null ? 0 : output.Contents.Length,
-                    output.Start.Value,
-                    output.Next.Value);
+                    output.Start,
+                    output.Next);
 
                 //
                 // If there is no new data, then output.Next == this.nextOffset
                 // and output.Contents is an empty string. We never return null
                 // because this is an end-less stream.
                 //
-                this.nextOffset = output.Next.Value;
-                return output.Contents;
+                if (output.Next.HasValue)
+                {
+                    this.nextOffset = output.Next.Value;
+                }
+
+                return output.Contents ?? string.Empty;
             }
         }
     }
