@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         // Failed to take ownership of mutex, so this is a subsequent process.
                         //
                         var returnCode = PostCommandToNamedPipeServer(args);
-                        if (returnCode > 0)
+                        if (returnCode >= 0)
                         {
                             //
                             // Activation was successful.
