@@ -377,7 +377,7 @@ namespace Google.Solutions.IapDesktop
                 // DPI change events. This implicitly means that DockPanelSuite won't
                 // even try to re-scale.
                 //
-                if (!ApplicationExtensions.SetHighDpiMode(HighDpiMode.PerMonitorV2))
+                if (!ApplicationExtensions.SetHighDpiMode(HighDpiMode.SystemAware))
                 {
                     ApplicationTraceSource.Log.TraceWarning("Enabling High-DPI mode failed");
                 }
