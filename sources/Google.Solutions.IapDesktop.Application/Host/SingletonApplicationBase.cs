@@ -154,6 +154,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
                                 "Activating the first process failed with return code {0}",
                                 returnCode);
 
+                            //
+                            // Ignore and start a new instance.
+                            //
                             return HandleFirstInvocation(args);
                         }
                     }
