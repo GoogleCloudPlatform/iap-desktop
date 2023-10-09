@@ -78,8 +78,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             }
         }
 
+        private class HungSingleton : Singleton
+        {
+            public HungSingleton(string name) : base(name)
+            {
+            }
+
+            protected override int HandleSubsequentInvocation(string[] args)
+            {
+                throw new TimeoutException("unresponsive");
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Run.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenFirstInstance_ThenArgumentsArePassedToHandleFirstInvocation(
+        public void WhenNoInstanceRunning_ThenRunStartsNewInstance(
             [Values(
                 new string[0],
                 new [] {"one", "two"},
@@ -101,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenSecondInstance_ThenArgumentsArePassedToHandleSubsequentInvocation(
+        public void WhenInstanceRunning_ThenRunPassesArgumentsToFirstInstance(
             [Values(
                 new string[0],
                 new [] {"one", "two"},
@@ -131,7 +147,38 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenNameOnlyDiffersInCasing_ThenArgumentsArePassedToHandleSubsequentInvocation()
+        public void WhenFirstInstanceHung_ThenRunStartsNewInstance()
+        {
+            var appName = Guid.NewGuid().ToString();
+
+            var first = new HungSingleton(appName);
+            Task.Factory.StartNew(() =>
+            {
+                first.Run(new[] { "first" });
+            },
+            TaskCreationOptions.LongRunning);
+
+            // Wait for first app to start.
+            first.WaitTillRunning();
+
+            var second = new Singleton(appName);
+
+            Task.Factory.StartNew(() =>
+            {
+                second.Run(new[] { "second" });
+            },
+            TaskCreationOptions.LongRunning);
+
+            second.WaitTillRunning();
+
+            first.Quit();
+            second.Quit();
+
+            Assert.AreEqual(new[] { "second" }, second.FirstInvocationArgs);
+        }
+
+        [Test]
+        public void WhenInstanceNamesOnlyDifferInCasing_ThenRunPassesArgumentsToFirstInstance()
         {
             var guid = Guid.NewGuid().ToString();
             var first = new Singleton("TEST_" + guid);
@@ -149,6 +196,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             first.Quit();
             second.Quit();
         }
+        
+        //---------------------------------------------------------------------
+        // Object names.
+        //---------------------------------------------------------------------
 
         [Test]
         public void MutexNameIsLocal()

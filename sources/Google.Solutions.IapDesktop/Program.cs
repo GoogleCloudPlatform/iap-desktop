@@ -709,9 +709,15 @@ namespace Google.Solutions.IapDesktop
             var options = CommandLineOptions.ParseOrExit(args);
 
             //
-            // Make sure the main form is ready.
+            // Make sure the main form is ready. If that's not the case
+            // within a few seconds, then the process might be "stuck"
+            // in the sign-in process.
             //
-            this.mainFormInitialized.WaitOne();
+            if (!this.mainFormInitialized.WaitOne(TimeSpan.FromSeconds(3)))
+            {
+                throw new TimeoutException("The main form is not ready");
+            }
+
             if (this.initializedMainForm != null)
             {
                 //

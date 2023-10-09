@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1031 // catch Exception
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
@@ -139,7 +140,25 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         //
                         // Failed to take ownership of mutex, so this is a subsequent process.
                         //
-                        return PostCommandToNamedPipeServer(args);
+                        var returnCode = PostCommandToNamedPipeServer(args);
+                        if (returnCode >= 0)
+                        {
+                            //
+                            // Activation was successful.
+                            //
+                            return returnCode;
+                        }
+                        else
+                        {
+                            ApplicationTraceSource.Log.TraceError(
+                                "Activating the first process failed with return code {0}",
+                                returnCode);
+
+                            //
+                            // Ignore and start a new instance.
+                            //
+                            return HandleFirstInvocation(args);
+                        }
                     }
                 }
             }
@@ -284,8 +303,18 @@ namespace Google.Solutions.IapDesktop.Application.Host
                                 var result = HandleSubsequentInvocation(args);
                                 writer.Write(result);
                             }
+                            catch (TimeoutException)
+                            {
+                                //
+                                // Notify other instance, but don't crash.
+                                //
+                                writer.Write(-2);
+                            }
                             catch (Exception e)
                             {
+                                //
+                                // Something bad happened, crash.
+                                //
                                 HandleSubsequentInvocationException(e);
                                 writer.Write(-1);
                             }
