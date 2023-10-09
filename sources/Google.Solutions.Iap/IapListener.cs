@@ -192,6 +192,8 @@ namespace Google.Solutions.Iap
                                 continue;
                             }
 
+                            socket.NoDelay = true;
+
                             var clientStream = new SocketStream(socket, this.Statistics);
                             var serverStream = new SshRelayStream(this.server);
 
