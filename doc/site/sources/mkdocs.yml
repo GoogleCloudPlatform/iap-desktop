@@ -92,8 +92,8 @@ nav:
       - 'Connect to a Linux VM': 'connect-linux.md'
       - 'Connect to SQL Server': 'connect-sqlserver.md'
       - 'Connect to VMs from within a web browser': 'connect-by-url.md'
-    - 'Customize IAP Desktop':
-      - 'Use the tool windows':
+    - 'Use IAP Desktop':
+      - 'Tool windows':
         - 'Instance properties': 'toolwindow-instance-properties.md'
         - 'Event log': 'toolwindow-eventlog.md'
         - 'Serial port output': 'toolwindow-serial-port-output.md'
