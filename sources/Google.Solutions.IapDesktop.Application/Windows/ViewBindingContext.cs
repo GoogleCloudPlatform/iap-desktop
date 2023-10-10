@@ -36,23 +36,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     public class ViewBindingContext : IBindingContext
     {
         private readonly IExceptionDialog exceptionDialog;
-        private IWin32Window errorReportingOwner;
-
-        /// <summary>
-        /// Sets the current main window that can be used as parent
-        /// for any error messages.
-        /// 
-        /// NB. During startup, we have a different main window than
-        /// later.
-        /// </summary>
-        public void SetCurrentMainWindow(IWin32Window owner)
-        {
-            this.errorReportingOwner = owner;
-        }
 
         public ViewBindingContext(IExceptionDialog exceptionDialog)
         {
             this.exceptionDialog = exceptionDialog.ExpectNotNull(nameof(exceptionDialog));
+        }
+
+        private IWin32Window GetMainWindow()
+        {
+            var mainWindowHwnd = Process.GetCurrentProcess().MainWindowHandle;
+            return mainWindowHwnd == IntPtr.Zero ? null : new Win32Window(mainWindowHwnd);
         }
 
         //---------------------------------------------------------------------
@@ -61,7 +54,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public void OnBindingCreated(IComponent control, IDisposable binding)
         {
-            Debug.Assert(this.errorReportingOwner != null);
             Debug.WriteLine($"Binding added for {control.GetType().Name} ({control})");
         }
 
@@ -70,13 +62,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             ICommand command,
             Exception exception)
         {
-            Debug.Assert(this.errorReportingOwner != null);
-
             //
-            // NB. We might not know the parent window if this is
-            // a menu command. 
+            // NB. window might be null. If so, try to use the main
+            // window as parent. This is typically the main form,
+            // but could also be the authorize dialog.
             //
-            var parent = window ?? this.errorReportingOwner;
+            var parent = window ?? GetMainWindow();
 
             ApplicationEventSource.Log.CommandFailed(
                 command.Id,
@@ -95,6 +86,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             {
                 ApplicationEventSource.Log.CommandExecuted(command.Id);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        private class Win32Window : IWin32Window
+        {
+            public Win32Window(IntPtr handle)
+            {
+                this.Handle = handle;
+            }
+
+            public IntPtr Handle { get; }
         }
     }
 }
