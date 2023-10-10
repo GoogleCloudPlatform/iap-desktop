@@ -94,12 +94,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.applicationSettings = this.serviceProvider.GetService<IRepository<IApplicationSettings>>();
             this.bindingContext = serviceProvider.GetService<IBindingContext>();
 
-            //
-            // Register this window with the binding context so that any
-            // error dialogs can use this window as owner.
-            //
-            ((ViewBindingContext)this.bindingContext).SetCurrentMainWindow(this);
-
             // 
             // Restore window settings.
             //

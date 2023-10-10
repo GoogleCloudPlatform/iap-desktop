@@ -56,12 +56,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         public void Bind(AuthorizeViewModel viewModel, IBindingContext bindingContext)
         {
             //
-            // Register this window with the binding context so that any
-            // error dialos can use this window as owner.
-            //
-            ((ViewBindingContext)bindingContext).SetCurrentMainWindow(this);
-
-            //
             // Bind controls.
             //
             this.BindReadonlyObservableProperty(
