@@ -101,3 +101,5 @@ Supported client applications include:
 *   Chrome (to connect to management portals and other internal websites)
 *   [Custom applications](client-application-configuration.md)
 
+Instead of letting IAP Desktop launch a client application for you, you can use port forwarding
+and connect the application to the forwarded port yourself.
