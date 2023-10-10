@@ -109,7 +109,12 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
         public override Uri CreateDomainSpecificServiceUri(Uri target)
         {
-            if (!string.IsNullOrEmpty(this.HostedDomain))
+            if (!string.IsNullOrEmpty(this.HostedDomain) &&
+
+                //
+                // ServiceLogin can't handle percent-encoded quotes.
+                //
+                !target.AbsoluteUri.Contains("%22"))
             {
                 //
                 // Sign in using same domain.
