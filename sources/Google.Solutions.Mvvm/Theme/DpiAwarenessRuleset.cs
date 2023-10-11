@@ -18,6 +18,8 @@ namespace Google.Solutions.Mvvm.Theme
             var location = c.Location;
             var size = c.Size;
 
+            // TODO: Check if HighDPI needed.
+
             if (c.Dock.HasFlag(DockStyle.Fill))
             {
                 return;
