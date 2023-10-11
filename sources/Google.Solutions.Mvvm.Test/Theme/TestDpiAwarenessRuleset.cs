@@ -17,6 +17,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         {
             using (var form = new SampleDialog())
             {
+                ApplicationExtensions.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();
 
                 new ControlTheme()
