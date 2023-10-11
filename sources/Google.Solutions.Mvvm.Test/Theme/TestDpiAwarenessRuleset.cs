@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Testing.Apis.Integration;
+﻿using Google.Solutions.Mvvm.Theme;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Windows.Forms;
@@ -8,19 +9,22 @@ namespace Google.Solutions.Mvvm.Test.Theme
     [TestFixture]
     [InteractiveTest]
     [Apartment(ApartmentState.STA)]
-    public partial class TestDpiAwarenessRuleset : Form
+    public class TestDpiAwarenessRuleset
     {
-        public TestDpiAwarenessRuleset()
-        {
-            InitializeComponent();
-        }
 
         [Test]
         public void TestUi()
         {
-            using (var form = new TestDpiAwarenessRuleset())
+            using (var form = new SampleDialog())
             {
                 Application.EnableVisualStyles();
+
+                new ControlTheme()
+                    .AddRuleSet(new WindowsRuleSet(false))
+                    .AddRuleSet(new CommonControlRuleSet())
+                    .AddRuleSet(new DpiAwarenessRuleset())
+                    .ApplyTo(form);
+
                 Application.Run(form);
             }
         }
