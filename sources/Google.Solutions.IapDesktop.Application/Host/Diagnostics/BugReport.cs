@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using System;
 using System.Reflection;
 using System.Text;
@@ -50,14 +51,14 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
             if (this.exception != null)
             {
-                text.Append(this.exception.ToString());
+                text.Append(this.exception.ToString(ExceptionFormatOptions.IncludeOffsets));
 
                 if (this.exception is ReflectionTypeLoadException tle)
                 {
                     text.Append("\nLoader Exceptions:\n");
                     foreach (var e in tle.LoaderExceptions)
                     {
-                        text.Append(e.ToString());
+                        text.Append(e.ToString(ExceptionFormatOptions.IncludeOffsets));
                     }
                 }
 
