@@ -1,6 +1,6 @@
 ﻿namespace Google.Solutions.Mvvm.Test.Theme
 {
-    partial class TestDpiAwarenessRuleset
+    partial class SampleDialog
     {
         /// <summary>
         /// Required designer variable.
