@@ -27,6 +27,7 @@ using System.Diagnostics.CodeAnalysis;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable VSTHRD101 // Avoid unsupported async delegates
 
 namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
