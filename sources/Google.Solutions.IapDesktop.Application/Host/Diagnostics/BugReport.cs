@@ -51,7 +51,11 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
             if (this.exception != null)
             {
-                text.Append(this.exception.ToString(ExceptionFormatOptions.IncludeOffsets));
+                for (var ex = this.exception; ex != null; ex = ex.InnerException)
+                {
+                    text.Append(ex.ToString(ExceptionFormatOptions.IncludeOffsets));
+                    text.Append("\n\n");
+                }
 
                 if (this.exception is ReflectionTypeLoadException tle)
                 {
@@ -59,10 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
                     foreach (var e in tle.LoaderExceptions)
                     {
                         text.Append(e.ToString(ExceptionFormatOptions.IncludeOffsets));
+                        text.Append("\n\n");
                     }
                 }
-
-                text.Append("\n\n");
             }
 
             var cpuArchitecture = Assembly.GetEntryAssembly()?.GetName().ProcessorArchitecture.ToString() ?? "unknown";
