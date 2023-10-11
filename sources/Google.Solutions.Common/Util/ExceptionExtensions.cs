@@ -20,6 +20,8 @@
 //
 
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,5 +74,65 @@ namespace Google.Solutions.Common.Util
 
             return fullMessage.ToString();
         }
+
+        public static string ToString(this Exception exception, ExceptionFormatOptions options)
+        {
+            switch (options)
+            {
+                case ExceptionFormatOptions.IncludeOffsets:
+                    return StackTraceBuilder.CreateStackTraceWithOffsets(exception);
+
+                default:
+                    return exception.ToString();
+            }
+        }
+
+        private static class StackTraceBuilder
+        {
+            public static string CreateStackTraceWithOffsets(Exception e)
+            {
+                var stackTrace = new StackTrace(e, false);
+                var buffer = new StringBuilder();
+
+                buffer.AppendLine($"{e.GetType().FullName}: {e.Message}");
+
+                foreach (var frame in stackTrace.GetFrames().EnsureNotNull())
+                {
+                    var method = frame.GetMethod();
+                    var parameters = string.Join(
+                        ", ",
+                        method
+                            .GetParameters()
+                            .EnsureNotNull()
+                            .Select(p => $"{p.ParameterType.Name} {p.Name}"));
+
+                    buffer.Append($"   at {method.ReflectedType.FullName}.{method.Name}({parameters})");
+                    buffer.Append($" +IL_{frame.GetILOffset():x4}");
+
+                    var line = frame.GetFileName();
+                    if (line != null)
+                    {
+                        buffer.Append($" in {line}:{frame.GetFileLineNumber()}");
+                    }
+
+                    buffer.AppendLine();
+                }
+
+                return buffer.ToString();
+            }
+        }
+    }
+
+    public enum ExceptionFormatOptions
+    {
+        /// <summary>
+        /// Normal format.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Include IL offsets.
+        /// </summary>
+        IncludeOffsets
     }
 }

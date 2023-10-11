@@ -29,6 +29,18 @@ namespace Google.Solutions.Common.Test.Util
     [TestFixture]
     public class TestExceptionExtensions : CommonFixtureBase
     {
+        private static Exception CreateException()
+        {
+            try
+            {
+                throw new ArgumentException("sample");
+            }
+            catch (ArgumentException e)
+            {
+                return e;
+            }
+        }
+
         //---------------------------------------------------------------------
         // Unwrap.
         //---------------------------------------------------------------------
@@ -107,6 +119,27 @@ namespace Google.Solutions.Common.Test.Util
                 new InvalidOperationException("two",
                     new Exception("three")));
             Assert.AreEqual("One: two: three", ex.FullMessage());
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoOptionsSet_ThenToStringReturnsStandardTrace()
+        {
+            var ex = CreateException();
+            Assert.AreEqual(ex.ToString(), ex.ToString(ExceptionFormatOptions.None));
+        }
+
+        [Test]
+        public void WhenIncludeOffsetOptionsSet_ThenToStringIncludesOffsets()
+        {
+            var ex = CreateException();
+            var s = ex.ToString(ExceptionFormatOptions.IncludeOffsets);
+            StringAssert.Contains(
+                "CreateException() +IL_00",
+                s);
         }
     }
 }

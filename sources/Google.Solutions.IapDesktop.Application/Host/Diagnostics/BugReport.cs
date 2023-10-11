@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using System;
 using System.Reflection;
 using System.Text;
@@ -50,18 +51,21 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 
             if (this.exception != null)
             {
-                text.Append(this.exception.ToString());
+                for (var ex = this.exception; ex != null; ex = ex.InnerException)
+                {
+                    text.Append(ex.ToString(ExceptionFormatOptions.IncludeOffsets));
+                    text.Append("\n\n");
+                }
 
                 if (this.exception is ReflectionTypeLoadException tle)
                 {
                     text.Append("\nLoader Exceptions:\n");
                     foreach (var e in tle.LoaderExceptions)
                     {
-                        text.Append(e.ToString());
+                        text.Append(e.ToString(ExceptionFormatOptions.IncludeOffsets));
+                        text.Append("\n\n");
                     }
                 }
-
-                text.Append("\n\n");
             }
 
             var cpuArchitecture = Assembly.GetEntryAssembly()?.GetName().ProcessorArchitecture.ToString() ?? "unknown";
