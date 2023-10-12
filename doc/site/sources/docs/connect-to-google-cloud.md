@@ -26,7 +26,7 @@ using [a group policy](group-policies.md).
 
     This feature requires IAP Desktop 2.38
     
-If your workstation is connected to an on-premises network that that has
+If your workstation is connected to an on-premises network that has
 [hybrid connectivity to Google Cloud](https://cloud.google.com/hybrid-connectivity),
 you can optionally let IAP Desktop connect to Google Cloud APIs through 
 [Private Service Connect (PSC)](https://cloud.google.com/vpc/docs/about-accessing-google-apis-endpoints):
