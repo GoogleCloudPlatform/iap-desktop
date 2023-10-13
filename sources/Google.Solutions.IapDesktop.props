@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <DefaultTargetFramework>net462</DefaultTargetFramework>
+    <DefaultTargetFramework>net47</DefaultTargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Company>Google LLC</Company>
     <Product>IAP Desktop</Product>
