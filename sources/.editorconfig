@@ -234,3 +234,5 @@ dotnet_diagnostic.VSTHRD110.severity = suggestion
 
 # VSTHRD200: Use "Async" suffix for async methods
 dotnet_diagnostic.VSTHRD200.severity = suggestion
+
+csharp_prefer_simple_using_statement = false

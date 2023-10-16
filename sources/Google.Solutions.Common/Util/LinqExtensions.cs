@@ -30,17 +30,20 @@ namespace Google.Solutions.Common.Util
     {
         public static HashSet<T> ToHashSet<T>(
             this IEnumerable<T> source,
-            IEqualityComparer<T> comparer = null)
+            IEqualityComparer<T>? comparer = null)
         {
             return new HashSet<T>(source, comparer);
         }
 
-        public static IEnumerable<T> EnsureNotNull<T>(this IEnumerable<T> e)
+        public static IEnumerable<T> EnsureNotNull<T>(
+            this IEnumerable<T>? e)
         {
             return e ?? Enumerable.Empty<T>();
         }
 
-        public static bool ContainsAll<T>(this IEnumerable<T> sequence, IEnumerable<T> lookup)
+        public static bool ContainsAll<T>(
+            this IEnumerable<T> sequence, 
+            IEnumerable<T> lookup)
         {
             return !lookup.Except(sequence).Any();
         }

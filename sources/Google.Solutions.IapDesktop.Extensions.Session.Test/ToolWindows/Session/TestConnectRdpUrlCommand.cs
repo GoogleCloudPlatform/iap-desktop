@@ -88,11 +88,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))
                 .ReturnsAsync(context.Object);
 
-            ISession nullSession;
             var sessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
             sessionBroker
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
+
+            ISession nullSession;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
                 .Returns(false);

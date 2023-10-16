@@ -44,25 +44,25 @@ namespace Google.Solutions.Platform.Net
 
         private const string SubdomainWilcard = "[*.]";
 
-        private readonly string scheme;
+        private readonly string? scheme;
         private readonly ushort? port;
-        private readonly string domain;
+        private readonly string? domain;
         private readonly bool includeSubdomains;
 
-        private static ushort? DefaultPortForScheme(string scheme)
+        private static ushort? DefaultPortForScheme(string? scheme)
         {
-            switch (scheme)
+            return scheme switch
             {
-                case "http": return 80;
-                case "https": return 443;
-                default: return null; // any.
-            }
+                "http" => (ushort?)80,
+                "https" => (ushort?)443,
+                _ => null,// any.
+            };
         }
 
         private ChromePolicyUrlPattern(
-            string scheme,
+            string? scheme,
             ushort? port,
-            string domain,
+            string? domain,
             bool includeSubdomains)
         {
             this.scheme = scheme;
@@ -116,7 +116,7 @@ namespace Google.Solutions.Platform.Net
             }
 
             var colonDoubleSlashIndex = pattern.IndexOf("://");
-            string scheme;
+            string? scheme;
             string patternWithoutScheme;
             if (colonDoubleSlashIndex == -1)
             {

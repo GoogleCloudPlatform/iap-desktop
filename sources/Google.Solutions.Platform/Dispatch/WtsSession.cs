@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Dispatch
         // Equality.
         //---------------------------------------------------------------------
 
-        public bool Equals(IWtsSession other)
+        public bool Equals(IWtsSession? other)
         {
             return other != null && other.Id == this.Id;
         }

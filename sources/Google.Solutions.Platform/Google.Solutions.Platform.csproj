@@ -4,7 +4,6 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Platform extensions library</Description>
-    
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

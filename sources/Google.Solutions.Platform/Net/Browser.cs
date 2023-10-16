@@ -110,9 +110,9 @@ namespace Google.Solutions.Platform.Net
 
     public class ChromeBrowser : Browser
     {
-        private static string ChromeExecutablePath { get; } = null;
+        private static string? ChromeExecutablePath { get; } = null;
 
-        private readonly string arguments;
+        private readonly string? arguments;
 
         static ChromeBrowser()
         {
@@ -122,7 +122,7 @@ namespace Google.Solutions.Platform.Net
             }
         }
 
-        public ChromeBrowser(string arguments = null)
+        public ChromeBrowser(string? arguments = null)
         {
             this.arguments = arguments;
         }
@@ -131,6 +131,12 @@ namespace Google.Solutions.Platform.Net
 
         public override void Navigate(Uri address)
         {
+            if (!IsAvailable)
+            {
+                throw new InvalidOperationException(
+                    "Chrome is not installed on this machine");
+            }
+
             using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = false,

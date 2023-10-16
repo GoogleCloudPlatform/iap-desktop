@@ -45,7 +45,9 @@ namespace Google.Solutions.Common.Test.Runtime
         {
             using (var container = new DisposableContainer())
             {
+                #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 container.Add(null);
+                #pragma warning restore CS8625
             }
         }
 

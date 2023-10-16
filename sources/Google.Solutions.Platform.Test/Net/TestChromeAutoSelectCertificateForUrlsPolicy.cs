@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis.Cryptography;
 using Microsoft.Win32;
@@ -34,7 +35,7 @@ namespace Google.Solutions.Platform.Test.Net
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
-        private RegistryKey key;
+        private RegistryKey? key;
 
         //
         // New-SelfSignedCertificate `
@@ -79,7 +80,7 @@ namespace Google.Solutions.Platform.Test.Net
         public void WhenKeyIsNull_ThenBuilderCreatesEmptyPolicy()
         {
             var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
-                .AddGroupPolicy((RegistryKey)null)
+                .AddGroupPolicy((RegistryKey?)null)
                 .Build();
 
             Assert.IsNotNull(policy);
@@ -97,7 +98,7 @@ namespace Google.Solutions.Platform.Test.Net
         [Test]
         public void WhenKeyContainsJunkValues_ThenBuilderIgnoresJunkValues()
         {
-            this.key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
+            this.key!.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
             this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{}}");
             this.key.SetValue("junk", 1);
             this.key.SetValue("-3", "junk");
@@ -111,7 +112,7 @@ namespace Google.Solutions.Platform.Test.Net
         [Test]
         public void WhenKeyContainsMalformedValues_ThenBuilderIgnoresJunkValues()
         {
-            this.key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
+            this.key!.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
             this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{"); // Syntax error.
 
             var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
@@ -123,7 +124,7 @@ namespace Google.Solutions.Platform.Test.Net
         [Test]
         public void WhenKeyContainsSelectors_ThenBuilderEvaluatesSelectors()
         {
-            this.key.SetValue("11",
+            this.key!.SetValue("11",
                 "{'pattern': 'https://[*.]example.org', 'filter':{'SUBJECT': {'CN': 'example.org'}}}");
             this.key.SetValue("20",
                 "{'pattern': 'https://[*.]example.com', 'filter':{'SUBJECT': {'CN': 'example.com'}}}");

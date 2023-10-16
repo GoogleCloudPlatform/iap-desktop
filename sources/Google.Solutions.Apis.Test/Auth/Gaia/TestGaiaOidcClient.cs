@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 "client-secret",
                 "/authorize/");
 
-        private static UnverifiedGaiaJsonWebToken SampleIdToken
+        private static readonly UnverifiedGaiaJsonWebToken SampleIdToken
             = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
                 new Google.Apis.Auth.GoogleJsonWebSignature.Payload()

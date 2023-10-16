@@ -30,8 +30,9 @@ namespace Google.Solutions.Common.Util
         /// Verify that the argument is not null.
         /// </summary>
         public static T ExpectNotNull<T>(
-            this T value,
+            this T? value,
             string argumentName)
+            where T : class
         {
             if (value == null)
             {
@@ -46,10 +47,10 @@ namespace Google.Solutions.Common.Util
         /// Verify that the argument is not null, and not an empty string.
         /// </summary>
         public static string ExpectNotEmpty(
-            this string value,
+            this string? value,
             string argumentName)
         {
-            if (string.IsNullOrEmpty(value))
+            if (value == null || string.IsNullOrEmpty(value))
             {
                 throw new ArgumentNullException(
                     $"The argument {argumentName} must not be null or empty");

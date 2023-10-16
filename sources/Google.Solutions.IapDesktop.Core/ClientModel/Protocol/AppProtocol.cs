@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
-            this.RemotePort = remotePort.ExpectNotNull(nameof(remotePort));
+            this.RemotePort = remotePort;
             this.LocalEndpoint = localEndpoint;
             this.Client = client;
         }

@@ -29,7 +29,7 @@ namespace Google.Solutions.Common.Threading
     {
         public static Task<bool> WaitAsync(this WaitHandle waitHandle)
         {
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object?>();
 
             var registration = ThreadPool.RegisterWaitForSingleObject(
                 waitHandle,

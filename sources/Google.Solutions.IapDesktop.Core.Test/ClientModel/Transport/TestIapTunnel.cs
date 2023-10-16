@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
 using NUnit.Framework;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -187,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         [Test]
         public void DisposeStopsRelay()
         {
-            CancellationToken token;
+            var token = CancellationToken.None;
             var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);
             listener
@@ -214,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         public void CloseStopsRelay()
         {
             Task listenTask = new TaskCompletionSource<object>().Task;
-            CancellationToken token;
+            var token = CancellationToken.None;
 
             var listener = new Mock<IIapListener>();
             listener.SetupGet(l => l.LocalEndpoint).Returns(SampleLoopbackEndpoint);

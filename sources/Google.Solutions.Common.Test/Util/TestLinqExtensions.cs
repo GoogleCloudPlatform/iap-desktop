@@ -32,7 +32,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenEnumIsNull_EnsureNotNullReturnsEmpty()
         {
-            IEnumerable<string> e = null;
+            IEnumerable<string>? e = null;
             Assert.IsNotNull(e.EnsureNotNull());
             Assert.AreEqual(0, e.EnsureNotNull().Count());
         }

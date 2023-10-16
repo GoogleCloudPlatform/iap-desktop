@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(SessionContextBase<TCredential, TParameters>.iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
             this.Instance = instance.ExpectNotNull(nameof(instance));
-            this.Parameters = parameters.ExpectNotNull(nameof(parameters));
+            this.Parameters = parameters;
         }
 
         //---------------------------------------------------------------------

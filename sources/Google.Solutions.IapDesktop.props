@@ -9,6 +9,16 @@
     <Platforms>x64;x86</Platforms>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <RuntimeIdentifiers>win7-x86;win7-x64</RuntimeIdentifiers>
+
+    <!-- 
+      Use C# 8 so that we can use nullable 
+      
+      For details on C# 8 support in .NET Framework, see
+      https://stackoverflow.com/a/57020770/4372
+    -->
+    <LangVersion>8</LangVersion>
+    <WarningLevel>5</WarningLevel>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugType>full</DebugType>

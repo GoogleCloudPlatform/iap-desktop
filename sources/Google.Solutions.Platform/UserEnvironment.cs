@@ -64,7 +64,7 @@ namespace Google.Solutions.Platform
         /// considering both per-user and per-machine apps.
         /// </summary>
         /// <see cref="https://learn.microsoft.com/en-us/windows/win32/shell/app-registration"/>
-        public static bool TryResolveAppPath(string exeName, out string path)
+        public static bool TryResolveAppPath(string exeName, out string? path)
         {
             Precondition.ExpectNotEmpty(exeName,nameof(exeName));
 
@@ -95,7 +95,7 @@ namespace Google.Solutions.Platform
                     // NB. If the value is of kind REG_EXPAND_SZ, GetValue()
                     // automatically resolves environment variables.
                     //
-                    path = (string)appKey?.GetValue(null);
+                    path = (string?)appKey?.GetValue(null);
                     if (!string.IsNullOrEmpty(path))
                     {
                         return true;

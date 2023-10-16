@@ -26,7 +26,7 @@ namespace Google.Solutions.Common.Diagnostics
 {
     public static class DumpObjectExtensions
     {
-        public static string DumpProperties(this object obj)
+        public static string DumpProperties(this object? obj)
         {
             var buffer = new StringBuilder();
 

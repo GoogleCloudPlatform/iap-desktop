@@ -6,6 +6,7 @@
     <Description>IAP Desktop</Description>
     
     <UseWindowsForms>True</UseWindowsForms>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />

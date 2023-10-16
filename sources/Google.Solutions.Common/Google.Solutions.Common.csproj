@@ -4,7 +4,6 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Base class library</Description>
-    
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
