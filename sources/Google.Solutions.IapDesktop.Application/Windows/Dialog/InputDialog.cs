@@ -95,7 +95,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             InputDialogParameters parameters,
             out string input)
         {
-            parameters.ExpectNotNull(nameof(parameters));
             parameters.ExpectValid();
 
             using (var dialog = new SystemInputDialog(
