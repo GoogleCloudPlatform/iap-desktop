@@ -23,10 +23,10 @@
 # Basic configuration
 #------------------------------------------------------------------------------
 
-PRODUCT_VERSION = 2.38
+PRODUCT_VERSION = 2.39
 CONFIGURATION = Release
 PLATFORM = x86
-TARGET_FRAMEWORK = net462
+TARGET_FRAMEWORK = net47
 
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
 BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)

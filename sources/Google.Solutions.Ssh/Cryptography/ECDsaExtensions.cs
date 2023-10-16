@@ -43,39 +43,10 @@ namespace Google.Solutions.Ssh.Cryptography
             // Key exporting is only supported on 4.7+.
             //
 
-#if NET47_OR_GREATER
             var point = key.ExportParameters(false).Q;
             var qX = point.X;
             var qY = point.Y;
-#else
-            var exportMethod = key.GetType().GetMethod(
-                "ExportParameters",
-                BindingFlags.Instance | BindingFlags.Public);
-            if (exportMethod == null)
-            {
-                throw new PlatformNotSupportedException(
-                    "Using ECDSA requires .NET framework 4.7 or newer");
-            }
 
-            var ecParameters = exportMethod.Invoke(
-                key,
-                new object[] { false });
-
-            var qPoint = ecParameters.GetType().GetField(
-                    "Q",
-                    BindingFlags.Instance | BindingFlags.Public)
-                .GetValue(ecParameters);
-
-            var qX = (byte[])qPoint.GetType().GetField(
-                    "X",
-                    BindingFlags.Instance | BindingFlags.Public)
-                .GetValue(qPoint);
-
-            var qY = (byte[])qPoint.GetType().GetField(
-                    "Y",
-                    BindingFlags.Instance | BindingFlags.Public)
-                .GetValue(qPoint);
-#endif
             //
             // Get size in bytes (rounding up).
             //
