@@ -33,7 +33,7 @@ namespace Google.Solutions.Apis.Auth
     /// </summary>
     public interface IOidcSession 
     {
-        event EventHandler Terminated;
+        event EventHandler? Terminated;
 
         /// <summary>
         /// Username. The syntax differs depending on the implementation.

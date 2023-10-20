@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Locator
                 return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
             }
 
-            public bool Equals(DiskTypeLocator other)
+            public bool Equals(DiskTypeLocator? other)
             {
                 return other is object &&
                     this.Name == other.Name &&
@@ -84,17 +84,17 @@ namespace Google.Solutions.Apis.Locator
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator other)
+            public override bool Equals(ResourceLocator? other)
             {
                 return other is DiskTypeLocator locator && Equals(locator);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is DiskTypeLocator locator && Equals(locator);
             }
 
-            public static bool operator ==(DiskTypeLocator obj1, DiskTypeLocator obj2)
+            public static bool operator ==(DiskTypeLocator? obj1, DiskTypeLocator? obj2)
             {
                 if (obj1 is null)
                 {
@@ -104,7 +104,7 @@ namespace Google.Solutions.Apis.Locator
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(DiskTypeLocator obj1, DiskTypeLocator obj2)
+            public static bool operator !=(DiskTypeLocator? obj1, DiskTypeLocator? obj2)
             {
                 return !(obj1 == obj2);
             }
@@ -160,7 +160,7 @@ namespace Google.Solutions.Apis.Locator
                 return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
             }
 
-            public bool Equals(InstanceLocator other)
+            public bool Equals(InstanceLocator? other)
             {
                 return other is object &&
                     this.Name == other.Name &&
@@ -168,17 +168,17 @@ namespace Google.Solutions.Apis.Locator
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator other)
+            public override bool Equals(ResourceLocator? other)
             {
                 return other is InstanceLocator locator && Equals(locator);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is InstanceLocator locator && Equals(locator);
             }
 
-            public static bool operator ==(InstanceLocator obj1, InstanceLocator obj2)
+            public static bool operator ==(InstanceLocator? obj1, InstanceLocator? obj2)
             {
                 if (obj1 is null)
                 {
@@ -188,7 +188,7 @@ namespace Google.Solutions.Apis.Locator
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(InstanceLocator obj1, InstanceLocator obj2)
+            public static bool operator !=(InstanceLocator? obj1, InstanceLocator? obj2)
             {
                 return !(obj1 == obj2);
             }
@@ -244,7 +244,7 @@ namespace Google.Solutions.Apis.Locator
                 return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
             }
 
-            public bool Equals(MachineTypeLocator other)
+            public bool Equals(MachineTypeLocator? other)
             {
                 return other is object &&
                     this.Name == other.Name &&
@@ -252,17 +252,17 @@ namespace Google.Solutions.Apis.Locator
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator other)
+            public override bool Equals(ResourceLocator? other)
             {
                 return other is MachineTypeLocator locator && Equals(locator);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is MachineTypeLocator locator && Equals(locator);
             }
 
-            public static bool operator ==(MachineTypeLocator obj1, MachineTypeLocator obj2)
+            public static bool operator ==(MachineTypeLocator? obj1, MachineTypeLocator? obj2)
             {
                 if (obj1 is null)
                 {
@@ -272,7 +272,7 @@ namespace Google.Solutions.Apis.Locator
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(MachineTypeLocator obj1, MachineTypeLocator obj2)
+            public static bool operator !=(MachineTypeLocator? obj1, MachineTypeLocator? obj2)
             {
                 return !(obj1 == obj2);
             }
@@ -328,7 +328,7 @@ namespace Google.Solutions.Apis.Locator
                 return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
             }
 
-            public bool Equals(NodeTypeLocator other)
+            public bool Equals(NodeTypeLocator? other)
             {
                 return other is object &&
                     this.Name == other.Name &&
@@ -336,17 +336,17 @@ namespace Google.Solutions.Apis.Locator
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator other)
+            public override bool Equals(ResourceLocator? other)
             {
                 return other is NodeTypeLocator locator && Equals(locator);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is NodeTypeLocator locator && Equals(locator);
             }
 
-            public static bool operator ==(NodeTypeLocator obj1, NodeTypeLocator obj2)
+            public static bool operator ==(NodeTypeLocator? obj1, NodeTypeLocator? obj2)
             {
                 if (obj1 is null)
                 {
@@ -356,7 +356,7 @@ namespace Google.Solutions.Apis.Locator
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(NodeTypeLocator obj1, NodeTypeLocator obj2)
+            public static bool operator !=(NodeTypeLocator? obj1, NodeTypeLocator? obj2)
             {
                 return !(obj1 == obj2);
             }

@@ -135,7 +135,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new MachineTypeLocator("proj", "zone2", "n2d-standard-64");
 
             Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1.Equals((object?)ref2));
             Assert.IsFalse(ref1 == ref2);
             Assert.IsTrue(ref1 != ref2);
         }
@@ -146,7 +146,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
 
             Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1!.Equals((object?)null));
             Assert.IsFalse(ref1 == null);
             Assert.IsFalse(null == ref1);
             Assert.IsTrue(ref1 != null);

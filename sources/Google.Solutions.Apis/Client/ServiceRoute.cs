@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Client
         /// </summary>
         public static ServiceRoute Public = new ServiceRoute(null);
 
-        public ServiceRoute(string endpoint)
+        public ServiceRoute(string? endpoint)
         {
             this.Endpoint = endpoint;
         }
@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Name of IP address of the PSC endpoint. Null for the public route.
         /// </summary>
-        public string Endpoint { get; }
+        public string? Endpoint { get; }
 
         public override string ToString()
         {

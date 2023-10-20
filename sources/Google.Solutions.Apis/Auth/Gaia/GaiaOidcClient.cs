@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
         }
 
         public static ServiceEndpoint<GaiaOidcClient> CreateEndpoint(
-            ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<GaiaOidcClient>(
                 route ?? ServiceRoute.Public,
@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
         internal static GaiaOidcSession CreateSession(
             IAuthorizationCodeFlow flow,
-            OidcOfflineCredential offlineCredential,
+            OidcOfflineCredential? offlineCredential,
             TokenResponse tokenResponse)
         {
             flow.ExpectNotNull(nameof(flow));
@@ -122,7 +122,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
             }
             else if (offlineCredential != null &&
                 !string.IsNullOrEmpty(offlineCredential.IdToken) &&
-                UnverifiedGaiaJsonWebToken.Decode(offlineCredential.IdToken) is var offlineIdToken &&
+                UnverifiedGaiaJsonWebToken.Decode(offlineCredential.IdToken!) is var offlineIdToken &&
+                offlineIdToken != null &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {
                 //
@@ -155,7 +156,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
         private GaiaOidcSession CreateSessionAndRegisterTerminateEvent(
             IAuthorizationCodeFlow flow,
-            OidcOfflineCredential offlineCredential,
+            OidcOfflineCredential? offlineCredential,
             TokenResponse tokenResponse)
         {
             var session = CreateSession(
@@ -174,7 +175,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
         //---------------------------------------------------------------------
 
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
-            OidcOfflineCredential offlineCredential,
+            OidcOfflineCredential? offlineCredential,
             ICodeReceiver codeReceiver,
             CancellationToken cancellationToken)
         {
@@ -194,6 +195,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
 
             if (offlineCredential?.IdToken != null &&
                 UnverifiedGaiaJsonWebToken.TryDecode(offlineCredential.IdToken, out var offlineIdToken) &&
+                offlineIdToken != null &&
                 !string.IsNullOrEmpty(offlineIdToken.Payload.Email))
             {
                 //

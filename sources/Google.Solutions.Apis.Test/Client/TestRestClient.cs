@@ -42,7 +42,7 @@ namespace Google.Solutions.Apis.Test.Client
         public class SampleResource
         {
             [JsonProperty("issuer")]
-            public string Issuer { get; set; }
+            public string? Issuer { get; set; }
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Test.Client
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(result.Issuer);
+            Assert.IsNotNull(result?.Issuer);
         }
 
         [Test]

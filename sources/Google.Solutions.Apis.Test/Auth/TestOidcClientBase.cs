@@ -46,8 +46,8 @@ namespace Google.Solutions.Apis.Test.Auth
             {
             }
 
-            public Func<IOidcSession> ActivateOfflineCredential;
-            public Func<IOidcSession> AuthorizeWithBrowser;
+            public Func<IOidcSession>? ActivateOfflineCredential;
+            public Func<IOidcSession>? AuthorizeWithBrowser;
 
             public override IServiceEndpoint Endpoint => throw new System.NotImplementedException();
 
@@ -55,14 +55,24 @@ namespace Google.Solutions.Apis.Test.Auth
                 OidcOfflineCredential offlineCredential,
                 CancellationToken cancellationToken)
             {
+                if (this.ActivateOfflineCredential == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 return Task.FromResult(this.ActivateOfflineCredential());
             }
 
             protected override Task<IOidcSession> AuthorizeWithBrowserAsync(
-                OidcOfflineCredential offlineCredential,
+                OidcOfflineCredential? offlineCredential,
                 ICodeReceiver codeReceiver,
                 CancellationToken cancellationToken)
             {
+                if (this.AuthorizeWithBrowser == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 return Task.FromResult(this.AuthorizeWithBrowser());
             }
         }
@@ -85,7 +95,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
-            OidcOfflineCredential offlineCredential = null;
+            OidcOfflineCredential? offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
             var client = new SampleClient(store.Object);
@@ -166,7 +176,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
-            OidcOfflineCredential offlineCredential = null;
+            OidcOfflineCredential? offlineCredential = null;
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(false);
 
             var client = new SampleClient(store.Object)
@@ -189,7 +199,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             // Wrong offline credential.
             var store = new Mock<IOidcOfflineCredentialStore>();
-            var offlineCredential = new OidcOfflineCredential(OidcIssuer.Sts, null, "rt", null);
+            var offlineCredential = new OidcOfflineCredential(OidcIssuer.Sts, "scope", "rt", null);
             store.Setup(s => s.TryRead(out offlineCredential)).Returns(true);
 
             var client = new SampleClient(store.Object)

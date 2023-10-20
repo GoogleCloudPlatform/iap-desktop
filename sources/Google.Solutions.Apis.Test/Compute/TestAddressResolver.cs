@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
                 .Setup(a => a.GetInstanceAsync(SampleInstance, It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ResourceNotFoundException("mock", null));
+                .ThrowsAsync(new ResourceNotFoundException("mock", new Exception()));
 
             var resolver = new AddressResolver(computeClient.Object);
 

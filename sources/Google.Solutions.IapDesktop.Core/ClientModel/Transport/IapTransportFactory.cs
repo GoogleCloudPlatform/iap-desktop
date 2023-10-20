@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -228,6 +229,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         // IIapTransportFactory.
         //---------------------------------------------------------------------
 
+        [SuppressMessage("Usage", 
+            "VSTHRD002:Avoid problematic synchronous waits",
+            Justification = "Explicit check")]
         public IEnumerable<IIapTunnel> Pool
         {
             get

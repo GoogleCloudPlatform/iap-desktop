@@ -38,8 +38,8 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestResourceMetadataExtensions : CommonFixtureBase
     {
-        private InstancesResource instancesResource;
-        private ProjectsResource projectsResource;
+        private InstancesResource? instancesResource;
+        private ProjectsResource? projectsResource;
 
         [SetUp]
         public void SetUp()
@@ -63,14 +63,14 @@ namespace Google.Solutions.Apis.Test.Compute
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
-            await this.instancesResource.AddMetadataAsync(
+            await this.instancesResource!.AddMetadataAsync(
                     locator,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var instance = await this.instancesResource.Get(
+            var instance = await this.instancesResource!.Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var key = Guid.NewGuid().ToString();
 
-            await this.instancesResource.AddMetadataAsync(
+            await this.instancesResource!.AddMetadataAsync(
                     locator,
                     key,
                     "value to be overridden",
@@ -98,14 +98,14 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             var value = "metadata value";
-            await this.instancesResource.AddMetadataAsync(
+            await this.instancesResource!.AddMetadataAsync(
                     locator,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var instance = await this.instancesResource.Get(
+            var instance = await this.instancesResource!.Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -126,14 +126,14 @@ namespace Google.Solutions.Apis.Test.Compute
             var key = Guid.NewGuid().ToString();
 
             var callbacks = 0;
-            await this.instancesResource.UpdateMetadataAsync(
+            await this.instancesResource!.UpdateMetadataAsync(
                     locator,
                     metadata =>
                     {
                         if (callbacks++ == 0)
                         {
                             // Provoke a conflict on the first attempt.
-                            this.instancesResource.AddMetadataAsync(
+                            this.instancesResource!.AddMetadataAsync(
                                 locator,
                                 key,
                                 "conflict #" + callbacks,
@@ -146,7 +146,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     2)
                 .ConfigureAwait(false);
 
-            var instance = await this.instancesResource.Get(
+            var instance = await this.instancesResource!.Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -168,12 +168,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var callbacks = 0;
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => this.instancesResource.UpdateMetadataAsync(
+                () => this.instancesResource!.UpdateMetadataAsync(
                     locator,
                     metadata =>
                     {
                         // Provoke a conflict every time.
-                        this.instancesResource.AddMetadataAsync(
+                        this.instancesResource!.AddMetadataAsync(
                             locator,
                             key,
                             "conflict #" + callbacks++,
@@ -195,14 +195,14 @@ namespace Google.Solutions.Apis.Test.Compute
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
-            await this.projectsResource.AddMetadataAsync(
+            await this.projectsResource!.AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var project = await this.projectsResource.Get(TestProject.ProjectId)
+            var project = await this.projectsResource!.Get(TestProject.ProjectId)
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -216,7 +216,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var key = Guid.NewGuid().ToString();
 
-            await this.projectsResource.AddMetadataAsync(
+            await this.projectsResource!.AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     "value to be overridden",
@@ -224,14 +224,14 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             var value = "metadata value";
-            await this.projectsResource.AddMetadataAsync(
+            await this.projectsResource!.AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var project = await this.projectsResource.Get(TestProject.ProjectId)
+            var project = await this.projectsResource!.Get(TestProject.ProjectId)
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -246,14 +246,14 @@ namespace Google.Solutions.Apis.Test.Compute
             var key = Guid.NewGuid().ToString();
 
             var callbacks = 0;
-            await this.projectsResource.UpdateMetadataAsync(
+            await this.projectsResource!.UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>
                     {
                         if (callbacks++ == 0)
                         {
                             // Provoke a conflict on the first attempt.
-                            this.projectsResource.AddMetadataAsync(
+                            this.projectsResource!.AddMetadataAsync(
                                 TestProject.ProjectId,
                                 key,
                                 "conflict #" + callbacks,
@@ -266,7 +266,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     2)
                 .ConfigureAwait(false);
 
-            var project = await this.projectsResource.Get(TestProject.ProjectId)
+            var project = await this.projectsResource!.Get(TestProject.ProjectId)
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -282,12 +282,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var callbacks = 0;
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => this.projectsResource.UpdateMetadataAsync(
+                () => this.projectsResource!.UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>
                     {
                         // Provoke a conflict every time.
-                        this.projectsResource.AddMetadataAsync(
+                        this.projectsResource!.AddMetadataAsync(
                             TestProject.ProjectId,
                             key,
                             "conflict #" + callbacks++,

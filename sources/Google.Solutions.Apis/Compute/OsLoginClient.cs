@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Compute
         }
 
         public static ServiceEndpoint<OsLoginClient> CreateEndpoint(
-                ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<OsLoginClient>(
                 route ?? ServiceRoute.Public,

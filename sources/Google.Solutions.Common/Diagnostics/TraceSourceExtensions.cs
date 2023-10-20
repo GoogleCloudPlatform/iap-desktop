@@ -36,7 +36,7 @@ namespace Google.Solutions.Common.Diagnostics
             }
         }
 
-        public static void TraceVerbose(this TraceSource source, string message, params object[] args)
+        public static void TraceVerbose(this TraceSource source, string message, params object?[] args)
         {
             if (source.Switch.ShouldTrace(TraceEventType.Verbose))
             {
@@ -44,7 +44,7 @@ namespace Google.Solutions.Common.Diagnostics
             }
         }
 
-        public static void TraceWarning(this TraceSource source, string message, params object[] args)
+        public static void TraceWarning(this TraceSource source, string message, params object?[] args)
         {
             if (source.Switch.ShouldTrace(TraceEventType.Warning))
             {
@@ -52,7 +52,7 @@ namespace Google.Solutions.Common.Diagnostics
             }
         }
 
-        public static void TraceError(this TraceSource source, string message, params object[] args)
+        public static void TraceError(this TraceSource source, string message, params object?[] args)
         {
             if (source.Switch.ShouldTrace(TraceEventType.Error))
             {

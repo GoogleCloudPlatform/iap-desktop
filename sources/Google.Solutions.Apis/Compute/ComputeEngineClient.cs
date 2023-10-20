@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Compute
         }
 
         public static ServiceEndpoint<ComputeEngineClient> CreateEndpoint(
-                ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<ComputeEngineClient>(
                 route ?? ServiceRoute.Public,
@@ -247,7 +247,7 @@ namespace Google.Solutions.Apis.Compute
         // Guest attributes.
         //---------------------------------------------------------------------
 
-        public async Task<GuestAttributes> GetGuestAttributesAsync(
+        public async Task<GuestAttributes?> GetGuestAttributesAsync(
             InstanceLocator instance,
             string queryPath,
             CancellationToken cancellationToken)

@@ -129,7 +129,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new ZoneLocator("proj", "us-central1-a");
 
             Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1!.Equals((object?)null));
             Assert.IsFalse(ref1 == null);
             Assert.IsFalse(null == ref1);
             Assert.IsTrue(ref1 != null);

@@ -101,7 +101,7 @@ namespace Google.Solutions.Common.Test.Threading
 
                 thread.Start();
 
-                ctx.Post(_ => throw new ArgumentException(), null);
+                ctx.Post(_ => throw new ArgumentException(), null!);
 
                 thread.Join();
             }

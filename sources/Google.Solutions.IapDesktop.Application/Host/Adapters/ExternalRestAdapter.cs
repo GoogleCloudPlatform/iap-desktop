@@ -39,7 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         /// <returns>null if not found or empty</returns>
         Task<TModel> GetAsync<TModel>(
             Uri url,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken)
+            where TModel : class;
     }
 
     public class ExternalRestAdapter : IExternalRestAdapter
@@ -52,11 +53,12 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
 
 
         public async Task<TModel> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
+            where TModel : class
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(url))
             {
                 return await this.client
-                    .GetAsync<TModel>(url.ToString(), null, cancellationToken)
+                    .GetAsync<TModel>(url.ToString(), cancellationToken)
                     .ConfigureAwait(false);
             }
         }

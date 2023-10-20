@@ -56,7 +56,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new InstanceLocator("proj", "zone", "inst");
 
             Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
+            Assert.IsTrue(ref1.Equals((object?)ref2));
             Assert.IsTrue(ref1 == ref2);
             Assert.IsFalse(ref1 != ref2);
         }
@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
+            Assert.IsTrue(ref1.Equals((object?)ref2));
             Assert.IsTrue(ref1 == ref2);
             Assert.IsFalse(ref1 != ref2);
         }
@@ -80,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new InstanceLocator("proj", "zone", "other");
 
             Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1.Equals((object?)ref2));
             Assert.IsFalse(ref1 == ref2);
             Assert.IsTrue(ref1 != ref2);
         }
@@ -92,9 +92,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.IsFalse(ref2.Equals(ref1));
-            Assert.IsFalse(ref2.Equals((object)ref1));
+            Assert.IsFalse(ref2.Equals((object?)ref1));
             Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
+            Assert.IsFalse(ref1.Equals((object?)ref2));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new InstanceLocator("proj", "zone", "inst");
 
             Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1!.Equals((object?)null));
             Assert.IsFalse(ref1 == null);
             Assert.IsFalse(null == ref1);
             Assert.IsTrue(ref1 != null);

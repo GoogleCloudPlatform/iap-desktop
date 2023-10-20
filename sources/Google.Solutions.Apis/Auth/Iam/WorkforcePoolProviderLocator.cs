@@ -53,7 +53,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             this.Provider = provider.ExpectNotEmpty(nameof(provider));
         }
 
-        public static WorkforcePoolProviderLocator Parse(string resourceReference)
+        public static WorkforcePoolProviderLocator? Parse(string? resourceReference)
         {
             if (TryParse(resourceReference, out var locator))
             {
@@ -67,8 +67,8 @@ namespace Google.Solutions.Apis.Auth.Iam
         }
 
         public static bool TryParse(
-            string resourceReference, 
-            out WorkforcePoolProviderLocator locator)
+            string? resourceReference, 
+            out WorkforcePoolProviderLocator? locator)
         {
             if (string.IsNullOrEmpty(resourceReference))
             {

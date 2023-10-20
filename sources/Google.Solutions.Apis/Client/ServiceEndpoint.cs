@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Client
         public ServiceEndpoint(
             ServiceRoute pscDirections,
             Uri tlsUri, 
-            Uri mtlsUri)
+            Uri? mtlsUri)
         {
             this.pscDirections = pscDirections.ExpectNotNull(nameof(pscDirections));
             this.CanonicalUri = tlsUri.ExpectNotNull(nameof(tlsUri));
@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// MTLS variant of the same endpoint.
         /// </summary>
-        public Uri MtlsUri { get; }
+        public Uri? MtlsUri { get; }
 
         //---------------------------------------------------------------------
         // IServiceEndpoint.

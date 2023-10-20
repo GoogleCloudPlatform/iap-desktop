@@ -59,14 +59,14 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         private class OfflineStore : IOidcOfflineCredentialStore
         {
-            public OidcOfflineCredential StoredCredential { get; set; }
+            public OidcOfflineCredential? StoredCredential { get; set; }
 
             public void Clear()
             {
                 this.StoredCredential = null;
             }
 
-            public bool TryRead(out OidcOfflineCredential credential)
+            public bool TryRead(out OidcOfflineCredential? credential)
             {
                 credential = this.StoredCredential;
                 return credential != null;
@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         private class WorkforcePoolClientWithMockFlow : WorkforcePoolClient
         {
             public Mock<IAuthorizationCodeFlow> Flow = new Mock<IAuthorizationCodeFlow>();
-            public StsService.IntrospectTokenResponse IntrospectTokenResponse = null;
+            public StsService.IntrospectTokenResponse? IntrospectTokenResponse = null;
 
             public WorkforcePoolClientWithMockFlow(
                 IDeviceEnrollment deviceEnrollment,
@@ -110,6 +110,11 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             private protected override Task<StsService.IntrospectTokenResponse> IntrospectTokenAsync(
                 StsService.IntrospectTokenRequest request, CancellationToken cancellationToken)
             {
+                if (this.IntrospectTokenResponse == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 return Task.FromResult(this.IntrospectTokenResponse);
             }
         }
@@ -239,7 +244,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             {
                 StoredCredential = new OidcOfflineCredential(
                     OidcIssuer.Sts,
-                    null,
+                    "scope",
                     "refresh-token",
                     null)
             };
@@ -274,7 +279,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             {
                 StoredCredential = new OidcOfflineCredential(
                     OidcIssuer.Sts,
-                    null,
+                    "scope",
                     "refresh-token",
                     null)
             };
@@ -310,7 +315,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual("SUBJECT", session.Username);
+            Assert.AreEqual("SUBJECT", session!.Username);
             Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
             Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
 

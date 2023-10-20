@@ -70,25 +70,12 @@ namespace Google.Solutions.Apis.Client
         public UserAgent UserAgent { get; }
 
         /// <summary>
-        /// Certificate for mTLS.
-        /// </summary>
-        public X509Certificate2 ClientCertificate { get; }
-
-        /// <summary>
         /// Perform a GET request.
         /// </summary>
-        public Task<TModel> GetAsync<TModel>(
+        public async Task<TModel?> GetAsync<TModel>(
             string url,
             CancellationToken cancellationToken)
-            => GetAsync<TModel>(url, null, cancellationToken);
-
-        /// <summary>
-        /// Perform an authenticated GET request.
-        /// </summary>
-        public async Task<TModel> GetAsync<TModel>(
-            string url,
-            ICredential credential,
-            CancellationToken cancellationToken)
+            where TModel : class
         {
             using (CommonTraceSource.Log.TraceMethod().WithParameters(url))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -96,16 +83,6 @@ namespace Google.Solutions.Apis.Client
                 if (this.UserAgent != null)
                 {
                     request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
-                }
-
-                if (credential != null)
-                {
-                    var accessToken = await credential.GetAccessTokenForRequestAsync(
-                        null,
-                        cancellationToken).ConfigureAwait(false);
-                    request.Headers.Authorization = new AuthenticationHeaderValue(
-                        "Bearer",
-                        accessToken);
                 }
 
                 try

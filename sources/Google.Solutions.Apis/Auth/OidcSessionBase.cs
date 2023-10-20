@@ -43,7 +43,7 @@ namespace Google.Solutions.Apis.Auth
         // IOidcSession.
         //---------------------------------------------------------------------
 
-        public event EventHandler Terminated;
+        public event EventHandler? Terminated;
 
         public ICredential ApiCredential => this.Credential;
 

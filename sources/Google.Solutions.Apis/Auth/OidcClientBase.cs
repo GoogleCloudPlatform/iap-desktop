@@ -45,7 +45,7 @@ namespace Google.Solutions.Apis.Auth
         /// Try to authorize using an existing refresh token.
         /// </summary>
         /// <returns>Null if silent authorization failed</returns>
-        Task<IOidcSession> TryAuthorizeSilentlyAsync(
+        Task<IOidcSession?> TryAuthorizeSilentlyAsync(
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Auth
 
         public abstract IServiceEndpoint Endpoint { get; }
 
-        public async Task<IOidcSession> TryAuthorizeSilentlyAsync(
+        public async Task<IOidcSession?> TryAuthorizeSilentlyAsync(
             CancellationToken cancellationToken)
         {
             if (this.store.TryRead(out var offlineCredential))
@@ -89,7 +89,7 @@ namespace Google.Solutions.Apis.Auth
                 ApiTraceSource.Log.TraceVerbose(
                     "Attempting authorization using offline credential...");
 
-                Debug.Assert(offlineCredential.RefreshToken != null);
+                Debug.Assert(offlineCredential!.RefreshToken != null);
 
                 if (offlineCredential.Issuer != this.Registration.Issuer)
                 {
@@ -106,8 +106,8 @@ namespace Google.Solutions.Apis.Auth
                         .ConfigureAwait(false);
 
                     Debug.Assert(session != null);
-                    Debug.Assert(session.OfflineCredential != null);
-                    Debug.Assert(session.OfflineCredential.Issuer == this.Registration.Issuer);
+                    Debug.Assert(session!.OfflineCredential != null);
+                    Debug.Assert(session.OfflineCredential!.Issuer == this.Registration.Issuer);
 
                     //
                     // Update the offline credential as the refresh
@@ -177,7 +177,7 @@ namespace Google.Solutions.Apis.Auth
                     .ConfigureAwait(false);
 
                 Debug.Assert(session != null);
-                Debug.Assert(session.OfflineCredential.Issuer == this.Registration.Issuer);
+                Debug.Assert(session!.OfflineCredential.Issuer == this.Registration.Issuer);
 
                 //
                 // Store the refresh token so that we can do a silent
@@ -206,7 +206,7 @@ namespace Google.Solutions.Apis.Auth
         }
 
         protected abstract Task<IOidcSession> AuthorizeWithBrowserAsync(
-            OidcOfflineCredential offlineCredential,
+            OidcOfflineCredential? offlineCredential,
             ICodeReceiver codeReceiver,
             CancellationToken cancellationToken);
 

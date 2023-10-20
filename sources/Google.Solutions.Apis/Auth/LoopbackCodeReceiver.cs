@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Auth
     /// </summary>
     public class LoopbackCodeReceiver : ICodeReceiver
     {
-        private string redirectUri;
+        private string? redirectUri;
         private readonly string path;
         private readonly string responseHtml;
 
@@ -86,7 +86,8 @@ namespace Google.Solutions.Apis.Auth
         {
             get
             {
-                if (string.IsNullOrEmpty(this.redirectUri))
+                if (this.redirectUri == null || 
+                    string.IsNullOrEmpty(this.redirectUri))
                 {
                     var port = GetRandomUnusedPort();
                     this.redirectUri = new UriBuilder()

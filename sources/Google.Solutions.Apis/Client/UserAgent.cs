@@ -34,7 +34,7 @@ namespace Google.Solutions.Apis.Client
         /// <summary>
         /// Application-specific features/extensions to be added to header.
         /// </summary>
-        public string Extensions { get; set; }
+        public string? Extensions { get; set; }
 
         private static string GetOsVersion()
         {
@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Client
 
             if (!string.IsNullOrEmpty(this.Extensions))
             {
-                Debug.Assert(this.Extensions.IndexOf(';') < 0);
+                Debug.Assert(this.Extensions!.IndexOf(';') < 0);
                 platform += "; " + this.Extensions;
             }
 

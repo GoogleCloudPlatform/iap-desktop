@@ -32,7 +32,7 @@ namespace Google.Solutions.Apis.Diagnostics
 
     public interface IExceptionWithHelpTopic : _Exception
     {
-        IHelpTopic Help { get; }
+        IHelpTopic? Help { get; }
     }
 
     public class HelpTopic : IHelpTopic

@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.IsTrue(UnverifiedGaiaJsonWebToken.TryDecode(
                 SampleJwtWithInvalidSignature,
                 out var jwt));
-            Assert.AreEqual("jwt", jwt.Header.Type);
+            Assert.AreEqual("jwt", jwt!.Header.Type);
             Assert.AreEqual("x@example.com", jwt.Payload.Email);
         }
 

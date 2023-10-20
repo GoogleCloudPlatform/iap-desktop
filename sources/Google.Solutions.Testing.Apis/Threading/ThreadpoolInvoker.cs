@@ -25,6 +25,8 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+
 namespace Google.Solutions.Testing.Apis.Threading
 {
     /// <summary>
@@ -37,7 +39,7 @@ namespace Google.Solutions.Testing.Apis.Threading
         private int outstanding = 0;
         private readonly ManualResetEvent idle = new ManualResetEvent(false);
 
-        public Task AwaitPendingInvocations()
+        public Task AwaitPendingInvocationsAsync()
         {
             return this.idle.WaitAsync();
         }

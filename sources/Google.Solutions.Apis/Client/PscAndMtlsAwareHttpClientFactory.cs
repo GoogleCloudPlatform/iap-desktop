@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Client
     {
         private readonly ServiceEndpointDirections directions;
         private readonly IDeviceEnrollment deviceEnrollment;
-        private readonly ICredential credential;
+        private readonly ICredential? credential;
         private readonly UserAgent userAgent;
 
         public PscAndMtlsAwareHttpClientFactory(
@@ -157,10 +157,10 @@ namespace Google.Solutions.Apis.Client
                 }
                 
                 if (this.directions.UseClientCertificate &&
-                    HttpClientHandlerExtensions.CanUseClientCertificates)
+                    HttpClientHandlerExtensions.CanUseClientCertificates &&
+                    this.deviceEnrollment.Certificate != null)
                 {
                     Debug.Assert(this.deviceEnrollment.State == DeviceEnrollmentState.Enrolled);
-                    Debug.Assert(this.deviceEnrollment.Certificate != null);
 
                     var added = handler.TryAddClientCertificate(this.deviceEnrollment.Certificate);
                     Debug.Assert(added);

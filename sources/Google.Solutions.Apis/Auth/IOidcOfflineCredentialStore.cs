@@ -31,7 +31,7 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// Try to load an offline credential.
         /// </summary>
-        bool TryRead(out OidcOfflineCredential credential);
+        bool TryRead(out OidcOfflineCredential? credential);
 
         /// <summary>
         /// Store offline credential.
@@ -63,7 +63,7 @@ namespace Google.Solutions.Apis.Auth
         /// <summary>
         /// ID token, optional.
         /// </summary>
-        public string IdToken { get; }
+        public string? IdToken { get; }
 
         /// <summary>
         /// List of authorized scopes (space separated).
@@ -74,7 +74,7 @@ namespace Google.Solutions.Apis.Auth
             OidcIssuer issuer,
             string scope,
             string refreshToken, 
-            string idToken)
+            string? idToken)
         {
             this.Issuer = issuer;
             this.Scope = scope;
