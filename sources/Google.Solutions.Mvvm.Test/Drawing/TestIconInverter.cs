@@ -37,7 +37,8 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         // UI tests.
         //---------------------------------------------------------------------
 
-        private string fileName;
+        private string? fileName;
+
         public TestIconInverter()
         {
             InitializeComponent();

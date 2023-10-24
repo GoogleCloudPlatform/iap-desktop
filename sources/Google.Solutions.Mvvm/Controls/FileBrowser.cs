@@ -396,12 +396,12 @@ namespace Google.Solutions.Mvvm.Controls
 
         public class Breadcrumb
         {
-            public Breadcrumb Parent { get; }
+            public Breadcrumb? Parent { get; }
             public IFileItem Directory => this.TreeNode.Model;
             internal DirectoryTreeView.Node TreeNode { get; }
 
             internal Breadcrumb(
-                Breadcrumb parent,
+                Breadcrumb? parent,
                 BindableTreeView<IFileItem>.Node treeNode)
             {
                 this.Parent = parent;

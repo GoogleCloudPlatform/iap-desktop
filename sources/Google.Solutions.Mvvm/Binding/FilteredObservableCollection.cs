@@ -35,8 +35,8 @@ namespace Google.Solutions.Mvvm.Binding
         private readonly ObservableCollection<T> collection;
         private Predicate<T> predicate = _ => true;
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public FilteredObservableCollection(ObservableCollection<T> collection)
         {
