@@ -23,6 +23,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,12 +38,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
     {
         private class ViewModelItem : ViewModelBase
         {
-            private string name;
+            private string? name;
             private int imageIndex;
 
             public string Name
             {
-                get => this.name;
+                get => this.name ?? throw new ArgumentException(nameof(Name);
                 set
                 {
                     this.name = value;
@@ -63,12 +64,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         private class ViewModel : ViewModelBase
         {
-            private ViewModelItem selectedItem = null;
-            private IEnumerable<ViewModelItem> selectedItems = null;
+            private ViewModelItem? selectedItem = null;
+            private IEnumerable<ViewModelItem>? selectedItems = null;
 
-            public ObservableCollection<ViewModelItem> Items { get; set; }
+            public ObservableCollection<ViewModelItem>? Items { get; set; }
 
-            public ViewModelItem SelectedItem
+            public ViewModelItem? SelectedItem
             {
                 get => this.selectedItem;
                 set
@@ -77,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     RaisePropertyChange();
                 }
             }
-            public IEnumerable<ViewModelItem> SelectedItems
+            public IEnumerable<ViewModelItem>? SelectedItems
             {
                 get => this.selectedItems;
                 set
@@ -379,7 +380,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.listView.Items[0].Selected = true;
 
             Assert.IsNotNull(viewModel.SelectedItem);
-            Assert.AreEqual("one", viewModel.SelectedItem.Name);
+            Assert.AreEqual("one", viewModel.SelectedItem!.Name);
         }
 
         [Test]

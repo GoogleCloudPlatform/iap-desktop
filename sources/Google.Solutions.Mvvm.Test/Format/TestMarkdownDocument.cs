@@ -566,9 +566,9 @@ namespace Google.Solutions.Mvvm.Test.Format
 
             Assert.IsFalse(token1.Equals(token2));
             Assert.IsFalse(token1.Equals(null));
-            Assert.IsFalse(token1 == token2);
-            Assert.IsFalse(token1 == null);
-            Assert.IsTrue(token1 != token2);
+            Assert.IsFalse(token1! == token2);
+            Assert.IsFalse(token1! == null!);
+            Assert.IsTrue(token1! != token2);
         }
     }
 }

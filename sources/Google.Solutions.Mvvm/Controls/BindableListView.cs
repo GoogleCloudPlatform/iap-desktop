@@ -106,8 +106,8 @@ namespace Google.Solutions.Mvvm.Controls
         // Selection properties.
         //---------------------------------------------------------------------
 
-        public event EventHandler SelectedModelItemsChanged;
-        public event EventHandler SelectedModelItemChanged;
+        public event EventHandler? SelectedModelItemsChanged;
+        public event EventHandler? SelectedModelItemChanged;
 
         protected override void OnSelectedIndexChanged(EventArgs e)
         {

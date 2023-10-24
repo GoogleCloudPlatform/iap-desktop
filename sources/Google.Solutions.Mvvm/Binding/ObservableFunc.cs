@@ -33,7 +33,7 @@ namespace Google.Solutions.Mvvm.Binding
     {
         private readonly Func<T> func;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public T Value => this.func();
 

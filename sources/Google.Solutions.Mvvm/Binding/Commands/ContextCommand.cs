@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             set => this.id = value;
         }
 
-        public Image Image { get; set; }
+        public Image? Image { get; set; }
         
         public Keys ShortcutKeys { get; set; }
 

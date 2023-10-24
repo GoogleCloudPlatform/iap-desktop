@@ -107,9 +107,9 @@ namespace Google.Solutions.Mvvm.Controls
         // Events.
         //---------------------------------------------------------------------
 
-        public event EventHandler<ExceptionEventArgs> NavigationFailed;
-        public event EventHandler CurrentDirectoryChanged;
-        public event EventHandler SelectedFilesChanged;
+        public event EventHandler<ExceptionEventArgs>? NavigationFailed;
+        public event EventHandler? CurrentDirectoryChanged;
+        public event EventHandler? SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
             => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));

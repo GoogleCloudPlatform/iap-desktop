@@ -58,8 +58,8 @@ namespace Google.Solutions.Mvvm.Controls
 
         private readonly TaskScheduler taskScheduler;
 
-        public event EventHandler SelectedModelNodeChanged;
-        public event EventHandler<ExceptionEventArgs> LoadingChildrenFailed;
+        public event EventHandler? SelectedModelNodeChanged;
+        public event EventHandler<ExceptionEventArgs>? LoadingChildrenFailed;
 
         public BindableTreeView()
         {
@@ -82,7 +82,7 @@ namespace Google.Solutions.Mvvm.Controls
             };
         }
 
-        public TModelNode SelectedModelNode
+        public TModelNode? SelectedModelNode
         {
             get
             {

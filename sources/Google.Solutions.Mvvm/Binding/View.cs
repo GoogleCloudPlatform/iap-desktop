@@ -193,7 +193,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public TViewModel ViewModel { get; }
 
-        public IControlTheme Theme { get; set; }
+        public IControlTheme? Theme { get; set; }
 
         internal Dialog(IServiceProvider serviceProvider, TViewModel viewModel)
         {
@@ -265,12 +265,12 @@ namespace Google.Solutions.Mvvm.Binding
     /// Hydrated view that can be used as a standalone window.
     /// </summary>
     public sealed class Window<TView, TViewModel>
-        where TView : IView<TViewModel>
+        where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
         private readonly IServiceProvider serviceProvider;
 
-        private TView form;
+        private TView? form;
 
         public TViewModel ViewModel { get; }
 
