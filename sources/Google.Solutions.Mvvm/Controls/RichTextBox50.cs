@@ -177,7 +177,7 @@ namespace Google.Solutions.Mvvm.Controls
                 public int msg = 0;
                 public IntPtr wParam = IntPtr.Zero;
                 public IntPtr lParam = IntPtr.Zero;
-                public CHARRANGE charrange = null;
+                public CHARRANGE? charrange = null;
             }
 
             [StructLayout(LayoutKind.Sequential)]

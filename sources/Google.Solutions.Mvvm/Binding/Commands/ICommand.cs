@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         /// <summary>
         /// ID, used for tracing.
         /// </summary>
-        string Id { get; }
+        string? Id { get; }
 
         /// <summary>
         /// Caption, shown in UI.

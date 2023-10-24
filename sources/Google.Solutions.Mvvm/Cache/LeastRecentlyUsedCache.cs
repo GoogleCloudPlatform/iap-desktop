@@ -29,6 +29,7 @@ namespace Google.Solutions.Mvvm.Cache
     /// Non-threadsafe, simple implementation of a LRU cache.
     /// </summary>
     internal class LeastRecentlyUsedCache<K, V>
+        where V : class
     {
         private readonly int capacity;
         private readonly LinkedList<KeyValuePair<K, V>> lruList = new LinkedList<KeyValuePair<K, V>>();
@@ -45,7 +46,7 @@ namespace Google.Solutions.Mvvm.Cache
             this.capacity = capacity;
         }
 
-        public V Lookup(K key)
+        public V? Lookup(K key)
         {
             if (this.cacheMap.TryGetValue(key, out var node))
             {

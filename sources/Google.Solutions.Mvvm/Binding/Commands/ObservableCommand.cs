@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             this.executeFunc = executeFunc;
         }
 
-        public override string Id => null;
+        public override string? Id => null;
 
         public IObservableProperty<bool> CanExecute { get; }
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         public static ObservableCommand Build(
             string text,
             Func<CancellationToken, Task> executeFunc,
-            IObservableProperty<bool> canExecute = null)
+            IObservableProperty<bool>? canExecute = null)
         {
             return new ObservableCommand(
                 text,
@@ -94,7 +94,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         public static ObservableCommand Build(
             string text,
             Func<Task> executeFunc,
-            IObservableProperty<bool> canExecute = null)
+            IObservableProperty<bool>? canExecute = null)
         {
             return new ObservableCommand(
                 text,
@@ -105,7 +105,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         public static ObservableCommand Build(
             string text,
             Action executeAction,
-            IObservableProperty<bool> canExecute = null)
+            IObservableProperty<bool>? canExecute = null)
         {
             return new ObservableCommand(
                 text,

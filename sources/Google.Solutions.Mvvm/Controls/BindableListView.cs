@@ -43,7 +43,7 @@ namespace Google.Solutions.Mvvm.Controls
         [Browsable(true)]
         public bool AutoResizeColumnsOnUpdate { get; set; } = false;
 
-        private string ExtractColumnValue(int columnIndex, TModelItem modelItem)
+        private string? ExtractColumnValue(int columnIndex, TModelItem modelItem)
         {
             if (this.columnAccessors.TryGetValue(columnIndex, out var accessorFunc))
             {

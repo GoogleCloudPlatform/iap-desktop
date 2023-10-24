@@ -37,7 +37,8 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
-        private IFileSystem fileSystem = null;
+        private IFileSystem? fileSystem = null;
+
         private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
@@ -50,6 +51,12 @@ namespace Google.Solutions.Mvvm.Controls
         //---------------------------------------------------------------------
         // Privates.
         //---------------------------------------------------------------------
+
+        private IFileSystem FileSystem
+        {
+            get => this.fileSystem ?? 
+                throw new InvalidOperationException("The control has not been bound yet");
+        }
 
         private int GetImageIndex(FileType fileType)
         {
@@ -147,12 +154,12 @@ namespace Google.Solutions.Mvvm.Controls
             //
             if (!this.listFilesCache.TryGetValue(folder, out var children))
             {
-                children = await this.fileSystem
+                children = await this.FileSystem
                     .ListFilesAsync(folder)
                     .ConfigureAwait(true);
                 Debug.Assert(children != null);
 
-                this.listFilesCache[folder] = children;
+                this.listFilesCache[folder] = children!;
             }
 
             return children;

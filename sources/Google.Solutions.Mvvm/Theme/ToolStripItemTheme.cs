@@ -52,7 +52,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 // Consider current child items...
                 //
-                List<WeakReference<ToolStripItem>> appliedItems = null;
+                List<WeakReference<ToolStripItem>>? appliedItems = null;
                 if (this.IncludeControlsAddedLater)
                 {
                     appliedItems = new List<WeakReference<ToolStripItem>>();
@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Theme
                     {
                         ApplyTo(subItem);
 
-                        if (this.IncludeControlsAddedLater)
+                        if (this.IncludeControlsAddedLater && appliedItems != null)
                         {
                             //
                             // Memoize items we've applied already so that
@@ -138,7 +138,7 @@ namespace Google.Solutions.Mvvm.Theme
             this.rules.AddLast(apply);
         }
 
-        public void ApplyTo(ToolStrip toolStrip)
+        public void ApplyTo(ToolStrip? toolStrip)
         {
             if (toolStrip == null)
             {

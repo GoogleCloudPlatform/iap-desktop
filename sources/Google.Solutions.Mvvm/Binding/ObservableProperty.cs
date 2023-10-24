@@ -50,8 +50,8 @@ namespace Google.Solutions.Mvvm.Binding
     public abstract class ObservablePropertyBase<T>
          : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
     {
-        private LinkedList<IObservableProperty> dependents;
-        public event PropertyChangedEventHandler PropertyChanged;
+        private LinkedList<IObservableProperty>? dependents;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public virtual void RaisePropertyChange()
         {

@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public abstract class ProgressBarBase : Control
     {
-        internal Timer timer;
+        internal Timer? timer;
         private int value;
         private int maximum = 100;
         private int speed = 1;
@@ -124,7 +124,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             base.OnVisibleChanged(e);
 
-            if (this.Indeterminate)
+            if (this.Indeterminate && this.timer != null)
             {
                 //
                 // Only run the timer when the control is

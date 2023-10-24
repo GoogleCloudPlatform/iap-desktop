@@ -141,7 +141,7 @@ namespace Google.Solutions.Mvvm.Binding
             return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
         }
 
-        public IControlTheme Theme { get; set; }
+        public IControlTheme? Theme { get; set; }
 
         internal ViewFactory(IServiceProvider serviceProvider)
         {
@@ -274,7 +274,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public TViewModel ViewModel { get; }
 
-        public IControlTheme Theme { get; set; }
+        public IControlTheme? Theme { get; set; }
 
         internal Window(IServiceProvider serviceProvider, TViewModel viewModel)
         {

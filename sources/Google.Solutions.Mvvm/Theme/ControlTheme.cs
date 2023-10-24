@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Theme
         // IControlTheme.
         //---------------------------------------------------------------------
 
-        public void ApplyTo(Control control)
+        public void ApplyTo(Control? control)
         {
             if (control == null)
             {

@@ -55,7 +55,9 @@ namespace Google.Solutions.Mvvm.Controls
             this.Format += (_, e) =>
             {
                 var v = ((Enum)e.Value);
-                e.Value = v.GetAttribute<DisplayAttribute>().Name ?? v.ToString();
+                e.Value = v?.GetAttribute<DisplayAttribute>()?.Name 
+                    ?? v?.ToString()
+                    ?? "(null)";
             };
 
             //

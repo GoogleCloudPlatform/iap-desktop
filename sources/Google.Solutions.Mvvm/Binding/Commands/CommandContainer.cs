@@ -249,11 +249,11 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             // Virtual properties.
             //-----------------------------------------------------------------
 
-            public virtual string Text => null;
+            public virtual string? Text => null;
 
-            public virtual string ToolTip => null;
+            public virtual string? ToolTip => null;
 
-            public virtual Image Image => null;
+            public virtual Image? Image => null;
 
             public virtual Keys ShortcutKeys => Keys.None;
 

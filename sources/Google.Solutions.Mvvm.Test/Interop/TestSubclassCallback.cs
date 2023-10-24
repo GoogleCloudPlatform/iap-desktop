@@ -97,7 +97,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                     throw new ArgumentException("test");
                 });
 
-                Exception exception = null;
+                Exception? exception = null;
                 callback.UnhandledException += (_, e) => exception = e;
 
                 //
