@@ -125,6 +125,13 @@ namespace Google.Solutions.Mvvm.Binding
             {
                 Debug.Assert(this.viewModel.View != null);
                 Debug.Assert(this.viewModel.View is ISynchronizeInvoke);
+
+                if (this.viewModel?.View == null)
+                {
+                    throw new InvalidOperationException(
+                        "The view model is not connected to a view");
+                }
+
                 return ((ISynchronizeInvoke)this.viewModel.View);
             }
         }

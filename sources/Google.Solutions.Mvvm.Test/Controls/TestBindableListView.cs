@@ -43,7 +43,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             public string Name
             {
-                get => this.name ?? throw new ArgumentException(nameof(Name);
+                get => this.name ?? throw new ArgumentException(nameof(Name));
                 set
                 {
                     this.name = value;

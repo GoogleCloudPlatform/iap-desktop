@@ -106,7 +106,7 @@ namespace Google.Solutions.Mvvm.Controls
         [Category("Appearance")]
         public override string Text
         {
-            get => this.infoLabel?.Text;
+            get => this.infoLabel.Text;
             set
             {
                 this.infoLabel.Text = value;

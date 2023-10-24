@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -214,7 +215,7 @@ namespace Google.Solutions.Mvvm.Binding
                     case NotifyCollectionChangedAction.Add:
                         {
                             var index = e.NewStartingIndex;
-                            foreach (var newModelItem in newModelItems)
+                            foreach (var newModelItem in newModelItems.EnsureNotNull())
                             {
                                 this.view.Insert(
                                     index++,
@@ -228,7 +229,9 @@ namespace Google.Solutions.Mvvm.Binding
                             foreach (var oldViewItem in this.view
                                 .OfType<ToolStripMenuItem>()
                                 .Where(item => item.Tag is TModel)
-                                .Where(item => oldModelItems.Contains((TModel)item.Tag))
+                                .Where(item => oldModelItems
+                                    .EnsureNotNull()
+                                    .Contains((TModel)item.Tag))
                                 .ToList())
                             {
                                 this.view.Remove(oldViewItem);
