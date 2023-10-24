@@ -68,7 +68,7 @@ namespace Google.Solutions.Iap
         }
 
         public static ServiceEndpoint<IapClient> CreateEndpoint(
-            ServiceRoute route = null)
+            ServiceRoute? route = null)
         {
             return new ServiceEndpoint<IapClient>(
                 route ?? ServiceRoute.Public,
@@ -96,7 +96,7 @@ namespace Google.Solutions.Iap
             var directions = this.Endpoint.GetDirections(
                 this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
 
-            X509Certificate2 clientCertificate = null;
+            X509Certificate2? clientCertificate = null;
             if (directions.UseClientCertificate)
             {
                 Debug.Assert(this.authorization.DeviceEnrollment.Certificate != null);

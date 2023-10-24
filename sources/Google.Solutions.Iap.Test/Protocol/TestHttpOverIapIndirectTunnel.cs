@@ -57,8 +57,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     80,
                     IapClient.DefaultNetworkInterface),
                 policy.Object,
-                null);
-            listener.ClientAcceptLimit = 1; // Terminate after first connection.
+                null)
+            {
+                ClientAcceptLimit = 1 // Terminate after first connection.
+            };
+
             listener.ListenAsync(CancellationToken.None);
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

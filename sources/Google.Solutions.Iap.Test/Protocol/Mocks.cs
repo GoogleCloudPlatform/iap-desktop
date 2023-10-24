@@ -36,8 +36,8 @@ namespace Google.Solutions.Iap.Test.Protocol
         public int ReadCount { get; private set; } = 0;
         public int CloseCount { get; private set; } = 0;
 
-        public byte[][] ExpectedReadData { get; set; }
-        public byte[][] ExpectedWriteData { get; set; }
+        public byte[][]? ExpectedReadData { get; set; }
+        public byte[][]? ExpectedWriteData { get; set; }
         public WebSocketCloseStatus? ExpectServerCloseCodeOnRead { get; set; }
         public WebSocketCloseStatus? ExpectServerCloseCodeOnWrite { get; set; }
 
@@ -121,7 +121,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
     internal class MockSshRelayEndpoint : ISshRelayTarget
     {
-        public IList<INetworkStream> ExpectedStreams { get; set; }
+        public IList<INetworkStream> ExpectedStreams { get; set; } = new List<INetworkStream>();
 
         public INetworkStream ExpectedStream
         {

@@ -168,7 +168,7 @@ namespace Google.Solutions.Iap.Net
         internal class SetUsernameAsHostHeaderPatch : SystemPatch, IWebRequestCreate
         {
             private readonly string prefix;
-            private IWebRequestCreate originalFactory;
+            private IWebRequestCreate? originalFactory;
 
             public SetUsernameAsHostHeaderPatch(string prefix)
             {
@@ -194,6 +194,11 @@ namespace Google.Solutions.Iap.Net
             {
                 if (this.IsInstalled)
                 {
+                    if (this.originalFactory == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
                     ReplaceWebRequestPrefixRegistration(
                         this.prefix,
                         _ => this.originalFactory);
@@ -205,6 +210,11 @@ namespace Google.Solutions.Iap.Net
 
             public WebRequest Create(Uri uri)
             {
+                if (this.originalFactory == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 if (!string.IsNullOrEmpty(uri.UserInfo))
                 {
                     Debug.Assert(!uri.UserInfo.Contains(":"));

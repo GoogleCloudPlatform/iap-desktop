@@ -59,7 +59,7 @@ namespace Google.Solutions.Iap
         private readonly ServiceEndpointDirections endpointDirections;
         private readonly ICredential credential;
 
-        internal X509Certificate2 ClientCertificate { get; }
+        internal X509Certificate2? ClientCertificate { get; }
 
         private Uri CreateConnectUri()
         {
@@ -211,7 +211,7 @@ namespace Google.Solutions.Iap
             ushort port,
             string nic,
             UserAgent userAgent,
-            X509Certificate2 clientCertificate)
+            X509Certificate2? clientCertificate)
         {
             this.endpointDirections = endpointDetails;
             this.credential = credential;

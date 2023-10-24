@@ -57,7 +57,7 @@ namespace Google.Solutions.Iap.Protocol
         //
         // Current connection, guarded by the a lock.
         //
-        private INetworkStream connection = null;
+        private INetworkStream? connection = null;
         private readonly AsyncLock connectLock = new AsyncLock();
 
         internal SessionState State { get; } = new SessionState();
@@ -66,7 +66,7 @@ namespace Google.Solutions.Iap.Protocol
         /// Unique identifier of session. Available after initial
         /// connection has been established.
         /// </summary>
-        public string Sid { get; private set; }
+        public string? Sid { get; private set; }
 
         private void TraceVerbose(string message)
         {
@@ -111,7 +111,7 @@ namespace Google.Solutions.Iap.Protocol
                     // a CONNECT_SUCCESS_SID message.
                     //
                     var message = new byte[SshRelayFormat.MaxMessageSize];
-                    string connectionSid = null;
+                    string? connectionSid = null;
 
                     while (true)
                     {
@@ -188,7 +188,7 @@ namespace Google.Solutions.Iap.Protocol
 
                     var connection = await this.Endpoint
                         .ReconnectAsync(
-                            this.Sid,
+                            this.Sid!,
                             this.State.BytesReceived,
                             cancellationToken)
                         .ConfigureAwait(false);
@@ -337,7 +337,7 @@ namespace Google.Solutions.Iap.Protocol
                         .ConfigureAwait(false);
 
                     Debug.Assert(connection != null);
-                    return await ioAction(connection).ConfigureAwait(false);
+                    return await ioAction(connection!).ConfigureAwait(false);
                 }
                 catch (WebSocketStreamClosedByClientException)
                 {

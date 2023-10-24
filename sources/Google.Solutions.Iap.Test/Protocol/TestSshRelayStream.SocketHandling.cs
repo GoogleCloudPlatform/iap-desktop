@@ -35,7 +35,9 @@ namespace Google.Solutions.Iap.Test.Protocol
     [TestFixture]
     public class TestSshRelayStreamSocketHandling : IapFixtureBase
     {
-        private WebSocketServer server;
+        private WebSocketServer? server;
+        private WebSocketServer Server
+            => this.server ?? throw new InvalidOperationException();
 
         [OneTimeSetUp]
         public void StartServer()
@@ -46,7 +48,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         [OneTimeTearDown]
         public void StopServer()
         {
-            this.server.Dispose();
+            this.server?.Dispose();
         }
 
         private class Endpoint : ISshRelayTarget, IDisposable
@@ -114,8 +116,8 @@ namespace Google.Solutions.Iap.Test.Protocol
         private async Task<Endpoint> CreateEndpointAsync()
         {
             return new Endpoint(
-                this.server,
-                await this.server
+                this.Server,
+                await this.Server
                     .ConnectAsync()
                     .ConfigureAwait(false));
         }
