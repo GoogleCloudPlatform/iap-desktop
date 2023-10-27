@@ -74,9 +74,9 @@ namespace Google.Solutions.Iap
         private readonly IIapListenerPolicy policy;
         private readonly TcpListener listener;
 
-        public event EventHandler<ClientEventArgs> ClientConnected;
-        public event EventHandler<ClientEventArgs> ClientDisconnected;
-        public event EventHandler<ConnectionFailedEventArgs> ConnectionFailed;
+        public event EventHandler<ClientEventArgs>? ClientConnected;
+        public event EventHandler<ClientEventArgs>? ClientDisconnected;
+        public event EventHandler<ConnectionFailedEventArgs>? ConnectionFailed;
 
         public int ClientsAccepted { get; private set; } = 0;
 
@@ -113,7 +113,7 @@ namespace Google.Solutions.Iap
         public IapListener(
             ISshRelayTarget server,
             IIapListenerPolicy policy,
-            IPEndPoint localEndpoint)
+            IPEndPoint? localEndpoint)
         {
             this.server = server.ExpectNotNull(nameof(server));
             this.policy = policy.ExpectNotNull(nameof(policy));

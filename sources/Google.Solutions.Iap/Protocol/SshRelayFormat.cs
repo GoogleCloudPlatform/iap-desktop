@@ -295,7 +295,7 @@ namespace Google.Solutions.Iap.Protocol
             public static uint Encode(
                 byte[] messageBuffer,
                 SshRelayCloseCode closeCode,
-                string closeReason)
+                string? closeReason)
             {
                 var closeReasonBytes = closeReason == null
                     ? Array.Empty<byte>()
@@ -303,7 +303,7 @@ namespace Google.Solutions.Iap.Protocol
 
                 ThrowIfBufferSmallerThan(messageBuffer, MinMessageLength + (uint)closeReasonBytes.Length);
 
-                if (closeReason.Length > MaxArrayLength)
+                if (closeReasonBytes.Length > MaxArrayLength)
                 {
                     throw new ArgumentException($"Reason must not exceed {MaxArrayLength} bytes");
                 }

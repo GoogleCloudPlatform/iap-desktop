@@ -23,6 +23,7 @@ using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Test.Util;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
+using System;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,10 @@ namespace Google.Solutions.Iap.Test.Net
     [TestFixture]
     public class TestWebSocketStream : IapFixtureBase
     {
-        private WebSocketServer server;
+        private WebSocketServer? server;
+
+        private WebSocketServer Server
+            => this.server ?? throw new InvalidOperationException();
 
         [OneTimeSetUp]
         public void StartServer()
@@ -43,7 +47,7 @@ namespace Google.Solutions.Iap.Test.Net
         [OneTimeTearDown]
         public void StopServer()
         {
-            this.server.Dispose();
+            this.server?.Dispose();
         }
 
         private static byte[] FillBuffer(uint size)
@@ -65,7 +69,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenServerClosesConnectionWithError_ThenReadThrowsException()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 await connection.Server
                     .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
@@ -104,7 +108,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenConnectionClosedByClient_ThenReadThrowsException()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 using (var clientStream = new WebSocketStream(connection.Client))
                 {
@@ -124,7 +128,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenServerClosesConnectionNormally_ThenReadReturnsZero()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 await connection.Server
                     .CloseOutputAsync(WebSocketCloseStatus.NormalClosure)
@@ -146,7 +150,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenServerClosesConnectionAndReadSizeZero_ThenReadSucceeds()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 await connection.Server
                     .CloseOutputAsync(WebSocketCloseStatus.NormalClosure)
@@ -170,7 +174,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenFrameSizeEqualsReadSize_ThenReadSucceeds()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 var frame = FillBuffer(8);
                 await connection.Server
@@ -193,7 +197,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenFrameSizeEqualToTwiceReadSize_ThenReadSucceeds()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 var frame = FillBuffer(8);
                 await connection.Server
@@ -223,7 +227,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenFrameLessThanSizeTwiceReadSize_ThenReadSucceeds()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 var frame = FillBuffer(8);
                 await connection.Server
@@ -256,7 +260,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenFrameLessThanReadSize_ThenReadSucceeds()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 // Send 2 frames
                 var frame = FillBuffer(4);
@@ -295,7 +299,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenServerClosedConnection_ThenWriteSucceeds()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 await connection.Server
                     .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
@@ -321,7 +325,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenConnectionClosedByClient_ThenWriteThrowsException()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 using (var clientStream = new WebSocketStream(connection.Client))
                 {
@@ -345,7 +349,7 @@ namespace Google.Solutions.Iap.Test.Net
         [Test]
         public async Task WhenConnectionClosedByClient_TheCloseThrowsException()
         {
-            using (var connection = await this.server.ConnectAsync())
+            using (var connection = await this.Server.ConnectAsync())
             {
                 using (var clientStream = new WebSocketStream(connection.Client))
                 {

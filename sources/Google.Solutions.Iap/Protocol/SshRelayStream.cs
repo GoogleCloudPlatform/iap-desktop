@@ -181,7 +181,7 @@ namespace Google.Solutions.Iap.Protocol
         // Overrides.
         //---------------------------------------------------------------------
 
-        public string Sid => this.session.Sid;
+        public string? Sid => this.session.Sid;
 
         protected override async Task<int> ProtectedReadAsync(
             byte[] buffer,
