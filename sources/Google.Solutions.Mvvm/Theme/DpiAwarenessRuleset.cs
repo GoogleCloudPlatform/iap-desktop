@@ -1,4 +1,7 @@
 ﻿using Google.Solutions.Common.Util;
+using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -8,17 +11,40 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public class DpiAwarenessRuleset : ControlTheme.IRuleSet
     {
+        private static int MulDiv(int number, int numerator, int denominator)
+        {
+            return (int)(((long)number * numerator) / denominator);
+        }
+
+        private static Size ScaleToSystemDpi(Size size)
+        {
+            return new Size(
+                MulDiv(size.Width, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
+                MulDiv(size.Height, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi));
+        }
+
+        private static int ScaleToSystemDpi(int size)
+        {
+            return MulDiv(size, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi);
+        }
 
         //---------------------------------------------------------------------
         // Theming rules.
         //---------------------------------------------------------------------
 
+        private void ScaleForm(Form form)
+        {
+            //
+            // NB. Form.DeviceDpi might not be set correctly, so
+            // use the system DPI.
+            //
+            //form.Size = ScaleToSystemDpi(form.Size);
+        }
+
         private void ScaleControl(Control c)
         {
             var location = c.Location;
             var size = c.Size;
-
-            // TODO: Check if HighDPI needed.
 
             if (c.Dock.HasFlag(DockStyle.Fill))
             {
@@ -38,13 +64,13 @@ namespace Google.Solutions.Mvvm.Theme
                 }
                 else
                 {
-                    var newWidth = c.ScaleDpi(size.Width);
+                    var newWidth = ScaleToSystemDpi(size.Width);
 
                     //
                     // Move left to maintain proportions.
                     //
-                    var marginRight = c.Parent.Width - location.X - size.Width;
-                    location.X = c.Parent.Width - newWidth - c.ScaleDpi(marginRight);
+                    var marginRight = c.Parent.ClientRectangle.Width - location.X - size.Width;
+                    location.X = c.Parent.ClientRectangle.Width - newWidth - ScaleToSystemDpi(marginRight);
 
                     size.Width = newWidth;
                 }
@@ -59,8 +85,8 @@ namespace Google.Solutions.Mvvm.Theme
                 }
                 else
                 {
-                    location.X = c.ScaleDpi(location.X);
-                    size.Width = c.ScaleDpi(size.Width);
+                    location.X = ScaleToSystemDpi(location.X);
+                    size.Width = ScaleToSystemDpi(size.Width);
                 }
             }
 
@@ -77,8 +103,8 @@ namespace Google.Solutions.Mvvm.Theme
                 }
                 else
                 {
-                    location.X = c.ScaleDpi(location.X);
-                    size.Height = c.ScaleDpi(size.Height);
+                    location.X = ScaleToSystemDpi(location.X);
+                    size.Height = ScaleToSystemDpi(size.Height);
                 }
             }
             else if (c.Anchor.HasFlag(AnchorStyles.Bottom))
@@ -91,13 +117,13 @@ namespace Google.Solutions.Mvvm.Theme
                 }
                 else
                 {
-                    var newHeight = c.ScaleDpi(size.Height);
+                    var newHeight = ScaleToSystemDpi(size.Height);
 
                     //
                     // Move up to maintain proportions.
                     //
-                    var marginBottom = c.Parent.Height - location.Y - size.Height;
-                    location.Y = c.Parent.Height - newHeight - c.ScaleDpi(marginBottom);
+                    var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
+                    location.Y = c.Parent.ClientRectangle.Height - newHeight - ScaleToSystemDpi(marginBottom);
 
                     size.Height = newHeight;
                 }
@@ -118,7 +144,11 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            controlTheme.AddRule<Control>(ScaleControl);
+            if (DeviceCaps.IsHighDpiEnabled)
+            {
+                controlTheme.AddRule<Form>(ScaleForm);
+                controlTheme.AddRule<Control>(ScaleControl);
+            }
         }
     }
 
@@ -126,12 +156,63 @@ namespace Google.Solutions.Mvvm.Theme
     // Helper classes.
     //---------------------------------------------------------------------
 
-    internal static class ControlExtensions
+    //internal static class HighDpiExtensions
+    //{
+
+
+    //    //internal static Size ScaleToDeviceDpi(this Control c, Size size)
+    //    //{
+    //    //    return ScaleToDpi(c, size, (ushort)c.DeviceDpi);
+    //    //}
+
+    //    //internal static int ScaleToDeviceDpi(this Control c, int size)
+    //    //{
+    //    //    return MulDiv(size, c.DeviceDpi, DeviceCaps.DefaultDpi);
+    //    //}
+    //}
+
+    internal class DeviceCaps
     {
-        public static int ScaleDpi(this Control c, int size)
+        public const ushort DefaultDpi = 96;
+
+        public static ushort SystemDpi { get; }
+
+        public static bool IsHighDpiEnabled
         {
-            // TODO: use Control.DeviceDpi, MulDiv
-            return (int)(1.5f * size);
+            get => SystemDpi != DefaultDpi;
         }
+
+        static DeviceCaps() 
+        {
+            var hdc = NativeMethods.GetDC(IntPtr.Zero);
+            SystemDpi = (ushort)NativeMethods.GetDeviceCaps(
+                hdc, 
+                NativeMethods.DeviceCap.LOGPIXELSX);
+
+            NativeMethods.ReleaseDC(IntPtr.Zero, hdc); //TODO: use dispose 
+        }
+    }
+
+    internal class NativeMethods
+    {
+        internal enum DeviceCap : int
+        {
+            LOGPIXELSX = 88,
+            LOGPIXELSY = 90
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetDC(
+            IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr ReleaseDC(
+            IntPtr hwnd,
+            IntPtr hdc);
+
+        [DllImport("gdi32.dll")] 
+        public static extern int GetDeviceCaps(
+            IntPtr hdc,
+            DeviceCap nIndex);
     }
 }
