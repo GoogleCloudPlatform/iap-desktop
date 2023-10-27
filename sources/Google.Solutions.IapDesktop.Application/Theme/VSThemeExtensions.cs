@@ -18,6 +18,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
@@ -150,6 +151,25 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 else
                 {
                     base.WndProc(ref m);
+                }
+            }
+
+            protected override void OnLayout(LayoutEventArgs levent)
+            {
+                base.OnLayout(levent);
+
+                //
+                // When a float window is split, the base class resets
+                // the icon and sets the title to " ".
+                //
+                // When that happens, apply the standard title and
+                // icon again so that we avoid showing a windows with a
+                // standard icon and empty title.
+                //
+                if (string.IsNullOrWhiteSpace(this.Text))
+                {
+                    this.Text = Install.ProductName;
+                    this.Icon = Install.ProductIcon;
                 }
             }
 

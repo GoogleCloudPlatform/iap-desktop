@@ -21,9 +21,11 @@
 
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Properties;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -75,8 +77,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
     public class Install : IInstall
     {
-        public const string FriendlyName = "IAP Desktop";
-
         private const string VersionHistoryValueName = "InstalledVersionHistory";
 
         public const string DefaultBaseKeyPath = @"Software\Google\IapDesktop";
@@ -87,6 +87,16 @@ namespace Google.Solutions.IapDesktop.Application.Host
         //---------------------------------------------------------------------
         // Static properties (based on assembly metadata).
         //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Friendly name.
+        /// </summary>
+        public const string ProductName = "IAP Desktop";
+
+        /// <summary>
+        /// Default product icon to use for windows.
+        /// </summary>
+        public static Icon ProductIcon => Resources.logo;
 
         /// <summary>
         /// User agent to use in all HTTP requests.

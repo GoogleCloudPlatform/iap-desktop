@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             this.protocolRegistryMock.Verify(r => r.Register(
                     It.Is<string>(s => s == IapRdpUrl.Scheme),
-                    It.Is<string>(s => s == Install.FriendlyName),
+                    It.Is<string>(s => s == Install.ProductName),
                     It.IsAny<string>()),
                 Times.Once);
         }
