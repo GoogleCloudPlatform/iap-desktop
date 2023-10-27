@@ -28,6 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node2");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2});
             this.anchoredBox = new System.Windows.Forms.GroupBox();
             this.fixedBox = new System.Windows.Forms.GroupBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -38,6 +43,8 @@
             this.leftAlignedLabel = new System.Windows.Forms.Label();
             this.rightAlignedLabel = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.anchoredBox.SuspendLayout();
             this.fixedBox.SuspendLayout();
             this.SuspendLayout();
@@ -47,6 +54,7 @@
             this.anchoredBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.anchoredBox.Controls.Add(this.treeView1);
             this.anchoredBox.Controls.Add(this.listBox1);
             this.anchoredBox.Controls.Add(this.fixedBox);
             this.anchoredBox.Location = new System.Drawing.Point(12, 12);
@@ -58,6 +66,7 @@
             // 
             // fixedBox
             // 
+            this.fixedBox.Controls.Add(this.radioButton1);
             this.fixedBox.Controls.Add(this.checkBox1);
             this.fixedBox.Controls.Add(this.label1);
             this.fixedBox.Controls.Add(this.textBox1);
@@ -147,6 +156,32 @@
             this.listBox1.Size = new System.Drawing.Size(200, 95);
             this.listBox1.TabIndex = 3;
             // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(54, 70);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(85, 17);
+            this.radioButton1.TabIndex = 3;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "radioButton1";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(219, 207);
+            this.treeView1.Name = "treeView1";
+            treeNode1.Name = "Node1";
+            treeNode1.Text = "Node1";
+            treeNode2.Name = "Node2";
+            treeNode2.Text = "Node2";
+            treeNode3.Name = "Node0";
+            treeNode3.Text = "Node0";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode3});
+            this.treeView1.Size = new System.Drawing.Size(230, 97);
+            this.treeView1.TabIndex = 4;
+            // 
             // SampleDialog
             // 
             this.AcceptButton = this.okButton;
@@ -182,5 +217,7 @@
         private System.Windows.Forms.Label leftAlignedLabel;
         private System.Windows.Forms.Label rightAlignedLabel;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.RadioButton radioButton1;
     }
 }
