@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Common.Util;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -11,53 +12,49 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public class DpiAwarenessRuleset : ControlTheme.IRuleSet
     {
+        private readonly DeviceCapabilities deviceCaps;
+
+        public DpiAwarenessRuleset()
+        {
+            //
+            // Get system DPI and use this for scaling operations.
+            //
+            this.deviceCaps = DeviceCapabilities.GetScreenCapabilities();
+        }
+
+        //---------------------------------------------------------------------
+        // Helper methods for DPI calculation.
+        //---------------------------------------------------------------------
+
         private static int MulDiv(int number, int numerator, int denominator)
         {
             return (int)(((long)number * numerator) / denominator);
         }
 
-        private static Size ScaleToSystemDpi(Size size)
+        private Size ScaleToSystemDpi(Size size)
         {
             return new Size(
-                MulDiv(size.Width, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
-                MulDiv(size.Height, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi));
+                MulDiv(size.Width, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(size.Height, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi));
         }
 
-        private static Padding ScaleToSystemDpi(Padding padding)
+        private Padding ScaleToSystemDpi(Padding padding)
         {
             return new Padding(
-                MulDiv(padding.Left, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
-                MulDiv(padding.Top, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
-                MulDiv(padding.Right, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
-                MulDiv(padding.Bottom, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi));
+                MulDiv(padding.Left, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Top, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Right, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Bottom, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi));
         }
 
-        private static int ScaleToSystemDpi(int size)
+        private int ScaleToSystemDpi(int size)
         {
-            return MulDiv(size, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi);
+            return MulDiv(size, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi);
         }
 
         //---------------------------------------------------------------------
         // Theming rules.
         //---------------------------------------------------------------------
-
-        private void ScaleForm(Form f)
-        {
-        }
-
-        private void ScaleGroupBox(GroupBox box)
-        {
-            //box.Margin = ScaleToSystemDpi(box.Margin);
-            //var oldFont = box.Font;
-            //box.Font = new Font(
-            //        oldFont.FontFamily,
-            //        (oldFont.Size * DeviceCaps.SystemDpi) / DeviceCaps.DefaultDpi,
-            //        oldFont.Style);
-        }
-
-        private void ScaleLabel(Label label)
-        {
-        }
 
         private void ScaleControlFont(Control c)
         {
@@ -80,20 +77,17 @@ namespace Google.Solutions.Mvvm.Theme
             }
             else if (c.Font == Control.DefaultFont)
             {
+                // TODO: cache font.
                 var oldFont = c.Font;
                 c.Font = new Font(
                     oldFont.FontFamily,
-                    (oldFont.Size * DeviceCaps.SystemDpi) / DeviceCaps.DefaultDpi,
+                    (oldFont.Size * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi,
                     oldFont.Style);
             }
         }
 
         private void ScaleControl(Control c)
         {
-            var isdefault = c.Font == Control.DefaultFont;
-
-
-
             var location = c.Location;
             var size = c.Size;
 
@@ -186,8 +180,6 @@ namespace Google.Solutions.Mvvm.Theme
             c.Size = size;
         }
 
-        // TODO: adjust groupbox margin
-
         //---------------------------------------------------------------------
         // IRuleSet
         //---------------------------------------------------------------------
@@ -196,13 +188,10 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            if (DeviceCaps.IsHighDpiEnabled)
+            if (this.deviceCaps.IsHighDpiEnabled)
             {
-                controlTheme.AddRule<Form>(ScaleForm);
                 controlTheme.AddRule<Control>(ScaleControl);
                 controlTheme.AddRule<Control>(ScaleControlFont);
-                controlTheme.AddRule<GroupBox>(ScaleGroupBox);
-                controlTheme.AddRule<Label>(ScaleLabel);
             }
         }
     }
@@ -211,26 +200,36 @@ namespace Google.Solutions.Mvvm.Theme
     // Helper classes.
     //---------------------------------------------------------------------
 
-
-    internal class DeviceCaps
+    internal class DeviceCapabilities
     {
         public const ushort DefaultDpi = 96;
 
-        public static ushort SystemDpi { get; }
+        public ushort SystemDpi { get; }
 
-        public static bool IsHighDpiEnabled
+        public bool IsHighDpiEnabled
         {
             get => SystemDpi != DefaultDpi;
         }
 
-        static DeviceCaps() 
+        private DeviceCapabilities(ushort systemDpi)
+        {
+            this.SystemDpi = systemDpi;
+        }
+
+        public static DeviceCapabilities GetScreenCapabilities()
         {
             var hdc = NativeMethods.GetDC(IntPtr.Zero);
-            SystemDpi = (ushort)NativeMethods.GetDeviceCaps(
-                hdc, 
-                NativeMethods.DeviceCap.LOGPIXELSX);
-
-            NativeMethods.ReleaseDC(IntPtr.Zero, hdc); //TODO: use dispose 
+            try
+            {
+                return new DeviceCapabilities(
+                    (ushort)NativeMethods.GetDeviceCaps(
+                        hdc,
+                        NativeMethods.DeviceCap.LOGPIXELSX));
+            }
+            finally
+            {
+                NativeMethods.ReleaseDC(IntPtr.Zero, hdc);
+            }
         }
     }
 
