@@ -23,6 +23,15 @@ namespace Google.Solutions.Mvvm.Theme
                 MulDiv(size.Height, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi));
         }
 
+        private static Padding ScaleToSystemDpi(Padding padding)
+        {
+            return new Padding(
+                MulDiv(padding.Left, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
+                MulDiv(padding.Top, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
+                MulDiv(padding.Right, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi),
+                MulDiv(padding.Bottom, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi));
+        }
+
         private static int ScaleToSystemDpi(int size)
         {
             return MulDiv(size, DeviceCaps.SystemDpi, DeviceCaps.DefaultDpi);
@@ -32,13 +41,19 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private void ScaleForm(Form form)
+        private void ScaleGroupBox(GroupBox box)
         {
-            //
-            // NB. Form.DeviceDpi might not be set correctly, so
-            // use the system DPI.
-            //
-            //form.Size = ScaleToSystemDpi(form.Size);
+            box.Margin = ScaleToSystemDpi(box.Margin);
+        }
+
+        private void ScaleControlFont(Control c)
+        {
+            var oldFont = c.Font;
+            c.Font = new Font(
+                oldFont.FontFamily, 
+                (oldFont.Size * DeviceCaps.SystemDpi)/DeviceCaps.DefaultDpi, 
+                oldFont.Style);
+            oldFont.Dispose();
         }
 
         private void ScaleControl(Control c)
@@ -98,8 +113,10 @@ namespace Google.Solutions.Mvvm.Theme
                 if (c.Anchor.HasFlag(AnchorStyles.Bottom))
                 {
                     //
-                    // Let auto-layout will take care of it.
+                    // Shrink to maintain bottom margin.
                     //
+                    var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
+                    size.Height -= (ScaleToSystemDpi(marginBottom) - marginBottom);
                 }
                 else
                 {
@@ -123,7 +140,7 @@ namespace Google.Solutions.Mvvm.Theme
                     // Move up to maintain proportions.
                     //
                     var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
-                    location.Y = c.Parent.ClientRectangle.Height - newHeight - ScaleToSystemDpi(marginBottom);
+                    location.Y -= (ScaleToSystemDpi(marginBottom) - marginBottom);
 
                     size.Height = newHeight;
                 }
@@ -146,8 +163,9 @@ namespace Google.Solutions.Mvvm.Theme
 
             if (DeviceCaps.IsHighDpiEnabled)
             {
-                controlTheme.AddRule<Form>(ScaleForm);
+                //controlTheme.AddRule<Control>(ScaleControlFont);
                 controlTheme.AddRule<Control>(ScaleControl);
+                controlTheme.AddRule<GroupBox>(ScaleGroupBox);
             }
         }
     }
