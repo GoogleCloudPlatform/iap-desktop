@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // NB. Properties are accessed from a non-GUI thread, so
             // they must be thread-safe.
             //
-            this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
+            this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.ProductName}");
             this.IntroductionText = ObservableProperty.Build(
                 "Sign in to access your \r\nGoogle Cloud VMs.");
             this.Version = ObservableProperty.Build($"Version {install.CurrentVersion}");

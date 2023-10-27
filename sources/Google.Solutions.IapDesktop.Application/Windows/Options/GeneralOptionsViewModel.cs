@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             {
                 this.protocolRegistry.Register(
                     IapRdpUrl.Scheme,
-                    Install.FriendlyName,
+                    Install.ProductName,
                     ExecutableLocation);
             }
             else
