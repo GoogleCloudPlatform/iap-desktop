@@ -70,6 +70,7 @@ namespace Google.Solutions.Mvvm.Theme
             else if (c is Form ||
                 c is Label ||
                 c is CheckBox ||
+                c is RadioButton ||
                 c is Button)
             {
                 //
@@ -155,7 +156,7 @@ namespace Google.Solutions.Mvvm.Theme
                 }
                 else
                 {
-                    location.X = ScaleToSystemDpi(location.X);
+                    location.Y = ScaleToSystemDpi(location.Y);
                     size.Height = ScaleToSystemDpi(size.Height);
                 }
             }
