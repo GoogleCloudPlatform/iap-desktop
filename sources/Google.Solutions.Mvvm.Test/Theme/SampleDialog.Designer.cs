@@ -37,6 +37,7 @@
             this.okButton = new System.Windows.Forms.Button();
             this.leftAlignedLabel = new System.Windows.Forms.Label();
             this.rightAlignedLabel = new System.Windows.Forms.Label();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.anchoredBox.SuspendLayout();
             this.fixedBox.SuspendLayout();
             this.SuspendLayout();
@@ -46,6 +47,7 @@
             this.anchoredBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.anchoredBox.Controls.Add(this.listBox1);
             this.anchoredBox.Controls.Add(this.fixedBox);
             this.anchoredBox.Location = new System.Drawing.Point(12, 12);
             this.anchoredBox.Name = "anchoredBox";
@@ -133,6 +135,14 @@
             this.rightAlignedLabel.TabIndex = 4;
             this.rightAlignedLabel.Text = "Right-aligned text";
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(12, 207);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(200, 95);
+            this.listBox1.TabIndex = 3;
+            // 
             // SampleDialog
             // 
             this.AcceptButton = this.okButton;
@@ -167,5 +177,6 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label leftAlignedLabel;
         private System.Windows.Forms.Label rightAlignedLabel;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
