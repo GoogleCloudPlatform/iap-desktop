@@ -41,23 +41,58 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
+        private void ScaleForm(Form f)
+        {
+        }
+
         private void ScaleGroupBox(GroupBox box)
         {
-            box.Margin = ScaleToSystemDpi(box.Margin);
+            //box.Margin = ScaleToSystemDpi(box.Margin);
+            //var oldFont = box.Font;
+            //box.Font = new Font(
+            //        oldFont.FontFamily,
+            //        (oldFont.Size * DeviceCaps.SystemDpi) / DeviceCaps.DefaultDpi,
+            //        oldFont.Style);
+        }
+
+        private void ScaleLabel(Label label)
+        {
         }
 
         private void ScaleControlFont(Control c)
         {
-            var oldFont = c.Font;
-            c.Font = new Font(
-                oldFont.FontFamily, 
-                (oldFont.Size * DeviceCaps.SystemDpi)/DeviceCaps.DefaultDpi, 
-                oldFont.Style);
-            oldFont.Dispose();
+            if (c is Form)
+            {
+                //
+                // Changing the font size of the form changes the layout.
+                //
+            }
+            else if (c is Form ||
+                c is Label ||
+                c is CheckBox ||
+                c is Button)
+            {
+                //
+                // These controls have their font size scaled by the system.
+                //
+                c.Font = Control.DefaultFont;
+            }
+            else if (c.Font == Control.DefaultFont)
+            {
+                var oldFont = c.Font;
+                c.Font = new Font(
+                    oldFont.FontFamily,
+                    (oldFont.Size * DeviceCaps.SystemDpi) / DeviceCaps.DefaultDpi,
+                    oldFont.Style);
+            }
         }
 
         private void ScaleControl(Control c)
         {
+            var isdefault = c.Font == Control.DefaultFont;
+
+
+
             var location = c.Location;
             var size = c.Size;
 
@@ -151,7 +186,6 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
         // TODO: adjust groupbox margin
-        // TODO: adjust font size margin
 
         //---------------------------------------------------------------------
         // IRuleSet
@@ -163,9 +197,11 @@ namespace Google.Solutions.Mvvm.Theme
 
             if (DeviceCaps.IsHighDpiEnabled)
             {
-                //controlTheme.AddRule<Control>(ScaleControlFont);
+                controlTheme.AddRule<Form>(ScaleForm);
                 controlTheme.AddRule<Control>(ScaleControl);
+                controlTheme.AddRule<Control>(ScaleControlFont);
                 controlTheme.AddRule<GroupBox>(ScaleGroupBox);
+                controlTheme.AddRule<Label>(ScaleLabel);
             }
         }
     }
@@ -174,20 +210,6 @@ namespace Google.Solutions.Mvvm.Theme
     // Helper classes.
     //---------------------------------------------------------------------
 
-    //internal static class HighDpiExtensions
-    //{
-
-
-    //    //internal static Size ScaleToDeviceDpi(this Control c, Size size)
-    //    //{
-    //    //    return ScaleToDpi(c, size, (ushort)c.DeviceDpi);
-    //    //}
-
-    //    //internal static int ScaleToDeviceDpi(this Control c, int size)
-    //    //{
-    //    //    return MulDiv(size, c.DeviceDpi, DeviceCaps.DefaultDpi);
-    //    //}
-    //}
 
     internal class DeviceCaps
     {
