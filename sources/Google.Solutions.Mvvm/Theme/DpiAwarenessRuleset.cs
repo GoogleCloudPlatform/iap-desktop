@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Theme
         private readonly Font UiFont = new Font(new FontFamily("Segoe UI"), 8.25f);
         private readonly SizeF UiFontDimensions = new SizeF(7f, 15f);
 
-        private void ScaleControlFont(Control c)
+        private void PrepareControl(Control c)
         {
             if (c is Form container)
             {
@@ -107,7 +107,7 @@ namespace Google.Solutions.Mvvm.Theme
             //}
         }
 
-        private void ScaleForm(Form c)
+        private void ForceRescaleForm(Form c)
         {
             //
             // Force scaling and relayout (after the form's handle has been created).
@@ -115,99 +115,99 @@ namespace Google.Solutions.Mvvm.Theme
             c.Font = SystemFonts.DefaultFont; //TODO: use Segoe
         }
 
-        private void ScaleControl(Control c)
-        {
-            var location = c.Location;
-            var size = c.Size;
+        //private void ScaleControl(Control c)
+        //{
+        //    var location = c.Location;
+        //    var size = c.Size;
 
-            if (c.Dock.HasFlag(DockStyle.Fill))
-            {
-                return;
-            }
+        //    if (c.Dock.HasFlag(DockStyle.Fill))
+        //    {
+        //        return;
+        //    }
 
-            //
-            // Resize horizontally.
-            //
-            if (c.Anchor.HasFlag(AnchorStyles.Right))
-            {
-                if (c.Anchor.HasFlag(AnchorStyles.Left))
-                {
-                    //
-                    // Let auto-layout will take care of it.
-                    //
-                }
-                else
-                {
-                    var newWidth = ScaleToSystemDpi(size.Width);
+        //    //
+        //    // Resize horizontally.
+        //    //
+        //    if (c.Anchor.HasFlag(AnchorStyles.Right))
+        //    {
+        //        if (c.Anchor.HasFlag(AnchorStyles.Left))
+        //        {
+        //            //
+        //            // Let auto-layout will take care of it.
+        //            //
+        //        }
+        //        else
+        //        {
+        //            var newWidth = ScaleToSystemDpi(size.Width);
 
-                    //
-                    // Move left to maintain proportions.
-                    //
-                    var marginRight = c.Parent.ClientRectangle.Width - location.X - size.Width;
-                    location.X = c.Parent.ClientRectangle.Width - newWidth - ScaleToSystemDpi(marginRight);
+        //            //
+        //            // Move left to maintain proportions.
+        //            //
+        //            var marginRight = c.Parent.ClientRectangle.Width - location.X - size.Width;
+        //            location.X = c.Parent.ClientRectangle.Width - newWidth - ScaleToSystemDpi(marginRight);
 
-                    size.Width = newWidth;
-                }
-            }
-            else if (c.Anchor.HasFlag(AnchorStyles.Left))
-            {
-                if (c.Anchor.HasFlag(AnchorStyles.Right))
-                {
-                    //
-                    // Let auto-layout will take care of it.
-                    //
-                }
-                else
-                {
-                    location.X = ScaleToSystemDpi(location.X);
-                    size.Width = ScaleToSystemDpi(size.Width);
-                }
-            }
+        //            size.Width = newWidth;
+        //        }
+        //    }
+        //    else if (c.Anchor.HasFlag(AnchorStyles.Left))
+        //    {
+        //        if (c.Anchor.HasFlag(AnchorStyles.Right))
+        //        {
+        //            //
+        //            // Let auto-layout will take care of it.
+        //            //
+        //        }
+        //        else
+        //        {
+        //            location.X = ScaleToSystemDpi(location.X);
+        //            size.Width = ScaleToSystemDpi(size.Width);
+        //        }
+        //    }
 
-            //
-            // Resize vertically.
-            //
-            if (c.Anchor.HasFlag(AnchorStyles.Top))
-            {
-                if (c.Anchor.HasFlag(AnchorStyles.Bottom))
-                {
-                    //
-                    // Shrink to maintain bottom margin.
-                    //
-                    var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
-                    size.Height -= (ScaleToSystemDpi(marginBottom) - marginBottom);
-                }
-                else
-                {
-                    location.Y = ScaleToSystemDpi(location.Y);
-                    size.Height = ScaleToSystemDpi(size.Height);
-                }
-            }
-            else if (c.Anchor.HasFlag(AnchorStyles.Bottom))
-            {
-                if (c.Anchor.HasFlag(AnchorStyles.Top))
-                {
-                    //
-                    // Let auto-layout will take care of it.
-                    //
-                }
-                else
-                {
-                    var newHeight = ScaleToSystemDpi(size.Height);
+        //    //
+        //    // Resize vertically.
+        //    //
+        //    if (c.Anchor.HasFlag(AnchorStyles.Top))
+        //    {
+        //        if (c.Anchor.HasFlag(AnchorStyles.Bottom))
+        //        {
+        //            //
+        //            // Shrink to maintain bottom margin.
+        //            //
+        //            var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
+        //            size.Height -= (ScaleToSystemDpi(marginBottom) - marginBottom);
+        //        }
+        //        else
+        //        {
+        //            location.Y = ScaleToSystemDpi(location.Y);
+        //            size.Height = ScaleToSystemDpi(size.Height);
+        //        }
+        //    }
+        //    else if (c.Anchor.HasFlag(AnchorStyles.Bottom))
+        //    {
+        //        if (c.Anchor.HasFlag(AnchorStyles.Top))
+        //        {
+        //            //
+        //            // Let auto-layout will take care of it.
+        //            //
+        //        }
+        //        else
+        //        {
+        //            var newHeight = ScaleToSystemDpi(size.Height);
 
-                    //
-                    // Move up to maintain proportions.
-                    //
-                    var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
-                    location.Y -= (ScaleToSystemDpi(marginBottom) - marginBottom);
+        //            //
+        //            // Move up to maintain proportions.
+        //            //
+        //            var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
+        //            location.Y -= (ScaleToSystemDpi(marginBottom) - marginBottom);
 
-                    size.Height = newHeight;
-                }
-            }
+        //            size.Height = newHeight;
+        //        }
+        //    }
 
-            c.Location = location;
-            c.Size = size;
-        }
+        //    c.Location = location;
+        //    c.Size = size;
+        //}
 
         //---------------------------------------------------------------------
         // IRuleSet
@@ -220,8 +220,16 @@ namespace Google.Solutions.Mvvm.Theme
             if (this.deviceCaps.IsHighDpiEnabled)
             {
                 // controlTheme.AddRule<Control>(ScaleControl);
-                controlTheme.AddRule<Control>(ScaleControlFont);
-                controlTheme.AddRule<Form>(ScaleForm, ControlTheme.Options.ApplyWhenHandleCreated);
+                //
+                // Ensure that controls are properly configured
+                // before their handle is created.
+                //
+                controlTheme.AddRule<Control>(PrepareControl);
+
+                //
+                // Force scaling once the handle has been created.
+                //
+                controlTheme.AddRule<Form>(ForceRescaleForm, ControlTheme.Options.ApplyWhenHandleCreated);
             }
         }
     }
