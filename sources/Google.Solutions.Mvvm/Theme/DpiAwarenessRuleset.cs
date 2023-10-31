@@ -80,6 +80,9 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void PrepareControlForFontSizing(Control c)
         {
+
+            // Cf https://stackoverflow.com/questions/22735174/how-to-write-winforms-code-that-auto-scales-to-system-font-and-dpi-settings
+
             if (c is ContainerControl container)
             {
                 //
@@ -130,6 +133,21 @@ namespace Google.Solutions.Mvvm.Theme
         private void StylePictureBox(PictureBox pictureBox)
         {
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void StyleToolStrip(ToolStrip toolStrip)
+        {
+            toolStrip.ImageScalingSize = ScaleToSystemDpi(toolStrip.ImageScalingSize);
+            // TODO: margin is too small
+            toolStrip.Font = this.UiFontUnscaled;
+        }
+        private void StyleTextBox(TextBoxBase textBox)
+        {
+            if (textBox.Multiline)
+            {
+                // Quirk: adjust height
+                textBox.Height /= 4; //TODO: What's the right factor here?
+            }
         }
 
         private void ForceRescaleForm(Form c)
@@ -254,6 +272,8 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 controlTheme.AddRule<Control>(PrepareControlForFontSizing);
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
+                controlTheme.AddRule<ToolStrip>(StyleToolStrip);
+                controlTheme.AddRule<TextBoxBase>(StyleTextBox);
 
                 //
                 // Force scaling once the handle has been created.
