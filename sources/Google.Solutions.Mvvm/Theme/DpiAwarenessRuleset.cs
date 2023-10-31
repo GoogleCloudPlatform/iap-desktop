@@ -15,12 +15,25 @@ namespace Google.Solutions.Mvvm.Theme
     {
         private readonly DeviceCapabilities deviceCaps;
 
+        private readonly Font UiFont;
+        private readonly SizeF UiFontDimensions;
+
         public DpiAwarenessRuleset()
         {
             //
             // Get system DPI and use this for scaling operations.
             //
             this.deviceCaps = DeviceCapabilities.GetScreenCapabilities();
+
+            //
+            // Use Segoe instead of the legacy Microsoft Sans Serif.
+            //
+            // NB. We must set the initial size based on the current DPI settings.
+            // 
+            this.UiFont = new Font(
+                new FontFamily("Segoe UI"),
+                (8.25f * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi);
+            this.UiFontDimensions = new SizeF(7f, 15f);
         }
 
         //---------------------------------------------------------------------
@@ -57,9 +70,6 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private readonly Font UiFont = new Font(new FontFamily("Segoe UI"), 8.25f);
-        private readonly SizeF UiFontDimensions = new SizeF(7f, 15f);
-
         private void PrepareControl(Control c)
         {
             if (c is Form container)
@@ -78,12 +88,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 // NB. Dimension must match the font.
                 //
-                container.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-
-                //
-                // Changing the font size of the form changes the layout.
-                //
-                //container.Font = SystemFonts.DefaultFont; //TODO: use Segoe
+                container.AutoScaleDimensions = this.UiFontDimensions;
             }
             else if (
                 c is Label ||
@@ -112,7 +117,7 @@ namespace Google.Solutions.Mvvm.Theme
             //
             // Force scaling and relayout (after the form's handle has been created).
             //
-            c.Font = SystemFonts.DefaultFont; //TODO: use Segoe
+            c.Font = this.UiFont;
         }
 
         //private void ScaleControl(Control c)
