@@ -39,10 +39,11 @@ $env:Path = ($env:Path -split ";" `
 #------------------------------------------------------------------------------
 
 $MsBuildCandidates = `
+    "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
     "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
     "c:\VS\MSBuild\Current\Bin\"
 
-$Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -Last 1
+$Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
 if ($Msbuild)
 {
 	$MsbuildDir = (Split-Path $Msbuild -Parent)
@@ -59,9 +60,10 @@ else
 #------------------------------------------------------------------------------
 
 $NmakeCandidates = `
+    "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
     "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
     "c:\VS\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe"
-$Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -Last 1
+$Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
 if ($Nmake)
 {
 	$NMakeDir = (Split-Path $NMake -Parent)
