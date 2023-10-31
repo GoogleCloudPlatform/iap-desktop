@@ -1,6 +1,7 @@
 ﻿using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -56,15 +57,35 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
+        private readonly Font UiFont = new Font(new FontFamily("Segoe UI"), 8.25f);
+        private readonly SizeF UiFontDimensions = new SizeF(7f, 15f);
+
         private void ScaleControlFont(Control c)
         {
-            if (c is Form)
+            if (c is Form container)
             {
+                //
+                // All ContainerControls must be set to the same AutoScaleMode = Font.
+                //
+                // (Font will handle both DPI changes and changes to the system font size
+                // setting; DPI will only handle DPI changes, not changes to the system
+                // font size setting.)
+                //
+                container.AutoScaleMode = AutoScaleMode.Font;
+
+                //
+                // All ContainerControls must be set with the same AutoScaleDimensions.
+                //
+                // NB. Dimension must match the font.
+                //
+                container.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+
                 //
                 // Changing the font size of the form changes the layout.
                 //
+                //container.Font = SystemFonts.DefaultFont; //TODO: use Segoe
             }
-            else if (c is Form ||
+            else if (
                 c is Label ||
                 c is CheckBox ||
                 c is RadioButton ||
@@ -75,15 +96,23 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 c.Font = Control.DefaultFont;
             }
-            else if (c.Font == Control.DefaultFont)
-            {
-                // TODO: cache font.
-                var oldFont = c.Font;
-                c.Font = new Font(
-                    oldFont.FontFamily,
-                    (oldFont.Size * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi,
-                    oldFont.Style);
-            }
+            //else if (c.Font == Control.DefaultFont)
+            //{
+            //    // TODO: cache font.
+            //    var oldFont = c.Font;
+            //    c.Font = new Font(
+            //        oldFont.FontFamily,
+            //        (oldFont.Size * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi,
+            //        oldFont.Style);
+            //}
+        }
+
+        private void ScaleForm(Form c)
+        {
+            //
+            // Force scaling and relayout (after the form's handle has been created).
+            //
+            c.Font = SystemFonts.DefaultFont; //TODO: use Segoe
         }
 
         private void ScaleControl(Control c)
@@ -190,8 +219,9 @@ namespace Google.Solutions.Mvvm.Theme
 
             if (this.deviceCaps.IsHighDpiEnabled)
             {
-                controlTheme.AddRule<Control>(ScaleControl);
+                // controlTheme.AddRule<Control>(ScaleControl);
                 controlTheme.AddRule<Control>(ScaleControlFont);
+                controlTheme.AddRule<Form>(ScaleForm, ControlTheme.Options.ApplyWhenHandleCreated);
             }
         }
     }
@@ -208,7 +238,7 @@ namespace Google.Solutions.Mvvm.Theme
 
         public bool IsHighDpiEnabled
         {
-            get => SystemDpi != DefaultDpi;
+            get => this.SystemDpi != DefaultDpi;
         }
 
         private DeviceCapabilities(ushort systemDpi)
