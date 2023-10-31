@@ -1,7 +1,26 @@
-﻿using Google.Solutions.Common.Util;
-using Microsoft.Win32.SafeHandles;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Util;
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -27,21 +46,22 @@ namespace Google.Solutions.Mvvm.Theme
             this.deviceCaps = DeviceCapabilities.GetScreenCapabilities();
 
             //
-            // Use Segoe instead of the legacy Microsoft Sans Serif.
+            // Use Segoe UI instead of the legacy Microsoft Sans Serif.
             //
             // NB. We must set the initial size based on the current DPI settings.
             // 
-
+            var fontFamily = new FontFamily("Segoe UI");
             this.UiFont = new Font(
-                new FontFamily("Segoe UI"),
-               (9f * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi);
+                fontFamily,
+                (9f * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi);
             this.UiFontUnscaled = new Font(
-                new FontFamily("Segoe UI"),
-               9f);
-            this.UiFontDimensions = new SizeF(7f, 15f);
+                fontFamily,
+                9f);
 
-            //this.UiFont = SystemFonts.DefaultFont;
-            //this.UiFontDimensions = new SizeF(6f, 13f);
+            //
+            // NB. Dimension must match the font family.
+            //
+            this.UiFontDimensions = new SizeF(7f, 15f);
         }
 
         //---------------------------------------------------------------------
@@ -86,48 +106,24 @@ namespace Google.Solutions.Mvvm.Theme
             if (c is ContainerControl container)
             {
                 //
-                // All ContainerControls must be set to the same AutoScaleMode = Font.
+                // Let the system use font-based autoscaling.
                 //
-                // (Font will handle both DPI changes and changes to the system font size
+                // (This will handle both DPI changes and changes to the system font size
                 // setting; DPI will only handle DPI changes, not changes to the system
                 // font size setting.)
                 //
                 container.AutoScaleMode = AutoScaleMode.Font;
-
-                //
-                // All ContainerControls must be set with the same AutoScaleDimensions.
-                //
-                // NB. Dimension must match the font.
-                //
                 container.AutoScaleDimensions = this.UiFontDimensions;
             }
             else  
-            //else if (
-            //    c is Label ||
-            //    c is CheckBox ||
-            //    c is RadioButton ||
-            //    c is Button ||
-            //    c is TextBoxBase ||
-            //    c is ListBox ||
-            //    c is ListView ||
-            //    c is ComboBox ||
-            //    c is TabControl ||
-            //    c is TreeView)
             { 
                 //
                 // These controls have their font size scaled by the system.
+                // But for that to work, we habe to reassign the unscaled
+                // font.
                 //
-                c.Font = this.UiFontUnscaled;// Control.DefaultFont;
+                c.Font = this.UiFontUnscaled;
             }
-            //else if (c.Font == Control.DefaultFont)
-            //{
-            //    // TODO: cache font.
-            //    var oldFont = c.Font;
-            //    c.Font = new Font(
-            //        oldFont.FontFamily,
-            //        (oldFont.Size * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi,
-            //        oldFont.Style);
-            //}
         }
 
         private void StylePictureBox(PictureBox pictureBox)
@@ -139,8 +135,9 @@ namespace Google.Solutions.Mvvm.Theme
         {
             toolStrip.ImageScalingSize = ScaleToSystemDpi(toolStrip.ImageScalingSize);
             // TODO: margin is too small
-            toolStrip.Font = this.UiFontUnscaled;
+            //toolStrip.Font = this.UiFontUnscaled;
         }
+
         private void StyleTextBox(TextBoxBase textBox)
         {
             if (textBox.Multiline)
@@ -148,6 +145,12 @@ namespace Google.Solutions.Mvvm.Theme
                 // Quirk: adjust height
                 textBox.Height /= 4; //TODO: What's the right factor here?
             }
+        }
+
+        private void StyleTreeView(TreeView treeView)
+        {
+            treeView.ImageList.ImageSize = ScaleToSystemDpi(treeView.ImageList.ImageSize);
+            // TODO: icons are missing
         }
 
         private void ForceRescaleForm(Form c)
@@ -158,103 +161,12 @@ namespace Google.Solutions.Mvvm.Theme
                 // Top-level window. Force scaling and relayout
                 // (after the form's handle has been created).
                 //
+                // Avoid doing the same for child window as that
+                // would cause duplicate scaling.
+                //
                 c.Font = this.UiFont;
             }
         }
-
-        //private void ScaleControl(Control c)
-        //{
-        //    var location = c.Location;
-        //    var size = c.Size;
-
-        //    if (c.Dock.HasFlag(DockStyle.Fill))
-        //    {
-        //        return;
-        //    }
-
-        //    //
-        //    // Resize horizontally.
-        //    //
-        //    if (c.Anchor.HasFlag(AnchorStyles.Right))
-        //    {
-        //        if (c.Anchor.HasFlag(AnchorStyles.Left))
-        //        {
-        //            //
-        //            // Let auto-layout will take care of it.
-        //            //
-        //        }
-        //        else
-        //        {
-        //            var newWidth = ScaleToSystemDpi(size.Width);
-
-        //            //
-        //            // Move left to maintain proportions.
-        //            //
-        //            var marginRight = c.Parent.ClientRectangle.Width - location.X - size.Width;
-        //            location.X = c.Parent.ClientRectangle.Width - newWidth - ScaleToSystemDpi(marginRight);
-
-        //            size.Width = newWidth;
-        //        }
-        //    }
-        //    else if (c.Anchor.HasFlag(AnchorStyles.Left))
-        //    {
-        //        if (c.Anchor.HasFlag(AnchorStyles.Right))
-        //        {
-        //            //
-        //            // Let auto-layout will take care of it.
-        //            //
-        //        }
-        //        else
-        //        {
-        //            location.X = ScaleToSystemDpi(location.X);
-        //            size.Width = ScaleToSystemDpi(size.Width);
-        //        }
-        //    }
-
-        //    //
-        //    // Resize vertically.
-        //    //
-        //    if (c.Anchor.HasFlag(AnchorStyles.Top))
-        //    {
-        //        if (c.Anchor.HasFlag(AnchorStyles.Bottom))
-        //        {
-        //            //
-        //            // Shrink to maintain bottom margin.
-        //            //
-        //            var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
-        //            size.Height -= (ScaleToSystemDpi(marginBottom) - marginBottom);
-        //        }
-        //        else
-        //        {
-        //            location.Y = ScaleToSystemDpi(location.Y);
-        //            size.Height = ScaleToSystemDpi(size.Height);
-        //        }
-        //    }
-        //    else if (c.Anchor.HasFlag(AnchorStyles.Bottom))
-        //    {
-        //        if (c.Anchor.HasFlag(AnchorStyles.Top))
-        //        {
-        //            //
-        //            // Let auto-layout will take care of it.
-        //            //
-        //        }
-        //        else
-        //        {
-        //            var newHeight = ScaleToSystemDpi(size.Height);
-
-        //            //
-        //            // Move up to maintain proportions.
-        //            //
-        //            var marginBottom = c.Parent.ClientRectangle.Height - location.Y - size.Height;
-        //            location.Y -= (ScaleToSystemDpi(marginBottom) - marginBottom);
-
-        //            size.Height = newHeight;
-        //        }
-        //    }
-
-        //    c.Location = location;
-        //    c.Size = size;
-        //}
 
         //---------------------------------------------------------------------
         // IRuleSet
@@ -274,6 +186,7 @@ namespace Google.Solutions.Mvvm.Theme
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
                 controlTheme.AddRule<ToolStrip>(StyleToolStrip);
                 controlTheme.AddRule<TextBoxBase>(StyleTextBox);
+                controlTheme.AddRule<TreeView>(StyleTreeView);
 
                 //
                 // Force scaling once the handle has been created.
