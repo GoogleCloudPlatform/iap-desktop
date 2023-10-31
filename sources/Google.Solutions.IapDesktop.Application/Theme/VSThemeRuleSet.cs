@@ -337,11 +337,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     : this.theme.Palette.TextBox.Background;
             }
 
-            SetControlBorder(
-                text,
-                this.theme.Palette.TextBox.Border,
-                this.theme.Palette.TextBox.BorderHover,
-                this.theme.Palette.TextBox.BorderFocused);
+            //TODO: SetControlBorder breaks when GDI-scaling is on.
+            //SetControlBorder(
+            //    text,
+            //    this.theme.Palette.TextBox.Border,
+            //    this.theme.Palette.TextBox.BorderHover,
+            //    this.theme.Palette.TextBox.BorderFocused);
         }
 
         private void StyleMarkdownViewer(MarkdownViewer md)
