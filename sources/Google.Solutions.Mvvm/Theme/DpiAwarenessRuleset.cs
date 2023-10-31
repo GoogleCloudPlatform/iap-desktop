@@ -16,6 +16,7 @@ namespace Google.Solutions.Mvvm.Theme
         private readonly DeviceCapabilities deviceCaps;
 
         private readonly Font UiFont;
+        private readonly Font UiFontUnscaled;
         private readonly SizeF UiFontDimensions;
 
         public DpiAwarenessRuleset()
@@ -30,10 +31,17 @@ namespace Google.Solutions.Mvvm.Theme
             //
             // NB. We must set the initial size based on the current DPI settings.
             // 
+
             this.UiFont = new Font(
                 new FontFamily("Segoe UI"),
-                (8.25f * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi);
+               (9f * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi);
+            this.UiFontUnscaled = new Font(
+                new FontFamily("Segoe UI"),
+               9f);
             this.UiFontDimensions = new SizeF(7f, 15f);
+
+            //this.UiFont = SystemFonts.DefaultFont;
+            //this.UiFontDimensions = new SizeF(6f, 13f);
         }
 
         //---------------------------------------------------------------------
@@ -70,9 +78,9 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private void PrepareControl(Control c)
+        private void PrepareControlForFontSizing(Control c)
         {
-            if (c is Form container)
+            if (c is ContainerControl container)
             {
                 //
                 // All ContainerControls must be set to the same AutoScaleMode = Font.
@@ -90,16 +98,23 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 container.AutoScaleDimensions = this.UiFontDimensions;
             }
-            else if (
-                c is Label ||
-                c is CheckBox ||
-                c is RadioButton ||
-                c is Button)
-            {
+            else  
+            //else if (
+            //    c is Label ||
+            //    c is CheckBox ||
+            //    c is RadioButton ||
+            //    c is Button ||
+            //    c is TextBoxBase ||
+            //    c is ListBox ||
+            //    c is ListView ||
+            //    c is ComboBox ||
+            //    c is TabControl ||
+            //    c is TreeView)
+            { 
                 //
                 // These controls have their font size scaled by the system.
                 //
-                c.Font = Control.DefaultFont;
+                c.Font = this.UiFontUnscaled;// Control.DefaultFont;
             }
             //else if (c.Font == Control.DefaultFont)
             //{
@@ -112,12 +127,21 @@ namespace Google.Solutions.Mvvm.Theme
             //}
         }
 
+        private void StylePictureBox(PictureBox pictureBox)
+        {
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
         private void ForceRescaleForm(Form c)
         {
-            //
-            // Force scaling and relayout (after the form's handle has been created).
-            //
-            c.Font = this.UiFont;
+            if (c.Parent != null)
+            {
+                //
+                // Top-level window. Force scaling and relayout
+                // (after the form's handle has been created).
+                //
+                c.Font = this.UiFont;
+            }
         }
 
         //private void ScaleControl(Control c)
@@ -224,12 +248,12 @@ namespace Google.Solutions.Mvvm.Theme
 
             if (this.deviceCaps.IsHighDpiEnabled)
             {
-                // controlTheme.AddRule<Control>(ScaleControl);
                 //
                 // Ensure that controls are properly configured
                 // before their handle is created.
                 //
-                controlTheme.AddRule<Control>(PrepareControl);
+                controlTheme.AddRule<Control>(PrepareControlForFontSizing);
+                controlTheme.AddRule<PictureBox>(StylePictureBox);
 
                 //
                 // Force scaling once the handle has been created.

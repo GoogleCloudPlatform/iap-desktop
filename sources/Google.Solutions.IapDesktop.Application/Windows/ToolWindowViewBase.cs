@@ -90,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         public ToolWindowViewBase()
         {
             InitializeComponent();
-            this.AutoScaleMode = AutoScaleMode.Dpi;
         }
 
         public ToolWindowViewBase(
