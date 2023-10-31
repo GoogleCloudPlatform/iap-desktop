@@ -91,23 +91,27 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 ? VSTheme.GetDarkTheme()
                 : VSTheme.GetLightTheme();
 
+            // TODO: Use either GdiScalingRuleset or DpiAwareness
             var systemDialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new WindowsSystemDialogRuleset())
                 .AddRuleSet(new VSThemeDialogRuleSet(vsTheme))
-                .AddRuleSet(new GdiScalingRuleset());
+                .AddRuleSet(new GdiScalingRuleset())
+                .AddRuleSet(new DpiAwarenessRuleset());
 
             var dialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
                 .AddRuleSet(new VSThemeDialogRuleSet(vsTheme))
-                .AddRuleSet(new GdiScalingRuleset());
+                .AddRuleSet(new GdiScalingRuleset())
+                .AddRuleSet(new DpiAwarenessRuleset());
 
             var dockWindowTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
                 .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme))
-                .AddRuleSet(new GdiScalingRuleset());
+                .AddRuleSet(new GdiScalingRuleset())
+                .AddRuleSet(new DpiAwarenessRuleset());
 
 
             if (vsTheme.Extender.FloatWindowFactory is VSThemeExtensions.FloatWindowFactory factory)
