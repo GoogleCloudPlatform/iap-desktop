@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -149,8 +150,38 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleTreeView(TreeView treeView)
         {
-            treeView.ImageList.ImageSize = ScaleToSystemDpi(treeView.ImageList.ImageSize);
-            // TODO: icons are missing
+            void ScaleImageList(ImageList imageList)
+            {
+                var images = imageList
+                    .Images
+                    .Cast<Image>()
+                    .Select(i => (Image)i.Clone())
+                    .ToArray();
+
+                //
+                // Change the size. If the handle has been created already,
+                // this causes the imagelist to reset the contained images.
+                //
+                treeView.ImageList.ImageSize = ScaleToSystemDpi(treeView.ImageList.ImageSize);
+
+                if (treeView.ImageList.Images.Count != images.Length)
+                {
+                    //
+                    // Re-add images.
+                    //
+                    treeView.ImageList.Images.AddRange(images);
+                }
+            }
+
+            if (treeView.ImageList != null)
+            {
+                ScaleImageList(treeView.ImageList);
+            }
+
+            if (treeView.StateImageList != null)
+            {
+                ScaleImageList(treeView.StateImageList);
+            }
         }
 
         private void ForceRescaleForm(Form c)
