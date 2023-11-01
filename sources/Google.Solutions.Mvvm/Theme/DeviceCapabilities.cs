@@ -54,6 +54,13 @@ namespace Google.Solutions.Mvvm.Theme
                 MulDiv(size.Height, this.SystemDpi, DeviceCapabilities.DefaultDpi));
         }
 
+        public Rectangle ScaleToSystemDpi(Rectangle rect)
+        {
+            return new Rectangle(
+                rect.Location,
+                ScaleToSystemDpi(rect.Size));
+        }
+
         public Padding ScaleToSystemDpi(Padding padding)
         {
             return new Padding(
