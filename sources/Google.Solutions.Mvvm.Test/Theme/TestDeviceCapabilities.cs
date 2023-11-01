@@ -1,6 +1,5 @@
-﻿
 //
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -36,5 +35,3 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
     }
 }
-
-

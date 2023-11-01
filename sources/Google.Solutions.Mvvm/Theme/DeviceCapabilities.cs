@@ -21,6 +21,9 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
 {
@@ -37,6 +40,32 @@ namespace Google.Solutions.Mvvm.Theme
         public bool IsHighDpiEnabled
         {
             get => this.SystemDpi != DefaultDpi;
+        }
+
+        public static int MulDiv(int number, int numerator, int denominator)
+        {
+            return (int)(((long)number * numerator) / denominator);
+        }
+
+        public Size ScaleToSystemDpi(Size size)
+        {
+            return new Size(
+                MulDiv(size.Width, this.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(size.Height, this.SystemDpi, DeviceCapabilities.DefaultDpi));
+        }
+
+        public Padding ScaleToSystemDpi(Padding padding)
+        {
+            return new Padding(
+                MulDiv(padding.Left, this.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Top, this.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Right, this.SystemDpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Bottom, this.SystemDpi, DeviceCapabilities.DefaultDpi));
+        }
+
+        public int ScaleToSystemDpi(int size)
+        {
+            return MulDiv(size, this.SystemDpi, DeviceCapabilities.DefaultDpi);
         }
 
         //---------------------------------------------------------------------

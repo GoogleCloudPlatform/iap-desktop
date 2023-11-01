@@ -66,36 +66,6 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
         //---------------------------------------------------------------------
-        // Helper methods for DPI calculation.
-        //---------------------------------------------------------------------
-
-        private static int MulDiv(int number, int numerator, int denominator)
-        {
-            return (int)(((long)number * numerator) / denominator);
-        }
-
-        private Size ScaleToSystemDpi(Size size)
-        {
-            return new Size(
-                MulDiv(size.Width, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(size.Height, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi));
-        }
-
-        private Padding ScaleToSystemDpi(Padding padding)
-        {
-            return new Padding(
-                MulDiv(padding.Left, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(padding.Top, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(padding.Right, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(padding.Bottom, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi));
-        }
-
-        private int ScaleToSystemDpi(int size)
-        {
-            return MulDiv(size, this.deviceCaps.SystemDpi, DeviceCapabilities.DefaultDpi);
-        }
-
-        //---------------------------------------------------------------------
         // Helper methods.
         //---------------------------------------------------------------------
 
@@ -116,7 +86,7 @@ namespace Google.Solutions.Mvvm.Theme
             // Change the size. If the handle has been created already,
             // this causes the imagelist to reset the contained images.
             //
-            imageList.ImageSize = ScaleToSystemDpi(imageList.ImageSize);
+            imageList.ImageSize = this.deviceCaps.ScaleToSystemDpi(imageList.ImageSize);
 
             if (imageList.Images.Count != images.Length)
             {
@@ -170,9 +140,14 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleToolStrip(ToolStrip toolStrip)
         {
-            toolStrip.ImageScalingSize = ScaleToSystemDpi(toolStrip.ImageScalingSize);
+            toolStrip.ImageScalingSize 
+                = this.deviceCaps.ScaleToSystemDpi(toolStrip.ImageScalingSize);
             // TODO: margin is too small
             //toolStrip.Font = this.UiFontUnscaled;
+
+            //toolStrip.AutoSize = true;
+            //toolStrip.GripMargin = ScaleToSystemDpi(toolStrip.GripMargin);
+            
         }
 
         private void StyleTextBox(TextBoxBase textBox)
@@ -201,7 +176,7 @@ namespace Google.Solutions.Mvvm.Theme
             //
             foreach (ColumnHeader column in listView.Columns)
             {
-                column.Width = ScaleToSystemDpi(column.Width);
+                column.Width = this.deviceCaps.ScaleToSystemDpi(column.Width);
             }
         }
 
@@ -247,65 +222,5 @@ namespace Google.Solutions.Mvvm.Theme
                 controlTheme.AddRule<Form>(ForceRescaleForm, ControlTheme.Options.ApplyWhenHandleCreated);
             }
         }
-    }
-
-    //---------------------------------------------------------------------
-    // Helper classes.
-    //---------------------------------------------------------------------
-
-    internal class DeviceCapabilities
-    {
-        public const ushort DefaultDpi = 96;
-
-        public ushort SystemDpi { get; }
-
-        public bool IsHighDpiEnabled
-        {
-            get => this.SystemDpi != DefaultDpi;
-        }
-
-        private DeviceCapabilities(ushort systemDpi)
-        {
-            this.SystemDpi = systemDpi;
-        }
-
-        public static DeviceCapabilities GetScreenCapabilities()
-        {
-            var hdc = NativeMethods.GetDC(IntPtr.Zero);
-            try
-            {
-                return new DeviceCapabilities(
-                    (ushort)NativeMethods.GetDeviceCaps(
-                        hdc,
-                        NativeMethods.DeviceCap.LOGPIXELSX));
-            }
-            finally
-            {
-                NativeMethods.ReleaseDC(IntPtr.Zero, hdc);
-            }
-        }
-    }
-
-    internal class NativeMethods
-    {
-        internal enum DeviceCap : int
-        {
-            LOGPIXELSX = 88,
-            LOGPIXELSY = 90
-        }
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetDC(
-            IntPtr hwnd);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr ReleaseDC(
-            IntPtr hwnd,
-            IntPtr hdc);
-
-        [DllImport("gdi32.dll")] 
-        public static extern int GetDeviceCaps(
-            IntPtr hdc,
-            DeviceCap nIndex);
     }
 }
