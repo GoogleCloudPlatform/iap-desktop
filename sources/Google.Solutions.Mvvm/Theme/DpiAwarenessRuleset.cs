@@ -148,14 +148,18 @@ namespace Google.Solutions.Mvvm.Theme
                 container.AutoScaleMode = AutoScaleMode.Font;
                 container.AutoScaleDimensions = this.UiFontDimensions;
             }
-            else  
-            { 
+            else if (c.Font == Control.DefaultFont)
+            {
                 //
-                // These controls have their font size scaled by the system.
-                // But for that to work, we have to reassign the unscaled
+                // Non-container controls have their font size scaled by the 
+                // system. But for that to work, we have to reassign the unscaled
                 // font.
                 //
                 c.Font = this.UiFontUnscaled;
+            }
+            else
+            {
+                c.Font = new Font(this.UiFont.FontFamily, c.Font.Size);
             }
         }
 
