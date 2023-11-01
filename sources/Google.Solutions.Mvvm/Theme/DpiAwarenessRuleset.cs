@@ -96,6 +96,38 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
         //---------------------------------------------------------------------
+        // Helper methods.
+        //---------------------------------------------------------------------
+
+        private void ScaleImageList(ImageList imageList)
+        {
+            if (imageList == null)
+            {
+                return;
+            }
+
+            var images = imageList
+                .Images
+                .Cast<Image>()
+                .Select(i => (Image)i.Clone())
+                .ToArray();
+
+            //
+            // Change the size. If the handle has been created already,
+            // this causes the imagelist to reset the contained images.
+            //
+            imageList.ImageSize = ScaleToSystemDpi(imageList.ImageSize);
+
+            if (imageList.Images.Count != images.Length)
+            {
+                //
+                // Re-add images.
+                //
+                imageList.Images.AddRange(images);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Theming rules.
         //---------------------------------------------------------------------
 
@@ -120,7 +152,7 @@ namespace Google.Solutions.Mvvm.Theme
             { 
                 //
                 // These controls have their font size scaled by the system.
-                // But for that to work, we habe to reassign the unscaled
+                // But for that to work, we have to reassign the unscaled
                 // font.
                 //
                 c.Font = this.UiFontUnscaled;
@@ -150,37 +182,22 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleTreeView(TreeView treeView)
         {
-            void ScaleImageList(ImageList imageList)
+            ScaleImageList(treeView.ImageList);
+            ScaleImageList(treeView.StateImageList);
+        }
+
+        private void StyleListView(ListView listView)
+        {
+            ScaleImageList(listView.SmallImageList);
+            ScaleImageList(listView.LargeImageList);
+            ScaleImageList(listView.StateImageList);
+
+            //
+            // ListView doesn't scale columns automatically.
+            //
+            foreach (ColumnHeader column in listView.Columns)
             {
-                var images = imageList
-                    .Images
-                    .Cast<Image>()
-                    .Select(i => (Image)i.Clone())
-                    .ToArray();
-
-                //
-                // Change the size. If the handle has been created already,
-                // this causes the imagelist to reset the contained images.
-                //
-                treeView.ImageList.ImageSize = ScaleToSystemDpi(treeView.ImageList.ImageSize);
-
-                if (treeView.ImageList.Images.Count != images.Length)
-                {
-                    //
-                    // Re-add images.
-                    //
-                    treeView.ImageList.Images.AddRange(images);
-                }
-            }
-
-            if (treeView.ImageList != null)
-            {
-                ScaleImageList(treeView.ImageList);
-            }
-
-            if (treeView.StateImageList != null)
-            {
-                ScaleImageList(treeView.StateImageList);
+                column.Width = ScaleToSystemDpi(column.Width);
             }
         }
 
@@ -218,6 +235,7 @@ namespace Google.Solutions.Mvvm.Theme
                 controlTheme.AddRule<ToolStrip>(StyleToolStrip);
                 controlTheme.AddRule<TextBoxBase>(StyleTextBox);
                 controlTheme.AddRule<TreeView>(StyleTreeView);
+                controlTheme.AddRule<ListView>(StyleListView);
 
                 //
                 // Force scaling once the handle has been created.
