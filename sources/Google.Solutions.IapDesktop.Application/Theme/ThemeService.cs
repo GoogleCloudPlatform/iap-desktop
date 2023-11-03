@@ -96,17 +96,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             var systemDialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new WindowsSystemDialogRuleset())
-                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme));
+                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme))
+                .AddRuleSet(new GdiScalingRuleset());
 
             var dialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
-                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme));
+                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme))
+                .AddRuleSet(new GdiScalingRuleset());
 
             var dockWindowTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
-                .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme));
+                .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme))
+                .AddRuleSet(new GdiScalingRuleset());
 
             //
             // Apply the resulting theme to the different kinds of windows we have.

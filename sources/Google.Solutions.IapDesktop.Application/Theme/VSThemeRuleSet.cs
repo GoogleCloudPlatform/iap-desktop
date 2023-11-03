@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
