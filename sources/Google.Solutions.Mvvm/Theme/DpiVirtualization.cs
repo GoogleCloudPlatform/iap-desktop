@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Theme
             // GetSystemDpiForProcess returns the actual DPI.
             //
             // If the two differ, we know that virtualization
-            // is in play.
+            // (with or without GDI scaling) is in play.
             //
 
             var systemDpi = NativeMethods.GetDpiForSystem();
