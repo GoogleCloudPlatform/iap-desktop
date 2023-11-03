@@ -7,9 +7,6 @@
     
     <Nullable>disable</Nullable>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>copy /Y $(MSBuildProjectDirectory)\$(OutputPath)\$(TargetFramework)\$(AssemblyName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutputPath)\$(TargetFramework)\</PostBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
     <PackageReference Include="Google.Apis" Version="1.61.0" />
