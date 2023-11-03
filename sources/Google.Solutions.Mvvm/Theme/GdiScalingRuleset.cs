@@ -43,6 +43,21 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
+        private void DisableDoubleBufferingForLabel(Label label)
+        {
+            if (label is LinkLabel) 
+            {
+                //
+                // Disabling double-buffering causes the control to be
+                // cropped, so leave it on.
+                //
+            }
+            else
+            {
+                DisableDoubleBuffering(label);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IRuleSet
         //---------------------------------------------------------------------
@@ -54,7 +69,7 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            controlTheme.AddRule<Label>(DisableDoubleBuffering);
+            controlTheme.AddRule<Label>(DisableDoubleBufferingForLabel);
             controlTheme.AddRule<CheckBox>(DisableDoubleBuffering);
             controlTheme.AddRule<Button>(DisableDoubleBuffering);
             controlTheme.AddRule<ToolStrip>(DisableDoubleBuffering);
