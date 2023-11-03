@@ -57,6 +57,8 @@ namespace Google.Solutions.Mvvm.Theme
             controlTheme.AddRule<Label>(DisableDoubleBuffering);
             controlTheme.AddRule<CheckBox>(DisableDoubleBuffering);
             controlTheme.AddRule<Button>(DisableDoubleBuffering);
+            controlTheme.AddRule<ToolStrip>(DisableDoubleBuffering);
+            controlTheme.AddRule<ContextMenuStrip>(DisableDoubleBuffering);
         }
     }
 }
