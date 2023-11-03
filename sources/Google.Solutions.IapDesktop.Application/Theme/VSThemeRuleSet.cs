@@ -336,12 +336,18 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     : this.theme.Palette.TextBox.Background;
             }
 
-            //TODO: SetControlBorder breaks when GDI-scaling is on.
-            //SetControlBorder(
-            //    text,
-            //    this.theme.Palette.TextBox.Border,
-            //    this.theme.Palette.TextBox.BorderHover,
-            //    this.theme.Palette.TextBox.BorderFocused);
+            if (!DpiVirtualization.IsActive)
+            {
+                //
+                // When GDI scaling is active, SetControlBorder 
+                // causes strage painting issues.
+                //
+                SetControlBorder(
+                    text,
+                    this.theme.Palette.TextBox.Border,
+                    this.theme.Palette.TextBox.BorderHover,
+                    this.theme.Palette.TextBox.BorderFocused);
+            }
         }
 
         private void StyleMarkdownViewer(MarkdownViewer md)
