@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Theme
             // For simple controls, it's a reasonable trade-off to sacrifice
             // double-buffering in exchange for crisp text.
             //
-            if (DpiVirtualization.IsActive && this.doubleBufferedProperty != null)
+            if (GdiScaling.IsEnabled && this.doubleBufferedProperty != null)
             {
                 this.doubleBufferedProperty.SetValue(control, false);
             }

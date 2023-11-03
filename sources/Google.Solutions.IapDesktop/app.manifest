@@ -22,12 +22,6 @@
     </application>
   </compatibility>
 
-  <asmv3:application>
-    <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2017/WindowsSettings">
-      <gdiScaling>true</gdiScaling>
-    </asmv3:windowsSettings>
-  </asmv3:application>
-
   <!-- Enable themes for Windows common controls and dialogs (Windows XP and later) -->
   <!--
   <dependency>
