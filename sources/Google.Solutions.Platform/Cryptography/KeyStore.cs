@@ -57,6 +57,33 @@ namespace Google.Solutions.Platform.Cryptography
             this.provider = provider;
         }
 
+        private bool CheckKeyExists(string name)
+        {
+            try
+            {
+                return CngKey.Exists(name);
+            }
+            catch (CryptographicException e) when (e.HResult == Ntstatus.NTE_TEMPORARY_PROFILE)
+            {
+                //
+                // The Windows profile is marked as temporary ("mandatory"). In this state,
+                // we can't access any persisted keys.
+                //
+                // FWIW, it's still possible to create ephemeral keys in this state.
+                //
+                // Note for testing: The following PowerShell [2] command turns a profile read-only:
+                //
+                //   $USERSID='S-...' # SID of user
+                //   Set-ItemProperty -path Registry::"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$USERSID\" -Name State -Value 128
+                //
+                // [1] https://web.archive.org/web/20140217055725/http://support.microsoft.com/kb/264732.
+                // [2] https://web.archive.org/web/20151218221641/https://ittechlog.wordpress.com/2014/06/27/switch-a-local-profile-to-temporary/
+                //
+                throw new KeyStoreUnavailableException(
+                    "Accessing the CNG key failed because the Windows profile is temporary");
+            }
+        }
+
         //---------------------------------------------------------------------
         // IKeyStore.
         //---------------------------------------------------------------------
@@ -88,7 +115,7 @@ namespace Google.Solutions.Platform.Cryptography
                 {
                     DeleteKey(name);
                 }
-                else if (CngKey.Exists(name))
+                else if (CheckKeyExists(name))
                 {
                     var key = CngKey.Open(name);
                     if (key.Algorithm != type.Algorithm)
@@ -217,8 +244,8 @@ namespace Google.Solutions.Platform.Cryptography
     }
 
     /// <summary>
-    /// Exception that indicates that an operation could not be performed 
-    /// because of an existing conflicting key.
+    /// Indicates that an operation could not be performed because 
+    /// of an existing conflicting key.
     /// </summary>
     public class KeyConflictException : CryptographicException
     {
@@ -229,6 +256,16 @@ namespace Google.Solutions.Platform.Cryptography
 
         internal KeyConflictException(string message, Exception inner) 
             : base(message, inner)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Indicates that the key store is unavailable.
+    /// </summary>
+    public class KeyStoreUnavailableException : CryptographicException
+    {
+        internal KeyStoreUnavailableException(string message) : base(message)
         {
         }
     }
