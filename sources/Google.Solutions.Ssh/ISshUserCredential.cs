@@ -27,7 +27,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Base interface.
     /// </summary>
-    public interface IAuthenticator
+    public interface ISshUserCredential
     {
         /// <summary>
         /// Username to authenticate with.
@@ -38,7 +38,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Authenticator for "publickey" authentication.
     /// </summary>
-    public interface IPublicKeyAuthenticator : IAuthenticator 
+    public interface IPublicKeyCredential : ISshUserCredential 
     {
         /// <summary>
         /// Public key that corresponds to the signing key.
@@ -55,13 +55,14 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Authenticator for "password" authentication.
     /// </summary>
-    public interface IPasswordAuthenticator : IAuthenticator 
+    public interface IPasswordCredential : ISshUserCredential 
     { 
         SecureString Password { get; }
     }
 
     /// <summary>
-    /// Handler for "keyboard-interactive" prompts.
+    /// Handler for "keyboard-interactive" prompts that might be required
+    /// in addition to presenting a credential.
     /// </summary>
     public interface IKeyboardInteractiveHandler
     {

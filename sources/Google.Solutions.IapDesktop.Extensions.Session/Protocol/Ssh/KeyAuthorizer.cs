@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // IPublicKeyService.
+        // IKeyAuthorizer.
         //---------------------------------------------------------------------
 
         public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(

@@ -27,7 +27,10 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    internal static class UncompressedPointEncoding
+    /// <summary>
+    /// ECPoint encoding as defined in SEC 1: Elliptic Curve Cryptography.
+    /// </summary>
+    internal static class ECPointEncoding
     {
         private const byte UncompressedTag = 4;
 
@@ -55,6 +58,9 @@ namespace Google.Solutions.Ssh.Cryptography
             return buffer;
         }
 
+        /// <summary>
+        /// Decode point. Only uncompressed encoding is supported.
+        /// </summary>
         internal static ECPoint Decode(
             byte[] encoded,
             ushort keySizeInBits)

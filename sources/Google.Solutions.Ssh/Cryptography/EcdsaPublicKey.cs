@@ -93,7 +93,7 @@ namespace Google.Solutions.Ssh.Cryptography
                             $"{idenfifier} (expected: {expectedIdentifier})");
                     }
 
-                    var q = UncompressedPointEncoding.Decode(
+                    var q = ECPointEncoding.Decode(
                         reader.ReadByteString(),
                         keySizeInBits);
                     return new ECParameters()
@@ -153,7 +153,7 @@ namespace Google.Solutions.Ssh.Cryptography
                     // Encode public key according to RFC5656 section 3.1.
                     //
 
-                    var qInUncompressedEncoding = UncompressedPointEncoding.Encode(
+                    var qInUncompressedEncoding = ECPointEncoding.Encode(
                         this.key.ExportParameters(false).Q,
                         (ushort)this.key.KeySize);
 

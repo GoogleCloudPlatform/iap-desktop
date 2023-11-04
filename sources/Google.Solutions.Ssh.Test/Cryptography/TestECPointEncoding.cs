@@ -28,7 +28,7 @@ using System.Security.Cryptography;
 namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
-    public class TestUncompressedPointEncoding
+    public class TestECPointEncoding
     {
         [Test]
         public void WhenKeySizeDoesNotMatchPoint_ThenEncodeThrowsException()
@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var key = new ECDsaCng(ECCurve.NamedCurves.nistP256))
             {
                 Assert.Throws<SshFormatException>(
-                    () => UncompressedPointEncoding.Encode(
+                    () => ECPointEncoding.Encode(
                         key.ExportParameters(false).Q, 
                         128));
             }
@@ -49,12 +49,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 var point = key.ExportParameters(false).Q;
 
-                var encoded = UncompressedPointEncoding.Encode(point, (ushort)key.KeySize);
+                var encoded = ECPointEncoding.Encode(point, (ushort)key.KeySize);
 
                 Assert.AreEqual(4, encoded[0]);
                 Assert.AreEqual(65, encoded.Length);
 
-                var restoredPoint = UncompressedPointEncoding.Decode(
+                var restoredPoint = ECPointEncoding.Decode(
                     encoded,
                     (ushort)key.KeySize);
 
@@ -74,14 +74,14 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             uncompressedSizeData[0] = 1; // Junk.
 
             Assert.Throws<SshFormatException>(
-                () => UncompressedPointEncoding.Decode(uncompressedSizeData, 256));
+                () => ECPointEncoding.Decode(uncompressedSizeData, 256));
         }
 
         [Test]
         public void WhenEncodedDataNotUncompressed_ThenDecodeThrowsException()
         {
             Assert.Throws<NotImplementedException>(
-                () => UncompressedPointEncoding.Decode(
+                () => ECPointEncoding.Decode(
                     new byte[] { 0, 0, 0 },
                     246));
         }
