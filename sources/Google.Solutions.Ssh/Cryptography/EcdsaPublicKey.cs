@@ -54,7 +54,57 @@ namespace Google.Solutions.Ssh.Cryptography
 
             using (var reader = new SshReader(new MemoryStream(encodedKey)))
             {
-                throw new NotImplementedException();
+                ECCurve curve;
+                try
+                {
+                    var type = reader.ReadString();
+                    switch (type)
+                    {
+                        case "ecdsa-sha2-nistp256":
+                            curve = ECCurve.NamedCurves.nistP256;
+                            break;
+
+                        case "ecdsa-sha2-nistp384":
+                            curve = ECCurve.NamedCurves.nistP384;
+                            break;
+
+                        case "ecdsa-sha2-nistp521":
+                            curve = ECCurve.NamedCurves.nistP521;
+                            break;
+
+                        default:
+                            throw new SshFormatException(
+                                "The key is not an ECDSA key or uses " +
+                                $"an unsupported curve: {type}");
+                    }
+                }
+                catch (IOException e)
+                {
+                    throw new SshFormatException(
+                        "The key is malformed or truncated", e);
+                }
+
+                var key = new ECDsaCng(curve);
+
+                try
+                {
+                    var q = UncompressedPointEncoding.Decode(
+                        reader.ReadByteString(),
+                        key.KeySize);
+                    key.ImportParameters(new ECParameters()
+                    {
+                        Q = q,
+                        Curve = curve
+                    });
+
+                    return new EcdsaPublicKey(key);
+                }
+                catch (Exception e)
+                {
+                    key.Dispose();
+                    throw new SshFormatException(
+                        "The key contains malformed parameters", e);
+                }
             }
         }
 
@@ -78,9 +128,12 @@ namespace Google.Solutions.Ssh.Cryptography
                     // Encode public key according to RFC5656 section 3.1.
                     //
 
+                    var qInUncompressedEncoding = UncompressedPointEncoding.Encode(
+                        this.key.ExportParameters(false).Q,
+                        this.key.KeySize);
+
                     writer.WriteString(this.Type);
-                    writer.WriteString("nistp" + this.key.KeySize);
-                    writer.WriteString(this.key.EncodePublicKey());
+                    writer.WriteString(qInUncompressedEncoding);
                     writer.Flush();
 
                     return buffer.ToArray();

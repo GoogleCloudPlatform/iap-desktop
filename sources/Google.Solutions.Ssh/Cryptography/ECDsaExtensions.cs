@@ -36,13 +36,8 @@ namespace Google.Solutions.Ssh.Cryptography
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static byte[] EncodePublicKey(
-            this ECDsaCng key)
+        public static byte[] EncodePublicKey(this ECDsaCng key)// TODO: remove
         {
-            //
-            // Key exporting is only supported on 4.7+.
-            //
-
             var point = key.ExportParameters(false).Q;
             var qX = point.X;
             var qY = point.Y;
@@ -66,10 +61,9 @@ namespace Google.Solutions.Ssh.Cryptography
             Array.Copy(qY, 0, buffer, buffer.Length - qY.Length, qY.Length);
             return buffer;
         }
-
     }
 
-    internal struct ECDsaSignature
+    internal struct ECDsaSignature// TODO: remove
     {
         private readonly byte[] R;
         private readonly byte[] S;
@@ -85,7 +79,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Parse IEEE-1363 formatted signature.
         /// </summary>
-        public static ECDsaSignature FromIeee1363(byte[] signature)
+        public static ECDsaSignature FromIeee1363(byte[] signature)// TODO: remove
         {
             // Input is (r, s), each of them exactly half of the array.
             Debug.Assert(signature.Length % 2 == 0);
@@ -101,7 +95,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// Format signature according to RFC5656 section 3.1.2.
         /// </summary>
         /// <returns></returns>
-        public byte[] ToSshBlob()
+        public byte[] ToSshBlob() // TODO: remove
         {
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))

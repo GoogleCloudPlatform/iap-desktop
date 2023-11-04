@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -31,12 +32,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
     [TestFixture]
     public class TestRsaPublicKey
     {
-        private const string SampleKey =
-            "AAAAB3NzaC1yc2EAAAADAQABAAAAgQCrt1m7xe5Rd8DlltVnwx17WTt" +
-            "m2HCpvGsHCRo/BDlKso5YleTqoHPXYVz0Z8UXmUX14qgnRScySBYVSXqYYdh6j7" +
-            "ZPlI3ehrZ2vn0WEJSvcB/gi+VrcNfVEvvn2EFOip1fXZxFcdVhvhZp5HRTUzzKx" +
-            "spcMRM9OvY+qgJIveT7cw==";
-
         //---------------------------------------------------------------------
         // Type.
         //---------------------------------------------------------------------
@@ -55,31 +50,39 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         // FromWireFormat.
         //---------------------------------------------------------------------
 
+
         [Test]
-        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey()
+        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey(
+            [Values(
+                SampleKeys.Rsa1024,
+                SampleKeys.Rsa2048,
+                SampleKeys.Rsa4096)] string encodedKey)
         {
-            using (var key = new RSACng())
-            using (var publicKey = new RsaPublicKey(key))
-            using (var reencodedPublicKey = RsaPublicKey.FromWireFormat(publicKey.WireFormatValue))
+            using (var key = RsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)))
             {
-                CollectionAssert.AreEqual(publicKey.WireFormatValue, reencodedPublicKey.WireFormatValue);
+                Assert.AreEqual(
+                    encodedKey,
+                    Convert.ToBase64String(key.WireFormatValue));
             }
         }
 
         [Test]
-        public void WhenKeyValid_ThenFromWireFormatSucceeds()
+        public void WhenEncodedKeyIsUnsupported_ThenFromWireFormatThrowsException(
+            [Values(
+                SampleKeys.Ed25519,
+                SampleKeys.Nistp256)] string encodedKey)
         {
-            using (var publicKey = RsaPublicKey.FromWireFormat(Convert.FromBase64String(SampleKey)))
-            {
-            }
+            Assert.Throws<SshFormatException>(
+                () => RsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)));
         }
 
         [Test]
-        public void WhenKeyTruncated_ThenFromWireFormatThrowsException()
+        public void WhenKeyTruncated_ThenFromWireFormatThrowsException(
+            [Values(1, 20, 40)] int take)
         {
-            Assert.Throws<EndOfStreamException>(
+            Assert.Throws<SshFormatException>(
                 () => RsaPublicKey.FromWireFormat(
-                    Convert.FromBase64String(SampleKey).Take(60).ToArray()));
+                    Convert.FromBase64String(SampleKeys.Nistp256).Take(take).ToArray()));
         }
     }
 }

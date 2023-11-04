@@ -20,9 +20,10 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
-using System.IO;
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Test.Cryptography
@@ -30,7 +31,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
     [TestFixture]
     public class TestEcdsaPublicKey
     {
-
         //---------------------------------------------------------------------
         // Type.
         //---------------------------------------------------------------------
@@ -70,21 +70,37 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey()
+        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey(
+            [Values(
+                SampleKeys.Nistp256,
+                SampleKeys.Nistp384,
+                SampleKeys.Nistp512)] string encodedKey)
         {
-            Assert.Fail("NIY");
+            using (var key = EcdsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)))
+            {
+                Assert.AreEqual(
+                    encodedKey,
+                    Convert.ToBase64String(key.WireFormatValue));
+            }
         }
 
         [Test]
-        public void WhenKeyValid_ThenFromWireFormatSucceeds()
+        public void WhenEncodedKeyIsUnsupported_ThenFromWireFormatThrowsException(
+            [Values(
+                SampleKeys.Ed25519,
+                SampleKeys.Rsa2048)] string encodedKey)
         {
-            Assert.Fail("NIY");
+            Assert.Throws<SshFormatException>(
+                () => EcdsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)));
         }
 
         [Test]
-        public void WhenKeyTruncated_ThenFromWireFormatThrowsException()
+        public void WhenKeyTruncated_ThenFromWireFormatThrowsException(
+            [Values(1, 20, 40)] int take)
         {
-            Assert.Fail("NIY");
+            Assert.Throws<SshFormatException>(
+                () => EcdsaPublicKey.FromWireFormat(
+                    Convert.FromBase64String(SampleKeys.Nistp256).Take(take).ToArray()));
         }
     }
 }
