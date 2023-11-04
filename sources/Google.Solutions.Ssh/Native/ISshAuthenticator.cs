@@ -44,7 +44,7 @@ namespace Google.Solutions.Ssh.Native
         /// Prompt for additional (second factor)
         /// information.
         /// </summary>
-        string Prompt(
+        string? Prompt(
             string name,
             string instruction,
             string prompt,
@@ -69,7 +69,7 @@ namespace Google.Solutions.Ssh.Native
             this.KeyPair = keyPair.ExpectNotNull(nameof(this.KeyPair));
         }
 
-        public virtual string Prompt(
+        public virtual string? Prompt(
             string name,
             string instruction,
             string prompt,

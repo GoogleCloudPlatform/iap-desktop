@@ -195,7 +195,7 @@ namespace Google.Solutions.Ssh
             Func<SshAuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {
-            TResult result = null;
+            TResult? result = null;
 
             await RunSendOperationAsync(
                 session =>
@@ -204,7 +204,8 @@ namespace Google.Solutions.Ssh
                 })
                 .ConfigureAwait(false);
 
-            return result;
+            Debug.Assert(result != null);
+            return result!;
         }
 
         internal async Task<TResult> RunThrowingOperationAsync<TResult>(
@@ -216,8 +217,8 @@ namespace Google.Solutions.Ssh
             // exceptions, and these need to be passed thru to the caller
             // (as opposed to letting them bubble up to OnReceiveError).
             //
-            TResult result = null;
-            Exception exception = null;
+            TResult? result = null;
+            Exception? exception = null;
 
             await RunSendOperationAsync(
                 session =>
@@ -240,7 +241,8 @@ namespace Google.Solutions.Ssh
             }
             else
             {
-                return result;
+                Debug.Assert(result != null);
+                return result!;
             }
         }
 
@@ -258,7 +260,7 @@ namespace Google.Solutions.Ssh
             ITextTerminal terminal,
             TerminalSize initialSize)
         {
-            IEnumerable<EnvironmentVariable> environmentVariables = null;
+            IEnumerable<EnvironmentVariable>? environmentVariables = null;
             if (terminal.Locale != null)
             {
                 //

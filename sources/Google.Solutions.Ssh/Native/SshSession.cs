@@ -409,7 +409,7 @@ namespace Google.Solutions.Ssh.Native
         // Tracing.
         //---------------------------------------------------------------------
 
-        private UnsafeNativeMethods.TraceHandler TraceHandlerDelegate;
+        private UnsafeNativeMethods.TraceHandler? TraceHandlerDelegate;
 
         public void SetTraceHandler(
             LIBSSH2_TRACE mask,

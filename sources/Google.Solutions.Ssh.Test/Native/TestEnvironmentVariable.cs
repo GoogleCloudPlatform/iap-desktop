@@ -54,8 +54,8 @@ namespace Google.Solutions.Ssh.Test.Native
         [Test]
         public void WhenVariablesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new EnvironmentVariable("NAME", null, true);
-            var ref2 = new EnvironmentVariable("NAME", null, false);
+            var ref1 = new EnvironmentVariable("NAME", "", true);
+            var ref2 = new EnvironmentVariable("NAME", "", false);
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -68,8 +68,8 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var ref1 = new EnvironmentVariable("NAME", "value", false);
 
-            Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1.Equals(null!));
+            Assert.IsFalse(ref1.Equals((object)null!));
         }
     }
 }

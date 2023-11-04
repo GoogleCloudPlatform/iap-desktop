@@ -33,6 +33,7 @@ namespace Google.Solutions.Ssh.Native
         internal EnvironmentVariable(string name, string value, bool required)
         {
             Precondition.ExpectNotEmpty(name, nameof(name));
+            Precondition.ExpectNotNull(value, nameof(value));
 
             this.Name = name;
             this.Value = value;

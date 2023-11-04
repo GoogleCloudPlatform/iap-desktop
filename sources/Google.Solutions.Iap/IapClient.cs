@@ -93,8 +93,8 @@ namespace Google.Solutions.Iap
         {
             instance.ExpectNotNull(nameof(instance));
 
-            var directions = this.Endpoint.GetDirections(
-                this.authorization.DeviceEnrollment?.State ?? DeviceEnrollmentState.NotEnrolled);
+            Precondition.ExpectNotNull(this.authorization.DeviceEnrollment, "DeviceEnrollment");
+            var directions = this.Endpoint.GetDirections(this.authorization.DeviceEnrollment.State);
 
             X509Certificate2? clientCertificate = null;
             if (directions.UseClientCertificate)

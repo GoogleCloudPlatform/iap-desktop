@@ -111,8 +111,9 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 true,
                 IntPtr.Zero))
             {
+                Assert.IsNotNull(key);
                 Assert.IsInstanceOf<RsaSshKeyPair>(key);
-                Assert.AreEqual(3072, key.KeySize);
+                Assert.AreEqual(3072, key!.KeySize);
             }
         }
 
@@ -127,8 +128,9 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 true,
                 IntPtr.Zero))
             {
+                Assert.IsNotNull(key);
                 Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
-                Assert.AreEqual(256, key.KeySize);
+                Assert.AreEqual(256, key!.KeySize);
             }
         }
 
@@ -143,8 +145,9 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 true,
                 IntPtr.Zero))
             {
+                Assert.IsNotNull(key);
                 Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
-                Assert.AreEqual(384, key.KeySize);
+                Assert.AreEqual(384, key!.KeySize);
             }
         }
 
@@ -159,8 +162,9 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 true,
                 IntPtr.Zero))
             {
+                Assert.IsNotNull(key);
                 Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
-                Assert.AreEqual(521, key.KeySize);
+                Assert.AreEqual(521, key!.KeySize);
             }
         }
 
@@ -183,8 +187,9 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 false,
                 IntPtr.Zero))
             {
+                Assert.IsNotNull(createdKey);
                 Assert.IsNotNull(openedKey);
-                Assert.AreEqual(createdKey.PublicKeyString, openedKey.PublicKeyString);
+                Assert.AreEqual(createdKey!.PublicKeyString, openedKey!.PublicKeyString);
             }
         }
 

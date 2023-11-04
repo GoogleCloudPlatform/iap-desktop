@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Cryptography
     {
         private const int NTE_EXISTS = -2146893809; // 0x8009000F
 
-        private static CngKey OpenPersistentKeyPair(
+        private static CngKey? OpenPersistentKeyPair(
             string name,
             CngAlgorithm algorithm,
             CngProvider provider,
@@ -180,7 +180,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Create or open a key in the key storage provider.
         /// </summary>
-        public static ISshKeyPair OpenPersistentKeyPair(
+        public static ISshKeyPair? OpenPersistentKeyPair(
             string name,
             SshKeyType sshKeyType,
             CngProvider provider,

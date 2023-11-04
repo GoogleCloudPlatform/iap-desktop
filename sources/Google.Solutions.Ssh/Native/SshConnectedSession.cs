@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Native
         // Banner.
         //---------------------------------------------------------------------
 
-        public string GetRemoteBanner()
+        public string? GetRemoteBanner()
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.Ssh.Native
         // Host key.
         //---------------------------------------------------------------------
 
-        public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
+        public byte[]? GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_HOSTKEY_HASH), hashType))
@@ -156,7 +156,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public byte[] GetRemoteHostKey()
+        public byte[]? GetRemoteHostKey()
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
@@ -250,7 +250,7 @@ namespace Google.Solutions.Ssh.Native
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(authenticator, nameof(authenticator));
 
-            Exception interactiveCallbackException = null;
+            Exception? interactiveCallbackException = null;
 
             int Sign(
                 IntPtr session,
@@ -328,13 +328,13 @@ namespace Google.Solutions.Ssh.Native
                     // NB. Name and instruction aren't used by OS Login,
                     // so flatten the structure to a single level.
                     //
-                    string responseText = null;
+                    string? responseText = null;
                     try
                     {
                         responseText = authenticator.Prompt(
-                            name,
-                            instruction,
-                            promptText,
+                            name ?? string.Empty,
+                            instruction ?? string.Empty,
+                            promptText ?? string.Empty,
                             prompts[i].Echo != 0);
                     }
                     catch (Exception e)
@@ -361,7 +361,7 @@ namespace Google.Solutions.Ssh.Native
                     {
                         var responseTextBytes = Encoding.UTF8.GetBytes(responseText);
                         responses[i].TextLength = responseTextBytes.Length;
-                        responses[i].TextPtr = SshSession.Alloc(
+                        responses[i].TextPtr = SshSession.Alloc!(
                             new IntPtr(responseTextBytes.Length),
                             IntPtr.Zero);
                         Marshal.Copy(

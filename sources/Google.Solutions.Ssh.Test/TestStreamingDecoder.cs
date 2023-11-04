@@ -29,18 +29,11 @@ namespace Google.Solutions.Ssh.Test
     [UsesCloudResources]
     public class TestStreamingDecoder : SshFixtureBase
     {
-        private StreamingDecoder decoder;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.decoder = new StreamingDecoder(Encoding.UTF8);
-        }
-
         [Test]
         public void WhenInputContainsOneByteUtf8Sequence_ThenInputIsDecoded()
         {
-            var s = this.decoder.Decode(new byte[] { 0x24, 0x24 });
+            var decoder = new StreamingDecoder(Encoding.UTF8);
+            var s = decoder.Decode(new byte[] { 0x24, 0x24 });
             Assert.AreEqual("$$", s);
         }
 
@@ -48,34 +41,40 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void WhenInputContainsTwoByteUtf8Sequence_ThenInputIsDecoded()
         {
-            var s = this.decoder.Decode(new byte[] { 0xC2, 0xA2 });
+            var decoder = new StreamingDecoder(Encoding.UTF8);
+            var s = decoder.Decode(new byte[] { 0xC2, 0xA2 });
             Assert.AreEqual("\u00A2", s);
         }
 
         [Test]
         public void WhenInputContainsThreeByteUtf8Sequence_ThenInputIsDecoded()
         {
-            var s = this.decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
+            var decoder = new StreamingDecoder(Encoding.UTF8);
+            var s = decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
             Assert.AreEqual("\u0939", s);
         }
 
         [Test]
         public void WhenInputContainsPartialTwoByteUtf8Sequence_ThenInputIsHeld()
         {
-            var s = this.decoder.Decode(new byte[] { 0xC2 });
+            var decoder = new StreamingDecoder(Encoding.UTF8);
+
+            var s = decoder.Decode(new byte[] { 0xC2 });
             Assert.AreEqual("", s);
 
-            s = this.decoder.Decode(new byte[] { 0xA2, 0x20 });
+            s = decoder.Decode(new byte[] { 0xA2, 0x20 });
             Assert.AreEqual("\u00A2 ", s);
         }
 
         [Test]
         public void WhenInputContainsPartialThreeByteUtf8Sequence_ThenInputIsHeld()
         {
-            var s = this.decoder.Decode(new byte[] { 0xE0, 0xA4 });
+            var decoder = new StreamingDecoder(Encoding.UTF8);
+
+            var s = decoder.Decode(new byte[] { 0xE0, 0xA4 });
             Assert.AreEqual("", s);
 
-            s = this.decoder.Decode(new byte[] { 0xB9, 0x20 });
+            s = decoder.Decode(new byte[] { 0xB9, 0x20 });
             Assert.AreEqual("\u0939 ", s);
         }
     }

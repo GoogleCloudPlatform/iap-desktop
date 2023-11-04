@@ -353,7 +353,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         private class TwoFactorAuthenticator : SshSingleFactorAuthenticator
         {
-            public delegate string PromptDelegate(
+            public delegate string? PromptDelegate(
                 string name,
                 string instruction,
                 string prompt,
@@ -372,7 +372,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 this.prompt = prompt;
             }
 
-            public override string Prompt(
+            public override string? Prompt(
                 string name,
                 string instruction,
                 string prompt,

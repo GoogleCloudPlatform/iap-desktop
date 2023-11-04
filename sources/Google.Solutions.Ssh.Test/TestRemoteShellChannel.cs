@@ -42,7 +42,7 @@ namespace Google.Solutions.Ssh.Test
 
             public string TerminalType => "vanilla";
 
-            public CultureInfo Locale { get; set; } = CultureInfo.InvariantCulture;
+            public CultureInfo? Locale { get; set; } = CultureInfo.InvariantCulture;
 
             public void OnDataReceived(string data)
             {
