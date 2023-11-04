@@ -23,12 +23,13 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Platform.Cryptography
 {
     /// <summary>
-    /// Adapter for the Windows CNG key store.
+    /// Adapter for the current user's Windows CNG key store.
     /// </summary>
     public interface IKeyStore
     {
@@ -71,7 +72,8 @@ namespace Google.Solutions.Platform.Cryptography
                 //
                 // FWIW, it's still possible to create ephemeral keys in this state.
                 //
-                // Note for testing: The following PowerShell [2] command turns a profile read-only:
+                // Note for testing: The following PowerShell [2] command turns a
+                // profile read-only:
                 //
                 //   $USERSID='S-...' # SID of user
                 //   Set-ItemProperty -path Registry::"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$USERSID\" -Name State -Value 128
@@ -82,6 +84,14 @@ namespace Google.Solutions.Platform.Cryptography
                 throw new KeyStoreUnavailableException(
                     "Accessing the CNG key failed because the Windows profile is temporary");
             }
+        }
+
+        internal static string GetKeyContainerPath(CngKey key)
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"Microsoft\Crypto\Keys",
+                key.UniqueName);
         }
 
         //---------------------------------------------------------------------
@@ -206,16 +216,32 @@ namespace Google.Solutions.Platform.Cryptography
                 catch (CryptographicException e) when (e.HResult == Ntstatus.NTE_EXISTS)
                 {
                     //
-                    // This should not happen because of the previous Exists()
-                    // check, but:
+                    // This obscure error can happen if:
                     //
-                    //  - There might be a race condition (rare)
-                    //  - The specific algorithm might be disabled on the machine
-                    //    (also rare).
+                    //  - The key container is corrupted and
+                    //  - The user has lost write-access to the key container (although they
+                    //    might still be the file owner).
                     //
-                    throw new KeyConflictException(
-                        "Failed to create or access cryptographic key. If the error " +
-                        $"persists, try using an algorithm other than {type.Algorithm}.", 
+                    // In this state:
+                    //
+                    //  - CngKet.Exists() returns false (although the key container is there)
+                    //  - Open() and Delete() consistantly fail with NTE_EXISTS
+                    //  - certutil is unable to delete the key.
+                    //
+                    // The only remedy in that case is to delete the key container by
+                    // deleting the file. Obviously, the problem is that we don't know the
+                    // file name.
+                    //
+                    // To reproduce the issue, do the following:
+                    //
+                    //  - Open the file and corrupt the content
+                    //  - Update the file DACL so that it only contains 2 ACEs
+                    //    SYSTEM: read
+                    //    Current user: read
+                    //
+                    throw new InvalidKeyContainerException(
+                        "Failed to create or access cryptographic key. This might " +
+                        "be caused by corrupted file permissions on the CNG key container.", 
                         e);
                 }
             }
@@ -255,6 +281,17 @@ namespace Google.Solutions.Platform.Cryptography
         }
 
         internal KeyConflictException(string message, Exception inner) 
+            : base(message, inner)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Indicates that the key container is corrupt, inaccessible, or both.
+    /// </summary>
+    public class InvalidKeyContainerException : CryptographicException
+    {
+        internal InvalidKeyContainerException(string message, Exception inner)
             : base(message, inner)
         {
         }
