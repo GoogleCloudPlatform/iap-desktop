@@ -49,6 +49,42 @@ namespace Google.Solutions.Ssh.Cryptography
         // Factory methods.
         //---------------------------------------------------------------------
 
+        private static RSAParameters DecodeParametersFromWireFormat(byte[] encodedKey)
+        {
+            encodedKey.ExpectNotNull(nameof(encodedKey));
+
+            using (var reader = new SshReader(new MemoryStream(encodedKey)))
+            {
+                try
+                { 
+                    var type = reader.ReadString();
+                    if (type != RsaType)
+                    {
+                        throw new SshFormatException(
+                            $"Expected {RsaType} in header, but got {type}");
+                    }
+
+                    //
+                    // Decode public key according to RFC4253 section 6.6.
+                    //
+
+                    var exponent = reader.ReadMultiPrecisionInteger().ToArray();
+                    var modulus = reader.ReadMultiPrecisionInteger().ToArray();
+
+                    return new RSAParameters()
+                    {
+                        Exponent = exponent,
+                        Modulus = modulus
+                    };
+                }
+                catch (IOException e)
+                {
+                    throw new SshFormatException(
+                        "The key encoding is malformed or truncated", e);
+                }
+            }
+        }
+
         /// <summary>
         /// Read a key from its wire format (i.e., RFC4253 section 6.6.).
         /// </summary>
@@ -58,30 +94,12 @@ namespace Google.Solutions.Ssh.Cryptography
 
             using (var reader = new SshReader(new MemoryStream(encodedKey)))
             {
-                var type = reader.ReadString();
-                if (type != RsaType)
-                {
-                    throw new SshFormatException(
-                        $"Expected {RsaType} in header, but got {type}");
-                }
-
-                //
-                // Decode public key according to RFC4253 section 6.6.
-                //
-
-                var exponent = reader.ReadMultiPrecisionInteger().ToArray();
-                var modulus = reader.ReadMultiPrecisionInteger().ToArray();
-
+                var parameters = DecodeParametersFromWireFormat(encodedKey);
                 var key = new RSACng();
 
                 try
                 {
-                    key.ImportParameters(new RSAParameters()
-                    {
-                        Exponent = exponent,
-                        Modulus = modulus
-                    });
-
+                    key.ImportParameters(parameters);
                     return new RsaPublicKey(key);
                 }
                 catch (CryptographicException e)

@@ -22,6 +22,7 @@
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
+using System;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Test.Cryptography
@@ -48,14 +49,14 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 var point = key.ExportParameters(false).Q;
 
-                var encoded = UncompressedPointEncoding.Encode(point, key.KeySize);
+                var encoded = UncompressedPointEncoding.Encode(point, (ushort)key.KeySize);
 
                 Assert.AreEqual(4, encoded[0]);
                 Assert.AreEqual(65, encoded.Length);
 
                 var restoredPoint = UncompressedPointEncoding.Decode(
-                    encoded, 
-                    key.KeySize);
+                    encoded,
+                    (ushort)key.KeySize);
 
                 CollectionAssert.AreEqual(
                     point.X,
@@ -67,20 +68,21 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenEncodedDataNotUncompressed_ThenDecodeThrowsException()
+        public void WhenEncodedDataUncompressedButWithoutTag_ThenDecodeThrowsException()
         {
+            var uncompressedSizeData = new byte[256 / 8 * 2 + 1];
+            uncompressedSizeData[0] = 1; // Junk.
+
             Assert.Throws<SshFormatException>(
-                () => UncompressedPointEncoding.Decode(
-                    new byte[] { 3, 0, 0, 0 },
-                    246));
+                () => UncompressedPointEncoding.Decode(uncompressedSizeData, 256));
         }
 
         [Test]
-        public void WhenTruncated_ThenDecodeThrowsException()
+        public void WhenEncodedDataNotUncompressed_ThenDecodeThrowsException()
         {
-            Assert.Throws<SshFormatException>(
+            Assert.Throws<NotImplementedException>(
                 () => UncompressedPointEncoding.Decode(
-                    new byte[] { 4, 0, 0, 0 },
+                    new byte[] { 0, 0, 0 },
                     246));
         }
     }

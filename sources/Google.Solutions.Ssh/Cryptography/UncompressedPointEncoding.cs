@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// </summary>
         internal static byte[] Encode(
             ECPoint point,
-            int keySizeInBits)
+            ushort keySizeInBits)
         {
             var qX = point.X;
             var qY = point.Y;
@@ -57,29 +57,34 @@ namespace Google.Solutions.Ssh.Cryptography
 
         internal static ECPoint Decode(
             byte[] encoded,
-            int keySizeInBits)
+            ushort keySizeInBits)
         {
             encoded.ExpectNotNull(nameof(encoded));
 
-            if (encoded.Length == 0 ||
-                encoded[0] != UncompressedTag)
-            {
-                throw new SshFormatException(
-                    "The data does not contain an uncomressed point");
-            }
-
             var keySizeInBytes = (keySizeInBits + 7) / 8;
-            if ((encoded.Length - 1) / 2 != keySizeInBytes)
+            if (encoded.Length == 2 * keySizeInBytes + 1)
             {
-                throw new SshFormatException(
-                    "Point coordinates do not match field size");
-            }
+                //
+                // Point is uncompressed.
+                //
 
-            return new ECPoint()
+                if (encoded[0] != UncompressedTag)
+                {
+                    throw new SshFormatException(
+                        "The data contains a malformed uncomressed point");
+                }
+
+                return new ECPoint()
+                {
+                    X = encoded.Skip(1).Take(keySizeInBytes).ToArray(),
+                    Y = encoded.Skip(1 + keySizeInBytes).ToArray(),
+                };
+            }
+            else
             {
-                X = encoded.Skip(1).Take(keySizeInBytes).ToArray(),
-                Y = encoded.Skip(1 + keySizeInBytes).ToArray(),
-            };
+                throw new NotImplementedException(
+                    "Point compression is not supported");
+            }
         }
     }
 }

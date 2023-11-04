@@ -45,31 +45,38 @@ namespace Google.Solutions.Ssh.Cryptography
         // Factory methods.
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Read a key from its wire format (i.e., RFC5656 section 3.1).
-        /// </summary>
-        public static EcdsaPublicKey FromWireFormat(byte[] encodedKey)
+        private static ECParameters DecodeParametersFromWireFormat(byte[] encodedKey)
         {
             encodedKey.ExpectNotNull(nameof(encodedKey));
 
             using (var reader = new SshReader(new MemoryStream(encodedKey)))
             {
-                ECCurve curve;
                 try
                 {
                     var type = reader.ReadString();
+
+                    ECCurve curve;
+                    ushort keySizeInBits;
+                    string expectedIdentifier;
+
                     switch (type)
                     {
                         case "ecdsa-sha2-nistp256":
                             curve = ECCurve.NamedCurves.nistP256;
+                            expectedIdentifier = "nistp256";
+                            keySizeInBits = 256;
                             break;
 
                         case "ecdsa-sha2-nistp384":
                             curve = ECCurve.NamedCurves.nistP384;
+                            expectedIdentifier = "nistp384";
+                            keySizeInBits = 384;
                             break;
 
                         case "ecdsa-sha2-nistp521":
                             curve = ECCurve.NamedCurves.nistP521;
+                            expectedIdentifier = "nistp521";
+                            keySizeInBits = 521;
                             break;
 
                         default:
@@ -77,34 +84,52 @@ namespace Google.Solutions.Ssh.Cryptography
                                 "The key is not an ECDSA key or uses " +
                                 $"an unsupported curve: {type}");
                     }
+
+                    var idenfifier = reader.ReadString();
+                    if (idenfifier != expectedIdentifier)
+                    {
+                        throw new SshFormatException(
+                            "The key contains an unexpected identifier: " +
+                            $"{idenfifier} (expected: {expectedIdentifier})");
+                    }
+
+                    var q = UncompressedPointEncoding.Decode(
+                        reader.ReadByteString(),
+                        keySizeInBits);
+                    return new ECParameters()
+                    {
+                        Q = q,
+                        Curve = curve
+                    };
                 }
                 catch (IOException e)
                 {
                     throw new SshFormatException(
-                        "The key is malformed or truncated", e);
+                        "The key encoding is malformed or truncated", e);
                 }
+            }
+        }
 
-                var key = new ECDsaCng(curve);
+        /// <summary>
+        /// Read a key from its wire format (i.e., RFC5656 section 3.1).
+        /// </summary>
+        public static EcdsaPublicKey FromWireFormat(byte[] encodedKey)
+        {
+            encodedKey.ExpectNotNull(nameof(encodedKey));
 
-                try
-                {
-                    var q = UncompressedPointEncoding.Decode(
-                        reader.ReadByteString(),
-                        key.KeySize);
-                    key.ImportParameters(new ECParameters()
-                    {
-                        Q = q,
-                        Curve = curve
-                    });
+            var parameters = DecodeParametersFromWireFormat(encodedKey);
+            var key = new ECDsaCng(parameters.Curve);
 
-                    return new EcdsaPublicKey(key);
-                }
-                catch (Exception e)
-                {
-                    key.Dispose();
-                    throw new SshFormatException(
-                        "The key contains malformed parameters", e);
-                }
+            try
+            {
+                key.ImportParameters(parameters);
+                return new EcdsaPublicKey(key);
+            }
+            catch (Exception e)
+            {
+                key.Dispose();
+                throw new SshFormatException(
+                    "The key contains malformed parameters", e);
             }
         }
 
@@ -130,7 +155,7 @@ namespace Google.Solutions.Ssh.Cryptography
 
                     var qInUncompressedEncoding = UncompressedPointEncoding.Encode(
                         this.key.ExportParameters(false).Q,
-                        this.key.KeySize);
+                        (ushort)this.key.KeySize);
 
                     writer.WriteString(this.Type);
                     writer.WriteString(qInUncompressedEncoding);
