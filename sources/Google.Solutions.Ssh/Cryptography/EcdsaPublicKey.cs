@@ -158,6 +158,7 @@ namespace Google.Solutions.Ssh.Cryptography
                         (ushort)this.key.KeySize);
 
                     writer.WriteString(this.Type);
+                    writer.WriteString("nistp" + this.key.KeySize);
                     writer.WriteString(qInUncompressedEncoding);
                     writer.Flush();
 
