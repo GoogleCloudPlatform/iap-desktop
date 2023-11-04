@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,63 +19,59 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Cryptography;
-using System;
+using System.Security;
 
-namespace Google.Solutions.Ssh.Native
+namespace Google.Solutions.Ssh
 {
     /// <summary>
-    /// Source of authentication information.
+    /// Base interface.
     /// </summary>
-    public interface ISshAuthenticator //TODO: remove
+    public interface IAuthenticator
     {
         /// <summary>
-        /// Username.
+        /// Username to authenticate with.
         /// </summary>
         string Username { get; }
+    }
 
+    /// <summary>
+    /// Authenticator for "publickey" authentication.
+    /// </summary>
+    public interface IPublicKeyAuthenticator : IAuthenticator 
+    {
         /// <summary>
-        /// Key pair for public/private key authentication.
+        /// Public key that corresponds to the signing key.
         /// </summary>
-        ISshKeyPair KeyPair { get; }
+        PublicKey PublicKey { get; }
 
         /// <summary>
-        /// Prompt for additional (second factor)
-        /// information.
+        /// Sign an authentication challenge.
+        /// </summary>
+        /// <returns>Signature, in the format expected by SSH</returns>
+        byte[] Sign(AuthenticationChallenge challenge);
+    }
+
+    /// <summary>
+    /// Authenticator for "password" authentication.
+    /// </summary>
+    public interface IPasswordAuthenticator : IAuthenticator 
+    { 
+        SecureString Password { get; }
+    }
+
+    /// <summary>
+    /// Handler for "keyboard-interactive" prompts.
+    /// </summary>
+    public interface IKeyboardInteractiveHandler
+    {
+        /// <summary>
+        /// Respond to interactive prompt.
         /// </summary>
         string? Prompt(
             string name,
             string instruction,
             string prompt,
             bool echo);
-    }
-
-    /// <summary>
-    /// Authenticator that uses a public key and doesn't
-    /// support 2FA.
-    /// </summary>
-    public class SshSingleFactorAuthenticator : ISshAuthenticator
-    {
-        public string Username { get; }
-
-        public ISshKeyPair KeyPair { get; }
-
-        public SshSingleFactorAuthenticator(
-            string username,
-            ISshKeyPair keyPair)
-        {
-            this.Username = username.ExpectNotNull(nameof(username));
-            this.KeyPair = keyPair.ExpectNotNull(nameof(this.KeyPair));
-        }
-
-        public virtual string? Prompt(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
