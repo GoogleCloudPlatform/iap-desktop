@@ -41,7 +41,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// * RFC5656 (3.1) for ECDSA keys
         /// * PROTOCOL.certkeys for the OpenSSH certificate formats.
         /// </summary>
-        public abstract byte[] Value { get; }
+        public abstract byte[] WireFormatValue { get; }
 
         public string ToString(Format format)
         {
@@ -63,7 +63,7 @@ namespace Google.Solutions.Ssh.Cryptography
                 //   [...].
                 //
                 //
-                return $"{this.Type} {Convert.ToBase64String(this.Value)}";
+                return $"{this.Type} {Convert.ToBase64String(this.WireFormatValue)}";
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Google.Solutions.Ssh.Cryptography
                 //
                 return new StringBuilder()
                     .AppendLine(Ssh2FileFormat.Header)
-                    .AppendLine(Convert.ToBase64String(this.Value))
+                    .AppendLine(Convert.ToBase64String(this.WireFormatValue))
                     .AppendLine(Ssh2FileFormat.Footer)
                     .ToString();
             }

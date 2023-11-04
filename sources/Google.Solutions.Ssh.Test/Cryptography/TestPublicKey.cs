@@ -32,12 +32,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         {
             public SamplePublicKey(byte[] value)
             {
-                this.Value = value;
+                this.WireFormatValue = value;
             }
 
             public override string Type => "sample";
 
-            public override byte[] Value { get; }
+            public override byte[] WireFormatValue { get; }
         }
 
         //---------------------------------------------------------------------

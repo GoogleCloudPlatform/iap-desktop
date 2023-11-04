@@ -45,7 +45,14 @@ namespace Google.Solutions.Ssh.Cryptography
             this.key = key.ExpectNotNull(nameof(key));
         }
 
-        public RsaPublicKey(byte[] encodedKey)
+        //---------------------------------------------------------------------
+        // Factory methods.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Read a key from its wire format (i.e., RFC4253 section 6.6.).
+        /// </summary>
+        public static RsaPublicKey FromWireFormat(byte[] encodedKey)
         {
             encodedKey.ExpectNotNull(nameof(encodedKey));
 
@@ -65,19 +72,21 @@ namespace Google.Solutions.Ssh.Cryptography
                 var exponent = reader.ReadMultiPrecisionInteger().ToArray();
                 var modulus = reader.ReadMultiPrecisionInteger().ToArray();
 
-                this.key = new RSACng();
+                var key = new RSACng();
 
                 try
                 {
-                    this.key.ImportParameters(new RSAParameters()
+                    key.ImportParameters(new RSAParameters()
                     {
                         Exponent = exponent,
                         Modulus = modulus
                     });
+
+                    return new RsaPublicKey(key);
                 }
                 catch (CryptographicException e)
                 {
-                    this.key.Dispose();
+                    key.Dispose();
                     throw new SshFormatException(
                         "The key contains malformed parameters", e);
                 }
@@ -90,7 +99,7 @@ namespace Google.Solutions.Ssh.Cryptography
 
         public override string Type => RsaType;
 
-        public override byte[] Value
+        public override byte[] WireFormatValue
         {
             get
             {

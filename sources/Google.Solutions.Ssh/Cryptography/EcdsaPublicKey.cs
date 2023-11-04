@@ -21,7 +21,10 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Format;
+using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
@@ -39,6 +42,23 @@ namespace Google.Solutions.Ssh.Cryptography
         }
 
         //---------------------------------------------------------------------
+        // Factory methods.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Read a key from its wire format (i.e., RFC5656 section 3.1).
+        /// </summary>
+        public static EcdsaPublicKey FromWireFormat(byte[] encodedKey)
+        {
+            encodedKey.ExpectNotNull(nameof(encodedKey));
+
+            using (var reader = new SshReader(new MemoryStream(encodedKey)))
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
@@ -47,7 +67,7 @@ namespace Google.Solutions.Ssh.Cryptography
             get => "ecdsa-sha2-nistp" + this.key.KeySize;
         }
 
-        public override byte[] Value
+        public override byte[] WireFormatValue
         {
             get
             {

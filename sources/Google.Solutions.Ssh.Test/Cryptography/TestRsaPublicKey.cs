@@ -52,33 +52,33 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         //---------------------------------------------------------------------
-        // Ctor.
+        // FromWireFormat.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDecodedAndEncoded_ThenValueIsEqual()
+        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey()
         {
             using (var key = new RSACng())
             using (var publicKey = new RsaPublicKey(key))
-            using (var reencodedPublicKey = new RsaPublicKey(publicKey.Value))
+            using (var reencodedPublicKey = RsaPublicKey.FromWireFormat(publicKey.WireFormatValue))
             {
-                CollectionAssert.AreEqual(publicKey.Value, reencodedPublicKey.Value);
+                CollectionAssert.AreEqual(publicKey.WireFormatValue, reencodedPublicKey.WireFormatValue);
             }
         }
 
         [Test]
-        public void WhenKeyValid_ThenCtorSucceeds()
+        public void WhenKeyValid_ThenFromWireFormatSucceeds()
         {
-            using (var publicKey = new RsaPublicKey(Convert.FromBase64String(SampleKey)))
+            using (var publicKey = RsaPublicKey.FromWireFormat(Convert.FromBase64String(SampleKey)))
             {
             }
         }
 
         [Test]
-        public void WhenKeyTruncated_ThenConstructorThrowsException()
+        public void WhenKeyTruncated_ThenFromWireFormatThrowsException()
         {
             Assert.Throws<EndOfStreamException>(
-                () => new RsaPublicKey(
+                () => RsaPublicKey.FromWireFormat(
                     Convert.FromBase64String(SampleKey).Take(60).ToArray()));
         }
     }

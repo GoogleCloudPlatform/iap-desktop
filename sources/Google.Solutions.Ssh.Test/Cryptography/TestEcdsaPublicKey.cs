@@ -38,7 +38,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void TypeNistp256()
         {
-            
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
             using (var publicKey = new EcdsaPublicKey(key))
             {
@@ -49,7 +48,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void TypeNistp384()
         {
-
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP384)))
             using (var publicKey = new EcdsaPublicKey(key))
             {
@@ -60,7 +58,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void TypeNistp521()
         {
-
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP521)))
             using (var publicKey = new EcdsaPublicKey(key))
             {
@@ -69,23 +66,23 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         //---------------------------------------------------------------------
-        // Ctor.
+        // FromWireFormat.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDecodedAndEncoded_ThenValueIsEqual()
+        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey()
         {
             Assert.Fail("NIY");
         }
 
         [Test]
-        public void WhenKeyValid_ThenCtorSucceeds()
+        public void WhenKeyValid_ThenFromWireFormatSucceeds()
         {
             Assert.Fail("NIY");
         }
 
         [Test]
-        public void WhenKeyTruncated_ThenConstructorThrowsException()
+        public void WhenKeyTruncated_ThenFromWireFormatThrowsException()
         {
             Assert.Fail("NIY");
         }
