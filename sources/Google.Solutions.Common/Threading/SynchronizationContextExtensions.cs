@@ -89,16 +89,14 @@ namespace Google.Solutions.Common.Threading
         /// </summary>
         public static T Send<T>(
             this SynchronizationContext context,
-            Func<T> func) where T : class
+            Func<T> func) 
         {
-            T? value = null;
+            var value = default(T);
             context.Send(_ =>
             {
                 value = func();
             },
             null);
-
-            Invariant.ExpectNotNull(value, nameof(value));
 
             return value!;
         }

@@ -479,7 +479,7 @@ namespace Google.Solutions.Ssh
 
             public ISshKeyPair KeyPair => this.authenticator.KeyPair;
 
-            public string Prompt(string name, string instruction, string prompt, bool echo)
+            public string? Prompt(string name, string instruction, string prompt, bool echo)
             {
                 return this.context.Send(
                     () => this.authenticator.Prompt(name, instruction, prompt, echo));

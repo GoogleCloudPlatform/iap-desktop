@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// Language ($LC_ALL) of terminal.
         /// </summary>
-        CultureInfo Locale { get; }
+        CultureInfo? Locale { get; }
 
         /// <summary>
         /// Process decoded data received from remote peer.

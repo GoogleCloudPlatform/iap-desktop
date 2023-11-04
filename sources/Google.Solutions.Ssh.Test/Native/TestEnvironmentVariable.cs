@@ -68,8 +68,8 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var ref1 = new EnvironmentVariable("NAME", "value", false);
 
-            Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1.Equals(null!));
+            Assert.IsFalse(ref1.Equals((object)null!));
         }
     }
 }

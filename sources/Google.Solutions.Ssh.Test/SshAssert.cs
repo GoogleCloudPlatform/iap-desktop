@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Test
     internal static class SshAssert
     {
         public static void ThrowsNativeExceptionWithError(
-            SshSession session,
+            SshSession? session,
             LIBSSH2_ERROR expected,
             Action action)
         {
