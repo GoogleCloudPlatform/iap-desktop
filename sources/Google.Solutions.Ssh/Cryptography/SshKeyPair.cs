@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public enum SshKeyType : int
+    public enum SshKeyType : int //TODO: Move to session
     {
         //
         // NB. These values are used for persistence and
@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh.Cryptography
         EcdsaNistp521 = 0x13
     }
 
-    public static class SshKeyPair
+    public static class SshKeyPair //TODO: remove
     {
         private const int NTE_EXISTS = -2146893809; // 0x8009000F
 

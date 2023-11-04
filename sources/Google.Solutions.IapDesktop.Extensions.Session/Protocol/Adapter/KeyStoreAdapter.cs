@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter
     }
 
     [Service(typeof(IKeyStoreAdapter))]
-    public class KeyStoreAdapter : IKeyStoreAdapter
+    public class KeyStoreAdapter : IKeyStoreAdapter //TODO: Delete
     {
         private static readonly CngProvider Provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
 
