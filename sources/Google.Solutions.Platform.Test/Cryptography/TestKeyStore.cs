@@ -111,7 +111,7 @@ namespace Google.Solutions.Platform.Test.Cryptography
         }
 
         [Test]
-        public void WhenKeyFoundAndForceRecreateIsFalse_ThenOpenPersistentKeyReturnsExistingKey(
+        public void WhenKeyFoundAndForceCreateIsFalse_ThenOpenPersistentKeyReturnsExistingKey(
             [Values(
                 CommonKeyType.Rsa1024,
                 CommonKeyType.Rsa2048,
@@ -136,7 +136,37 @@ namespace Google.Solutions.Platform.Test.Cryptography
             {
                 Assert.IsNotNull(createdKey);
                 Assert.IsNotNull(openedKey);
-                Assert.AreEqual(createdKey.UniqueName, openedKey.UniqueName);
+                CngAssert.AssertEqual(keyType.Algorithm, createdKey, openedKey);
+            }
+        }
+
+        [Test]
+        public void WhenKeyFoundAndForceCreateIsTrue_ThenOpenPersistentKeyReturnsNewKey(
+            [Values(
+                CommonKeyType.Rsa1024,
+                CommonKeyType.Rsa2048,
+                CommonKeyType.Rsa3072,
+                CommonKeyType.EcdsaP256,
+                CommonKeyType.EcdsaP384,
+                CommonKeyType.EcdsaP521)] CommonKeyType commonType)
+        {
+            var keyType = LookupCommonKeyType(commonType);
+            using (var createdKey = this.Store.OpenKey(
+                IntPtr.Zero,
+                KeyName,
+                keyType,
+                CngKeyUsages.AllUsages,
+                false))
+            using (var openedKey = this.Store.OpenKey(
+                IntPtr.Zero,
+                KeyName,
+                keyType,
+                CngKeyUsages.AllUsages,
+                true))
+            {
+                Assert.IsNotNull(createdKey);
+                Assert.IsNotNull(openedKey);
+                CngAssert.AssertNotEqual(keyType.Algorithm, createdKey, openedKey);
             }
         }
 
@@ -151,7 +181,7 @@ namespace Google.Solutions.Platform.Test.Cryptography
                 false))
             { }
 
-            Assert.Throws<CryptographicException>(
+            Assert.Throws<KeyConflictException>(
                 () => this.Store.OpenKey(
                     IntPtr.Zero,
                     KeyName,
@@ -171,7 +201,7 @@ namespace Google.Solutions.Platform.Test.Cryptography
                 false))
             { }
 
-            Assert.Throws<CryptographicException>(
+            Assert.Throws<KeyConflictException>(
                 () => this.Store.OpenKey(
                     IntPtr.Zero,
                     KeyName,
@@ -191,7 +221,7 @@ namespace Google.Solutions.Platform.Test.Cryptography
                 false))
             { }
 
-            Assert.Throws<CryptographicException>(
+            Assert.Throws<KeyConflictException>(
                 () => this.Store.OpenKey(
                     IntPtr.Zero,
                     KeyName,

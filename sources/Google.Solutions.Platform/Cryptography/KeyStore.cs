@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Platform;
 using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -67,7 +66,7 @@ namespace Google.Solutions.Platform.Cryptography
             string name,
             KeyType type,
             CngKeyUsages usage,
-            bool forceRecreate)
+            bool forceCreate)
         {
             name.ExpectNotEmpty(nameof(name));
 
@@ -85,7 +84,11 @@ namespace Google.Solutions.Platform.Cryptography
                 //   certutil -csp "Microsoft Software Key Storage Provider" -key -user
                 //
 
-                if (!forceRecreate && CngKey.Exists(name))
+                if (forceCreate)
+                {
+                    DeleteKey(name);
+                }
+                else if (CngKey.Exists(name))
                 {
                     var key = CngKey.Open(name);
                     if (key.Algorithm != type.Algorithm)
@@ -93,7 +96,7 @@ namespace Google.Solutions.Platform.Cryptography
                         var foundAlgorithm = key.Algorithm;
                         key.Dispose();
 
-                        throw new CryptographicException(
+                        throw new KeyConflictException(
                             $"Key {name} exists but uses algorithm {foundAlgorithm}");
                     }
 
@@ -102,7 +105,7 @@ namespace Google.Solutions.Platform.Cryptography
                         var foundSize = key.KeySize;
                         key.Dispose();
 
-                        throw new CryptographicException(
+                        throw new KeyConflictException(
                             $"Key {name} exists but uses size {foundSize}");
                     }
 
@@ -114,7 +117,7 @@ namespace Google.Solutions.Platform.Cryptography
                     if ((key.KeyUsage & usage) == 0)
                     {
                         key.Dispose();
-                        throw new CryptographicException(
+                        throw new KeyConflictException(
                             $"Key {name} exists, but does not support requested usage");
 
                     }
@@ -183,7 +186,7 @@ namespace Google.Solutions.Platform.Cryptography
                     //  - The specific algorithm might be disabled on the machine
                     //    (also rare).
                     //
-                    throw new CryptographicException(
+                    throw new KeyConflictException(
                         "Failed to create or access cryptographic key. If the error " +
                         $"persists, try using an algorithm other than {type.Algorithm}.", 
                         e);
@@ -209,6 +212,24 @@ namespace Google.Solutions.Platform.Cryptography
         private static class Ntstatus
         {
             public const int NTE_EXISTS = unchecked((int)0x8009000F);
+            public const int NTE_TEMPORARY_PROFILE = unchecked((int)0x80090024);
+        }
+    }
+
+    /// <summary>
+    /// Exception that indicates that an operation could not be performed 
+    /// because of an existing conflicting key.
+    /// </summary>
+    public class KeyConflictException : CryptographicException
+    {
+        internal KeyConflictException(string message) 
+            : base(message)
+        {
+        }
+
+        internal KeyConflictException(string message, Exception inner) 
+            : base(message, inner)
+        {
         }
     }
 }
