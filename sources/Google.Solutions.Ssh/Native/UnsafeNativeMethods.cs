@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
@@ -200,8 +201,8 @@ namespace Google.Solutions.Ssh.Native
         internal static extern Int32 libssh2_session_disconnect_ex(
             SshSessionHandle session,
             SSH_DISCONNECT reason,
-            [MarshalAs(UnmanagedType.LPStr)] string description,
-            [MarshalAs(UnmanagedType.LPStr)] string lang);
+            [MarshalAs(UnmanagedType.LPStr)] string? description,
+            [MarshalAs(UnmanagedType.LPStr)] string? lang);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
         internal static extern Int32 libssh2_session_get_blocking(
@@ -379,7 +380,7 @@ namespace Google.Solutions.Ssh.Native
             uint channelTypeLength,
             uint windowSize,
             uint packetSize,
-            [MarshalAs(UnmanagedType.LPStr)] string message,
+            [MarshalAs(UnmanagedType.LPStr)] string? message,
             uint messageLength);
 
 
@@ -397,7 +398,7 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string request,
             uint requestLength,
-            [MarshalAs(UnmanagedType.LPStr)] string message,
+            [MarshalAs(UnmanagedType.LPStr)] string? message,
             uint messageLength);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
@@ -450,7 +451,7 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string term,
             uint termLength,
-            byte[] modes,
+            byte[]? modes,
             uint modesLength,
             int width,
             int height,
@@ -585,7 +586,7 @@ namespace Google.Solutions.Ssh.Native
         internal static extern void libssh2_trace_sethandler(
             SshSessionHandle session,
             IntPtr context,
-            TraceHandler callback);
+            TraceHandler? callback);
 
         //---------------------------------------------------------------------
         // Winsock.
@@ -650,7 +651,7 @@ namespace Google.Solutions.Ssh.Native
         // Utility functions.
         //---------------------------------------------------------------------
 
-        internal static string PtrToString(
+        internal static string? PtrToString(
             IntPtr stringPtr,
             int stringLength,
             Encoding encoding)
@@ -745,7 +746,7 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// Handle to parent session.
         /// </summary>
-        internal SshSessionHandle SessionHandle { get; private set; }
+        internal SshSessionHandle? SessionHandle { get; private set; }
 
         protected SshSessionResourceHandle() : base(true)
         {
@@ -779,8 +780,8 @@ namespace Google.Solutions.Ssh.Native
             // is being force-closed), then the finalizer may release
             // resources in arbitrary order. 
             //
-            Debug.Assert(this.SessionHandle != null);
-            Debug.Assert(!this.SessionHandle.IsClosed);
+            Invariant.ExpectNotNull(this.SessionHandle, nameof(this.SessionHandle));
+            Debug.Assert(!this.SessionHandle!.IsClosed);
 
             if (this.SessionHandle.IsClosed)
             {
@@ -800,7 +801,7 @@ namespace Google.Solutions.Ssh.Native
 
         internal void ValidateAndAttachToSession(SshSession session)
         {
-            Debug.Assert(session != null);
+            Precondition.ExpectNotNull(session, nameof(session));
 
             if (this.IsInvalid)
             {

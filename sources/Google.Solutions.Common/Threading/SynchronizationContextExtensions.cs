@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Security.Cryptography;
 using System.Threading;
@@ -86,7 +87,7 @@ namespace Google.Solutions.Common.Threading
         /// <summary>
         /// Send a callback and pass its return value.
         /// </summary>
-        public static T? Send<T>(
+        public static T Send<T>(
             this SynchronizationContext context,
             Func<T> func) where T : class
         {
@@ -97,7 +98,9 @@ namespace Google.Solutions.Common.Threading
             },
             null);
 
-            return value;
+            Invariant.ExpectNotNull(value, nameof(value));
+
+            return value!;
         }
 
         /// <summary>

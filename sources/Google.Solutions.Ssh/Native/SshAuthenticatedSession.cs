@@ -94,9 +94,6 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channelHandle,
             EnvironmentVariable environmentVariable)
         {
-            Debug.Assert(environmentVariable.Name != null);
-            Debug.Assert(environmentVariable.Value != null);
-
             channelHandle.CheckCurrentThreadOwnsHandle();
 
             //
@@ -141,7 +138,7 @@ namespace Google.Solutions.Ssh.Native
             string term,
             ushort widthInChars,
             ushort heightInChars,
-            IEnumerable<EnvironmentVariable> environmentVariables = null)
+            IEnumerable<EnvironmentVariable>? environmentVariables = null)
         {
             this.Session.Handle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(term, nameof(term));

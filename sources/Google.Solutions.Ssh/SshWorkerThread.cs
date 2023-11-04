@@ -68,7 +68,7 @@ namespace Google.Solutions.Ssh
 
         public bool JoinWorkerThreadOnDispose { get; set; } = true;
 
-        public string Banner { get; set; }
+        public string? Banner { get; set; }
 
         /// <summary>
         /// Context to perform callbacks on
@@ -225,7 +225,7 @@ namespace Google.Solutions.Ssh
 
                         if (!string.IsNullOrEmpty(this.Banner))
                         {
-                            session.SetLocalBanner(this.Banner);
+                            session.SetLocalBanner(this.Banner!);
                         }
 
                         session.Timeout = this.ConnectionTimeout;
@@ -480,7 +480,10 @@ namespace Google.Solutions.Ssh
             public ISshKeyPair KeyPair => this.authenticator.KeyPair;
 
             public string Prompt(string name, string instruction, string prompt, bool echo)
-                => this.context.Send(() => this.authenticator.Prompt(name, instruction, prompt, echo));
+            {
+                return this.context.Send(
+                    () => this.authenticator.Prompt(name, instruction, prompt, echo));
+            }
         }
     }
 }

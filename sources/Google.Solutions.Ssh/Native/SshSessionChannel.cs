@@ -61,7 +61,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public string ExitSignal
+        public string? ExitSignal
         {
             get
             {

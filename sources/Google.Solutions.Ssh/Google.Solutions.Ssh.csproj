@@ -4,8 +4,6 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>SSH library</Description>
-    
-    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent />
