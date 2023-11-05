@@ -61,16 +61,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return vmNode;
         }
 
-        private SshSettingsRepository CreateSshSettingsRepository()
+        private IRepository<ISshSettings> CreateSshSettingsRepository(
+            TimeSpan keyValidity)
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(@"Software\Google\__Test", false);
+            var keyTypeSetting = new Mock<IEnumSetting<SshKeyType>>();
+            keyTypeSetting.SetupGet(s => s.EnumValue).Returns(SshKeyType.Rsa3072);
 
-            return new SshSettingsRepository(
-                hkcu.CreateSubKey(@"Software\Google\__Test"),
-                null,
-                null,
-                UserProfile.SchemaVersion.Current);
+            var validitySetting = new Mock<IIntSetting>();
+            validitySetting.SetupGet(s => s.IntValue).Returns((int)keyValidity.TotalSeconds);
+
+            var localeSetting = new Mock<IBoolSetting>();
+
+            var settings = new Mock<ISshSettings>();
+            settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);
+            settings.SetupGet(s => s.PublicKeyValidity).Returns(validitySetting.Object);
+            settings.SetupGet(s => s.IsPropagateLocaleEnabled).Returns(localeSetting.Object);
+
+            var repository = new Mock<IRepository<ISshSettings>>();
+            repository
+                .Setup(r => r.GetSettings())
+                .Returns(settings.Object);
+
+            return repository.Object;
         }
 
         private Mock<IKeyStore> CreateKeyStoreMock()
@@ -86,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<KeyType>(),
                     It.IsAny<CngKeyUsages>(),
                     It.IsAny<bool>()))
-                .Returns(new RSACng(1024).Key);
+                .Returns(new RSACng(3072).Key); // Matching setting
 
             return keyStore;
         }
@@ -147,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository());
+                CreateSshSettingsRepository(TimeSpan.FromMinutes(1)));
 
             using (await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
@@ -158,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 k => k.OpenKey(
                     It.IsAny<IntPtr>(),
                     It.IsAny<string>(),
-                    It.Is<KeyType>(t => t.Algorithm == CngAlgorithm.ECDsaP384),
+                    It.Is<KeyType>(t => t.Algorithm == CngAlgorithm.Rsa),
                     CngKeyUsages.Signing,
                     false), 
                 Times.Once);
@@ -194,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository());
+                CreateSshSettingsRepository(TimeSpan.FromMinutes(1)));
 
             using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
@@ -213,11 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task CreateSshSessionContextUsesSshSettings()
         {
-            var sshSettingsRepository = CreateSshSettingsRepository();
-            var sshSettings = sshSettingsRepository.GetSettings();
-            sshSettings.PublicKeyValidity.IntValue = (int)TimeSpan.FromDays(4).TotalSeconds;
-            sshSettingsRepository.SetSettings(sshSettings);
-
+            var sshSettingsRepository = CreateSshSettingsRepository(TimeSpan.FromDays(4));
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))

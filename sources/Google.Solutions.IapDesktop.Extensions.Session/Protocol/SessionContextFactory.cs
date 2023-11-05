@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 CngKeyUsages.Signing,
                 false);
 
-            var keyCredential = (keyName.Type.Algorithm == CngAlgorithm.Rsa)
+            var keyCredential = (keyName.Type.Algorithm == CngAlgorithm.Rsa) //TODO: Rewrite this
                 ? (IAsymmetricKeyCredential)new RsaKeyCredential(new RSACng(cngKey))
                 : (IAsymmetricKeyCredential)new EcdsaKeyCredential(new ECDsaCng(cngKey));
 
