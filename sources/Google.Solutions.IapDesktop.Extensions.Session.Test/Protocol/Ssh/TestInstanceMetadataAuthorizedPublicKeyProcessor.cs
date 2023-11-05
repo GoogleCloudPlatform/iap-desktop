@@ -465,8 +465,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .FromMetadata(new Metadata())
                     .Add(new UnmanagedMetadataAuthorizedPublicKey(
                         "bob",
-                        "ssh-rsa",
-                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                        key.PublicKey.Type,
+                        Convert.ToBase64String(key.PublicKey.WireFormatValue),
                         SampleEmailAddress));
 
                 var computeClient = CreateComputeEngineAdapterMock(
@@ -518,8 +518,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
-                        "ssh-rsa",
-                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                        key.PublicKey.Type,
+                        Convert.ToBase64String(key.PublicKey.WireFormatValue),
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
 
                 var computeClient = CreateComputeEngineAdapterMock(
@@ -572,7 +572,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ecdsa-sha2-nistp384",
-                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                        "AAAA",
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             SampleEmailAddress,
                             DateTime.UtcNow.AddMinutes(5))));
@@ -627,7 +627,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
-                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                        "AAAA",
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             SampleEmailAddress,
                             DateTime.UtcNow.AddMinutes(-5))));

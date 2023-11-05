@@ -401,7 +401,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             var metadataKey = new ManagedMetadataAuthorizedPublicKey(
                 authorizedKeyPair.Username,
                 key.PublicKey.Type,
-                key.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                Convert.ToBase64String(key.PublicKey.WireFormatValue),
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     authorization.Session.Username,
                     DateTime.UtcNow.Add(validity)));
