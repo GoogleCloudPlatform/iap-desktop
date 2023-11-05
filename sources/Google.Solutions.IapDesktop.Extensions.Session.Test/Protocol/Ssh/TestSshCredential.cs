@@ -36,12 +36,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void ToStringReturnsUsername()
         {
-            var authorizedKey = new AuthorizedKeyPair(
+            var credential = new SshCredential(
                 new Mock<IAsymmetricKeySigner>().Object,
                 KeyAuthorizationMethods.InstanceMetadata,
                 "username");
 
-            var credential = new SshCredential(authorizedKey);
             Assert.AreEqual("username", credential.ToString());
         }
     }

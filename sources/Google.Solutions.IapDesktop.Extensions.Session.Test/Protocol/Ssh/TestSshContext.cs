@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void AuthorizeCredentialReturnsCredential()
         {
-            var authorizedKey = new AuthorizedKeyPair(
+            var authorizedKey = new SshCredential(
                 new Mock<IAsymmetricKeySigner>().Object,
                 KeyAuthorizationMethods.InstanceMetadata,
                 "username");
@@ -75,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreSame(
                 authorizedKey,
-                context.AuthorizeCredentialAsync(CancellationToken.None)
-                    .Result
-                    .Key);
+                context
+                    .AuthorizeCredentialAsync(CancellationToken.None)
+                    .Result);
         }
 
         //---------------------------------------------------------------------

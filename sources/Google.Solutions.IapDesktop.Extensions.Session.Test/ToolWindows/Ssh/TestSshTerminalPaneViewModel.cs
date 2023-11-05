@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             return authorization;
         }
 
-        private static async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
+        private static async Task<SshCredential> CreateAuthorizedKeyAsync(
             InstanceLocator instance,
             IAuthorization authorization,
             SshKeyType keyType)
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             {
                 Instance = instance,
                 Endpoint = new IPEndPoint(address, 22),
-                AuthorizedKey = authorizedKey,
+                Credential = authorizedKey,
                 Language = language,
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var authorizationSource = CreateAuthorizationMock();
             var eventService = new Mock<IEventQueue>();
 
-            var nonAuthorizedKey = new AuthorizedKeyPair(
+            var nonAuthorizedKey = new SshCredential(
                 AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "invalid");
@@ -350,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     View = window,
                     Instance = instance,
                     Endpoint = new IPEndPoint(address, 22),
-                    AuthorizedKey = nonAuthorizedKey,
+                    Credential = nonAuthorizedKey,
                     Language = null,
                     ConnectionTimeout = TimeSpan.FromSeconds(10)
                 };

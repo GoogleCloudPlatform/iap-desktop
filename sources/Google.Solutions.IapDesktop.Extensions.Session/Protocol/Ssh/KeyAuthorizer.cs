@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// </summary>
     public interface IKeyAuthorizer
     {
-        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+        Task<SshCredential> AuthorizeKeyAsync(
             InstanceLocator instance,
             IAsymmetricKeySigner key,
             TimeSpan keyValidity,
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // IKeyAuthorizer.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+        public async Task<SshCredential> AuthorizeKeyAsync(
             InstanceLocator instance,
             IAsymmetricKeySigner key,
             TimeSpan validity,

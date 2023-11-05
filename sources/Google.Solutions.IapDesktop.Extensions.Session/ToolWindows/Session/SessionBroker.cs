@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             window.ViewModel.Instance = instance;
             window.ViewModel.Endpoint = transport.Endpoint;
-            window.ViewModel.AuthorizedKey = credential.Key;
+            window.ViewModel.Credential = credential;
             window.ViewModel.Language = parameters.Language;
             window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
 

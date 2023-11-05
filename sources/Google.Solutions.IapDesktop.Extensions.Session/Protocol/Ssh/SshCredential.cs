@@ -20,21 +20,56 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Cryptography;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    public class SshCredential : ISessionCredential
+    /// <summary>
+    /// SSH key pair for which the public key has been authorized.
+    /// </summary>
+    public class SshCredential : ISessionCredential, IAsymmetricKeyCredential
     {
-        public AuthorizedKeyPair Key { get; }
+        public KeyAuthorizationMethods AuthorizationMethod { get; }
 
-        internal SshCredential(AuthorizedKeyPair key)
+        internal SshCredential(//TODO: rename
+            IAsymmetricKeySigner keyPair,
+            KeyAuthorizationMethods method,
+            string posixUsername)
         {
-            this.Key = key.ExpectNotNull(nameof(key));
+            Debug.Assert(LinuxUser.IsValidUsername(posixUsername));
+            Debug.Assert(method.IsSingleFlag());
+
+            this.Signer = keyPair;
+            this.AuthorizationMethod = method;
+            this.Username = posixUsername;
         }
+
+        //---------------------------------------------------------------------
+        // IAsymmetricKeyCredential.
+        //---------------------------------------------------------------------
+
+        public string Username { get; }
+
+        public IAsymmetricKeySigner Signer { get; }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
         public override string ToString()
         {
-            return this.Key.Username;
+            return this.Username;
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.Signer.Dispose();
         }
     }
 }

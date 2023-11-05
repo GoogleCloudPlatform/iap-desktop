@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             //
             // Authorize the key using OS Login or metadata-based keys.
             //
-            var authorizedKey = await this.keyAuthorizer
+            return await this.keyAuthorizer
                 .AuthorizeKeyAsync(
                     this.Instance,
                     this.localKeyPair,
@@ -76,8 +76,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     KeyAuthorizationMethods.All,
                     cancellationToken)
                 .ConfigureAwait(false);
-
-            return new SshCredential(authorizedKey);
         }
 
         public override Task<ITransport> ConnectTransportAsync(
