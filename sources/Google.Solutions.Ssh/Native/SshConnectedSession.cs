@@ -378,13 +378,13 @@ namespace Google.Solutions.Ssh.Native
             }
 
             using (SshTraceSource.Log.TraceMethod()
-                .WithParameters(authenticator.Credential.Username))
+                .WithParameters(authenticator.Username))
             {
                 var publicKey = authenticator.Credential.PublicKey.WireFormatValue;
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
-                    authenticator.Credential.Username,
+                    authenticator.Username,
                     publicKey,
                     new IntPtr(publicKey.Length),
                     Sign,
@@ -421,8 +421,8 @@ namespace Google.Solutions.Ssh.Native
                         {
                             result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
                                 this.session.Handle,
-                                authenticator.Credential.Username,
-                                authenticator.Credential.Username.Length,
+                                authenticator.Username,
+                                authenticator.Username.Length,
                                 InteractiveCallback,
                                 IntPtr.Zero);
 

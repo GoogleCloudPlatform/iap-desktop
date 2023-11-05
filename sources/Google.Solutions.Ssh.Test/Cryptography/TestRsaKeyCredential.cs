@@ -30,20 +30,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
     public class TestRsaKeyCredential
     {
         //---------------------------------------------------------------------
-        // Username.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void Username()
-        {
-            using (var key = new RSACng(1024))
-            using (var credential = new RsaKeyCredential("bob", key))
-            {
-                Assert.AreEqual("bob", credential.Username);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // Sign.
         //---------------------------------------------------------------------
 
@@ -68,7 +54,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
 
             using (var cngKey = new RSACng())
-            using (var credential = new RsaKeyCredential("bob", cngKey))
+            using (var credential = new RsaKeyCredential(cngKey))
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(
@@ -100,7 +86,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.AreEqual("rsa-sha2-256", challenge.Algorithm);
 
             using (var cngKey = new RSACng())
-            using (var credential = new RsaKeyCredential("bob", cngKey))
+            using (var credential = new RsaKeyCredential(cngKey))
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(

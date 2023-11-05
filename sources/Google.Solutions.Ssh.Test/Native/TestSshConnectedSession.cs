@@ -289,13 +289,13 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var credential = AsymmetricKeyCredential.CreateEphemeral("invaliduser", keyType))
+            using (var credential = AsymmetricKeyCredential.CreateEphemeral(keyType))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
-                        new SshSingleFactorAuthenticator(credential)));
+                        new SshSingleFactorAuthenticator("invaliduser", credential)));
             }
         }
 
@@ -364,9 +364,10 @@ namespace Google.Solutions.Ssh.Test.Native
             public uint PromptCount { get; private set; } = 0;
 
             public TwoFactorAuthenticator(
+                string username,
                 IAsymmetricKeyCredential credential,
                 PromptDelegate prompt)
-                : base(credential)
+                : base(username, credential)
             {
                 this.prompt = prompt;
             }
@@ -409,6 +410,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
+                    authenticator.Username,
                     authenticator.Credential,
                     (name, instruction, prompt, echo) =>
                     {
@@ -445,6 +447,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
+                    authenticator.Username,
                     authenticator.Credential,
                     (name, instruction, prompt, echo) =>
                     {
@@ -479,6 +482,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
+                    authenticator.Username,
                     authenticator.Credential,
                     (name, instruction, prompt, echo) =>
                     {

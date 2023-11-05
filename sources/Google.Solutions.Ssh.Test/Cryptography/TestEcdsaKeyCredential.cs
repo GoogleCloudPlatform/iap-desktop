@@ -29,20 +29,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
     public class TestEcdsaKeyCredential
     {
         //---------------------------------------------------------------------
-        // Username.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void Username()
-        {
-            using (var key = new ECDsaCng(256))
-            using (var credential = new EcdsaKeyCredential("bob", key))
-            {
-                Assert.AreEqual("bob", credential.Username);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // HashAlgorithm.
         //---------------------------------------------------------------------
 
@@ -50,7 +36,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP256_ThenHashAlgorithmIsSha256()
         {
             using (var key = new ECDsaCng(256))
-            using (var credential = new EcdsaKeyCredential("bob", key))
+            using (var credential = new EcdsaKeyCredential(key))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA256, credential.HashAlgorithm);
             }
@@ -60,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP384_ThenHashAlgorithmIsSha384()
         {
             using (var key = new ECDsaCng(384))
-            using (var credential = new EcdsaKeyCredential("bob", key))
+            using (var credential = new EcdsaKeyCredential(key))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA384, credential.HashAlgorithm);
             }
@@ -70,7 +56,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP521_ThenHashAlgorithmIsSha512()
         {
             using (var key = new ECDsaCng(521))
-            using (var credential = new EcdsaKeyCredential("bob", key))
+            using (var credential = new EcdsaKeyCredential(key))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA512, credential.HashAlgorithm);
             }

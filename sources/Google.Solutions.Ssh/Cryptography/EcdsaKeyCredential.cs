@@ -30,11 +30,9 @@ namespace Google.Solutions.Ssh.Cryptography
     {
         private readonly ECDsaCng key;
 
-        public EcdsaKeyCredential(string username, ECDsaCng key)
+        public EcdsaKeyCredential(ECDsaCng key)
         {
             this.key = key.ExpectNotNull(nameof(key));
-            this.Username = username.ExpectNotEmpty(nameof(username));
-
             this.PublicKey = new EcdsaPublicKey(key);
         }
 
@@ -74,8 +72,6 @@ namespace Google.Solutions.Ssh.Cryptography
         //---------------------------------------------------------------------
 
         public PublicKey PublicKey { get; }
-
-        public string Username { get; }
 
         public byte[] Sign(AuthenticationChallenge challenge)
         {

@@ -30,10 +30,6 @@ namespace Google.Solutions.Ssh
     /// </summary>
     public interface ISshUserCredential : IDisposable
     {
-        /// <summary>
-        /// Username to authenticate with.
-        /// </summary>
-        string Username { get; }
     }
 
     /// <summary>

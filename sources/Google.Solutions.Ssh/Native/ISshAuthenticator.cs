@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Cryptography;
 using System;
+using System.Security.Policy;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -30,6 +31,11 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public interface ISshAuthenticator //TODO: remove
     {
+        /// <summary>
+        /// Username to authenticate with.
+        /// </summary>
+        string Username { get; }
+
         /// <summary>
         /// Key pair for public/private key authentication.
         /// </summary>
@@ -52,11 +58,14 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public class SshSingleFactorAuthenticator : ISshAuthenticator //TODO: delete
     {
+        public string Username { get; }
         public IAsymmetricKeyCredential Credential { get; }
 
         public SshSingleFactorAuthenticator(
+            string username,
             IAsymmetricKeyCredential credential)
         {
+            this.Username = username.ExpectNotNull(nameof(username));
             this.Credential = credential.ExpectNotNull(nameof(credential));
         }
 

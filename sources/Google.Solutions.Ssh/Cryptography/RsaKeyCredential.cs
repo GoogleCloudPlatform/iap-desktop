@@ -31,10 +31,9 @@ namespace Google.Solutions.Ssh.Cryptography
     {
         private readonly RSA key;
 
-        public RsaKeyCredential(string username, RSA key)
+        public RsaKeyCredential(RSA key)
         {
             this.key = key.ExpectNotNull(nameof(key));
-            this.Username = username.ExpectNotEmpty(nameof(username));
 
             this.PublicKey = new RsaPublicKey(key);
         }
@@ -44,8 +43,6 @@ namespace Google.Solutions.Ssh.Cryptography
         //---------------------------------------------------------------------
 
         public PublicKey PublicKey { get; }
-
-        public string Username { get; }
 
         public byte[] Sign(AuthenticationChallenge challenge)
         {

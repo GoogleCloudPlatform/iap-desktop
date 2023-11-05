@@ -146,7 +146,7 @@ namespace Google.Solutions.Ssh.Test
                     .Cast<SshKeyType>()
                     .ToDictionary(
                         k => k,
-                        k => AsymmetricKeyCredential.CreateEphemeral(username, k));
+                        k => AsymmetricKeyCredential.CreateEphemeral(k));
 
                 var metadataEntry = string.Join(
                     "\n", 
@@ -178,7 +178,7 @@ namespace Google.Solutions.Ssh.Test
                 foreach (var kvp in keysByType)
                 {
                     cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] =
-                        new SshSingleFactorAuthenticator(kvp.Value);
+                        new SshSingleFactorAuthenticator(username, kvp.Value);
                 }
             }
 
