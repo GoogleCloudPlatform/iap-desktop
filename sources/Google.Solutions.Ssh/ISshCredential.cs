@@ -28,31 +28,29 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Base interface.
     /// </summary>
-    public interface ISshUserCredential : IDisposable
+    public interface ISshCredential : IDisposable
     {
+        /// <summary>
+        /// Name of remote user to authenticate with.
+        /// </summary>
+        string Username { get; }
     }
 
     /// <summary>
-    /// Signer for "publickey" authentication.
+    /// Authenticator for "publickey" authentication.
     /// </summary>
-    public interface IAsymmetricKeySigner : IDisposable 
+    public interface IAsymmetricKeyCredential : ISshCredential
     {
         /// <summary>
-        /// Public key that corresponds to the signing key.
+        /// Signer for handling authentication challenges.
         /// </summary>
-        PublicKey PublicKey { get; }
-
-        /// <summary>
-        /// Sign an authentication challenge.
-        /// </summary>
-        /// <returns>Signature, in the format expected by SSH</returns>
-        byte[] Sign(AuthenticationChallenge challenge);
+        IAsymmetricKeySigner Signer { get; }
     }
 
     /// <summary>
     /// Authenticator for "password" authentication.
     /// </summary>
-    public interface IPasswordCredential : ISshUserCredential 
+    public interface IPasswordCredential : ISshCredential 
     { 
         SecureString Password { get; }
     }

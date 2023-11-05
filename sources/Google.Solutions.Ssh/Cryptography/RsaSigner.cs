@@ -27,11 +27,11 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public class RsaKeyCredential : DisposableBase, IAsymmetricKeySigner
+    public class RsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly RSA key;
 
-        public RsaKeyCredential(RSA key)
+        public RsaSigner(RSA key)
         {
             this.key = key.ExpectNotNull(nameof(key));
 

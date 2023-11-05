@@ -34,10 +34,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// <summary>
     /// SSH key pair for which the public key has been authorized.
     /// </summary>
-    public sealed class AuthorizedKeyPair : IDisposable
+    public sealed class AuthorizedKeyPair : IDisposable  //TODO: rename to XxCredential
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
-        public IAsymmetricKeySigner KeyPair { get; } //TODO: rename
+        public IAsymmetricKeySigner KeyPair { get; }
         public string Username { get; }
 
         private AuthorizedKeyPair(

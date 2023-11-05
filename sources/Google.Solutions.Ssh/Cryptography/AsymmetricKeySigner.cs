@@ -24,6 +24,26 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
+    /// <summary>
+    /// Signer for public key authentication.
+    /// </summary>
+    public interface IAsymmetricKeySigner : IDisposable
+    {
+        /// <summary>
+        /// Public key that corresponds to the signing key.
+        /// </summary>
+        PublicKey PublicKey { get; }
+
+        /// <summary>
+        /// Sign an authentication challenge.
+        /// </summary>
+        /// <returns>Signature, in the format expected by SSH</returns>
+        byte[] Sign(AuthenticationChallenge challenge);
+    }
+
+    /// <summary>
+    /// Helper class for creating signers.
+    /// </summary>
     public static class AsymmetricKeySigner
     {
         /// <summary>
@@ -34,10 +54,10 @@ namespace Google.Solutions.Ssh.Cryptography
         {
             return sshKeyType switch
             {
-                SshKeyType.Rsa3072 => new RsaKeyCredential(new RSACng(3072)),
-                SshKeyType.EcdsaNistp256 => new EcdsaKeyCredential(new ECDsaCng(256)),
-                SshKeyType.EcdsaNistp384 => new EcdsaKeyCredential(new ECDsaCng(384)),
-                SshKeyType.EcdsaNistp521 => new EcdsaKeyCredential(new ECDsaCng(521)),
+                SshKeyType.Rsa3072 => new RsaSigner(new RSACng(3072)),
+                SshKeyType.EcdsaNistp256 => new EcdsaSigner(new ECDsaCng(256)),
+                SshKeyType.EcdsaNistp384 => new EcdsaSigner(new ECDsaCng(384)),
+                SshKeyType.EcdsaNistp521 => new EcdsaSigner(new ECDsaCng(521)),
                 _ => throw new ArgumentOutOfRangeException(nameof(sshKeyType))
             };
         }
@@ -49,11 +69,11 @@ namespace Google.Solutions.Ssh.Cryptography
         {
             if (key.Algorithm == CngAlgorithm.Rsa)
             {
-                return new RsaKeyCredential(new RSACng(key));
+                return new RsaSigner(new RSACng(key));
             }
             else
             {
-                return new EcdsaKeyCredential(new ECDsaCng(key));
+                return new EcdsaSigner(new ECDsaCng(key));
             }
         }
     }

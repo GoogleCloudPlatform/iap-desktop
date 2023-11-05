@@ -26,11 +26,11 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public class EcdsaKeyCredential : DisposableBase, IAsymmetricKeySigner
+    public class EcdsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly ECDsaCng key;
 
-        public EcdsaKeyCredential(ECDsaCng key)
+        public EcdsaSigner(ECDsaCng key)
         {
             this.key = key.ExpectNotNull(nameof(key));
             this.PublicKey = new EcdsaPublicKey(key);

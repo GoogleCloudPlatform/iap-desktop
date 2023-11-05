@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
-    public class TestRsaKeyCredential
+    public class TestRsaSigner
     {
         //---------------------------------------------------------------------
         // Sign.
@@ -54,7 +54,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
 
             using (var cngKey = new RSACng())
-            using (var credential = new RsaKeyCredential(cngKey))
+            using (var credential = new RsaSigner(cngKey))
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(
@@ -86,7 +86,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.AreEqual("rsa-sha2-256", challenge.Algorithm);
 
             using (var cngKey = new RSACng())
-            using (var credential = new RsaKeyCredential(cngKey))
+            using (var credential = new RsaSigner(cngKey))
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(

@@ -26,7 +26,7 @@ using System.Security.Cryptography;
 namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
-    public class TestEcdsaKeyCredential
+    public class TestEcdsaSigner
     {
         //---------------------------------------------------------------------
         // HashAlgorithm.
@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP256_ThenHashAlgorithmIsSha256()
         {
             using (var key = new ECDsaCng(256))
-            using (var credential = new EcdsaKeyCredential(key))
+            using (var credential = new EcdsaSigner(key))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA256, credential.HashAlgorithm);
             }
@@ -46,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP384_ThenHashAlgorithmIsSha384()
         {
             using (var key = new ECDsaCng(384))
-            using (var credential = new EcdsaKeyCredential(key))
+            using (var credential = new EcdsaSigner(key))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA384, credential.HashAlgorithm);
             }
@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP521_ThenHashAlgorithmIsSha512()
         {
             using (var key = new ECDsaCng(521))
-            using (var credential = new EcdsaKeyCredential(key))
+            using (var credential = new EcdsaSigner(key))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA512, credential.HashAlgorithm);
             }
