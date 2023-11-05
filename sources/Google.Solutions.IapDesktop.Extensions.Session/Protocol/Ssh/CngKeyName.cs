@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// Name of CNG key to use for SSH authentication.
     /// </summary>
     [DebuggerDisplay("{Value}")]
-    internal class CngKeyName // TODO: rename to CngKeyReference
+    internal class CngKeyName
     {
         public string Value { get; }
 

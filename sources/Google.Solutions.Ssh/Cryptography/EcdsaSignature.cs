@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    internal struct ECDsaSignature// TODO: Use JPKI instead
+    internal struct ECDsaSignature
     {
         private readonly byte[] R;
         private readonly byte[] S;

@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Type of key (rsa-ssa, ...).
         /// </summary>
-        public string KeyType { get; } //TODO: Use PublicKey
+        public string KeyType { get; }
 
         /// <summary>
         /// Public key.

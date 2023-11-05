@@ -84,7 +84,7 @@ namespace Google.Solutions.Ssh.Cryptography
             // Later .NET versions support alternate signature formats,
             // but in .NET 4.x, we must convert the format ourselves.
             //
-            var signature = ECDsaSignature.FromIeee1363( // TODO: Use JPKI extension
+            var signature = ECDsaSignature.FromIeee1363(
                 this.key.SignData(
                     challenge.Value,
                     this.HashAlgorithm));

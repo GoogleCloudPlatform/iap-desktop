@@ -61,15 +61,5 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 Assert.AreEqual(HashAlgorithmName.SHA512, credential.HashAlgorithm);
             }
         }
-
-        //---------------------------------------------------------------------
-        // Sign.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void Sign()
-        {
-            Assert.Fail("NIY");
-        }
     }
 }
