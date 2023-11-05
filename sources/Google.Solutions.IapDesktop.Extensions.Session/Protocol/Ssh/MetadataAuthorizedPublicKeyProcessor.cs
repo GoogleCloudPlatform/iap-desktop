@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
         }
 
-        public async Task<SshCredential> AuthorizeKeyPairAsync( //TODO: rename
+        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync( //TODO: rename
             IAsymmetricKeySigner key,
             TimeSpan validity,
             string username,
@@ -452,7 +452,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 .ConfigureAwait(false);
             }
 
-            return new SshCredential(
+            return new SshAuthorizedKeyCredential(
                 key,
                 useInstanceKeySet
                     ? KeyAuthorizationMethods.InstanceMetadata

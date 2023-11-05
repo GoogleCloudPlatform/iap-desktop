@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             return authorization;
         }
 
-        private static async Task<SshCredential> CreateAuthorizedKeyAsync(
+        private static async Task<SshAuthorizedKeyCredential> CreateAuthorizedKeyAsync(
             InstanceLocator instance,
             IAuthorization authorization,
             SshKeyType keyType)
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var authorizationSource = CreateAuthorizationMock();
             var eventService = new Mock<IEventQueue>();
 
-            var nonAuthorizedKey = new SshCredential(
+            var nonAuthorizedKey = new SshAuthorizedKeyCredential(
                 AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "invalid");

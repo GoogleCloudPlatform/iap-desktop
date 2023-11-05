@@ -29,19 +29,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// <summary>
     /// SSH key pair for which the public key has been authorized.
     /// </summary>
-    public class SshCredential : ISessionCredential, IAsymmetricKeyCredential
+    public class SshAuthorizedKeyCredential : ISessionCredential, IAsymmetricKeyCredential
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
 
-        internal SshCredential(//TODO: rename
-            IAsymmetricKeySigner keyPair,
+        internal SshAuthorizedKeyCredential(
+            IAsymmetricKeySigner signer,
             KeyAuthorizationMethods method,
             string posixUsername)
         {
             Debug.Assert(LinuxUser.IsValidUsername(posixUsername));
             Debug.Assert(method.IsSingleFlag());
 
-            this.Signer = keyPair;
+            this.Signer = signer;
             this.AuthorizationMethod = method;
             this.Username = posixUsername;
         }

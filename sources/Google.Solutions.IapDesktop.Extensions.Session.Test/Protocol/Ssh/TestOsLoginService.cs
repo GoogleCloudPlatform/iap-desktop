@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
     public class TestOsLoginService
     {
         //---------------------------------------------------------------------
-        // AuthorizeKeyPairAsync.
+        // AuthorizeKeyAsync.
         //---------------------------------------------------------------------
 
         [Test]

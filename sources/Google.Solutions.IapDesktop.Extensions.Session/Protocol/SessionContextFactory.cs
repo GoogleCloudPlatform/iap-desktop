@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<SshCredential, SshParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<SshAuthorizedKeyCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             }
         }
 
-        public Task<ISessionContext<SshCredential, SshParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<SshAuthorizedKeyCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 ? CultureInfo.CurrentUICulture
                 : null;
 
-            return Task.FromResult<ISessionContext<SshCredential, SshParameters>>(context);
+            return Task.FromResult<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>(context);
         }
     }
 }

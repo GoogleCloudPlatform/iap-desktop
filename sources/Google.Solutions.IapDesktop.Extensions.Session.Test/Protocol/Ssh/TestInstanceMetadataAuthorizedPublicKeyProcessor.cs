@@ -447,7 +447,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             ExceptionAssert.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
-                () => processor.AuthorizeKeyPairAsync(
+                () => processor.AuthorizeKeyAsync(
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     "user",
@@ -484,7 +484,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -537,7 +537,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -592,7 +592,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -647,7 +647,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -694,7 +694,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -732,7 +732,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -770,7 +770,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -806,7 +806,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                () => processor.AuthorizeKeyPairAsync(
+                () => processor.AuthorizeKeyAsync(
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     "bob",
@@ -833,7 +833,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -871,7 +871,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
-                    .AuthorizeKeyPairAsync(
+                    .AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "bob",
@@ -922,7 +922,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
-                    () => processor.AuthorizeKeyPairAsync(
+                    () => processor.AuthorizeKeyAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
                         "user",

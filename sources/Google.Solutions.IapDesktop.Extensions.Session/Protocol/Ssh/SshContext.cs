@@ -36,17 +36,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// Encapsulates settings and logic to create an SSH session.
     /// </summary>
     internal sealed class SshContext
-        : SessionContextBase<SshCredential, SshParameters>
+        : SessionContextBase<SshAuthorizedKeyCredential, SshParameters>
     {
         private readonly IKeyAuthorizer keyAuthorizer;
-        private readonly IAsymmetricKeySigner localKeyPair;
+        private readonly IAsymmetricKeySigner signer;
 
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IKeyAuthorizer keyAuthorizer,
             InstanceLocator instance,
-            IAsymmetricKeySigner localKeyPair)
+            IAsymmetricKeySigner signer)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
@@ -54,14 +54,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                   new SshParameters())
         {
             this.keyAuthorizer = keyAuthorizer.ExpectNotNull(nameof(keyAuthorizer));
-            this.localKeyPair = localKeyPair.ExpectNotNull(nameof(localKeyPair));
+            this.signer = signer.ExpectNotNull(nameof(signer));
         }
 
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override async Task<SshCredential> AuthorizeCredentialAsync(
+        public override async Task<SshAuthorizedKeyCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
             //
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             return await this.keyAuthorizer
                 .AuthorizeKeyAsync(
                     this.Instance,
-                    this.localKeyPair,
+                    this.signer,
                     this.Parameters.PublicKeyValidity,
                     this.Parameters.PreferredUsername.NullIfEmpty(),
                     KeyAuthorizationMethods.All,
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public override void Dispose()
         {
-            this.localKeyPair.Dispose();
+            this.signer.Dispose();
             GC.SuppressFinalize(this);
         }
     }

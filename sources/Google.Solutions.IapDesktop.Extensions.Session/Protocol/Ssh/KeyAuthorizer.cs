@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// </summary>
     public interface IKeyAuthorizer
     {
-        Task<SshCredential> AuthorizeKeyAsync(
+        Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             InstanceLocator instance,
             IAsymmetricKeySigner key,
             TimeSpan keyValidity,
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // IKeyAuthorizer.
         //---------------------------------------------------------------------
 
-        public async Task<SshCredential> AuthorizeKeyAsync(
+        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             InstanceLocator instance,
             IAsymmetricKeySigner key,
             TimeSpan validity,
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // metadata.
                     //
                     return await metdataKeyProcessor
-                        .AuthorizeKeyPairAsync(
+                        .AuthorizeKeyAsync(
                             key,
                             validity,
                             CreateUsernameForMetadata(preferredPosixUsername),

@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         It.IsAny<IAsymmetricKeySigner>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new SshCredential(
+                .ReturnsAsync(new SshAuthorizedKeyCredential(
                     new Mock<IAsymmetricKeySigner>().Object,
                     KeyAuthorizationMethods.Oslogin,
                     "bob"));

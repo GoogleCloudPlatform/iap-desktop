@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var sshCredential = new SshCredential(
+            var sshCredential = new SshAuthorizedKeyCredential(
                 AsymmetricKeySigner.CreateEphemeral(keyType),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "test");
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var sshCredential = new SshCredential(
+            var sshCredential = new SshAuthorizedKeyCredential(
                 AsymmetricKeySigner.CreateEphemeral(keyType),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "test");
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var sshCredential = new SshCredential(
+            var sshCredential = new SshAuthorizedKeyCredential(
                 AsymmetricKeySigner.CreateEphemeral(keyType),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "test");
