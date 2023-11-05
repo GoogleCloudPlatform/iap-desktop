@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
     public class TestCngKeyName
     {
         //---------------------------------------------------------------------
-        // Value.
+        // Value, Type.
         //---------------------------------------------------------------------
 
         [Test]
@@ -49,6 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual("IAPDESKTOP_user", name.Value);
             Assert.AreEqual("IAPDESKTOP_user", name.ToString());
+
+            Assert.AreEqual(CngAlgorithm.Rsa, name.Type.Algorithm);
+            Assert.AreEqual(3072, name.Type.Size);
         }
 
         [Test]
@@ -64,6 +67,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual("IAPDESKTOP_user_00000011_094FE673", name.Value);
             Assert.AreEqual("IAPDESKTOP_user_00000011_094FE673", name.ToString());
+
+            Assert.AreEqual(CngAlgorithm.ECDsaP256, name.Type.Algorithm);
+            Assert.AreEqual(256, name.Type.Size);
         }
 
         [Test]
@@ -79,6 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual("IAPDESKTOP_user_00000012_094FE673", name.Value);
             Assert.AreEqual("IAPDESKTOP_user_00000012_094FE673", name.ToString());
+
+            Assert.AreEqual(CngAlgorithm.ECDsaP384, name.Type.Algorithm);
+            Assert.AreEqual(384, name.Type.Size);
         }
 
         [Test]
@@ -94,6 +103,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual("IAPDESKTOP_user_00000013_094FE673", name.Value);
             Assert.AreEqual("IAPDESKTOP_user_00000013_094FE673", name.ToString());
+
+            Assert.AreEqual(CngAlgorithm.ECDsaP521, name.Type.Algorithm);
+            Assert.AreEqual(521, name.Type.Size);
         }
     }
 }

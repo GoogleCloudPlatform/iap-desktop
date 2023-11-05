@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
         }
 
-        public KeyType Type { get; } // TODO: test
+        public KeyType Type { get; }
 
         public override string ToString()
         {

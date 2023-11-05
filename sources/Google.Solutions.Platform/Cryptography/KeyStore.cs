@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Cryptography
 
         public CngProvider Provider { get; }
 
-        public CngKey OpenKey(//TODO: return AsymmKey
+        public CngKey OpenKey(
             IntPtr owner,
             string name,
             KeyType type,
