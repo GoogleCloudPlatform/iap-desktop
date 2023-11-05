@@ -83,6 +83,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.osLoginProfile = osLoginProfile.ExpectNotNull(nameof(osLoginProfile));
         }
 
+        internal string CreateUsernameForMetadata(string preferredPosixUsername)//TODO: test
+        {
+            if (preferredPosixUsername != null)
+            {
+                if (!LinuxUser.IsValidUsername(preferredPosixUsername))
+                {
+                    throw new ArgumentException(
+                        $"The username '{preferredPosixUsername}' is not a valid username");
+                }
+                else
+                {
+                    //
+                    // Use the preferred username.
+                    //
+                    return preferredPosixUsername;
+                }
+            }
+            else
+            {
+                // 
+                // No preferred username provided, so derive one
+                // from the user's username:
+                //
+                return LinuxUser.SuggestUsername(this.authorization);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IKeyAuthorizer.
         //---------------------------------------------------------------------
@@ -138,7 +165,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // NB. It's cheaper to unconditionally push the key than
                     // to check for previous keys first.
                     // 
-                    return await this.osLoginProfile.AuthorizeKeyPairAsync(
+                    return await this.osLoginProfile
+                        .AuthorizeKeyAsync(
                             new ProjectLocator(instance.ProjectId),
                             OsLoginSystemType.Linux,
                             key,
@@ -153,10 +181,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // figure out whether that's project or instance
                     // metadata.
                     //
-                    return await metdataKeyProcessor.AuthorizeKeyPairAsync(
+                    return await metdataKeyProcessor
+                        .AuthorizeKeyPairAsync(
                             key,
                             validity,
-                            preferredPosixUsername,
+                            CreateUsernameForMetadata(preferredPosixUsername),
                             allowedMethods,
                             this.authorization,
                             token)

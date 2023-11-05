@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Upload an a public key to authorize it.
         /// </summary>
-        Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
+        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             ProjectLocator project,
             OsLoginSystemType os,
             IAsymmetricKeySigner key,
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // IOsLoginService.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
+        public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             ProjectLocator project,
             OsLoginSystemType os,
             IAsymmetricKeySigner key,
@@ -159,7 +159,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         HelpTopics.TroubleshootingOsLogin);
                 }
 
-                return AuthorizedKeyPair.ForOsLoginAccount(key, account);
+                return new AuthorizedKeyPair(
+                    key,
+                    KeyAuthorizationMethods.Oslogin,
+                    account.Username);
             }
         }
 

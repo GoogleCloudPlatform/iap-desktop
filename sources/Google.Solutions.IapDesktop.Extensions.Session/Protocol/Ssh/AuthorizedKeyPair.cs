@@ -19,12 +19,9 @@
 // under the License.
 //
 
-using Google.Apis.CloudOSLogin.v1.Data;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
-using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
@@ -36,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
 
-        private AuthorizedKeyPair(
+        internal AuthorizedKeyPair(
             IAsymmetricKeySigner keyPair,
             KeyAuthorizationMethods method,
             string posixUsername)
@@ -56,72 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public string Username { get; }
 
         public IAsymmetricKeySigner Signer { get; }
-
-        //---------------------------------------------------------------------
-        // Factory methods.
-        //---------------------------------------------------------------------
-
-        public static AuthorizedKeyPair ForOsLoginAccount(
-            IAsymmetricKeySigner key,
-            PosixAccount posixAccount)
-        {
-            Precondition.ExpectNotNull(key, nameof(key));
-            Precondition.ExpectNotNull(posixAccount, nameof(posixAccount));
-
-            Debug.Assert(LinuxUser.IsValidUsername(posixAccount.Username));
-
-            return new AuthorizedKeyPair(
-                key,
-                KeyAuthorizationMethods.Oslogin,
-                posixAccount.Username);
-        }
-
-        public static AuthorizedKeyPair ForMetadata(
-            IAsymmetricKeySigner key,
-            string preferredUsername,
-            bool useInstanceKeySet,
-            IAuthorization authorization)
-        {
-            Precondition.ExpectNotNull(key, nameof(key));
-
-            if (preferredUsername != null)
-            {
-                if (!LinuxUser.IsValidUsername(preferredUsername))
-                {
-                    throw new ArgumentException(
-                        $"The username '{preferredUsername}' is not a valid username");
-                }
-                else
-                {
-                    //
-                    // Use the preferred username.
-                    //
-                    return new AuthorizedKeyPair(
-                        key,
-                        useInstanceKeySet
-                            ? KeyAuthorizationMethods.InstanceMetadata
-                            : KeyAuthorizationMethods.ProjectMetadata,
-                        preferredUsername);
-                }
-            }
-            else
-            {
-                Precondition.ExpectNotNull(authorization, nameof(authorization));
-
-                // 
-                // No preferred username provided, so derive one
-                // from the user's username:
-                //
-                var username = LinuxUser.SuggestUsername(authorization);
-
-                return new AuthorizedKeyPair(
-                    key,
-                    useInstanceKeySet
-                        ? KeyAuthorizationMethods.InstanceMetadata
-                        : KeyAuthorizationMethods.ProjectMetadata,
-                    username);
-            }
-        }
 
         //---------------------------------------------------------------------
         // IDisposable.

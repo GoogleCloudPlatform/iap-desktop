@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 () => processor.AuthorizeKeyPairAsync(
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
-                    null,
+                    "user",
                     KeyAuthorizationMethods.All,
                     CreateAuthorizationMock().Object,
                     CancellationToken.None).Wait());
@@ -697,7 +697,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .AuthorizeKeyPairAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
-                        null,
+                        "bob",
                         KeyAuthorizationMethods.All,
                         CreateAuthorizationMock().Object,
                         CancellationToken.None)
@@ -735,7 +735,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .AuthorizeKeyPairAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
-                        null,
+                        "bob",
                         KeyAuthorizationMethods.All,
                         CreateAuthorizationMock().Object,
                         CancellationToken.None)
@@ -773,7 +773,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .AuthorizeKeyPairAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
-                        null,
+                        "bob",
                         KeyAuthorizationMethods.All,
                         CreateAuthorizationMock().Object,
                         CancellationToken.None)
@@ -809,7 +809,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 () => processor.AuthorizeKeyPairAsync(
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
-                    null,
+                    "bob",
                     KeyAuthorizationMethods.Oslogin | KeyAuthorizationMethods.ProjectMetadata,
                     CreateAuthorizationMock().Object,
                     CancellationToken.None).Wait());
@@ -836,7 +836,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .AuthorizeKeyPairAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
-                        null,
+                        "bob",
                         KeyAuthorizationMethods.InstanceMetadata,
                         CreateAuthorizationMock().Object,
                         CancellationToken.None)
@@ -874,7 +874,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .AuthorizeKeyPairAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
-                        null,
+                        "bob",
                         KeyAuthorizationMethods.All,
                         CreateAuthorizationMock().Object,
                         CancellationToken.None)
@@ -925,7 +925,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     () => processor.AuthorizeKeyPairAsync(
                         signer,
                         TimeSpan.FromMinutes(1),
-                        null,
+                        "user",
                         KeyAuthorizationMethods.All,
                         CreateAuthorizationMock().Object,
                         CancellationToken.None).Wait());

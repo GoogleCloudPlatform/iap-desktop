@@ -38,18 +38,18 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestKeyAuthorizationService
+    public class TestKeyAuthorizer
     {
         private const string SampleEmailAddress = "bob@example.com";
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private static Mock<IAuthorization> CreateAuthorizationMock()
+        private static Mock<IAuthorization> CreateAuthorizationMock(string username)
         {
             var session = new Mock<IOidcSession>();
             session
                 .SetupGet(a => a.Username)
-                .Returns(SampleEmailAddress);
+                .Returns(username);
 
             var authorization = new Mock<IAuthorization>();
             authorization
@@ -118,19 +118,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var osLoginService = new Mock<IOsLoginProfile>();
             osLoginService
-                .Setup(s => s.AuthorizeKeyPairAsync(
+                .Setup(s => s.AuthorizeKeyAsync(
                         It.IsAny<ProjectLocator>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
                         It.IsAny<IAsymmetricKeySigner>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
-                .ReturnsAsync(AuthorizedKeyPair.ForOsLoginAccount(
+                .ReturnsAsync(new AuthorizedKeyPair(
                     new Mock<IAsymmetricKeySigner>().Object,
-                    new PosixAccount()
-                    {
-                        Username = "bob"
-                    }));
+                    KeyAuthorizationMethods.Oslogin,
+                    "bob"));
             return osLoginService;
+        }
+
+        //---------------------------------------------------------------------
+        // CreateUsernameForMetadata.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPreferredUsernameIsInvalid_ThenCreateUsernameForMetadataThrowsException(
+            [Values("", " ", "!user")] string username)
+        {
+            var authorizer = new KeyAuthorizer(
+                CreateAuthorizationMock(SampleEmailAddress).Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
+                new Mock<IOsLoginProfile>().Object);
+
+            Assert.Throws<ArgumentException>(
+                () => authorizer.CreateUsernameForMetadata(username));
+        }
+
+
+        [Test]
+        public void WhenPreferredUsernameIsValid_ThenCreateUsernameForMetadataReturnsPreferredUsername()
+        {
+            var authorizer = new KeyAuthorizer(
+                CreateAuthorizationMock(SampleEmailAddress).Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
+                new Mock<IOsLoginProfile>().Object);
+
+            Assert.AreEqual(
+                "user",
+                authorizer.CreateUsernameForMetadata("user"));
+        }
+
+        [Test]
+        public void WhenPreferredUsernameNullButSessionUsernameValid_ThenCreateUsernameForMetadataGeneratesUsername()
+        {
+            var authorizer = new KeyAuthorizer(
+                CreateAuthorizationMock("j@ex.ample").Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
+                new Mock<IOsLoginProfile>().Object);
+
+            Assert.AreEqual(
+                "j",
+                authorizer.CreateUsernameForMetadata(null));
+        }
+
+        [Test]
+        public void WhenPreferredUsernameNullAndSessionUsernameTooLong_ThenCreateUsernameForMetadataStripsUsername()
+        {
+            var authorizer = new KeyAuthorizer(
+                CreateAuthorizationMock("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample").Object,
+                new Mock<IComputeEngineClient>().Object,
+                new Mock<IResourceManagerClient>().Object,
+                new Mock<IOsLoginProfile>().Object);
+
+            Assert.AreEqual(
+                "abcdefghijklmnopqrstuvwxyzabcxyz",
+                authorizer.CreateUsernameForMetadata(null));
         }
 
         //---------------------------------------------------------------------
@@ -141,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task WhenOsLoginEnabledForProject_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
@@ -169,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task WhenOsLoginEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
@@ -197,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task WhenOsLoginDisabledForProjectButEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: false,
                     osLoginEnabledForInstance: true,
@@ -230,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 osLogin2fa: false,
                 osLoginSk: false);
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 computeClient.Object,
                 new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
@@ -262,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
@@ -285,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenOsLoginEnabledForInstanceButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
@@ -308,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenOsLoginWithSecurityKeyEnabledForInstance_ThenAuthorizeKeyThrowsNotImplementedException()
         {
             var service = new KeyAuthorizer(
-                CreateAuthorizationMock().Object,
+                CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,

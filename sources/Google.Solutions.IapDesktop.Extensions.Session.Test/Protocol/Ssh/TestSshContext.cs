@@ -49,11 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void AuthorizeCredentialReturnsCredential()
         {
-            var authorizedKey = AuthorizedKeyPair.ForMetadata(
+            var authorizedKey = new AuthorizedKeyPair(
                 new Mock<IAsymmetricKeySigner>().Object,
-                "username",
-                false,
-                new Mock<IAuthorization>().Object);
+                KeyAuthorizationMethods.InstanceMetadata,
+                "username");
 
             var key = new Mock<IAsymmetricKeySigner>().Object;
             var keyAuthorizer = new Mock<IKeyAuthorizer>();

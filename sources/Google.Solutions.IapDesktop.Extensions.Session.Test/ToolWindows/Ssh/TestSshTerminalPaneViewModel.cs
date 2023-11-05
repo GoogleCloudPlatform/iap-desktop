@@ -327,11 +327,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var authorizationSource = CreateAuthorizationMock();
             var eventService = new Mock<IEventQueue>();
 
-            var nonAuthorizedKey = AuthorizedKeyPair.ForMetadata(
+            var nonAuthorizedKey = new AuthorizedKeyPair(
                 AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072),
-                "invalid",
-                true,
-                authorizationSource.Object);
+                KeyAuthorizationMethods.InstanceMetadata,
+                "invalid");
 
             using (var window = new Form())
             {
