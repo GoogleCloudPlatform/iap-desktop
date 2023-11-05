@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     {
         Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             InstanceLocator instance,
-            IAsymmetricKeyCredential key,
+            IAsymmetricKeySigner key,
             TimeSpan keyValidity,
             string preferredPosixUsername,
             KeyAuthorizationMethods methods,
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             InstanceLocator instance,
-            IAsymmetricKeyCredential key,
+            IAsymmetricKeySigner key,
             TimeSpan validity,
             string preferredPosixUsername,
             KeyAuthorizationMethods allowedMethods,

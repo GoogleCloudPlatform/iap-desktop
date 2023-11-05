@@ -121,11 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .Setup(s => s.AuthorizeKeyPairAsync(
                         It.IsAny<ProjectLocator>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
-                        It.IsAny<IAsymmetricKeyCredential>(),
+                        It.IsAny<IAsymmetricKeySigner>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(AuthorizedKeyPair.ForOsLoginAccount(
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     new PosixAccount()
                     {
                         Username = "bob"
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<NotImplementedException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<IAsymmetricKeyCredential>().Object,
+                    new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,

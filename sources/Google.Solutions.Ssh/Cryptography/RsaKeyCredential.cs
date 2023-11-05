@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public class RsaKeyCredential : DisposableBase, IAsymmetricKeyCredential
+    public class RsaKeyCredential : DisposableBase, IAsymmetricKeySigner
     {
         private readonly RSA key;
 

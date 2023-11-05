@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             return await keyAdapter.AuthorizeKeyAsync(
                     instance,
-                    AsymmetricKeyCredential.CreateEphemeral(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     TimeSpan.FromMinutes(10),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -328,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var eventService = new Mock<IEventQueue>();
 
             var nonAuthorizedKey = AuthorizedKeyPair.ForMetadata(
-                AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072),
+                AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072),
                 "invalid",
                 true,
                 authorizationSource.Object);

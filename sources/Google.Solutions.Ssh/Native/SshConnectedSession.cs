@@ -270,7 +270,7 @@ namespace Google.Solutions.Ssh.Native
                 Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
                 var challenge = new AuthenticationChallenge(challengeBuffer);
-                var signature = authenticator.Credential.Sign(challenge);
+                var signature = authenticator.Signer.Sign(challenge);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
@@ -380,7 +380,7 @@ namespace Google.Solutions.Ssh.Native
             using (SshTraceSource.Log.TraceMethod()
                 .WithParameters(authenticator.Username))
             {
-                var publicKey = authenticator.Credential.PublicKey.WireFormatValue;
+                var publicKey = authenticator.Signer.PublicKey.WireFormatValue;
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,

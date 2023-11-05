@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void ToStringReturnsUsername()
         {
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
-                new Mock<IAsymmetricKeyCredential>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 "username",
                 false,
                 new Mock<IAuthorization>().Object);

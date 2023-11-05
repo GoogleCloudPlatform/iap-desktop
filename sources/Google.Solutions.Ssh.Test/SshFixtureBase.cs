@@ -146,7 +146,7 @@ namespace Google.Solutions.Ssh.Test
                     .Cast<SshKeyType>()
                     .ToDictionary(
                         k => k,
-                        k => AsymmetricKeyCredential.CreateEphemeral(k));
+                        k => AsymmetricKeySigner.CreateEphemeral(k));
 
                 var metadataEntry = string.Join(
                     "\n", 

@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyPairAsync(
                 null,
                 OsLoginSystemType.Linux,
-                new Mock<IAsymmetricKeyCredential>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
 
@@ -72,13 +72,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<IAsymmetricKeyCredential>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(-1),
                 CancellationToken.None).Wait());
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<IAsymmetricKeyCredential>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromSeconds(0),
                 CancellationToken.None).Wait());
         }
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 });
             var service = new OsLoginProfile(adapter.Object);
 
-            using (var keyCredential = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var keyCredential = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
             {
                 var key = await service
                     .AuthorizeKeyPairAsync(
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ReturnsAsync(new LoginProfile());
             var service = new OsLoginProfile(adapter.Object);
 
-            using (var keyCredential = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var keyCredential = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
             {
                 ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
                     () => service.AuthorizeKeyPairAsync(

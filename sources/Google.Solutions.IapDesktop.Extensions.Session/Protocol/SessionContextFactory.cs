@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 sshSettings.PublicKeyType.EnumValue,
                 this.keyStore.Provider);
 
-            var keyCredential = AsymmetricKeyCredential.Create(
+            var keyCredential = AsymmetricKeySigner.Create(
                 this.keyStore.OpenKey(
                     this.window.Handle,
                     keyName.Value,

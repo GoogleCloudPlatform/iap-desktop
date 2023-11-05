@@ -24,12 +24,12 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public static class AsymmetricKeyCredential
+    public static class AsymmetricKeySigner
     {
         /// <summary>
-        /// Create a new in-memory key for testing purposes.
+        /// Create a signer that uses an in-memory key. For testing purposes.
         /// </summary>
-        public static IAsymmetricKeyCredential CreateEphemeral(
+        public static IAsymmetricKeySigner CreateEphemeral(
             SshKeyType sshKeyType)
         {
             return sshKeyType switch
@@ -43,9 +43,9 @@ namespace Google.Solutions.Ssh.Cryptography
         }
 
         /// <summary>
-        /// Create a credential for an existing key.
+        /// Create a signer for an existing key.
         /// </summary>
-        public static IAsymmetricKeyCredential Create(CngKey key)
+        public static IAsymmetricKeySigner Create(CngKey key)
         {
             if (key.Algorithm == CngAlgorithm.Rsa)
             {

@@ -289,7 +289,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var credential = AsymmetricKeyCredential.CreateEphemeral(keyType))
+            using (var credential = AsymmetricKeySigner.CreateEphemeral(keyType))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -365,7 +365,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
             public TwoFactorAuthenticator(
                 string username,
-                IAsymmetricKeyCredential credential,
+                IAsymmetricKeySigner credential,
                 PromptDelegate prompt)
                 : base(username, credential)
             {
@@ -411,7 +411,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
                     authenticator.Username,
-                    authenticator.Credential,
+                    authenticator.Signer,
                     (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
@@ -448,7 +448,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
                     authenticator.Username,
-                    authenticator.Credential,
+                    authenticator.Signer,
                     (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
@@ -483,7 +483,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
                     authenticator.Username,
-                    authenticator.Credential,
+                    authenticator.Signer,
                     (name, instruction, prompt, echo) =>
                     {
                         throw new OperationCanceledException();

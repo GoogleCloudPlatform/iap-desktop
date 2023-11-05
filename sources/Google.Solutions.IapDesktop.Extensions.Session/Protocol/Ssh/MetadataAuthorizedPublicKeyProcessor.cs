@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
-            IAsymmetricKeyCredential key,
+            IAsymmetricKeySigner key,
             TimeSpan validity,
             string preferredPosixUsername,
             KeyAuthorizationMethods allowedMethods,

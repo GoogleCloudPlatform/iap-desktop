@@ -50,12 +50,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void AuthorizeCredentialReturnsCredential()
         {
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
-                new Mock<IAsymmetricKeyCredential>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 "username",
                 false,
                 new Mock<IAuthorization>().Object);
 
-            var key = new Mock<IAsymmetricKeyCredential>().Object;
+            var key = new Mock<IAsymmetricKeySigner>().Object;
             var keyAuthorizer = new Mock<IKeyAuthorizer>();
             keyAuthorizer
                 .Setup(s => s.AuthorizeKeyAsync(
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 SampleInstance,
-                new Mock<IAsymmetricKeyCredential>().Object);
+                new Mock<IAsymmetricKeySigner>().Object);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
 
             var sshTransport = await context
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 factory.Object,
                 new Mock<IKeyAuthorizer>().Object,
                 SampleInstance,
-                new Mock<IAsymmetricKeyCredential>().Object);
+                new Mock<IAsymmetricKeySigner>().Object);
             context.Parameters.TransportType = SessionTransportType.Vpc;
 
             var sshTransport = await context

@@ -39,14 +39,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         : SessionContextBase<SshCredential, SshParameters>
     {
         private readonly IKeyAuthorizer keyAuthorizer;
-        private readonly IAsymmetricKeyCredential localKeyPair;
+        private readonly IAsymmetricKeySigner localKeyPair;
 
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IKeyAuthorizer keyAuthorizer,
             InstanceLocator instance,
-            IAsymmetricKeyCredential localKeyPair)
+            IAsymmetricKeySigner localKeyPair)
             : base(
                   iapTransportFactory,
                   directTransportFactory,

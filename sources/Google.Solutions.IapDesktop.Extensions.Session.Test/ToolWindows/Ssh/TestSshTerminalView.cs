@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var authorizedKey = await keyAdapter
                 .AuthorizeKeyAsync(
                     instance,
-                    AsymmetricKeyCredential.CreateEphemeral(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     TimeSpan.FromMinutes(10),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var sshCredential = new SshCredential(
                 AuthorizedKeyPair.ForMetadata(
-                    AsymmetricKeyCredential.CreateEphemeral(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     "test",
                     true,
                     null));
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var sshCredential = new SshCredential(
                 AuthorizedKeyPair.ForMetadata(
-                    AsymmetricKeyCredential.CreateEphemeral(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     "test",
                     true,
                     null));
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var sshCredential = new SshCredential(
                 AuthorizedKeyPair.ForMetadata(
-                    AsymmetricKeyCredential.CreateEphemeral(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     "test",
                     true,
                     null));

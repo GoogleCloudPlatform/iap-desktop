@@ -37,9 +37,9 @@ namespace Google.Solutions.Ssh.Native
         string Username { get; }
 
         /// <summary>
-        /// Key pair for public/private key authentication.
+        /// Signer for public/private key authentication.
         /// </summary>
-        IAsymmetricKeyCredential Credential { get; }
+        IAsymmetricKeySigner Signer { get; }
 
         /// <summary>
         /// Prompt for additional (second factor)
@@ -59,14 +59,14 @@ namespace Google.Solutions.Ssh.Native
     public class SshSingleFactorAuthenticator : ISshAuthenticator
     {
         public string Username { get; }
-        public IAsymmetricKeyCredential Credential { get; }
+        public IAsymmetricKeySigner Signer { get; }
 
         public SshSingleFactorAuthenticator(
             string username,
-            IAsymmetricKeyCredential credential)
+            IAsymmetricKeySigner credential)
         {
             this.Username = username.ExpectNotNull(nameof(username));
-            this.Credential = credential.ExpectNotNull(nameof(credential));
+            this.Signer = credential.ExpectNotNull(nameof(credential));
         }
 
         public virtual string? Prompt(

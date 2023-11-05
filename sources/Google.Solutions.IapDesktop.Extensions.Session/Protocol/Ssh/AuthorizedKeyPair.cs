@@ -37,11 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     public sealed class AuthorizedKeyPair : IDisposable
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
-        public IAsymmetricKeyCredential KeyPair { get; } //TODO: rename
+        public IAsymmetricKeySigner KeyPair { get; } //TODO: rename
         public string Username { get; }
 
         private AuthorizedKeyPair(
-            IAsymmetricKeyCredential keyPair,
+            IAsymmetricKeySigner keyPair,
             KeyAuthorizationMethods method,
             string posixUsername)
         {
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         //---------------------------------------------------------------------
 
         public static AuthorizedKeyPair ForOsLoginAccount(
-            IAsymmetricKeyCredential key,
+            IAsymmetricKeySigner key,
             PosixAccount posixAccount)
         {
             Precondition.ExpectNotNull(key, nameof(key));
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public static AuthorizedKeyPair ForMetadata(
-            IAsymmetricKeyCredential key,
+            IAsymmetricKeySigner key,
             string preferredUsername,
             bool useInstanceKeySet,
             IAuthorization authorization)

@@ -477,7 +477,7 @@ namespace Google.Solutions.Ssh
 
             public string Username => this.authenticator.Username;
 
-            public IAsymmetricKeyCredential Credential => this.authenticator.Credential;
+            public IAsymmetricKeySigner Signer => this.authenticator.Signer;
 
             public string? Prompt(string name, string instruction, string prompt, bool echo)
             {

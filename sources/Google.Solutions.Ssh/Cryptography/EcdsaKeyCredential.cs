@@ -26,7 +26,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public class EcdsaKeyCredential : DisposableBase, IAsymmetricKeyCredential
+    public class EcdsaKeyCredential : DisposableBase, IAsymmetricKeySigner
     {
         private readonly ECDsaCng key;
 
