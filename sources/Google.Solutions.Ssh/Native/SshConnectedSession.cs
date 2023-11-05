@@ -245,10 +245,13 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public SshAuthenticatedSession Authenticate(ISshAuthenticator authenticator)
+        public SshAuthenticatedSession Authenticate(
+            IAsymmetricKeyCredential credential,
+            IKeyboardInteractiveHandler keyboardHandler)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Precondition.ExpectNotNull(authenticator, nameof(authenticator));
+            Precondition.ExpectNotNull(credential, nameof(credential));
+            Precondition.ExpectNotNull(keyboardHandler, nameof(keyboardHandler));
 
             Exception? interactiveCallbackException = null;
 
@@ -270,7 +273,7 @@ namespace Google.Solutions.Ssh.Native
                 Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
                 var challenge = new AuthenticationChallenge(challengeBuffer);
-                var signature = authenticator.Signer.Sign(challenge);
+                var signature = credential.Signer.Sign(challenge);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
@@ -331,7 +334,7 @@ namespace Google.Solutions.Ssh.Native
                     string? responseText = null;
                     try
                     {
-                        responseText = authenticator.Prompt(
+                        responseText = keyboardHandler.Prompt(
                             name ?? string.Empty,
                             instruction ?? string.Empty,
                             promptText ?? string.Empty,
@@ -378,13 +381,13 @@ namespace Google.Solutions.Ssh.Native
             }
 
             using (SshTraceSource.Log.TraceMethod()
-                .WithParameters(authenticator.Username))
+                .WithParameters(credential.Username))
             {
-                var publicKey = authenticator.Signer.PublicKey.WireFormatValue;
+                var publicKey = credential.Signer.PublicKey.WireFormatValue;
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
-                    authenticator.Username,
+                    credential.Username,
                     publicKey,
                     new IntPtr(publicKey.Length),
                     Sign,
@@ -421,8 +424,8 @@ namespace Google.Solutions.Ssh.Native
                         {
                             result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
                                 this.session.Handle,
-                                authenticator.Username,
-                                authenticator.Username.Length,
+                                credential.Username,
+                                credential.Username.Length,
                                 InteractiveCallback,
                                 IntPtr.Zero);
 

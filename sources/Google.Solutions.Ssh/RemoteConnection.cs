@@ -46,11 +46,13 @@ namespace Google.Solutions.Ssh
 
         public RemoteConnection(
             IPEndPoint endpoint,
-            ISshAuthenticator authenticator,
+            IAsymmetricKeyCredential credential,
+            IKeyboardInteractiveHandler keyboardHandler,
             SynchronizationContext callbackContext)
             : base(
                   endpoint,
-                  authenticator,
+                  credential,
+                  keyboardHandler,
                   callbackContext)
         {
         }

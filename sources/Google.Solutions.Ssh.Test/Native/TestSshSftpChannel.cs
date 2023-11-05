@@ -46,14 +46,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -68,14 +70,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 Assert.IsNotNull(channel);
@@ -92,14 +96,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -114,14 +120,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var files = channel.ListFiles("/etc");
@@ -142,14 +150,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var files = channel.ListFiles(".");
@@ -174,14 +184,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -200,14 +212,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -226,14 +240,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var directoryName = Guid.NewGuid().ToString();
@@ -259,14 +275,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -281,14 +299,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var directoryName = Guid.NewGuid().ToString();
@@ -315,14 +335,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -342,14 +364,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -369,7 +393,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
@@ -378,7 +402,9 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(
                 fileName,
@@ -404,13 +430,15 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential, 
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -425,14 +453,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -447,14 +477,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var fileName = Guid.NewGuid().ToString();

@@ -44,14 +44,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential, 
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(
                 Guid.NewGuid().ToString(),
@@ -75,14 +77,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var sendData = new StringBuilder();

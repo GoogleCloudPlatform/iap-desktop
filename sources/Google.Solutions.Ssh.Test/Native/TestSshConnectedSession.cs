@@ -289,13 +289,14 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var credential = AsymmetricKeySigner.CreateEphemeral(keyType))
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(keyType))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
-                        new SshSingleFactorAuthenticator("invaliduser", credential)));
+                        new StaticAsymmetricKeyCredential("invaliduser", signer),
+                        KeyboardInteractiveHandler.Silent));
             }
         }
 
@@ -306,7 +307,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -319,7 +320,9 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.SOCKET_SEND,
-                    () => connection.Authenticate(authenticator));
+                    () => connection.Authenticate(
+                        credential,
+                        KeyboardInteractiveHandler.Silent));
             }
         }
 
@@ -334,7 +337,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -342,7 +345,9 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var authSession = connection.Authenticate(authenticator);
+                var authSession = connection.Authenticate(
+                    credential,
+                    KeyboardInteractiveHandler.Silent);
                 Assert.IsNotNull(authSession);
             }
         }
@@ -350,38 +355,6 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
         // 2FA.
         //---------------------------------------------------------------------
-
-        private class TwoFactorAuthenticator : SshSingleFactorAuthenticator
-        {
-            public delegate string? PromptDelegate(
-                string name,
-                string instruction,
-                string prompt,
-                bool echo);
-
-            private readonly PromptDelegate prompt;
-
-            public uint PromptCount { get; private set; } = 0;
-
-            public TwoFactorAuthenticator(
-                string username,
-                IAsymmetricKeySigner credential,
-                PromptDelegate prompt)
-                : base(username, credential)
-            {
-                this.prompt = prompt;
-            }
-
-            public override string? Prompt(
-                string name,
-                string instruction,
-                string prompt,
-                bool echo)
-            {
-                this.PromptCount++;
-                return this.prompt(name, instruction, prompt, echo);
-            }
-        }
 
         //
         // Service acconts can't use 2FA, so emulate the 2FA prompting behavior
@@ -401,7 +374,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -409,9 +382,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var twoFactorAuthenticator = new TwoFactorAuthenticator(
-                    authenticator.Username,
-                    authenticator.Signer,
+                var twoFaHandler = new KeyboardInteractiveHandler(
                     (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
@@ -423,11 +394,11 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(twoFactorAuthenticator));
+                    () => connection.Authenticate(credential, twoFaHandler));
 
                 Assert.AreEqual(
                     SshConnectedSession.KeyboardInteractiveRetries,
-                    twoFactorAuthenticator.PromptCount);
+                    twoFaHandler.PromptCount);
             }
         }
 
@@ -438,7 +409,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -446,9 +417,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var twoFactorAuthenticator = new TwoFactorAuthenticator(
-                    authenticator.Username,
-                    authenticator.Signer,
+                var twoFactorHandler = new KeyboardInteractiveHandler(
                     (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
@@ -460,9 +429,9 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(twoFactorAuthenticator));
+                    () => connection.Authenticate(credential, twoFactorHandler));
 
-                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, twoFactorAuthenticator.PromptCount);
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, twoFactorHandler.PromptCount);
             }
         }
 
@@ -473,7 +442,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -481,17 +450,15 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var twoFactorAuthenticator = new TwoFactorAuthenticator(
-                    authenticator.Username,
-                    authenticator.Signer,
+                var twoFactorHandler = new KeyboardInteractiveHandler(
                     (name, instruction, prompt, echo) =>
                     {
                         throw new OperationCanceledException();
                     });
 
                 Assert.Throws<OperationCanceledException>(
-                    () => connection.Authenticate(twoFactorAuthenticator));
-                Assert.AreEqual(1, twoFactorAuthenticator.PromptCount);
+                    () => connection.Authenticate(credential, twoFactorHandler));
+                Assert.AreEqual(1, twoFactorHandler.PromptCount);
             }
         }
     }

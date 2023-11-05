@@ -43,14 +43,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL,
                 "vanilla",
@@ -68,14 +70,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             var session = CreateSession();
             var connection = session.Connect(endpoint);
-            var authSession = connection.Authenticate(authenticator);
+            var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent);
             var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL,
                 "vanilla",
@@ -99,7 +103,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
@@ -110,7 +114,9 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
-                    () => connection.Authenticate(authenticator));
+                    () => connection.Authenticate(
+                        credential,
+                        KeyboardInteractiveHandler.Silent));
             }
         }
     }

@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual("j", authorizedKey.Username);
             Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
-            Assert.AreSame(sshKey, authorizedKey.KeyPair);
+            Assert.AreSame(sshKey, authorizedKey.Signer);
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual("abcdefghijklmnopqrstuvwxyzabcxyz", authorizedKey.Username);
             Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-            Assert.AreSame(sshKey, authorizedKey.KeyPair);
+            Assert.AreSame(sshKey, authorizedKey.Signer);
         }
     }
 }

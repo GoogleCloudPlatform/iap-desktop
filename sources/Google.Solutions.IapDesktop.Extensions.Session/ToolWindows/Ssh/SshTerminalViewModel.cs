@@ -52,7 +52,8 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
-    public class SshTerminalViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal
+    public class SshTerminalViewModel 
+        : TerminalViewModelBase, IKeyboardInteractiveHandler, ITextTerminal
     {
         private RemoteShellChannel sshChannel = null;
 
@@ -106,14 +107,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         }
 
         //---------------------------------------------------------------------
-        // ISshAuthenticator.
+        // IKeyboardInteractiveHandler.
         //---------------------------------------------------------------------
 
-        string ISshAuthenticator.Username => this.AuthorizedKey.Username;
-
-        IAsymmetricKeySigner ISshAuthenticator.Signer => this.AuthorizedKey.KeyPair;
-
-        string ISshAuthenticator.Prompt(
+        string IKeyboardInteractiveHandler.Prompt(
             string name,
             string instruction,
             string prompt,
@@ -209,7 +206,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             {
                 var connection = new RemoteConnection(
                         this.Endpoint,
-                        (ISshAuthenticator)this,
+                        this.AuthorizedKey,
+                        (IKeyboardInteractiveHandler)this,
                         SynchronizationContext.Current)
                 {
                     Banner = SshSession.BannerPrefix + Install.UserAgent,

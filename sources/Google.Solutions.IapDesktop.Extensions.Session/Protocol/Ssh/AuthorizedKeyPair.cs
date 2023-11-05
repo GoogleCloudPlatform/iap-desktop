@@ -26,19 +26,15 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     /// <summary>
     /// SSH key pair for which the public key has been authorized.
     /// </summary>
-    public sealed class AuthorizedKeyPair : IDisposable  //TODO: rename to XxCredential
+    public sealed class AuthorizedKeyPair : IAsymmetricKeyCredential
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
-        public IAsymmetricKeySigner KeyPair { get; }
-        public string Username { get; }
 
         private AuthorizedKeyPair(
             IAsymmetricKeySigner keyPair,
@@ -48,10 +44,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Debug.Assert(LinuxUser.IsValidUsername(posixUsername));
             Debug.Assert(method.IsSingleFlag());
 
-            this.KeyPair = keyPair;
+            this.Signer = keyPair;
             this.AuthorizationMethod = method;
             this.Username = posixUsername;
         }
+
+        //---------------------------------------------------------------------
+        // IAsymmetricKeyCredential.
+        //---------------------------------------------------------------------
+
+        public string Username { get; }
+
+        public IAsymmetricKeySigner Signer { get; }
 
         //---------------------------------------------------------------------
         // Factory methods.
@@ -125,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public void Dispose()
         {
-            this.KeyPair.Dispose();
+            this.Signer.Dispose();
         }
     }
 }
