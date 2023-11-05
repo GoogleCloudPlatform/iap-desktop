@@ -29,7 +29,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// Source of authentication information.
     /// </summary>
-    public interface ISshAuthenticator //TODO: remove
+    public interface ISshAuthenticator
     {
         /// <summary>
         /// Username to authenticate with.
@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Native
     /// Authenticator that uses a public key and doesn't
     /// support 2FA.
     /// </summary>
-    public class SshSingleFactorAuthenticator : ISshAuthenticator //TODO: delete
+    public class SshSingleFactorAuthenticator : ISshAuthenticator
     {
         public string Username { get; }
         public IAsymmetricKeyCredential Credential { get; }

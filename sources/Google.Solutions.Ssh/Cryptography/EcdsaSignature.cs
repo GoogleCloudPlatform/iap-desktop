@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    internal struct ECDsaSignature// TODO: remove
+    internal struct ECDsaSignature// TODO: Use JPKI instead
     {
         private readonly byte[] R;
         private readonly byte[] S;
@@ -42,7 +42,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Parse IEEE-1363 formatted signature.
         /// </summary>
-        public static ECDsaSignature FromIeee1363(byte[] signature)// TODO: remove
+        public static ECDsaSignature FromIeee1363(byte[] signature)
         {
             // Input is (r, s), each of them exactly half of the array.
             Debug.Assert(signature.Length % 2 == 0);
@@ -58,7 +58,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// Format signature according to RFC5656 section 3.1.2.
         /// </summary>
         /// <returns></returns>
-        public byte[] ToSshBlob() // TODO: remove
+        public byte[] ToSshBlob()
         {
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))

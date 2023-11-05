@@ -323,16 +323,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 sshSettings.PublicKeyType.EnumValue,
                 this.keyStore.Provider);
 
-            var cngKey = this.keyStore.OpenKey(
-                this.window.Handle,
-                keyName.Value,
-                keyName.Type,
-                CngKeyUsages.Signing,
-                false);
-
-            var keyCredential = (keyName.Type.Algorithm == CngAlgorithm.Rsa) //TODO: Rewrite this
-                ? (IAsymmetricKeyCredential)new RsaKeyCredential(new RSACng(cngKey))
-                : (IAsymmetricKeyCredential)new EcdsaKeyCredential(new ECDsaCng(cngKey));
+            var keyCredential = AsymmetricKeyCredential.Create(
+                this.keyStore.OpenKey(
+                    this.window.Handle,
+                    keyName.Value,
+                    keyName.Type,
+                    CngKeyUsages.Signing,
+                    false));
 
             Debug.Assert(keyCredential != null);
 

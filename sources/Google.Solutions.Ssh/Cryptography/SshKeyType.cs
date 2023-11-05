@@ -19,15 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public enum SshKeyType : int //TODO: Move to session
+    public enum SshKeyType : int
     {
         //
         // NB. These values are used for persistence and
