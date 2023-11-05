@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            IAsymmetricKeyCredential key,
+            IAsymmetricKeyCredential key, //TODO: Use PublicKey
             TimeSpan validity,
             CancellationToken token);
 

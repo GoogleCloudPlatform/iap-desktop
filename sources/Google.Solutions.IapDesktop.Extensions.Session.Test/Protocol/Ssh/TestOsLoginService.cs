@@ -123,17 +123,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 });
             var service = new OsLoginProfile(adapter.Object);
 
-            var key = await service
-                .AuthorizeKeyPairAsync(
-                    new ProjectLocator("project-1"),
-                    OsLoginSystemType.Linux,
-                    new Mock<IAsymmetricKeyCredential>().Object,
-                    TimeSpan.FromDays(1),
-                    CancellationToken.None)
-                .ConfigureAwait(false);
+            using (var keyCredential = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            {
+                var key = await service
+                    .AuthorizeKeyPairAsync(
+                        new ProjectLocator("project-1"),
+                        OsLoginSystemType.Linux,
+                        keyCredential,
+                        TimeSpan.FromDays(1),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            Assert.AreEqual("joe3", key.Username);
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
+                Assert.AreEqual("joe3", key.Username);
+                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
+            }
         }
 
         [Test]
@@ -150,13 +153,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ReturnsAsync(new LoginProfile());
             var service = new OsLoginProfile(adapter.Object);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
-                () => service.AuthorizeKeyPairAsync(
-                    new ProjectLocator("project-1"),
-                    OsLoginSystemType.Linux,
-                    new Mock<IAsymmetricKeyCredential>().Object,
-                    TimeSpan.FromDays(1),
-                    CancellationToken.None).Wait());
+            using (var keyCredential = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            {
+                ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
+                    () => service.AuthorizeKeyPairAsync(
+                        new ProjectLocator("project-1"),
+                        OsLoginSystemType.Linux,
+                        keyCredential,
+                        TimeSpan.FromDays(1),
+                        CancellationToken.None).Wait());
+            }
         }
 
         //---------------------------------------------------------------------
