@@ -30,6 +30,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;
@@ -314,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
-            ISshKeyPair key,
+            IAsymmetricKeyCredential key,
             TimeSpan validity,
             string preferredPosixUsername,
             KeyAuthorizationMethods allowedMethods,
@@ -399,8 +400,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             var metadataKey = new ManagedMetadataAuthorizedPublicKey(
                 authorizedKeyPair.Username,
-                key.Type,
-                key.PublicKeyString,
+                key.PublicKey.Type,
+                key.PublicKey.ToString(PublicKey.Format.OpenSsh),
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     authorization.Session.Username,
                     DateTime.UtcNow.Add(validity)));

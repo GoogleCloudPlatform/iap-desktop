@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Threading;
@@ -38,14 +39,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         : SessionContextBase<SshCredential, SshParameters>
     {
         private readonly IKeyAuthorizer keyAuthorizer;
-        private readonly ISshKeyPair localKeyPair;
+        private readonly IAsymmetricKeyCredential localKeyPair;
 
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IKeyAuthorizer keyAuthorizer,
             InstanceLocator instance,
-            ISshKeyPair localKeyPair)
+            IAsymmetricKeyCredential localKeyPair)
             : base(
                   iapTransportFactory,
                   directTransportFactory,

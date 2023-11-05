@@ -34,6 +34,11 @@ namespace Google.Solutions.Platform.Cryptography
     public interface IKeyStore
     {
         /// <summary>
+        /// Provider that is used to manage keys.
+        /// </summary>
+        CngProvider Provider { get; }
+
+        /// <summary>
         /// Open or create a persistent key.
         /// </summary>
         CngKey OpenKey(
@@ -51,11 +56,9 @@ namespace Google.Solutions.Platform.Cryptography
 
     public class KeyStore : IKeyStore
     {
-        private readonly CngProvider provider;
-
         public KeyStore(CngProvider provider)
         {
-            this.provider = provider;
+            this.Provider = provider;
         }
 
         private bool CheckKeyExists(string name)
@@ -98,7 +101,9 @@ namespace Google.Solutions.Platform.Cryptography
         // IKeyStore.
         //---------------------------------------------------------------------
 
-        public CngKey OpenKey(
+        public CngProvider Provider { get; }
+
+        public CngKey OpenKey(//TODO: return AsymmKey
             IntPtr owner,
             string name,
             KeyType type,
@@ -176,7 +181,7 @@ namespace Google.Solutions.Platform.Cryptography
                     // Do not allow exporting.
                     ExportPolicy = CngExportPolicies.None,
 
-                    Provider = this.provider,
+                    Provider = this.Provider,
                     KeyUsage = usage
                 };
 
@@ -209,7 +214,7 @@ namespace Google.Solutions.Platform.Cryptography
                     Debug.Assert(key.KeySize == type.Size);
 
                     PlatformTraceSource.Log.TraceInformation(
-                        "Created new CNG key {0} in {1}", name, this.provider.Provider);
+                        "Created new CNG key {0} in {1}", name, this.Provider.Provider);
 
                     return key;
                 }
@@ -224,7 +229,7 @@ namespace Google.Solutions.Platform.Cryptography
                     //
                     // In this state:
                     //
-                    //  - CngKet.Exists() returns false (although the key container is there)
+                    //  - CngKey.Exists() returns false (although the key container is there)
                     //  - Open() and Delete() consistantly fail with NTE_EXISTS
                     //  - certutil is unable to delete the key.
                     //

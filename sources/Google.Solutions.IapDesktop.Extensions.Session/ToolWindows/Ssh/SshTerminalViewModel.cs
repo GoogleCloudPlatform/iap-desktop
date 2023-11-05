@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         string ISshAuthenticator.Username => this.AuthorizedKey.Username;
 
-        ISshKeyPair ISshAuthenticator.KeyPair => this.AuthorizedKey.KeyPair;
+        IAsymmetricKeyCredential ISshAuthenticator.Credential => this.AuthorizedKey.KeyPair;
 
         string ISshAuthenticator.Prompt(
             string name,

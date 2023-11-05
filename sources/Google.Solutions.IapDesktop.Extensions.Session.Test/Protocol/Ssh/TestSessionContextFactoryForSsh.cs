@@ -28,16 +28,17 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -72,16 +73,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 UserProfile.SchemaVersion.Current);
         }
 
-        private Mock<IKeyStoreAdapter> CreateKeyStoreAdapterMock()
+        private Mock<IKeyStore> CreateKeyStoreMock()
         {
-            var keyStore = new Mock<IKeyStoreAdapter>();
+            var keyStore = new Mock<IKeyStore>();
             keyStore
-                .Setup(k => k.OpenSshKeyPair(
-                    It.IsAny<SshKeyType>(),
-                    It.IsAny<IAuthorization>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<IWin32Window>()))
-                .Returns(RsaSshKeyPair.NewEphemeralKey(1024));
+                .SetupGet(k => k.Provider)
+                .Returns(CngProvider.MicrosoftSoftwareKeyStorageProvider);
+            keyStore
+                .Setup(k => k.OpenKey(
+                    It.IsAny<IntPtr>(),
+                    It.IsAny<string>(),
+                    It.IsAny<KeyType>(),
+                    It.IsAny<CngKeyUsages>(),
+                    It.IsAny<bool>()))
+                .Returns(new RSACng(1024).Key);
 
             return keyStore;
         }
@@ -129,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
-            var keyStore = CreateKeyStoreAdapterMock();
+            var keyStore = CreateKeyStoreMock();
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
@@ -149,11 +154,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             { }
 
-            keyStore.Verify(k => k.OpenSshKeyPair(
-                It.Is<SshKeyType>(t => t == SshKeyType.EcdsaNistp384),
-                It.IsAny<IAuthorization>(),
-                It.Is<bool>(create => true),
-                It.IsAny<IWin32Window>()), Times.Once);
+            keyStore.Verify(
+                k => k.OpenKey(
+                    It.IsAny<IntPtr>(),
+                    It.IsAny<string>(),
+                    It.Is<KeyType>(t => t.Algorithm == CngAlgorithm.ECDsaP384),
+                    CngKeyUsages.Signing,
+                    false), 
+                Times.Once);
         }
 
         //---------------------------------------------------------------------
@@ -179,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
-                CreateKeyStoreAdapterMock().Object,
+                CreateKeyStoreMock().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -224,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
-                CreateKeyStoreAdapterMock().Object,
+                CreateKeyStoreMock().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,

@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyPairAsync(
                 null,
                 OsLoginSystemType.Linux,
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeyCredential>().Object,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
 
@@ -71,13 +72,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeyCredential>().Object,
                 TimeSpan.FromDays(-1),
                 CancellationToken.None).Wait());
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeyCredential>().Object,
                 TimeSpan.FromSeconds(0),
                 CancellationToken.None).Wait());
         }
@@ -126,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .AuthorizeKeyPairAsync(
                     new ProjectLocator("project-1"),
                     OsLoginSystemType.Linux,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -153,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 () => service.AuthorizeKeyPairAsync(
                     new ProjectLocator("project-1"),
                     OsLoginSystemType.Linux,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromDays(1),
                     CancellationToken.None).Wait());
         }

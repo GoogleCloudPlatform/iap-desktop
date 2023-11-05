@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -447,7 +448,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             ExceptionAssert.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
                 () => processor.AuthorizeKeyPairAsync(
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -458,14 +459,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenExistingUnmanagedKeyFound_ThenKeyIsNotPushedAgain()
         {
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new UnmanagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
-                        key.PublicKeyString,
+                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
                         SampleEmailAddress));
 
                 var computeClient = CreateComputeEngineAdapterMock(
@@ -511,14 +512,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenExistingValidManagedKeyFound_ThenKeyIsNotPushedAgain()
         {
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
-                        key.PublicKeyString,
+                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
 
                 var computeClient = CreateComputeEngineAdapterMock(
@@ -564,14 +565,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenExistingManagedKeyOfDifferentTypeFound_ThenNewKeyIsPushed()
         {
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ecdsa-sha2-nistp384",
-                        key.PublicKeyString,
+                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             SampleEmailAddress,
                             DateTime.UtcNow.AddMinutes(5))));
@@ -619,14 +620,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenExpiredManagedKeyFound_ThenNewKeyIsPushed()
         {
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
-                        key.PublicKeyString,
+                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             SampleEmailAddress,
                             DateTime.UtcNow.AddMinutes(-5))));
@@ -690,7 +691,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
                     .AuthorizeKeyPairAsync(
@@ -728,7 +729,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
                     .AuthorizeKeyPairAsync(
@@ -766,7 +767,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
                     .AuthorizeKeyPairAsync(
@@ -806,7 +807,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => processor.AuthorizeKeyPairAsync(
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.Oslogin | KeyAuthorizationMethods.ProjectMetadata,
@@ -829,7 +830,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
                     .AuthorizeKeyPairAsync(
@@ -867,7 +868,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await processor
                     .AuthorizeKeyPairAsync(
@@ -918,7 +919,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
                     () => processor.AuthorizeKeyPairAsync(

@@ -28,6 +28,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            ISshKeyPair key,
+            IAsymmetricKeyCredential key,
             TimeSpan validity,
             CancellationToken token);
 
@@ -96,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            ISshKeyPair key,
+            IAsymmetricKeyCredential key,
             TimeSpan validity,
             CancellationToken token)
         {
@@ -134,8 +135,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
                         project,
-                        key.Type,
-                        key.PublicKeyString,
+                        key.PublicKey.Type,
+                        key.PublicKey.ToString(PublicKey.Format.OpenSsh),
                         validity,
                         token)
                     .ConfigureAwait(false);

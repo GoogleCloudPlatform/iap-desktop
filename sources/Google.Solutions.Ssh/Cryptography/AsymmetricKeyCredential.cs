@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    internal static class AsymmetricKeyCredential
+    public static class AsymmetricKeyCredential
     {
         /// <summary>
         /// Create a new in-memory key for testing purposes.

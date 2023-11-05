@@ -26,6 +26,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -120,11 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .Setup(s => s.AuthorizeKeyPairAsync(
                         It.IsAny<ProjectLocator>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
-                        It.IsAny<ISshKeyPair>(),
+                        It.IsAny<IAsymmetricKeyCredential>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(AuthorizedKeyPair.ForOsLoginAccount(
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     new PosixAccount()
                     {
                         Username = "bob"
@@ -152,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -180,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -208,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,
@@ -234,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = AsymmetricKeyCredential.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -273,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -296,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -319,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<NotImplementedException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.All,

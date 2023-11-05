@@ -22,6 +22,7 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
@@ -36,11 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     public sealed class AuthorizedKeyPair : IDisposable
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
-        public ISshKeyPair KeyPair { get; }
+        public IAsymmetricKeyCredential KeyPair { get; } //TODO: rename
         public string Username { get; }
 
         private AuthorizedKeyPair(
-            ISshKeyPair keyPair,
+            IAsymmetricKeyCredential keyPair,
             KeyAuthorizationMethods method,
             string posixUsername)
         {
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         //---------------------------------------------------------------------
 
         public static AuthorizedKeyPair ForOsLoginAccount(
-            ISshKeyPair key,
+            IAsymmetricKeyCredential key,
             PosixAccount posixAccount)
         {
             Precondition.ExpectNotNull(key, nameof(key));
@@ -72,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public static AuthorizedKeyPair ForMetadata(
-            ISshKeyPair key,
+            IAsymmetricKeyCredential key,
             string preferredUsername,
             bool useInstanceKeySet,
             IAuthorization authorization)

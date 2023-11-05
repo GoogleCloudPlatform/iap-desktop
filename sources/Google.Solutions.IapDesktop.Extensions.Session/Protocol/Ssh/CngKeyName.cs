@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
@@ -32,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// Name of CNG key to use for SSH authentication.
     /// </summary>
     [DebuggerDisplay("{Value}")]
-    internal class CngKeyName
+    internal class CngKeyName // TODO: rename to CngKeyReference
     {
         public string Value { get; }
 
@@ -41,6 +43,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             SshKeyType keyType,
             CngProvider provider)
         {
+            session.ExpectNotNull(nameof(session));
+            provider.ExpectNotNull(nameof(provider));
+
+            this.Type = keyType switch
+            {
+                SshKeyType.Rsa3072 => new KeyType(CngAlgorithm.Rsa, 3072),
+                SshKeyType.EcdsaNistp256 => new KeyType(CngAlgorithm.ECDsaP256, 256),
+                SshKeyType.EcdsaNistp384 => new KeyType(CngAlgorithm.ECDsaP384, 384),
+                SshKeyType.EcdsaNistp521 => new KeyType(CngAlgorithm.ECDsaP521, 521),
+                _ => throw new ArgumentOutOfRangeException(nameof(keyType))
+            };
+
             if (keyType == SshKeyType.Rsa3072 &&
                 provider == CngProvider.MicrosoftSoftwareKeyStorageProvider)
             {
@@ -74,6 +88,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 }
             }
         }
+
+        public KeyType Type { get; } // TODO: test
 
         public override string ToString()
         {

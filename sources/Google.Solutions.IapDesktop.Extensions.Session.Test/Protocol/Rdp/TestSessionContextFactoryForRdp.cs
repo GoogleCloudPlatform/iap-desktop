@@ -30,11 +30,11 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Microsoft.Win32;
 using Moq;
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 workspace.Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 workspace.Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 workspace.Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 workspace.Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 workspace.Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -368,7 +368,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 new Mock<IProjectWorkspace>().Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 new Mock<IConnectionSettingsService>().Object,
                 new Mock<IIapTransportFactory>().Object,
@@ -405,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IMainWindow>().Object,
                 new Mock<IAuthorization>().Object,
                 new Mock<IProjectWorkspace>().Object,
-                new Mock<IKeyStoreAdapter>().Object,
+                new Mock<IKeyStore>().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 new Mock<IConnectionSettingsService>().Object,
                 new Mock<IIapTransportFactory>().Object,

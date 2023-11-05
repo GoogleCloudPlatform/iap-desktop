@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Compute
         /// <param name="keyBlob">SSH1/Base64-encoded public key</param>
         Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            string keyType,
+            string keyType, //TODO: Use PublicKey
             string keyBlob,
             TimeSpan validity,
             CancellationToken token);

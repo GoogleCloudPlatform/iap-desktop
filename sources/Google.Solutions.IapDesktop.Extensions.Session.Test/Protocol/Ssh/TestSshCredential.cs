@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Moq;
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void ToStringReturnsUsername()
         {
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeyCredential>().Object,
                 "username",
                 false,
                 new Mock<IAuthorization>().Object);

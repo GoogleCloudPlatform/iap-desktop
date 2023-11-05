@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Moq;
 using NUnit.Framework;
@@ -55,14 +56,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKeyPair.ForMetadata(
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     "",
                     false,
                     new Mock<IAuthorization>().Object));
 
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKeyPair.ForMetadata(
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     " ",
                     false,
                     new Mock<IAuthorization>().Object));
@@ -73,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKeyPair.ForMetadata(
-                    new Mock<ISshKeyPair>().Object,
+                    new Mock<IAsymmetricKeyCredential>().Object,
                     "!user",
                     false,
                     new Mock<IAuthorization>().Object));
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenPreferredUsernameIsValid_ThenUsernameIsUsed()
         {
             var key = AuthorizedKeyPair.ForMetadata(
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeyCredential>().Object,
                 "user",
                 false,
                 new Mock<IAuthorization>().Object);
@@ -97,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenSessionUsernameValid_ThenForMetadataGeneratesUsername()
         {
-            var sshKey = new Mock<ISshKeyPair>().Object;
+            var sshKey = new Mock<IAsymmetricKeyCredential>().Object;
             var authorization = CreateAuthorization("j@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
@@ -114,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenSessionUsernameTooLong_ThenForMetadataStripsUsername()
         {
-            var sshKey = new Mock<ISshKeyPair>().Object;
+            var sshKey = new Mock<IAsymmetricKeyCredential>().Object;
             var authorization = CreateAuthorization("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
 
             var authorizedKey = AuthorizedKeyPair.ForMetadata(
