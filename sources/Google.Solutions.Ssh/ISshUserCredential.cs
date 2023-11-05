@@ -38,7 +38,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Authenticator for "publickey" authentication.
     /// </summary>
-    public interface IPublicKeyCredential : ISshUserCredential 
+    public interface IAsymmetricKeyCredential : ISshUserCredential 
     {
         /// <summary>
         /// Public key that corresponds to the signing key.

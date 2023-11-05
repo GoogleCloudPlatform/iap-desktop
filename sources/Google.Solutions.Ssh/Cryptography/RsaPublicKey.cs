@@ -40,7 +40,7 @@ namespace Google.Solutions.Ssh.Cryptography
 
         private readonly RSA key;
 
-        public RsaPublicKey(RSA key)
+        internal RsaPublicKey(RSA key)
         {
             this.key = key.ExpectNotNull(nameof(key));
         }
