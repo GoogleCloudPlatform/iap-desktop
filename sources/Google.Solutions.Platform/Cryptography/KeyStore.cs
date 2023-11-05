@@ -209,7 +209,7 @@ namespace Google.Solutions.Platform.Cryptography
                     Debug.Assert(key.KeySize == type.Size);
 
                     PlatformTraceSource.Log.TraceInformation(
-                        "Created new CNG key {0} in {1}", name, provider.Provider);
+                        "Created new CNG key {0} in {1}", name, this.provider.Provider);
 
                     return key;
                 }

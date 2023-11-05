@@ -289,13 +289,13 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            using (var credential = AsymmetricKeyCredential.CreateEphemeral("invaliduser", keyType))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
-                        new SshSingleFactorAuthenticator("invaliduser", key)));
+                        new SshSingleFactorAuthenticator(credential)));
             }
         }
 
@@ -364,10 +364,9 @@ namespace Google.Solutions.Ssh.Test.Native
             public uint PromptCount { get; private set; } = 0;
 
             public TwoFactorAuthenticator(
-                string username,
-                ISshKeyPair keyPair,
+                IAsymmetricKeyCredential credential,
                 PromptDelegate prompt)
-                : base(username, keyPair)
+                : base(credential)
             {
                 this.prompt = prompt;
             }
@@ -410,8 +409,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
-                    authenticator.Username,
-                    authenticator.KeyPair,
+                    authenticator.Credential,
                     (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
@@ -447,8 +445,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
-                    authenticator.Username,
-                    authenticator.KeyPair,
+                    authenticator.Credential,
                     (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
@@ -482,8 +479,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var twoFactorAuthenticator = new TwoFactorAuthenticator(
-                    authenticator.Username,
-                    authenticator.KeyPair,
+                    authenticator.Credential,
                     (name, instruction, prompt, echo) =>
                     {
                         throw new OperationCanceledException();

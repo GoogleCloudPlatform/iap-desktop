@@ -47,29 +47,32 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void ToStringReturnsOpenSshFormat()
         {
-            var key = new SamplePublicKey(Convert.FromBase64String("ABCD"));
-
-            Assert.AreEqual("sample ABCD", key.ToString());
+            using (var key = new SamplePublicKey(Convert.FromBase64String("ABCD")))
+            {
+                Assert.AreEqual("sample ABCD", key.ToString());
+            }
         }
 
         [Test]
         public void ToOpenSshString()
         {
-            var key = new SamplePublicKey(Convert.FromBase64String("ABCD"));
-
-            Assert.AreEqual("sample ABCD", key.ToString(PublicKey.Format.OpenSsh));
+            using (var key = new SamplePublicKey(Convert.FromBase64String("ABCD")))
+            {
+                Assert.AreEqual("sample ABCD", key.ToString(PublicKey.Format.OpenSsh));
+            }
         }
 
         [Test]
         public void ToSsh2String()
         {
-            var key = new SamplePublicKey(Convert.FromBase64String("ABCD"));
-
-            Assert.AreEqual(
-                "---- BEGIN SSH2 PUBLIC KEY ----\r\n" +
-                "ABCD\r\n" +
-                "---- END SSH2 PUBLIC KEY ----\r\n",
-                key.ToString(PublicKey.Format.Ssh2));
+            using (var key = new SamplePublicKey(Convert.FromBase64String("ABCD")))
+            {
+                Assert.AreEqual(
+                    "---- BEGIN SSH2 PUBLIC KEY ----\r\n" +
+                    "ABCD\r\n" +
+                    "---- END SSH2 PUBLIC KEY ----\r\n",
+                    key.ToString(PublicKey.Format.Ssh2));
+            }
         }
     }
 }

@@ -146,10 +146,13 @@ namespace Google.Solutions.Ssh.Test
                     .Cast<SshKeyType>()
                     .ToDictionary(
                         k => k,
-                        k => SshKeyPair.NewEphemeralKeyPair(k));
+                        k => AsymmetricKeyCredential.CreateEphemeral(username, k));
 
-                var metadataEntry = string.Join("\n", keysByType.Values.Select(
-                    k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
+                var metadataEntry = string.Join(
+                    "\n", 
+                    keysByType
+                        .Values
+                        .Select(k => $"{username}:{k.PublicKey.ToString(PublicKey.Format.OpenSsh)} {username}"));
 
                 using (var service = TestProject.CreateComputeService())
                 {
@@ -175,7 +178,7 @@ namespace Google.Solutions.Ssh.Test
                 foreach (var kvp in keysByType)
                 {
                     cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] =
-                        new SshSingleFactorAuthenticator(username, kvp.Value);
+                        new SshSingleFactorAuthenticator(kvp.Value);
                 }
             }
 

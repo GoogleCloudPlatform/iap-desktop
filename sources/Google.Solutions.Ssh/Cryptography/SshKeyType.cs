@@ -19,39 +19,31 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    /// <summary>
-    /// Public/private key pair that can be used for public key 
-    /// authentication.
-    /// </summary>
-    public interface ISshKeyPair : IDisposable
+    public enum SshKeyType : int //TODO: Move to session
     {
-        /// <summary>
-        /// Key type (for ex, 'ssh-rsa').
-        /// </summary>
-        string Type { get; }
+        //
+        // NB. These values are used for persistence and
+        // must be kept constant.
+        //
 
-        /// <summary>
-        /// Return public key in SSH format.
-        /// </summary>
-        byte[] GetPublicKey();
+        [Display(Name = "RSA (3072 bit)")]
+        Rsa3072 = 0x01,
 
-        /// <summary>
-        /// Return base64-encoded public key.
-        /// </summary>
-        string PublicKeyString { get; }
+        [Display(Name = "ECDSA NIST P-256")]
+        EcdsaNistp256 = 0x11,
 
-        /// <summary>
-        /// Sign an authentication challenge.
-        /// </summary>
-        byte[] Sign(AuthenticationChallenge challenge);
+        [Display(Name = "ECDSA NIST P-384")]
+        EcdsaNistp384 = 0x12,
 
-        /// <summary>
-        /// Size of underlying key.
-        /// </summary>
-        uint KeySize { get; }
+        [Display(Name = "ECDSA NIST P-521")]
+        EcdsaNistp521 = 0x13
     }
 }

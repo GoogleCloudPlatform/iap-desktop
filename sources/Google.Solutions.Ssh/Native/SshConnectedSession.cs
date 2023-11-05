@@ -270,7 +270,7 @@ namespace Google.Solutions.Ssh.Native
                 Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
 
                 var challenge = new AuthenticationChallenge(challengeBuffer);
-                var signature = authenticator.KeyPair.Sign(challenge);
+                var signature = authenticator.Credential.Sign(challenge);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
@@ -378,17 +378,13 @@ namespace Google.Solutions.Ssh.Native
             }
 
             using (SshTraceSource.Log.TraceMethod()
-                .WithParameters(authenticator.Username))
+                .WithParameters(authenticator.Credential.Username))
             {
-                //
-                // NB. The public key must be passed in OpenSSH format, not PEM.
-                // cf. https://tools.ietf.org/html/rfc4253#section-6.6
-                //
-                var publicKey = authenticator.KeyPair.GetPublicKey();
+                var publicKey = authenticator.Credential.PublicKey.WireFormatValue;
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
-                    authenticator.Username,
+                    authenticator.Credential.Username,
                     publicKey,
                     new IntPtr(publicKey.Length),
                     Sign,
@@ -425,8 +421,8 @@ namespace Google.Solutions.Ssh.Native
                         {
                             result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
                                 this.session.Handle,
-                                authenticator.Username,
-                                authenticator.Username.Length,
+                                authenticator.Credential.Username,
+                                authenticator.Credential.Username.Length,
                                 InteractiveCallback,
                                 IntPtr.Zero);
 

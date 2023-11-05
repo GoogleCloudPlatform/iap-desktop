@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using System;
 using System.Security;
 
 namespace Google.Solutions.Ssh
@@ -27,7 +28,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Base interface.
     /// </summary>
-    public interface ISshUserCredential
+    public interface ISshUserCredential : IDisposable
     {
         /// <summary>
         /// Username to authenticate with.

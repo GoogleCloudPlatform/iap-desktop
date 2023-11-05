@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 channel.Close();
 
                 StringAssert.Contains(
-                    $"whoami;exit\r\n{authenticator.Username}\r\nlogout\r\n",
+                    $"whoami;exit\r\n{authenticator.Credential.Username}\r\nlogout\r\n",
                     output);
 
                 Assert.AreEqual(0, channel.ExitCode);

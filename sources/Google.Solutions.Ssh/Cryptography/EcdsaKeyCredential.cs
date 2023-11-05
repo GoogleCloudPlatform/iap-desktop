@@ -102,6 +102,7 @@ namespace Google.Solutions.Ssh.Cryptography
 
         protected override void Dispose(bool disposing)
         {
+            this.PublicKey.Dispose();
             this.key.Dispose();
             base.Dispose(disposing);
         }

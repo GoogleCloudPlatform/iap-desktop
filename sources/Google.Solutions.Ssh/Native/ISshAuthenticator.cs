@@ -31,14 +31,9 @@ namespace Google.Solutions.Ssh.Native
     public interface ISshAuthenticator //TODO: remove
     {
         /// <summary>
-        /// Username.
-        /// </summary>
-        string Username { get; }
-
-        /// <summary>
         /// Key pair for public/private key authentication.
         /// </summary>
-        ISshKeyPair KeyPair { get; }
+        IAsymmetricKeyCredential Credential { get; }
 
         /// <summary>
         /// Prompt for additional (second factor)
@@ -55,18 +50,14 @@ namespace Google.Solutions.Ssh.Native
     /// Authenticator that uses a public key and doesn't
     /// support 2FA.
     /// </summary>
-    public class SshSingleFactorAuthenticator : ISshAuthenticator
+    public class SshSingleFactorAuthenticator : ISshAuthenticator //TODO: delete
     {
-        public string Username { get; }
-
-        public ISshKeyPair KeyPair { get; }
+        public IAsymmetricKeyCredential Credential { get; }
 
         public SshSingleFactorAuthenticator(
-            string username,
-            ISshKeyPair keyPair)
+            IAsymmetricKeyCredential credential)
         {
-            this.Username = username.ExpectNotNull(nameof(username));
-            this.KeyPair = keyPair.ExpectNotNull(nameof(this.KeyPair));
+            this.Credential = credential.ExpectNotNull(nameof(credential));
         }
 
         public virtual string? Prompt(

@@ -96,7 +96,7 @@ namespace Google.Solutions.Ssh
             this.workerCancellationSource = new CancellationTokenSource();
             this.workerThread = new Thread(WorkerThreadProc)
             {
-                Name = $"SSH worker for {authenticator.Username}@{this.endpoint}",
+                Name = $"SSH worker for {authenticator.Credential.Username}@{this.endpoint}",
                 IsBackground = true
             };
         }
@@ -475,9 +475,7 @@ namespace Google.Solutions.Ssh
                 this.context = context.ExpectNotNull(nameof(context));
             }
 
-            public string Username => this.authenticator.Username;
-
-            public ISshKeyPair KeyPair => this.authenticator.KeyPair;
+            public IAsymmetricKeyCredential Credential => this.authenticator.Credential;
 
             public string? Prompt(string name, string instruction, string prompt, bool echo)
             {
