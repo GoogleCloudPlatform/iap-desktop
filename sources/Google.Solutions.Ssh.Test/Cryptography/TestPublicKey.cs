@@ -30,12 +30,13 @@ namespace Google.Solutions.Ssh.Test.Cryptography
     {
         private class SamplePublicKey : PublicKey
         {
-            public SamplePublicKey(byte[] value)
+            public SamplePublicKey(string type, byte[] value)
             {
+                this.Type = type;
                 this.WireFormatValue = value;
             }
 
-            public override string Type => "sample";
+            public override string Type { get; }
 
             public override byte[] WireFormatValue { get; }
         }
@@ -47,7 +48,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void ToStringReturnsOpenSshFormat()
         {
-            using (var key = new SamplePublicKey(Convert.FromBase64String("ABCD")))
+            using (var key = new SamplePublicKey("sample", Convert.FromBase64String("ABCD")))
             {
                 Assert.AreEqual("sample ABCD", key.ToString());
             }
@@ -56,7 +57,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void ToOpenSshString()
         {
-            using (var key = new SamplePublicKey(Convert.FromBase64String("ABCD")))
+            using (var key = new SamplePublicKey("sample", Convert.FromBase64String("ABCD")))
             {
                 Assert.AreEqual("sample ABCD", key.ToString(PublicKey.Format.OpenSsh));
             }
@@ -65,13 +66,74 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         [Test]
         public void ToSsh2String()
         {
-            using (var key = new SamplePublicKey(Convert.FromBase64String("ABCD")))
+            using (var key = new SamplePublicKey("sample", Convert.FromBase64String("ABCD")))
             {
                 Assert.AreEqual(
                     "---- BEGIN SSH2 PUBLIC KEY ----\r\n" +
                     "ABCD\r\n" +
                     "---- END SSH2 PUBLIC KEY ----\r\n",
                     key.ToString(PublicKey.Format.Ssh2));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Equals.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTypesDifferent_ThenEqualsReturnsFalse()
+        {
+            using (var lhs = new SamplePublicKey("type1", Convert.FromBase64String("ABCD")))
+            using (var rhs = new SamplePublicKey("type2", Convert.FromBase64String("ABCD")))
+            {
+                Assert.IsFalse(lhs.Equals(rhs));
+                Assert.IsFalse(lhs.Equals((object)rhs));
+            }
+        }
+
+        [Test]
+        public void WhenWireFormatDifferent_ThenEqualsReturnsFalse()
+        {
+            using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
+            using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCE")))
+            {
+                Assert.IsFalse(lhs.Equals(rhs));
+                Assert.IsFalse(lhs.Equals((object)rhs));
+            }
+        }
+
+        [Test]
+        public void WhenTypesAndWireFormatEqual_ThenEqualsReturnsTrue()
+        {
+            using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
+            using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
+            {
+                Assert.IsTrue(lhs.Equals(rhs));
+                Assert.IsTrue(lhs.Equals((object)rhs));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // GetHashCode.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenWireFormatDifferent_ThenHashCodeIsDifferent()
+        {
+            using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
+            using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCE")))
+            {
+                Assert.AreNotEqual(lhs.GetHashCode(), rhs.GetHashCode());
+            }
+        }
+
+        [Test]
+        public void WhenTypesAndWireFormatEqual_ThenHashCodeIsEqual()
+        {
+            using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
+            using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
+            {
+                Assert.AreEqual(lhs.GetHashCode(), rhs.GetHashCode());
             }
         }
     }

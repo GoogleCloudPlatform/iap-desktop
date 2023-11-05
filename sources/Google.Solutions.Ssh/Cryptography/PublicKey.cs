@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Runtime;
 using System;
+using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace Google.Solutions.Ssh.Cryptography
@@ -28,7 +30,7 @@ namespace Google.Solutions.Ssh.Cryptography
     /// <summary>
     /// An SSH public key.
     /// </summary>
-    public abstract class PublicKey : DisposableBase
+    public abstract class PublicKey : DisposableBase, IEquatable<PublicKey>
     {
         /// <summary>
         /// Key type, such as rsa-ssh.
@@ -76,6 +78,23 @@ namespace Google.Solutions.Ssh.Cryptography
                     .AppendLine(Ssh2FileFormat.Footer)
                     .ToString();
             }
+        }
+
+        public bool Equals(PublicKey other)
+        {
+            return
+                this.Type == other.Type &&
+                Enumerable.SequenceEqual(this.WireFormatValue, other.WireFormatValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PublicKey && Equals((PublicKey)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return new BigInteger(this.WireFormatValue).GetHashCode();
         }
 
         public override string ToString()
