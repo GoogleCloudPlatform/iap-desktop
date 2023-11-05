@@ -235,12 +235,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
                         SampleLocator,
-                        key,
+                        signer,
                         TimeSpan.FromMinutes(1),
                         null,
                         KeyAuthorizationMethods.All,

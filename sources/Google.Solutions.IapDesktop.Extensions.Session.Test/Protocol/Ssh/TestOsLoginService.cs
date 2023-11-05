@@ -123,13 +123,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 });
             var service = new OsLoginProfile(adapter.Object);
 
-            using (var keyCredential = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
             {
                 var key = await service
                     .AuthorizeKeyPairAsync(
                         new ProjectLocator("project-1"),
                         OsLoginSystemType.Linux,
-                        keyCredential,
+                        signer,
                         TimeSpan.FromDays(1),
                         CancellationToken.None)
                     .ConfigureAwait(false);
@@ -153,13 +153,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ReturnsAsync(new LoginProfile());
             var service = new OsLoginProfile(adapter.Object);
 
-            using (var keyCredential = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
             {
                 ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
                     () => service.AuthorizeKeyPairAsync(
                         new ProjectLocator("project-1"),
                         OsLoginSystemType.Linux,
-                        keyCredential,
+                        signer,
                         TimeSpan.FromDays(1),
                         CancellationToken.None).Wait());
             }

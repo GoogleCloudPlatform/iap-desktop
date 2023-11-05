@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 sshSettings.PublicKeyType.EnumValue,
                 this.keyStore.Provider);
 
-            var keyCredential = AsymmetricKeySigner.Create(
+            var signer = AsymmetricKeySigner.Create(
                 this.keyStore.OpenKey(
                     this.window.Handle,
                     keyName.Value,
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     CngKeyUsages.Signing,
                     false));
 
-            Debug.Assert(keyCredential != null);
+            Debug.Assert(signer != null);
 
             //
             // Initialize a context and pass ownership of the key to it.
@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 this.directTransportFactory,
                 this.keyAuthorizer,
                 node.Instance,
-                keyCredential);
+                signer);
 
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
