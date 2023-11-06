@@ -85,7 +85,9 @@ namespace Google.Solutions.Platform.Cryptography
                 // [2] https://web.archive.org/web/20151218221641/https://ittechlog.wordpress.com/2014/06/27/switch-a-local-profile-to-temporary/
                 //
                 throw new KeyStoreUnavailableException(
-                    "Accessing the CNG key failed because the Windows profile is temporary");
+                    "Accessing your local CNG key store failed because you are using a " +
+                    "mandatory Windows user profile. Convert your user profile to " +
+                    "a regular profile, or log in as a different Windows user.");
             }
         }
 
@@ -126,11 +128,7 @@ namespace Google.Solutions.Platform.Cryptography
                 //   certutil -csp "Microsoft Software Key Storage Provider" -key -user
                 //
 
-                if (forceCreate)
-                {
-                    DeleteKey(name);
-                }
-                else if (CheckKeyExists(name))
+                if (!forceCreate && CheckKeyExists(name))
                 {
                     var key = CngKey.Open(name);
                     if (key.Algorithm != type.Algorithm)
@@ -175,10 +173,16 @@ namespace Google.Solutions.Platform.Cryptography
                 //
                 var keyParams = new CngKeyCreationParameters
                 {
-                    // Do not overwrite, store in user profile.
-                    KeyCreationOptions = CngKeyCreationOptions.None,
+                    //
+                    // Store in user profile, overwrite if necessary.
+                    //
+                    KeyCreationOptions = forceCreate 
+                        ? CngKeyCreationOptions.OverwriteExistingKey 
+                        : CngKeyCreationOptions.None,
 
+                    //
                     // Do not allow exporting.
+                    //
                     ExportPolicy = CngExportPolicies.None,
 
                     Provider = this.Provider,

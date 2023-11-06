@@ -22,12 +22,7 @@
 using Google.Solutions.Platform.Cryptography;
 using NUnit.Framework;
 using System;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
 using System.Security.Cryptography;
-using System.Security.Principal;
 
 namespace Google.Solutions.Platform.Test.Cryptography
 {
