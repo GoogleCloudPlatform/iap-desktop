@@ -23,9 +23,12 @@ using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.Iam.v1.Data;
 using Google.Apis.IAMCredentials.v1;
+using Google.Apis.Json;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Testing.Apis.Integration;
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Auth
@@ -63,6 +66,23 @@ namespace Google.Solutions.Testing.Apis.Auth
                 new TemporaryGaiaSession(
                     this.Username,
                     new TemporaryCredential(response.AccessToken)));
+        }
+
+        public async Task<string> SignJwtAsync(
+            IDictionary<string, string> claims,
+            CancellationToken cancellationToken)
+        {
+            var response = await this.credentialsService.Projects.ServiceAccounts
+                .SignJwt(
+                    new Google.Apis.IAMCredentials.v1.Data.SignJwtRequest()
+                    {
+                        Payload = NewtonsoftJsonSerializer.Instance.Serialize(claims)
+                    },
+                    $"projects/-/serviceAccounts/{this.Username}")
+                .ExecuteAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return response.SignedJwt;
         }
 
         //---------------------------------------------------------------------

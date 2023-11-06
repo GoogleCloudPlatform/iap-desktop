@@ -29,6 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Integration
@@ -77,7 +78,34 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             if (this.Type == PrincipalType.WorkforceIdentity)
             {
-                throw new NotImplementedException();
+                //
+                // Create a service account.
+                //
+                var trustedServiceAccount = await TemporaryServiceAccount
+                    .EmplaceAsync(
+                        TestProject.CreateIamService(),
+                        TestProject.CreateIamCredentialsService(),
+                        TestProject.CreateCloudResourceManagerService(),
+                        "identity-platform")
+                    .ConfigureAwait(true);
+
+                var subject = await TemporaryWorkforcePoolSubject
+                    .CreateAsync(
+                        TestProject.CreateCloudResourceManagerService(),
+                        TestProject.CreateIdentityPlatformService(),
+                        trustedServiceAccount,
+                        TestProject.WorkforcePoolId,
+                        TestProject.WorkforceProviderId,
+                        fingerprint,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                //
+                // Impersonate.
+                //
+                return await subject
+                    .ImpersonateAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
             }
             else if (this.Roles == null || !this.Roles.Any())
             {

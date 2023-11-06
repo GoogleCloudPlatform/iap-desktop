@@ -41,7 +41,6 @@ namespace Google.Solutions.Testing.Apis.Integration
         internal const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
 
         public static readonly string InvalidProjectId = "invalid-0000";
-        public static readonly string ProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
         public static readonly string Zone = "us-central1-a";
 
         public static UserAgent UserAgent { get; }
@@ -59,6 +58,25 @@ namespace Google.Solutions.Testing.Apis.Integration
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11;
         }
+
+        public static string ProjectId
+        {
+            get
+            {
+                var projectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
+                if (string.IsNullOrEmpty(projectId))
+                {
+                    throw new ApplicationException(
+                        "GOOGLE_CLOUD_PROJECT not set, must contain the project ID " +
+                        "to use for integration tests");
+                }
+
+                return projectId;
+            }
+        }
+
+        public static string WorkforcePoolId => ProjectId;
+        public static string WorkforceProviderId => "identity-platform";
 
         internal static GoogleCredential GetAdminCredential()
         {
@@ -193,6 +211,19 @@ namespace Google.Solutions.Testing.Apis.Integration
             return (TService)Activator.CreateInstance(
                 typeof(TService),
                 new object[] { initializer });
+        }
+
+        internal static TemporaryWorkforcePoolSubject.IdentityPlatformService CreateIdentityPlatformService()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("IDENTITYPLATFORM_APIKEY");
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new ApplicationException(
+                    "IDENTITYPLATFORM_APIKEY not set, must contain an API key " +
+                    $"for the project {ProjectId}");
+            }
+
+            return new TemporaryWorkforcePoolSubject.IdentityPlatformService(apiKey);
         }
     }
 }
