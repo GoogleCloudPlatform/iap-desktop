@@ -35,8 +35,10 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -248,13 +250,13 @@ namespace Google.Solutions.Apis.Compute
             string publicKey,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(zone))
             {
                 try
                 {
-                    var request = new SignSshPublicKeyRequest(
+                    var request = new BetaSignSshPublicKeyRequest(
                         this.service,
-                        new SignSshPublicKeyRequestData()
+                        new BetaSignSshPublicKeyRequestData()
                         {
                             SshPublicKey = publicKey
                         },
@@ -287,12 +289,50 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
+        public async Task<IList<SecurityKey>> ListSecurityKeysAsync(
+            ProjectLocator project,
+            CancellationToken cancellationToken)
+        {
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
+            {
+                var gaiaSession = this.authorization.Session as IGaiaOidcSession
+                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+
+                try
+                {
+                    var request = new BetaGetLoginProfileRequest(
+                        this.service,
+                        $"users/{gaiaSession.Username}")
+                    {
+                        ProjectId = project.Name,
+                        View = BetaGetLoginProfileRequest.ViewEnum.SECURITYKEY
+                    };
+
+                    var response = await request
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    return response.SecurityKeys ?? new List<SecurityKey>();
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to use OS Login: " +
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // v1beta1 entities. These can be removed once the methods have been
         // promoted to v1.
         //---------------------------------------------------------------------
 
-        private class SignSshPublicKeyResponseData : IDirectResponseSchema
+        #region Request entities
+
+        private class BetaSignSshPublicKeyResponseData : IDirectResponseSchema
         {
             [JsonProperty("signedSshPublicKey")]
             public virtual string? SignedSshPublicKey { get; set; }
@@ -300,7 +340,7 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class SignSshPublicKeyRequestData : IDirectResponseSchema
+        private class BetaSignSshPublicKeyRequestData : IDirectResponseSchema
         {
             [JsonProperty("sshPublicKey")]
             public virtual string? SshPublicKey { get; set; }
@@ -308,16 +348,20 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class SignSshPublicKeyRequest : CloudOSLoginBaseServiceRequest<SignSshPublicKeyResponseData>
+        private class BetaSignSshPublicKeyRequest 
+            : CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
         {
             [RequestParameter("parent")]
             public virtual string Parent { get; private set; }
-            private SignSshPublicKeyRequestData Body { get; set; }
+            private BetaSignSshPublicKeyRequestData Body { get; set; }
             public override string MethodName => "signSshPublicKey";
             public override string HttpMethod => "POST";
             public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
 
-            public SignSshPublicKeyRequest(IClientService service, SignSshPublicKeyRequestData body, string parent)
+            public BetaSignSshPublicKeyRequest(
+                IClientService service, 
+                BetaSignSshPublicKeyRequestData body, 
+                string parent)
                 : base(service)
             {
                 this.Parent = parent;
@@ -343,6 +387,124 @@ namespace Google.Solutions.Apis.Compute
                 });
             }
         }
+
+        private class BetaLoginProfile : IDirectResponseSchema
+        {
+            /// <summary>The registered security key credentials for a user.</summary>
+            [JsonProperty("securityKeys")]
+            public virtual IList<SecurityKey>? SecurityKeys { get; set; }
+
+            public virtual string? ETag { get; set; }
+        }
+
+        public class SecurityKey : IDirectResponseSchema
+        {
+            [JsonProperty("deviceNickname")]
+            public virtual string? DeviceNickname { get; set; }
+
+            [JsonProperty("privateKey")]
+            public virtual string? PrivateKey { get; set; }
+
+            [JsonProperty("publicKey")]
+            public virtual string? PublicKey { get; set; }
+
+            [JsonProperty("universalTwoFactor")]
+            public virtual UniversalTwoFactor? UniversalTwoFactor { get; set; }
+
+            [JsonProperty("webAuthn")]
+            public virtual WebAuthn? WebAuthn { get; set; }
+
+            public virtual string? ETag { get; set; }
+        }
+
+        public class UniversalTwoFactor : IDirectResponseSchema
+        {
+            [JsonProperty("appId")]
+            public virtual string? AppId { get; set; }
+
+            public virtual string? ETag { get; set; }
+        }
+
+        public class WebAuthn : IDirectResponseSchema
+        {
+            [JsonProperty("rpId")]
+            public virtual string? RpId { get; set; }
+
+            public virtual string? ETag { get; set; }
+        }
+
+        private class BetaGetLoginProfileRequest : CloudOSLoginBaseServiceRequest<BetaLoginProfile>
+        {
+            public enum ViewEnum
+            {
+                [StringValue("SECURITY_KEY")]
+                SECURITYKEY
+            }
+
+            [RequestParameter("name")]
+            public virtual string Name { get; private set; }
+
+            [RequestParameter("projectId")]
+            public virtual string? ProjectId { get; set; }
+
+            [RequestParameter("systemId")]
+            public virtual string? SystemId { get; set; }
+
+            [RequestParameter("view")]
+            public virtual ViewEnum? View { get; set; }
+
+            public override string MethodName => "getLoginProfile";
+
+            public override string HttpMethod => "GET";
+
+            public override string RestPath => "v1beta/{+name}/loginProfile";
+
+            public BetaGetLoginProfileRequest(IClientService service, string name)
+                : base(service)
+            {
+                this.Name = name;
+                InitParameters();
+            }
+
+            protected override void InitParameters()
+            {
+                base.InitParameters();
+                this.RequestParameters.Add("name", new Parameter
+                {
+                    Name = "name",
+                    IsRequired = true,
+                    ParameterType = "path",
+                    DefaultValue = null,
+                    Pattern = "^users/[^/]+$"
+                });
+                this.RequestParameters.Add("projectId", new Parameter
+                {
+                    Name = "projectId",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null,
+                    Pattern = null
+                });
+                this.RequestParameters.Add("systemId", new Parameter
+                {
+                    Name = "systemId",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null,
+                    Pattern = null
+                });
+                this.RequestParameters.Add("view", new Parameter
+                {
+                    Name = "view",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null,
+                    Pattern = null
+                });
+            }
+        }
+
+        #endregion
     }
 
     internal class OsLoginNotSupportedForWorkloadIdentityException :
