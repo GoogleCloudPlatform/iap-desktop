@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
@@ -56,6 +57,23 @@ namespace Google.Solutions.Apis.Test.Compute
             return authorization.Object;
         }
 
+        private static IAuthorization CreateGaiaAuthorizationWithMismatchedUser(
+            string username,
+            ICredential credential)
+        {
+            var session = new Mock<IGaiaOidcSession>();
+            session.SetupGet(s => s.Username).Returns(username);
+            session.SetupGet(s => s.Email).Returns(username);
+            session.SetupGet(s => s.ApiCredential).Returns(credential);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.Session).Returns(session.Object);
+            authorization.SetupGet(a => a.DeviceEnrollment)
+                .Returns(TestProject.DisabledEnrollment);
+
+            return authorization.Object;
+        }
+
         //---------------------------------------------------------------------
         // ImportSshPublicKeyAsync.
         //---------------------------------------------------------------------
@@ -78,10 +96,10 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenImportSshPublicKeyThrowsException(
+        public async Task WhenEmailAndCredentialMismatch_ThenImportSshPublicKeyThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var authorization = new TemporaryAuthorization(
+            var authorization = CreateGaiaAuthorizationWithMismatchedUser(
                 "x@gmail.com",
                 await credentialTask);
             var client = new OsLoginClient(
@@ -145,10 +163,10 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenGetLoginProfileThrowsException(
+        public async Task WhenEmailAndCredentialMismatch_ThenGetLoginProfileThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var authorization = new TemporaryAuthorization(
+            var authorization = CreateGaiaAuthorizationWithMismatchedUser(
                 "x@gmail.com",
                 await credentialTask);
             var client = new OsLoginClient(
@@ -310,10 +328,10 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenListSecurityKeysAsyncThrowsException(
+        public async Task WhenEmailAndCredentialMismatch_ThenListSecurityKeysAsyncThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var authorization = new TemporaryAuthorization(
+            var authorization = CreateGaiaAuthorizationWithMismatchedUser(
                 "x@gmail.com",
                 await credentialTask);
             var client = new OsLoginClient(

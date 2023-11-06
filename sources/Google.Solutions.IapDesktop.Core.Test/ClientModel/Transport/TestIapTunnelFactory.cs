@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             var iapClient = new IapClient(
                 IapClient.CreateEndpoint(),
-                TemporaryAuthorization.ForInvalidCredential(),
+                TestProject.InvalidAuthorization,
                 SampleUserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             var iapClient = new IapClient(
                 IapClient.CreateEndpoint(),
-                TemporaryAuthorization.ForInvalidCredential(),
+                TestProject.InvalidAuthorization,
                 SampleUserAgent);
 
             var profile = new IapTunnel.Profile(

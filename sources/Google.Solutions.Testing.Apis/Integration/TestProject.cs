@@ -25,7 +25,9 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Services;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Testing.Apis.Auth;
 using System;
 using System.Linq;
 using System.Net;
@@ -58,7 +60,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                 SecurityProtocolType.Tls11;
         }
 
-        public static GoogleCredential GetAdminCredential()
+        internal static GoogleCredential GetAdminCredential()
         {
             // This account must have the following roles:
             // - Compute Admin
@@ -76,85 +78,116 @@ namespace Google.Solutions.Testing.Apis.Integration
                 : credential;
         }
 
-        public static GoogleCredential GetSecureConnectCredential()
+        public static IAuthorization SecureConnectAuthorization
         {
-            // This account must have:
-            // - Cloud Identity Premium
-            // - an associated device certificate on the local machine
-
-            var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
-            if (string.IsNullOrEmpty(credentialsPath))
+            get
             {
-                throw new ApplicationException(
-                    "SECURECONNECT_CREDENTIALS not set, needs to point to credentials " +
-                    "JSON of a SecureConnect-enabled user");
-            }
+                //
+                // This account must have:
+                // - Cloud Identity Premium
+                // - an associated device certificate on the local machine
+                //
+                var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
+                if (string.IsNullOrEmpty(credentialsPath))
+                {
+                    throw new ApplicationException(
+                        "SECURECONNECT_CREDENTIALS not set, needs to point to credentials " +
+                        "JSON of a SecureConnect-enabled user");
+                }
 
-            var credential = GoogleCredential.FromFile(credentialsPath);
-            return credential.IsCreateScopedRequired
-                ? credential.CreateScoped(CloudPlatformScope)
-                : credential;
+                var certificatePath = Environment.GetEnvironmentVariable("SECURECONNECT_CERTIFICATE");
+                if (string.IsNullOrEmpty(certificatePath))
+                {
+                    throw new ApplicationException(
+                        "SECURECONNECT_CERTIFICATE not set, needs to point to a PFX " +
+                        "containing a SecureConnect device certificate");
+                }
+
+                var collection = new X509Certificate2Collection();
+                collection.Import(
+                    credentialsPath,
+                    string.Empty, // No passphrase
+                    X509KeyStorageFlags.DefaultKeySet);
+
+                var certificate = collection
+                    .OfType<X509Certificate2>()
+                    .First();
+
+                var credential = GoogleCredential.FromFile(credentialsPath);
+
+                return new TemporaryAuthorization(
+                    new Enrollment(certificate),
+                    new TemporaryGaiaSession(
+                        ((UserCredential)credential.UnderlyingCredential).UserId,
+                        credential.IsCreateScopedRequired
+                            ? credential.CreateScoped(CloudPlatformScope)
+                            : credential));
+
+            }
         }
 
-        public static X509Certificate2 GetDeviceCertificate()
+        public static IAuthorization InvalidAuthorization
         {
-            var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CERTIFICATE");
-            if (string.IsNullOrEmpty(credentialsPath))
-            {
-                throw new ApplicationException(
-                    "SECURECONNECT_CERTIFICATE not set, needs to point to a PFX " +
-                    "containing a SecureConnect device certificate");
-            }
+            get => new TemporaryAuthorization(
+                new Enrollment(),
+                new TemporarySession(
+                    "invalid@gserviceaccount.com",
+                    GoogleCredential.FromAccessToken("invalid")));
+        }
 
-            var collection = new X509Certificate2Collection();
-            collection.Import(
-                credentialsPath,
-                string.Empty, // No passphrase
-                X509KeyStorageFlags.DefaultKeySet);
 
-            return collection
-                .OfType<X509Certificate2>()
-                .First();
+        public static IAuthorization AdminAuthorization
+        {
+            get => new TemporaryAuthorization(
+                new Enrollment(),
+                new TemporaryGaiaSession(
+                    "admin@gserviceaccount.com",
+                    GetAdminCredential()));
+        }
+
+        public static IDeviceEnrollment DisabledEnrollment
+        {
+            get => new Enrollment();
         }
 
         public static ComputeService CreateComputeService()
         {
             return new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = TestProject.GetAdminCredential()
+                HttpClientInitializer = GetAdminCredential()
             });
         }
 
-        public static IamService CreateIamService()
+        internal static IamService CreateIamService()
         {
             return new IamService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = TestProject.GetAdminCredential()
+                HttpClientInitializer = GetAdminCredential()
             });
         }
 
-        public static IAMCredentialsService CreateIamCredentialsService()
+        internal static IAMCredentialsService CreateIamCredentialsService()
         {
             return new IAMCredentialsService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = TestProject.GetAdminCredential()
+                HttpClientInitializer = GetAdminCredential()
             });
         }
 
-        public static CloudResourceManagerService CreateCloudResourceManagerService()
+        internal static CloudResourceManagerService CreateCloudResourceManagerService()
         {
             return new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = TestProject.GetAdminCredential()
+                HttpClientInitializer = GetAdminCredential()
             });
         }
 
-        public static TService CreateService<TService>()
+        internal static TService CreateService<TService>()
             where TService : BaseClientService
         {
             var initializer = new BaseClientService.Initializer
             {
-                HttpClientInitializer = TestProject.GetAdminCredential()
+                HttpClientInitializer = GetAdminCredential()
             };
 
             return (TService)Activator.CreateInstance(

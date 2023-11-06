@@ -30,67 +30,20 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Auth
 {
-    internal class TemporaryServiceAccount
+    internal class TemporaryServiceAccount : Principal
     {
-        private readonly CloudResourceManagerService crmService;
         private readonly IAMCredentialsService credentialsService;
 
         public TemporaryServiceAccount(
             CloudResourceManagerService crmService,
             IAMCredentialsService credentialsService,
             string email)
+            : base(crmService, email)
         {
-            this.crmService = crmService;
             this.credentialsService = credentialsService;
-            this.Email = email;
         }
 
-        public string Email { get; }
-
-        public async Task GrantRolesAsync(string[] roles)
-        {
-            for (var attempt = 0; attempt < 6; attempt++)
-            {
-                var policy = await this.crmService.Projects
-                    .GetIamPolicy(
-                        new Google.Apis.CloudResourceManager.v1.Data.GetIamPolicyRequest(),
-                        TestProject.ProjectId)
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-
-                foreach (var role in roles)
-                {
-                    policy.Bindings.Add(
-                        new Google.Apis.CloudResourceManager.v1.Data.Binding()
-                        {
-                            Role = role,
-                            Members = new string[] { $"serviceAccount:{this.Email}" }
-                        });
-                }
-
-                try
-                {
-                    await this.crmService.Projects
-                        .SetIamPolicy(
-                            new Google.Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
-                            {
-                                Policy = policy
-                            },
-                            TestProject.ProjectId)
-                        .ExecuteAsync()
-                        .ConfigureAwait(false);
-
-                    break;
-                }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
-                {
-                    //
-                    // Concurrent modification - back off and retry. 
-                    //
-                    await Task.Delay(200).ConfigureAwait(false);
-                }
-            }
-        }
+        protected override string PolicyPrefix => "serviceAccount";
 
         public async Task<IAuthorization> ImpersonateAsync()
         {
@@ -101,14 +54,14 @@ namespace Google.Solutions.Testing.Apis.Auth
                     {
                         Scope = new string[] { TestProject.CloudPlatformScope }
                     },
-                    $"projects/-/serviceAccounts/{this.Email}")
+                    $"projects/-/serviceAccounts/{this.Username}")
                 .ExecuteAsync()
                 .ConfigureAwait(false);
 
             return new TemporaryAuthorization(
                 new Enrollment(),
                 new TemporaryGaiaSession(
-                    this.Email,
+                    this.Username,
                     new TemporaryCredential(response.AccessToken)));
         }
 

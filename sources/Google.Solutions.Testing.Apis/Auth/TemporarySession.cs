@@ -27,6 +27,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CS0067 // The event 'TemporarySession.Reauthorized' is never used
+
 namespace Google.Solutions.Testing.Apis.Auth
 {
     internal class TemporarySession : IOidcSession

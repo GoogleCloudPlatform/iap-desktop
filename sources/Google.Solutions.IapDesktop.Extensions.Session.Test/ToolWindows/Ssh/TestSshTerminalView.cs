@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var addressResolver = new AddressResolver(new ComputeEngineClient(
                 ComputeEngineClient.CreateEndpoint(),
-                TemporaryAuthorization.ForAdmin(),
+                TestProject.AdminAuthorization,
                 TestProject.UserAgent));
 
             return await new DirectTransportFactory(addressResolver)
