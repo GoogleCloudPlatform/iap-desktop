@@ -19,20 +19,34 @@
 // under the License.
 //
 
-using System;
+using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh.Format
+namespace Google.Solutions.Platform.Cryptography
 {
-    public class SshFormatException : SshException
+    /// <summary>
+    /// A key type.
+    /// </summary>
+    public readonly struct KeyType
     {
-        internal SshFormatException(string message) 
-            : base(message)
+        public KeyType(CngAlgorithm algorithm, ushort size)
         {
+            this.Algorithm = algorithm;
+            this.Size = size;
         }
 
-        internal SshFormatException(string message, Exception inner) 
-            : base(message, inner)
+        /// <summary>
+        /// Algorithm to use.
+        /// </summary>
+        public CngAlgorithm Algorithm { get; }
+
+        /// <summary>
+        /// Key size to use.
+        /// </summary>
+        public ushort Size { get; }
+
+        public override string ToString()
         {
+            return $"{this.Algorithm.Algorithm} ({this.Size} bit)";
         }
     }
 }

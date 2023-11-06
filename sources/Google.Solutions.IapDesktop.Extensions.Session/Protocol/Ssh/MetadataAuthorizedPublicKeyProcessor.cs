@@ -30,6 +30,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;
@@ -313,14 +314,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
         }
 
-        public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
-            ISshKeyPair key,
+        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
+            IAsymmetricKeySigner key,
             TimeSpan validity,
-            string preferredPosixUsername,
+            string username,
             KeyAuthorizationMethods allowedMethods,
             IAuthorization authorization,
             CancellationToken cancellationToken)
         {
+            key.ExpectNotNull(nameof(key));
+            username.ExpectNotNull(nameof(username));
+
             Debug.Assert(!this.IsOsLoginEnabled);
 
             var instanceMetadata = this.instanceDetails.Metadata;
@@ -390,17 +394,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 throw new ArgumentException(nameof(allowedMethods));
             }
 
-            var authorizedKeyPair = AuthorizedKeyPair.ForMetadata(
-                key,
-                preferredPosixUsername,
-                useInstanceKeySet,
-                authorization);
-            Debug.Assert(authorizedKeyPair.Username != null);
-
             var metadataKey = new ManagedMetadataAuthorizedPublicKey(
-                authorizedKeyPair.Username,
-                key.Type,
-                key.PublicKeyString,
+                username,
+                key.PublicKey.Type,
+                Convert.ToBase64String(key.PublicKey.WireFormatValue),
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     authorization.Session.Username,
                     DateTime.UtcNow.Add(validity)));
@@ -419,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 ApplicationTraceSource.Log.TraceVerbose(
                     "Existing SSH key found for {0}",
-                    authorizedKeyPair.Username);
+                    username);
             }
             else
             {
@@ -429,7 +426,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 ApplicationTraceSource.Log.TraceVerbose(
                     "Pushing new SSH key for {0}",
-                    authorizedKeyPair.Username);
+                    username);
 
                 await ModifyMetadataAndHandleErrorsAsync(
                     async token =>
@@ -455,7 +452,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 .ConfigureAwait(false);
             }
 
-            return authorizedKeyPair;
+            return new SshAuthorizedKeyCredential(
+                key,
+                useInstanceKeySet
+                    ? KeyAuthorizationMethods.InstanceMetadata
+                    : KeyAuthorizationMethods.ProjectMetadata,
+                username);
         }
     }
 

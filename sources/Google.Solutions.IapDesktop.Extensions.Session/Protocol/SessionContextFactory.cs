@@ -29,15 +29,18 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<SshCredential, SshParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<SshAuthorizedKeyCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -85,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private readonly IWin32Window window;
         private readonly IAuthorization authorization;
         private readonly IProjectWorkspace workspace;
-        private readonly IKeyStoreAdapter keyStoreAdapter;
+        private readonly IKeyStore keyStore;
         private readonly IKeyAuthorizer keyAuthorizer;
         private readonly IConnectionSettingsService settingsService;
         private readonly IRepository<ISshSettings> sshSettingsRepository;
@@ -98,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             IMainWindow window,
             IAuthorization authorization,
             IProjectWorkspace workspace,
-            IKeyStoreAdapter keyStoreAdapter,
+            IKeyStore keyStoreAdapter,
             IKeyAuthorizer keyAuthorizer,
             IConnectionSettingsService settingsService,
             IIapTransportFactory iapTransportFactory,
@@ -110,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             this.window = window.ExpectNotNull(nameof(window));
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.workspace = workspace.ExpectNotNull(nameof(workspace));
-            this.keyStoreAdapter = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
+            this.keyStore = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
             this.keyAuthorizer = keyAuthorizer.ExpectNotNull(nameof(keyAuthorizer));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
@@ -299,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             }
         }
 
-        public Task<ISessionContext<SshCredential, SshParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<SshAuthorizedKeyCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
@@ -314,12 +317,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             // Load persistent CNG key. This might pop up dialogs.
             //
             var sshSettings = this.sshSettingsRepository.GetSettings();
-            var localKeyPair = this.keyStoreAdapter.OpenSshKeyPair(
+
+            var keyName = new CngKeyName(
+                this.authorization.Session,
                 sshSettings.PublicKeyType.EnumValue,
-                this.authorization,
-                true,
-                this.window);
-            Debug.Assert(localKeyPair != null);
+                this.keyStore.Provider);
+
+            var signer = AsymmetricKeySigner.Create(
+                this.keyStore.OpenKey(
+                    this.window.Handle,
+                    keyName.Value,
+                    keyName.Type,
+                    CngKeyUsages.Signing,
+                    false));
+
+            Debug.Assert(signer != null);
 
             //
             // Initialize a context and pass ownership of the key to it.
@@ -329,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 this.directTransportFactory,
                 this.keyAuthorizer,
                 node.Instance,
-                localKeyPair);
+                signer);
 
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
@@ -340,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 ? CultureInfo.CurrentUICulture
                 : null;
 
-            return Task.FromResult<ISessionContext<SshCredential, SshParameters>>(context);
+            return Task.FromResult<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>(context);
         }
     }
 }

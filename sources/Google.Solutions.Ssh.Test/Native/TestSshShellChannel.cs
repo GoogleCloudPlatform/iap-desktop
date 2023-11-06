@@ -85,14 +85,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -108,7 +110,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 channel.Close();
 
                 StringAssert.Contains(
-                    $"whoami;exit\r\n{authenticator.Username}\r\nlogout\r\n",
+                    $"whoami;exit\r\n{credential.Username}\r\nlogout\r\n",
                     output);
 
                 Assert.AreEqual(0, channel.ExitCode);
@@ -122,14 +124,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -168,14 +172,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -199,14 +205,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(authenticator))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,37 +20,23 @@
 //
 
 using Google.Solutions.Common.Runtime;
-using Google.Solutions.Ssh.Format;
-using System;
+using Google.Solutions.Common.Util;
 using System.Diagnostics;
-using System.IO;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public sealed class ECDsaSshKeyPair : DisposableBase, ISshKeyPair
+    public class EcdsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly ECDsaCng key;
 
-        private ECDsaSshKeyPair(ECDsaCng key)
+        public EcdsaSigner(ECDsaCng key)
         {
-            Debug.Assert(key.KeySize == 256 ||
-                         key.KeySize == 384 ||
-                         key.KeySize == 521);
-
-            this.key = key;
-        }
-        public static ECDsaSshKeyPair FromKey(ECDsaCng key)
-        {
-            return new ECDsaSshKeyPair(key);
+            this.key = key.ExpectNotNull(nameof(key));
+            this.PublicKey = new EcdsaPublicKey(key);
         }
 
-        public static ECDsaSshKeyPair NewEphemeralKey(int keySize)
-        {
-            return new ECDsaSshKeyPair(new ECDsaCng(keySize));
-        }
-
-        private HashAlgorithmName HashAlgorithm
+        internal HashAlgorithmName HashAlgorithm
         {
             get
             {
@@ -82,36 +68,14 @@ namespace Google.Solutions.Ssh.Cryptography
         }
 
         //---------------------------------------------------------------------
-        // ISshKey.
+        // IAsymmetricKeyCredential.
         //---------------------------------------------------------------------
 
-        public byte[] GetPublicKey()
-        {
-            using (var buffer = new MemoryStream())
-            using (var writer = new SshWriter(buffer))
-            {
-                //
-                // Encode public key according to RFC5656 section 3.1.
-                //
-
-                writer.WriteString(this.Type);
-                writer.WriteString("nistp" + this.key.KeySize);
-                writer.WriteString(this.key.EncodePublicKey());
-                writer.Flush();
-
-                return buffer.ToArray();
-            }
-        }
-
-        public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
-
-        public string Type => "ecdsa-sha2-nistp" + this.key.KeySize;
-
-        public uint KeySize => (uint)this.key.KeySize;
+        public PublicKey PublicKey { get; }
 
         public byte[] Sign(AuthenticationChallenge challenge)
         {
-            Debug.Assert(challenge.Algorithm == this.Type);
+            Debug.Assert(challenge.Algorithm == this.PublicKey.Type);
 
             //
             // NB. The signature returned by CNG is formatted according to
@@ -129,16 +93,13 @@ namespace Google.Solutions.Ssh.Cryptography
         }
 
         //---------------------------------------------------------------------
-        // Disposable.
+        // Overrides.
         //---------------------------------------------------------------------
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                this.key.Dispose();
-            }
-
+            this.PublicKey.Dispose();
+            this.key.Dispose();
             base.Dispose(disposing);
         }
     }

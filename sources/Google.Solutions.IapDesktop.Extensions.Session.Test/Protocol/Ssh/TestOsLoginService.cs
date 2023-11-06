@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
     public class TestOsLoginService
     {
         //---------------------------------------------------------------------
-        // AuthorizeKeyPairAsync.
+        // AuthorizeKeyAsync.
         //---------------------------------------------------------------------
 
         [Test]
@@ -48,14 +49,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new OsLoginProfile(new Mock<IOsLoginClient>().Object);
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyPairAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
                 null,
                 OsLoginSystemType.Linux,
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyPairAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
                 null,
@@ -68,16 +69,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var service = new OsLoginProfile(new Mock<IOsLoginClient>().Object);
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(-1),
                 CancellationToken.None).Wait());
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyPairAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
                 new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<ISshKeyPair>().Object,
+                new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromSeconds(0),
                 CancellationToken.None).Wait());
         }
@@ -122,17 +123,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 });
             var service = new OsLoginProfile(adapter.Object);
 
-            var key = await service
-                .AuthorizeKeyPairAsync(
-                    new ProjectLocator("project-1"),
-                    OsLoginSystemType.Linux,
-                    new Mock<ISshKeyPair>().Object,
-                    TimeSpan.FromDays(1),
-                    CancellationToken.None)
-                .ConfigureAwait(false);
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            {
+                var key = await service
+                    .AuthorizeKeyAsync(
+                        new ProjectLocator("project-1"),
+                        OsLoginSystemType.Linux,
+                        signer,
+                        TimeSpan.FromDays(1),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            Assert.AreEqual("joe3", key.Username);
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
+                Assert.AreEqual("joe3", key.Username);
+                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
+            }
         }
 
         [Test]
@@ -149,13 +153,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ReturnsAsync(new LoginProfile());
             var service = new OsLoginProfile(adapter.Object);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
-                () => service.AuthorizeKeyPairAsync(
-                    new ProjectLocator("project-1"),
-                    OsLoginSystemType.Linux,
-                    new Mock<ISshKeyPair>().Object,
-                    TimeSpan.FromDays(1),
-                    CancellationToken.None).Wait());
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            {
+                ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
+                    () => service.AuthorizeKeyAsync(
+                        new ProjectLocator("project-1"),
+                        OsLoginSystemType.Linux,
+                        signer,
+                        TimeSpan.FromDays(1),
+                        CancellationToken.None).Wait());
+            }
         }
 
         //---------------------------------------------------------------------

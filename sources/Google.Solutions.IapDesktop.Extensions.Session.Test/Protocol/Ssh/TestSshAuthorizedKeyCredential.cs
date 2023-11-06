@@ -19,20 +19,29 @@
 // under the License.
 //
 
-using System;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Ssh.Cryptography;
+using Moq;
+using NUnit.Framework;
 
-namespace Google.Solutions.Ssh.Format
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
-    public class SshFormatException : SshException
+    [TestFixture]
+    public class TestSshAuthorizedKeyCredential
     {
-        internal SshFormatException(string message) 
-            : base(message)
-        {
-        }
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
-        internal SshFormatException(string message, Exception inner) 
-            : base(message, inner)
+        [Test]
+        public void ToStringReturnsUsername()
         {
+            var credential = new SshAuthorizedKeyCredential(
+                new Mock<IAsymmetricKeySigner>().Object,
+                KeyAuthorizationMethods.InstanceMetadata,
+                "username");
+
+            Assert.AreEqual("username", credential.ToString());
         }
     }
 }

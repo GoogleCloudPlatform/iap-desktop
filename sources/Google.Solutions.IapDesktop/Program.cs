@@ -73,6 +73,7 @@ using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -424,6 +425,8 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddSingleton<IWin32ProcessFactory>(processFactory);
                 preAuthLayer.AddSingleton<IWin32ProcessSet>(processFactory);
+                preAuthLayer.AddSingleton<IKeyStore>(
+                    new KeyStore(CngProvider.MicrosoftSoftwareKeyStorageProvider));
 
                 //
                 // Load settings.

@@ -27,5 +27,10 @@ namespace Google.Solutions.Ssh
         internal SshException(string message) : base(message)
         {
         }
+
+        internal SshException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }

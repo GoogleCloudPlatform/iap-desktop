@@ -20,55 +20,12 @@
 //
 
 using Google.Solutions.Ssh.Format;
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    internal static class ECDsaExtensions
-    {
-        /// <summary>
-        /// Encode public key point with point compression.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static byte[] EncodePublicKey(
-            this ECDsaCng key)
-        {
-            //
-            // Key exporting is only supported on 4.7+.
-            //
-
-            var point = key.ExportParameters(false).Q;
-            var qX = point.X;
-            var qY = point.Y;
-
-            //
-            // Get size in bytes (rounding up).
-            //
-            var keySizeInBytes = (key.KeySize + 7) / 8;
-            if (qX.Length > keySizeInBytes || qY.Length > keySizeInBytes)
-            {
-                throw new ArgumentException("Point coordinates do not match field size");
-            }
-
-            //
-            // Encode point, see sun/security/util/ECUtil.java or
-            // java/org/bouncycastle/math/ec/ECPoint.java for reference.
-            //
-            var buffer = new byte[keySizeInBytes * 2 + 1];
-            buffer[0] = 4; // Tag for 'uncompressed'.
-            Array.Copy(qX, 0, buffer, keySizeInBytes - qX.Length + 1, qX.Length);
-            Array.Copy(qY, 0, buffer, buffer.Length - qY.Length, qY.Length);
-            return buffer;
-        }
-
-    }
-
     internal struct ECDsaSignature
     {
         private readonly byte[] R;

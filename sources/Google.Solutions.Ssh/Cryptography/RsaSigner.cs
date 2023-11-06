@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,61 +21,28 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
-using Google.Solutions.Ssh.Format;
+using Google.Solutions.Common.Util;
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public sealed class RsaSshKeyPair : DisposableBase, ISshKeyPair
+    public class RsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly RSA key;
 
-        private RsaSshKeyPair(RSA key)
+        public RsaSigner(RSA key)
         {
-            this.key = key;
-        }
+            this.key = key.ExpectNotNull(nameof(key));
 
-        public static RsaSshKeyPair FromKey(RSA key)
-        {
-            return new RsaSshKeyPair(key);
-        }
-
-        public static RsaSshKeyPair NewEphemeralKey(int keySize)
-        {
-            return new RsaSshKeyPair(new RSACng(keySize));
+            this.PublicKey = new RsaPublicKey(key);
         }
 
         //---------------------------------------------------------------------
-        // ISshKey.
+        // IAsymmetricKeyCredential.
         //---------------------------------------------------------------------
 
-        public byte[] GetPublicKey()
-        {
-            using (var buffer = new MemoryStream())
-            using (var writer = new SshWriter(buffer))
-            {
-                //
-                // Encode public key according to RFC4253 section 6.6.
-                //
-                var parameters = this.key.ExportParameters(false);
-
-                writer.WriteString(this.Type);
-                writer.WriteMultiPrecisionInteger(parameters.Exponent);
-                writer.WriteMultiPrecisionInteger(parameters.Modulus);
-                writer.Flush();
-
-                return buffer.ToArray();
-            }
-        }
-
-        public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
-
-        public string Type => "ssh-rsa";
-
-        public uint KeySize => (uint)this.key.KeySize;
+        public PublicKey PublicKey { get; }
 
         public byte[] Sign(AuthenticationChallenge challenge)
         {
@@ -109,10 +76,11 @@ namespace Google.Solutions.Ssh.Cryptography
 
                 default:
                     SshTraceSource.Log.TraceWarning(
-                        "Received challenge for unrecognized algorithm {0}", 
+                        "Received challenge for unrecognized algorithm {0}",
                         challenge.Algorithm);
 
-                    throw new ArgumentException("Unrecognized algorithm: " + challenge.Algorithm);
+                    throw new ArgumentException(
+                        $"Unrecognized algorithm: {challenge.Algorithm}");
             }
 
             return this.key.SignData(
@@ -122,16 +90,13 @@ namespace Google.Solutions.Ssh.Cryptography
         }
 
         //---------------------------------------------------------------------
-        // Disposable.
+        // Overrides.
         //---------------------------------------------------------------------
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                this.key.Dispose();
-            }
-
+            this.PublicKey.Dispose();
+            this.key.Dispose();
             base.Dispose(disposing);
         }
     }

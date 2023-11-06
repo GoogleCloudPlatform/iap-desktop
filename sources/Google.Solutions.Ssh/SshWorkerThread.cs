@@ -37,7 +37,8 @@ namespace Google.Solutions.Ssh
     public abstract class SshWorkerThread : IDisposable
     {
         private readonly IPEndPoint endpoint;
-        private readonly ISshAuthenticator authenticator;
+        private readonly IAsymmetricKeyCredential credential;
+        private readonly IKeyboardInteractiveHandler keyboardHandler;
 
         private readonly Thread workerThread;
         private readonly CancellationTokenSource workerCancellationSource;
@@ -84,11 +85,13 @@ namespace Google.Solutions.Ssh
 
         protected SshWorkerThread(
             IPEndPoint endpoint,
-            ISshAuthenticator authenticator,
+            IAsymmetricKeyCredential credential,
+            IKeyboardInteractiveHandler keyboardHandler,
             SynchronizationContext callbackContext)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
-            this.authenticator = authenticator.ExpectNotNull(nameof(authenticator));
+            this.credential = credential.ExpectNotNull(nameof(credential));
+            this.keyboardHandler = keyboardHandler.ExpectNotNull(nameof(keyboardHandler));
             this.CallbackContext = callbackContext.ExpectNotNull(nameof(callbackContext));
 
             this.readyToSend = UnsafeNativeMethods.WSACreateEvent();
@@ -96,7 +99,7 @@ namespace Google.Solutions.Ssh
             this.workerCancellationSource = new CancellationTokenSource();
             this.workerThread = new Thread(WorkerThreadProc)
             {
-                Name = $"SSH worker for {authenticator.Username}@{this.endpoint}",
+                Name = $"SSH worker for {credential.Username}@{this.endpoint}",
                 IsBackground = true
             };
         }
@@ -234,15 +237,17 @@ namespace Google.Solutions.Ssh
                         // Force 2FA callbacks to happen on the callback 
                         // context, not on the current worker thread.
                         //
-                        var crossContextAuthenticator = new SynchronizationContextBoundAuthenticator(
-                            this.authenticator,
+                        var crossContextAuthenticator = new SynchronizationContextBoundKeyboardInteractiveHandler(
+                            this.keyboardHandler,
                             this.CallbackContext);
 
                         //
                         // Open connection and perform handshake using blocking I/O.
                         //
                         using (var connectedSession = session.Connect(this.endpoint))
-                        using (var authenticatedSession = connectedSession.Authenticate(crossContextAuthenticator))
+                        using (var authenticatedSession = connectedSession.Authenticate(
+                            this.credential,
+                            crossContextAuthenticator))
                         {
                             //
                             // Make sure the readyToSend handle remains valid throughout
@@ -462,27 +467,24 @@ namespace Google.Solutions.Ssh
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class SynchronizationContextBoundAuthenticator : ISshAuthenticator
+        private class SynchronizationContextBoundKeyboardInteractiveHandler 
+            : IKeyboardInteractiveHandler
         {
-            private readonly ISshAuthenticator authenticator;
+            private readonly IKeyboardInteractiveHandler handler;
             private readonly SynchronizationContext context;
 
-            public SynchronizationContextBoundAuthenticator(
-                ISshAuthenticator authenticator,
+            public SynchronizationContextBoundKeyboardInteractiveHandler(
+                IKeyboardInteractiveHandler handler,
                 SynchronizationContext context)
             {
-                this.authenticator = authenticator.ExpectNotNull(nameof(authenticator));
+                this.handler = handler.ExpectNotNull(nameof(handler));
                 this.context = context.ExpectNotNull(nameof(context));
             }
-
-            public string Username => this.authenticator.Username;
-
-            public ISshKeyPair KeyPair => this.authenticator.KeyPair;
 
             public string? Prompt(string name, string instruction, string prompt, bool echo)
             {
                 return this.context.Send(
-                    () => this.authenticator.Prompt(name, instruction, prompt, echo));
+                    () => this.handler.Prompt(name, instruction, prompt, echo));
             }
         }
     }

@@ -28,16 +28,17 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,28 +61,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return vmNode;
         }
 
-        private SshSettingsRepository CreateSshSettingsRepository()
+        private IRepository<ISshSettings> CreateSshSettingsRepository(
+            TimeSpan keyValidity)
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(@"Software\Google\__Test", false);
+            var keyTypeSetting = new Mock<IEnumSetting<SshKeyType>>();
+            keyTypeSetting.SetupGet(s => s.EnumValue).Returns(SshKeyType.Rsa3072);
 
-            return new SshSettingsRepository(
-                hkcu.CreateSubKey(@"Software\Google\__Test"),
-                null,
-                null,
-                UserProfile.SchemaVersion.Current);
+            var validitySetting = new Mock<IIntSetting>();
+            validitySetting.SetupGet(s => s.IntValue).Returns((int)keyValidity.TotalSeconds);
+
+            var localeSetting = new Mock<IBoolSetting>();
+
+            var settings = new Mock<ISshSettings>();
+            settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);
+            settings.SetupGet(s => s.PublicKeyValidity).Returns(validitySetting.Object);
+            settings.SetupGet(s => s.IsPropagateLocaleEnabled).Returns(localeSetting.Object);
+
+            var repository = new Mock<IRepository<ISshSettings>>();
+            repository
+                .Setup(r => r.GetSettings())
+                .Returns(settings.Object);
+
+            return repository.Object;
         }
 
-        private Mock<IKeyStoreAdapter> CreateKeyStoreAdapterMock()
+        private Mock<IKeyStore> CreateKeyStoreMock()
         {
-            var keyStore = new Mock<IKeyStoreAdapter>();
+            var keyStore = new Mock<IKeyStore>();
             keyStore
-                .Setup(k => k.OpenSshKeyPair(
-                    It.IsAny<SshKeyType>(),
-                    It.IsAny<IAuthorization>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<IWin32Window>()))
-                .Returns(RsaSshKeyPair.NewEphemeralKey(1024));
+                .SetupGet(k => k.Provider)
+                .Returns(CngProvider.MicrosoftSoftwareKeyStorageProvider);
+            keyStore
+                .Setup(k => k.OpenKey(
+                    It.IsAny<IntPtr>(),
+                    It.IsAny<string>(),
+                    It.IsAny<KeyType>(),
+                    It.IsAny<CngKeyUsages>(),
+                    It.IsAny<bool>()))
+                .Returns(new RSACng(3072).Key); // Matching setting
 
             return keyStore;
         }
@@ -129,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
-            var keyStore = CreateKeyStoreAdapterMock();
+            var keyStore = CreateKeyStoreMock();
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
@@ -142,18 +159,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository());
+                CreateSshSettingsRepository(TimeSpan.FromMinutes(1)));
 
             using (await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             { }
 
-            keyStore.Verify(k => k.OpenSshKeyPair(
-                It.Is<SshKeyType>(t => t == SshKeyType.EcdsaNistp384),
-                It.IsAny<IAuthorization>(),
-                It.Is<bool>(create => true),
-                It.IsAny<IWin32Window>()), Times.Once);
+            keyStore.Verify(
+                k => k.OpenKey(
+                    It.IsAny<IntPtr>(),
+                    It.IsAny<string>(),
+                    It.Is<KeyType>(t => t.Algorithm == CngAlgorithm.Rsa),
+                    CngKeyUsages.Signing,
+                    false), 
+                Times.Once);
         }
 
         //---------------------------------------------------------------------
@@ -179,14 +199,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
-                CreateKeyStoreAdapterMock().Object,
+                CreateKeyStoreMock().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository());
+                CreateSshSettingsRepository(TimeSpan.FromMinutes(1)));
 
             using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
@@ -205,11 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task CreateSshSessionContextUsesSshSettings()
         {
-            var sshSettingsRepository = CreateSshSettingsRepository();
-            var sshSettings = sshSettingsRepository.GetSettings();
-            sshSettings.PublicKeyValidity.IntValue = (int)TimeSpan.FromDays(4).TotalSeconds;
-            sshSettingsRepository.SetSettings(sshSettings);
-
+            var sshSettingsRepository = CreateSshSettingsRepository(TimeSpan.FromDays(4));
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -224,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
-                CreateKeyStoreAdapterMock().Object,
+                CreateKeyStoreMock().Object,
                 new Mock<IKeyAuthorizer>().Object,
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,

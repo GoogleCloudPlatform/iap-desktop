@@ -19,32 +19,47 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Ssh.Cryptography;
-using Moq;
 using NUnit.Framework;
+using System.Security.Cryptography;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
+namespace Google.Solutions.Ssh.Test.Cryptography
 {
     [TestFixture]
-    public class TestSshCredential
+    public class TestEcdsaSigner
     {
         //---------------------------------------------------------------------
-        // ToString.
+        // HashAlgorithm.
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsUsername()
+        public void WhenKeyIsNistP256_ThenHashAlgorithmIsSha256()
         {
-            var authorizedKey = AuthorizedKeyPair.ForMetadata(
-                new Mock<ISshKeyPair>().Object,
-                "username",
-                false,
-                new Mock<IAuthorization>().Object);
+            using (var key = new ECDsaCng(256))
+            using (var credential = new EcdsaSigner(key))
+            {
+                Assert.AreEqual(HashAlgorithmName.SHA256, credential.HashAlgorithm);
+            }
+        }
 
-            var credential = new SshCredential(authorizedKey);
-            Assert.AreEqual("username", credential.ToString());
+        [Test]
+        public void WhenKeyIsNistP384_ThenHashAlgorithmIsSha384()
+        {
+            using (var key = new ECDsaCng(384))
+            using (var credential = new EcdsaSigner(key))
+            {
+                Assert.AreEqual(HashAlgorithmName.SHA384, credential.HashAlgorithm);
+            }
+        }
+
+        [Test]
+        public void WhenKeyIsNistP521_ThenHashAlgorithmIsSha512()
+        {
+            using (var key = new ECDsaCng(521))
+            using (var credential = new EcdsaSigner(key))
+            {
+                Assert.AreEqual(HashAlgorithmName.SHA512, credential.HashAlgorithm);
+            }
         }
     }
 }

@@ -130,10 +130,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);
 
-            var authorizedKey = await keyAdapter
+            var sshCredential = await keyAdapter
                 .AuthorizeKeyAsync(
                     instance,
-                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     TimeSpan.FromMinutes(10),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -142,7 +142,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var sshCredential = new SshCredential(authorizedKey);
             var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10),
@@ -212,12 +211,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var sshCredential = new SshCredential(
-                AuthorizedKeyPair.ForMetadata(
-                    SshKeyPair.NewEphemeralKeyPair(keyType),
-                    "test",
-                    true,
-                    null));
+            var sshCredential = new SshAuthorizedKeyCredential(
+                AsymmetricKeySigner.CreateEphemeral(keyType),
+                KeyAuthorizationMethods.InstanceMetadata,
+                "test");
             var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
@@ -245,12 +242,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var sshCredential = new SshCredential(
-                AuthorizedKeyPair.ForMetadata(
-                    SshKeyPair.NewEphemeralKeyPair(keyType),
-                    "test",
-                    true,
-                    null));
+            var sshCredential = new SshAuthorizedKeyCredential(
+                AsymmetricKeySigner.CreateEphemeral(keyType),
+                KeyAuthorizationMethods.InstanceMetadata,
+                "test");
             var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
@@ -279,12 +274,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var sshCredential = new SshCredential(
-                AuthorizedKeyPair.ForMetadata(
-                    SshKeyPair.NewEphemeralKeyPair(keyType),
-                    "test",
-                    true,
-                    null));
+            var sshCredential = new SshAuthorizedKeyCredential(
+                AsymmetricKeySigner.CreateEphemeral(keyType),
+                KeyAuthorizationMethods.InstanceMetadata,
+                "test");
             var sshParameters = new SshParameters()
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(10)

@@ -19,22 +19,26 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Cryptography;
+using NUnit.Framework;
+using System;
+using System.Security.Cryptography;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
+namespace Google.Solutions.Platform.Test.Cryptography
 {
-    public class SshCredential : ISessionCredential
+    [TestFixture]
+    public class TestKeyType
     {
-        public AuthorizedKeyPair Key { get; }
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
-        internal SshCredential(AuthorizedKeyPair key)
+        [Test]
+        public void KeyTypeToString()
         {
-            this.Key = key.ExpectNotNull(nameof(key));
-        }
-
-        public override string ToString()
-        {
-            return this.Key.Username;
+            Assert.AreEqual(
+                "RSA (1024 bit)",
+                new KeyType(CngAlgorithm.Rsa, 1024).ToString());
         }
     }
 }

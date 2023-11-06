@@ -52,7 +52,8 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
-    public class SshTerminalViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal
+    public class SshTerminalViewModel 
+        : TerminalViewModelBase, IKeyboardInteractiveHandler, ITextTerminal
     {
         private RemoteShellChannel sshChannel = null;
 
@@ -94,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         internal CultureInfo Language { get; set; }
         internal IPEndPoint Endpoint { get; set; }
-        internal AuthorizedKeyPair AuthorizedKey { get; set; }
+        internal SshAuthorizedKeyCredential Credential { get; set; }
         internal TimeSpan ConnectionTimeout { get; set; }
 
         protected override void OnValidate()
@@ -102,18 +103,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             base.OnValidate();
 
             this.Endpoint.ExpectNotNull(nameof(this.Endpoint));
-            this.AuthorizedKey.ExpectNotNull(nameof(this.AuthorizedKey));
+            this.Credential.ExpectNotNull(nameof(this.Credential));
         }
 
         //---------------------------------------------------------------------
-        // ISshAuthenticator.
+        // IKeyboardInteractiveHandler.
         //---------------------------------------------------------------------
 
-        string ISshAuthenticator.Username => this.AuthorizedKey.Username;
-
-        ISshKeyPair ISshAuthenticator.KeyPair => this.AuthorizedKey.KeyPair;
-
-        string ISshAuthenticator.Prompt(
+        string IKeyboardInteractiveHandler.Prompt(
             string name,
             string instruction,
             string prompt,
@@ -209,7 +206,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             {
                 var connection = new RemoteConnection(
                         this.Endpoint,
-                        (ISshAuthenticator)this,
+                        this.Credential,
+                        (IKeyboardInteractiveHandler)this,
                         SynchronizationContext.Current)
                 {
                     Banner = SshSession.BannerPrefix + Install.UserAgent,
@@ -233,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
-                if (this.AuthorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                if (this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                 {
                     throw new OsLoginAuthenticationFailedException(
                         "You do not have sufficient permissions to access this VM instance.\n\n" +
@@ -583,7 +581,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             if (disposing)
             {
                 this.sshChannel?.Connection.Dispose();
-                this.AuthorizedKey.Dispose();
+                this.Credential.Dispose();
             }
         }
     }

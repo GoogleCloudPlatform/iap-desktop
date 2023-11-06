@@ -56,14 +56,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -87,14 +88,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -119,14 +121,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -154,14 +157,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -192,14 +196,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -232,14 +237,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -278,14 +284,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -315,14 +322,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection
@@ -352,14 +360,15 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+            var credential = await GetCredentialForInstanceAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 endpoint,
-                authenticator,
+                credential,
+                KeyboardInteractiveHandler.Silent,
                 new SynchronizationContext()))
             {
                 await connection

@@ -28,6 +28,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;
@@ -46,10 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Upload an a public key to authorize it.
         /// </summary>
-        Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
+        Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            ISshKeyPair key,
+            IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token);
 
@@ -93,10 +94,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // IOsLoginService.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
+        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            ISshKeyPair key,
+            IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token)
         {
@@ -134,8 +135,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
                         project,
-                        key.Type,
-                        key.PublicKeyString,
+                        key.PublicKey.Type,
+                        Convert.ToBase64String(key.PublicKey.WireFormatValue),
                         validity,
                         token)
                     .ConfigureAwait(false);
@@ -158,7 +159,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         HelpTopics.TroubleshootingOsLogin);
                 }
 
-                return AuthorizedKeyPair.ForOsLoginAccount(key, account);
+                return new SshAuthorizedKeyCredential(
+                    key,
+                    KeyAuthorizationMethods.Oslogin,
+                    account.Username);
             }
         }
 

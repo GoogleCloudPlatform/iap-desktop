@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             return authorization;
         }
 
-        private static async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
+        private static async Task<SshAuthorizedKeyCredential> CreateAuthorizedKeyAsync(
             InstanceLocator instance,
             IAuthorization authorization,
             SshKeyType keyType)
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             return await keyAdapter.AuthorizeKeyAsync(
                     instance,
-                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
                     TimeSpan.FromMinutes(10),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             {
                 Instance = instance,
                 Endpoint = new IPEndPoint(address, 22),
-                AuthorizedKey = authorizedKey,
+                Credential = authorizedKey,
                 Language = language,
                 ConnectionTimeout = TimeSpan.FromSeconds(10)
             };
@@ -327,11 +327,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var authorizationSource = CreateAuthorizationMock();
             var eventService = new Mock<IEventQueue>();
 
-            var nonAuthorizedKey = AuthorizedKeyPair.ForMetadata(
-                SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072),
-                "invalid",
-                true,
-                authorizationSource.Object);
+            var nonAuthorizedKey = new SshAuthorizedKeyCredential(
+                AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072),
+                KeyAuthorizationMethods.InstanceMetadata,
+                "invalid");
 
             using (var window = new Form())
             {
@@ -351,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     View = window,
                     Instance = instance,
                     Endpoint = new IPEndPoint(address, 22),
-                    AuthorizedKey = nonAuthorizedKey,
+                    Credential = nonAuthorizedKey,
                     Language = null,
                     ConnectionTimeout = TimeSpan.FromSeconds(10)
                 };

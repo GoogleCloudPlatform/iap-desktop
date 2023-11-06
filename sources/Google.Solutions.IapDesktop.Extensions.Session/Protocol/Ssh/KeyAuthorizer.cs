@@ -27,6 +27,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Threading;
@@ -40,9 +41,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// </summary>
     public interface IKeyAuthorizer
     {
-        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+        Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             InstanceLocator instance,
-            ISshKeyPair key,
+            IAsymmetricKeySigner key,
             TimeSpan keyValidity,
             string preferredPosixUsername,
             KeyAuthorizationMethods methods,
@@ -82,13 +83,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.osLoginProfile = osLoginProfile.ExpectNotNull(nameof(osLoginProfile));
         }
 
+        internal string CreateUsernameForMetadata(string preferredPosixUsername)
+        {
+            if (preferredPosixUsername != null)
+            {
+                if (!LinuxUser.IsValidUsername(preferredPosixUsername))
+                {
+                    throw new ArgumentException(
+                        $"The username '{preferredPosixUsername}' is not a valid username");
+                }
+                else
+                {
+                    //
+                    // Use the preferred username.
+                    //
+                    return preferredPosixUsername;
+                }
+            }
+            else
+            {
+                // 
+                // No preferred username provided, so derive one
+                // from the user's username:
+                //
+                return LinuxUser.SuggestUsername(this.authorization);
+            }
+        }
+
         //---------------------------------------------------------------------
-        // IPublicKeyService.
+        // IKeyAuthorizer.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             InstanceLocator instance,
-            ISshKeyPair key,
+            IAsymmetricKeySigner key,
             TimeSpan validity,
             string preferredPosixUsername,
             KeyAuthorizationMethods allowedMethods,
@@ -137,7 +165,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // NB. It's cheaper to unconditionally push the key than
                     // to check for previous keys first.
                     // 
-                    return await this.osLoginProfile.AuthorizeKeyPairAsync(
+                    return await this.osLoginProfile
+                        .AuthorizeKeyAsync(
                             new ProjectLocator(instance.ProjectId),
                             OsLoginSystemType.Linux,
                             key,
@@ -152,10 +181,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // figure out whether that's project or instance
                     // metadata.
                     //
-                    return await metdataKeyProcessor.AuthorizeKeyPairAsync(
+                    return await metdataKeyProcessor
+                        .AuthorizeKeyAsync(
                             key,
                             validity,
-                            preferredPosixUsername,
+                            CreateUsernameForMetadata(preferredPosixUsername),
                             allowedMethods,
                             this.authorization,
                             token)

@@ -41,8 +41,8 @@ namespace Google.Solutions.Ssh.Test
 {
     public abstract class SshFixtureBase : FixtureBase
     {
-        private static readonly IDictionary<string, ISshAuthenticator> cachedAuthenticators =
-            new Dictionary<string, ISshAuthenticator>();
+        private static readonly IDictionary<string, IAsymmetricKeyCredential> cachedCredentials =
+            new Dictionary<string, IAsymmetricKeyCredential>();
 
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
@@ -127,14 +127,14 @@ namespace Google.Solutions.Ssh.Test
         /// Create an authenticator for a given key type, minimizing
         /// server rountrips.
         /// </summary>
-        protected static async Task<ISshAuthenticator> CreateEphemeralAuthenticatorForInstanceAsync(
+        protected static async Task<IAsymmetricKeyCredential> GetCredentialForInstanceAsync(
             InstanceLocator instanceLocator,
             SshKeyType keyType)
         {
             var username = $"testuser";
             var cacheKey = $"{instanceLocator}|{username}|{keyType}";
 
-            if (!cachedAuthenticators.ContainsKey(cacheKey))
+            if (!cachedCredentials.ContainsKey(cacheKey))
             {
                 //
                 // Create a set of keys for this user/instance.
@@ -146,10 +146,13 @@ namespace Google.Solutions.Ssh.Test
                     .Cast<SshKeyType>()
                     .ToDictionary(
                         k => k,
-                        k => SshKeyPair.NewEphemeralKeyPair(k));
+                        k => AsymmetricKeySigner.CreateEphemeral(k));
 
-                var metadataEntry = string.Join("\n", keysByType.Values.Select(
-                    k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
+                var metadataEntry = string.Join(
+                    "\n", 
+                    keysByType
+                        .Values
+                        .Select(k => $"{username}:{k.PublicKey.ToString(PublicKey.Format.OpenSsh)} {username}"));
 
                 using (var service = TestProject.CreateComputeService())
                 {
@@ -174,12 +177,12 @@ namespace Google.Solutions.Ssh.Test
 
                 foreach (var kvp in keysByType)
                 {
-                    cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] =
-                        new SshSingleFactorAuthenticator(username, kvp.Value);
+                    cachedCredentials[$"{instanceLocator}|{username}|{kvp.Key}"] =
+                        new StaticAsymmetricKeyCredential(username, kvp.Value);
                 }
             }
 
-            return cachedAuthenticators[cacheKey];
+            return cachedCredentials[cacheKey];
         }
     }
 }
