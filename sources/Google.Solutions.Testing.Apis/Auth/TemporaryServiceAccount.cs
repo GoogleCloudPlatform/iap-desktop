@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Auth
 {
-    internal class TemporaryServiceAccount : Principal
+    internal class TemporaryServiceAccount : TemporaryPrincipal
     {
         private readonly IAMCredentialsService credentialsService;
 

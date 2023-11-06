@@ -21,12 +21,15 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Testing.Apis.Auth;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Integration
 {
@@ -55,6 +58,59 @@ namespace Google.Solutions.Testing.Apis.Integration
             }
         }
 
+        private static async Task<IAuthorization> CreateAuthorizationWithRolesAsync(
+            string fingerprint,
+            string[] roles)
+        {
+            if (roles == null || !roles.Any())
+            {
+                //
+                // Return the credentials of the (admin) account the
+                // tests are run as.
+                //
+                return TestProject.AdminAuthorization;
+            }
+            else
+            {
+                //
+                // Create a service account with exactly these
+                // roles and return temporary credentials.
+                //
+                try
+                {
+                    //
+                    // Create a service account.
+                    //
+                    var serviceAccount = await TemporaryServiceAccount
+                        .EmplaceAsync(
+                            TestProject.CreateIamService(),
+                            TestProject.CreateIamCredentialsService(),
+                            TestProject.CreateCloudResourceManagerService(),
+                            fingerprint)
+                        .ConfigureAwait(true);
+
+                    //
+                    // Assign roles.
+                    //
+                    await serviceAccount
+                        .GrantRolesAsync(roles)
+                        .ConfigureAwait(true);
+
+                    //
+                    // Impersonate.
+                    //
+                    return await serviceAccount
+                        .ImpersonateAsync()
+                        .ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
 
         public IEnumerable GetData(IParameterInfo parameter)
         {
@@ -65,7 +121,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     ResourceTask<IAuthorization>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        () => CredentialFactory.CreateServiceAccountAuthorizationAsync(
+                        () => CreateAuthorizationWithRolesAsync(
                             fingerprint,
                             this.Roles))
                 };
@@ -77,8 +133,9 @@ namespace Google.Solutions.Testing.Apis.Integration
                     ResourceTask<ICredential>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        async () => (await CredentialFactory
-                            .CreateServiceAccountAuthorizationAsync(fingerprint, this.Roles))
+                        async () => (await CreateAuthorizationWithRolesAsync(
+                            fingerprint, 
+                            this.Roles))
                             .Session
                             .ApiCredential)
                 };

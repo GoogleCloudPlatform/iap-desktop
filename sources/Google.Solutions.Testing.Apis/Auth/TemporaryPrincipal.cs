@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Auth
 {
-    internal abstract class Principal
+    internal abstract class TemporaryPrincipal
     {
         private readonly CloudResourceManagerService crmService;
 
-        protected Principal(
+        protected TemporaryPrincipal(
             CloudResourceManagerService crmService,
             string username)
         {
