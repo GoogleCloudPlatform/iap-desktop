@@ -94,8 +94,8 @@ namespace Google.Solutions.Testing.Apis.Integration
                         TestProject.CreateCloudResourceManagerService(),
                         TestProject.CreateIdentityPlatformService(),
                         trustedServiceAccount,
-                        TestProject.WorkforcePoolId,
-                        TestProject.WorkforceProviderId,
+                        TestProject.Configuration.WorkforcePoolId,
+                        TestProject.Configuration.WorkforceProviderId,
                         fingerprint,
                         CancellationToken.None)
                     .ConfigureAwait(true);

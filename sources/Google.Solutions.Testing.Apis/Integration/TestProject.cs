@@ -24,11 +24,14 @@ using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Compute.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.IAMCredentials.v1;
+using Google.Apis.Json;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis.Auth;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -41,9 +44,28 @@ namespace Google.Solutions.Testing.Apis.Integration
         internal const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
 
         public static readonly string InvalidProjectId = "invalid-0000";
-        public static readonly string Zone = "us-central1-a";
 
+        private static GoogleCredential adminCredential;
+
+        /// <summary>
+        /// Test configuration, loaded from file.
+        /// </summary>
+        internal static ConfigurationSection Configuration { get; }
+
+        /// <summary>
+        /// User agent to use for tests.
+        /// </summary>
         public static UserAgent UserAgent { get; }
+
+        /// <summary>
+        /// Project to run tests in.
+        /// </summary>
+        public static string ProjectId => Configuration.ProjectId;
+
+        /// <summary>
+        /// Zone to run tests in.
+        /// </summary>
+        public static string Zone => Configuration.Zone;
 
         static TestProject()
         {
@@ -57,30 +79,33 @@ namespace Google.Solutions.Testing.Apis.Integration
             ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11;
-        }
 
-        public static string ProjectId
-        {
-            get
+
+            var configFile = Environment.GetEnvironmentVariable("IAPDESKTOP_CONFIGURATION");
+            if (string.IsNullOrEmpty(configFile))
             {
-                var projectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
-                if (string.IsNullOrEmpty(projectId))
-                {
-                    throw new ApplicationException(
-                        "GOOGLE_CLOUD_PROJECT not set, must contain the project ID " +
-                        "to use for integration tests");
-                }
-
-                return projectId;
+                throw new ApplicationException(
+                    "IAPDESKTOP_CONFIGURATION not set, must contain the " +
+                    "path to a configuration file for integration tests.");
             }
-        }
 
-        public static string WorkforcePoolId => ProjectId;
-        public static string WorkforceProviderId => "identity-platform";
+            //
+            // Load configuration file.
+            //
+            Configuration = NewtonsoftJsonSerializer
+                .Instance
+                .Deserialize<ConfigurationSection>(File.ReadAllText(configFile));
+            if (string.IsNullOrEmpty(Configuration.ProjectId) )
+            {
+                throw new ApplicationException(
+                    $"The configuration file {configFile} is incomplete.");
+            }
 
-        internal static GoogleCredential GetAdminCredential()
-        {
+            //
+            // Load admin credential.
+            //
             // This account must have the following roles:
+            //
             // - Compute Admin
             // - Service Account Admin (to create service accounts)
             // - Service Account User (to access Compute Engine Service account)
@@ -89,9 +114,9 @@ namespace Google.Solutions.Testing.Apis.Integration
             // - Private Logs Viewer (for data access log)
             // - Project IAM Admin
             // - Service Account Token Creator
-
+            //
             var credential = GoogleCredential.GetApplicationDefault();
-            return credential.IsCreateScopedRequired
+            adminCredential = credential.IsCreateScopedRequired
                 ? credential.CreateScoped(CloudPlatformScope)
                 : credential;
         }
@@ -160,7 +185,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                 new Enrollment(),
                 new TemporaryGaiaSession(
                     "admin@gserviceaccount.com",
-                    GetAdminCredential()));
+                    adminCredential));
         }
 
         public static IDeviceEnrollment DisabledEnrollment
@@ -172,7 +197,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             return new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = GetAdminCredential()
+                HttpClientInitializer = adminCredential
             });
         }
 
@@ -180,7 +205,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             return new IamService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = GetAdminCredential()
+                HttpClientInitializer = adminCredential
             });
         }
 
@@ -188,7 +213,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             return new IAMCredentialsService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = GetAdminCredential()
+                HttpClientInitializer = adminCredential
             });
         }
 
@@ -196,7 +221,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             return new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = GetAdminCredential()
+                HttpClientInitializer = adminCredential
             });
         }
 
@@ -205,7 +230,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             var initializer = new BaseClientService.Initializer
             {
-                HttpClientInitializer = GetAdminCredential()
+                HttpClientInitializer = adminCredential
             };
 
             return (TService)Activator.CreateInstance(
@@ -224,6 +249,37 @@ namespace Google.Solutions.Testing.Apis.Integration
             }
 
             return new TemporaryWorkforcePoolSubject.IdentityPlatformService(apiKey);
+        }
+
+        //---------------------------------------------------------------------
+        // Configuration.
+        //---------------------------------------------------------------------
+
+        public class ConfigurationSection
+        {
+            /// <summary>
+            /// Project to run tests in.
+            /// </summary>
+            [JsonProperty("projectId")]
+            public string ProjectId { get; internal set; }
+
+            /// <summary>
+            /// Zone to run tests in.
+            /// </summary>
+            [JsonProperty("zone")]
+            public string Zone { get; internal set; }
+
+            /// <summary>
+            /// Workforce pool for test principals.
+            /// </summary>
+            [JsonProperty("workforcePoolId")]
+            public string WorkforcePoolId { get; internal set; }
+
+            /// <summary>
+            /// Workforce pool provider for test principals.
+            /// </summary>
+            [JsonProperty("workforceProviderId")]
+            public string WorkforceProviderId { get; internal set; }
         }
     }
 }
