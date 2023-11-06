@@ -199,7 +199,7 @@ namespace Google.Solutions.Testing.Application.Views
             var credentialAdapter = new WindowsCredentialGenerator(
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
-                    TemporaryAuthorization.ForAdmin(),
+                    TestProject.AdminAuthorization,
                     TestProject.UserAgent));
 
             return await credentialAdapter

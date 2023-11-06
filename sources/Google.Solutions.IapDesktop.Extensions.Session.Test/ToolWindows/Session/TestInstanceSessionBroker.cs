@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void WhenNotConnected_ThenIsConnectedIsFalse()
         {
             var serviceProvider = CreateServiceProvider(
-                TemporaryAuthorization.ForInvalidCredential());
+                TestProject.InvalidAuthorization);
 
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
             var broker = new InstanceSessionBroker(serviceProvider);
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void WhenNotConnected_ThenActiveSessionReturnsNull()
         {
             var serviceProvider = CreateServiceProvider(
-                TemporaryAuthorization.ForInvalidCredential());
+                TestProject.InvalidAuthorization);
 
             var broker = new InstanceSessionBroker(serviceProvider);
             Assert.IsNull(broker.ActiveSession);
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void WhenNotConnected_ThenTryActivateReturnsFalse()
         {
             var serviceProvider = CreateServiceProvider(
-                TemporaryAuthorization.ForInvalidCredential());
+                TestProject.InvalidAuthorization);
 
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
             var broker = new InstanceSessionBroker(serviceProvider);

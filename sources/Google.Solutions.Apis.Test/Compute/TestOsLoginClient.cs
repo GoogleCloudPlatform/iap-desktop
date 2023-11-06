@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
@@ -40,18 +41,19 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestOsLoginClient
     {
-        private IAuthorization CreateNonGaiaAuthorization()
+        private static IAuthorization CreateGaiaAuthorizationWithMismatchedUser(
+            string username,
+            ICredential credential)
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
-
-            var session = new Mock<IOidcSession>();
-            session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
-            session.SetupGet(s => s.Username).Returns("user");
+            var session = new Mock<IGaiaOidcSession>();
+            session.SetupGet(s => s.Username).Returns(username);
+            session.SetupGet(s => s.Email).Returns(username);
+            session.SetupGet(s => s.ApiCredential).Returns(credential);
 
             var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
             authorization.SetupGet(a => a.Session).Returns(session.Object);
+            authorization.SetupGet(a => a.DeviceEnrollment)
+                .Returns(TestProject.DisabledEnrollment);
 
             return authorization.Object;
         }
@@ -61,11 +63,13 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingNonGaiaSession_ThenImportSshPublicKeyThrowsException()
+        public async Task WhenUsingWorkforceSession_ThenImportSshPublicKeyThrowsException(
+            [Credential(Type = PrincipalType.WorkforceIdentity)] 
+            ResourceTask<IAuthorization> authorization)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
-                CreateNonGaiaAuthorization(),
+                await authorization,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -78,10 +82,10 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenImportSshPublicKeyThrowsException(
+        public async Task WhenEmailAndCredentialMismatch_ThenImportSshPublicKeyThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var authorization = new TemporaryAuthorization(
+            var authorization = CreateGaiaAuthorizationWithMismatchedUser(
                 "x@gmail.com",
                 await credentialTask);
             var client = new OsLoginClient(
@@ -131,11 +135,13 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingNonGaiaSession_ThenGetLoginProfileThrowsException()
+        public async Task WhenUsingWorkforceSession_ThenGetLoginProfileThrowsException(
+            [Credential(Type = PrincipalType.WorkforceIdentity)] 
+            ResourceTask<IAuthorization> authorization)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
-                CreateNonGaiaAuthorization(),
+                await authorization,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -145,10 +151,10 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenGetLoginProfileThrowsException(
+        public async Task WhenEmailAndCredentialMismatch_ThenGetLoginProfileThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var authorization = new TemporaryAuthorization(
+            var authorization = CreateGaiaAuthorizationWithMismatchedUser(
                 "x@gmail.com",
                 await credentialTask);
             var client = new OsLoginClient(
@@ -186,11 +192,13 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingNonGaiaSession_ThenDeleteSshPublicKeyThrowsException()
+        public async Task WhenUsingWorkforceSession_ThenDeleteSshPublicKeyThrowsException(
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
+            ResourceTask<IAuthorization> authorization)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
-                CreateNonGaiaAuthorization(),
+                await authorization,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -275,7 +283,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingGaiaSession_ThenSignPublicKeyAsyncThrowsException(
+        public async Task WhenUsingGaiaSession_ThenSignPublicKeyThrowsException(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -286,7 +294,24 @@ namespace Google.Solutions.Apis.Test.Compute
 
             ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
                 () => client.SignPublicKeyAsync(
-                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
+                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    "AAAA",
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenUsingWorkforceSession_ThenSignPublicKeyThrowsException(
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => client.SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
                     "AAAA",
                     CancellationToken.None).Wait());
         }
@@ -296,11 +321,13 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingNonGaiaSession_ThenListSecurityKeysAsyncException()
+        public async Task WhenUsingWorkforceSession_ThenListSecurityKeysAsyncException(
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
+            ResourceTask<IAuthorization> authorization)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
-                CreateNonGaiaAuthorization(),
+                await authorization,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -310,10 +337,10 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailInvalid_ThenListSecurityKeysAsyncThrowsException(
+        public async Task WhenEmailAndCredentialMismatch_ThenListSecurityKeysAsyncThrowsException(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
-            var authorization = new TemporaryAuthorization(
+            var authorization = CreateGaiaAuthorizationWithMismatchedUser(
                 "x@gmail.com",
                 await credentialTask);
             var client = new OsLoginClient(

@@ -98,7 +98,7 @@ namespace Google.Solutions.Apis.Test.Client
 
             var client = new SampleClient(
                 endpoint,
-                TemporaryAuthorization.ForSecureConnectUser(),
+                TestProject.SecureConnectAuthorization,
                 TestProject.UserAgent);
 
             Assert.AreEqual("https://sample.mtls.googleapis.com/", client.Initializer.BaseUri);

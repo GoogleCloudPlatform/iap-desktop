@@ -21,33 +21,51 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Testing.Apis.Auth;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Integration
 {
     public sealed class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {
+        /// <summary>
+        /// Required roles.
+        /// </summary>
         public string[] Roles { get; set; } = Array.Empty<string>();
 
+        /// <summary>
+        /// Required role.
+        /// </summary>
         public string Role
         {
             set => this.Roles = new[] { value };
             get => this.Roles.First();
         }
 
+        /// <summary>
+        /// Type of principal.
+        /// </summary>
+        public PrincipalType Type { get; set; } = PrincipalType.Gaia;
+
         private string CreateSpecificationFingerprint()
         {
             using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
+                //
                 // Create a hash of the image specification.
+                //
                 var specificationRaw = Encoding.UTF8.GetBytes(
                     string.Join(",", this.Roles));
-                return "s" + BitConverter
+                return (this.Type == PrincipalType.Gaia ? "s" : "i") +
+                    BitConverter
                     .ToString(sha.ComputeHash(specificationRaw))
                     .Replace("-", string.Empty)
                     .Substring(0, 14)
@@ -55,6 +73,97 @@ namespace Google.Solutions.Testing.Apis.Integration
             }
         }
 
+        private async Task<IAuthorization> CreateAuthorizationWithRolesAsync(
+            string fingerprint)
+        {
+            if (this.Type == PrincipalType.WorkforceIdentity)
+            {
+                //
+                // Create a service account.
+                //
+                var trustedServiceAccount = await TemporaryServiceAccount
+                    .EmplaceAsync(
+                        TestProject.CreateIamService(),
+                        TestProject.CreateIamCredentialsService(),
+                        TestProject.CreateCloudResourceManagerService(),
+                        "identity-platform")
+                    .ConfigureAwait(true);
+
+                var subject = await TemporaryWorkforcePoolSubject
+                    .CreateAsync(
+                        TestProject.CreateCloudResourceManagerService(),
+                        new TemporaryWorkforcePoolSubject.IdentityPlatformService(
+                            TestProject.Configuration.IdentityPlatformApiKey),
+                        trustedServiceAccount,
+                        TestProject.Configuration.WorkforcePoolId,
+                        TestProject.Configuration.WorkforceProviderId,
+                        fingerprint,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                //
+                // Assign roles.
+                //
+                await subject
+                    .GrantRolesAsync(this.Roles)
+                    .ConfigureAwait(true);
+
+                //
+                // Impersonate.
+                //
+                return await subject
+                    .ImpersonateAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
+            }
+            else if (this.Roles == null || !this.Roles.Any())
+            {
+                //
+                // Return the credentials of the (admin) account the
+                // tests are run as.
+                //
+                return TestProject.AdminAuthorization;
+            }
+            else
+            {
+                //
+                // Create a service account with exactly these
+                // roles and return temporary credentials.
+                //
+                try
+                {
+                    //
+                    // Create a service account.
+                    //
+                    var serviceAccount = await TemporaryServiceAccount
+                        .EmplaceAsync(
+                            TestProject.CreateIamService(),
+                            TestProject.CreateIamCredentialsService(),
+                            TestProject.CreateCloudResourceManagerService(),
+                            fingerprint)
+                        .ConfigureAwait(true);
+
+                    //
+                    // Assign roles.
+                    //
+                    await serviceAccount
+                        .GrantRolesAsync(this.Roles)
+                        .ConfigureAwait(true);
+
+                    //
+                    // Impersonate.
+                    //
+                    return await serviceAccount
+                        .ImpersonateAsync()
+                        .ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
 
         public IEnumerable GetData(IParameterInfo parameter)
         {
@@ -65,9 +174,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     ResourceTask<IAuthorization>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        () => CredentialFactory.CreateServiceAccountAuthorizationAsync(
-                            fingerprint,
-                            this.Roles))
+                        () => CreateAuthorizationWithRolesAsync(fingerprint))
                 };
             }
             else if (parameter.ParameterType == typeof(ResourceTask<ICredential>))
@@ -77,8 +184,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     ResourceTask<ICredential>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        async () => (await CredentialFactory
-                            .CreateServiceAccountAuthorizationAsync(fingerprint, this.Roles))
+                        async () => (await CreateAuthorizationWithRolesAsync(fingerprint))
                             .Session
                             .ApiCredential)
                 };
@@ -94,5 +200,11 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             return CreateSpecificationFingerprint();
         }
+    }
+
+    public enum PrincipalType
+    {
+        Gaia,
+        WorkforceIdentity
     }
 }

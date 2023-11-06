@@ -85,7 +85,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
-                TemporaryAuthorization.ForInvalidCredential(),
+                TestProject.InvalidAuthorization,
                 TestProject.UserAgent);
 
             var stream = new SshRelayStream(
