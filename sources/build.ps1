@@ -169,14 +169,8 @@ if (Test-Path "${env:KOKORO_GFILE_DIR}\iapdesktop-kokoro.json")
 		$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iapdesktop-kokoro.json"
 	}
 
-	if (!${Env:GOOGLE_CLOUD_PROJECT})
-	{
-		${Env:GOOGLE_CLOUD_PROJECT} = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
-	}
-    
     & gcloud auth activate-service-account --key-file=$Env:GOOGLE_APPLICATION_CREDENTIALS | Out-Default
     
-	Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
 	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
 }
 
@@ -198,6 +192,16 @@ if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx")
 	}
 
 	Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
+}
+
+if (Test-Path "${env:KOKORO_GFILE_DIR}\test-configuration.json")
+{
+	if (!$Env:IAPDESKTOP_CONFIGURATION)
+	{
+		$Env:IAPDESKTOP_CONFIGURATION = "${env:KOKORO_GFILE_DIR}\test-configuration.json"
+	}
+
+	Write-Host "Test configuration: ${Env:IAPDESKTOP_CONFIGURATION}" -ForegroundColor Yellow
 }
 
 #------------------------------------------------------------------------------
