@@ -1,0 +1,161 @@
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Iam.v1;
+using Google.Apis.Iam.v1.Data;
+using Google.Apis.IAMCredentials.v1;
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Testing.Apis.Integration;
+using System;
+using System.Threading.Tasks;
+
+namespace Google.Solutions.Testing.Apis.Auth
+{
+    internal class TemporaryServiceAccount
+    {
+        private readonly CloudResourceManagerService crmService;
+        private readonly IAMCredentialsService credentialsService;
+
+        public TemporaryServiceAccount(
+            CloudResourceManagerService crmService,
+            IAMCredentialsService credentialsService,
+            string email)
+        {
+            this.crmService = crmService;
+            this.credentialsService = credentialsService;
+            this.Email = email;
+        }
+
+        public string Email { get; }
+
+        public async Task GrantRolesAsync(string[] roles)
+        {
+            for (var attempt = 0; attempt < 6; attempt++)
+            {
+                var policy = await this.crmService.Projects
+                    .GetIamPolicy(
+                        new Google.Apis.CloudResourceManager.v1.Data.GetIamPolicyRequest(),
+                        TestProject.ProjectId)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+
+                foreach (var role in roles)
+                {
+                    policy.Bindings.Add(
+                        new Google.Apis.CloudResourceManager.v1.Data.Binding()
+                        {
+                            Role = role,
+                            Members = new string[] { $"serviceAccount:{this.Email}" }
+                        });
+                }
+
+                try
+                {
+                    await this.crmService.Projects
+                        .SetIamPolicy(
+                            new Google.Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
+                            {
+                                Policy = policy
+                            },
+                            TestProject.ProjectId)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+
+                    break;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
+                {
+                    //
+                    // Concurrent modification - back off and retry. 
+                    //
+                    await Task.Delay(200).ConfigureAwait(false);
+                }
+            }
+        }
+
+        public async Task<IAuthorization> ImpersonateAsync()
+        {
+            var response = await this.credentialsService.Projects
+                .ServiceAccounts
+                .GenerateAccessToken(
+                    new Google.Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
+                    {
+                        Scope = new string[] { TestProject.CloudPlatformScope }
+                    },
+                    $"projects/-/serviceAccounts/{this.Email}")
+                .ExecuteAsync()
+                .ConfigureAwait(false);
+
+            return new TemporaryAuthorization(
+                new Enrollment(),
+                new TemporaryGaiaSession(
+                    this.Email,
+                    new TemporaryCredential(response.AccessToken)));
+        }
+
+        //---------------------------------------------------------------------
+        // Factory.
+        //---------------------------------------------------------------------
+
+        internal static async Task<TemporaryServiceAccount> EmplaceAsync(
+            IamService iamService,
+            IAMCredentialsService credentialsService,
+            CloudResourceManagerService crmService,
+            string name)
+        {
+            var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
+            try
+            {
+                var account = await iamService.Projects.ServiceAccounts
+                    .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
+                    .ExecuteAsync()
+                    .ConfigureAwait(true);
+
+                return new TemporaryServiceAccount(
+                    crmService,
+                    credentialsService,
+                    account.Email);
+            }
+            catch (Exception)
+            {
+                var account = await iamService.Projects.ServiceAccounts
+                    .Create(
+                        new CreateServiceAccountRequest()
+                        {
+                            AccountId = name,
+                            ServiceAccount = new ServiceAccount()
+                            {
+                                DisplayName = "Test account for integration testing"
+                            }
+                        },
+                        $"projects/{TestProject.ProjectId}")
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+
+                return new TemporaryServiceAccount(
+                    crmService,
+                    credentialsService,
+                    account.Email);
+            }
+        }
+    }
+}

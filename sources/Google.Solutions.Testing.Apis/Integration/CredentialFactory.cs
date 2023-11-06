@@ -19,14 +19,11 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Iam.v1.Data;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Testing.Apis.Auth;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -35,81 +32,6 @@ namespace Google.Solutions.Testing.Apis.Integration
 {
     public static class CredentialFactory
     {
-        private static async Task<ServiceAccount> CreateOrGetServiceAccountAsync(
-            string name)
-        {
-            var service = TestProject.CreateIamService();
-            var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
-            try
-            {
-                return await service.Projects.ServiceAccounts
-                    .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
-                    .ExecuteAsync()
-                    .ConfigureAwait(true);
-            }
-            catch (Exception)
-            {
-                return await service.Projects.ServiceAccounts.Create(
-                        new CreateServiceAccountRequest()
-                        {
-                            AccountId = name,
-                            ServiceAccount = new ServiceAccount()
-                            {
-                                DisplayName = "Test account for integration testing"
-                            }
-                        },
-                    $"projects/{TestProject.ProjectId}")
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-            }
-        }
-
-        private static async Task GrantRolesToServiceAccountAsync(
-            ServiceAccount member,
-            string[] roles)
-        {
-            var service = TestProject.CreateCloudResourceManagerService();
-
-            for (var attempt = 0; attempt < 6; attempt++)
-            {
-                var policy = await service.Projects
-                    .GetIamPolicy(
-                        new Google.Apis.CloudResourceManager.v1.Data.GetIamPolicyRequest(),
-                        TestProject.ProjectId)
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-
-                foreach (var role in roles)
-                {
-                    policy.Bindings.Add(
-                        new Google.Apis.CloudResourceManager.v1.Data.Binding()
-                        {
-                            Role = role,
-                            Members = new string[] { $"serviceAccount:{member.Email}" }
-                        });
-                }
-
-                try
-                {
-                    await service.Projects.SetIamPolicy(
-                            new Google.Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
-                            {
-                                Policy = policy
-                            },
-                            TestProject.ProjectId)
-                        .ExecuteAsync()
-                        .ConfigureAwait(false);
-
-                    break;
-                }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
-                {
-                    // Concurrent modification - back off and retry. 
-                    await Task.Delay(200).ConfigureAwait(false);
-                }
-            }
-        }
-
         public static async Task<IAuthorization> CreateServiceAccountAuthorizationAsync(
             string name,
             string[] roles)
@@ -121,8 +43,10 @@ namespace Google.Solutions.Testing.Apis.Integration
                 // tests are run as.
                 //
                 return new TemporaryAuthorization(
-                    "admin@gserviceaccount.com",
-                    TestProject.GetAdminCredential());
+                    new Enrollment(),
+                    new TemporaryGaiaSession(
+                        "admin@gserviceaccount.com",
+                        TestProject.GetAdminCredential()));
             }
             else
             {
@@ -135,31 +59,27 @@ namespace Google.Solutions.Testing.Apis.Integration
                     //
                     // Create a service account.
                     //
-                    var serviceAccount = await CreateOrGetServiceAccountAsync(name)
+                    var serviceAccount = await TemporaryServiceAccount
+                        .EmplaceAsync(
+                            TestProject.CreateIamService(),
+                            TestProject.CreateIamCredentialsService(),
+                            TestProject.CreateCloudResourceManagerService(),
+                            name)
                         .ConfigureAwait(true);
 
                     //
                     // Assign roles.
                     //
-                    await GrantRolesToServiceAccountAsync(serviceAccount, roles)
+                    await serviceAccount
+                        .GrantRolesAsync(roles)
                         .ConfigureAwait(true);
 
                     //
-                    // Create a token.
+                    // Impersonate.
                     //
-                    var service = TestProject.CreateIamCredentialsService();
-                    var response = await service.Projects.ServiceAccounts.GenerateAccessToken(
-                            new Google.Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
-                            {
-                                Scope = new string[] { TestProject.CloudPlatformScope }
-                            },
-                            $"projects/-/serviceAccounts/{serviceAccount.Email}")
-                        .ExecuteAsync()
+                    return await serviceAccount
+                        .ImpersonateAsync()
                         .ConfigureAwait(false);
-
-                    return new TemporaryAuthorization(
-                        serviceAccount.Email,
-                        response.AccessToken);
                 }
                 catch (Exception e)
                 {
