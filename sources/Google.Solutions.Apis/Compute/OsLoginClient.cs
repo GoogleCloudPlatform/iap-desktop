@@ -42,6 +42,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Apis.Compute.OsLoginClient;
 
 namespace Google.Solutions.Apis.Compute
 {
@@ -88,6 +89,22 @@ namespace Google.Solutions.Apis.Compute
         Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// List enrolled U2F and WebAuthn security keys.
+        /// </summary>
+        Task<IList<SecurityKey>> ListSecurityKeysAsync(
+            ProjectLocator project,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Create a certificate from a public key. Only relevant
+        /// when using workforce identity.
+        /// </summary>
+        Task<string?> SignPublicKeyAsync(
+            ZoneLocator zone,
+            string publicKey,
+            CancellationToken cancellationToken)
     }
 
     public class OsLoginClient : ApiClientBase, IOsLoginClient

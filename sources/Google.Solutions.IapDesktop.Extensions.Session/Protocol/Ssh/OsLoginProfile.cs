@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private static readonly ProjectLocator WellKnownProject
             = new ProjectLocator("windows-cloud");
 
-        private readonly IOsLoginClient adapter;
+        private readonly IOsLoginClient client;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public OsLoginProfile(IOsLoginClient adapter)
         {
-            this.adapter = adapter.ExpectNotNull(nameof(adapter));
+            this.client = adapter.ExpectNotNull(nameof(adapter));
         }
 
         //---------------------------------------------------------------------
@@ -122,18 +122,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // Note that the Posix account managed by OS login can 
                 // differ based on the project that we're trying to access.
-                // Therefore, make sure to specify the project when
-                // importing the key.
+                // Therefore, we specify the project when importing or
+                // certifying the key.
                 //
                 // OS Login auto-generates a username for us. Again, this
                 // username might differ based on project/organization.
                 //
 
+                // TODO: Branch based on session type
+                //       The certificate must be prepared by OS Login BEFORE fetching
+                //       LoginProfile for BYOID OS Login users, since the LoginProfile may be
+                //       missing before the SignSshPublicKey call.
+
                 //
                 // Import the key for the given project.
                 //
 
-                var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
+                var loginProfile = await this.client
+                    .ImportSshPublicKeyAsync(
                         project,
                         key.PublicKey.Type,
                         Convert.ToBase64String(key.PublicKey.WireFormatValue),
@@ -179,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 // using any project.
                 //
                 // 
-                var loginProfile = await this.adapter
+                var loginProfile = await this.client
                     .GetLoginProfileAsync(WellKnownProject, cancellationToken)
                     .ConfigureAwait(false);
 
@@ -199,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Debug.Assert(key is AuthorizedPublicKey);
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(key))
             {
-                await this.adapter.DeleteSshPublicKeyAsync(
+                await this.client.DeleteSshPublicKeyAsync(
                         ((AuthorizedPublicKey)key).Fingerprint,
                         cancellationToken)
                     .ConfigureAwait(false);
