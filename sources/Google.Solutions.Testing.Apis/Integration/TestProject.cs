@@ -105,7 +105,7 @@ namespace Google.Solutions.Testing.Apis.Integration
 
                 var collection = new X509Certificate2Collection();
                 collection.Import(
-                    credentialsPath,
+                    certificatePath,
                     string.Empty, // No passphrase
                     X509KeyStorageFlags.DefaultKeySet);
 

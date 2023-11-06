@@ -58,10 +58,13 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
+                //
                 // Create a hash of the image specification.
+                //
                 var specificationRaw = Encoding.UTF8.GetBytes(
                     string.Join(",", this.Roles));
-                return "s" + BitConverter
+                return (this.Type == PrincipalType.Gaia ? "s" : "i") +
+                    BitConverter
                     .ToString(sha.ComputeHash(specificationRaw))
                     .Replace("-", string.Empty)
                     .Substring(0, 14)
