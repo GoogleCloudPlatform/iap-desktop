@@ -44,5 +44,9 @@ namespace Google.Solutions.Apis
         public static readonly IHelpTopic WorkforceIdentityLimitations = new HelpTopic(
             "Workforce identity federation: supported products and limitations",
             "https://cloud.google.com/iam/docs/federated-identity-supported-services");
+
+        public static readonly IHelpTopic UseOsLoginWithWorkforceIdentity = new HelpTopic(
+            "Use workforce identity federation with OS Login",
+            "https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org#use_workforce_identity_federation_with_os_login");
     }
 }

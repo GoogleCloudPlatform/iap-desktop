@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
@@ -48,6 +47,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var session = new Mock<IOidcSession>();
             session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
+            session.SetupGet(s => s.Username).Returns("user");
 
             var authorization = new Mock<IAuthorization>();
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
@@ -100,7 +100,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenImportSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -163,7 +164,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenGetLoginProfileReturnsProfile(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -184,7 +186,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingNonGaiaSession_ThenDeleteSshPublicKeyhrowsException()
+        public void WhenUsingNonGaiaSession_ThenDeleteSshPublicKeyThrowsException()
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -199,7 +201,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingKeyTwice_ThenDeleteSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -253,7 +256,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingNonexistingKey_ThenDeleteSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -264,6 +268,82 @@ namespace Google.Solutions.Apis.Test.Compute
                     "nonexisting",
                     CancellationToken.None)
                 .ConfigureAwait(false);
+        }
+
+        //---------------------------------------------------------------------
+        // SignPublicKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUsingGaiaSession_ThenSignPublicKeyAsyncThrowsException(
+            [Credential(Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
+                () => client.SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
+                    "AAAA",
+                    CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // ListSecurityKeysAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUsingNonGaiaSession_ThenListSecurityKeysAsyncException()
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                CreateNonGaiaAuthorization(),
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
+                () => client.ListSecurityKeysAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenEmailInvalid_ThenListSecurityKeysAsyncThrowsException(
+            [Credential] ResourceTask<ICredential> credentialTask)
+        {
+            var authorization = new TemporaryAuthorization(
+                "x@gmail.com",
+                await credentialTask);
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                authorization,
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => client.ListSecurityKeysAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenEmailValid_ThenListSecurityKeysAsyncReturnsList(
+            [Credential(Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
+
+            var keys = await client
+                .ListSecurityKeysAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(keys);
         }
     }
 }
