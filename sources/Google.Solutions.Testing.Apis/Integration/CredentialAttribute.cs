@@ -35,13 +35,24 @@ namespace Google.Solutions.Testing.Apis.Integration
 {
     public sealed class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {
+        /// <summary>
+        /// Required roles.
+        /// </summary>
         public string[] Roles { get; set; } = Array.Empty<string>();
 
+        /// <summary>
+        /// Required role.
+        /// </summary>
         public string Role
         {
             set => this.Roles = new[] { value };
             get => this.Roles.First();
         }
+
+        /// <summary>
+        /// Type of principal.
+        /// </summary>
+        public PrincipalType Type { get; set; } = PrincipalType.Gaia;
 
         private string CreateSpecificationFingerprint()
         {
@@ -58,11 +69,14 @@ namespace Google.Solutions.Testing.Apis.Integration
             }
         }
 
-        private static async Task<IAuthorization> CreateAuthorizationWithRolesAsync(
-            string fingerprint,
-            string[] roles)
+        private async Task<IAuthorization> CreateAuthorizationWithRolesAsync(
+            string fingerprint)
         {
-            if (roles == null || !roles.Any())
+            if (this.Type == PrincipalType.WorkforceIdentity)
+            {
+                throw new NotImplementedException();
+            }
+            else if (this.Roles == null || !this.Roles.Any())
             {
                 //
                 // Return the credentials of the (admin) account the
@@ -93,7 +107,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     // Assign roles.
                     //
                     await serviceAccount
-                        .GrantRolesAsync(roles)
+                        .GrantRolesAsync(this.Roles)
                         .ConfigureAwait(true);
 
                     //
@@ -121,9 +135,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     ResourceTask<IAuthorization>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        () => CreateAuthorizationWithRolesAsync(
-                            fingerprint,
-                            this.Roles))
+                        () => CreateAuthorizationWithRolesAsync(fingerprint))
                 };
             }
             else if (parameter.ParameterType == typeof(ResourceTask<ICredential>))
@@ -133,9 +145,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     ResourceTask<ICredential>.ProvisionOnce(
                         parameter.Method,
                         fingerprint,
-                        async () => (await CreateAuthorizationWithRolesAsync(
-                            fingerprint, 
-                            this.Roles))
+                        async () => (await CreateAuthorizationWithRolesAsync(fingerprint))
                             .Session
                             .ApiCredential)
                 };
@@ -151,5 +161,11 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             return CreateSpecificationFingerprint();
         }
+    }
+
+    public enum PrincipalType
+    {
+        Gaia,
+        WorkforceIdentity
     }
 }
