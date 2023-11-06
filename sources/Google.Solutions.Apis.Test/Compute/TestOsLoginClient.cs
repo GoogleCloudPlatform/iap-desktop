@@ -100,7 +100,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenImportSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -163,7 +164,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenGetLoginProfileReturnsProfile(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -184,7 +186,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingNonGaiaSession_ThenDeleteSshPublicKeyhrowsException()
+        public void WhenUsingNonGaiaSession_ThenDeleteSshPublicKeyThrowsException()
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -199,7 +201,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingKeyTwice_ThenDeleteSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -253,7 +256,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingNonexistingKey_ThenDeleteSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorizationTask)
+            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
@@ -264,6 +268,27 @@ namespace Google.Solutions.Apis.Test.Compute
                     "nonexisting",
                     CancellationToken.None)
                 .ConfigureAwait(false);
+        }
+
+        //---------------------------------------------------------------------
+        // SignPublicKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUsingGaiaSession_ThenSignPublicKeyAsyncThrowsException(
+            [Credential(Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
+                () => client.SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
+                    "AAAA",
+                    CancellationToken.None).Wait());
         }
     }
 }

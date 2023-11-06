@@ -21,6 +21,10 @@
 
 using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Apis.Discovery;
+using Google.Apis.Requests;
+using Google.Apis.Services;
+using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
@@ -29,6 +33,7 @@ using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -93,7 +98,7 @@ namespace Google.Solutions.Apis.Compute
         }
 
         //---------------------------------------------------------------------
-        // IOsLoginAdapter.
+        // IOsLoginClient.
         //---------------------------------------------------------------------
 
         public async Task<LoginProfile> ImportSshPublicKeyAsync(
@@ -237,6 +242,107 @@ namespace Google.Solutions.Apis.Compute
                 }
             }
         }
+
+        public async Task<string?> SignPublicKeyAsync(
+            ZoneLocator zone,
+            string publicKey,
+            CancellationToken cancellationToken)
+        {
+            using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                try
+                {
+                    var request = new SignSshPublicKeyRequest(
+                        this.service,
+                        new SignSshPublicKeyRequestData()
+                        {
+                            SshPublicKey = publicKey
+                        },
+                        $"users/{this.authorization.Session.Username}/projects/{zone.ProjectId}/locations/{zone.Name}");
+
+                    var response = await request
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    return response.SignedSshPublicKey;
+                }
+                catch (GoogleApiException e) when (
+                    e.Error != null && 
+                    e.Error.Code == 400 && 
+                    e.Error.Message != null &&
+                    e.Error.Message.Contains("google.posix_username"))
+                {
+                    throw new ExternalIdpNotConfiguredForOsLoginException(
+                        "Your IdP configuration doesn't support the use of OS Login",
+                        e);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to use OS Login: " +
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // v1beta1 entities. These can be removed once the methods have been
+        // promoted to v1.
+        //---------------------------------------------------------------------
+
+        private class SignSshPublicKeyResponseData : IDirectResponseSchema
+        {
+            [JsonProperty("signedSshPublicKey")]
+            public virtual string? SignedSshPublicKey { get; set; }
+
+            public virtual string? ETag { get; set; }
+        }
+
+        private class SignSshPublicKeyRequestData : IDirectResponseSchema
+        {
+            [JsonProperty("sshPublicKey")]
+            public virtual string? SshPublicKey { get; set; }
+
+            public virtual string? ETag { get; set; }
+        }
+
+        private class SignSshPublicKeyRequest : CloudOSLoginBaseServiceRequest<SignSshPublicKeyResponseData>
+        {
+            [RequestParameter("parent")]
+            public virtual string Parent { get; private set; }
+            private SignSshPublicKeyRequestData Body { get; set; }
+            public override string MethodName => "signSshPublicKey";
+            public override string HttpMethod => "POST";
+            public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
+
+            public SignSshPublicKeyRequest(IClientService service, SignSshPublicKeyRequestData body, string parent)
+                : base(service)
+            {
+                this.Parent = parent;
+                this.Body = body;
+                InitParameters();
+            }
+
+            protected override object GetBody()
+            {
+                return this.Body;
+            }
+
+            protected override void InitParameters()
+            {
+                base.InitParameters();
+                this.RequestParameters.Add("parent", new Parameter
+                {
+                    Name = "parent",
+                    IsRequired = true,
+                    ParameterType = "path",
+                    DefaultValue = null,
+                    Pattern = "^users/[^/]+/projects/[^/]+/locations/[^/]+$"
+                });
+            }
+        }
     }
 
     internal class OsLoginNotSupportedForWorkloadIdentityException :
@@ -244,9 +350,23 @@ namespace Google.Solutions.Apis.Compute
     {
         public OsLoginNotSupportedForWorkloadIdentityException() 
             : base(
-                    "This project or VM instance uses OS Login, but OS Login is " +
-                    "currently not supported by workforce identity federation.")
+                "This project or VM instance uses OS Login, but OS Login is " +
+                "currently not supported by workforce identity federation.")
         {
+        }
+    }
+
+    public class ExternalIdpNotConfiguredForOsLoginException :
+        ClientException, IExceptionWithHelpTopic
+    {
+        public IHelpTopic? Help { get; }
+
+        public ExternalIdpNotConfiguredForOsLoginException(
+            string message, 
+            Exception inner)
+            : base(message, inner)
+        {
+            this.Help = HelpTopics.UseOsLoginWithWorkforceIdentity;
         }
     }
 }
