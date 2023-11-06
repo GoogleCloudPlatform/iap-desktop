@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public ManagedMetadataAuthorizedPublicKey(
             string loginUsername,
-            string keyType,
+            string keyType,//TODO: use PublicKey
             string key,
             PublicKeyMetadata metadata)
             : base(loginUsername, keyType, key)

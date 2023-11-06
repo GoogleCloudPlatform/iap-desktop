@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.osLoginProfile = osLoginProfile.ExpectNotNull(nameof(osLoginProfile));
         }
 
-        internal string CreateUsernameForMetadata(string preferredPosixUsername)//TODO: test
+        internal string CreateUsernameForMetadata(string preferredPosixUsername)
         {
             if (preferredPosixUsername != null)
             {

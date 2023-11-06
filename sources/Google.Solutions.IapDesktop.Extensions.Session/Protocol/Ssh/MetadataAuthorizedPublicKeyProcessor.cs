@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
         }
 
-        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync( //TODO: rename
+        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
             IAsymmetricKeySigner key,
             TimeSpan validity,
             string username,
