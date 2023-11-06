@@ -25,6 +25,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Json;
+using Google.Apis.Logging.v2.Data;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
@@ -36,6 +37,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 
 namespace Google.Solutions.Testing.Apis.Integration
 {
@@ -258,12 +260,31 @@ namespace Google.Solutions.Testing.Apis.Integration
 
             /// <summary>
             /// Workforce pool for test principals.
+            /// 
+            /// Create the pool as follows:
+            /// 
+            ///   gcloud iam workforce-pools create PROJECT_ID \
+            ///     --location global \
+            ///     --organization ORG_ID
+            ///     
             /// </summary>
             [JsonProperty("workforcePoolId")]
             public string WorkforcePoolId { get; internal set; }
 
             /// <summary>
             /// Workforce pool provider for test principals.
+            /// 
+            /// Create the pool as follows:
+            /// 
+            ///   gcloud iam workforce-pools providers update-oidc identity-platform \
+            ///     --workforce-pool PROJECT_ID \
+            ///     --location global \
+            ///     --attribute-mapping 'google.subject=assertion.sub, google.posix_username=assertion.sub' \
+            ///     --client-id "PROJECT_ID" \
+            ///     --issuer-uri https://securetoken.google.com/PROJECT_ID/ \
+            ///     --web-sso-response-type "id-token" \
+            ///     --web-sso-assertion-claims-behavior "only-id-token-claims"
+            /// 
             /// </summary>
             [JsonProperty("workforceProviderId")]
             public string WorkforceProviderId { get; internal set; }
