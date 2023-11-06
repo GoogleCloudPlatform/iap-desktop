@@ -51,7 +51,9 @@ namespace Google.Solutions.Testing.Apis.Auth
             this.SubjectToken = subjectToken;
         }
 
-        protected override string PolicyPrefix => "principal";
+        protected override string PrincipalId => 
+            "principal://iam.googleapis.com/locations/global" +
+            $"/workforcePools/{this.PoolId}/subject/{this.Username}";
 
         public string PoolId { get; }
         public string ProviderId { get; }
@@ -70,7 +72,8 @@ namespace Google.Solutions.Testing.Apis.Auth
                             $"/{this.PoolId}/providers/{this.ProviderId}",
                         Scope = "https://www.googleapis.com/auth/cloud-platform",
                         RequestedTokenType = "urn:ietf:params:oauth:token-type:access_token",
-                        SubjectToken = this.SubjectToken
+                        SubjectToken = this.SubjectToken,
+                        SubjectTokenType = "urn:ietf:params:oauth:token-type:id_token"
                     })
                 .ExecuteAsync(cancellationToken)
                 .ConfigureAwait(false);
@@ -107,13 +110,13 @@ namespace Google.Solutions.Testing.Apis.Auth
             //
             var customToken = await trustedServiceAccount
                 .SignJwtAsync(
-                    new Dictionary<string, string>
+                    new Dictionary<string, object>
                     {
                         { "iss", trustedServiceAccount.Username },
                         { "sub", trustedServiceAccount.Username },
                         { "aud", "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit" },
-                        { "iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() },
-                        { "exp", DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds().ToString() },
+                        { "iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds() },
+                        { "exp", DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds() },
                         { "uid", username }
                     },
                     cancellationToken)
@@ -183,8 +186,8 @@ namespace Google.Solutions.Testing.Apis.Auth
                     {
                         return NewtonsoftJsonSerializer
                             .Instance
-                            .Deserialize<TokenResponse>(stream)
-                            .IdToken;
+                            .Deserialize<Dictionary<string, string>>(stream)
+                            ["idToken"];
                     }
                 }
             }

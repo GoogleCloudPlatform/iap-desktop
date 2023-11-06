@@ -92,12 +92,20 @@ namespace Google.Solutions.Testing.Apis.Integration
                 var subject = await TemporaryWorkforcePoolSubject
                     .CreateAsync(
                         TestProject.CreateCloudResourceManagerService(),
-                        TestProject.CreateIdentityPlatformService(),
+                        new TemporaryWorkforcePoolSubject.IdentityPlatformService(
+                            TestProject.Configuration.IdentityPlatformApiKey),
                         trustedServiceAccount,
                         TestProject.Configuration.WorkforcePoolId,
                         TestProject.Configuration.WorkforceProviderId,
                         fingerprint,
                         CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                //
+                // Assign roles.
+                //
+                await subject
+                    .GrantRolesAsync(this.Roles)
                     .ConfigureAwait(true);
 
                 //

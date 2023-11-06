@@ -238,19 +238,6 @@ namespace Google.Solutions.Testing.Apis.Integration
                 new object[] { initializer });
         }
 
-        internal static TemporaryWorkforcePoolSubject.IdentityPlatformService CreateIdentityPlatformService()
-        {
-            var apiKey = Environment.GetEnvironmentVariable("IDENTITYPLATFORM_APIKEY");
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ApplicationException(
-                    "IDENTITYPLATFORM_APIKEY not set, must contain an API key " +
-                    $"for the project {ProjectId}");
-            }
-
-            return new TemporaryWorkforcePoolSubject.IdentityPlatformService(apiKey);
-        }
-
         //---------------------------------------------------------------------
         // Configuration.
         //---------------------------------------------------------------------
@@ -280,6 +267,12 @@ namespace Google.Solutions.Testing.Apis.Integration
             /// </summary>
             [JsonProperty("workforceProviderId")]
             public string WorkforceProviderId { get; internal set; }
+
+            /// <summary>
+            /// API key for Identity Platform (in same project).
+            /// </summary>
+            [JsonProperty("identityPlatformApiKey")]
+            public string IdentityPlatformApiKey { get; internal set; }
         }
     }
 }

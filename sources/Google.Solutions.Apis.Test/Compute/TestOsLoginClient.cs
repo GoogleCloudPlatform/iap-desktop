@@ -363,5 +363,15 @@ namespace Google.Solutions.Apis.Test.Compute
 
             Assert.IsNotNull(keys);
         }
+
+        [Test]
+
+        public async Task ___(
+            [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var auth = await authorizationTask;
+            Assert.IsNotNull(auth);
+        }
     }
 }

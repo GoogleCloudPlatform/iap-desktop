@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Util;
 using Google.Solutions.Testing.Apis.Integration;
 using System.Threading.Tasks;
 
@@ -39,11 +40,15 @@ namespace Google.Solutions.Testing.Apis.Auth
 
         public string Username { get; }
 
-        protected abstract string PolicyPrefix { get; }
+        protected abstract string PrincipalId { get; }
 
         public async Task GrantRolesAsync(string[] roles)
         {
-            for (var attempt = 0; attempt < 6; attempt++)
+            GoogleApiException lastException = null;
+
+            var backoff = new ExponentialBackOff();
+
+            for (var attempt = 0; attempt < backoff.MaxNumOfRetries; attempt++)
             {
                 var policy = await this.crmService.Projects
                     .GetIamPolicy(
@@ -58,7 +63,7 @@ namespace Google.Solutions.Testing.Apis.Auth
                         new Google.Apis.CloudResourceManager.v1.Data.Binding()
                         {
                             Role = role,
-                            Members = new string[] { $"{this.PolicyPrefix}:{this.Username}" }
+                            Members = new string[] { this.PrincipalId }
                         });
                 }
 
@@ -74,16 +79,22 @@ namespace Google.Solutions.Testing.Apis.Auth
                         .ExecuteAsync()
                         .ConfigureAwait(false);
 
-                    break;
+                    return;
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
                 {
+                    lastException = e;
+
                     //
                     // Concurrent modification - back off and retry. 
                     //
-                    await Task.Delay(200).ConfigureAwait(false);
+                    await Task
+                        .Delay(backoff.DeltaBackOff)
+                        .ConfigureAwait(false);
                 }
             }
+
+            throw lastException;
         }
     }
 }

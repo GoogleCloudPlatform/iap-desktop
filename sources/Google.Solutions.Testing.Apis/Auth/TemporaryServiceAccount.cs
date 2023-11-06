@@ -46,7 +46,7 @@ namespace Google.Solutions.Testing.Apis.Auth
             this.credentialsService = credentialsService;
         }
 
-        protected override string PolicyPrefix => "serviceAccount";
+        protected override string PrincipalId => $"serviceAccount:{this.Username}";
 
         public async Task<IAuthorization> ImpersonateAsync()
         {
@@ -69,7 +69,7 @@ namespace Google.Solutions.Testing.Apis.Auth
         }
 
         public async Task<string> SignJwtAsync(
-            IDictionary<string, string> claims,
+            IDictionary<string, object> claims,
             CancellationToken cancellationToken)
         {
             var response = await this.credentialsService.Projects.ServiceAccounts
