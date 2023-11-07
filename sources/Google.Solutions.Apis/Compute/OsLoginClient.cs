@@ -54,13 +54,26 @@ namespace Google.Solutions.Apis.Compute
         /// Import user's public key to OS Login.
         /// </summary>
         /// <param name="keyType">Key type (for ex, 'ssh-rsa')</param>
-        /// <param name="keyBlob">SSH1/Base64-encoded public key</param>
+        /// <param name="keyBlob">Base64-encoded public key</param>
         Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
             string keyType,
             string keyBlob,
             TimeSpan validity,
             CancellationToken token);
+
+        /// <summary>
+        /// Certify a user's public key.
+        /// </summary>
+        /// <param name="zone"></param>
+        /// <param name="keyType">Key type (for ex, 'ssh-rsa')</param>
+        /// <param name="keyBlob">Base64-encoded public key</param>
+        /// <returns></returns>
+        Task<string?> SignPublicKeyAsync(
+            ZoneLocator zone,
+            string keyType,
+            string keyBlob,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Read user's profile and published SSH keys.

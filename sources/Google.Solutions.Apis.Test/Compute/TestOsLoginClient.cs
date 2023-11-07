@@ -143,7 +143,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingWorkforceSession_ThenGetLoginProfileThrowsException(
+        public async Task WhenUsingWorkforceSession_ThenGetLoginProfileSucceeds(
             [Credential(Type = PrincipalType.WorkforceIdentity)] 
             ResourceTask<IAuthorization> authorization)
         {
@@ -153,10 +153,27 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
-                () => client.GetLoginProfileAsync(
+            //
+            // Certifiy a key to force creation of profile.
+            //
+            await client
+                .SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    "ecdsa-sha2-nistp256",
+                    SampleKeyNistp256,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var profile = await client
+                .GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(profile);
+            Assert.AreEqual(
+                (await authorization).Session.Username,
+                profile.PosixAccounts.First().Username);
         }
 
         [Test]
@@ -179,7 +196,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailValid_ThenGetLoginProfileReturnsProfile(
+        public async Task WhenEmailValid_ThenGetLoginProfileSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] 
             ResourceTask<IAuthorization> authorizationTask)
         {
