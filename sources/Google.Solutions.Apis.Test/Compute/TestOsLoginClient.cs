@@ -41,6 +41,11 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestOsLoginClient
     {
+        public const string SampleKeyNistp256 =
+            "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOAATK5b5Y" +
+            "ERo8r80PGSNgH+fabpTTr1tSt3CcAXd1gk3E+f1vvPL/1MxYeGolwehAyTL8mP" +
+            "kxxmyn0tRb5TGvM=";
+
         private static IAuthorization CreateGaiaAuthorizationWithMismatchedUser(
             string username,
             ICredential credential)
@@ -148,7 +153,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
                 () => client.GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
@@ -305,12 +310,13 @@ namespace Google.Solutions.Apis.Test.Compute
             ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
                 () => client.SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "AAAA",
+                    "ecdsa-sha2-nistp256",
+                    SampleKeyNistp256,
                     CancellationToken.None).Wait());
         }
 
         [Test]
-        public async Task WhenUsingWorkforceSession_ThenSignPublicKeyThrowsException(
+        public async Task WhenUsingWorkforceSession_ThenSignPublicKeySucceeds(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -320,11 +326,17 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.SignPublicKeyAsync(
+            var certifiedKey = await client
+                .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "AAAA",
-                    CancellationToken.None).Wait());
+                    "ecdsa-sha2-nistp256",
+                    SampleKeyNistp256,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            StringAssert.StartsWith(
+                "ecdsa-sha2-nistp256-cert-v01@openssh.com", 
+                certifiedKey);
         }
 
         //---------------------------------------------------------------------

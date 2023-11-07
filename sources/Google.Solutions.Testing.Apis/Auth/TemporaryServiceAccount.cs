@@ -46,7 +46,7 @@ namespace Google.Solutions.Testing.Apis.Auth
             this.credentialsService = credentialsService;
         }
 
-        protected override string PrincipalId => $"serviceAccount:{this.Username}";
+        internal override string PrincipalId => $"serviceAccount:{this.Username}";
 
         public async Task<IAuthorization> ImpersonateAsync()
         {

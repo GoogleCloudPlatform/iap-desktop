@@ -177,11 +177,10 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             get => new TemporaryAuthorization(
                 new Enrollment(),
-                new TemporarySession(
+                new TemporaryGaiaSession(
                     "invalid@gserviceaccount.com",
                     GoogleCredential.FromAccessToken("invalid")));
         }
-
 
         public static IAuthorization AdminAuthorization
         {

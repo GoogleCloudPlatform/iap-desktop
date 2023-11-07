@@ -40,7 +40,7 @@ namespace Google.Solutions.Testing.Apis.Auth
 
         public string Username { get; }
 
-        protected abstract string PrincipalId { get; }
+        internal abstract string PrincipalId { get; }
 
         public async Task GrantRolesAsync(string[] roles)
         {

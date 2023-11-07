@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Json;
 using Newtonsoft.Json;
@@ -29,10 +28,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using Google.Apis.IAMCredentials.v1;
 using Google.Solutions.Apis.Auth;
 using Google.Apis.CloudSecurityToken.v1;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.Testing.Apis.Auth
 {
@@ -51,7 +48,7 @@ namespace Google.Solutions.Testing.Apis.Auth
             this.SubjectToken = subjectToken;
         }
 
-        protected override string PrincipalId => 
+        internal override string PrincipalId => 
             "principal://iam.googleapis.com/locations/global" +
             $"/workforcePools/{this.PoolId}/subject/{this.Username}";
 
@@ -80,8 +77,8 @@ namespace Google.Solutions.Testing.Apis.Auth
 
             return new TemporaryAuthorization(
                 new Enrollment(),
-                new TemporarySession(
-                    this.Username,
+                new TemporaryWorkforcePoolSession(
+                    this,
                     new TemporaryCredential(response.AccessToken)));
         }
 

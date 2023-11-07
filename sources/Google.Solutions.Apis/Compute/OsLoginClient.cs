@@ -38,6 +38,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -108,6 +110,27 @@ namespace Google.Solutions.Apis.Compute
                 "https://oslogin.googleapis.com/");
         }
 
+        internal string EncodedUserPathComponent
+        {
+            get => this.authorization.Session switch
+            {
+                //
+                // Use the email address without extra encoding.
+                //
+                IGaiaOidcSession gaiaSession
+                    => gaiaSession.Email,
+
+                //
+                // Use the full principal idenfifier (yes, that's a URL)
+                // and encode it.
+                //
+                IWorkforcePoolSession wfSession 
+                    => WebUtility.UrlEncode(wfSession.PrincipalIdentifier),
+                
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
         //---------------------------------------------------------------------
         // IOsLoginClient.
         //---------------------------------------------------------------------
@@ -125,16 +148,15 @@ namespace Google.Solutions.Apis.Compute
 
             Debug.Assert(!keyType.Contains(' '));
 
-            var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+            if (this.authorization.Session is IWorkforcePoolSession)
+            {
+                throw new OsLoginNotSupportedForWorkloadIdentityException();
+            }
 
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
-
-                var userEmail = gaiaSession.Email;
-                Debug.Assert(userEmail != null);
 
                 var request = this.service.Users.ImportSshPublicKey(
                     new SshPublicKey()
@@ -142,7 +164,7 @@ namespace Google.Solutions.Apis.Compute
                         Key = $"{keyType} {keyBlob}",
                         ExpirationTimeUsec = expiryTimeUsec
                     },
-                    $"users/{userEmail}");
+                    $"users/{this.EncodedUserPathComponent}");
                 request.ProjectId = project.ProjectId;
 
                 try
@@ -200,11 +222,8 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
-
                 var request = this.service.Users.GetLoginProfile(
-                    $"users/{gaiaSession.Email}");
+                    $"users/{this.EncodedUserPathComponent}");
                 request.ProjectId = project.ProjectId;
 
                 try
@@ -221,6 +240,13 @@ namespace Google.Solutions.Apis.Compute
                         HelpTopics.ManagingOsLogin,
                         e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        "The login profile could not be found, it it has not " +
+                        "been allocated yet",
+                        e);
+                }
             }
         }
 
@@ -230,16 +256,15 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(fingerprint))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+                if (this.authorization.Session is IWorkforcePoolSession)
+                {
+                    throw new OsLoginNotSupportedForWorkloadIdentityException();
+                }
 
                 try
                 {
-                    var userEmail = gaiaSession.Email;
-                    Debug.Assert(userEmail != null);
-
                     await this.service.Users.SshPublicKeys
-                        .Delete($"users/{userEmail}/sshPublicKeys/{fingerprint}")
+                        .Delete($"users/{this.EncodedUserPathComponent}/sshPublicKeys/{fingerprint}")
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
@@ -256,7 +281,8 @@ namespace Google.Solutions.Apis.Compute
 
         public async Task<string?> SignPublicKeyAsync(
             ZoneLocator zone,
-            string publicKey,
+            string keyType,
+            string keyBlob,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(zone))
@@ -267,9 +293,9 @@ namespace Google.Solutions.Apis.Compute
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
                         {
-                            SshPublicKey = publicKey
+                            SshPublicKey = $"{keyType} {keyBlob}"
                         },
-                        $"users/{this.authorization.Session.Username}/projects/{zone.ProjectId}/locations/{zone.Name}");
+                        $"users/{this.EncodedUserPathComponent}/projects/{zone.ProjectId}/locations/{zone.Name}");
 
                     var response = await request
                         .ExecuteAsync(cancellationToken)
@@ -304,14 +330,17 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+
+                if (this.authorization.Session is IWorkforcePoolSession)
+                {
+                    throw new OsLoginNotSupportedForWorkloadIdentityException();
+                }
 
                 try
                 {
                     var request = new BetaGetLoginProfileRequest(
                         this.service,
-                        $"users/{gaiaSession.Username}")
+                        $"users/{this.EncodedUserPathComponent}")
                     {
                         ProjectId = project.Name,
                         View = BetaGetLoginProfileRequest.ViewEnum.SECURITYKEY
@@ -521,8 +550,8 @@ namespace Google.Solutions.Apis.Compute
     {
         public OsLoginNotSupportedForWorkloadIdentityException() 
             : base(
-                "This project or VM instance uses OS Login, but OS Login is " +
-                "currently not supported by workforce identity federation.")
+                "This OS Login operation is not supported for " +
+                "workforce identity federation.")
         {
         }
     }
