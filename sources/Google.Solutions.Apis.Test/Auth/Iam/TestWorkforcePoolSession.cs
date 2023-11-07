@@ -25,8 +25,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth.Iam;
 using Moq;
 using NUnit.Framework;
-using Google.Apis.Auth;
-using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth;
 using System;
 
@@ -48,6 +46,39 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     AccessToken = accessToken
                 }
             };
+        }
+
+        //---------------------------------------------------------------------
+        // PrincipalIdentifier.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void PrincipalIdentifier()
+        {
+            var session = new WorkforcePoolSession(
+                CreateUserCredential("rt", "at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
+                new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
+
+            Assert.AreEqual(
+                "principal://iam.googleapis.com/locations/global/workforcePools/" +
+                "pool-1/subject/subject-1", 
+                session.PrincipalIdentifier);
+        }
+
+        //---------------------------------------------------------------------
+        // Username.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Username()
+        {
+            var session = new WorkforcePoolSession(
+                CreateUserCredential("rt", "at"),
+                new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
+                new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
+
+            Assert.AreEqual("subject-1", session.Username);
         }
 
         //---------------------------------------------------------------------
