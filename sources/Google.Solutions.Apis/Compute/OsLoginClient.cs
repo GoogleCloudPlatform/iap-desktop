@@ -38,7 +38,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -84,9 +83,19 @@ namespace Google.Solutions.Apis.Compute
         public OsLoginClient(
             ServiceEndpoint<OsLoginClient> endpoint,
             IAuthorization authorization,
+            ApiKey apiKey,
             UserAgent userAgent)
             : base(endpoint, authorization, userAgent)
         {
+            if (!(authorization.Session is IGaiaOidcSession))
+            {
+                //
+                // When authenticating using workforce identity, we have
+                // to pass an API key to charge against.
+                //
+                this.Initializer.ApiKey = apiKey.Value;
+            }
+
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.service = new CloudOSLoginService(this.Initializer);
         }

@@ -70,6 +70,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -91,6 +92,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -110,6 +112,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var keyType = "ssh-rsa";
@@ -142,6 +145,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -160,6 +164,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -176,6 +181,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var profile = await client
@@ -199,6 +205,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -215,6 +222,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var keyType = "ssh-rsa";
@@ -270,6 +278,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await client.DeleteSshPublicKeyAsync(
@@ -290,6 +299,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
@@ -307,6 +317,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -328,6 +339,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -346,6 +358,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -362,6 +375,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var keys = await client

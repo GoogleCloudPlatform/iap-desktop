@@ -69,6 +69,8 @@ namespace Google.Solutions.Testing.Apis.Integration
         /// </summary>
         public static string Zone => Configuration.Zone;
 
+        public static ApiKey ApiKey => new ApiKey(Configuration.ApiKey);
+
         static TestProject()
         {
             UserAgent = new UserAgent(
@@ -257,6 +259,12 @@ namespace Google.Solutions.Testing.Apis.Integration
             /// </summary>
             [JsonProperty("zone")]
             public string Zone { get; internal set; }
+
+            /// <summary>
+            /// API key (for OS Login/workforce identity).
+            /// </summary>
+            [JsonProperty("apiKey")]
+            public string ApiKey { get; internal set; }
 
             /// <summary>
             /// Workforce pool for test principals.
