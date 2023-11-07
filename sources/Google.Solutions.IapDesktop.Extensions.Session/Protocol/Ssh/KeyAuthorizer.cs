@@ -161,13 +161,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                             "This is currently not supported by IAP Desktop.");
                     }
 
-                    //
-                    // NB. It's cheaper to unconditionally push the key than
-                    // to check for previous keys first.
-                    // 
                     return await this.osLoginProfile
                         .AuthorizeKeyAsync(
-                            new ProjectLocator(instance.ProjectId),
+                            new ZoneLocator(instance.ProjectId, instance.Zone),
                             OsLoginSystemType.Linux,
                             key,
                             validity,

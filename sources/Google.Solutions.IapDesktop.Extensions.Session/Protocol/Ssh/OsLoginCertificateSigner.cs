@@ -1,5 +1,7 @@
 ﻿using Google.Solutions.Common.Runtime;
 using Google.Solutions.Ssh.Cryptography;
+using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
@@ -16,16 +18,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public OsLoginCertificateSigner(
             IAsymmetricKeySigner underlyingSigner,
-            byte[] certifiedPublicKey)
+            string openSshFormattedCertifiedPublicKey) //TODO: test
         {
             //
             // Use the same signer, but "replace" its public key
             // with the certified key.
             //
             this.underlyingSigner = underlyingSigner;
+
+            var parts = openSshFormattedCertifiedPublicKey.Split(' ');
+            if (parts.Length != 2)
+            {
+                throw new FormatException(
+                    "The key does not follow the OpenSSH format");
+            }
+
+            Debug.Assert(parts[0].EndsWith("-cert-v01@openssh.com"));
+
             this.PublicKey = new CertifiedPublicKey(
-                $"{underlyingSigner.PublicKey.Type}-cert-v01@openssh.com",
-                certifiedPublicKey);
+                parts[0],
+                Convert.FromBase64String(parts[1]));
         }
 
         //---------------------------------------------------------------------
@@ -46,6 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         protected override void Dispose(bool disposing)
         {
             this.underlyingSigner.Dispose();
+            this.PublicKey.Dispose();
             base.Dispose(disposing);
         }
 
