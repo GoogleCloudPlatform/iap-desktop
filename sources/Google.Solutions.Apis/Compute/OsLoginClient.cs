@@ -54,12 +54,10 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Import user's public key to OS Login.
         /// </summary>
-        /// <param name="keyType">Key type (for ex, 'ssh-rsa')</param>
-        /// <param name="keyBlob">Base64-encoded public key</param>
+        /// <param name="key">public key, in OpenSSH format</param>
         Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            string keyType,
-            string keyBlob,
+            string key,
             TimeSpan validity,
             CancellationToken token);
 
@@ -67,13 +65,11 @@ namespace Google.Solutions.Apis.Compute
         /// Certify a user's public key.
         /// </summary>
         /// <param name="zone"></param>
-        /// <param name="keyType">Key type (for ex, 'ssh-rsa')</param>
-        /// <param name="keyBlob">Base64-encoded public key</param>
+        /// <param name="key">public key, in OpenSSH format</param>
         /// <returns></returns>
         Task<string?> SignPublicKeyAsync(
             ZoneLocator zone,
-            string keyType,
-            string keyBlob,
+            string key,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -96,15 +92,6 @@ namespace Google.Solutions.Apis.Compute
         Task<IList<SecurityKey>> ListSecurityKeysAsync(
             ProjectLocator project,
             CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Create a certificate from a public key. Only relevant
-        /// when using workforce identity.
-        /// </summary>
-        Task<string?> SignPublicKeyAsync(
-            ZoneLocator zone,
-            string publicKey,
-            CancellationToken cancellationToken)
     }
 
     public class OsLoginClient : ApiClientBase, IOsLoginClient
@@ -167,16 +154,14 @@ namespace Google.Solutions.Apis.Compute
 
         public async Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            string keyType,
-            string keyBlob,
+            string key,
             TimeSpan validity,
             CancellationToken token)
         {
             project.ExpectNotNull(nameof(project));
-            keyType.ExpectNotEmpty(nameof(keyType));
-            keyBlob.ExpectNotEmpty(nameof(keyBlob));
+            key.ExpectNotEmpty(nameof(key));
 
-            Debug.Assert(!keyType.Contains(' '));
+            Debug.Assert(key.Contains(' '));
 
             if (this.authorization.Session is IWorkforcePoolSession)
             {
@@ -191,7 +176,7 @@ namespace Google.Solutions.Apis.Compute
                 var request = this.service.Users.ImportSshPublicKey(
                     new SshPublicKey()
                     {
-                        Key = $"{keyType} {keyBlob}",
+                        Key = key,
                         ExpirationTimeUsec = expiryTimeUsec
                     },
                     $"users/{this.EncodedUserPathComponent}");
@@ -214,7 +199,7 @@ namespace Google.Solutions.Apis.Compute
                     //
                     if (response.LoginProfile.SshPublicKeys
                         .EnsureNotNull()
-                        .Any(kvp => kvp.Value.Key.Contains(keyBlob)))
+                        .Any(kvp => kvp.Value.Key.Contains(key)))
                     {
                         return response.LoginProfile;
                     }
@@ -311,8 +296,7 @@ namespace Google.Solutions.Apis.Compute
 
         public async Task<string?> SignPublicKeyAsync(
             ZoneLocator zone,
-            string keyType,
-            string keyBlob,
+            string key,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(zone))
@@ -323,7 +307,7 @@ namespace Google.Solutions.Apis.Compute
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
                         {
-                            SshPublicKey = $"{keyType} {keyBlob}"
+                            SshPublicKey = key
                         },
                         $"users/{this.EncodedUserPathComponent}/projects/{zone.ProjectId}/locations/{zone.Name}");
 

@@ -81,8 +81,7 @@ namespace Google.Solutions.Apis.Test.Compute
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
                 () => client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    "ssh-rsa",
-                    "blob",
+                    "ssh-rsa blob",
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());
         }
@@ -103,8 +102,7 @@ namespace Google.Solutions.Apis.Test.Compute
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    "ssh-rsa",
-                    "blob",
+                    "ssh-rsa blob",
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());
         }
@@ -120,22 +118,20 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            var keyType = "ssh-rsa";
-            var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
+            var key = "ssh-rsa notarealkey-" + Guid.NewGuid().ToString();
 
             var profile = await client.ImportSshPublicKeyAsync(
                 new ProjectLocator(TestProject.ProjectId),
-                keyType,
-                keyBlob,
+                key,
                 TimeSpan.FromMinutes(5),
                 CancellationToken.None)
             .ConfigureAwait(false);
 
-            var key = profile.SshPublicKeys
+            var entry = profile.SshPublicKeys
                 .Values
-                .Where(k => k.Key.Contains(keyBlob))
+                .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(key);
+            Assert.IsNotNull(entry);
         }
 
         //---------------------------------------------------------------------
@@ -159,8 +155,7 @@ namespace Google.Solutions.Apis.Test.Compute
             await client
                 .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "ecdsa-sha2-nistp256",
-                    SampleKeyNistp256,
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -247,49 +242,50 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            var keyType = "ssh-rsa";
-            var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
+            var key = "ssh-rsa notarealkey-" + Guid.NewGuid().ToString();
 
             //
             // Import a key.
             //
-            var profile = await client.ImportSshPublicKeyAsync(
+            var profile = await client
+                .ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    keyType,
-                    keyBlob,
+                    key,
                     TimeSpan.FromMinutes(5),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var key = profile.SshPublicKeys
+            var entry = profile.SshPublicKeys
                 .Values
-                .Where(k => k.Key.Contains(keyBlob))
+                .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(key);
+            Assert.IsNotNull(entry);
 
             //
             // Delete key twice.
             //
-            await client.DeleteSshPublicKeyAsync(
-                    key.Fingerprint,
+            await client
+                .DeleteSshPublicKeyAsync(
+                    entry.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
             await client.DeleteSshPublicKeyAsync(
-                    key.Fingerprint,
+                    entry.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             //
             // Check that it's gone.
             //
-            profile = await client.GetLoginProfileAsync(
+            profile = await client
+                .GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsFalse(profile.SshPublicKeys
                 .EnsureNotNull()
-                .Any(k => k.Key.Contains(keyBlob)));
+                .Any(k => k.Key.Contains(key)));
         }
 
         [Test]
@@ -327,8 +323,7 @@ namespace Google.Solutions.Apis.Test.Compute
             ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
                 () => client.SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "ecdsa-sha2-nistp256",
-                    SampleKeyNistp256,
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None).Wait());
         }
 
@@ -346,8 +341,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var certifiedKey = await client
                 .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "ecdsa-sha2-nistp256",
-                    SampleKeyNistp256,
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None)
                 .ConfigureAwait(false);
 

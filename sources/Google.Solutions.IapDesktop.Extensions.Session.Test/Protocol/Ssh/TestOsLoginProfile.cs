@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestOsLoginService
+    public class TestOsLoginProfile
     {
         //---------------------------------------------------------------------
         // AuthorizeKeyAsync.
@@ -90,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
-                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
@@ -146,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
-                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
