@@ -75,7 +75,8 @@ namespace Google.Solutions.Ssh.Cryptography
 
         public byte[] Sign(AuthenticationChallenge challenge)
         {
-            Debug.Assert(challenge.Algorithm == this.PublicKey.Type);
+            //TODO: Also accept cert types
+            //Debug.Assert(challenge.Algorithm == this.PublicKey.Type);
 
             //
             // NB. The signature returned by CNG is formatted according to

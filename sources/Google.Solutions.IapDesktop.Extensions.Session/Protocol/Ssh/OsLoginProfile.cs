@@ -176,6 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                             token)
                         .ConfigureAwait(false);
 
+                    // TODO: b/309752006: Use the username from the certified key instead?.
+
                     var loginProfile = await this.client
                         .GetLoginProfileAsync(
                             new ProjectLocator(zone.ProjectId),

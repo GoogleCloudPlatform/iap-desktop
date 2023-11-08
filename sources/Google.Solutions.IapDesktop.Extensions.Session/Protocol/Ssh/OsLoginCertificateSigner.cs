@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// A signer that uses a key that has been certified
     /// (i.e., turned into a certificate) by OS Login.
     /// </summary>
-    public class OsLoginCertificateSigner : DisposableBase, IAsymmetricKeySigner
+    internal class OsLoginCertificateSigner : DisposableBase, IAsymmetricKeySigner
     {
         /// <summary>
         /// Underlying signer, typically a local key pair.
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.underlyingSigner = underlyingSigner;
 
             var parts = openSshFormattedCertifiedPublicKey.Split(' ');
-            if (parts.Length != 2)
+            if (parts.Length < 2)
             {
                 throw new FormatException(
                     "The key does not follow the OpenSSH format");
