@@ -187,7 +187,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             : base(loginUsername, keyType, key)
         {
             Precondition.ExpectNotNull(metadata, nameof(metadata));
-            Debug.Assert(metadata.Email.Contains("@"));
             Debug.Assert(metadata.ExpireOn.Kind == DateTimeKind.Utc);
 
             this.Metadata = metadata;
