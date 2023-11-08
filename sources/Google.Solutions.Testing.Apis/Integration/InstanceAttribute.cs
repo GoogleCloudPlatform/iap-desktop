@@ -41,6 +41,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         public InstanceServiceAccount ServiceAccount { get; set; } = InstanceServiceAccount.None;
 
         public bool EnableOsInventory { get; set; } = false;
+        public bool EnableOsLogin { get; set; } = false;
 
         protected abstract string InstanceNamePrefix { get; }
         protected abstract IEnumerable<Metadata.ItemsData> Metadata { get; }
@@ -59,6 +60,7 @@ namespace Google.Solutions.Testing.Apis.Integration
             imageSpecification.Append(this.PublicIp);
             imageSpecification.Append(this.InitializeScript);
             imageSpecification.Append(this.EnableOsInventory);
+            imageSpecification.Append(this.EnableOsLogin);
             imageSpecification.Append(this.ServiceAccount.ToString());
             imageSpecification.Append(GetType().Name);
 
@@ -158,15 +160,11 @@ namespace Google.Solutions.Testing.Apis.Integration
                         $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-Body TRUE"
                 };
-
-                if (this.EnableOsInventory)
+                yield return new Metadata.ItemsData()
                 {
-                    yield return new Metadata.ItemsData()
-                    {
-                        Key = "enable-os-inventory",
-                        Value = "TRUE"
-                    };
-                }
+                    Key = "enable-os-inventory",
+                    Value = this.EnableOsInventory ? "TRUE" : "FALSE"
+                };
             }
         }
     }
@@ -214,15 +212,17 @@ namespace Google.Solutions.Testing.Apis.Integration
                         $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
-
-                if (this.EnableOsInventory)
+                yield return new Metadata.ItemsData()
                 {
-                    yield return new Metadata.ItemsData()
-                    {
-                        Key = "enable-os-inventory",
-                        Value = "TRUE"
-                    };
-                }
+                    Key = "enable-os-inventory",
+                    Value = this.EnableOsInventory ? "TRUE" : "FALSE"
+                };
+                yield return new Metadata.ItemsData()
+                {
+                    Key = "enable-oslogin",
+                    Value = this.EnableOsLogin ? "TRUE" : "FALSE"
+                };
+
             }
         }
     }
