@@ -142,12 +142,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task WhenUsingGaiaSessionAndInRole_ThenAuthenticationWithOsLoginSucceeds(
-            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
+            [Values(SshKeyType.Rsa3072)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,
             [Credential(Roles = new [] {
                 PredefinedRole.ComputeViewer,
                 PredefinedRole.OsLogin})] ResourceTask<IAuthorization> authorization)
         {
+            //
+            // NB. Authentication can fail if we do two connection attempts in quick
+            // succession using different keys (a limitation of the guest environment).
+            // Therefore use a single key only.
+            // 
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
             using (var credential = await CreateKeyAuthorizer(await authorization)
                 .AuthorizeKeyAsync(
