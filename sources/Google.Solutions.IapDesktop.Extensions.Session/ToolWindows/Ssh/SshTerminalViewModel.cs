@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
-                if (this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                if (this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin) //TODO: Warn about outdated guest env
                 {
                     throw new OsLoginAuthenticationFailedException(
                         "You do not have sufficient permissions to access this VM instance.\n\n" +

@@ -106,7 +106,7 @@ namespace Google.Solutions.Apis.Compute
             UserAgent userAgent)
             : base(endpoint, authorization, userAgent)
         {
-            if (!(authorization.Session is IGaiaOidcSession))
+            if (authorization.Session is IWorkforcePoolSession)
             {
                 //
                 // When authenticating using workforce identity, we have
@@ -237,6 +237,11 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
+                if (this.authorization.Session is IWorkforcePoolSession)
+                {
+                    throw new OsLoginNotSupportedForWorkloadIdentityException();
+                }
+
                 var request = this.service.Users.GetLoginProfile(
                     $"users/{this.EncodedUserPathComponent}");
                 request.ProjectId = project.ProjectId;
@@ -311,6 +316,28 @@ namespace Google.Solutions.Apis.Compute
                         },
                         $"users/{this.EncodedUserPathComponent}/projects/{zone.ProjectId}/locations/{zone.Name}");
 
+                    if (this.authorization.Session is IWorkforcePoolSession)
+                    {
+                        //
+                        // This is a non-resourceful API. Charging to a client
+                        // project doesn't work with workforce identity, so we
+                        // have to do one of the following:
+                        //
+                        // (1) Pass an API key that's from the same project as the
+                        //     OAuth client.
+                        //
+                        // (2) Pass an API key from any project, and set the
+                        //     quota project.
+                        //
+                        //     This requires the user to have the
+                        //     serviceusage.services.use permission.
+                        //
+                        // Option (1) isn't viable currently, so we need to do (2).
+                        //
+                        
+                        request.UserProject = zone.ProjectId;
+                    }
+
                     var response = await request
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
@@ -324,16 +351,32 @@ namespace Google.Solutions.Apis.Compute
                     e.Error.Message.Contains("google.posix_username"))
                 {
                     throw new ExternalIdpNotConfiguredForOsLoginException(
-                        "Your IdP configuration doesn't support the use of OS Login",
+                        "Your workforce identity provider configuration doesn't contain " +
+                        "an attribute mapping for 'google.posix_username'. This mapping is " +
+                        "required for using OS Login.",
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
-                    throw new ResourceAccessDeniedException(
-                        "You do not have sufficient permissions to use OS Login: " +
-                        e.Error?.Message ?? "access denied",
-                        HelpTopics.ManagingOsLogin,
-                        e);
+                    if (e.Error?.Message is var message &&
+                        message != null &&
+                        message.Contains("roles/serviceusage.serviceUsageConsumer"))
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient permissions to use OS Login: You " +
+                            "need the 'Service Usage Consumer' (or an equivalent custom role) " +
+                            "to perform this action.",
+                            HelpTopics.ManagingOsLogin, //TODO: different help link
+                            e);
+                    }
+                    else
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient permissions to use OS Login: " +
+                            e.Error?.Message ?? "access denied",
+                            HelpTopics.ManagingOsLogin,
+                            e);
+                    }
                 }
             }
         }
@@ -410,6 +453,9 @@ namespace Google.Solutions.Apis.Compute
             public override string HttpMethod => "POST";
             public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
 
+            [RequestParameter("$userProject")]
+            public virtual string? UserProject { get; set; }
+
             public BetaSignSshPublicKeyRequest(
                 IClientService service, 
                 BetaSignSshPublicKeyRequestData body, 
@@ -436,6 +482,13 @@ namespace Google.Solutions.Apis.Compute
                     ParameterType = "path",
                     DefaultValue = null,
                     Pattern = "^users/[^/]+/projects/[^/]+/locations/[^/]+$"
+                });
+                this.RequestParameters.Add("$userProject", new Parameter
+                {
+                    Name = "$userProject",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null
                 });
             }
         }
@@ -505,6 +558,9 @@ namespace Google.Solutions.Apis.Compute
             [RequestParameter("view")]
             public virtual ViewEnum? View { get; set; }
 
+            [RequestParameter("$userProject")]
+            public virtual string? UserProject { get; set; }
+
             public override string MethodName => "getLoginProfile";
 
             public override string HttpMethod => "GET";
@@ -552,6 +608,13 @@ namespace Google.Solutions.Apis.Compute
                     ParameterType = "query",
                     DefaultValue = null,
                     Pattern = null
+                });
+                this.RequestParameters.Add("$userProject", new Parameter
+                {
+                    Name = "$userProject",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null
                 });
             }
         }

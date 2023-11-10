@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public OsLoginCertificateSigner(
             IAsymmetricKeySigner underlyingSigner,
-            string openSshFormattedCertifiedPublicKey) //TODO: test
+            string openSshFormattedCertifiedPublicKey)
         {
             //
             // Use the same signer, but "replace" its public key
@@ -47,8 +47,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             //
             this.underlyingSigner = underlyingSigner;
 
+            //
+            // Parse the key, which is in the format:
+            //
+            //  [type] [base64-blob] [username]
+            //
+            // It's safe to assume that the server includes
+            // a username, see b/309752006.
+            //
             var parts = openSshFormattedCertifiedPublicKey.Split(' ');
-            if (parts.Length < 2)
+            if (parts.Length < 3)
             {
                 throw new FormatException(
                     "The key does not follow the OpenSSH format");
@@ -59,7 +67,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.PublicKey = new CertifiedPublicKey(
                 parts[0],
                 Convert.FromBase64String(parts[1]));
+            this.Username = parts[2];
         }
+
+        internal string Username { get; }
 
         //---------------------------------------------------------------------
         // IAsymmetricKeySigner.

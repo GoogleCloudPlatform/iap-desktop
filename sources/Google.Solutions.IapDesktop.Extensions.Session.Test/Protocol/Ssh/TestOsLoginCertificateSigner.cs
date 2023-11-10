@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             using (var signer = new OsLoginCertificateSigner(
                 new Mock<IAsymmetricKeySigner>().Object,
-                "ssh-rsa-cert-v01@openssh.com AAAA"))
+                "ssh-rsa-cert-v01@openssh.com AAAA user"))
             {
                 Assert.AreEqual(
                     "ssh-rsa-cert-v01@openssh.com",
@@ -57,6 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Assert.AreEqual(
                     Convert.FromBase64String("AAAA"),
                     signer.PublicKey.WireFormatValue);
+
+                Assert.AreEqual("user", signer.Username);
             }
         }
     }

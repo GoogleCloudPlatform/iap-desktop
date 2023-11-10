@@ -139,7 +139,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingWorkforceSession_ThenGetLoginProfileSucceeds(
+        public async Task WhenUsingWorkforceSession_ThenGetLoginProfileThrowsException(
             [Credential(Type = PrincipalType.WorkforceIdentity)] 
             ResourceTask<IAuthorization> authorization)
         {
@@ -149,26 +149,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            //
-            // Certifiy a key to force creation of profile.
-            //
-            await client
-                .SignPublicKeyAsync(
-                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-
-            var profile = await client
+            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
+                () => client
                 .GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(profile);
-            Assert.AreEqual(
-                (await authorization).Session.Username,
-                profile.PosixAccounts.First().Username);
+                .Wait());
         }
 
         [Test]
@@ -328,8 +314,28 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUsingWorkforceSession_ThenSignPublicKeySucceeds(
+        public async Task WhenUsingWorkforceSessionAndUserInNotRole_ThenSignPublicKeyThrowsException(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => client
+                    .SignPublicKeyAsync(
+                        new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                        $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                        CancellationToken.None)
+                    .Wait());
+        }
+
+        [Test]
+        public async Task WhenUsingWorkforceSessionAndUserInRole_ThenSignPublicKeySucceeds(
+            [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ServiceUsageConsumer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
@@ -346,7 +352,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             StringAssert.StartsWith(
-                "ecdsa-sha2-nistp256-cert-v01@openssh.com", 
+                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
                 certifiedKey);
         }
 
