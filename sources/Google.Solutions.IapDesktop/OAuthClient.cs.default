@@ -23,6 +23,11 @@ namespace Google.Solutions.IapDesktop
             ClientId = "<<your-client-id-here>>",
             ClientSecret = "<<your-client-secret-here>>"
         };
+
+        /// <summary>
+        /// API Key (for OS Login only).
+        /// </summary>
+        internal static ApiKey ApiKey = new ApiKey("<<your-key-here>>");
     }
 
     internal static class AnalyticsStream
