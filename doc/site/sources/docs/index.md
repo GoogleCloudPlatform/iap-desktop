@@ -15,7 +15,7 @@ For Windows 11/10/8.1. No admin rights required.
 
 ## Access Linux and Windows VMs from anywhere
 
-[![Overview](https://github.com/GoogleCloudPlatform/iap-desktop/raw/master/doc/images/Screenshot_350.png){ align=right }](https://github.com/GoogleCloudPlatform/iap-desktop/blob/master/doc/images/Screenshot_1400.png?raw=true)
+[![Overview](images/screenshots/Overview_350.png){ align=right }](images/screenshots/Overview_1400.png?raw=true)
 
 IAP Desktop uses [Identity-Aware-Proxy (IAP) :octicons-link-external-16:](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to connect to VM instances so that you can:
 
@@ -34,7 +34,7 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 ## Connect to Windows VMs with Remote Desktop
 
-[![Remote Desktop](https://github.com/GoogleCloudPlatform/iap-desktop/raw/master/doc/images/RemoteDesktop_350.png){ align=right }](https://github.com/GoogleCloudPlatform/iap-desktop/blob/master/doc/images/RemoteDesktop_1400.gif?raw=true)
+[![Remote Desktop](images/screenshots/RemoteDesktop_350.png){ align=right }](images/screenshots/RemoteDesktop_1400.gif?raw=true)
 
 IAP Desktop is a [full-featured Remote Desktop client](connect-windows.md) that lets you:
 
@@ -47,11 +47,11 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 *   Automatically generate Windows credentials by using the Compute Engine guest agent environment
 *   Encrypt and store your Windows credentials locally
 
-:arrow_forward: [Show screencast](https://github.com/GoogleCloudPlatform/iap-desktop/tree/master/doc/images/RemoteDesktop_1400.gif?raw=true)
+:material-movie-play: [Show screencast](images/screenshots/RemoteDesktop_1400.gif?raw=true)
 
 ## Connect to Linux VMs with SSH
 
-[![SSH](https://github.com/GoogleCloudPlatform/iap-desktop/raw/master/doc/images/SSH_350.png){ align=right }](https://github.com/GoogleCloudPlatform/iap-desktop/blob/master/doc/images/SSH_1400.gif?raw=true)
+[![SSH](images/screenshots/SSH_350.png){ align=right }](images/screenshots/SSH_1400.gif?raw=true)
 
 IAP Desktop [includes an SSH client and terminal](connect-linux.md) so that you can:
 
@@ -65,12 +65,12 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 *   Use OS Login [2-factor authentication :octicons-link-external-16:](https://cloud.google.com/compute/docs/oslogin/set-up-oslogin)
 *   Store our SSH keys locally using Windows CNG
 
-:arrow_forward: [Show screencast](https://github.com/GoogleCloudPlatform/iap-desktop/tree/master/doc/images/SSH_1400.gif?raw=true)
+:material-movie-play: [Show screencast](images/screenshots/SSH_1400.gif?raw=true)
 
 
 ## Manage VMs across projects
 
-[![Manage VMs across projects](https://github.com/GoogleCloudPlatform/iap-desktop/raw/master/doc/images/Manage_350.png){ align=right }](https://github.com/GoogleCloudPlatform/iap-desktop/blob/master/doc/images/Manage_1400.gif?raw=true)
+[![Manage VMs across projects](images/screenshots/Manage_350.png){ align=right }](https://github.com/GoogleCloudPlatform/iap-desktop/blob/master/doc/images/Manage_1400.gif?raw=true)
 
 IAP Desktop gives you a consolidated view of your VMs and lets you:
 
@@ -81,13 +81,13 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 *   Perform other common operations such as starting or stopping VMs
 
 
-:arrow_forward: [Show screencast](https://github.com/GoogleCloudPlatform/iap-desktop/tree/master/doc/images/Manage_1400.gif?raw=true)
+:material-movie-play: [Show screencast](images/screenshots/Manage_1400.gif?raw=true)
 
 <br><br><br>
 
 ## Connect to SQL Server and other services
 
-[![Connect to SQL Server](https://github.com/GoogleCloudPlatform/iap-desktop/raw/master/doc/images/Client_350.png){ align=right }](https://github.com/GoogleCloudPlatform/iap-desktop/blob/master/doc/images/Client_700.gif?raw=true)
+[![Connect to SQL Server](images/screenshots/Client_350.png){ align=right }](images/screenshots/Client_700.png?raw=true)
 
 
 You can use IAP Desktop to let client applications connect to your Google Cloud VMs through IAP:
