@@ -40,6 +40,22 @@ To delete a profile, do the following:
 
 You can't delete the default profile.
 
+## Use a different Google account
+
+Although it's a good practice to use one profile per Google account, the
+relationship between profiles and Google accounts isn't fixed: You can
+modify a profile to use a different Google account by signing out and
+signing in again:
+
+1.  Switch to the profile you want to modify.
+
+1.  In the main menu, select **File > Sign out and exit**.
+
+1.  When prompted whether you want to keep the profile, select **Yes**.
+
+The next time you switch to the profile, you're prompted to sign in again. You can now
+sign in with a different Google account.
+
 ## What's next
 
 *   See how you can [connect to Linux VMs by using SSH](connect-linux.md)
