@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Compute
         private const string MetadataKey = "windows-keys";
 
         //
-        // Default encrption settings.
+        // Default settings for password encryption.
         //
         private const string DefaultHashFunction = "sha256";
         private static readonly RSAEncryptionPadding DefaultEncryptionPadding 
@@ -261,7 +261,7 @@ namespace Google.Solutions.Apis.Compute
                         }
 
                         //
-                        // Old versions of the guest environments unconditionally used
+                        // Old versions of the Windows guest agent unconditionally used
                         // OaepSHA1. Current versions vary the padding based on the
                         // hash function passed in the request, and echo the hash function
                         // in the response.
