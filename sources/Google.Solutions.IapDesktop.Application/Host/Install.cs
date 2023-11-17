@@ -125,7 +125,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 //
                 // Create a hash and use the first few bytes as unique ID.
                 //
-                using (var hash = new SHA256Managed())
+                // NB. Use SHA256.Create for FIPS-awareness.
+                //
+                using (var hash = SHA256.Create())
                 {
                     uniqueId = Convert.ToBase64String(
                         hash.ComputeHash(Encoding.UTF8.GetBytes(machineGuid)), 0, 12);

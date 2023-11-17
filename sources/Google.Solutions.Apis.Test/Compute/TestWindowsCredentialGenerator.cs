@@ -34,7 +34,7 @@ namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestWindowsCredentialService
+    public class TestWindowsCredentialGenerator
     {
         [Test]
         public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
@@ -51,7 +51,8 @@ namespace Google.Solutions.Apis.Test.Compute
 
             try
             {
-                await adapter.CreateWindowsCredentialsAsync(
+                await adapter
+                    .CreateWindowsCredentialsAsync(
                         await testInstance,
                         username,
                         UserFlags.AddToAdministrators,
@@ -84,7 +85,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 "doesnotexist");
             try
             {
-                await adapter.CreateWindowsCredentialsAsync(
+                await adapter
+                    .CreateWindowsCredentialsAsync(
                         instanceRef,
                         username,
                         UserFlags.AddToAdministrators,
@@ -111,7 +113,8 @@ namespace Google.Solutions.Apis.Test.Compute
             var adapter = new WindowsCredentialGenerator(computeClient);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
-            var credentials = await adapter.CreateWindowsCredentialsAsync(
+            var credentials = await adapter
+                .CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
                     UserFlags.AddToAdministrators,
@@ -136,13 +139,15 @@ namespace Google.Solutions.Apis.Test.Compute
             var adapter = new WindowsCredentialGenerator(computeClient);
             var username = "existinguser";
 
-            await adapter.CreateWindowsCredentialsAsync(
+            await adapter
+                .CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
                     UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            var credentials = await adapter.CreateWindowsCredentialsAsync(
+            var credentials = await adapter
+                .CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
                     UserFlags.None,
@@ -167,13 +172,15 @@ namespace Google.Solutions.Apis.Test.Compute
             var adapter = new WindowsCredentialGenerator(computeClient);
             var username = "existinguser";
 
-            await adapter.CreateWindowsCredentialsAsync(
+            await adapter
+                .CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
                     UserFlags.None,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            var credentials = await adapter.CreateWindowsCredentialsAsync(
+            var credentials = await adapter
+                .CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
                     UserFlags.AddToAdministrators,
@@ -362,7 +369,8 @@ namespace Google.Solutions.Apis.Test.Compute
             var adapter = new WindowsCredentialGenerator(computeClient);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
-            var result = await adapter.CreateWindowsCredentialsAsync(
+            var result = await adapter
+                .CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
                     UserFlags.AddToAdministrators,

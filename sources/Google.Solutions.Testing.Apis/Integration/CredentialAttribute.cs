@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,7 +58,7 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         private string CreateSpecificationFingerprint()
         {
-            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            using (var sha = SHA256.Create())
             {
                 //
                 // Create a hash of the account specification.

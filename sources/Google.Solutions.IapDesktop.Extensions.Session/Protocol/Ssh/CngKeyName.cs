@@ -73,7 +73,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 // use a key from a provider different from the one we're 
                 // expecting to use.
                 //
-                using (var sha = new SHA256Managed())
+                // NB. Use SHA256.Create for FIPS-awareness.
+                //
+                using (var sha = SHA256.Create())
                 {
                     //
                     // Instead of using the full provider name (which can be

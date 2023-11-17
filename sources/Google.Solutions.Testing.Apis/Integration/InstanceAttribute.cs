@@ -26,6 +26,7 @@ using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Google.Solutions.Testing.Apis.Integration
@@ -74,7 +75,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                 specification.Append(kokoroJobType);
             }
 
-            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            using (var sha = SHA256.Create())
             {
                 var specificationRaw = Encoding.UTF8.GetBytes(specification.ToString());
                 return this.InstanceNamePrefix + BitConverter

@@ -89,6 +89,13 @@ namespace Google.Solutions.Apis.Compute
         private const int SerialPort = 4;
         private const string MetadataKey = "windows-keys";
 
+        //
+        // Default encrption settings.
+        //
+        private const string DefaultHashFunction = "sha256";
+        private static readonly RSAEncryptionPadding DefaultEncryptionPadding 
+            = RSAEncryptionPadding.OaepSHA256;
+
         private readonly IComputeEngineClient computeClient;
 
         //---------------------------------------------------------------------
@@ -112,7 +119,7 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken token)
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(instanceRef, username))
-            using (var rsa = new RSACryptoServiceProvider(RsaKeySize))
+            using (var rsa = new RSACng(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
 
@@ -123,7 +130,8 @@ namespace Google.Solutions.Apis.Compute
                     Email = username,
                     Modulus = Convert.ToBase64String(keyParameters.Modulus),
                     Exponent = Convert.ToBase64String(keyParameters.Exponent),
-                    AddToAdministrators = userType.HasFlag(UserFlags.AddToAdministrators)
+                    AddToAdministrators = userType.HasFlag(UserFlags.AddToAdministrators),
+                    HashFunction = DefaultHashFunction
                 };
 
                 //
@@ -252,9 +260,26 @@ namespace Google.Solutions.Apis.Compute
                                 responsePayload?.ErrorMessage ?? "The response is empty");
                         }
 
+                        //
+                        // Old versions of the guest environments unconditionally used
+                        // OaepSHA1. Current versions vary the padding based on the
+                        // hash function passed in the request, and echo the hash function
+                        // in the response.
+                        //
+                        // If the response contains the hash function we requested, then
+                        // we know it's a current version and we can use the appropriate
+                        // OAEP padding. If the response contains no hash function field,
+                        // then we're dealing with an old version and need to fall back
+                        // to OaepSHA1.
+                        //
+
+                        var padding = responsePayload.HashFunction == DefaultHashFunction
+                            ? DefaultEncryptionPadding
+                            : RSAEncryptionPadding.OaepSHA1;
+
                         var password = rsa.Decrypt(
                             Convert.FromBase64String(responsePayload.EncryptedPassword),
-                            true);
+                            padding);
 
                         return new NetworkCredential(
                             username,
@@ -343,6 +368,9 @@ namespace Google.Solutions.Apis.Compute
 
             [JsonProperty("addToAdministrators")]
             public bool? AddToAdministrators { get; set; }
+
+            [JsonProperty("hashFunction")]
+            public string? HashFunction { get; set; }
         }
 
         internal class ResponsePayload
@@ -352,6 +380,9 @@ namespace Google.Solutions.Apis.Compute
 
             [JsonProperty("errorMessage")]
             public string? ErrorMessage { get; set; }
+
+            [JsonProperty("hashFunction")]
+            public string? HashFunction { get; set; }
         }
     }
 
