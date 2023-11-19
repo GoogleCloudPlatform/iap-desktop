@@ -21,6 +21,7 @@
 
 
 using Google.Solutions.Mvvm.Interop;
+using Google.Solutions.Mvvm.Theme;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
@@ -42,7 +43,16 @@ namespace Google.Solutions.Mvvm.Controls
                 // particularly in dark mode.
                 //
                 var cp = base.CreateParams;
-                cp.ExStyle |= (int)WindowStyles.WS_EX_COMPOSITED;
+
+                if (!GdiScaling.IsEnabled)
+                {
+                    //
+                    // WS_EX_COMPOSITED can break scrolling if
+                    // DPI virtualization is active.
+                    //
+                    cp.ExStyle |= (int)WindowStyles.WS_EX_COMPOSITED;
+                }
+
                 return cp;
             }
         }

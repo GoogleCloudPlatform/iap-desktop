@@ -59,6 +59,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Interop;
+using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Dispatch;
@@ -84,6 +85,7 @@ namespace Google.Solutions.IapDesktop
 {
     public class Program : SingletonApplicationBase
     {
+        private static readonly Version Windows10_1703 = new Version(10, 0, 15063, 0);
         private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
         private static readonly Version WindowsServer2022 = new Version(10, 0, 20348, 0);
 
@@ -446,21 +448,34 @@ namespace Google.Solutions.IapDesktop
                     Install.UserAgent.Extensions = "Enterprise";
                 }
 
+                var themeSettingsRepository = new ThemeSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Theme"));
+
+                if (Environment.OSVersion.Version >= Windows10_1703)
+                {
+                    //
+                    // Enable GDI scaling unless it has been disabled by the user.
+                    //
+                    GdiScaling.IsEnabled = themeSettingsRepository
+                        .GetSettings()
+                        .IsGdiScalingEnabled
+                        .BoolValue;
+                }
+
                 var authSettingsRepository = new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"));
-                preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
-                preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
 
                 var accessSettingsRepository = new AccessSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),
                     profile.UserPolicyKey?.OpenSubKey("Application"));
+                
+                preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
+                preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IRepository<IAccessSettings>>(accessSettingsRepository);
-                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(new ThemeSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Theme")));
+                preAuthLayer.AddSingleton<IRepository<IThemeSettings>>(themeSettingsRepository);
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
-
                 preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
                 preAuthLayer.AddSingleton<IThemeService, ThemeService>();
                 preAuthLayer.AddTransient<IQuarantine, Quarantine>();

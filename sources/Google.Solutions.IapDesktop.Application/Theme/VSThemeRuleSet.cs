@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
@@ -337,11 +336,18 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     : this.theme.Palette.TextBox.Background;
             }
 
-            SetControlBorder(
-                text,
-                this.theme.Palette.TextBox.Border,
-                this.theme.Palette.TextBox.BorderHover,
-                this.theme.Palette.TextBox.BorderFocused);
+            if (!GdiScaling.IsEnabled)
+            {
+                //
+                // When GDI scaling is active, SetControlBorder 
+                // causes strage painting issues.
+                //
+                SetControlBorder(
+                    text,
+                    this.theme.Palette.TextBox.Border,
+                    this.theme.Palette.TextBox.BorderHover,
+                    this.theme.Palette.TextBox.BorderFocused);
+            }
         }
 
         private void StyleMarkdownViewer(MarkdownViewer md)

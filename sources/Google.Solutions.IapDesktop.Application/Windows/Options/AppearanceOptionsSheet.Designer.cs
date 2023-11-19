@@ -55,7 +55,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.themeInfoLabel = new System.Windows.Forms.Label();
             this.themeLabel = new System.Windows.Forms.Label();
             this.theme = new Google.Solutions.Mvvm.Controls.BindableComboBox();
+            this.scalingBox = new System.Windows.Forms.GroupBox();
+            this.gdiScalingCheckBox = new System.Windows.Forms.CheckBox();
             this.themeBox.SuspendLayout();
+            this.scalingBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // themeBox
@@ -97,15 +100,38 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.theme.Size = new System.Drawing.Size(154, 21);
             this.theme.TabIndex = 3;
             // 
+            // scalingBox
+            // 
+            this.scalingBox.Controls.Add(this.gdiScalingCheckBox);
+            this.scalingBox.Location = new System.Drawing.Point(4, 95);
+            this.scalingBox.Name = "scalingBox";
+            this.scalingBox.Size = new System.Drawing.Size(336, 60);
+            this.scalingBox.TabIndex = 1;
+            this.scalingBox.TabStop = false;
+            this.scalingBox.Text = "Scaling";
+            // 
+            // gdiScalingCheckBox
+            // 
+            this.gdiScalingCheckBox.AutoSize = true;
+            this.gdiScalingCheckBox.Location = new System.Drawing.Point(21, 24);
+            this.gdiScalingCheckBox.Name = "gdiScalingCheckBox";
+            this.gdiScalingCheckBox.Size = new System.Drawing.Size(216, 17);
+            this.gdiScalingCheckBox.TabIndex = 0;
+            this.gdiScalingCheckBox.Text = "Enable GDI scaling on high-DPI screens";
+            this.gdiScalingCheckBox.UseVisualStyleBackColor = true;
+            // 
             // AppearanceOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.scalingBox);
             this.Controls.Add(this.themeBox);
             this.Name = "AppearanceOptionsSheet";
             this.Size = new System.Drawing.Size(343, 322);
             this.themeBox.ResumeLayout(false);
             this.themeBox.PerformLayout();
+            this.scalingBox.ResumeLayout(false);
+            this.scalingBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -116,5 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         private System.Windows.Forms.Label themeLabel;
         private BindableComboBox theme;
         private System.Windows.Forms.Label themeInfoLabel;
+        private System.Windows.Forms.GroupBox scalingBox;
+        private System.Windows.Forms.CheckBox gdiScalingCheckBox;
     }
 }

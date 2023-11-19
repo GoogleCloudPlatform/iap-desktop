@@ -49,12 +49,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 : "Themes are not supported on this version\nof Windows";
             this.SelectedTheme = ObservableProperty.Build(settings.Theme.EnumValue);
 
+            this.IsGdiScalingEnabled = ObservableProperty.Build(
+                settings.IsGdiScalingEnabled.BoolValue);
+
             MarkDirtyWhenPropertyChanges(this.SelectedTheme);
+            MarkDirtyWhenPropertyChanges(this.IsGdiScalingEnabled);
         }
 
         protected override void Save(IThemeSettings settings)
         {
             settings.Theme.EnumValue = this.SelectedTheme.Value;
+            settings.IsGdiScalingEnabled.BoolValue = this.IsGdiScalingEnabled.Value;
         }
 
         //---------------------------------------------------------------------
@@ -66,5 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public string ThemeInfoText { get; private set; }
 
         public ObservableProperty<ApplicationTheme> SelectedTheme { get; private set; }
+
+        public ObservableProperty<bool> IsGdiScalingEnabled { get; private set; }
     }
 }

@@ -32,25 +32,6 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public class RichTextBox50 : RichTextBox
     {
-
-#if !NET471_OR_GREATER
-        //
-        // .NET versions prior to 4.7 use an older version of
-        // RichEdit that doesn't include friendly links yet.
-        //
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                var cp = base.CreateParams;
-                NativeMethods.LoadLibraryW("MsftEdit.dll");
-                cp.ClassName = "RichEdit50W";
-                return cp;
-            }
-        }
-#endif
-
         //---------------------------------------------------------------------
         // Support for friendly links
         //

@@ -66,6 +66,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         //---------------------------------------------------------------------
+        // IsGdiScalingEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenGdiScalingChanged_ThenDirtyFlagIsSet()
+        {
+            var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
+            Assert.IsTrue(viewModel.IsGdiScalingEnabled.Value);
+
+            viewModel.IsGdiScalingEnabled.Value = false;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        //---------------------------------------------------------------------
         // Load.
         //---------------------------------------------------------------------
 
@@ -81,10 +96,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             //
             var settings = this.settingsRepository.GetSettings();
             settings.Theme.Value = ApplicationTheme.Dark;
+            settings.IsGdiScalingEnabled.Value = false;
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
             Assert.AreEqual(ApplicationTheme.Dark, viewModel.SelectedTheme.Value);
+            Assert.IsFalse(viewModel.IsGdiScalingEnabled.Value);
         }
 
         [Test]
@@ -96,10 +113,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
+            viewModel.IsGdiScalingEnabled.Value = false;
             await viewModel.ApplyChangesAsync();
 
             var settings = this.settingsRepository.GetSettings();
             Assert.AreEqual(ApplicationTheme.Dark, settings.Theme.Value);
+            Assert.IsFalse(settings.IsGdiScalingEnabled.BoolValue);
         }
     }
 }

@@ -53,6 +53,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.theme.BindObservableProperty(
                 viewModel.SelectedTheme,
                 bindingContext);
+            this.gdiScalingCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsGdiScalingEnabled,
+                bindingContext);
         }
     }
 }

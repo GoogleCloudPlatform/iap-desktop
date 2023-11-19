@@ -52,6 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// Current theme.
         /// </summary>
         IEnumSetting<ApplicationTheme> Theme { get; }
+
+        /// <summary>
+        /// Enable GDI scaling for high-DPI monitors.
+        /// </summary>
+        IBoolSetting IsGdiScalingEnabled { get; }
     }
 
     public class ThemeSettingsRepository : RegistryRepositoryBase<IThemeSettings>
@@ -71,10 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         private class ThemeSettings : IThemeSettings
         {
             public IEnumSetting<ApplicationTheme> Theme { get; private set; }
+            public IBoolSetting IsGdiScalingEnabled { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                this.Theme
+                this.Theme,
+                this.IsGdiScalingEnabled
             };
 
             private ThemeSettings()
@@ -91,6 +98,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                         null,
                         null,
                         ApplicationTheme._Default,
+                        registryKey),
+                    IsGdiScalingEnabled = RegistryBoolSetting.FromKey(
+                        "IsGdiScalingEnabled",
+                        "IsGdiScalingEnabled",
+                        null,
+                        null,
+                        true,
                         registryKey)
                 };
             }
