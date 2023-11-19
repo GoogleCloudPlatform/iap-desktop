@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Client;
 
 namespace Google.Solutions.IapDesktop
 {
