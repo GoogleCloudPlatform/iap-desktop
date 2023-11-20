@@ -41,6 +41,11 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestOsLoginClient
     {
+        public const string SampleKeyNistp256 =
+            "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOAATK5b5Y" +
+            "ERo8r80PGSNgH+fabpTTr1tSt3CcAXd1gk3E+f1vvPL/1MxYeGolwehAyTL8mP" +
+            "kxxmyn0tRb5TGvM=";
+
         private static IAuthorization CreateGaiaAuthorizationWithMismatchedUser(
             string username,
             ICredential credential)
@@ -70,13 +75,13 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
                 () => client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    "ssh-rsa",
-                    "blob",
+                    "ssh-rsa blob",
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());
         }
@@ -91,13 +96,13 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    "ssh-rsa",
-                    "blob",
+                    "ssh-rsa blob",
                     TimeSpan.FromMinutes(1),
                     CancellationToken.None).Wait());
         }
@@ -110,24 +115,23 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            var keyType = "ssh-rsa";
-            var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
+            var key = "ssh-rsa notarealkey-" + Guid.NewGuid().ToString();
 
             var profile = await client.ImportSshPublicKeyAsync(
                 new ProjectLocator(TestProject.ProjectId),
-                keyType,
-                keyBlob,
+                key,
                 TimeSpan.FromMinutes(5),
                 CancellationToken.None)
             .ConfigureAwait(false);
 
-            var key = profile.SshPublicKeys
+            var entry = profile.SshPublicKeys
                 .Values
-                .Where(k => k.Key.Contains(keyBlob))
+                .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(key);
+            Assert.IsNotNull(entry);
         }
 
         //---------------------------------------------------------------------
@@ -142,12 +146,15 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
-                () => client.GetLoginProfileAsync(
+                () => client
+                .GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None)
+                .Wait());
         }
 
         [Test]
@@ -160,6 +167,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -169,13 +177,14 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenEmailValid_ThenGetLoginProfileReturnsProfile(
+        public async Task WhenEmailValid_ThenGetLoginProfileSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] 
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var profile = await client
@@ -199,6 +208,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -215,51 +225,53 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            var keyType = "ssh-rsa";
-            var keyBlob = "notarealkey-" + Guid.NewGuid().ToString();
+            var key = "ssh-rsa notarealkey-" + Guid.NewGuid().ToString();
 
             //
             // Import a key.
             //
-            var profile = await client.ImportSshPublicKeyAsync(
+            var profile = await client
+                .ImportSshPublicKeyAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    keyType,
-                    keyBlob,
+                    key,
                     TimeSpan.FromMinutes(5),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var key = profile.SshPublicKeys
+            var entry = profile.SshPublicKeys
                 .Values
-                .Where(k => k.Key.Contains(keyBlob))
+                .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(key);
+            Assert.IsNotNull(entry);
 
             //
             // Delete key twice.
             //
-            await client.DeleteSshPublicKeyAsync(
-                    key.Fingerprint,
+            await client
+                .DeleteSshPublicKeyAsync(
+                    entry.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
             await client.DeleteSshPublicKeyAsync(
-                    key.Fingerprint,
+                    entry.Fingerprint,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             //
             // Check that it's gone.
             //
-            profile = await client.GetLoginProfileAsync(
+            profile = await client
+                .GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsFalse(profile.SshPublicKeys
                 .EnsureNotNull()
-                .Any(k => k.Key.Contains(keyBlob)));
+                .Any(k => k.Key.Contains(key)));
         }
 
         [Test]
@@ -270,6 +282,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await client.DeleteSshPublicKeyAsync(
@@ -290,30 +303,57 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
                 () => client.SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "AAAA",
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None).Wait());
         }
 
         [Test]
-        public async Task WhenUsingWorkforceSession_ThenSignPublicKeyThrowsException(
+        public async Task WhenUsingWorkforceSessionAndUserInNotRole_ThenSignPublicKeyThrowsException(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.SignPublicKeyAsync(
+                () => client
+                    .SignPublicKeyAsync(
+                        new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                        $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                        CancellationToken.None)
+                    .Wait());
+        }
+
+        [Test]
+        public async Task WhenUsingWorkforceSessionAndUserInRole_ThenSignPublicKeySucceeds(
+            [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ServiceUsageConsumer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            var certifiedKey = await client
+                .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    "AAAA",
-                    CancellationToken.None).Wait());
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            StringAssert.StartsWith(
+                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+                certifiedKey);
         }
 
         //---------------------------------------------------------------------
@@ -328,6 +368,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
@@ -346,6 +387,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -362,6 +404,7 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
+                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var keys = await client

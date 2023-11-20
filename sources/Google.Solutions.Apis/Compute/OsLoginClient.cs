@@ -38,9 +38,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Apis.Compute.OsLoginClient;
 
 namespace Google.Solutions.Apis.Compute
 {
@@ -52,14 +54,23 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Import user's public key to OS Login.
         /// </summary>
-        /// <param name="keyType">Key type (for ex, 'ssh-rsa')</param>
-        /// <param name="keyBlob">SSH1/Base64-encoded public key</param>
+        /// <param name="key">public key, in OpenSSH format</param>
         Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            string keyType,
-            string keyBlob,
+            string key,
             TimeSpan validity,
             CancellationToken token);
+
+        /// <summary>
+        /// Certify a user's public key.
+        /// </summary>
+        /// <param name="zone"></param>
+        /// <param name="key">public key, in OpenSSH format</param>
+        /// <returns></returns>
+        Task<string?> SignPublicKeyAsync(
+            ZoneLocator zone,
+            string key,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Read user's profile and published SSH keys.
@@ -74,6 +85,13 @@ namespace Google.Solutions.Apis.Compute
         Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// List enrolled U2F and WebAuthn security keys.
+        /// </summary>
+        Task<IList<SecurityKey>> ListSecurityKeysAsync(
+            ProjectLocator project,
+            CancellationToken cancellationToken);
     }
 
     public class OsLoginClient : ApiClientBase, IOsLoginClient
@@ -84,9 +102,19 @@ namespace Google.Solutions.Apis.Compute
         public OsLoginClient(
             ServiceEndpoint<OsLoginClient> endpoint,
             IAuthorization authorization,
+            ApiKey apiKey,
             UserAgent userAgent)
             : base(endpoint, authorization, userAgent)
         {
+            if (authorization.Session is IWorkforcePoolSession)
+            {
+                //
+                // When authenticating using workforce identity, we have
+                // to pass an API key to charge against.
+                //
+                this.Initializer.ApiKey = apiKey.Value;
+            }
+
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.service = new CloudOSLoginService(this.Initializer);
         }
@@ -99,41 +127,59 @@ namespace Google.Solutions.Apis.Compute
                 "https://oslogin.googleapis.com/");
         }
 
+        internal string EncodedUserPathComponent
+        {
+            get => this.authorization.Session switch
+            {
+                //
+                // Use the email address without extra encoding.
+                //
+                IGaiaOidcSession gaiaSession
+                    => gaiaSession.Email,
+
+                //
+                // Use the full principal idenfifier (yes, that's a URL)
+                // and encode it.
+                //
+                IWorkforcePoolSession wfSession 
+                    => WebUtility.UrlEncode(wfSession.PrincipalIdentifier),
+                
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
         //---------------------------------------------------------------------
         // IOsLoginClient.
         //---------------------------------------------------------------------
 
         public async Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            string keyType,
-            string keyBlob,
+            string key,
             TimeSpan validity,
             CancellationToken token)
         {
             project.ExpectNotNull(nameof(project));
-            keyType.ExpectNotEmpty(nameof(keyType));
-            keyBlob.ExpectNotEmpty(nameof(keyBlob));
+            key.ExpectNotEmpty(nameof(key));
 
-            Debug.Assert(!keyType.Contains(' '));
+            Debug.Assert(key.Contains(' '));
 
-            var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+            if (this.authorization.Session is IWorkforcePoolSession)
+            {
+                throw new OsLoginNotSupportedForWorkloadIdentityException();
+            }
 
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
 
-                var userEmail = gaiaSession.Email;
-                Debug.Assert(userEmail != null);
-
                 var request = this.service.Users.ImportSshPublicKey(
                     new SshPublicKey()
                     {
-                        Key = $"{keyType} {keyBlob}",
+                        Key = key,
                         ExpirationTimeUsec = expiryTimeUsec
                     },
-                    $"users/{userEmail}");
+                    $"users/{this.EncodedUserPathComponent}");
                 request.ProjectId = project.ProjectId;
 
                 try
@@ -153,7 +199,7 @@ namespace Google.Solutions.Apis.Compute
                     //
                     if (response.LoginProfile.SshPublicKeys
                         .EnsureNotNull()
-                        .Any(kvp => kvp.Value.Key.Contains(keyBlob)))
+                        .Any(kvp => kvp.Value.Key.Contains(key)))
                     {
                         return response.LoginProfile;
                     }
@@ -191,11 +237,13 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+                if (this.authorization.Session is IWorkforcePoolSession)
+                {
+                    throw new OsLoginNotSupportedForWorkloadIdentityException();
+                }
 
                 var request = this.service.Users.GetLoginProfile(
-                    $"users/{gaiaSession.Email}");
+                    $"users/{this.EncodedUserPathComponent}");
                 request.ProjectId = project.ProjectId;
 
                 try
@@ -212,6 +260,13 @@ namespace Google.Solutions.Apis.Compute
                         HelpTopics.ManagingOsLogin,
                         e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        "The login profile could not be found, it it has not " +
+                        "been allocated yet",
+                        e);
+                }
             }
         }
 
@@ -221,16 +276,15 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(fingerprint))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+                if (this.authorization.Session is IWorkforcePoolSession)
+                {
+                    throw new OsLoginNotSupportedForWorkloadIdentityException();
+                }
 
                 try
                 {
-                    var userEmail = gaiaSession.Email;
-                    Debug.Assert(userEmail != null);
-
                     await this.service.Users.SshPublicKeys
-                        .Delete($"users/{userEmail}/sshPublicKeys/{fingerprint}")
+                        .Delete($"users/{this.EncodedUserPathComponent}/sshPublicKeys/{fingerprint}")
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
@@ -247,7 +301,7 @@ namespace Google.Solutions.Apis.Compute
 
         public async Task<string?> SignPublicKeyAsync(
             ZoneLocator zone,
-            string publicKey,
+            string key,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(zone))
@@ -258,9 +312,31 @@ namespace Google.Solutions.Apis.Compute
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
                         {
-                            SshPublicKey = publicKey
+                            SshPublicKey = key
                         },
-                        $"users/{this.authorization.Session.Username}/projects/{zone.ProjectId}/locations/{zone.Name}");
+                        $"users/{this.EncodedUserPathComponent}/projects/{zone.ProjectId}/locations/{zone.Name}");
+
+                    if (this.authorization.Session is IWorkforcePoolSession)
+                    {
+                        //
+                        // This is a non-resourceful API. Charging to a client
+                        // project doesn't work with workforce identity, so we
+                        // have to do one of the following:
+                        //
+                        // (1) Pass an API key that's from the same project as the
+                        //     OAuth client.
+                        //
+                        // (2) Pass an API key from any project, and set the
+                        //     quota project.
+                        //
+                        //     This requires the user to have the
+                        //     serviceusage.services.use permission.
+                        //
+                        // Option (1) isn't viable currently, so we need to do (2).
+                        //
+                        
+                        request.UserProject = zone.ProjectId;
+                    }
 
                     var response = await request
                         .ExecuteAsync(cancellationToken)
@@ -275,16 +351,32 @@ namespace Google.Solutions.Apis.Compute
                     e.Error.Message.Contains("google.posix_username"))
                 {
                     throw new ExternalIdpNotConfiguredForOsLoginException(
-                        "Your IdP configuration doesn't support the use of OS Login",
+                        "Your workforce identity provider configuration doesn't contain " +
+                        "an attribute mapping for 'google.posix_username'. This mapping is " +
+                        "required for using OS Login.",
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
-                    throw new ResourceAccessDeniedException(
-                        "You do not have sufficient permissions to use OS Login: " +
-                        e.Error?.Message ?? "access denied",
-                        HelpTopics.ManagingOsLogin,
-                        e);
+                    if (e.Error?.Message is var message &&
+                        message != null &&
+                        message.Contains("roles/serviceusage.serviceUsageConsumer"))
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient permissions to use OS Login: You " +
+                            "need the 'Service Usage Consumer' (or an equivalent custom role) " +
+                            "to perform this action.",
+                            HelpTopics.ManagingOsLogin, //TODO: different help link
+                            e);
+                    }
+                    else
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient permissions to use OS Login: " +
+                            e.Error?.Message ?? "access denied",
+                            HelpTopics.ManagingOsLogin,
+                            e);
+                    }
                 }
             }
         }
@@ -295,14 +387,17 @@ namespace Google.Solutions.Apis.Compute
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
-                var gaiaSession = this.authorization.Session as IGaiaOidcSession
-                    ?? throw new OsLoginNotSupportedForWorkloadIdentityException();
+
+                if (this.authorization.Session is IWorkforcePoolSession)
+                {
+                    throw new OsLoginNotSupportedForWorkloadIdentityException();
+                }
 
                 try
                 {
                     var request = new BetaGetLoginProfileRequest(
                         this.service,
-                        $"users/{gaiaSession.Username}")
+                        $"users/{this.EncodedUserPathComponent}")
                     {
                         ProjectId = project.Name,
                         View = BetaGetLoginProfileRequest.ViewEnum.SECURITYKEY
@@ -358,6 +453,9 @@ namespace Google.Solutions.Apis.Compute
             public override string HttpMethod => "POST";
             public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
 
+            [RequestParameter("$userProject")]
+            public virtual string? UserProject { get; set; }
+
             public BetaSignSshPublicKeyRequest(
                 IClientService service, 
                 BetaSignSshPublicKeyRequestData body, 
@@ -384,6 +482,13 @@ namespace Google.Solutions.Apis.Compute
                     ParameterType = "path",
                     DefaultValue = null,
                     Pattern = "^users/[^/]+/projects/[^/]+/locations/[^/]+$"
+                });
+                this.RequestParameters.Add("$userProject", new Parameter
+                {
+                    Name = "$userProject",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null
                 });
             }
         }
@@ -453,6 +558,9 @@ namespace Google.Solutions.Apis.Compute
             [RequestParameter("view")]
             public virtual ViewEnum? View { get; set; }
 
+            [RequestParameter("$userProject")]
+            public virtual string? UserProject { get; set; }
+
             public override string MethodName => "getLoginProfile";
 
             public override string HttpMethod => "GET";
@@ -501,6 +609,13 @@ namespace Google.Solutions.Apis.Compute
                     DefaultValue = null,
                     Pattern = null
                 });
+                this.RequestParameters.Add("$userProject", new Parameter
+                {
+                    Name = "$userProject",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null
+                });
             }
         }
 
@@ -512,8 +627,8 @@ namespace Google.Solutions.Apis.Compute
     {
         public OsLoginNotSupportedForWorkloadIdentityException() 
             : base(
-                "This project or VM instance uses OS Login, but OS Login is " +
-                "currently not supported by workforce identity federation.")
+                "This OS Login operation is not supported for " +
+                "workforce identity federation.")
         {
         }
     }

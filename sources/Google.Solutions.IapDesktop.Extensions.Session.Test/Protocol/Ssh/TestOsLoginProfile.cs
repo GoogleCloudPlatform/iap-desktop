@@ -20,11 +20,13 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -38,8 +40,68 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestOsLoginService
+    public class TestOsLoginProfile
     {
+        private static readonly ZoneLocator SampleZone =
+            new ZoneLocator("project-1", "zone-1");
+
+        private static IAuthorization CreateAuthorization<TSession>()
+            where TSession : class, IOidcSession
+        {
+            var session = new Mock<TSession>();
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Session)
+                .Returns(session.Object);
+
+            return authorization.Object;
+        }
+
+        //---------------------------------------------------------------------
+        // LookupUsername.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProfileContainsMultipleAccounts_ThenLookupUsernamePrimary()
+        {
+            var loginProfile = new LoginProfile()
+            {
+                PosixAccounts = new[]
+                {
+                    new PosixAccount()
+                    {
+                        AccountId = "1",
+                        Primary = false,
+                        OperatingSystemType = "DOS",
+                        Username = "joe1"
+                    },
+                    new PosixAccount()
+                    {
+                        AccountId = "2",
+                        Primary = true,
+                        OperatingSystemType = "DOS",
+                        Username = "joe2"
+                    },
+                    new PosixAccount()
+                    {
+                        AccountId = "3",
+                        Primary = true,
+                        OperatingSystemType = "LINUX",
+                        Username = "joe3"
+                    }
+                }
+            };
+
+            Assert.AreEqual("joe3", OsLoginProfile.LookupUsername(loginProfile));
+        }
+
+        [Test]
+        public void WhenProfileContainsNoAccount_ThenLookupUsernameThrowsException()
+        {
+            Assert.Throws<InvalidOsLoginProfileException>(
+                () =>  OsLoginProfile.LookupUsername(new LoginProfile()));
+        }
+
         //---------------------------------------------------------------------
         // AuthorizeKeyAsync.
         //---------------------------------------------------------------------
@@ -47,17 +109,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
-            var service = new OsLoginProfile(new Mock<IOsLoginClient>().Object);
+            var profile = new OsLoginProfile(
+                new Mock<IOsLoginClient>().Object,
+                CreateAuthorization<IGaiaOidcSession>());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => profile.AuthorizeKeyAsync(
                 null,
                 OsLoginSystemType.Linux,
                 new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
-                new ProjectLocator("project-1"),
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => profile.AuthorizeKeyAsync(
+                SampleZone,
                 OsLoginSystemType.Linux,
                 null,
                 TimeSpan.FromDays(1),
@@ -67,30 +131,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenValidityIsZeroOrNegative_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
-            var service = new OsLoginProfile(new Mock<IOsLoginClient>().Object);
+            var profile = new OsLoginProfile(
+                new Mock<IOsLoginClient>().Object,
+                CreateAuthorization<IGaiaOidcSession>());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
-                new ProjectLocator("project-1"),
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => profile.AuthorizeKeyAsync(
+                SampleZone,
                 OsLoginSystemType.Linux,
                 new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(-1),
                 CancellationToken.None).Wait());
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
-                new ProjectLocator("project-1"),
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => profile.AuthorizeKeyAsync(
+                SampleZone,
                 OsLoginSystemType.Linux,
                 new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromSeconds(0),
                 CancellationToken.None).Wait());
         }
 
+        //---------------------------------------------------------------------
+        // AuthorizeKeyAsync - Gaia.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenAdapterReturnsMultipleAccounts_ThenAuthorizeKeyAsyncSelectsPrimary()
+        public async Task WhenUsingGaiaSession_ThenAuthorizeImportsKey()
         {
-            var adapter = new Mock<IOsLoginClient>();
-            adapter
+            var client = new Mock<IOsLoginClient>();
+            client
                 .Setup(a => a.ImportSshPublicKeyAsync(
                     It.IsAny<ProjectLocator>(),
-                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
@@ -101,67 +170,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         new PosixAccount()
                         {
                             AccountId = "1",
-                            Primary = false,
-                            OperatingSystemType = "DOS",
-                            Username = "joe1"
-                        },
-                        new PosixAccount()
-                        {
-                            AccountId = "2",
-                            Primary = true,
-                            OperatingSystemType = "DOS",
-                            Username = "joe2"
-                        },
-                        new PosixAccount()
-                        {
-                            AccountId = "3",
                             Primary = true,
                             OperatingSystemType = "LINUX",
-                            Username = "joe3"
+                            Username = "joe"
                         }
                     }
                 });
-            var service = new OsLoginProfile(adapter.Object);
+
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IGaiaOidcSession>());
 
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
-            {
-                var key = await service
-                    .AuthorizeKeyAsync(
-                        new ProjectLocator("project-1"),
-                        OsLoginSystemType.Linux,
-                        signer,
-                        TimeSpan.FromDays(1),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                Assert.AreEqual("joe3", key.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
+            using (var credential = await profile
+                .AuthorizeKeyAsync(
+                    SampleZone,
+                    OsLoginSystemType.Linux,
+                    signer,
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None)
+                .ConfigureAwait(false))
+            { 
+                client.Verify(c => c.ImportSshPublicKeyAsync(
+                    new ProjectLocator(SampleZone.ProjectId),
+                    signer.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None), Times.Once());
+                Assert.AreEqual("joe", credential.Username);
+                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
             }
         }
 
         [Test]
-        public void WhenAdapterReturnsNoAccount_ThenAuthorizeKeyAsyncThrowsOsLoginSshKeyImportFailedException()
+        public async Task WhenUsingWorkforceSession_ThenAuthorizeSignsKey()
         {
-            var adapter = new Mock<IOsLoginClient>();
-            adapter
-                .Setup(a => a.ImportSshPublicKeyAsync(
-                    It.IsAny<ProjectLocator>(),
+            var client = new Mock<IOsLoginClient>();
+            client
+                .Setup(a => a.SignPublicKeyAsync(
+                    It.IsAny<ZoneLocator>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new LoginProfile());
-            var service = new OsLoginProfile(adapter.Object);
+                .ReturnsAsync("ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA joe");
+
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IWorkforcePoolSession>());
 
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
-            {
-                ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
-                    () => service.AuthorizeKeyAsync(
-                        new ProjectLocator("project-1"),
-                        OsLoginSystemType.Linux,
-                        signer,
-                        TimeSpan.FromDays(1),
-                        CancellationToken.None).Wait());
+            using (var credential = await profile
+                .AuthorizeKeyAsync(
+                    SampleZone,
+                    OsLoginSystemType.Linux,
+                    signer,
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None)
+                .ConfigureAwait(false))
+            { 
+                client.Verify(c => c.SignPublicKeyAsync(
+                    SampleZone,
+                    signer.PublicKey.ToString(PublicKey.Format.OpenSsh),
+                    CancellationToken.None), Times.Once());
+                Assert.AreEqual("joe", credential.Username);
+                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
+                Assert.IsInstanceOf<OsLoginCertificateSigner>(credential.Signer);
             }
         }
 
@@ -172,17 +243,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenProfileIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var adapter = new Mock<IOsLoginClient>();
-            adapter.Setup(a => a.GetLoginProfileAsync(
+            var client = new Mock<IOsLoginClient>();
+            client.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
                 {
                 });
 
-            var service = new OsLoginProfile(adapter.Object);
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IGaiaOidcSession>());
 
-            var keys = await service
+            var keys = await profile
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -192,8 +265,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenProfileContainsInvalidKeys_ThenListAuthorizedKeysIgnoresThem()
         {
-            var adapter = new Mock<IOsLoginClient>();
-            adapter.Setup(a => a.GetLoginProfileAsync(
+            var client = new Mock<IOsLoginClient>();
+            client.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
@@ -230,9 +303,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     }
                 });
 
-            var service = new OsLoginProfile(adapter.Object);
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IGaiaOidcSession>());
 
-            var keys = await service
+            var keys = await profile
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -248,8 +323,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-            var adapter = new Mock<IOsLoginClient>();
-            adapter.Setup(a => a.GetLoginProfileAsync(
+            var client = new Mock<IOsLoginClient>();
+            client.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
@@ -269,9 +344,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     }
                 });
 
-            var service = new OsLoginProfile(adapter.Object);
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IGaiaOidcSession>());
 
-            var keys = await service
+            var keys = await profile
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -289,8 +366,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
         {
-            var adapter = new Mock<IOsLoginClient>();
-            adapter.Setup(a => a.GetLoginProfileAsync(
+            var client = new Mock<IOsLoginClient>();
+            client.Setup(a => a.GetLoginProfileAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
@@ -309,17 +386,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     }
                 });
 
-            var service = new OsLoginProfile(adapter.Object);
-            var keys = await service
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IGaiaOidcSession>());
+
+            var keys = await profile
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            await service.DeleteAuthorizedKeyAsync(
+            await profile.DeleteAuthorizedKeyAsync(
                     keys.First(),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            adapter.Verify(a => a.DeleteSshPublicKeyAsync(
+            client.Verify(a => a.DeleteSshPublicKeyAsync(
                     It.Is<string>(f => f == "fingerprint-1"),
                     It.IsAny<CancellationToken>()),
                 Times.Once());

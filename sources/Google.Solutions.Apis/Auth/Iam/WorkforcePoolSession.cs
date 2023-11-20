@@ -34,7 +34,7 @@ namespace Google.Solutions.Apis.Auth.Iam
     /// <summary>
     /// A workforce identity "3PI" session.
     /// </summary>
-    internal class WorkforcePoolSession : OidcSessionBase
+    internal class WorkforcePoolSession : OidcSessionBase, IWorkforcePoolSession
     {
         private readonly WorkforcePoolProviderLocator provider;
         private readonly WorkforcePoolIdentity identity;
@@ -48,6 +48,12 @@ namespace Google.Solutions.Apis.Auth.Iam
             this.provider = provider.ExpectNotNull(nameof(provider));
             this.identity = identity.ExpectNotNull(nameof(identity));
         }
+
+        //---------------------------------------------------------------------
+        // IWorkforcePoolSession.
+        //---------------------------------------------------------------------
+
+        public string PrincipalIdentifier => this.identity.ToString();
 
         //---------------------------------------------------------------------
         // Overrides.

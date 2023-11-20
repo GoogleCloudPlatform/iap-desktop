@@ -20,6 +20,9 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
@@ -48,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// Upload an a public key to authorize it.
         /// </summary>
         Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
-            ProjectLocator project,
+            ZoneLocator zone,
             OsLoginSystemType os,
             IAsymmetricKeySigner key,
             TimeSpan validity,
@@ -79,15 +82,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private static readonly ProjectLocator WellKnownProject
             = new ProjectLocator("windows-cloud");
 
-        private readonly IOsLoginClient adapter;
+        private readonly IOsLoginClient client;
+        private readonly IAuthorization authorization;
+
+        internal static string LookupUsername(LoginProfile loginProfile)
+        {
+            //
+            // Although rare, there could be multiple POSIX accounts.
+            //
+            var account = loginProfile.PosixAccounts
+                .EnsureNotNull()
+                .FirstOrDefault(a => a.Primary == true &&
+                                     a.OperatingSystemType == "LINUX");
+
+            if (account == null)
+            {
+                // 
+                // This is strange, the account should have been created.
+                //
+                throw new InvalidOsLoginProfileException(
+                    "The login profile does not contain a suitable POSIX account",
+                    HelpTopics.TroubleshootingOsLogin);
+            }
+
+            return account.Username;
+        }
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginProfile(IOsLoginClient adapter)
+        public OsLoginProfile(
+            IOsLoginClient adapter,
+            IAuthorization authorization)
         {
-            this.adapter = adapter.ExpectNotNull(nameof(adapter));
+            this.client = adapter.ExpectNotNull(nameof(adapter));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
         }
 
         //---------------------------------------------------------------------
@@ -95,13 +125,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         //---------------------------------------------------------------------
 
         public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
-            ProjectLocator project,
+            ZoneLocator zone,
             OsLoginSystemType os,
             IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token)
         {
-            Precondition.ExpectNotNull(project, nameof(project));
+            Precondition.ExpectNotNull(zone, nameof(zone));
             Precondition.ExpectNotNull(key, nameof(key));
 
             if (os != OsLoginSystemType.Linux)
@@ -114,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 throw new ArgumentException(nameof(validity));
             }
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(project))
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(zone))
             {
                 //
                 // If OS Login is enabled for a project, we have to use
@@ -122,47 +152,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // Note that the Posix account managed by OS login can 
                 // differ based on the project that we're trying to access.
-                // Therefore, make sure to specify the project when
-                // importing the key.
+                // Therefore, we specify the project when importing or
+                // certifying the key.
                 //
                 // OS Login auto-generates a username for us. Again, this
                 // username might differ based on project/organization.
                 //
+                var publicKey = key.PublicKey.ToString(PublicKey.Format.OpenSsh);
 
-                //
-                // Import the key for the given project.
-                //
-
-                var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
-                        project,
-                        key.PublicKey.Type,
-                        Convert.ToBase64String(key.PublicKey.WireFormatValue),
-                        validity,
-                        token)
-                    .ConfigureAwait(false);
-
-                //
-                // Although rare, there could be multiple POSIX accounts.
-                //
-                var account = loginProfile.PosixAccounts
-                    .EnsureNotNull()
-                    .FirstOrDefault(a => a.Primary == true &&
-                                         a.OperatingSystemType == "LINUX");
-
-                if (account == null)
+                if (this.authorization.Session is IWorkforcePoolSession)
                 {
-                    // 
-                    // This is strange, the account should have been created.
                     //
-                    throw new OsLoginSshKeyImportFailedException(
-                        "Imported SSH key to OSLogin, but no POSIX account was created",
-                        HelpTopics.TroubleshootingOsLogin);
-                }
+                    // Authorize the key by signing it.
+                    //
+                    // Note that we have no control over how long the
+                    // certified key remains valid.
+                    //
 
-                return new SshAuthorizedKeyCredential(
-                    key,
-                    KeyAuthorizationMethods.Oslogin,
-                    account.Username);
+                    var certifiedKey = await this.client
+                        .SignPublicKeyAsync(
+                            zone,
+                            publicKey,
+                            token)
+                        .ConfigureAwait(false);
+
+                    var certificateSigner = new OsLoginCertificateSigner(
+                        key,
+                        certifiedKey);
+
+                    return new SshAuthorizedKeyCredential(
+                        certificateSigner,
+                        KeyAuthorizationMethods.Oslogin,
+                        certificateSigner.Username);
+                }
+                else
+                {
+                    //
+                    // Authorize the key by importing it.
+                    //
+                    // NB. It's cheaper to unconditionally push the key than
+                    // to check for previous keys first.
+                    // 
+
+                    var loginProfile = await this.client
+                        .ImportSshPublicKeyAsync(
+                            new ProjectLocator(zone.ProjectId),
+                            publicKey,
+                            validity,
+                            token)
+                        .ConfigureAwait(false);
+
+                    return new SshAuthorizedKeyCredential(
+                        key,
+                        KeyAuthorizationMethods.Oslogin,
+                        LookupUsername(loginProfile));
+                }
             }
         }
 
@@ -179,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 // using any project.
                 //
                 // 
-                var loginProfile = await this.adapter
+                var loginProfile = await this.client
                     .GetLoginProfileAsync(WellKnownProject, cancellationToken)
                     .ConfigureAwait(false);
 
@@ -199,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Debug.Assert(key is AuthorizedPublicKey);
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(key))
             {
-                await this.adapter.DeleteSshPublicKeyAsync(
+                await this.client.DeleteSshPublicKeyAsync(
                         ((AuthorizedPublicKey)key).Fingerprint,
                         cancellationToken)
                     .ConfigureAwait(false);
@@ -280,11 +324,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class OsLoginSshKeyImportFailedException : Exception, IExceptionWithHelpTopic
+    public class InvalidOsLoginProfileException : Exception, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 
-        public OsLoginSshKeyImportFailedException(
+        public InvalidOsLoginProfileException(
             string message,
             IHelpTopic helpTopic)
             : base(message)

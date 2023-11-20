@@ -25,6 +25,7 @@ using Google.Apis.Iam.v1.Data;
 using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Json;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Common.Threading;
 using Google.Solutions.Testing.Apis.Integration;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace Google.Solutions.Testing.Apis.Auth
 {
     internal class TemporaryServiceAccount : TemporaryPrincipal
     {
+        private static readonly AsyncLock serviceAccountLock = new AsyncLock();
         private readonly IAMCredentialsService credentialsService;
 
         public TemporaryServiceAccount(
@@ -46,7 +48,7 @@ namespace Google.Solutions.Testing.Apis.Auth
             this.credentialsService = credentialsService;
         }
 
-        protected override string PrincipalId => $"serviceAccount:{this.Username}";
+        internal override string PrincipalId => $"serviceAccount:{this.Username}";
 
         public async Task<IAuthorization> ImpersonateAsync()
         {
@@ -95,39 +97,42 @@ namespace Google.Solutions.Testing.Apis.Auth
             CloudResourceManagerService crmService,
             string name)
         {
-            var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
-            try
+            using (await serviceAccountLock.AcquireAsync(CancellationToken.None))
             {
-                var account = await iamService.Projects.ServiceAccounts
-                    .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
-                    .ExecuteAsync()
-                    .ConfigureAwait(true);
+                var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
+                try
+                {
+                    var account = await iamService.Projects.ServiceAccounts
+                        .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
 
-                return new TemporaryServiceAccount(
-                    crmService,
-                    credentialsService,
-                    account.Email);
-            }
-            catch (Exception)
-            {
-                var account = await iamService.Projects.ServiceAccounts
-                    .Create(
-                        new CreateServiceAccountRequest()
-                        {
-                            AccountId = name,
-                            ServiceAccount = new ServiceAccount()
+                    return new TemporaryServiceAccount(
+                        crmService,
+                        credentialsService,
+                        account.Email);
+                }
+                catch (Exception)
+                {
+                    var account = await iamService.Projects.ServiceAccounts
+                        .Create(
+                            new CreateServiceAccountRequest()
                             {
-                                DisplayName = "Test account for integration testing"
-                            }
-                        },
-                        $"projects/{TestProject.ProjectId}")
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
+                                AccountId = name,
+                                ServiceAccount = new ServiceAccount()
+                                {
+                                    DisplayName = "Test account for integration testing"
+                                }
+                            },
+                            $"projects/{TestProject.ProjectId}")
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
 
-                return new TemporaryServiceAccount(
-                    crmService,
-                    credentialsService,
-                    account.Email);
+                    return new TemporaryServiceAccount(
+                        crmService,
+                        credentialsService,
+                        account.Email);
+                }
             }
         }
     }

@@ -41,6 +41,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         public InstanceServiceAccount ServiceAccount { get; set; } = InstanceServiceAccount.None;
 
         public bool EnableOsInventory { get; set; } = false;
+        public bool EnableOsLogin { get; set; } = false;
 
         protected abstract string InstanceNamePrefix { get; }
         protected abstract IEnumerable<Metadata.ItemsData> Metadata { get; }
@@ -52,28 +53,32 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         private string CreateSpecificationFingerprint()
         {
-            // Create a hash of the image specification.
-            var imageSpecification = new StringBuilder();
-            imageSpecification.Append(this.MachineType);
-            imageSpecification.Append(this.ImageFamily);
-            imageSpecification.Append(this.PublicIp);
-            imageSpecification.Append(this.InitializeScript);
-            imageSpecification.Append(this.EnableOsInventory);
-            imageSpecification.Append(this.ServiceAccount.ToString());
-            imageSpecification.Append(GetType().Name);
+            //
+            // Create a hash of the VM specification.
+            //
+            var specification = new StringBuilder()
+                .Append(TestProject.ProjectId)
+                .Append(this.MachineType)
+                .Append(this.ImageFamily)
+                .Append(this.PublicIp)
+                .Append(this.InitializeScript)
+                .Append(this.EnableOsInventory)
+                .Append(this.EnableOsLogin)
+                .Append(this.ServiceAccount.ToString())
+                .Append(GetType().Name);
 
             var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
             if (!string.IsNullOrEmpty(kokoroJobType))
             {
                 // Prevent different job types sharing the same VMs.
-                imageSpecification.Append(kokoroJobType);
+                specification.Append(kokoroJobType);
             }
 
             using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
-                var imageSpecificationRaw = Encoding.UTF8.GetBytes(imageSpecification.ToString());
+                var specificationRaw = Encoding.UTF8.GetBytes(specification.ToString());
                 return this.InstanceNamePrefix + BitConverter
-                    .ToString(sha.ComputeHash(imageSpecificationRaw))
+                    .ToString(sha.ComputeHash(specificationRaw))
                     .Replace("-", string.Empty)
                     .Substring(0, 14)
                     .ToLower();
@@ -158,15 +163,11 @@ namespace Google.Solutions.Testing.Apis.Integration
                         $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-Body TRUE"
                 };
-
-                if (this.EnableOsInventory)
+                yield return new Metadata.ItemsData()
                 {
-                    yield return new Metadata.ItemsData()
-                    {
-                        Key = "enable-os-inventory",
-                        Value = "TRUE"
-                    };
-                }
+                    Key = "enable-os-inventory",
+                    Value = this.EnableOsInventory ? "TRUE" : "FALSE"
+                };
             }
         }
     }
@@ -175,14 +176,14 @@ namespace Google.Solutions.Testing.Apis.Integration
     public sealed class LinuxInstanceAttribute : InstanceAttribute
     {
         public const string DefaultMachineType = "f1-micro";
-        public const string Debian9 = "projects/debian-cloud/global/images/family/debian-11";
+        public const string Debian = "projects/debian-cloud/global/images/family/debian-11";
 
         protected override string InstanceNamePrefix => "u";
 
         public LinuxInstanceAttribute()
         {
             this.MachineType = DefaultMachineType;
-            this.ImageFamily = Debian9;
+            this.ImageFamily = Debian;
         }
 
         protected override IEnumerable<Metadata.ItemsData> Metadata
@@ -214,15 +215,17 @@ namespace Google.Solutions.Testing.Apis.Integration
                         $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
-
-                if (this.EnableOsInventory)
+                yield return new Metadata.ItemsData()
                 {
-                    yield return new Metadata.ItemsData()
-                    {
-                        Key = "enable-os-inventory",
-                        Value = "TRUE"
-                    };
-                }
+                    Key = "enable-os-inventory",
+                    Value = this.EnableOsInventory ? "TRUE" : "FALSE"
+                };
+                yield return new Metadata.ItemsData()
+                {
+                    Key = "enable-oslogin",
+                    Value = this.EnableOsLogin ? "TRUE" : "FALSE"
+                };
+
             }
         }
     }

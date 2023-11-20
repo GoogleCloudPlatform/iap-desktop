@@ -27,9 +27,11 @@ using System.Diagnostics;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     /// <summary>
-    /// SSH key pair for which the public key has been authorized.
+    /// An SSH key credential that has been authorized for the target
+    /// instance.
     /// </summary>
-    public class SshAuthorizedKeyCredential : ISessionCredential, IAsymmetricKeyCredential
+    public class SshAuthorizedKeyCredential 
+        : ISessionCredential, IAsymmetricKeyCredential
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
 

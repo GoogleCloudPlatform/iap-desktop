@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Common.Util;
 using System;
 using System.Threading;
@@ -31,9 +32,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Auth
 {
-    internal class TemporarySession : IOidcSession
+    internal abstract class TemporarySession : IOidcSession
     {
-        public TemporarySession(
+        protected TemporarySession(
             string username,
             ICredential apiCredential)
         {
@@ -91,5 +92,22 @@ namespace Google.Solutions.Testing.Apis.Auth
         public string HostedDomain => null;
 
         public string Email => this.Username;
+    }
+
+    internal class TemporaryWorkforcePoolSession : TemporarySession, IWorkforcePoolSession
+    {
+        public TemporaryWorkforcePoolSession(
+            TemporaryWorkforcePoolSubject subject, 
+            ICredential apiCredential) 
+            : base(subject.Username, apiCredential)
+        {
+            this.PrincipalIdentifier = subject.PrincipalId;
+        }
+
+        //---------------------------------------------------------------------
+        // IGaiaOidcSession.
+        //---------------------------------------------------------------------
+
+        public string PrincipalIdentifier { get; }
     }
 }

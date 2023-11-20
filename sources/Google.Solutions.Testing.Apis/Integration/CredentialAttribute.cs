@@ -60,10 +60,15 @@ namespace Google.Solutions.Testing.Apis.Integration
             using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
                 //
-                // Create a hash of the image specification.
+                // Create a hash of the account specification.
                 //
-                var specificationRaw = Encoding.UTF8.GetBytes(
-                    string.Join(",", this.Roles));
+                var specification = new StringBuilder()
+                    .Append(TestProject.ProjectId)
+                    .Append(string.Join(",", this.Roles));
+
+                var specificationRaw = 
+                    Encoding.UTF8.GetBytes(specification.ToString());
+
                 return (this.Type == PrincipalType.Gaia ? "s" : "i") +
                     BitConverter
                     .ToString(sha.ComputeHash(specificationRaw))

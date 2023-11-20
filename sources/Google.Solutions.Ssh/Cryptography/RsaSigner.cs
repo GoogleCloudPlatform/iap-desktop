@@ -63,6 +63,7 @@ namespace Google.Solutions.Ssh.Cryptography
             switch (challenge.Algorithm)
             {
                 case "ssh-rsa":
+                case "ssh-rsa-cert-v01@openssh.com":
                     hashAlgorithm = HashAlgorithmName.SHA1;
                     break;
 

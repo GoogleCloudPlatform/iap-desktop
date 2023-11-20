@@ -181,13 +181,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public ManagedMetadataAuthorizedPublicKey(
             string loginUsername,
-            string keyType,//TODO: use PublicKey
+            string keyType,
             string key,
             PublicKeyMetadata metadata)
             : base(loginUsername, keyType, key)
         {
             Precondition.ExpectNotNull(metadata, nameof(metadata));
-            Debug.Assert(metadata.Email.Contains("@"));
             Debug.Assert(metadata.ExpireOn.Kind == DateTimeKind.Utc);
 
             this.Metadata = metadata;
