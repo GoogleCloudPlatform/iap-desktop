@@ -210,24 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<ZoneLocator>(),
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync("ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA");
-            client
-                .Setup(a => a.GetLoginProfileAsync(
-                    It.IsAny<ProjectLocator>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new LoginProfile()
-                {
-                    PosixAccounts = new[]
-                    {
-                        new PosixAccount()
-                        {
-                            AccountId = "1",
-                            Primary = true,
-                            OperatingSystemType = "LINUX",
-                            Username = "joe"
-                        }
-                    }
-                });
+                .ReturnsAsync("ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA joe");
 
             var profile = new OsLoginProfile(
                 client.Object,

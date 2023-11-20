@@ -252,7 +252,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Type = PrincipalType.WorkforceIdentity,
                 Roles = new [] {
                     PredefinedRole.ComputeViewer,
-                    PredefinedRole.OsLogin})] 
+                    PredefinedRole.OsLogin,
+                    PredefinedRole.ServiceUsageConsumer})] 
                 ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
