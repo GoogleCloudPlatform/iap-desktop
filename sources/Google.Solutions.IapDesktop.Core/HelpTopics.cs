@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Core
         private const string GaParameters = "utm_source=iapdesktop&utm_medium=help";
 
         public static readonly IHelpTopic IapAccess = new HelpTopic(
-            "Configuring access to Cloud IAP",
+            "Configure IAP in your project",
             $"https://googlecloudplatform.github.io/iap-desktop/setup-iap/?{GaParameters}");
 
         public static readonly IHelpTopic CreateIapFirewallRule = new HelpTopic(

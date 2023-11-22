@@ -336,4 +336,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.Help = helpTopic;
         }
     }
+
+    public class OsLoginSkNotSupportedException : Exception, IExceptionWithHelpTopic
+    {
+        public IHelpTopic Help { get; }
+
+        public OsLoginSkNotSupportedException(
+            string message,
+            IHelpTopic helpTopic)
+            : base(message)
+        {
+            this.Help = helpTopic;
+        }
+    }
 }
