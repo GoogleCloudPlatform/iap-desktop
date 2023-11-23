@@ -205,10 +205,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             try
             {
                 var connection = new RemoteConnection(
-                        this.Endpoint,
-                        this.Credential,
-                        (IKeyboardInteractiveHandler)this,
-                        SynchronizationContext.Current)
+                    this.Endpoint,
+                    this.Credential,
+                    (IKeyboardInteractiveHandler)this,
+                    SynchronizationContext.Current)
                 {
                     Banner = SshSession.BannerPrefix + Install.UserAgent,
                     ConnectionTimeout = this.ConnectionTimeout,
@@ -223,22 +223,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 await connection.ConnectAsync()
                     .ConfigureAwait(false);
 
-                return await connection.OpenShellAsync(
+                return await connection
+                    .OpenShellAsync(
                         (ITextTerminal)this,
                         initialSize)
                     .ConfigureAwait(false);
             }
             catch (SshNativeException e) when (
+                e.ErrorCode == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED &&
+                this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+            {
+                throw new OsLoginAuthenticationFailedException(
+                    "Authenticating to the VM failed. Possible reasons for this " +
+                    "error include:\n\n" +
+                    " - The VM is configured to require 2-step verification,\n" +
+                    "   and you haven't set up 2SV for your user account\n" +
+                    " - The guest environment is misconfigured or not running",
+                    e,
+                    HelpTopics.TroubleshootingOsLogin);
+            }
+            catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
-                if (this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin) //TODO: Warn about outdated guest env
+                if (this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                 {
-                    throw new OsLoginAuthenticationFailedException(
-                        "You do not have sufficient permissions to access this VM instance.\n\n" +
-                        "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
+                    var outdatedMessage = this.Credential.Signer is OsLoginCertificateSigner
+                        ? " - The VM is running an outdated version of the guest environment \n" +
+                          "   that doesn't support certificate-based authentication\n"
+                        : string.Empty;
+
+                    var message =
+                        "Authenticating to the VM failed. Possible reasons for this " +
+                        "error include:\n\n" +
+                        " - You don't have sufficient access to log in\n" +
+                        outdatedMessage +
+                        " - The VM's guest environment is misconfigured or not running\n\n" +
+                        "To log in, you need all of the following roles:\n\n" +
                         " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" +
                         " 2. 'Service Account User' (if the VM uses a service account)\n" +
-                        " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization)",
+                        " 3. 'Compute OS Login External User'\n" +
+                        "    (if the VM belongs to a different GCP organization)\n\n" +
+                        "Note that it might take several minutes for IAM policy changes to take effect.";
+
+                    throw new OsLoginAuthenticationFailedException(
+                        message,
                         e,
                         HelpTopics.GrantingOsLoginRoles);
                 }

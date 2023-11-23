@@ -254,6 +254,7 @@ namespace Google.Solutions.Ssh.Native
             Precondition.ExpectNotNull(keyboardHandler, nameof(keyboardHandler));
 
             Exception? interactiveCallbackException = null;
+            uint interactiveCallbackInvocations = 0;
 
             int Sign(
                 IntPtr session,
@@ -296,6 +297,8 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr responsesPtr,
                 IntPtr context)
             {
+                interactiveCallbackInvocations++;
+
                 var name = UnsafeNativeMethods.PtrToString(
                     namePtr,
                     nameLength,
@@ -431,6 +434,19 @@ namespace Google.Solutions.Ssh.Native
 
                             if (result == LIBSSH2_ERROR.NONE)
                             {
+                                break;
+                            }
+                            else if (result == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
+                                interactiveCallbackInvocations == 0)
+                            {
+                                //
+                                // No callback was performed yet authentication failed.
+                                // This indicates that there were no keyboard/interactive
+                                // prompts to process.
+                                //
+                                // Restore the original error code and bail out.
+                                //
+                                result = LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED;
                                 break;
                             }
                             else if (interactiveCallbackException != null)

@@ -363,16 +363,17 @@ namespace Google.Solutions.Apis.Compute
                         message.Contains("roles/serviceusage.serviceUsageConsumer"))
                     {
                         throw new ResourceAccessDeniedException(
-                            "You do not have sufficient permissions to use OS Login: You " +
-                            "need the 'Service Usage Consumer' (or an equivalent custom role) " +
-                            "to perform this action.",
+                            "You do not have sufficient access to log in.\n\n." +
+                            "Because you've authenticated using workforce identity federation, " +
+                            "you additionally need the 'Service Usage Consumer' role " +
+                            "(or an equivalent custom role) to log in.",
                             HelpTopics.ManagingOsLogin, //TODO: different help link
                             e);
                     }
                     else
                     {
                         throw new ResourceAccessDeniedException(
-                            "You do not have sufficient permissions to use OS Login: " +
+                            "You do not have sufficient access to log in: " +
                             e.Error?.Message ?? "access denied",
                             HelpTopics.ManagingOsLogin,
                             e);

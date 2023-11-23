@@ -285,11 +285,10 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 catch (SshRelayDeniedException e)
                 {
                     throw new TransportFailedException(
-                        "You do not have sufficient permissions to access this VM instance. " +
-                        "You need the 'IAP-secured Tunnel User' role (or an equivalent custom role) " +
-                        "to perform this action.\n\n" +
-                        "Note: If you've just been granted the role, it might take a few minutes " +
-                        "for the change to take effect.",
+                        "You do not have sufficient access to connect to this VM instance.\n\n" +
+                        "To connect to this VM, you need the 'IAP-secured Tunnel User' " +
+                        "role (or an equivalent custom role).\n\n" +
+                        "Note that it might take several minutes for IAM policy changes to take effect.",
                         HelpTopics.IapAccess,
                         e);
                 }
