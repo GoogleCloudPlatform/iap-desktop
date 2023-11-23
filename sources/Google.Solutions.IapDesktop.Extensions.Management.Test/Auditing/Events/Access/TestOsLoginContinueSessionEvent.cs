@@ -31,7 +31,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestOsLoginContinueSessionEven : ApplicationFixtureBase
     {
         [Test]
-        public void WhenChallengePending_ThenFieldsAreExtracted()
+        public void WhenChallengePending_ThenFieldsAreExtracted(
+            [Values("v1", "v1beta")] string version)
         {
             var json = @"
                 {
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   },
                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
                   'receiveTimestamp': '2021-11-10T06:49:50.169748838Z'
-                }";
+                }".Replace("v1", version);
 
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r));

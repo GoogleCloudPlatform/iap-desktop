@@ -31,7 +31,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestOsLoginCheckPolicyEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenCheckSucceeded_ThenFieldsAreExtracted()
+        public void WhenCheckSucceeded_ThenFieldsAreExtracted(
+            [Values("v1", "v1beta")] string version)
         {
             var json = @"
                 {
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   },
                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
                   'receiveTimestamp': '2021-11-10T06:54:57.478165572Z'
-                }";
+                }".Replace("v1", version);
 
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));

@@ -78,8 +78,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 { SetMetadataEvent.Method, rec => new SetMetadataEvent(rec) },
                 { SetCommonInstanceMetadataEvent.Method, rec => new SetCommonInstanceMetadataEvent(rec) },
                 { OsLoginCheckPolicyEvent.Method, rec => new OsLoginCheckPolicyEvent(rec) },
+                { OsLoginCheckPolicyEvent.BetaMethod, rec => new OsLoginCheckPolicyEvent(rec) },
                 { OsLoginStartSessionEvent.Method, rec => new OsLoginStartSessionEvent(rec) },
-                { OsLoginContinueSessionEvent.Method, rec => new OsLoginContinueSessionEvent(rec) }
+                { OsLoginStartSessionEvent.BetaMethod, rec => new OsLoginStartSessionEvent(rec) },
+                { OsLoginContinueSessionEvent.Method, rec => new OsLoginContinueSessionEvent(rec) },
+                { OsLoginContinueSessionEvent.BetaMethod, rec => new OsLoginContinueSessionEvent(rec) }
             };
 
         public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;

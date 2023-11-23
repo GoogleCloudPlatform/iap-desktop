@@ -36,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
     {
         public const string ServiceName = "oslogin.googleapis.com";
         public const string Method = "google.cloud.oslogin.v1.OsLoginService.ContinueSession";
+        public const string BetaMethod = "google.cloud.oslogin.v1beta.OsLoginService.ContinueSession";
 
         public override EventCategory Category => EventCategory.Access;
 
@@ -47,7 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         public static bool IsStartOsLoginContinueSessionEvent(LogRecord record)
         {
             return record.IsDataAccessEvent &&
-                record.ProtoPayload.MethodName == Method;
+                (record.ProtoPayload.MethodName == Method ||
+                 record.ProtoPayload.MethodName == BetaMethod);
         }
 
         public string ChallengeStatus => this.LogRecord.ProtoPayload.Response?.Value<string>("status");
