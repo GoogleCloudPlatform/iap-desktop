@@ -376,7 +376,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 CreateOsLoginServiceMock().Object);
 
-            ExceptionAssert.ThrowsAggregateException<NotImplementedException>(
+            ExceptionAssert.ThrowsAggregateException<OsLoginSkNotSupportedException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
