@@ -363,7 +363,7 @@ namespace Google.Solutions.Apis.Compute
                         message.Contains("roles/serviceusage.serviceUsageConsumer"))
                     {
                         throw new ResourceAccessDeniedException(
-                            "You do not have sufficient access to log in.\n\n." +
+                            "You do not have sufficient access to log in.\n\n" +
                             "Because you've authenticated using workforce identity federation, " +
                             "you additionally need the 'Service Usage Consumer' role " +
                             "(or an equivalent custom role) to log in.",
