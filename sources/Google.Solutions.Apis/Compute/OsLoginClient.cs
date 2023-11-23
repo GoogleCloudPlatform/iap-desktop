@@ -367,7 +367,7 @@ namespace Google.Solutions.Apis.Compute
                             "Because you've authenticated using workforce identity federation, " +
                             "you additionally need the 'Service Usage Consumer' role " +
                             "(or an equivalent custom role) to log in.",
-                            HelpTopics.ManagingOsLogin, //TODO: different help link
+                            HelpTopics.UseOsLoginWithWorkforceIdentity,
                             e);
                     }
                     else
