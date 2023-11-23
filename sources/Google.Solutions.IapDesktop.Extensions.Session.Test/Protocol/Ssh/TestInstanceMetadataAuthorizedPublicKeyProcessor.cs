@@ -31,6 +31,7 @@ using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -132,9 +133,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var adapter = new Mock<IResourceManagerClient>();
             adapter
-                .Setup(a => a.IsGrantedPermissionAsync(
+                .Setup(a => a.IsAccessGrantedAsync(
                         It.IsAny<string>(),
-                        It.IsAny<string>(),
+                        It.IsAny<IReadOnlyCollection<string>>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(allowSetCommonInstanceMetadata);
 

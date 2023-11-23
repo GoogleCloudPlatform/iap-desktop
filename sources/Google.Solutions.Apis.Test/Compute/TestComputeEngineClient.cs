@@ -341,7 +341,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
+        public async Task WhenUserInRole_ThenIsAccessGrantedReturnsTrue(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -351,7 +351,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            var result = await client.IsGrantedPermission(
+            var result = await client.IsAccessGrantedAsync(
                     locator,
                     Permissions.ComputeInstancesGet)
                 .ConfigureAwait(false);
@@ -360,7 +360,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
+        public async Task WhenUserNotInRole_ThenIsAccessGrantedReturnsFalse(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -370,7 +370,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            var result = await client.IsGrantedPermission(
+            var result = await client.IsAccessGrantedAsync(
                     locator,
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
@@ -379,7 +379,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserLacksInstanceListPermission_ThenIsGrantedPermissionFailsOpenAndReturnsTrue(
+        public async Task WhenUserLacksInstanceListPermission_ThenIsAccessGrantedFailsOpenAndReturnsTrue(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -389,7 +389,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            var result = await client.IsGrantedPermission(
+            var result = await client.IsAccessGrantedAsync(
                     locator,
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
