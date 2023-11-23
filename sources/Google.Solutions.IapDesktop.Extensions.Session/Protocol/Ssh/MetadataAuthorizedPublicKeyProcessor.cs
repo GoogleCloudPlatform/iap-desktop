@@ -364,7 +364,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 var canUpdateProjectMetadata = await this.resourceManagerAdapter
                     .IsAccessGrantedAsync(
                         this.instance.ProjectId,
-                        new[] { Permissions.ComputeProjectsSetCommonInstanceMetadata },
+                        new[] { 
+                            Permissions.ComputeProjectsSetCommonInstanceMetadata,
+                            Permissions.ServiceAccountsActAs
+                        },
                         cancellationToken)
                     .ConfigureAwait(false);
 
