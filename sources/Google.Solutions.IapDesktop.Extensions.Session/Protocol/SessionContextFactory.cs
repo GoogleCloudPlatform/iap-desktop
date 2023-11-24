@@ -329,7 +329,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     keyName.Value,
                     keyName.Type,
                     CngKeyUsages.Signing,
-                    false));
+                    false),
+                true);
 
             Debug.Assert(signer != null);
 

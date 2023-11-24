@@ -22,9 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Format;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
@@ -35,10 +33,12 @@ namespace Google.Solutions.Ssh.Cryptography
     public class EcdsaPublicKey : PublicKey
     {
         private readonly ECDsaCng key;
+        private readonly bool ownsKey;
 
-        public EcdsaPublicKey(ECDsaCng key)
+        public EcdsaPublicKey(ECDsaCng key, bool ownsKey)
         {
             this.key = key.ExpectNotNull(nameof(key));
+            this.ownsKey = ownsKey;
         }
 
         //---------------------------------------------------------------------
@@ -123,7 +123,7 @@ namespace Google.Solutions.Ssh.Cryptography
             try
             {
                 key.ImportParameters(parameters);
-                return new EcdsaPublicKey(key);
+                return new EcdsaPublicKey(key, true);
             }
             catch (Exception e)
             {
@@ -169,7 +169,11 @@ namespace Google.Solutions.Ssh.Cryptography
 
         protected override void Dispose(bool disposing)
         {
-            this.key.Dispose();
+            if (this.ownsKey)
+            {
+                this.key.Dispose();
+            }
+
             base.Dispose(disposing);
         }
     }

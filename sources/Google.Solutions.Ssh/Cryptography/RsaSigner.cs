@@ -30,12 +30,14 @@ namespace Google.Solutions.Ssh.Cryptography
     public class RsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly RSA key;
+        private readonly bool ownsKey;
 
-        public RsaSigner(RSA key)
+        public RsaSigner(RSA key, bool ownsKey)
         {
             this.key = key.ExpectNotNull(nameof(key));
 
-            this.PublicKey = new RsaPublicKey(key);
+            this.PublicKey = new RsaPublicKey(key, false);
+            this.ownsKey = ownsKey;
         }
 
         //---------------------------------------------------------------------
@@ -96,8 +98,12 @@ namespace Google.Solutions.Ssh.Cryptography
 
         protected override void Dispose(bool disposing)
         {
+            if (this.ownsKey)
+            {
+                this.key.Dispose();
+            }
+
             this.PublicKey.Dispose();
-            this.key.Dispose();
             base.Dispose(disposing);
         }
     }

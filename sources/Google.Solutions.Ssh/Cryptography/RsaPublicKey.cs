@@ -39,10 +39,12 @@ namespace Google.Solutions.Ssh.Cryptography
         private const string RsaType = "ssh-rsa";
 
         private readonly RSA key;
+        private readonly bool ownsKey;
 
-        internal RsaPublicKey(RSA key)
+        internal RsaPublicKey(RSA key, bool ownsKey)
         {
             this.key = key.ExpectNotNull(nameof(key));
+            this.ownsKey = ownsKey;
         }
 
         //---------------------------------------------------------------------
@@ -100,7 +102,7 @@ namespace Google.Solutions.Ssh.Cryptography
                 try
                 {
                     key.ImportParameters(parameters);
-                    return new RsaPublicKey(key);
+                    return new RsaPublicKey(key, true);
                 }
                 catch (CryptographicException e)
                 {
@@ -141,7 +143,11 @@ namespace Google.Solutions.Ssh.Cryptography
 
         protected override void Dispose(bool disposing)
         {
-            this.key.Dispose();
+            if (this.ownsKey)
+            {
+                this.key.Dispose();
+            }
+            
             base.Dispose(disposing);
         }
     }

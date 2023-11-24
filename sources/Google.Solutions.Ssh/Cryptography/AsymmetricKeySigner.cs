@@ -54,10 +54,10 @@ namespace Google.Solutions.Ssh.Cryptography
         {
             return sshKeyType switch
             {
-                SshKeyType.Rsa3072 => new RsaSigner(new RSACng(3072)),
-                SshKeyType.EcdsaNistp256 => new EcdsaSigner(new ECDsaCng(256)),
-                SshKeyType.EcdsaNistp384 => new EcdsaSigner(new ECDsaCng(384)),
-                SshKeyType.EcdsaNistp521 => new EcdsaSigner(new ECDsaCng(521)),
+                SshKeyType.Rsa3072 => new RsaSigner(new RSACng(3072), true),
+                SshKeyType.EcdsaNistp256 => new EcdsaSigner(new ECDsaCng(256), true),
+                SshKeyType.EcdsaNistp384 => new EcdsaSigner(new ECDsaCng(384), true),
+                SshKeyType.EcdsaNistp521 => new EcdsaSigner(new ECDsaCng(521), true),
                 _ => throw new ArgumentOutOfRangeException(nameof(sshKeyType))
             };
         }
@@ -65,15 +65,15 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Create a signer for an existing key.
         /// </summary>
-        public static IAsymmetricKeySigner Create(CngKey key)
+        public static IAsymmetricKeySigner Create(CngKey key, bool ownsKey)
         {
             if (key.Algorithm == CngAlgorithm.Rsa)
             {
-                return new RsaSigner(new RSACng(key));
+                return new RsaSigner(new RSACng(key), ownsKey);
             }
             else
             {
-                return new EcdsaSigner(new ECDsaCng(key));
+                return new EcdsaSigner(new ECDsaCng(key), ownsKey);
             }
         }
     }

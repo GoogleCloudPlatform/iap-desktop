@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void TypeNistp256()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
-            using (var publicKey = new EcdsaPublicKey(key))
+            using (var publicKey = new EcdsaPublicKey(key, true))
             {
                 Assert.AreEqual("ecdsa-sha2-nistp256", publicKey.Type);
             }
@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void TypeNistp384()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP384)))
-            using (var publicKey = new EcdsaPublicKey(key))
+            using (var publicKey = new EcdsaPublicKey(key, true))
             {
                 Assert.AreEqual("ecdsa-sha2-nistp384", publicKey.Type);
             }
@@ -59,7 +59,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void TypeNistp521()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP521)))
-            using (var publicKey = new EcdsaPublicKey(key))
+            using (var publicKey = new EcdsaPublicKey(key, true))
             {
                 Assert.AreEqual("ecdsa-sha2-nistp521", publicKey.Type);
             }
@@ -101,6 +101,42 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.Throws<SshFormatException>(
                 () => EcdsaPublicKey.FromWireFormat(
                     Convert.FromBase64String(SampleKeys.Nistp256).Take(take).ToArray()));
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        {
+            var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256));
+            using (var publicKey = new EcdsaPublicKey(key, true))
+            {
+                Assert.IsFalse(key.IsDisposed());
+            }
+
+            using (var publicKey = new EcdsaPublicKey(key, true))
+            {
+                Assert.IsTrue(key.IsDisposed());
+            }
+        }
+
+        [Test]
+        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        {
+            using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
+            {
+                using (var publicKey = new EcdsaPublicKey(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
+
+                using (var publicKey = new EcdsaPublicKey(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
+            }
         }
     }
 }
