@@ -243,10 +243,14 @@ namespace Google.Solutions.Platform.Cryptography
                     //
                     // To reproduce the issue, do the following:
                     //
-                    //  - Open the file and corrupt the content
-                    //  - Update the file DACL so that it only contains 2 ACEs
-                    //    SYSTEM: read
-                    //    Current user: read
+                    //  1. Run `certutil -csp "Microsoft Software Key Storage Provider" -key -user`
+                    //     to find out the name of the key container.
+                    //  2. Go to %APPDATA%\Microsoft\Crypto\Keys and find the corresponding file.
+                    //  3. Open the file and corrupt the content.
+                    //  4. Update the file DACL so that it only contains 2 ACEs:
+                    //
+                    //       SYSTEM: read
+                    //       Current user: read
                     //
                     throw new InvalidKeyContainerException(
                         "Failed to create or access cryptographic key. This might " +

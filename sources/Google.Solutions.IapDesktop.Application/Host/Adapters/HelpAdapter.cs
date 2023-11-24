@@ -62,33 +62,14 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             "Access Google APIs through Private Service Connect",
             $"https://googlecloudplatform.github.io/iap-desktop/connect-to-google-cloud/?{GaParameters}");
 
-        public static readonly IHelpTopic ManagingMetadataAuthorizedKeys = new HelpTopic(
-            "Managing SSH keys in metadata",
-            "https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys");
-
-        public static readonly IHelpTopic TroubleshootingOsLogin = new HelpTopic(
-            "Troubleshooting OS Login",
-            "https://cloud.google.com/compute/docs/oslogin/troubleshoot-os-login");
-
-        public static readonly IHelpTopic GrantingOsLoginRoles = new HelpTopic(
-            "Granting OS Login IAM roles",
-            "https://cloud.google.com/compute/docs/instances/managing-instance-access#grant-iam-roles");
-
-        public static readonly IHelpTopic EnableOsLoginSecurityKeys = new HelpTopic(
-            "Using security keys with OS Login",
-            "https://cloud.google.com/compute/docs/oslogin/security-keys");
-
         public static readonly IHelpTopic NodeUsageReporting = new HelpTopic(
            "Track VM and sole-tenant node usage for license reporting",
            "https://cloud.google.com/compute/docs/nodes/determining-server-usage");
 
-        public static readonly IHelpTopic AppProtocols = new HelpTopic(
-            "App protocols",
-            $"https://googlecloudplatform.github.io/iap-desktop/client-application-configuration/?{GaParameters}");
-        
         public static readonly IHelpTopic Privacy = new HelpTopic(
             "Privacy",
             $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}");
+
     }
 
     public class HelpAdapter
