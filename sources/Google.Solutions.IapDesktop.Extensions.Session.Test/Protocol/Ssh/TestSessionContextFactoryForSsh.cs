@@ -62,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         private IRepository<ISshSettings> CreateSshSettingsRepository(
+            bool usePersistentKey,
             TimeSpan keyValidity)
         {
             var keyTypeSetting = new Mock<IEnumSetting<SshKeyType>>();
@@ -70,12 +71,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var validitySetting = new Mock<IIntSetting>();
             validitySetting.SetupGet(s => s.IntValue).Returns((int)keyValidity.TotalSeconds);
 
+            var usePersistentKeySetting = new Mock<IBoolSetting>();
+            usePersistentKeySetting.SetupGet(s => s.BoolValue).Returns(usePersistentKey);
+
             var localeSetting = new Mock<IBoolSetting>();
 
             var settings = new Mock<ISshSettings>();
             settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);
             settings.SetupGet(s => s.PublicKeyValidity).Returns(validitySetting.Object);
             settings.SetupGet(s => s.IsPropagateLocaleEnabled).Returns(localeSetting.Object);
+            settings.SetupGet(s => s.UsePersistentKey).Returns(usePersistentKeySetting.Object);
 
             var repository = new Mock<IRepository<ISshSettings>>();
             repository
@@ -135,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateSshSessionContextOpensSshKey()
+        public async Task WhenUsePersistentKeyIsTrue_ThenCreateSshSessionContextOpensSshKey()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -159,12 +164,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(TimeSpan.FromMinutes(1)));
+                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(123)));
 
-            using (await factory
+            using (var context = await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
-            { }
+            {
+                Assert.AreEqual(TimeSpan.FromMinutes(123), context.Parameters.PublicKeyValidity);
+            }
 
             keyStore.Verify(
                 k => k.OpenKey(
@@ -174,6 +181,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CngKeyUsages.Signing,
                     false), 
                 Times.Once);
+        }
+
+
+        [Test]
+        public async Task WhenUsePersistentKeyIsFalse_ThenCreateSshSessionContextUsesEphemeralKey()
+        {
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(
+                    InstanceConnectionSettings
+                        .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
+                        .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
+            var keyStore = CreateKeyStoreMock();
+
+            var factory = new SessionContextFactory(
+                new Mock<IMainWindow>().Object,
+                CreateAuthorizationMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
+                keyStore.Object,
+                new Mock<IKeyAuthorizer>().Object,
+                settingsService.Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
+                CreateSshSettingsRepository(false, TimeSpan.FromMinutes(123)));
+
+            using (var context = await factory
+                .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual(
+                    SessionContextFactory.EphemeralKeyExpiry,
+                    context.Parameters.PublicKeyValidity);
+            }
+
+            keyStore.Verify(
+                k => k.OpenKey(
+                    It.IsAny<IntPtr>(),
+                    It.IsAny<string>(),
+                    It.Is<KeyType>(t => t.Algorithm == CngAlgorithm.Rsa),
+                    CngKeyUsages.Signing,
+                    false),
+                Times.Never);
         }
 
         //---------------------------------------------------------------------
@@ -206,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<ISelectCredentialsDialog>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(TimeSpan.FromMinutes(1)));
+                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
 
             using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
@@ -225,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task CreateSshSessionContextUsesSshSettings()
         {
-            var sshSettingsRepository = CreateSshSettingsRepository(TimeSpan.FromDays(4));
+            var sshSettingsRepository = CreateSshSettingsRepository(true, TimeSpan.FromDays(4));
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
