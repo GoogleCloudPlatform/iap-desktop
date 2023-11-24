@@ -47,19 +47,48 @@ namespace Google.Solutions.Ssh.Cryptography
     public static class AsymmetricKeySigner
     {
         /// <summary>
-        /// Create a signer that uses an in-memory key. For testing purposes.
+        /// Create an in-memory key of a given type.
         /// </summary>
-        public static IAsymmetricKeySigner CreateEphemeral(
+        private static AsymmetricAlgorithm CreateSigningKey(
             SshKeyType sshKeyType)
         {
             return sshKeyType switch
             {
-                SshKeyType.Rsa3072 => new RsaSigner(new RSACng(3072), true),
-                SshKeyType.EcdsaNistp256 => new EcdsaSigner(new ECDsaCng(256), true),
-                SshKeyType.EcdsaNistp384 => new EcdsaSigner(new ECDsaCng(384), true),
-                SshKeyType.EcdsaNistp521 => new EcdsaSigner(new ECDsaCng(521), true),
+                SshKeyType.Rsa3072 => new RSACng(3072),
+                SshKeyType.EcdsaNistp256 => new ECDsaCng(256),
+                SshKeyType.EcdsaNistp384 => new ECDsaCng(384),
+                SshKeyType.EcdsaNistp521 => new ECDsaCng(521),
                 _ => throw new ArgumentOutOfRangeException(nameof(sshKeyType))
             };
+        }
+
+        /// <summary>
+        /// Create a signer that uses an in-memory key. For testing purposes.
+        /// </summary>
+        public static IAsymmetricKeySigner CreateEphemeral(SshKeyType sshKeyType)
+        {
+            return Create(CreateSigningKey(sshKeyType), true);
+        }
+
+        /// <summary>
+        /// Create a signer for an existing key and algorithm.
+        /// </summary>
+        public static IAsymmetricKeySigner Create(
+            AsymmetricAlgorithm algorithm, 
+            bool ownsKey)
+        {
+            if (algorithm is RSA rsa)
+            {
+                return new RsaSigner(rsa, ownsKey);
+            }
+            else if (algorithm is ECDsaCng ecdsa) 
+            {
+                return new EcdsaSigner(ecdsa, ownsKey);
+            }
+            else
+            {
+                throw new ArgumentException(nameof(algorithm));
+            }
         }
 
         /// <summary>
@@ -69,11 +98,11 @@ namespace Google.Solutions.Ssh.Cryptography
         {
             if (key.Algorithm == CngAlgorithm.Rsa)
             {
-                return new RsaSigner(new RSACng(key), ownsKey);
+                return Create(new RSACng(key), ownsKey);
             }
             else
             {
-                return new EcdsaSigner(new ECDsaCng(key), ownsKey);
+                return Create(new ECDsaCng(key), ownsKey);
             }
         }
     }
