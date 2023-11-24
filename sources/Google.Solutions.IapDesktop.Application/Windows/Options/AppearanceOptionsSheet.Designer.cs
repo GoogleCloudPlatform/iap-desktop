@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.scalingBox.Size = new System.Drawing.Size(336, 60);
             this.scalingBox.TabIndex = 1;
             this.scalingBox.TabStop = false;
-            this.scalingBox.Text = "Scaling";
+            this.scalingBox.Text = "Scaling:";
             // 
             // gdiScalingCheckBox
             // 
