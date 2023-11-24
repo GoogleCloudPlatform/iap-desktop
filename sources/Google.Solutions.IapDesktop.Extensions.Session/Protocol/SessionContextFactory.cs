@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -85,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
     [Service(typeof(ISessionContextFactory))]
     public class SessionContextFactory : ISessionContextFactory
     {
-        internal static readonly TimeSpan EphemeralKeyExpiry = TimeSpan.FromDays(1);
+        internal static readonly TimeSpan EphemeralKeyValidity = TimeSpan.FromDays(1);
 
         private readonly IWin32Window window;
         private readonly IAuthorization authorization;
@@ -347,8 +346,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // Use an ephemeral key and cap its validity.
                 //
-                signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.EnumValue); // TODO: test
-                validity = EphemeralKeyExpiry;
+                signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.EnumValue);
+                validity = EphemeralKeyValidity;
             }
 
             Debug.Assert(signer != null);

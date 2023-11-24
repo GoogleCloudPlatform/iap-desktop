@@ -183,7 +183,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Times.Once);
         }
 
-
         [Test]
         public async Task WhenUsePersistentKeyIsFalse_ThenCreateSshSessionContextUsesEphemeralKey()
         {
@@ -216,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             {
                 Assert.AreEqual(
-                    SessionContextFactory.EphemeralKeyExpiry,
+                    SessionContextFactory.EphemeralKeyValidity,
                     context.Parameters.PublicKeyValidity);
             }
 

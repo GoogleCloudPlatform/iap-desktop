@@ -50,15 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             //
             // Authentication box.
             //
-            this.publicKeyType.Items.AddRange(
-                viewModel
-                    .AllPublicKeyTypes
-                    .Cast<object>()
-                    .ToArray());
-            this.publicKeyType.BindProperty(
-                c => c.SelectedIndex,
-                viewModel,
-                m => m.PublicKeyTypeIndex,
+            this.publicKeyType.BindObservableProperty(
+                viewModel.PublicKeyType,
                 bindingContext);
             this.publicKeyType.BindReadonlyProperty(
                 c => c.Enabled,
@@ -66,27 +59,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 m => m.IsPublicKeyTypeEditable,
                 bindingContext);
 
-            this.publicKeyValidityUpDown.BindProperty(
+            this.usePersistentKeyCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.UsePersistentKey,
+                bindingContext);
+
+            this.publicKeyValidityUpDown.BindObservableProperty(
                 c => c.Value,
                 viewModel,
                 m => m.PublicKeyValidityInDays,
                 bindingContext);
-            this.publicKeyValidityUpDown.BindReadonlyProperty(
+            this.publicKeyValidityUpDown.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsPublicKeyValidityInDaysEditable,
+                bindingContext);
+            this.publicKeyValidityLabel.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsPublicKeyValidityInDaysEditable,
+                bindingContext);
+            this.daysLabel.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsPublicKeyValidityInDaysEditable,
                 bindingContext);
 
-            this.publicKeyType.FormattingEnabled = true;
-            this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e) {
-                var v = ((SshKeyType)e.Value);
-                e.Value = v.GetAttribute<DisplayAttribute>()?.Name ?? v.ToString();
-            };
-
             //
             // Connection box.
             //
-            this.propagateLocaleCheckBox.BindProperty(
+            this.propagateLocaleCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsPropagateLocaleEnabled,
