@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Create an in-memory key of a given type.
         /// </summary>
-        private static AsymmetricAlgorithm CreateSigningKey(
+        public static AsymmetricAlgorithm CreateSigningKey(
             SshKeyType sshKeyType)
         {
             return sshKeyType switch
