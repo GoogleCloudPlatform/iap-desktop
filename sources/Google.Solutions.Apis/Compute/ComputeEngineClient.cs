@@ -378,7 +378,7 @@ namespace Google.Solutions.Apis.Compute
         // Permission check.
         //---------------------------------------------------------------------
 
-        public async Task<bool> IsGrantedPermission(
+        public async Task<bool> IsAccessGrantedAsync(
             InstanceLocator instanceLocator,
             string permission)
         {
@@ -386,7 +386,8 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
-                    var response = await this.service.Instances.TestIamPermissions(
+                    var response = await this.service.Instances
+                        .TestIamPermissions(
                             new TestPermissionsRequest
                             {
                                 Permissions = new[] { permission }

@@ -26,5 +26,6 @@ namespace Google.Solutions.Apis.Compute
         public const string ComputeInstancesSetMetadata = "compute.instances.setMetadata";
         public const string ComputeInstancesGet = "compute.instances.get";
         public const string ComputeProjectsSetCommonInstanceMetadata = "compute.projects.setCommonInstanceMetadata";
+        public const string ServiceAccountsActAs = "iam.serviceAccounts.actAs";
     }
 }

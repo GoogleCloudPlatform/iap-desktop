@@ -48,9 +48,12 @@ namespace Google.Solutions.Apis.Crm
             int? maxResults,
             CancellationToken cancellationToken);
 
-        Task<bool> IsGrantedPermissionAsync(
+        /// <summary>
+        /// Test if all permissions have been granted.
+        /// </summary>
+        Task<bool> IsAccessGrantedAsync(
             string projectId,
-            string permission,
+            IReadOnlyCollection<string> permissions,
             CancellationToken cancellationToken);
     }
 
@@ -157,24 +160,26 @@ namespace Google.Solutions.Apis.Crm
             }
         }
 
-        public async Task<bool> IsGrantedPermissionAsync(
+        public async Task<bool> IsAccessGrantedAsync(
             string projectId,
-            string permission,
+            IReadOnlyCollection<string> permissions,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithParameters(permission))
+            using (ApiTraceSource.Log.TraceMethod()
+                .WithParameters(string.Join(",", permissions)))
             {
-                var response = await this.service.Projects.TestIamPermissions(
+                var response = await this.service.Projects
+                    .TestIamPermissions(
                         new TestIamPermissionsRequest()
                         {
-                            Permissions = new[] { permission }
+                            Permissions = permissions.ToList()
                         },
                         projectId)
                     .ExecuteAsync(cancellationToken)
                     .ConfigureAwait(false);
                 return response != null &&
                     response.Permissions != null &&
-                    response.Permissions.Any(p => p == permission);
+                    permissions.All(p => response.Permissions.Contains(p));
             }
         }
 

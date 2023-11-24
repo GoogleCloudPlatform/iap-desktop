@@ -340,7 +340,7 @@ namespace Google.Solutions.Apis.Compute
             //
             // For performance reasons, only check (1).
             //
-            return this.computeClient.IsGrantedPermission(
+            return this.computeClient.IsAccessGrantedAsync(
                 instanceRef,
                 Permissions.ComputeInstancesSetMetadata);
         }

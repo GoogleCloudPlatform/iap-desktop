@@ -103,7 +103,10 @@ namespace Google.Solutions.Apis.Compute
         // Permission check.
         //---------------------------------------------------------------------
 
-        Task<bool> IsGrantedPermission(
+        /// <summary>
+        /// Test if a permission has been granted.
+        /// </summary>
+        Task<bool> IsAccessGrantedAsync(
             InstanceLocator instanceRef,
             string permission);
     }

@@ -70,38 +70,38 @@ namespace Google.Solutions.Apis.Test.Crm
             Assert.AreEqual(TestProject.ProjectId, project.Name);
         }
 
+        //---------------------------------------------------------------------
+        // IsAccessGranted.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
+        public async Task WhenUserHasPermission_ThenIsAccessGrantedReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            var result = await client.IsGrantedPermissionAsync(
+            var result = await client.IsAccessGrantedAsync(
                     TestProject.ProjectId,
-                    Permissions.ComputeInstancesGet,
+                    new[] { Permissions.ComputeInstancesGet },
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsTrue(result);
         }
 
-        //---------------------------------------------------------------------
-        // IsGrantedPermission.
-        //---------------------------------------------------------------------
-
         [Test]
-        public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
+        public async Task WhenUserLacksOnePermission_ThenIsAccessGrantedReturnsFalse(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            var result = await client.IsGrantedPermissionAsync(
+            var result = await client.IsAccessGrantedAsync(
                     TestProject.ProjectId,
-                    "compute.disks.create",
+                    new[] { "compute.disks.create", Permissions.ComputeInstancesGet },
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
