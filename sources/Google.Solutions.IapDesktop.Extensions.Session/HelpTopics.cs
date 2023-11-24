@@ -46,9 +46,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             "Using security keys with OS Login",
             "https://cloud.google.com/compute/docs/oslogin/security-keys");
 
-        public static readonly IHelpTopic SshKeyStorage = new HelpTopic(
-            "SSH key storage",
-            $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}"); //TODO: Add real link
+        public static readonly IHelpTopic TroubleshootingSsh = new HelpTopic(
+            "SSH troubleshooting",
+            $"http://localhost:8000/iap-desktop/troubleshooting-ssh/?{GaParameters}"); //TODO: Add real link
 
     }
 }

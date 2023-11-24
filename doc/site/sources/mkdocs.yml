@@ -105,7 +105,6 @@ nav:
 #     - 'Set up certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
     - 'Deploy IAP Desktop across endpoints':
       - 'Use group policies': 'group-policies.md'
-      - 'Troubleshoot common issues': 'troubleshooting.md'
     
   - 'Reference':
     - User interface:
@@ -116,6 +115,10 @@ nav:
         - 'Client application configuration': 'client-application-configuration.md'
         - 'Group policies': 'group-policy-reference.md'
         - 'SSH algorithms': 'ssh-algorithms.md'
+    - 'Troubleshooting':
+      - 'Installation issues': 'troubleshooting.md'
+      - 'RDP issues': 'troubleshooting-rdp.md'
+      - 'SSH issues': 'troubleshooting-ssh.md'
     - 'Privacy & security': 'security.md'
   - GitHub: https://github.com/GoogleCloudPlatform/iap-desktop
     

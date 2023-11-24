@@ -353,7 +353,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                         "Windows CNG key container or key store is inaccessible.\n\n" +
                         "If the problem persists, go to Tools > Options > SSH and disable " +
                         "the option to use a persistent key for SSH authentication.",
-                        HelpTopics.SshKeyStorage,
+                        HelpTopics.TroubleshootingSsh,
                         e);
                 }
             }
