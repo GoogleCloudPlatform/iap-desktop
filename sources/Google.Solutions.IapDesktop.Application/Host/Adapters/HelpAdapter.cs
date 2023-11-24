@@ -89,6 +89,12 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         public static readonly IHelpTopic Privacy = new HelpTopic(
             "Privacy",
             $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}");
+
+        //TODO: Split, move to Session
+
+        public static readonly IHelpTopic SshKeyStorage = new HelpTopic(
+            "SSH key storage",
+            $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}"); //TODO: Add real link
     }
 
     public class HelpAdapter

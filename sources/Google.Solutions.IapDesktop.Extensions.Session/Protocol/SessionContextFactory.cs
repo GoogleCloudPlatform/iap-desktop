@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -331,15 +332,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     sshSettings.PublicKeyType.EnumValue,
                     this.keyStore.Provider);
 
-                signer = AsymmetricKeySigner.Create(
-                    this.keyStore.OpenKey(
-                        this.window.Handle,
-                        keyName.Value,
-                        keyName.Type,
-                        CngKeyUsages.Signing,
-                        false),
-                    true);
-                validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+                try
+                {
+                    signer = AsymmetricKeySigner.Create(
+                        this.keyStore.OpenKey(
+                            this.window.Handle,
+                            keyName.Value,
+                            keyName.Type,
+                            CngKeyUsages.Signing,
+                            false),
+                        true);
+                    validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+                }
+                catch (CryptographicException e) when (
+                    e is KeyStoreUnavailableException ||
+                    e is InvalidKeyContainerException)
+                {
+                    throw new SessionException(
+                        "Creating or opening the SSH key failed because the " +
+                        "Windows CNG key container or key store is inaccessible.\n\n" +
+                        "If the error perisists, go to Tools > Options > SSH and disable " +
+                        "the option to use a persistent key for SSH authentication.",
+                        HelpTopics.SshKeyStorage,
+                        e);
+                }
             }
             else
             {
