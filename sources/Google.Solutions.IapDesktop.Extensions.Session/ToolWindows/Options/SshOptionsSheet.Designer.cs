@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 {
     partial class SshOptionsSheet
@@ -51,13 +53,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         {
             this.authBox = new System.Windows.Forms.GroupBox();
             this.keyTypeLabel = new System.Windows.Forms.Label();
-            this.publicKeyType = new System.Windows.Forms.ComboBox();
+            this.publicKeyType = new BindableComboBox();
             this.daysLabel = new System.Windows.Forms.Label();
             this.validityNoteLabel = new System.Windows.Forms.Label();
             this.publicKeyValidityLabel = new System.Windows.Forms.Label();
             this.publicKeyValidityUpDown = new System.Windows.Forms.NumericUpDown();
             this.connectionBox = new System.Windows.Forms.GroupBox();
             this.propagateLocaleCheckBox = new System.Windows.Forms.CheckBox();
+            this.usePersistentKeyCheckBox = new System.Windows.Forms.CheckBox();
             this.authBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.publicKeyValidityUpDown)).BeginInit();
             this.connectionBox.SuspendLayout();
@@ -65,6 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // authBox
             // 
+            this.authBox.Controls.Add(this.usePersistentKeyCheckBox);
             this.authBox.Controls.Add(this.keyTypeLabel);
             this.authBox.Controls.Add(this.publicKeyType);
             this.authBox.Controls.Add(this.daysLabel);
@@ -73,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.authBox.Controls.Add(this.publicKeyValidityUpDown);
             this.authBox.Location = new System.Drawing.Point(4, 3);
             this.authBox.Name = "authBox";
-            this.authBox.Size = new System.Drawing.Size(336, 111);
+            this.authBox.Size = new System.Drawing.Size(336, 138);
             this.authBox.TabIndex = 0;
             this.authBox.TabStop = false;
             this.authBox.Text = "Public key authentication:";
@@ -99,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // daysLabel
             // 
             this.daysLabel.AutoSize = true;
-            this.daysLabel.Location = new System.Drawing.Point(231, 57);
+            this.daysLabel.Location = new System.Drawing.Point(231, 80);
             this.daysLabel.Name = "daysLabel";
             this.daysLabel.Size = new System.Drawing.Size(29, 13);
             this.daysLabel.TabIndex = 4;
@@ -108,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // validityNoteLabel
             // 
             this.validityNoteLabel.AutoSize = true;
-            this.validityNoteLabel.Location = new System.Drawing.Point(18, 79);
+            this.validityNoteLabel.Location = new System.Drawing.Point(36, 108);
             this.validityNoteLabel.Name = "validityNoteLabel";
             this.validityNoteLabel.Size = new System.Drawing.Size(274, 13);
             this.validityNoteLabel.TabIndex = 5;
@@ -117,15 +121,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // publicKeyValidityLabel
             // 
             this.publicKeyValidityLabel.AutoSize = true;
-            this.publicKeyValidityLabel.Location = new System.Drawing.Point(18, 57);
+            this.publicKeyValidityLabel.Location = new System.Drawing.Point(36, 80);
             this.publicKeyValidityLabel.Name = "publicKeyValidityLabel";
-            this.publicKeyValidityLabel.Size = new System.Drawing.Size(154, 13);
+            this.publicKeyValidityLabel.Size = new System.Drawing.Size(115, 13);
             this.publicKeyValidityLabel.TabIndex = 2;
-            this.publicKeyValidityLabel.Text = "Let authorized keys expire after";
+            this.publicKeyValidityLabel.Text = "Let the key expire after";
             // 
             // publicKeyValidityUpDown
             // 
-            this.publicKeyValidityUpDown.Location = new System.Drawing.Point(172, 55);
+            this.publicKeyValidityUpDown.Location = new System.Drawing.Point(172, 78);
             this.publicKeyValidityUpDown.Maximum = new decimal(new int[] {
             3650,
             0,
@@ -148,9 +152,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // connectionBox
             // 
             this.connectionBox.Controls.Add(this.propagateLocaleCheckBox);
-            this.connectionBox.Location = new System.Drawing.Point(4, 119);
+            this.connectionBox.Location = new System.Drawing.Point(4, 148);
             this.connectionBox.Name = "connectionBox";
-            this.connectionBox.Size = new System.Drawing.Size(336, 73);
+            this.connectionBox.Size = new System.Drawing.Size(336, 64);
             this.connectionBox.TabIndex = 1;
             this.connectionBox.TabStop = false;
             this.connectionBox.Text = "Environment:";
@@ -165,6 +169,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.propagateLocaleCheckBox.TabIndex = 0;
             this.propagateLocaleCheckBox.Text = "Use Windows display &language as locale (LC_ALL)";
             this.propagateLocaleCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // usePersistentKeyCheckBox
+            // 
+            this.usePersistentKeyCheckBox.AutoSize = true;
+            this.usePersistentKeyCheckBox.Location = new System.Drawing.Point(20, 52);
+            this.usePersistentKeyCheckBox.Name = "usePersistentKeyCheckBox";
+            this.usePersistentKeyCheckBox.Size = new System.Drawing.Size(298, 17);
+            this.usePersistentKeyCheckBox.TabIndex = 6;
+            this.usePersistentKeyCheckBox.Text = "Use persistent key and store it in Windows CNG key store";
+            this.usePersistentKeyCheckBox.UseVisualStyleBackColor = true;
             // 
             // SshOptionsSheet
             // 
@@ -191,8 +205,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         private System.Windows.Forms.Label validityNoteLabel;
         private System.Windows.Forms.Label publicKeyValidityLabel;
         private System.Windows.Forms.Label keyTypeLabel;
-        private System.Windows.Forms.ComboBox publicKeyType;
+        private BindableComboBox publicKeyType;
         private System.Windows.Forms.GroupBox connectionBox;
         private System.Windows.Forms.CheckBox propagateLocaleCheckBox;
+        private System.Windows.Forms.CheckBox usePersistentKeyCheckBox;
     }
 }

@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP256_ThenHashAlgorithmIsSha256()
         {
             using (var key = new ECDsaCng(256))
-            using (var credential = new EcdsaSigner(key))
+            using (var credential = new EcdsaSigner(key, true))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA256, credential.HashAlgorithm);
             }
@@ -46,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP384_ThenHashAlgorithmIsSha384()
         {
             using (var key = new ECDsaCng(384))
-            using (var credential = new EcdsaSigner(key))
+            using (var credential = new EcdsaSigner(key, true))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA384, credential.HashAlgorithm);
             }
@@ -56,9 +56,45 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenKeyIsNistP521_ThenHashAlgorithmIsSha512()
         {
             using (var key = new ECDsaCng(521))
-            using (var credential = new EcdsaSigner(key))
+            using (var credential = new EcdsaSigner(key, true))
             {
                 Assert.AreEqual(HashAlgorithmName.SHA512, credential.HashAlgorithm);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        {
+            var key = new ECDsaCng(521);
+            using (var signer = new EcdsaSigner(key, true))
+            {
+                Assert.IsFalse(key.IsDisposed());
+            }
+
+            using (var signer = new EcdsaSigner(key, true))
+            {
+                Assert.IsTrue(key.IsDisposed());
+            }
+        }
+
+        [Test]
+        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        {
+            using (var key = new ECDsaCng(521))
+            {
+                using (var signer = new EcdsaSigner(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
+
+                using (var signer = new EcdsaSigner(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
             }
         }
     }

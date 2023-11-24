@@ -29,11 +29,14 @@ namespace Google.Solutions.Ssh.Cryptography
     public class EcdsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly ECDsaCng key;
+        private readonly bool ownsKey;
 
-        public EcdsaSigner(ECDsaCng key)
+        public EcdsaSigner(ECDsaCng key, bool ownsKey)
         {
             this.key = key.ExpectNotNull(nameof(key));
-            this.PublicKey = new EcdsaPublicKey(key);
+
+            this.PublicKey = new EcdsaPublicKey(key, false);
+            this.ownsKey = ownsKey;
         }
 
         internal HashAlgorithmName HashAlgorithm
@@ -100,8 +103,12 @@ namespace Google.Solutions.Ssh.Cryptography
 
         protected override void Dispose(bool disposing)
         {
+            if (this.ownsKey)
+            {
+                this.key.Dispose();
+            }
+
             this.PublicKey.Dispose();
-            this.key.Dispose();
             base.Dispose(disposing);
         }
     }

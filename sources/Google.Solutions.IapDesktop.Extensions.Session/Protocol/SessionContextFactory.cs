@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -85,6 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
     [Service(typeof(ISessionContextFactory))]
     public class SessionContextFactory : ISessionContextFactory
     {
+        internal static readonly TimeSpan EphemeralKeyValidity = TimeSpan.FromDays(1);
+
         private readonly IWin32Window window;
         private readonly IAuthorization authorization;
         private readonly IProjectWorkspace workspace;
@@ -314,22 +315,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 .TypedCollection;
 
             //
-            // Load persistent CNG key. This might pop up dialogs.
+            // Load the SSH key to use.
             //
             var sshSettings = this.sshSettingsRepository.GetSettings();
 
-            var keyName = new CngKeyName(
-                this.authorization.Session,
-                sshSettings.PublicKeyType.EnumValue,
-                this.keyStore.Provider);
+            IAsymmetricKeySigner signer;
+            TimeSpan validity;
+            if (sshSettings.UsePersistentKey.BoolValue)
+            {
+                //
+                // Load persistent CNG key. This might pop up dialogs.
+                //
+                var keyName = new CngKeyName(
+                    this.authorization.Session,
+                    sshSettings.PublicKeyType.EnumValue,
+                    this.keyStore.Provider);
 
-            var signer = AsymmetricKeySigner.Create(
-                this.keyStore.OpenKey(
-                    this.window.Handle,
-                    keyName.Value,
-                    keyName.Type,
-                    CngKeyUsages.Signing,
-                    false));
+                signer = AsymmetricKeySigner.Create(
+                    this.keyStore.OpenKey(
+                        this.window.Handle,
+                        keyName.Value,
+                        keyName.Type,
+                        CngKeyUsages.Signing,
+                        false),
+                    true);
+                validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+            }
+            else
+            {
+                //
+                // Use an ephemeral key and cap its validity.
+                //
+                signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.EnumValue);
+                validity = EphemeralKeyValidity;
+            }
 
             Debug.Assert(signer != null);
 
@@ -347,7 +366,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
             context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
-            context.Parameters.PublicKeyValidity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+            context.Parameters.PublicKeyValidity = validity;
             context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.BoolValue
                 ? CultureInfo.CurrentUICulture
                 : null;

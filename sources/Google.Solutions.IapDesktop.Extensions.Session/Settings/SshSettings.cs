@@ -53,6 +53,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// algorithm for public key use authentication.
         /// </summary>
         IEnumSetting<SshKeyType> PublicKeyType { get; }
+
+        /// <summary>
+        /// Controls whether the SSH signing key is stored in the
+        /// local key store.
+        /// </summary>
+        IBoolSetting UsePersistentKey { get; }
     }
 
     /// <summary>
@@ -105,12 +111,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             public IBoolSetting IsPropagateLocaleEnabled { get; private set; }
             public IIntSetting PublicKeyValidity { get; private set; }
             public IEnumSetting<SshKeyType> PublicKeyType { get; private set; }
+            public IBoolSetting UsePersistentKey { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.IsPropagateLocaleEnabled,
                 this.PublicKeyValidity,
-                this.PublicKeyType
+                this.PublicKeyType,
+                this.UsePersistentKey
             };
 
             private SshSettings()
@@ -160,6 +168,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                             settingsKey,
                             (int)TimeSpan.FromMinutes(1).TotalSeconds,
                             int.MaxValue)
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    UsePersistentKey = RegistryBoolSetting.FromKey(
+                            "UsePersistentKey",
+                            "UsePersistentKey",
+                            "Persist SSH signing key",
+                            null,
+                            true,
+                            settingsKey)
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),
 

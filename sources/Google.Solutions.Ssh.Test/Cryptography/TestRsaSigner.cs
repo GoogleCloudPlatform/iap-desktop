@@ -54,14 +54,14 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
 
             using (var cngKey = new RSACng())
-            using (var credential = new RsaSigner(cngKey))
+            using (var signer = new RsaSigner(cngKey, true))
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(
                         challengeBlob, 
                         HashAlgorithmName.SHA512, 
                         RSASignaturePadding.Pkcs1),
-                    credential.Sign(challenge));
+                    signer.Sign(challenge));
             }
         }
 
@@ -86,14 +86,50 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.AreEqual("rsa-sha2-256", challenge.Algorithm);
 
             using (var cngKey = new RSACng())
-            using (var credential = new RsaSigner(cngKey))
+            using (var signer = new RsaSigner(cngKey, true))
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(
                         challengeBlob, 
                         HashAlgorithmName.SHA256, 
                         RSASignaturePadding.Pkcs1),
-                    credential.Sign(challenge));
+                    signer.Sign(challenge));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        {
+            var key = new RSACng();
+            using (var signer = new RsaSigner(key, true))
+            {
+                Assert.IsFalse(key.IsDisposed());
+            }
+
+            using (var signer = new RsaSigner(key, true))
+            {
+                Assert.IsTrue(key.IsDisposed());
+            }
+        }
+
+        [Test]
+        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        {
+            using (var key = new RSACng())
+            {
+                using (var signer = new RsaSigner(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
+
+                using (var signer = new RsaSigner(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
             }
         }
     }

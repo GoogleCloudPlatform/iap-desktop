@@ -23,10 +23,10 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
@@ -38,10 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             Enum.GetValues(typeof(SshKeyType))
                 .Cast<SshKeyType>()
                 .ToArray();
-
-        private bool isPropagateLocaleEnabled;
-        private int publicKeyValidityInDays;
-        private SshKeyType publicKeyType;
 
         public SshOptionsViewModel(IRepository<ISshSettings> settingsRepository)
             : base("SSH", settingsRepository)
@@ -55,79 +51,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         protected override void Load(ISshSettings settings)
         {
-            this.IsPropagateLocaleEnabled =
-                settings.IsPropagateLocaleEnabled.BoolValue;
-
-            this.PublicKeyValidityInDays =
-                (int)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays;
-            this.IsPublicKeyValidityInDaysEditable = !settings.PublicKeyValidity.IsReadOnly;
-
-            this.publicKeyType = settings.PublicKeyType.EnumValue;
+            this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.EnumValue);
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
+
+            this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.BoolValue);
+
+            this.PublicKeyValidityInDays = ObservableProperty.Build(
+                (decimal)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays);
+            this.IsPublicKeyValidityInDaysEditable = ObservableProperty.Build(
+                this.UsePersistentKey,
+                usePersistent => usePersistent && !settings.PublicKeyValidity.IsReadOnly);
+
+            this.IsPropagateLocaleEnabled = ObservableProperty.Build(
+                settings.IsPropagateLocaleEnabled.BoolValue);
+
+            MarkDirtyWhenPropertyChanges(this.PublicKeyType);
+            MarkDirtyWhenPropertyChanges(this.UsePersistentKey);
+            MarkDirtyWhenPropertyChanges(this.PublicKeyValidityInDays);
+            MarkDirtyWhenPropertyChanges(this.IsPropagateLocaleEnabled);
         }
 
         protected override void Save(ISshSettings settings)
         {
-            Debug.Assert(this.IsDirty.Value);
-
-            settings.IsPropagateLocaleEnabled.BoolValue =
-                this.IsPropagateLocaleEnabled;
+            settings.PublicKeyType.EnumValue = this.PublicKeyType.Value;
+            settings.UsePersistentKey.BoolValue = this.UsePersistentKey.Value;
             settings.PublicKeyValidity.IntValue =
-                (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays).TotalSeconds;
-            settings.PublicKeyType.EnumValue = this.PublicKeyType;
+                (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;
+            
+            settings.IsPropagateLocaleEnabled.BoolValue = this.IsPropagateLocaleEnabled.Value;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsPublicKeyValidityInDaysEditable { get; private set; }
+        public ObservableFunc<bool> IsPublicKeyValidityInDaysEditable { get; private set; }
+
         public bool IsPublicKeyTypeEditable { get; private set; }
 
-        public bool IsPropagateLocaleEnabled
-        {
-            get => this.isPropagateLocaleEnabled;
-            set
-            {
-                this.IsDirty.Value = true;
-                this.isPropagateLocaleEnabled = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsPropagateLocaleEnabled { get; private set; }
 
-        public SshKeyType PublicKeyType
-        {
-            get => this.publicKeyType;
-            set
-            {
-                if (value == this.publicKeyType)
-                {
-                    return;
-                }
+        public ObservableProperty<SshKeyType> PublicKeyType { get; private set; }
 
-                this.IsDirty.Value = true;
-                this.publicKeyType = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public int PublicKeyTypeIndex
-        {
-            get => Array.IndexOf(publicKeyTypes, this.PublicKeyType);
-            set => this.PublicKeyType = publicKeyTypes[value];
-        }
-
-        public decimal PublicKeyValidityInDays
-        {
-            get => this.publicKeyValidityInDays;
-            set
-            {
-                this.IsDirty.Value = true;
-                this.publicKeyValidityInDays = (int)value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<decimal> PublicKeyValidityInDays { get; private set; }
 
         public IList<SshKeyType> AllPublicKeyTypes => publicKeyTypes;
+
+        public ObservableProperty<bool> UsePersistentKey { get; private set; }
     }
 }

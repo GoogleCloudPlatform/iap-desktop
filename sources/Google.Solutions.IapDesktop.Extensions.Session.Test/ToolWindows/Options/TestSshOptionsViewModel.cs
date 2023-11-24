@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsPropagateLocaleEnabled);
+            Assert.IsTrue(viewModel.IsPropagateLocaleEnabled.Value);
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsPropagateLocaleEnabled);
+            Assert.IsFalse(viewModel.IsPropagateLocaleEnabled.Value);
         }
 
         [Test]
@@ -100,10 +100,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             settings.IsPropagateLocaleEnabled.BoolValue = true;
             settingsRepository.SetSettings(settings);
 
-            var viewModel = new SshOptionsViewModel(settingsRepository)
-            {
-                IsPropagateLocaleEnabled = false
-            };
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+            viewModel.IsPropagateLocaleEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
 
@@ -119,7 +117,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsPropagateLocaleEnabled = !viewModel.IsPropagateLocaleEnabled;
+            viewModel.IsPropagateLocaleEnabled.Value = !viewModel.IsPropagateLocaleEnabled.Value;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // UsePersistentKey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingEnabled_ThenUsePersistentKeyIsTrue()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.UsePersistentKey.BoolValue = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            Assert.IsTrue(viewModel.UsePersistentKey.Value);
+            Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenUsePersistentKeyIsTrue()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.UsePersistentKey.BoolValue = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.UsePersistentKey.Value);
+            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+        }
+
+        [Test]
+        public async Task WhenDisablingUsePersistentKey_ThenChangeIsApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.UsePersistentKey.BoolValue = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+            viewModel.UsePersistentKey.Value = false;
+
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.IsFalse(settings.UsePersistentKey.BoolValue);
+        }
+
+        [Test]
+        public void WhenUsePersistentKeyChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+
+            viewModel.UsePersistentKey.Value = !viewModel.UsePersistentKey.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
         }
@@ -138,8 +198,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(1, viewModel.PublicKeyValidityInDays);
-            Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable);
+            Assert.AreEqual(1, (int)viewModel.PublicKeyValidityInDays.Value);
+            Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable.Value);
         }
 
         [Test]
@@ -157,8 +217,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(2, viewModel.PublicKeyValidityInDays);
-            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable);
+            Assert.AreEqual(2, viewModel.PublicKeyValidityInDays.Value);
+            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
         }
 
         [Test]
@@ -169,10 +229,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
             settingsRepository.SetSettings(settings);
 
-            var viewModel = new SshOptionsViewModel(settingsRepository)
-            {
-                PublicKeyValidityInDays = 365 * 2
-            };
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+            viewModel.PublicKeyValidityInDays.Value = 365 * 2;
 
             await viewModel.ApplyChangesAsync();
 
@@ -188,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.PublicKeyValidityInDays++;
+            viewModel.PublicKeyValidityInDays.Value++;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
         }
@@ -207,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(SshKeyType.EcdsaNistp256, viewModel.PublicKeyType);
+            Assert.AreEqual(SshKeyType.EcdsaNistp256, viewModel.PublicKeyType.Value);
             Assert.IsTrue(viewModel.IsPublicKeyTypeEditable);
         }
 
@@ -226,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(SshKeyType.EcdsaNistp384, viewModel.PublicKeyType);
+            Assert.AreEqual(SshKeyType.EcdsaNistp384, viewModel.PublicKeyType.Value);
             Assert.IsFalse(viewModel.IsPublicKeyTypeEditable);
         }
 
@@ -238,10 +296,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
             settingsRepository.SetSettings(settings);
 
-            var viewModel = new SshOptionsViewModel(settingsRepository)
-            {
-                PublicKeyType = SshKeyType.EcdsaNistp384
-            };
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+            viewModel.PublicKeyType.Value = SshKeyType.EcdsaNistp384;
 
             await viewModel.ApplyChangesAsync();
 
@@ -257,55 +313,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.PublicKeyType++;
+            viewModel.PublicKeyType.Value++;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
-        }
-
-        [Test]
-        public void WhenPublicKeyTypeNotChanged_ThenIsDirtyIsTrueUntilApplied()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var viewModel = new SshOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-
-            viewModel.PublicKeyType = viewModel.PublicKeyType;
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-        }
-
-        //---------------------------------------------------------------------
-        // PublicKeyTypeIndex.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenIndexSet_ThenPublicKeyTypeIsUpdated()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var viewModel = new SshOptionsViewModel(settingsRepository);
-
-            viewModel.PublicKeyType = viewModel.AllPublicKeyTypes[0];
-            viewModel.PublicKeyTypeIndex++;
-
-            Assert.AreEqual(1, viewModel.PublicKeyTypeIndex);
-            Assert.AreEqual(viewModel.AllPublicKeyTypes[1], viewModel.PublicKeyType);
-        }
-
-        //---------------------------------------------------------------------
-        // AllPublicKeyTypes.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void AllPublicKeyTypesReturnsList()
-        {
-            var settingsRepository = CreateSettingsRepository();
-            var viewModel = new SshOptionsViewModel(settingsRepository);
-
-            var keyTypes = viewModel.AllPublicKeyTypes.ToList();
-
-            Assert.Greater(keyTypes.Count, 1);
-            Assert.AreEqual(keyTypes.Count, Enum.GetValues(typeof(SshKeyType)).Length);
         }
     }
 }

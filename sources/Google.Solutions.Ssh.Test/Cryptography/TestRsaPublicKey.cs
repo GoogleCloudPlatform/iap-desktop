@@ -40,7 +40,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void Type()
         {
             using (var key = new RSACng())
-            using (var publicKey = new RsaPublicKey(key))
+            using (var publicKey = new RsaPublicKey(key, true))
             {
                 Assert.AreEqual("ssh-rsa", publicKey.Type);
             }
@@ -49,7 +49,6 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
         // FromWireFormat.
         //---------------------------------------------------------------------
-
 
         [Test]
         public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey(
@@ -83,6 +82,42 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             Assert.Throws<SshFormatException>(
                 () => RsaPublicKey.FromWireFormat(
                     Convert.FromBase64String(SampleKeys.Nistp256).Take(take).ToArray()));
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        {
+            var key = new RSACng();
+            using (var publicKey = new RsaPublicKey(key, true))
+            {
+                Assert.IsFalse(key.IsDisposed());
+            }
+
+            using (var publicKey = new RsaPublicKey(key, true))
+            {
+                Assert.IsTrue(key.IsDisposed());
+            }
+        }
+
+        [Test]
+        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        {
+            using (var key = new RSACng())
+            { 
+                using (var publicKey = new RsaPublicKey(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
+
+                using (var publicKey = new RsaPublicKey(key, false))
+                {
+                    Assert.IsFalse(key.IsDisposed());
+                }
+            }
         }
     }
 }

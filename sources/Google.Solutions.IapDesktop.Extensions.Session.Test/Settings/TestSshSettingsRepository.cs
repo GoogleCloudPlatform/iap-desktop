@@ -72,7 +72,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             }
         }
 
-
         //---------------------------------------------------------------------
         // IsPropagateLocaleEnabled.
         //---------------------------------------------------------------------
@@ -320,6 +319,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 var settings = repository.GetSettings();
 
                 Assert.AreEqual(3 * 60, settings.PublicKeyValidity.IntValue);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // UsePersistentKey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenKeyEmpty_ThenUsePersistentKeyIsTrue()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    null,
+                    null,
+                    UserProfile.SchemaVersion.Current);
+                var settings = repository.GetSettings();
+
+                Assert.IsTrue(settings.UsePersistentKey.BoolValue);
             }
         }
     }
