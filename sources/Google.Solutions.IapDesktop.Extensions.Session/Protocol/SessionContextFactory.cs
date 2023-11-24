@@ -351,7 +351,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     throw new SessionException(
                         "Creating or opening the SSH key failed because the " +
                         "Windows CNG key container or key store is inaccessible.\n\n" +
-                        "If the error perisists, go to Tools > Options > SSH and disable " +
+                        "If the problem persists, go to Tools > Options > SSH and disable " +
                         "the option to use a persistent key for SSH authentication.",
                         HelpTopics.SshKeyStorage,
                         e);
