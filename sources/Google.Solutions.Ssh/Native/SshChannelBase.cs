@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Native
 
                 using (SshTraceSource.Log.TraceMethod().WithoutParameters())
                 {
-                    return UnsafeNativeMethods.libssh2_channel_eof(
+                    return NativeMethods.libssh2_channel_eof(
                         this.ChannelHandle) == 1;
                 }
             }
@@ -94,7 +94,7 @@ namespace Google.Solutions.Ssh.Native
                     SshEventSource.Log.ChannelReadInitiated(buffer.Length);
                 }
 
-                var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
+                var bytesRead = NativeMethods.libssh2_channel_read_ex(
                     this.ChannelHandle,
                     (int)streamId,
                     buffer,
@@ -160,7 +160,7 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
+                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_wait_eof(
                     this.ChannelHandle);
 
                 if (result != LIBSSH2_ERROR.NONE)
@@ -181,7 +181,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     SshEventSource.Log.ChannelCloseInitiated();
 
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_close(
                         this.ChannelHandle);
 
                     if (result == LIBSSH2_ERROR.SOCKET_SEND)

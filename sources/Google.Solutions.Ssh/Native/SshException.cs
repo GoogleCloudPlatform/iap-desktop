@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Native
             string path)
         {
             var errno = (LIBSSH2_FX_ERROR)
-                UnsafeNativeMethods.libssh2_sftp_last_error(channelHandle);
+                NativeMethods.libssh2_sftp_last_error(channelHandle);
 
             return new SshSftpNativeException(
                 errno,

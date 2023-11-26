@@ -55,7 +55,7 @@ namespace Google.Solutions.Ssh.Native
                     // NB. This call does not cause network traffic and therefore
                     // should not block.
                     //
-                    return UnsafeNativeMethods.libssh2_channel_get_exit_status(
+                    return NativeMethods.libssh2_channel_get_exit_status(
                         this.ChannelHandle);
                 }
             }
@@ -74,7 +74,7 @@ namespace Google.Solutions.Ssh.Native
                     // should not block.
                     //
 
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_get_exit_signal(
                         this.ChannelHandle,
                         out var signalPtr,
                         out var signalLength,
@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_size_ex(
+            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_request_pty_size_ex(
                 this.ChannelHandle,
                 widthInChars,
                 heightInChars,

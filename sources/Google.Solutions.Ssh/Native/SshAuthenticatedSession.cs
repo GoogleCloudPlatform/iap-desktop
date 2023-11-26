@@ -62,7 +62,7 @@ namespace Google.Solutions.Ssh.Native
             using (SshTraceSource.Log.TraceMethod().WithParameters(mode))
             {
                 LIBSSH2_ERROR result;
-                var channelHandle = UnsafeNativeMethods.libssh2_channel_open_ex(
+                var channelHandle = NativeMethods.libssh2_channel_open_ex(
                     this.Session.Handle,
                     SshSessionChannelBase.Type,
                     (uint)SshSessionChannelBase.Type.Length,
@@ -77,7 +77,7 @@ namespace Google.Solutions.Ssh.Native
                 // Configure how extended data (stderr, in particular) should
                 // be handled.
                 //
-                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_handle_extended_data2(
+                result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_handle_extended_data2(
                     channelHandle,
                     mode);
                 if (result != LIBSSH2_ERROR.NONE)
@@ -101,7 +101,7 @@ namespace Google.Solutions.Ssh.Native
             // variables to be specified. Trying to set a non-whiteisted
             // variable causes a CHANNEL_REQUEST_DENIED error.
             //
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_setenv_ex(
+            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_setenv_ex(
                 channelHandle,
                 environmentVariable.Name,
                 (uint)environmentVariable.Name.Length,
@@ -165,7 +165,7 @@ namespace Google.Solutions.Ssh.Native
                 // Request a pseudoterminal. This must be done before the shell
                 // is launched.
                 //
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_ex(
+                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_request_pty_ex(
                     channelHandle,
                     term,
                     (uint)term.Length,
@@ -186,7 +186,7 @@ namespace Google.Solutions.Ssh.Native
                 // Launch the shell.
                 //
                 var request = "shell";
-                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
+                result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_process_startup(
                     channelHandle,
                     request,
                     (uint)request.Length,
@@ -212,7 +212,7 @@ namespace Google.Solutions.Ssh.Native
         {
             using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var channelHandle = UnsafeNativeMethods.libssh2_sftp_init(
+                var channelHandle = NativeMethods.libssh2_sftp_init(
                     this.Session.Handle);
 
                 channelHandle.ValidateAndAttachToSession(this.Session);

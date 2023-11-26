@@ -58,7 +58,7 @@ namespace Google.Solutions.Ssh.Native
             var files = new LinkedList<SshSftpFileInfo>();
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(path))
-            using (var dirHandle = UnsafeNativeMethods.libssh2_sftp_open_ex(
+            using (var dirHandle = NativeMethods.libssh2_sftp_open_ex(
                 this.channelHandle,
                 path,
                 (uint)path.Length,
@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Native
                     {
                         while (true)
                         {
-                            var bytesInBuffer = UnsafeNativeMethods.libssh2_sftp_readdir_ex(
+                            var bytesInBuffer = NativeMethods.libssh2_sftp_readdir_ex(
                                 dirHandle,
                                 fileNameBuffer.DangerousGetHandle(),
                                 new IntPtr(MaxFilenameLength),
@@ -126,7 +126,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 try
                 {
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_mkdir_ex(
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_mkdir_ex(
                         this.channelHandle,
                         path,
                         (uint)path.Length,
@@ -155,7 +155,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 try
                 {
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_rmdir_ex(
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_rmdir_ex(
                         this.channelHandle,
                         path,
                         (uint)path.Length);
@@ -187,7 +187,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 try
                 {
-                    var fileHandle = UnsafeNativeMethods.libssh2_sftp_open_ex(
+                    var fileHandle = NativeMethods.libssh2_sftp_open_ex(
                         this.channelHandle,
                         path,
                         (uint)path.Length,
@@ -221,7 +221,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 try
                 {
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_unlink_ex(
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_unlink_ex(
                         this.channelHandle,
                         path,
                         (uint)path.Length);

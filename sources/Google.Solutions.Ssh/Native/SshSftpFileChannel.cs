@@ -72,7 +72,7 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var bytesRead = UnsafeNativeMethods.libssh2_sftp_read(
+                var bytesRead = NativeMethods.libssh2_sftp_read(
                     this.fileHandle,
                     buffer,
                     new IntPtr(buffer.Length));
@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh.Native
                     var totalBytesWritten = 0;
                     while (totalBytesWritten < length)
                     {
-                        var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(
+                        var bytesWritten = NativeMethods.libssh2_sftp_write(
                             this.fileHandle,
                             Marshal.UnsafeAddrOfPinnedArrayElement(buffer, totalBytesWritten),
                             new IntPtr(length - totalBytesWritten));

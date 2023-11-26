@@ -94,7 +94,7 @@ namespace Google.Solutions.Ssh
             this.keyboardHandler = keyboardHandler.ExpectNotNull(nameof(keyboardHandler));
             this.CallbackContext = callbackContext.ExpectNotNull(nameof(callbackContext));
 
-            this.readyToSend = UnsafeNativeMethods.WSACreateEvent();
+            this.readyToSend = NativeMethods.WSACreateEvent();
 
             this.workerCancellationSource = new CancellationTokenSource();
             this.workerThread = new Thread(WorkerThreadProc)
@@ -183,11 +183,11 @@ namespace Google.Solutions.Ssh
         {
             if (ready)
             {
-                UnsafeNativeMethods.WSASetEvent(this.readyToSend);
+                NativeMethods.WSASetEvent(this.readyToSend);
             }
             else
             {
-                UnsafeNativeMethods.WSAResetEvent(this.readyToSend);
+                NativeMethods.WSAResetEvent(this.readyToSend);
             }
         }
 
@@ -264,7 +264,7 @@ namespace Google.Solutions.Ssh
                             //
                             using (session.AsNonBlocking())
                             using (Disposable.For(() => this.readyToSend.DangerousRelease()))
-                            using (var readyToReceive = UnsafeNativeMethods.WSACreateEvent())
+                            using (var readyToReceive = NativeMethods.WSACreateEvent())
                             {
                                 //
                                 // Create an event that is signalled whenever there is data
@@ -274,13 +274,13 @@ namespace Google.Solutions.Ssh
                                 // calling WSAEnumNetworkEvents.
                                 //
 
-                                if (UnsafeNativeMethods.WSAEventSelect(
+                                if (NativeMethods.WSAEventSelect(
                                     connectedSession.Socket.Handle,
                                     readyToReceive,
-                                    UnsafeNativeMethods.FD_READ) != 0)
+                                    NativeMethods.FD_READ) != 0)
                                 {
                                     throw new Win32Exception(
-                                        UnsafeNativeMethods.WSAGetLastError(),
+                                        NativeMethods.WSAGetLastError(),
                                         "WSAEventSelect failed");
                                 }
 
@@ -319,14 +319,14 @@ namespace Google.Solutions.Ssh
                                         // to become sluggish.
                                         //
 
-                                        var waitResult = UnsafeNativeMethods.WSAWaitForMultipleEvents(
+                                        var waitResult = NativeMethods.WSAWaitForMultipleEvents(
                                             (uint)waitHandles.Length,
                                             waitHandles,
                                             false,
                                             (uint)this.SocketWaitInterval.TotalMilliseconds,
                                             false);
 
-                                        if (waitResult == UnsafeNativeMethods.WSA_WAIT_EVENT_0)
+                                        if (waitResult == NativeMethods.WSA_WAIT_EVENT_0)
                                         {
                                             //
                                             // Socket has data available. 
@@ -336,18 +336,18 @@ namespace Google.Solutions.Ssh
                                             //
                                             // Reset the WSA event.
                                             //
-                                            var wsaEvents = new UnsafeNativeMethods.WSANETWORKEVENTS()
+                                            var wsaEvents = new NativeMethods.WSANETWORKEVENTS()
                                             {
                                                 iErrorCode = new int[10]
                                             };
 
-                                            if (UnsafeNativeMethods.WSAEnumNetworkEvents(
+                                            if (NativeMethods.WSAEnumNetworkEvents(
                                                 connectedSession.Socket.Handle,
                                                 readyToReceive,
                                                 ref wsaEvents) != 0)
                                             {
                                                 throw new Win32Exception(
-                                                    UnsafeNativeMethods.WSAGetLastError(),
+                                                    NativeMethods.WSAGetLastError(),
                                                     "WSAEnumNetworkEvents failed");
                                             }
 
@@ -356,7 +356,7 @@ namespace Google.Solutions.Ssh
                                             //
                                             OnReadyToReceive(authenticatedSession);
                                         }
-                                        else if (waitResult == UnsafeNativeMethods.WSA_WAIT_EVENT_0 + 1)
+                                        else if (waitResult == NativeMethods.WSA_WAIT_EVENT_0 + 1)
                                         {
                                             //
                                             // User has data to send. Perform whatever send operation 
@@ -365,7 +365,7 @@ namespace Google.Solutions.Ssh
                                             currentOperation = Operation.Sending;
                                             OnReadyToSend(authenticatedSession);
                                         }
-                                        else if (waitResult == UnsafeNativeMethods.WSA_WAIT_TIMEOUT)
+                                        else if (waitResult == NativeMethods.WSA_WAIT_TIMEOUT)
                                         {
                                             // 
                                             // Channel is idle - use the opportunity to send a 
@@ -374,10 +374,10 @@ namespace Google.Solutions.Ssh
                                             // 
                                             session.KeepAlive();
                                         }
-                                        else if (waitResult == UnsafeNativeMethods.WSA_WAIT_FAILED)
+                                        else if (waitResult == NativeMethods.WSA_WAIT_FAILED)
                                         {
                                             throw new Win32Exception(
-                                                UnsafeNativeMethods.WSAGetLastError(),
+                                                NativeMethods.WSAGetLastError(),
                                                 "WSAWaitForMultipleEvents failed");
                                         }
                                     }
