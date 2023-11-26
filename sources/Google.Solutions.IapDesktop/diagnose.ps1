@@ -29,6 +29,7 @@ $Providers = @{
 	#
 	"Google-Solutions-Apis" = "{EC3585B8-5C28-42AE-8CE7-D76CB00303C6}"
 	"Google-IapDesktop-Application" = "{4B23296B-C25A-449C-91F2-897BDABAA1A8}"
+	"Google-Solutions-Ssh" = "{7FCCFB8B-ABEC-4ADB-B994-E631DD56AA8C}"
 
 	#
 	# Relevant system providers.

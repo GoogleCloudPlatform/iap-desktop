@@ -199,6 +199,8 @@ namespace Google.Solutions.Ssh.Native
                     throw this.Session.CreateException(result);
                 }
 
+                SshEventSource.Log.ShellChannelOpened(term);
+
                 return new SshShellChannel(this.Session, channelHandle);
             }
         }
@@ -214,6 +216,8 @@ namespace Google.Solutions.Ssh.Native
                     this.Session.Handle);
 
                 channelHandle.ValidateAndAttachToSession(this.Session);
+
+                SshEventSource.Log.SftpChannelOpened();
 
                 return new SshSftpChannel(this.Session, channelHandle);
             }

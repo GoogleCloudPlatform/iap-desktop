@@ -267,6 +267,8 @@ namespace Google.Solutions.Ssh.Native
                 Debug.Assert(context == IntPtr.Zero);
                 Debug.Assert(session == this.session.Handle.DangerousGetHandle());
 
+                SshEventSource.Log.PublicKeyChallengeReceived();
+
                 //
                 // Read the challenge.
                 //
@@ -312,6 +314,8 @@ namespace Google.Solutions.Ssh.Native
                     promptsPtr,
                     numPrompts);
 
+                SshEventSource.Log.KeyboardInteractiveChallengeReceived(name, instruction);
+
                 //
                 // NB. libssh2 allocates the responses structure for us, but frees
                 // the embedded text strings using its allocator.
@@ -347,6 +351,8 @@ namespace Google.Solutions.Ssh.Native
                     {
                         SshTraceSource.Log.TraceError(
                             "Authentication callback threw exception", e);
+
+                        SshEventSource.Log.KeyboardInteractiveChallengeAborted();
 
                         //
                         // Don't let the exception escape into unmanaged code,
@@ -387,6 +393,8 @@ namespace Google.Solutions.Ssh.Native
                 .WithParameters(credential.Username))
             {
                 var publicKey = credential.Signer.PublicKey.WireFormatValue;
+
+                SshEventSource.Log.PublicKeyAuthenticationInitiated(credential.Username);
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,

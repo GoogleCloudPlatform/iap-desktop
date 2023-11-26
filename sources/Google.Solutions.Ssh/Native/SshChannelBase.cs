@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -88,11 +89,21 @@ namespace Google.Solutions.Ssh.Native
                     return 0u;
                 }
 
+                if (SshEventSource.Log.IsEnabled())
+                {
+                    SshEventSource.Log.ChannelReadInitiated(buffer.Length);
+                }
+
                 var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
                     this.ChannelHandle,
                     (int)streamId,
                     buffer,
                     new IntPtr(buffer.Length));
+
+                if (SshEventSource.Log.IsEnabled())
+                {
+                    SshEventSource.Log.ChannelReadCompleted(bytesRead);
+                }
 
                 if (bytesRead >= 0)
                 {
@@ -116,11 +127,21 @@ namespace Google.Solutions.Ssh.Native
             {
                 Debug.Assert(!this.closedForWriting);
 
+                if (SshEventSource.Log.IsEnabled())
+                {
+                    SshEventSource.Log.ChannelWriteInitiated(buffer.Length);
+                }
+
                 var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
                     this.ChannelHandle,
                     (int)streamId,
                     buffer,
                     new IntPtr(buffer.Length));
+
+                if (SshEventSource.Log.IsEnabled())
+                {
+                    SshEventSource.Log.ChannelWriteCompleted(bytesWritten);
+                }
 
                 if (bytesWritten >= 0)
                 {
@@ -158,6 +179,8 @@ namespace Google.Solutions.Ssh.Native
                 // Avoid closing more than once.
                 if (!this.closedForWriting)
                 {
+                    SshEventSource.Log.ChannelCloseInitiated();
+
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
                         this.ChannelHandle);
 
