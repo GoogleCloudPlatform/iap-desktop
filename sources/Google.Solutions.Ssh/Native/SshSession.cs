@@ -344,11 +344,14 @@ namespace Google.Solutions.Ssh.Native
                     SocketType.Stream,
                     ProtocolType.Tcp)
                 {
-
+                    //
                     // Flush input data immediately so that the user does not
                     // experience a lag.
+                    //
                     NoDelay = true
                 };
+
+                SshEventSource.Log.ConnectionHandshakeInitiated(remoteEndpoint.ToString());
 
                 socket.Connect(remoteEndpoint);
 
@@ -361,6 +364,8 @@ namespace Google.Solutions.Ssh.Native
                     socket.Close();
                     throw CreateException(result);
                 }
+
+                SshEventSource.Log.ConnectionHandshakeCompleted(remoteEndpoint.ToString());
 
                 return new SshConnectedSession(this, socket);
             }
@@ -388,6 +393,8 @@ namespace Google.Solutions.Ssh.Native
                 out var errorMessage,
                 out var errorMessageLength,
                 0);
+
+            SshEventSource.Log.ConnectionErrorEncountered((int)error);
 
             if (lastError == error)
             {
