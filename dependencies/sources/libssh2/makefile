@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 33
+TAG = 34
 
 #
 # NB. We're using custom ports for libssh2 and openssl:
@@ -118,7 +118,7 @@ $(MAKEDIR)\obj\libssh2\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg: \
     <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.pdb" target="runtimes\win10-x86\native" />
     <file src="obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.dll" target="runtimes\win10-x64\native" />
     <file src="obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.pdb" target="runtimes\win10-x64\native" />
-    <file src="libssh2.targets" target="build" />
+    <file src="Google.Solutions.ThirdParty.Libssh2.targets" target="build" />
   </files>
 </package>
 <<NOKEEP
