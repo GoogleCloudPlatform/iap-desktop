@@ -21,11 +21,12 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 30
+TAG = 31
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
 VTNETCORE_VERSION = 1.0.30.$(TAG)
+VTNETCORE_PACKAGE_ID = Google.Solutions.ThirdParty.Vtnetcore
 
 default: package
 
@@ -59,7 +60,7 @@ $(MAKEDIR)\obj\VtNetCore\VtNetCore.csproj:
 
 	cd $(MAKEDIR)
 
-$(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg: \
+$(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\$(VTNETCORE_PACKAGE_ID).$(VTNETCORE_VERSION).nupkg: \
 		$(MAKEDIR)\obj\VtNetCore\VtNetCore.csproj
 	@echo "========================================================"
 	@echo "=== Building vtnetcore                               ==="
@@ -68,7 +69,7 @@ $(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nup
 
 	msbuild \
 		/t:Restore;Build \
-		"/p:Configuration=$(CONFIGURATION);Platform=Any CPU;AssemblyName=vtnetcore;Version=$(VTNETCORE_VERSION);OutputPath=bin\$(CONFIGURATION)" \
+		"/p:Configuration=$(CONFIGURATION);Platform=Any CPU;AssemblyName=vtnetcore;PackageId=$(VTNETCORE_PACKAGE_ID);Version=$(VTNETCORE_VERSION);OutputPath=bin\$(CONFIGURATION)" \
 		"$(MAKEDIR)\obj\VtNetCore\VtNetCore.csproj"
 
 	cd $(MAKEDIR)
@@ -77,13 +78,15 @@ $(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nup
 # Main targets
 #------------------------------------------------------------------------------
 
-package: $(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg 
-    copy /Y $(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg $(MAKEDIR)\obj\vtnetcore.nupkg
+package: $(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\$(VTNETCORE_PACKAGE_ID).$(VTNETCORE_VERSION).nupkg 
+    copy /Y \
+		$(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\$(VTNETCORE_PACKAGE_ID).$(VTNETCORE_VERSION).nupkg \
+		$(MAKEDIR)\obj\$(VTNETCORE_PACKAGE_ID).nupkg
 
 clean:
     msbuild /t:Clean "$(MAKEDIR)\obj\VtNetCore\VtNetCore.csproj"
     -rd /S /Q $(MAKEDIR)\obj\VtNetCore\bin
-    -del $(MAKEDIR)\obj\vtnetcore.nupkg
+    -del $(MAKEDIR)\obj\$(VTNETCORE_PACKAGE_ID).nupkg
     
 distclean:
     -rd /S /Q $(MAKEDIR)\obj
