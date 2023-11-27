@@ -150,7 +150,7 @@ namespace Google.Solutions.Ssh.Native
         internal uint mtime;
     };
 
-    internal static class UnsafeNativeMethods
+    internal static class NativeMethods
     {
         private const string Libssh2 = "libssh2.dll";
 
@@ -361,6 +361,22 @@ namespace Google.Solutions.Ssh.Native
             KeyboardInteractiveCallback callback,
             IntPtr context);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate int PasswordChangeCallback(
+            IntPtr session,
+            IntPtr newPasswordPtr,
+            IntPtr newPasswordLengthPtr,
+            IntPtr context);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern int libssh2_userauth_password_ex(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string username,
+            int usernameLength,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            int passwordLength,
+            PasswordChangeCallback passwordChangeCallback);
+
         //---------------------------------------------------------------------
         // Channel.
         //---------------------------------------------------------------------
@@ -382,7 +398,6 @@ namespace Google.Solutions.Ssh.Native
             uint packetSize,
             [MarshalAs(UnmanagedType.LPStr)] string? message,
             uint messageLength);
-
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern int libssh2_channel_setenv_ex(
@@ -716,7 +731,7 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         protected override bool ReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_free(
+            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_free(
                 this.handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
 
@@ -806,7 +821,7 @@ namespace Google.Solutions.Ssh.Native
             if (this.IsInvalid)
             {
                 throw session.CreateException(
-                    (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                    (LIBSSH2_ERROR)NativeMethods.libssh2_session_last_errno(
                         session.Handle));
             }
 
@@ -823,7 +838,7 @@ namespace Google.Solutions.Ssh.Native
     {
         protected override void ProtectedReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(
+            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_free(
                 this.handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
@@ -836,7 +851,7 @@ namespace Google.Solutions.Ssh.Native
     {
         protected override void ProtectedReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_shutdown(
+            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_shutdown(
                 this.handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
@@ -848,7 +863,7 @@ namespace Google.Solutions.Ssh.Native
     {
         protected override void ProtectedReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_close_handle(
+            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_close_handle(
                 this.handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
@@ -863,7 +878,7 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         protected override bool ReleaseHandle()
         {
-            var result = UnsafeNativeMethods.WSACloseEvent(this.handle);
+            var result = NativeMethods.WSACloseEvent(this.handle);
             Debug.Assert(result);
             return result;
         }

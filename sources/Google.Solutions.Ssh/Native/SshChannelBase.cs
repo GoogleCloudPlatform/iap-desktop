@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh.Native
                     SshEventSource.Log.ChannelWriteInitiated(buffer.Length);
                 }
 
-                var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
+                var bytesWritten = NativeMethods.libssh2_channel_write_ex(
                     this.ChannelHandle,
                     (int)streamId,
                     buffer,
