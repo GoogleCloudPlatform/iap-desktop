@@ -21,11 +21,12 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 5
+TAG = 6
 
 DOCKPANELSUITE_TAG = Release_3.0.6
 DOCKPANELSUITE_URL = https://github.com/dockpanelsuite/dockpanelsuite.git
 DOCKPANELSUITE_VERSION = 3.0.6.$(TAG)
+DOCKPANELSUITE_PACKAGE_ID = Google.Solutions.ThirdParty.DockPanelSuite
 
 MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;TargetFramework=net462;OutputPath=bin\$(CONFIGURATION);AllowUnsafeBlocks=true;TargetFrameworkProfile=;TargetFrameworkVersion=v4.6.2
 
@@ -50,7 +51,7 @@ $(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj:
 
 	cd $(MAKEDIR)
 
-$(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg: \
+$(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\$(DOCKPANELSUITE_PACKAGE_ID).$(DOCKPANELSUITE_VERSION).nupkg: \
 		$(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj
 	@echo "========================================================"
 	@echo "=== Building dockpanelsuite                          ==="
@@ -71,7 +72,7 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_V
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>DockPanelSuite</id>
+    <id>$(DOCKPANELSUITE_PACKAGE_ID)</id>
     <version>$(DOCKPANELSUITE_VERSION)</version>
     <authors>http://dockpanelsuite.com</authors>
     <owners>http://dockpanelsuite.com</owners>
@@ -93,9 +94,11 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_V
 #------------------------------------------------------------------------------
 
 package: \
-    $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg \
+    $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\$(DOCKPANELSUITE_PACKAGE_ID).$(DOCKPANELSUITE_VERSION).nupkg \
     
-    copy /Y $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg $(MAKEDIR)\obj\dockpanelsuite.nupkg
+    copy /Y \
+		$(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\$(DOCKPANELSUITE_PACKAGE_ID).$(DOCKPANELSUITE_VERSION).nupkg \
+		$(MAKEDIR)\obj\$(DOCKPANELSUITE_PACKAGE_ID).nupkg
 
 clean:
 	msbuild \
@@ -108,7 +111,7 @@ clean:
 		"$(MAKEDIR)\obj\WinFormsUI\ThemeVS2015.csproj"
     
     -rd /S /Q $(MAKEDIR)\obj\WinFormsUI\bin
-    -del $(MAKEDIR)\obj\dockpanelsuite.nupkg
+    -del $(MAKEDIR)\obj\$(DOCKPANELSUITE_PACKAGE_ID).nupkg
     
 distclean:
     -rd /S /Q $(MAKEDIR)\obj

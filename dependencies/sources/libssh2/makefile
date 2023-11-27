@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 32
+TAG = 33
 
 #
 # NB. We're using custom ports for libssh2 and openssl:
@@ -39,6 +39,7 @@ TAG = 32
 VCPKG_TAG = 2023.06.20
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.11.0.$(TAG)
+LIBSSH2_PACKAGE_ID = Google.Solutions.ThirdParty.Libssh2
 
 default: package
 
@@ -93,7 +94,7 @@ $(MAKEDIR)\obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.dll: $(MAKE
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
 
-$(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg: \
+$(MAKEDIR)\obj\libssh2\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg: \
 		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll \
 		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.dll
 	@echo "========================================================"
@@ -103,7 +104,7 @@ $(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg: \
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>libssh2</id>
+    <id>$(LIBSSH2_PACKAGE_ID)</id>
     <version>$(LIBSSH2_VERSION)</version>
     <authors>https://www.libssh2.org/</authors>
     <owners>https://www.libssh2.org/</owners>
@@ -126,8 +127,8 @@ $(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg: \
 # Main targets
 #------------------------------------------------------------------------------
 
-package: $(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg
-    copy /Y $(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg $(MAKEDIR)\obj\libssh2.nupkg
+package: $(MAKEDIR)\obj\libssh2\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg
+    copy /Y $(MAKEDIR)\obj\libssh2\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).nupkg
 
 clean: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 	@echo "========================================================"
@@ -142,8 +143,8 @@ clean: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
 	-rd /S /Q $(MAKEDIR)\obj\libssh2\
-    -rd /S /Q $(LOCALAPPDATA)\vcpkg
-    -del $(MAKEDIR)\obj\libssh2.nupkg
+    -rd /S /Q $(LOCALAPPDATA)\vcpkg\archives
+    -del $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).nupkg
 
 distclean: clean
     -rd /S /Q $(MAKEDIR)\obj

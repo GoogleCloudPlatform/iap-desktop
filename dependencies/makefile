@@ -33,9 +33,9 @@ DIRS=\
 # Nuget packages to build
 PACKAGES=$(PACKAGES) \
 	$(MAKEDIR)\sources\tsc\obj\google.solutions.tsc.nupkg \
-    $(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
-    $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
-    $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg
+    $(MAKEDIR)\sources\vtnetcore\obj\Google.Solutions.ThirdParty.Vtnetcore.nupkg \
+    $(MAKEDIR)\sources\dockpanelsuite\obj\Google.Solutions.ThirdParty.DockPanelSuite.nupkg \
+    $(MAKEDIR)\sources\libssh2\obj\Google.Solutions.ThirdParty.Libssh2.nupkg
 
 default: publish
 
