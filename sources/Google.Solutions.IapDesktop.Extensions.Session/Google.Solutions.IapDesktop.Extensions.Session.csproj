@@ -10,7 +10,7 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DockPanelSuite" Version="3.0.6.5" />
+    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
     <PackageReference Include="Google.Apis" Version="1.61.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
     <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.61.0.2634" />
@@ -21,7 +21,7 @@
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
-    <PackageReference Include="vtnetcore" Version="1.0.30.30" />
+    <PackageReference Include="Google.Solutions.ThirdParty.Vtnetcore" Version="1.0.30.31" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
