@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using NUnit.Framework;
 using System;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
 {
@@ -63,6 +64,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
 
             StringAssert.Contains("inner#1", report.ToString());
             StringAssert.Contains("inner#2", report.ToString());
+        }
+
+        [Test]
+        public void WhenSourceWindowSetToControl_ThenToStringContainsWindowDetails()
+        {
+            using (var form = new Form()
+            {
+                Name = "TestForm",
+            })
+            {
+                var report = new BugReport(GetType(), new ApplicationException("test"))
+                {
+                    SourceWindow = form
+                };
+
+                StringAssert.Contains("Window: TestForm (Form)", report.ToString());
+            }
         }
     }
 }

@@ -22,8 +22,10 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 {
@@ -44,6 +46,11 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
             this.source = source;
             this.exception = exception;
         }
+
+        /// <summary>
+        /// Window that produced the issue, if any.
+        /// </summary>
+        public IWin32Window SourceWindow { get; set; }
 
         public override string ToString()
         {
@@ -66,6 +73,22 @@ namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
                         text.Append("\n\n");
                     }
                 }
+            }
+
+            if (this.SourceWindow == null)
+            {
+                text.Append("Window: unknown\n");
+            }
+            else if (this.SourceWindow is Control control &&
+                control.FindForm() is var form &&
+                form != null)
+            {
+                text.Append($"Window: {form.Name} ({control.GetType().Name})\n");
+                text.Append($"Control: {control.Name} ({control.GetType().Name})\n");
+            }
+            else if (this.SourceWindow.Handle == Process.GetCurrentProcess().MainWindowHandle)
+            {
+                text.Append("Window: main\n");
             }
 
             var cpuArchitecture = Assembly.GetEntryAssembly()?.GetName().ProcessorArchitecture.ToString() ?? "unknown";
