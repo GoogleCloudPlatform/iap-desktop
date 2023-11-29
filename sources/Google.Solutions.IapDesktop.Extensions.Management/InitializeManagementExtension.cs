@@ -66,25 +66,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
             //
             // Add commands to project explorer context menu.
             //
-            var reportContainer = projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Report",
-                    context => context is IProjectModelProjectNode
-                            || context is IProjectModelCloudNode
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
-                    context => { }));
-            reportContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Analyze VM and sole-tenant node usage...",
-                    context => CommandState.Enabled,
-                    context => this.serviceProvider
-                        .GetService<HelpAdapter>()
-                        .OpenTopic(HelpTopics.NodeUsageReporting))
-                {
-                    Image = Resources.Report_16
-                });
-
             var controlContainer = projectExplorer.ContextMenuCommands.AddCommand(
                 new ContextCommand<IProjectModelNode>(
                     "Contro&l",
