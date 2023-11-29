@@ -211,13 +211,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     caption,
                     details);
 
+                var bugReport = ShouldShowBugReportLink(e)
+                    ? new BugReport(GetType(), e)
+                    {
+                        SourceWindow = parent
+                    }
+                    : null;
+
                 ShowErrorDialogWithHelp(
                     parent,
                     caption,
                     message,
                     details.ToString(),
                     (e as IExceptionWithHelpTopic)?.Help,
-                    ShouldShowBugReportLink(e) ? new BugReport(GetType(), e) : null);
+                    bugReport);
             }
         }
     }
