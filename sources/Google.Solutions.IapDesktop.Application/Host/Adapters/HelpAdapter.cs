@@ -62,10 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             "Access Google APIs through Private Service Connect",
             $"https://googlecloudplatform.github.io/iap-desktop/connect-to-google-cloud/?{GaParameters}");
 
-        public static readonly IHelpTopic NodeUsageReporting = new HelpTopic(
-           "Track VM and sole-tenant node usage for license reporting",
-           "https://cloud.google.com/compute/docs/nodes/determining-server-usage");
-
         public static readonly IHelpTopic Privacy = new HelpTopic(
             "Privacy",
             $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}");
