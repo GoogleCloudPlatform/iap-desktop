@@ -233,7 +233,10 @@ namespace Google.Solutions.Ssh.Native
 
                 if (stringPtr == IntPtr.Zero)
                 {
-                    return Array.Empty<string>();
+                    //
+                    // This is an error, not an empty list.
+                    //
+                    throw this.session.CreateException(this.session.LastError);
                 }
                 else
                 {
