@@ -179,8 +179,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
 !endif
 
-#$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
-$(INSTALLER_SNAPSHOT):
+$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Packaging installer snapshot                     ==="
 	@echo "========================================================"
