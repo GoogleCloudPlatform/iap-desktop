@@ -179,11 +179,14 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
 !endif
 
-$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+#$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+$(INSTALLER_SNAPSHOT):
 	@echo "========================================================"
 	@echo "=== Packaging installer snapshot                     ==="
 	@echo "========================================================"
 	
+    -1 robocopy $(MAKEDIR)\installer\bin $(MAKEDIR)\installer\bin.original /E /MOVE
+    
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
 		-ZipFile $(INSTALLER_SNAPSHOT) \
 		-Path $(MAKEDIR)\makefile, \
@@ -191,6 +194,8 @@ $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 			  $(MAKEDIR)\installer, \
 			  $(NUGET_PACKAGEES)\Wix\$(WIX)\tools
 
+    - robocopy $(MAKEDIR)\installer\bin.original $(MAKEDIR)\installer\bin /E /MOVE
+    
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Packaging symbols                                ==="
