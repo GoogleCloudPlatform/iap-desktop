@@ -38,7 +38,7 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);

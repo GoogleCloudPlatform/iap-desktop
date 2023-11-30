@@ -112,10 +112,18 @@ namespace Google.Solutions.Ssh
         [Event(25, Level = EventLevel.Warning)]
         internal void KeyboardInteractiveChallengeAborted(
             string exception)
-            => WriteEvent(25);
+            => WriteEvent(25, exception);
 
         [Event(26, Level = EventLevel.Verbose)]
         internal void KeyboardInteractiveAuthenticationCompleted()
             => WriteEvent(26);
+
+        [Event(27, Level = EventLevel.Verbose)]
+        internal void PasswordAuthenticationInitiated(string username)
+            => WriteEvent(27, username);
+
+        [Event(28, Level = EventLevel.Verbose)]
+        internal void PasswordAuthenticationCompleted()
+            => WriteEvent(28);
     }
 }

@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
@@ -103,7 +103,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);

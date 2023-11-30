@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
@@ -28,6 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Google.Solutions.Ssh.Native
@@ -257,7 +259,6 @@ namespace Google.Solutions.Ssh.Native
             Precondition.ExpectNotNull(keyboardHandler, nameof(keyboardHandler));
 
             Exception? interactiveCallbackException = null;
-            uint interactiveCallbackInvocations = 0;
 
             void InteractiveCallback(
                 IntPtr namePtr,
@@ -269,8 +270,6 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr responsesPtr,
                 IntPtr context)
             {
-                interactiveCallbackInvocations++;
-
                 var name = NativeMethods.PtrToString(
                     namePtr,
                     nameLength,
@@ -420,6 +419,60 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        private SshAuthenticatedSession AuthenticateWithPassword(
+            IPasswordCredential credential)
+        {
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            Precondition.ExpectNotNull(credential, nameof(credential));
+
+            var passwordChangeCallbackInvocations = 0;
+            int PasswordChangeCallback(
+                IntPtr session,
+                IntPtr newPasswordPtr,
+                IntPtr newPasswordLengthPtr,
+                IntPtr context)
+            {
+                //
+                // We don't support password changes. Leaving parameters
+                // unchanged will abort the process.
+                //
+                passwordChangeCallbackInvocations++;
+                return -1;
+            }
+
+            using (SshTraceSource.Log.TraceMethod().WithParameters(credential.Username))
+            {
+                SshEventSource.Log.PasswordAuthenticationInitiated(credential.Username);
+
+                var password = credential.Password.AsClearText();
+
+                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_password_ex(
+                    this.session.Handle,
+                    credential.Username,
+                    credential.Username.Length,
+                    password,
+                    password.Length,
+                    PasswordChangeCallback);
+
+                if (result == LIBSSH2_ERROR.NONE)
+                {
+                    SshEventSource.Log.PasswordAuthenticationCompleted();
+
+                    return new SshAuthenticatedSession(this.session);
+                }
+                else if (passwordChangeCallbackInvocations > 0)
+                {
+                    throw new UnsupportedAuthenticationMethodException(
+                        "The password expired and must be changed",
+                        this.session.CreateException(result));
+                }
+                else
+                {
+                    throw this.session.CreateException(result);
+                }
+            }
+        }
+
         private SshAuthenticatedSession AuthenticateWithPublicKey(
             IAsymmetricKeyCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
@@ -514,7 +567,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         public SshAuthenticatedSession Authenticate(
-            IAsymmetricKeyCredential credential,
+            ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
@@ -523,17 +576,39 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(credential.Username))
             {
+                //
+                // Query authentication methods supported by server.
+                //
+                // NB. The server might require a sequence of authentication methods,
+                // for example:
+                //
+                //  AuthenticationMethods publickey password,keyboard-interactive
+                //
+                // In this case, GetAuthenticationMethods returns publickey and password,
+                // but not keyboard-interactive.
+                //
                 var authenticationMethods = GetAuthenticationMethods(credential.Username);
-                if (authenticationMethods.Contains("publickey"))
+
+                if (authenticationMethods.Contains(AuthenticationMetods.PublicKey) &&
+                    credential is IAsymmetricKeyCredential keyCredential)
                 {
-                    return AuthenticateWithPublicKey(credential, keyboardHandler);
+                    return AuthenticateWithPublicKey(keyCredential, keyboardHandler);
+                }
+                else if (authenticationMethods.Contains(AuthenticationMetods.Password) &&
+                    credential is IPasswordCredential passwordCredential)
+                {
+                    return AuthenticateWithPassword(passwordCredential);
+                }
+                else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
+                {
+                    return AuthenticateWithKeyboard(credential, keyboardHandler);
                 }
                 else
                 {
-                    var methods = string.Join(", ", authenticationMethods);
                     throw new UnsupportedAuthenticationMethodException(
-                        $"The server requires an unsupported set of " +
-                        $"authentication methods: {methods}");
+                        "The supplied credential is incompatible with the " +
+                        "authentication methods supported by the server: " +
+                        string.Join(" or ", authenticationMethods));
                 }
             }
         }
