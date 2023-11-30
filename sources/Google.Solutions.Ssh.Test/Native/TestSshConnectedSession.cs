@@ -280,27 +280,6 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            using (var connection = session.Connect(endpoint))
-            using (var signer = AsymmetricKeySigner.CreateEphemeral(keyType))
-            {
-                SshAssert.ThrowsNativeExceptionWithError(
-                    session,
-                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(
-                        new StaticAsymmetricKeyCredential("invaliduser", signer),
-                        KeyboardInteractiveHandler.Silent));
-            }
-        }
-
-        [Test]
         public async Task WhenSessionDisconnected_ThenAuthenticateThrowsSocketSend(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
@@ -326,8 +305,33 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
+        //---------------------------------------------------------------------
+        // Public key authentication.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
+        public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(keyType))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
+                        new StaticAsymmetricKeyCredential("invaliduser", signer),
+                        KeyboardInteractiveHandler.Silent));
+            }
+        }
+
+        [Test]
+        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(
                 SshKeyType.Rsa3072,
@@ -352,15 +356,44 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
+        private const string SshdWithPublicKeyAndPasswordAuth =
+            "cat << EOF > /etc/ssh/sshd_config\n" +
+            "UsePam yes\n" +
+            "AuthenticationMethods publickey,password\n" +
+            "EOF\n" +
+            "systemctl restart sshd";
+
+        [Test]
+        public async Task WhenPublicKeyAndPasswordRequired_ThenAuthenticateThrowsException(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyAndPasswordAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var credential = await GetCredentialForInstanceAsync(
+                    instance,
+                    keyType)
+                .ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                Assert.Throws<UnsupportedAuthenticationMethodException>(
+                    () => connection.Authenticate(
+                        credential,
+                        KeyboardInteractiveHandler.Silent));
+            }
+        }
+
         //---------------------------------------------------------------------
-        // 2FA.
+        // Public key authentication + 2FA.
         //---------------------------------------------------------------------
 
         //
         // Service acconts can't use 2FA, so emulate the 2FA prompting behavior
         // by setting up SSHD to require a public key *and* a keyboard-interactive.
         //
-        private const string RequireSshPassword =
+        private const string SshdWithPublicKeyAndKeyboardInteractiveAuth =
             "cat << EOF > /etc/ssh/sshd_config\n" +
             "UsePam yes\n" +
             "AuthenticationMethods publickey,keyboard-interactive\n" +
@@ -369,7 +402,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
-            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyAndKeyboardInteractiveAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var instance = await instanceLocatorTask;
@@ -404,7 +437,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
-            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyAndKeyboardInteractiveAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var instance = await instanceLocatorTask;
@@ -436,8 +469,8 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task When2faRequiredAndPromptThrowsException_ThenAuthenticationFailsWithoutRetry(
-            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
+        public async Task When2faRequiredAndPromptThrowsException_ThenAuthenticateFailsWithoutRetry(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyAndKeyboardInteractiveAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var instance = await instanceLocatorTask;

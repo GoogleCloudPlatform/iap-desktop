@@ -248,8 +248,8 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        private SshAuthenticatedSession AuthenticateWithPublicKey(
-            IAsymmetricKeyCredential credential,
+        private SshAuthenticatedSession AuthenticateWithKeyboard(
+            ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
@@ -258,39 +258,6 @@ namespace Google.Solutions.Ssh.Native
 
             Exception? interactiveCallbackException = null;
             uint interactiveCallbackInvocations = 0;
-
-            int Sign(
-                IntPtr session,
-                out IntPtr signaturePtr,
-                out IntPtr signatureLength,
-                IntPtr challengePtr,
-                IntPtr challengeLength,
-                IntPtr context)
-            {
-                Debug.Assert(context == IntPtr.Zero);
-                Debug.Assert(session == this.session.Handle.DangerousGetHandle());
-
-                SshEventSource.Log.PublicKeyChallengeReceived();
-
-                //
-                // Read the challenge.
-                //
-                var challengeBuffer = new byte[challengeLength.ToInt32()];
-                Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
-
-                var challenge = new AuthenticationChallenge(challengeBuffer);
-                var signature = credential.Signer.Sign(challenge);
-
-                //
-                // Copy data back to a buffer that libssh2 can free using
-                // the allocator specified in libssh2_session_init_ex.
-                //
-                signatureLength = new IntPtr(signature.Length);
-                signaturePtr = SshSession.Alloc(signatureLength, IntPtr.Zero);
-                Marshal.Copy(signature, 0, signaturePtr, signature.Length);
-
-                return (int)LIBSSH2_ERROR.NONE;
-            }
 
             void InteractiveCallback(
                 IntPtr namePtr,
@@ -317,7 +284,7 @@ namespace Google.Solutions.Ssh.Native
                     promptsPtr,
                     numPrompts);
 
-                SshEventSource.Log.KeyboardInteractiveChallengeReceived(name, instruction);
+                SshEventSource.Log.KeyboardInteractivePromptReceived(name, instruction);
 
                 //
                 // NB. libssh2 allocates the responses structure for us, but frees
@@ -355,7 +322,7 @@ namespace Google.Solutions.Ssh.Native
                         SshTraceSource.Log.TraceError(
                             "Authentication callback threw exception", e);
 
-                        SshEventSource.Log.KeyboardInteractiveChallengeAborted();
+                        SshEventSource.Log.KeyboardInteractiveChallengeAborted(e.FullMessage());
 
                         //
                         // Don't let the exception escape into unmanaged code,
@@ -394,6 +361,108 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(credential.Username))
             {
+                var result = LIBSSH2_ERROR.NONE;
+
+                //
+                // Temporarily change the timeout since we must give the
+                // user some time to react.
+                //
+                var originalTimeout = this.session.Timeout;
+                this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
+                
+                try
+                {
+                    //
+                    // Retry to account for wrong user input.
+                    //
+                    for (var retry = 0; retry < KeyboardInteractiveRetries; retry++)
+                    {
+                        SshEventSource.Log.KeyboardInteractiveAuthenticationInitiated();
+
+                        result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_keyboard_interactive_ex(
+                            this.session.Handle,
+                            credential.Username,
+                            credential.Username.Length,
+                            InteractiveCallback,
+                            IntPtr.Zero);
+
+                        if (result == LIBSSH2_ERROR.NONE)
+                        {
+                            break;
+                        }
+                        else if (interactiveCallbackException != null)
+                        {
+                            //
+                            // Restore exception thrown in callback.
+                            //
+                            throw interactiveCallbackException;
+                        }
+                    }
+                }
+                finally
+                {
+                    //
+                    // Restore timeout.
+                    //
+                    this.session.Timeout = originalTimeout;
+                }
+
+                if (result == LIBSSH2_ERROR.NONE)
+                {
+                    SshEventSource.Log.KeyboardInteractiveAuthenticationCompleted();
+
+                    return new SshAuthenticatedSession(this.session);
+                }
+                else
+                {
+                    throw this.session.CreateException(result);
+                }
+            }
+        }
+
+        private SshAuthenticatedSession AuthenticateWithPublicKey(
+            IAsymmetricKeyCredential credential,
+            IKeyboardInteractiveHandler keyboardHandler)
+        {
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            Precondition.ExpectNotNull(credential, nameof(credential));
+            Precondition.ExpectNotNull(keyboardHandler, nameof(keyboardHandler));
+
+            int Sign(
+                IntPtr session,
+                out IntPtr signaturePtr,
+                out IntPtr signatureLength,
+                IntPtr challengePtr,
+                IntPtr challengeLength,
+                IntPtr context)
+            {
+                Debug.Assert(context == IntPtr.Zero);
+                Debug.Assert(session == this.session.Handle.DangerousGetHandle());
+
+                SshEventSource.Log.PublicKeyChallengeReceived();
+
+                //
+                // Read the challenge.
+                //
+                var challengeBuffer = new byte[challengeLength.ToInt32()];
+                Marshal.Copy(challengePtr, challengeBuffer, 0, challengeBuffer.Length);
+
+                var challenge = new AuthenticationChallenge(challengeBuffer);
+                var signature = credential.Signer.Sign(challenge);
+
+                //
+                // Copy data back to a buffer that libssh2 can free using
+                // the allocator specified in libssh2_session_init_ex.
+                //
+                signatureLength = new IntPtr(signature.Length);
+                signaturePtr = SshSession.Alloc(signatureLength, IntPtr.Zero);
+                Marshal.Copy(signature, 0, signaturePtr, signature.Length);
+
+                return (int)LIBSSH2_ERROR.NONE;
+            }
+
+            using (SshTraceSource.Log.TraceMethod().WithParameters(credential.Username))
+            {
                 var publicKey = credential.Signer.PublicKey.WireFormatValue;
 
                 SshEventSource.Log.PublicKeyAuthenticationInitiated(credential.Username);
@@ -406,84 +475,40 @@ namespace Google.Solutions.Ssh.Native
                     Sign,
                     IntPtr.Zero);
 
-                if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED)
+                if (result == LIBSSH2_ERROR.NONE)
                 {
+                    SshEventSource.Log.PublicKeyAuthenticationCompleted();
+
+                    return new SshAuthenticatedSession(this.session);
+                }
+                else if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED)
+                {
+                    //
+                    // Public key wasn't sufficient for authentication. There
+                    // might be additional MFA challenges we need to handle.
+                    //
+                    var requiredMethods = GetAuthenticationMethods(credential.Username);
+
                     SshTraceSource.Log.TraceVerbose(
                         "Server responded that public key is unverified, " +
-                        "trying keyboard/interactive auth for MFA challenges");
+                        "additionally requires {0}",
+                        string.Join(", ", requiredMethods));
 
-                    //
-                    // Public key wasn't accepted - this might be because the
-                    // key is not authorized, or because we need to respond to
-                    // some more (MFA) challenges.
-                    //
-                    // NB. It's not worth checking GetAuthenticationMethods, it
-                    // won't indicate whether additional challenges are expected
-                    // or not.
-                    //
-
-                    //
-                    // Temporarily change the timeout since we must give the
-                    // user some time to react.
-                    //
-                    var originalTimeout = this.session.Timeout;
-                    this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
-                    try
+                    if (requiredMethods.FirstOrDefault() == AuthenticationMetods.KeyboardInteractive)
                     {
-                        //
-                        // Retry to account for wrong user input.
-                        //
-                        for (var retry = 0; retry < KeyboardInteractiveRetries; retry++)
-                        {
-                            result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_keyboard_interactive_ex(
-                                this.session.Handle,
-                                credential.Username,
-                                credential.Username.Length,
-                                InteractiveCallback,
-                                IntPtr.Zero);
-
-                            if (result == LIBSSH2_ERROR.NONE)
-                            {
-                                break;
-                            }
-                            else if (result == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
-                                interactiveCallbackInvocations == 0)
-                            {
-                                //
-                                // No callback was performed yet authentication failed.
-                                // This indicates that there were no keyboard/interactive
-                                // prompts to process.
-                                //
-                                // Restore the original error code and bail out.
-                                //
-                                result = LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED;
-                                break;
-                            }
-                            else if (interactiveCallbackException != null)
-                            {
-                                //
-                                // Restore exception thrown in callback.
-                                //
-                                throw interactiveCallbackException;
-                            }
-                        }
+                        return AuthenticateWithKeyboard(credential, keyboardHandler);
                     }
-                    finally
+                    else
                     {
-                        //
-                        // Restore timeout.
-                        //
-                        this.session.Timeout = originalTimeout;
+                        throw new UnsupportedAuthenticationMethodException(
+                            $"The server requires {string.Join(", ", requiredMethods)} as " +
+                            "additional authentication methods, which is currently not supported.",
+                            this.session.CreateException(result));
                     }
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
                 }
                 else
                 {
-                    return new SshAuthenticatedSession(this.session);
+                    throw this.session.CreateException(result);
                 }
             }
         }
@@ -506,9 +531,9 @@ namespace Google.Solutions.Ssh.Native
                 else
                 {
                     var methods = string.Join(", ", authenticationMethods);
-                    throw new SshException(
-                        "Negotiating an authentication method failed " +
-                        $"(methods supported by the server: {methods})");
+                    throw new UnsupportedAuthenticationMethodException(
+                        $"The server requires an unsupported set of " +
+                        $"authentication methods: {methods}");
                 }
             }
         }

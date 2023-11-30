@@ -18,34 +18,17 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-using System;
 
-namespace Google.Solutions.Ssh
+
+namespace Google.Solutions.Ssh.Native
 {
-    public class SshException : Exception
+    /// <summary>
+    /// Standard authentication methods.
+    /// </summary>
+    internal static class AuthenticationMetods
     {
-        internal SshException(string message) : base(message)
-        {
-        }
-
-        internal SshException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
-    }
-
-    public class UnsupportedAuthenticationMethodException : SshException
-    {
-        internal UnsupportedAuthenticationMethodException(string message) 
-            : base(message)
-        {
-        }
-
-        internal UnsupportedAuthenticationMethodException(
-            string message, 
-            Exception inner) 
-            : base(message, inner)
-        {
-        }
+        public const string PublicKey = "publickey";
+        public const string Password = "password";
+        public const string KeyboardInteractive = "keyboard-interactive";
     }
 }

@@ -96,13 +96,26 @@ namespace Google.Solutions.Ssh
             => WriteEvent(21);
 
         [Event(22, Level = EventLevel.Verbose)]
-        internal void KeyboardInteractiveChallengeReceived(
-            string? name, 
-            string? instruction)
-            => WriteEvent(22, name, instruction);
+        internal void PublicKeyAuthenticationCompleted()
+            => WriteEvent(22);
 
         [Event(23, Level = EventLevel.Verbose)]
-        internal void KeyboardInteractiveChallengeAborted()
+        internal void KeyboardInteractiveAuthenticationInitiated()
             => WriteEvent(23);
+
+        [Event(24, Level = EventLevel.Verbose)]
+        internal void KeyboardInteractivePromptReceived(
+            string? name, 
+            string? instruction)
+            => WriteEvent(24, name, instruction);
+
+        [Event(25, Level = EventLevel.Warning)]
+        internal void KeyboardInteractiveChallengeAborted(
+            string exception)
+            => WriteEvent(25);
+
+        [Event(26, Level = EventLevel.Verbose)]
+        internal void KeyboardInteractiveAuthenticationCompleted()
+            => WriteEvent(26);
     }
 }
