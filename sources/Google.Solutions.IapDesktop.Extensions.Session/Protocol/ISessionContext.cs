@@ -31,7 +31,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
     /// session.
     /// </summary>
     public interface ISessionContext<TCredential, TParameters> : IProtocolContext
-        where TCredential : ISessionCredential
     {
         /// <summary>
         /// Target instance of this session.
@@ -48,13 +47,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         /// remote calls, so the method should be called in a job.
         /// </summary>
         Task<TCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken);
-    }
-
-    public interface ISessionCredential
-    {
-        /// <summary>
-        /// A description of the credential that is safe to display.
-        /// </summary>
-        string ToString();
     }
 }

@@ -23,7 +23,7 @@ using System.Security;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 {
-    public class RdpCredential : ISessionCredential
+    public class RdpCredential
     {
         internal static RdpCredential Empty = new RdpCredential(null, null, null);
 

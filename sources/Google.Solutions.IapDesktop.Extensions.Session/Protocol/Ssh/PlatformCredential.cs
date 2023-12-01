@@ -29,8 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// <summary>
     /// A platform-managed SSH credential.
     /// </summary>
-    public class PlatformCredential 
-        : ISessionCredential, IAsymmetricKeyCredential
+    public class PlatformCredential : IAsymmetricKeyCredential
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
 

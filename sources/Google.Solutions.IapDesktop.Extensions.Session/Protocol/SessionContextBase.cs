@@ -33,7 +33,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
     public abstract class SessionContextBase<TCredential, TParameters>
         : ISessionContext<TCredential, TParameters>
-        where TCredential : ISessionCredential
     {
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;

@@ -124,12 +124,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             session.ContextCommands = this.SessionMenu;
         }
 
-        private void ApplyTabStyle<TParameters>(
+        private void ApplyTabStyle<TCredential, TParameters>(
             DockContentHandler dockHandler,
             SessionTransportType transportType,
             bool isCreatedFromUrl,
             InstanceLocator instance,
-            ISessionCredential credential,
+            TCredential credential,
             TParameters sessionParameters)
         {
             //
@@ -166,7 +166,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private Task<AuthorizationResult<TCredential>> CreateTransportAndAuthorizeAsync
             <TCredential, TParameters>(
             ISessionContext<TCredential, TParameters> context)
-            where TCredential : ISessionCredential
         {
             return this.jobService.RunAsync(
                 new JobDescription(
