@@ -70,8 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
                 credentialFactory.Object,
-                SampleInstance,
-                key);
+                key,
+                SampleInstance);
 
             Assert.AreSame(
                 authorizedKey,
@@ -106,8 +106,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IPlatformCredentialFactory>().Object,
-                SampleInstance,
-                new Mock<IAsymmetricKeySigner>().Object);
+                new Mock<IAsymmetricKeySigner>().Object,
+                SampleInstance);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
 
             var sshTransport = await context
@@ -135,8 +135,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
                 new Mock<IPlatformCredentialFactory>().Object,
-                SampleInstance,
-                new Mock<IAsymmetricKeySigner>().Object);
+                new Mock<IAsymmetricKeySigner>().Object,
+                SampleInstance);
             context.Parameters.TransportType = SessionTransportType.Vpc;
 
             var sshTransport = await context

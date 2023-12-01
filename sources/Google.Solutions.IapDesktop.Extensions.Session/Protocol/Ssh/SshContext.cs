@@ -23,8 +23,10 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,17 +36,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// Encapsulates settings and logic to create an SSH session.
     /// </summary>
     internal sealed class SshContext
-        : SessionContextBase<PlatformCredential, SshParameters>
+        : SessionContextBase<ISshCredential, SshParameters>
     {
+        private readonly ISshCredential preAuthorizedCredential;
         private readonly IPlatformCredentialFactory credentialFactory;
         private readonly IAsymmetricKeySigner signer;
 
+        /// <summary>
+        /// Create context that uses a platform-managed credential.
+        /// </summary>
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IPlatformCredentialFactory credentialFactory,
-            InstanceLocator instance,
-            IAsymmetricKeySigner signer)
+            IAsymmetricKeySigner signer,
+            InstanceLocator instance)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
@@ -55,25 +61,55 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.signer = signer.ExpectNotNull(nameof(signer));
         }
 
+        /// <summary>
+        /// Create context that uses an unmanaged/pre-authorized credential.
+        /// </summary>
+        internal SshContext(
+            IIapTransportFactory iapTransportFactory,
+            IDirectTransportFactory directTransportFactory,
+            ISshCredential preAuthorizedCredential,
+            InstanceLocator instance)
+            : base(
+                  iapTransportFactory,
+                  directTransportFactory,
+                  instance,
+                  new SshParameters())
+        {
+            this.preAuthorizedCredential = preAuthorizedCredential;
+        }
+
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override async Task<PlatformCredential> AuthorizeCredentialAsync(
+        public override async Task<ISshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
-            //
-            // Authorize the key using OS Login or metadata-based keys.
-            //
-            return await this.credentialFactory
-                .CreateCredentialAsync(
-                    this.Instance,
-                    this.signer,
-                    this.Parameters.PublicKeyValidity,
-                    this.Parameters.PreferredUsername.NullIfEmpty(),
-                    KeyAuthorizationMethods.All,
-                    cancellationToken)
-                .ConfigureAwait(false);
+            if (this.preAuthorizedCredential != null)
+            {
+                Debug.Assert(this.credentialFactory == null);
+                Debug.Assert(this.signer == null);
+
+                return this.preAuthorizedCredential;
+            }
+            else
+            {
+                Debug.Assert(this.credentialFactory != null);
+                Debug.Assert(this.signer != null);
+
+                //
+                // Authorize the key using OS Login or metadata-based keys.
+                //
+                return await this.credentialFactory
+                    .CreateCredentialAsync(
+                        this.Instance,
+                        this.signer,
+                        this.Parameters.PublicKeyValidity,
+                        this.Parameters.PreferredUsername.NullIfEmpty(),
+                        KeyAuthorizationMethods.All,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
         }
 
         public override Task<ITransport> ConnectTransportAsync(

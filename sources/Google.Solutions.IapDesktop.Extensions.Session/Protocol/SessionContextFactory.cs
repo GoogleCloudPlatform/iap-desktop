@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<PlatformCredential, SshParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<ISshCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -304,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             }
         }
 
-        public Task<ISessionContext<PlatformCredential, SshParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<ISshCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
@@ -375,8 +375,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 this.iapTransportFactory,
                 this.directTransportFactory,
                 this.credentialFactory,
-                node.Instance,
-                signer);
+                signer,
+                node.Instance);
 
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 ? CultureInfo.CurrentUICulture
                 : null;
 
-            return Task.FromResult<ISessionContext<PlatformCredential, SshParameters>>(context);
+            return Task.FromResult<ISessionContext<ISshCredential, SshParameters>>(context);
         }
     }
 }
