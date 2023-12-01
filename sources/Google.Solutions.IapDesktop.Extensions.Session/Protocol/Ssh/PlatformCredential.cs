@@ -61,7 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public override string ToString()
         {
-            return this.Username;
+            return $"{this.Username} (using {this.Signer.PublicKey.Type}, " +
+                $"authorized using {this.AuthorizationMethod})";
         }
 
         //---------------------------------------------------------------------

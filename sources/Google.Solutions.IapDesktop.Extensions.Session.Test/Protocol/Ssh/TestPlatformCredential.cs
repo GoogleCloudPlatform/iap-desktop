@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Ssh.Cryptography;
-using Moq;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
@@ -36,12 +35,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void ToStringReturnsUsername()
         {
-            var credential = new PlatformCredential(
-                new Mock<IAsymmetricKeySigner>().Object,
-                KeyAuthorizationMethods.InstanceMetadata,
-                "username");
+            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
+            {
+                var credential = new PlatformCredential(
+                    signer,
+                    KeyAuthorizationMethods.InstanceMetadata,
+                    "username");
 
-            Assert.AreEqual("username", credential.ToString());
+                Assert.AreEqual(
+                    "username (using ssh-rsa, authorized using InstanceMetadata)", 
+                    credential.ToString());
+            }
         }
     }
 }
