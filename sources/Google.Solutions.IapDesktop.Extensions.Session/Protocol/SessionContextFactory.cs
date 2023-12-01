@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<SshAuthorizedKeyCredential, SshParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<PlatformCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private readonly IAuthorization authorization;
         private readonly IProjectWorkspace workspace;
         private readonly IKeyStore keyStore;
-        private readonly IKeyAuthorizer keyAuthorizer;
+        private readonly IPlatformCredentialFactory credentialFactory;
         private readonly IConnectionSettingsService settingsService;
         private readonly IRepository<ISshSettings> sshSettingsRepository;
         private readonly IIapTransportFactory iapTransportFactory;
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             IAuthorization authorization,
             IProjectWorkspace workspace,
             IKeyStore keyStoreAdapter,
-            IKeyAuthorizer keyAuthorizer,
+            IPlatformCredentialFactory credentialFactory,
             IConnectionSettingsService settingsService,
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.workspace = workspace.ExpectNotNull(nameof(workspace));
             this.keyStore = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
-            this.keyAuthorizer = keyAuthorizer.ExpectNotNull(nameof(keyAuthorizer));
+            this.credentialFactory = credentialFactory.ExpectNotNull(nameof(credentialFactory));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
@@ -304,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             }
         }
 
-        public Task<ISessionContext<SshAuthorizedKeyCredential, SshParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<PlatformCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             var context = new SshContext(
                 this.iapTransportFactory,
                 this.directTransportFactory,
-                this.keyAuthorizer,
+                this.credentialFactory,
                 node.Instance,
                 signer);
 
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 ? CultureInfo.CurrentUICulture
                 : null;
 
-            return Task.FromResult<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>(context);
+            return Task.FromResult<ISessionContext<PlatformCredential, SshParameters>>(context);
         }
     }
 }

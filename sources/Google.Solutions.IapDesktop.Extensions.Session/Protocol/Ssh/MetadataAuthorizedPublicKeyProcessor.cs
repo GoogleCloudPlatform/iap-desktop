@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
         }
 
-        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
+        public async Task<PlatformCredential> AuthorizeKeyAsync(
             IAsymmetricKeySigner key,
             TimeSpan validity,
             string username,
@@ -455,7 +455,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 .ConfigureAwait(false);
             }
 
-            return new SshAuthorizedKeyCredential(
+            return new PlatformCredential(
                 key,
                 useInstanceKeySet
                     ? KeyAuthorizationMethods.InstanceMetadata

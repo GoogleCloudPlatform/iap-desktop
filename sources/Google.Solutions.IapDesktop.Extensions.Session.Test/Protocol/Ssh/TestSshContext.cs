@@ -49,15 +49,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void AuthorizeCredentialReturnsCredential()
         {
-            var authorizedKey = new SshAuthorizedKeyCredential(
+            var authorizedKey = new PlatformCredential(
                 new Mock<IAsymmetricKeySigner>().Object,
                 KeyAuthorizationMethods.InstanceMetadata,
                 "username");
 
             var key = new Mock<IAsymmetricKeySigner>().Object;
-            var keyAuthorizer = new Mock<IKeyAuthorizer>();
-            keyAuthorizer
-                .Setup(s => s.AuthorizeKeyAsync(
+            var credentialFactory = new Mock<IPlatformCredentialFactory>();
+            credentialFactory
+                .Setup(s => s.CreateCredentialAsync(
                     SampleInstance,
                     key,
                     It.IsAny<TimeSpan>(),
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                keyAuthorizer.Object,
+                credentialFactory.Object,
                 SampleInstance,
                 key);
 
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var context = new SshContext(
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IKeyAuthorizer>().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
                 SampleInstance,
                 new Mock<IAsymmetricKeySigner>().Object);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
-                new Mock<IKeyAuthorizer>().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
                 SampleInstance,
                 new Mock<IAsymmetricKeySigner>().Object);
             context.Parameters.TransportType = SessionTransportType.Vpc;

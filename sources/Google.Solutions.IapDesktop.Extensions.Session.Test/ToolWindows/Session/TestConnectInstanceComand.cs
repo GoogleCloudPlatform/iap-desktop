@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenSshSessionFoundAndForceNewIsFalse_ThenExecuteDoesNotCreateNewSession()
         {
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(

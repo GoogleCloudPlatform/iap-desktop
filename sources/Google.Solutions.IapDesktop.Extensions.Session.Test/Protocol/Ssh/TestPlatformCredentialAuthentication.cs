@@ -40,11 +40,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestKeyAuthorizerAndAuthenticate
+    public class TestPlatformCredentialAuthentication
     {
-        private static KeyAuthorizer CreateKeyAuthorizer(IAuthorization authorization)
+        private static PlatformCredentialFactory CreateCredentialFactory(
+            IAuthorization authorization)
         {
-            return new KeyAuthorizer(
+            return new PlatformCredentialFactory(
                 authorization,
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
@@ -118,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
-            using (var credential = await CreateKeyAuthorizer(await authorization)
-                .AuthorizeKeyAsync(
+            using (var credential = await CreateCredentialFactory(await authorization)
+                .CreateCredentialAsync(
                     await instance,
                     key,
                     TimeSpan.FromHours(1),
@@ -154,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             // Therefore use a single key only.
             // 
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
-            using (var credential = await CreateKeyAuthorizer(await authorization)
-                .AuthorizeKeyAsync(
+            using (var credential = await CreateCredentialFactory(await authorization)
+                .CreateCredentialAsync(
                     await instance,
                     key,
                     TimeSpan.FromHours(1),
@@ -185,8 +186,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 PredefinedRole.OsLogin})] ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
-            using (var credential = await CreateKeyAuthorizer(await authorization)
-                .AuthorizeKeyAsync(
+            using (var credential = await CreateCredentialFactory(await authorization)
+                .CreateCredentialAsync(
                     await instance,
                     key,
                     TimeSpan.FromHours(1),
@@ -222,8 +223,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
-            using (var credential = await CreateKeyAuthorizer(await authorization)
-                .AuthorizeKeyAsync(
+            using (var credential = await CreateCredentialFactory(await authorization)
+                .CreateCredentialAsync(
                     await instance,
                     key,
                     TimeSpan.FromHours(1),
@@ -257,8 +258,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
-            using (var credential = await CreateKeyAuthorizer(await authorization)
-                .AuthorizeKeyAsync(
+            using (var credential = await CreateCredentialFactory(await authorization)
+                .CreateCredentialAsync(
                     await instance,
                     key,
                     TimeSpan.FromHours(1),

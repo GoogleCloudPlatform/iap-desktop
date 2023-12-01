@@ -103,14 +103,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             return authorization;
         }
 
-        private static async Task<SshAuthorizedKeyCredential> CreateAuthorizedKeyAsync(
+        private static async Task<PlatformCredential> CreateAuthorizedKeyAsync(
             InstanceLocator instance,
             IAuthorization authorization,
             SshKeyType keyType)
         {
             var authorizationSource = CreateAuthorizationMock();
 
-            var keyAdapter = new KeyAuthorizer(
+            var keyAdapter = new PlatformCredentialFactory(
                 authorizationSource.Object,
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);
 
-            return await keyAdapter.AuthorizeKeyAsync(
+            return await keyAdapter.CreateCredentialAsync(
                     instance,
                     AsymmetricKeySigner.CreateEphemeral(keyType),
                     TimeSpan.FromMinutes(10),
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var authorizationSource = CreateAuthorizationMock();
             var eventService = new Mock<IEventQueue>();
 
-            var nonAuthorizedKey = new SshAuthorizedKeyCredential(
+            var nonAuthorizedKey = new PlatformCredential(
                 AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "invalid");

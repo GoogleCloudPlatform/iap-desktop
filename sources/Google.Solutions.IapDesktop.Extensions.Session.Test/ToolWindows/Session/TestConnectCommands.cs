@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
         {
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
         {
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -583,7 +583,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task ContextMenuConnectSshInNewTerminalForcesNewConnection()
         {
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -670,7 +670,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             connectedSession.SetupGet(s => s.Instance).Returns(locator);
 
 
-            var context = new Mock<ISessionContext<SshAuthorizedKeyCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(

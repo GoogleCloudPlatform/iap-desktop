@@ -27,15 +27,14 @@ using System.Diagnostics;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     /// <summary>
-    /// An SSH key credential that has been authorized for the target
-    /// instance.
+    /// A platform-managed SSH credential.
     /// </summary>
-    public class SshAuthorizedKeyCredential 
+    public class PlatformCredential 
         : ISessionCredential, IAsymmetricKeyCredential
     {
         public KeyAuthorizationMethods AuthorizationMethod { get; }
 
-        internal SshAuthorizedKeyCredential(
+        internal PlatformCredential(
             IAsymmetricKeySigner signer,
             KeyAuthorizationMethods method,
             string posixUsername)
