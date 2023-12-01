@@ -244,10 +244,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     HelpTopics.TroubleshootingOsLogin);
             }
             catch (SshNativeException e) when (
-                e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
+                e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
+                this.Credential is PlatformCredential platformCredential)
             {
-                if (this.Credential is PlatformCredential platformCredential &&
-                    platformCredential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                if (platformCredential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                 {
                     var outdatedMessage = platformCredential.Signer is OsLoginCertificateSigner
                         ? " - The VM is running an outdated version of the guest environment \n" +

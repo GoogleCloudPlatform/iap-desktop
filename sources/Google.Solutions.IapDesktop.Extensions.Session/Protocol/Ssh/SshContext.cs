@@ -42,6 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private readonly IPlatformCredentialFactory credentialFactory;
         private readonly IAsymmetricKeySigner signer;
 
+        internal bool UsePlatformManagedCredential
+            => this.preAuthorizedCredential == null;
+
         /// <summary>
         /// Create context that uses a platform-managed credential.
         /// </summary>
@@ -59,6 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         {
             this.credentialFactory = credentialFactory.ExpectNotNull(nameof(credentialFactory));
             this.signer = signer.ExpectNotNull(nameof(signer));
+
+            Debug.Assert(this.UsePlatformManagedCredential);
         }
 
         /// <summary>
@@ -76,6 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                   new SshParameters())
         {
             this.preAuthorizedCredential = preAuthorizedCredential;
+
+            Debug.Assert(!this.UsePlatformManagedCredential);
         }
 
         //---------------------------------------------------------------------
@@ -85,14 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public override async Task<ISshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
-            if (this.preAuthorizedCredential != null)
-            {
-                Debug.Assert(this.credentialFactory == null);
-                Debug.Assert(this.signer == null);
-
-                return this.preAuthorizedCredential;
-            }
-            else
+            if (this.UsePlatformManagedCredential)
             {
                 Debug.Assert(this.credentialFactory != null);
                 Debug.Assert(this.signer != null);
@@ -110,6 +110,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         cancellationToken)
                     .ConfigureAwait(false);
             }
+            else
+            {
+                Debug.Assert(this.credentialFactory == null);
+                Debug.Assert(this.signer == null);
+                Debug.Assert(this.Parameters.PreferredUsername == null);
+
+                return this.preAuthorizedCredential;
+            }
         }
 
         public override Task<ITransport> ConnectTransportAsync(
@@ -125,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public override void Dispose()
         {
-            this.signer.Dispose();
+            this.signer?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

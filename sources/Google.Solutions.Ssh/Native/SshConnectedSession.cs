@@ -607,8 +607,8 @@ namespace Google.Solutions.Ssh.Native
                 {
                     throw new UnsupportedAuthenticationMethodException(
                         "The supplied credential is incompatible with the " +
-                        "authentication methods supported by the server: " +
-                        string.Join(" or ", authenticationMethods));
+                        "authentication methods supported by the server:\n\n - " +
+                        string.Join("\n - ", authenticationMethods));
                 }
             }
         }

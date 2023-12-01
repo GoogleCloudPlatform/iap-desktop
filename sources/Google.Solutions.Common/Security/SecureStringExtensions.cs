@@ -26,6 +26,8 @@ namespace Google.Solutions.Common.Security
 {
     public static class SecureStringExtensions
     {
+        public static SecureString Empty = FromClearText(string.Empty);
+
         public static string AsClearText(this SecureString secureString)
         {
             return new NetworkCredential(string.Empty, secureString).Password;

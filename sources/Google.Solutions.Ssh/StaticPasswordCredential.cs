@@ -28,7 +28,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Username/password credential.
     /// </summary>
-    internal sealed class StaticPasswordCredential : IPasswordCredential
+    public sealed class StaticPasswordCredential : IPasswordCredential
     {
         public StaticPasswordCredential(
             string username,

@@ -403,7 +403,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.SshUsername = RegistryStringSetting.FromKey(
                 "SshUsername",
                 "Username",
-                "Linux username, only applicable if OS Login is disabled",
+                "Linux username",
                 Categories.SshCredentials,
                 null,
                 key,
