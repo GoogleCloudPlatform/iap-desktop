@@ -20,12 +20,15 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Security;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Apis.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -245,7 +248,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
-        // User auth.
+        // Authentication.
         //---------------------------------------------------------------------
 
         [Test]
@@ -286,7 +289,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -306,11 +309,121 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
-        // Public key authentication.
+        // Authentication: password.
+        //---------------------------------------------------------------------
+
+        private const string SshdWithPublicKeyOrPasswordAuth =
+            "cat << EOF > /etc/ssh/sshd_config\n" +
+            "UsePam yes\n" +
+            "AuthenticationMethods publickey password\n" +
+            "EOF\n" +
+            "systemctl restart sshd";
+
+        [Test]
+        public async Task WhenPasswordInvalid_ThenAuthenticateUsingPasswordThrowsException(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)] 
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
+                        new StaticPasswordCredential("invaliduser", "invalidpassword"),
+                        KeyboardInteractiveHandler.Silent));
+            }
+        }
+
+        [Test]
+        public async Task WhenPasswordValid_ThenAuthenticateUsingPasswordSucceeds(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)] 
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            var credential = await CreatePasswordCredentialAsync(
+                    instance,
+                    endpoint)
+                .ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
+            {
+                Assert.IsNotNull(authSession);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Authentication: keyboard-interactive.
+        //---------------------------------------------------------------------
+
+        private const string SshdWithPublicKeyOrKeyboardInteractiveAuth =
+            "cat << EOF > /etc/ssh/sshd_config\n" +
+            "UsePam yes\n" +
+            "AuthenticationMethods publickey keyboard-interactive\n" +
+            "EOF\n" +
+            "systemctl restart sshd";
+
+        [Test]
+        public async Task WhenPasswordInvalid_ThenAuthenticateUsingKeyboardInteractiveThrowsException(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)] 
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
+                        new StaticPasswordCredential("ignored", "ignored"),
+                        new KeyboardInteractiveHandler(
+                            (name, instr, prompt, echo) => "wrong-password")));
+            }
+        }
+
+        [Test]
+        public async Task WhenPasswordValid_ThenAuthenticateUsingKeyboardInteractiveSucceeds(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)] 
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            var credential = await CreatePasswordCredentialAsync(
+                    instance,
+                    endpoint)
+                .ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                new StaticPasswordCredential(credential.Username, "ignored"),
+                new KeyboardInteractiveHandler(
+                    (name, instr, prompt, echo) => credential.Password.AsClearText())))
+            {
+                Assert.IsNotNull(authSession);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Authentication: public key.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
+        public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -341,17 +454,17 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
             {
-                var authSession = connection.Authenticate(
-                    credential,
-                    KeyboardInteractiveHandler.Silent);
                 Assert.IsNotNull(authSession);
             }
         }
@@ -370,7 +483,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -407,7 +520,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -442,7 +555,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);
@@ -475,7 +588,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await GetCredentialForInstanceAsync(
+            var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     keyType)
                 .ConfigureAwait(false);

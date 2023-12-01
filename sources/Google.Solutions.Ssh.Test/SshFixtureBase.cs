@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
@@ -34,6 +35,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -124,10 +126,10 @@ namespace Google.Solutions.Ssh.Test
         }
 
         /// <summary>
-        /// Create an authenticator for a given key type, minimizing
-        /// server rountrips.
+        /// Create a public key credential for a given key type, 
+        /// using a cache to minimize server rountrips.
         /// </summary>
-        protected static async Task<IAsymmetricKeyCredential> GetCredentialForInstanceAsync(
+        protected static async Task<IAsymmetricKeyCredential> CreateAsymmetricKeyCredentialAsync(
             InstanceLocator instanceLocator,
             SshKeyType keyType)
         {
@@ -149,7 +151,7 @@ namespace Google.Solutions.Ssh.Test
                         k => AsymmetricKeySigner.CreateEphemeral(k));
 
                 var metadataEntry = string.Join(
-                    "\n", 
+                    "\n",
                     keysByType
                         .Values
                         .Select(k => $"{username}:{k.PublicKey.ToString(PublicKey.Format.OpenSsh)} {username}"));
@@ -183,6 +185,62 @@ namespace Google.Solutions.Ssh.Test
             }
 
             return cachedCredentials[cacheKey];
+        }
+
+        /// <summary>
+        /// Create a password credential.
+        /// </summary>
+        protected static async Task<IPasswordCredential> CreatePasswordCredentialAsync(
+            InstanceLocator instance,
+            IPEndPoint endpoint)
+        {
+            var credential = await CreateAsymmetricKeyCredentialAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            //
+            // Create a user with random password.
+            //
+            var username = $"upwd{Guid.NewGuid().ToString().Substring(0, 6)}";
+            var password = Guid.NewGuid().ToString();
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                credential,
+                KeyboardInteractiveHandler.Silent))
+            using (var channel = authSession.OpenShellChannel(
+                LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL,
+                "vanilla",
+                80,
+                24,
+                null))
+            {
+                var command =
+                    $"sudo useradd -p \"$(openssl passwd -6 \"{password}\")\" {username} && exit\r\n";
+
+                channel.Write(Encoding.ASCII.GetBytes(command));
+                channel.WaitForEndOfStream();
+                channel.Close();
+            }
+
+            return new StaticPasswordCredential(username, password);
+        }
+
+        [SetUpFixture]
+        public class Cleanup
+        {
+            [OneTimeTearDown]
+            public void DisposeCachedCredentials()
+            {
+                foreach (var credential in cachedCredentials.Values)
+                {
+                    credential.Dispose();
+                }
+
+                cachedCredentials.Clear();
+            }
         }
     }
 }

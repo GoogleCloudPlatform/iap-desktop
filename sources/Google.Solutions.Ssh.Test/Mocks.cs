@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Security;
 using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
+using System.Security;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -63,7 +65,7 @@ namespace Google.Solutions.Ssh.Test
     }
 
 
-    internal class StaticAsymmetricKeyCredential : IAsymmetricKeyCredential
+    internal sealed class StaticAsymmetricKeyCredential : IAsymmetricKeyCredential
     {
         public StaticAsymmetricKeyCredential(string username, IAsymmetricKeySigner signer)
         {
@@ -72,6 +74,25 @@ namespace Google.Solutions.Ssh.Test
         }
 
         public IAsymmetricKeySigner Signer { get; }
+
+        public string Username { get; }
+
+        public void Dispose()
+        {
+        }
+    }
+
+    internal sealed class StaticPasswordCredential : IPasswordCredential
+    {
+        public StaticPasswordCredential(
+            string username,
+            string password)
+        {
+            this.Username = username;
+            this.Password = SecureStringExtensions.FromClearText(password);
+        }
+
+        public SecureString Password { get; }
 
         public string Username { get; }
 

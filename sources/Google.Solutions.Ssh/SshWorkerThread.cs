@@ -23,7 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.ComponentModel;
@@ -37,7 +36,7 @@ namespace Google.Solutions.Ssh
     public abstract class SshWorkerThread : IDisposable
     {
         private readonly IPEndPoint endpoint;
-        private readonly IAsymmetricKeyCredential credential;
+        private readonly ISshCredential credential;
         private readonly IKeyboardInteractiveHandler keyboardHandler;
 
         private readonly Thread workerThread;
@@ -85,7 +84,7 @@ namespace Google.Solutions.Ssh
 
         protected SshWorkerThread(
             IPEndPoint endpoint,
-            IAsymmetricKeyCredential credential,
+            ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler,
             SynchronizationContext callbackContext)
         {
