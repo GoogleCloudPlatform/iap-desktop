@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -244,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             InstanceLocator instance,
             ITransport transport,
             SshParameters parameters,
-            PlatformCredential credential)
+            ISshCredential credential)
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 

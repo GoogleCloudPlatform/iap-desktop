@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         internal CultureInfo Language { get; set; }
         internal IPEndPoint Endpoint { get; set; }
-        internal PlatformCredential Credential { get; set; }
+        internal ISshCredential Credential { get; set; }
         internal TimeSpan ConnectionTimeout { get; set; }
 
         protected override void OnValidate()
@@ -231,7 +231,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             }
             catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED &&
-                this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                this.Credential is PlatformCredential platformCredential &&
+                platformCredential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
             {
                 throw new OsLoginAuthenticationFailedException(
                     "Authenticating to the VM failed. Possible reasons for this " +
@@ -245,9 +246,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
-                if (this.Credential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                if (this.Credential is PlatformCredential platformCredential &&
+                    platformCredential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                 {
-                    var outdatedMessage = this.Credential.Signer is OsLoginCertificateSigner
+                    var outdatedMessage = platformCredential.Signer is OsLoginCertificateSigner
                         ? " - The VM is running an outdated version of the guest environment \n" +
                           "   that doesn't support certificate-based authentication\n"
                         : string.Empty;
