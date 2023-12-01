@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenCredentialTypeIsPublicKey_ThenCreateSshSessionContextUsesPlatformCredential()
+        public async Task WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
             settings.SshPort.IntValue = 2222;
@@ -183,11 +183,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenCredentialTypeIsPassword_ThenCreateSshSessionContextUsesPasswordCredential(
+        public async Task WhenPublicKeyAuthDisabled_ThenCreateSshSessionContextUsesPasswordCredential(
             [Values("user", "", null)] string username)
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
-            settings.SshCredentialType.EnumValue = SshCredentialType.Password;
+            settings.SshPublicKeyAuthentication.EnumValue = SshPublicKeyAuthentication.Disabled;
             settings.SshUsername.StringValue = username;
 
             var settingsService = new Mock<IConnectionSettingsService>();

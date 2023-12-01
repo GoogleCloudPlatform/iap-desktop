@@ -318,25 +318,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 .TypedCollection;
 
             SshContext context;
-            if (settings.SshCredentialType.EnumValue == SshCredentialType.Password)
-            {
-                //
-                // Use password for authentication.
-                //
-
-                var username = string.IsNullOrEmpty(settings.SshUsername.StringValue)
-                    ? LinuxUser.SuggestUsername(this.authorization)
-                    : settings.SshUsername.StringValue;
-
-                context = new SshContext(
-                    this.iapTransportFactory,
-                    this.directTransportFactory,
-                    new StaticPasswordCredential(
-                        username,
-                        (SecureString)settings.SshPassword.Value ?? SecureStringExtensions.Empty),
-                    node.Instance);
-            }
-            else
+            if (settings.SshPublicKeyAuthentication.EnumValue == SshPublicKeyAuthentication.Enabled)
             {
                 //
                 // Use an asymmetric key pair for authentication, and
@@ -404,6 +386,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 
                 context.Parameters.PublicKeyValidity = validity;
                 context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
+            }
+            else
+            {
+                //
+                // Use password for authentication.
+                //
+
+                var username = string.IsNullOrEmpty(settings.SshUsername.StringValue)
+                    ? LinuxUser.SuggestUsername(this.authorization)
+                    : settings.SshUsername.StringValue;
+
+                context = new SshContext(
+                    this.iapTransportFactory,
+                    this.directTransportFactory,
+                    new StaticPasswordCredential(
+                        username,
+                        (SecureString)settings.SshPassword.Value ?? SecureStringExtensions.Empty),
+                    node.Instance);
             }
 
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;

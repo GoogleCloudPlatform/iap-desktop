@@ -66,12 +66,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     //
     //-------------------------------------------------------------------------
 
-    public enum SshCredentialType
+    public enum SshPublicKeyAuthentication
     {
-        PublicKey = 0,
-        Password = 1,
+        Disabled = 0,
+        Enabled = 1,
 
         [Browsable(false)]
-        _Default = PublicKey
+        _Default = Enabled
     }
 }
