@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Threading;
@@ -36,15 +34,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// Encapsulates settings and logic to create an SSH session.
     /// </summary>
     internal sealed class SshContext
-        : SessionContextBase<SshAuthorizedKeyCredential, SshParameters>
+        : SessionContextBase<PlatformCredential, SshParameters>
     {
-        private readonly IKeyAuthorizer keyAuthorizer;
+        private readonly IPlatformCredentialFactory credentialFactory;
         private readonly IAsymmetricKeySigner signer;
 
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            IKeyAuthorizer keyAuthorizer,
+            IPlatformCredentialFactory credentialFactory,
             InstanceLocator instance,
             IAsymmetricKeySigner signer)
             : base(
@@ -53,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                   instance,
                   new SshParameters())
         {
-            this.keyAuthorizer = keyAuthorizer.ExpectNotNull(nameof(keyAuthorizer));
+            this.credentialFactory = credentialFactory.ExpectNotNull(nameof(credentialFactory));
             this.signer = signer.ExpectNotNull(nameof(signer));
         }
 
@@ -61,14 +59,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override async Task<SshAuthorizedKeyCredential> AuthorizeCredentialAsync(
+        public override async Task<PlatformCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
             //
             // Authorize the key using OS Login or metadata-based keys.
             //
-            return await this.keyAuthorizer
-                .AuthorizeKeyAsync(
+            return await this.credentialFactory
+                .CreateCredentialAsync(
                     this.Instance,
                     this.signer,
                     this.Parameters.PublicKeyValidity,

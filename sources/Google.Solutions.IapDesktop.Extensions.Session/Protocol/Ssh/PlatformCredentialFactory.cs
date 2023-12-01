@@ -26,9 +26,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Threading;
@@ -37,15 +35,19 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     /// <summary>
-    /// Authorizes SSH keys using OS Login or metadata-based keys,
-    /// depending on the instance's configuration.
+    /// Factory for platform-managed SSH credentials. 
     /// </summary>
-    public interface IKeyAuthorizer
+    public interface IPlatformCredentialFactory
     {
-        Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
+        /// <summary>
+        /// Create a platform-managed key credential by using OS Login,
+        /// instance- or project-metadata to authorize an asymmetric key.
+        /// </summary>
+        /// <returns></returns>
+        Task<PlatformCredential> CreateCredentialAsync(
             InstanceLocator instance,
-            IAsymmetricKeySigner key,
-            TimeSpan keyValidity,
+            IAsymmetricKeySigner signer,
+            TimeSpan validity,
             string preferredPosixUsername,
             KeyAuthorizationMethods methods,
             CancellationToken token);
@@ -60,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         All = 7
     }
 
-    [Service(typeof(IKeyAuthorizer))]
-    public class KeyAuthorizer : IKeyAuthorizer
+    [Service(typeof(IPlatformCredentialFactory))]
+    public class PlatformCredentialFactory : IPlatformCredentialFactory
     {
         private readonly IAuthorization authorization;
         private readonly IComputeEngineClient computeClient;
@@ -72,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        public KeyAuthorizer(
+        public PlatformCredentialFactory(
             IAuthorization authorization,
             IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
@@ -112,19 +114,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // IKeyAuthorizer.
+        // IPlatformCredentialFactory.
         //---------------------------------------------------------------------
 
-        public async Task<SshAuthorizedKeyCredential> AuthorizeKeyAsync(
+        public async Task<PlatformCredential> CreateCredentialAsync(
             InstanceLocator instance,
-            IAsymmetricKeySigner key,
+            IAsymmetricKeySigner signer,
             TimeSpan validity,
             string preferredPosixUsername,
             KeyAuthorizationMethods allowedMethods,
             CancellationToken token)
         {
             Precondition.ExpectNotNull(instance, nameof(instance));
-            Precondition.ExpectNotNull(key, nameof(key));
+            Precondition.ExpectNotNull(signer, nameof(signer));
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(instance))
             {
@@ -168,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         .AuthorizeKeyAsync(
                             new ZoneLocator(instance.ProjectId, instance.Zone),
                             OsLoginSystemType.Linux,
-                            key,
+                            signer,
                             validity,
                             token)
                         .ConfigureAwait(false);
@@ -182,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     //
                     return await metdataKeyProcessor
                         .AuthorizeKeyAsync(
-                            key,
+                            signer,
                             validity,
                             CreateUsernameForMetadata(preferredPosixUsername),
                             allowedMethods,

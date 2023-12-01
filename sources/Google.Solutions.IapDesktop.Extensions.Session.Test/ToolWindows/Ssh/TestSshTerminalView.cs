@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var serviceProvider = CreateServiceProvider();
 
-            var keyAdapter = new KeyAuthorizer(
+            var keyAdapter = new PlatformCredentialFactory(
                 authorization,
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(), 
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 new Mock<IOsLoginProfile>().Object);
 
             var sshCredential = await keyAdapter
-                .AuthorizeKeyAsync(
+                .CreateCredentialAsync(
                     instance,
                     AsymmetricKeySigner.CreateEphemeral(keyType),
                     TimeSpan.FromMinutes(10),
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var sshCredential = new SshAuthorizedKeyCredential(
+            var sshCredential = new PlatformCredential(
                 AsymmetricKeySigner.CreateEphemeral(keyType),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "test");
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var sshCredential = new SshAuthorizedKeyCredential(
+            var sshCredential = new PlatformCredential(
                 AsymmetricKeySigner.CreateEphemeral(keyType),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "test");
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var sshCredential = new SshAuthorizedKeyCredential(
+            var sshCredential = new PlatformCredential(
                 AsymmetricKeySigner.CreateEphemeral(keyType),
                 KeyAuthorizationMethods.InstanceMetadata,
                 "test");

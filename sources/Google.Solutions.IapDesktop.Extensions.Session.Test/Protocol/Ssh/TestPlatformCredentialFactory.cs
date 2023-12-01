@@ -19,14 +19,12 @@
 // under the License.
 //
 
-using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Moq;
@@ -38,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestKeyAuthorizer
+    public class TestPlatformCredentialFactory
     {
         private const string SampleEmailAddress = "bob@example.com";
         private static readonly InstanceLocator SampleLocator
@@ -124,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         It.IsAny<IAsymmetricKeySigner>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new SshAuthorizedKeyCredential(
+                .ReturnsAsync(new PlatformCredential(
                     new Mock<IAsymmetricKeySigner>().Object,
                     KeyAuthorizationMethods.Oslogin,
                     "bob"));
@@ -139,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenPreferredUsernameIsInvalid_ThenCreateUsernameForMetadataThrowsException(
             [Values("", " ", "!user")] string username)
         {
-            var authorizer = new KeyAuthorizer(
+            var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 new Mock<IComputeEngineClient>().Object,
                 new Mock<IResourceManagerClient>().Object,
@@ -153,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenPreferredUsernameIsValid_ThenCreateUsernameForMetadataReturnsPreferredUsername()
         {
-            var authorizer = new KeyAuthorizer(
+            var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 new Mock<IComputeEngineClient>().Object,
                 new Mock<IResourceManagerClient>().Object,
@@ -167,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenPreferredUsernameNullButSessionUsernameValid_ThenCreateUsernameForMetadataGeneratesUsername()
         {
-            var authorizer = new KeyAuthorizer(
+            var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock("j@ex.ample").Object,
                 new Mock<IComputeEngineClient>().Object,
                 new Mock<IResourceManagerClient>().Object,
@@ -181,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenPreferredUsernameNullAndSessionUsernameTooLong_ThenCreateUsernameForMetadataStripsUsername()
         {
-            var authorizer = new KeyAuthorizer(
+            var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample").Object,
                 new Mock<IComputeEngineClient>().Object,
                 new Mock<IResourceManagerClient>().Object,
@@ -199,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginEnabledForProject_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: true,
@@ -210,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
-                .AuthorizeKeyAsync(
+                .CreateCredentialAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
@@ -227,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
@@ -238,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
-                .AuthorizeKeyAsync(
+                .CreateCredentialAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
@@ -255,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenOsLoginDisabledForProjectButEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: false,
@@ -266,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service
-                .AuthorizeKeyAsync(
+                .CreateCredentialAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
@@ -288,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 osLoginEnabledForInstance: false,
                 osLogin2fa: false,
                 osLoginSk: false);
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 computeClient.Object,
                 new Mock<IResourceManagerClient>().Object,
@@ -297,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
-                    .AuthorizeKeyAsync(
+                    .CreateCredentialAsync(
                         SampleLocator,
                         signer,
                         TimeSpan.FromMinutes(1),
@@ -320,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: true,
@@ -331,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                () => service.AuthorizeKeyAsync(
+                () => service.CreateCredentialAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
@@ -343,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenOsLoginEnabledForInstanceButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
@@ -354,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                () => service.AuthorizeKeyAsync(
+                () => service.CreateCredentialAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),
@@ -366,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenOsLoginWithSecurityKeyEnabledForInstance_ThenAuthorizeKeyThrowsNotImplementedException()
         {
-            var service = new KeyAuthorizer(
+            var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
                 CreateComputeEngineClientMock(
                     osLoginEnabledForProject: null,
@@ -377,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateOsLoginServiceMock().Object);
 
             ExceptionAssert.ThrowsAggregateException<OsLoginSkNotSupportedException>(
-                () => service.AuthorizeKeyAsync(
+                () => service.CreateCredentialAsync(
                     SampleLocator,
                     new Mock<IAsymmetricKeySigner>().Object,
                     TimeSpan.FromMinutes(1),

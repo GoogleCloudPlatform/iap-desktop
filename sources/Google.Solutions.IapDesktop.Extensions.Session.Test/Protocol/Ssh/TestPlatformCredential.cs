@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestSshAuthorizedKeyCredential
+    public class TestPlatformCredential
     {
         //---------------------------------------------------------------------
         // ToString.
@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void ToStringReturnsUsername()
         {
-            var credential = new SshAuthorizedKeyCredential(
+            var credential = new PlatformCredential(
                 new Mock<IAsymmetricKeySigner>().Object,
                 KeyAuthorizationMethods.InstanceMetadata,
                 "username");

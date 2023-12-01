@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         internal CultureInfo Language { get; set; }
         internal IPEndPoint Endpoint { get; set; }
-        internal SshAuthorizedKeyCredential Credential { get; set; }
+        internal PlatformCredential Credential { get; set; }
         internal TimeSpan ConnectionTimeout { get; set; }
 
         protected override void OnValidate()

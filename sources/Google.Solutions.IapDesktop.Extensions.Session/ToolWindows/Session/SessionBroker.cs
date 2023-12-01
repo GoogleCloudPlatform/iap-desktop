@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// Create a new SSH session.
         /// </summary>
         Task<ISession> CreateSessionAsync(
-            ISessionContext<SshAuthorizedKeyCredential, SshParameters> context);
+            ISessionContext<PlatformCredential, SshParameters> context);
 
         /// <summary>
         /// Create a new RDP session.
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             InstanceLocator instance,
             ITransport transport,
             SshParameters parameters,
-            SshAuthorizedKeyCredential credential)
+            PlatformCredential credential)
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 
@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public ICommandContainer<ISession> SessionMenu { get; }
 
         public async Task<ISession> CreateSessionAsync(
-            ISessionContext<SshAuthorizedKeyCredential, SshParameters> context)
+            ISessionContext<PlatformCredential, SshParameters> context)
         {
             try
             {
