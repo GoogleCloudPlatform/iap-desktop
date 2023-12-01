@@ -33,6 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -138,7 +139,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public RegistryDwordSetting SshPort { get; private set; }
         public RegistryEnumSetting<SessionTransportType> SshTransport { get; private set; }
         public RegistryStringSetting SshUsername { get; private set; }
+        public RegistrySecureStringSetting SshPassword { get; private set; }
         public RegistryDwordSetting SshConnectionTimeout { get; private set; }
+        public RegistryEnumSetting<SshCredentialType> SshCredentialType { get; private set; }
 
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
@@ -149,7 +152,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.SshTransport,
             this.SshConnectionTimeout,
             this.SshPort,
+            this.SshCredentialType,
             this.SshUsername,
+            this.SshPassword,
         };
 
         //---------------------------------------------------------------------
@@ -386,15 +391,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Categories.SshConnection,
                 SessionTransportType._Default,
                 key);
+            this.SshCredentialType = RegistryEnumSetting<SshCredentialType>.FromKey(
+                "SshCredentialType",
+                "Type",
+                "Type of credential to use. Use PublicKey to let IAP Desktop automatically " +
+                    "create an SSH key pair and publish it using OS Login or metadata keys. " +
+                    "Use Password to use password/keyboard-interactive authentication instead.",
+                Categories.SshCredentials,
+                Protocol.Ssh.SshCredentialType._Default,
+                key);
             this.SshUsername = RegistryStringSetting.FromKey(
                 "SshUsername",
                 "Username",
-                "Preferred Linux username (only applicable if OS Login is disabled)",
+                "Linux username, only applicable if OS Login is disabled",
                 Categories.SshCredentials,
                 null,
                 key,
                 username => string.IsNullOrEmpty(username) ||
                             LinuxUser.IsValidUsername(username));
+            this.SshPassword = RegistrySecureStringSetting.FromKey(
+                "SshPassword",
+                "Password",
+                "Password, only applicable if Type is set to Password",
+                Categories.SshCredentials,
+                key,
+                DataProtectionScope.CurrentUser);
             this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
                 "SshConnectionTimeout",
                 "Connection timeout",
@@ -479,8 +500,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);
             prototype.SshTransport = (RegistryEnumSetting<SessionTransportType>)
                 baseSettings.SshTransport.OverlayBy(overlaySettings.SshTransport);
+            prototype.SshCredentialType = (RegistryEnumSetting<SshCredentialType>)
+                baseSettings.SshCredentialType.OverlayBy(overlaySettings.SshCredentialType);
             prototype.SshUsername = (RegistryStringSetting)
                 baseSettings.SshUsername.OverlayBy(overlaySettings.SshUsername);
+            prototype.SshPassword = (RegistrySecureStringSetting)
+                baseSettings.SshPassword.OverlayBy(overlaySettings.SshPassword);
             prototype.SshConnectionTimeout = (RegistryDwordSetting)
                 baseSettings.SshConnectionTimeout.OverlayBy(overlaySettings.SshConnectionTimeout);
 

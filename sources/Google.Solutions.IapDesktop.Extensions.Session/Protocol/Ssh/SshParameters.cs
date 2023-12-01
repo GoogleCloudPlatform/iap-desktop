@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
@@ -55,5 +56,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// Validity to apply when authorizing the public key.
         /// </summary>
         public TimeSpan PublicKeyValidity { get; set; } = DefaultPublicKeyValidity;
+    }
+
+    //-------------------------------------------------------------------------
+    // Enums.
+    //
+    // NB. Numeric values must be kept unchanged as they are persisted
+    // as settings.
+    //
+    //-------------------------------------------------------------------------
+
+    public enum SshCredentialType
+    {
+        PublicKey = 0,
+        Password = 1,
+
+        [Browsable(false)]
+        _Default = PublicKey
     }
 }
