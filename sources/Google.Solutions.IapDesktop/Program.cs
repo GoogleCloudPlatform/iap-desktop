@@ -336,28 +336,6 @@ namespace Google.Solutions.IapDesktop
             //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
 #endif
 
-            if (Environment.OSVersion.Version >= Windows11 ||
-                Environment.OSVersion.Version >= WindowsServer2022)
-            {
-                //
-                // Windows 2022 and Windows 11 fully support TLS 1.3:
-                // https://docs.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp-
-                //
-                System.Net.ServicePointManager.SecurityProtocol =
-                    SecurityProtocolType.Tls12 |
-                    SecurityProtocolType.Tls11 |
-                    (SecurityProtocolType)0x3000; // TLS 1.3
-            }
-            else
-            {
-                //
-                // Windows 10 and below don't properly support TLS 1.3 yet.
-                //
-                System.Net.ServicePointManager.SecurityProtocol =
-                    SecurityProtocolType.Tls12 |
-                    SecurityProtocolType.Tls11;
-            }
-
             //
             // Install patches requires for IAP.
             //
@@ -487,6 +465,12 @@ namespace Google.Solutions.IapDesktop
                 // NB. Until now, no network connections have been made.
                 //
                 var appSettings = appSettingsRepository.GetSettings();
+
+                //
+                // Override default set of TLS versions.
+                //
+                ServicePointManager.SecurityProtocol = appSettings.TlsVersions.EnumValue;
+
                 try
                 {
                     //
@@ -496,7 +480,9 @@ namespace Google.Solutions.IapDesktop
                 }
                 catch (Exception)
                 {
+                    //
                     // Settings invalid -> ignore.
+                    //
                 }
 
                 //
