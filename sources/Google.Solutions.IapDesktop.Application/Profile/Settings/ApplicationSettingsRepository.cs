@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
@@ -45,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         IStringSetting ProxyPacUrl { get; }
         IStringSetting ProxyUsername { get; }
         ISecureStringSetting ProxyPassword { get; }
+        IEnumSetting<SecurityProtocolType> TlsVersions { get; }
         IStringSetting FullScreenDevices { get; }
         IStringSetting CollapsedProjects { get; }
     }
@@ -106,6 +109,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISecureStringSetting ProxyPassword { get; private set; }
 
+            public IEnumSetting<SecurityProtocolType> TlsVersions { get; private set; }
+
             public IStringSetting FullScreenDevices { get; private set; }
 
             public IStringSetting CollapsedProjects { get; private set; }
@@ -123,6 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.ProxyPacUrl,
                 this.ProxyUsername,
                 this.ProxyPassword,
+                this.TlsVersions,
                 this.FullScreenDevices,
                 this.CollapsedProjects
             };
@@ -187,6 +193,15 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             null,
                             settingsKey,
                             url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    TlsVersions = RegistryEnumSetting<SecurityProtocolType>.FromKey(
+                            "TlsVersions",
+                            "TlsVersions",
+                            null,
+                            null,
+                            OSCapabilities.SupportedTlsVersions,
+                            settingsKey)
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),
 
