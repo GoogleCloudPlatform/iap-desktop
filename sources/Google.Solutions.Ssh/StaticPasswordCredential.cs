@@ -19,42 +19,42 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Security;
+using Google.Solutions.Common.Util;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
+namespace Google.Solutions.Ssh
 {
-    public class RdpCredential
+    /// <summary>
+    /// Username/password credential.
+    /// </summary>
+    public sealed class StaticPasswordCredential : IPasswordCredential
     {
-        internal static RdpCredential Empty = new RdpCredential(null, null, null);
-
-        public string User { get; }
-        public SecureString Password { get; }
-        public string Domain { get; }
-
-        internal RdpCredential(
-            string user,
-            string domain,
+        public StaticPasswordCredential(
+            string username,
             SecureString password)
         {
-            this.User = user;
-            this.Password = password;
-            this.Domain = domain;
+            this.Username = username.ExpectNotNull(nameof(username));
+            this.Password = password.ExpectNotNull(nameof(password));
         }
+
+        internal StaticPasswordCredential(
+            string username,
+            string password)
+            : this(username, SecureStringExtensions.FromClearText(password)) { 
+        }
+
+        public SecureString Password { get; }
+
+        public string Username { get; }
 
         public override string ToString()
         {
-            if (!string.IsNullOrEmpty(this.Domain) && !string.IsNullOrEmpty(this.User))
-            {
-                return $"{this.Domain}\\{this.User}";
-            }
-            else if (!string.IsNullOrEmpty(this.User))
-            {
-                return this.User;
-            }
-            else
-            {
-                return "(empty)";
-            }
+            return this.Username;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

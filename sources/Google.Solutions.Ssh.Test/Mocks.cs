@@ -81,23 +81,4 @@ namespace Google.Solutions.Ssh.Test
         {
         }
     }
-
-    internal sealed class StaticPasswordCredential : IPasswordCredential
-    {
-        public StaticPasswordCredential(
-            string username,
-            string password)
-        {
-            this.Username = username;
-            this.Password = SecureStringExtensions.FromClearText(password);
-        }
-
-        public SecureString Password { get; }
-
-        public string Username { get; }
-
-        public void Dispose()
-        {
-        }
-    }
 }

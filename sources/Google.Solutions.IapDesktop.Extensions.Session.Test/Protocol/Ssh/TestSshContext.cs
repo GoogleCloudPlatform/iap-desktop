@@ -47,9 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void AuthorizeCredentialReturnsCredential()
+        public void WhenUsingPlatformManagedCredential_ThenAuthorizeCredentialCreatesCredential()
         {
-            var authorizedKey = new PlatformCredential(
+            var credential = new PlatformCredential(
                 new Mock<IAsymmetricKeySigner>().Object,
                 KeyAuthorizationMethods.InstanceMetadata,
                 "username");
@@ -64,17 +64,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<string>(),
                     KeyAuthorizationMethods.All,
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(authorizedKey);
+                .ReturnsAsync(credential);
 
             var context = new SshContext(
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
                 credentialFactory.Object,
-                SampleInstance,
-                key);
+                key,
+                SampleInstance);
 
             Assert.AreSame(
-                authorizedKey,
+                credential,
+                context
+                    .AuthorizeCredentialAsync(CancellationToken.None)
+                    .Result);
+        }
+
+        [Test]
+        public void WhenUsingPreAuthorizedCredential_ThenAuthorizeCredentialReturnsCredential()
+        {
+            var credential = new StaticPasswordCredential("user", "password");
+
+            var context = new SshContext(
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                credential,
+                SampleInstance);
+
+            Assert.AreSame(
+                credential,
                 context
                     .AuthorizeCredentialAsync(CancellationToken.None)
                     .Result);
@@ -106,8 +124,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 factory.Object,
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IPlatformCredentialFactory>().Object,
-                SampleInstance,
-                new Mock<IAsymmetricKeySigner>().Object);
+                new Mock<IAsymmetricKeySigner>().Object,
+                SampleInstance);
             context.Parameters.TransportType = SessionTransportType.IapTunnel;
 
             var sshTransport = await context
@@ -135,8 +153,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IIapTransportFactory>().Object,
                 factory.Object,
                 new Mock<IPlatformCredentialFactory>().Object,
-                SampleInstance,
-                new Mock<IAsymmetricKeySigner>().Object);
+                new Mock<IAsymmetricKeySigner>().Object,
+                SampleInstance);
             context.Parameters.TransportType = SessionTransportType.Vpc;
 
             var sshTransport = await context

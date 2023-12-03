@@ -22,6 +22,8 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -33,6 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using Moq;
@@ -136,8 +139,136 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // CreateSshSessionContext - key.
+        // CreateSshSessionContext - connection settings.
         //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            settings.SshPort.IntValue = 2222;
+            settings.SshUsername.StringValue = "user";
+            settings.SshConnectionTimeout.Value = (int)TimeSpan.FromSeconds(123).TotalSeconds;
+
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings
+                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
+
+            var factory = new SessionContextFactory(
+                new Mock<IMainWindow>().Object,
+                CreateAuthorizationMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
+                CreateKeyStoreMock().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
+                settingsService.Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
+                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
+
+            using (var context = (SshContext)await factory
+                .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                Assert.IsTrue(context.UsePlatformManagedCredential);
+
+                Assert.AreEqual(2222, context.Parameters.Port);
+                Assert.AreEqual("user", context.Parameters.PreferredUsername);
+                Assert.AreEqual(TimeSpan.FromSeconds(123), context.Parameters.ConnectionTimeout);
+            }
+        }
+
+        [Test]
+        public async Task WhenPublicKeyAuthDisabled_ThenCreateSshSessionContextUsesPasswordCredential(
+            [Values("user", "", null)] string username)
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            settings.SshPublicKeyAuthentication.EnumValue = SshPublicKeyAuthentication.Disabled;
+            settings.SshUsername.StringValue = username;
+
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings
+                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
+
+            var factory = new SessionContextFactory(
+                new Mock<IMainWindow>().Object,
+                CreateAuthorizationMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
+                CreateKeyStoreMock().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
+                settingsService.Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
+                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
+
+            using (var context = (SshContext)await factory
+                .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                Assert.IsFalse(context.UsePlatformManagedCredential);
+                Assert.IsNull(context.Parameters.PreferredUsername);
+
+                var credential = await context
+                    .AuthorizeCredentialAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsInstanceOf<StaticPasswordCredential>(credential);
+                Assert.AreEqual(
+                    string.IsNullOrEmpty(username) ? "bob" : username, 
+                    credential.Username);
+                Assert.AreEqual(
+                    string.Empty, 
+                    ((StaticPasswordCredential)credential).Password.AsClearText());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // CreateSshSessionContext - global settings.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task CreateSshSessionContextUsesSshSettings()
+        {
+            var sshSettingsRepository = CreateSshSettingsRepository(true, TimeSpan.FromDays(4));
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(
+                    InstanceConnectionSettings
+                        .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
+                        .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
+
+            var factory = new SessionContextFactory(
+                new Mock<IMainWindow>().Object,
+                CreateAuthorizationMock().Object,
+                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
+                CreateKeyStoreMock().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
+                settingsService.Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialCallback>().Object,
+                sshSettingsRepository);
+
+            using (var context = (SshContext)await factory
+                .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual(TimeSpan.FromDays(4), context.Parameters.PublicKeyValidity);
+            }
+        }
 
         [Test]
         public async Task WhenUsePersistentKeyIsTrue_ThenCreateSshSessionContextOpensSshKey()
@@ -179,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<string>(),
                     It.Is<KeyType>(t => t.Algorithm == CngAlgorithm.Rsa),
                     CngKeyUsages.Signing,
-                    false), 
+                    false),
                 Times.Once);
         }
 
@@ -227,87 +358,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CngKeyUsages.Signing,
                     false),
                 Times.Never);
-        }
-
-        //---------------------------------------------------------------------
-        // CreateSshSessionContext - connection settings.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task CreateSshSessionContextUsesConnectionSettings()
-        {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
-            settings.SshPort.IntValue = 2222;
-            settings.SshUsername.StringValue = "user";
-            settings.SshConnectionTimeout.Value = (int)TimeSpan.FromSeconds(123).TotalSeconds;
-
-            var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(settings
-                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
-
-            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
-
-            var factory = new SessionContextFactory(
-                new Mock<IMainWindow>().Object,
-                CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
-                CreateKeyStoreMock().Object,
-                new Mock<IPlatformCredentialFactory>().Object,
-                settingsService.Object,
-                new Mock<IIapTransportFactory>().Object,
-                new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
-
-            using (var context = (SshContext)await factory
-                .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
-                .ConfigureAwait(false))
-            {
-                Assert.AreEqual(2222, context.Parameters.Port);
-                Assert.AreEqual("user", context.Parameters.PreferredUsername);
-                Assert.AreEqual(TimeSpan.FromSeconds(123), context.Parameters.ConnectionTimeout);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // CreateSshSessionContext - global settings.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task CreateSshSessionContextUsesSshSettings()
-        {
-            var sshSettingsRepository = CreateSshSettingsRepository(true, TimeSpan.FromDays(4));
-            var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService
-                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    InstanceConnectionSettings
-                        .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
-                        .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
-
-            var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
-
-            var factory = new SessionContextFactory(
-                new Mock<IMainWindow>().Object,
-                CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
-                CreateKeyStoreMock().Object,
-                new Mock<IPlatformCredentialFactory>().Object,
-                settingsService.Object,
-                new Mock<IIapTransportFactory>().Object,
-                new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
-                new Mock<IRdpCredentialCallback>().Object,
-                sshSettingsRepository);
-
-            using (var context = (SshContext)await factory
-                .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
-                .ConfigureAwait(false))
-            {
-                Assert.AreEqual(TimeSpan.FromDays(4), context.Parameters.PublicKeyValidity);
-            }
         }
     }
 }

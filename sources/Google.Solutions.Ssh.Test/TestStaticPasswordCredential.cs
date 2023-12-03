@@ -1,4 +1,7 @@
-﻿//
+﻿using Google.Solutions.Ssh.Cryptography;
+using NUnit.Framework;
+
+//
 // Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,14 +22,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
-using Google.Solutions.Ssh.Cryptography;
-using NUnit.Framework;
-
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
+namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
-    public class TestPlatformCredential
+    public class TestStaticPasswordCredential
     {
         //---------------------------------------------------------------------
         // ToString.
@@ -37,14 +36,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
-                var credential = new PlatformCredential(
-                    signer,
-                    KeyAuthorizationMethods.InstanceMetadata,
-                    "username");
-
-                Assert.AreEqual(
-                    "username (using ssh-rsa, authorized using InstanceMetadata)", 
-                    credential.ToString());
+                using (var credential = new StaticPasswordCredential(
+                    "username",
+                    "password"))
+                {
+                    Assert.AreEqual(
+                        "username",
+                        credential.ToString());
+                }
             }
         }
     }

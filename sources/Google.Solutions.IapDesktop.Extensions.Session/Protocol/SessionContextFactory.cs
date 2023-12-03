@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
@@ -53,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         /// Create a new SSH session context. The method might require UI
         /// interactiion.
         /// </summary>
-        Task<ISessionContext<PlatformCredential, SshParameters>> CreateSshSessionContextAsync(
+        Task<ISessionContext<ISshCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken cancellationToken);
 
@@ -304,90 +305,115 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             }
         }
 
-        public Task<ISessionContext<PlatformCredential, SshParameters>> CreateSshSessionContextAsync(
+        public Task<ISessionContext<ISshCredential, SshParameters>> CreateSshSessionContextAsync(
             IProjectModelInstanceNode node,
             CancellationToken _)
         {
             node.ExpectNotNull(nameof(node));
             Debug.Assert(node.IsSshSupported());
 
+            var sshSettings = this.sshSettingsRepository.GetSettings();
             var settings = (InstanceConnectionSettings)this.settingsService
                 .GetConnectionSettings(node)
                 .TypedCollection;
 
-            //
-            // Load the SSH key to use.
-            //
-            var sshSettings = this.sshSettingsRepository.GetSettings();
-
-            IAsymmetricKeySigner signer;
-            TimeSpan validity;
-            if (sshSettings.UsePersistentKey.BoolValue)
+            SshContext context;
+            if (settings.SshPublicKeyAuthentication.EnumValue == SshPublicKeyAuthentication.Enabled)
             {
                 //
-                // Load persistent CNG key. This might pop up dialogs.
+                // Use an asymmetric key pair for authentication, and
+                // authorize it automatically using whichever mechanism
+                // is appropriate for the instance.
                 //
-                var keyName = new CngKeyName(
-                    this.authorization.Session,
-                    sshSettings.PublicKeyType.EnumValue,
-                    this.keyStore.Provider);
 
-                try
+                IAsymmetricKeySigner signer;
+                TimeSpan validity;
+                if (sshSettings.UsePersistentKey.BoolValue)
                 {
-                    signer = AsymmetricKeySigner.Create(
-                        this.keyStore.OpenKey(
-                            this.window.Handle,
-                            keyName.Value,
-                            keyName.Type,
-                            CngKeyUsages.Signing,
-                            false),
-                        true);
-                    validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+                    //
+                    // Load persistent CNG key. This might pop up dialogs.
+                    //
+                    var keyName = new CngKeyName(
+                        this.authorization.Session,
+                        sshSettings.PublicKeyType.EnumValue,
+                        this.keyStore.Provider);
+
+                    try
+                    {
+                        signer = AsymmetricKeySigner.Create(
+                            this.keyStore.OpenKey(
+                                this.window.Handle,
+                                keyName.Value,
+                                keyName.Type,
+                                CngKeyUsages.Signing,
+                                false),
+                            true);
+                        validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+                    }
+                    catch (CryptographicException e) when (
+                        e is KeyStoreUnavailableException ||
+                        e is InvalidKeyContainerException)
+                    {
+                        throw new SessionException(
+                            "Creating or opening the SSH key failed because the " +
+                            "Windows CNG key container or key store is inaccessible.\n\n" +
+                            "If the problem persists, go to Tools > Options > SSH and disable " +
+                            "the option to use a persistent key for SSH authentication.",
+                            HelpTopics.TroubleshootingSsh,
+                            e);
+                    }
                 }
-                catch (CryptographicException e) when (
-                    e is KeyStoreUnavailableException ||
-                    e is InvalidKeyContainerException)
+                else
                 {
-                    throw new SessionException(
-                        "Creating or opening the SSH key failed because the " +
-                        "Windows CNG key container or key store is inaccessible.\n\n" +
-                        "If the problem persists, go to Tools > Options > SSH and disable " +
-                        "the option to use a persistent key for SSH authentication.",
-                        HelpTopics.TroubleshootingSsh,
-                        e);
+                    //
+                    // Use an ephemeral key and cap its validity.
+                    //
+                    signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.EnumValue);
+                    validity = EphemeralKeyValidity;
                 }
+
+                Debug.Assert(signer != null);
+
+                //
+                // Initialize a context and pass ownership of the key to it.
+                //
+                context = new SshContext(
+                    this.iapTransportFactory,
+                    this.directTransportFactory,
+                    this.credentialFactory,
+                    signer,
+                    node.Instance);
+
+                context.Parameters.PublicKeyValidity = validity;
+                context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
             }
             else
             {
                 //
-                // Use an ephemeral key and cap its validity.
+                // Use password for authentication.
                 //
-                signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.EnumValue);
-                validity = EphemeralKeyValidity;
+
+                var username = string.IsNullOrEmpty(settings.SshUsername.StringValue)
+                    ? LinuxUser.SuggestUsername(this.authorization)
+                    : settings.SshUsername.StringValue;
+
+                context = new SshContext(
+                    this.iapTransportFactory,
+                    this.directTransportFactory,
+                    new StaticPasswordCredential(
+                        username,
+                        (SecureString)settings.SshPassword.Value ?? SecureStringExtensions.Empty),
+                    node.Instance);
             }
-
-            Debug.Assert(signer != null);
-
-            //
-            // Initialize a context and pass ownership of the key to it.
-            //
-            var context = new SshContext(
-                this.iapTransportFactory,
-                this.directTransportFactory,
-                this.credentialFactory,
-                node.Instance,
-                signer);
 
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
-            context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
-            context.Parameters.PublicKeyValidity = validity;
             context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.BoolValue
                 ? CultureInfo.CurrentUICulture
                 : null;
 
-            return Task.FromResult<ISessionContext<PlatformCredential, SshParameters>>(context);
+            return Task.FromResult<ISessionContext<ISshCredential, SshParameters>>(context);
         }
     }
 }

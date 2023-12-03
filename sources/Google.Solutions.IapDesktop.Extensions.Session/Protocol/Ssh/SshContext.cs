@@ -23,8 +23,10 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,17 +36,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     /// Encapsulates settings and logic to create an SSH session.
     /// </summary>
     internal sealed class SshContext
-        : SessionContextBase<PlatformCredential, SshParameters>
+        : SessionContextBase<ISshCredential, SshParameters>
     {
+        private readonly ISshCredential preAuthorizedCredential;
         private readonly IPlatformCredentialFactory credentialFactory;
         private readonly IAsymmetricKeySigner signer;
 
+        internal bool UsePlatformManagedCredential
+            => this.preAuthorizedCredential == null;
+
+        /// <summary>
+        /// Create context that uses a platform-managed credential.
+        /// </summary>
         internal SshContext(
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
             IPlatformCredentialFactory credentialFactory,
-            InstanceLocator instance,
-            IAsymmetricKeySigner signer)
+            IAsymmetricKeySigner signer,
+            InstanceLocator instance)
             : base(
                   iapTransportFactory,
                   directTransportFactory,
@@ -53,27 +62,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         {
             this.credentialFactory = credentialFactory.ExpectNotNull(nameof(credentialFactory));
             this.signer = signer.ExpectNotNull(nameof(signer));
+
+            Debug.Assert(this.UsePlatformManagedCredential);
+        }
+
+        /// <summary>
+        /// Create context that uses an unmanaged/pre-authorized credential.
+        /// </summary>
+        internal SshContext(
+            IIapTransportFactory iapTransportFactory,
+            IDirectTransportFactory directTransportFactory,
+            ISshCredential preAuthorizedCredential,
+            InstanceLocator instance)
+            : base(
+                  iapTransportFactory,
+                  directTransportFactory,
+                  instance,
+                  new SshParameters())
+        {
+            this.preAuthorizedCredential = preAuthorizedCredential;
+
+            Debug.Assert(!this.UsePlatformManagedCredential);
         }
 
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        public override async Task<PlatformCredential> AuthorizeCredentialAsync(
+        public override async Task<ISshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
-            //
-            // Authorize the key using OS Login or metadata-based keys.
-            //
-            return await this.credentialFactory
-                .CreateCredentialAsync(
-                    this.Instance,
-                    this.signer,
-                    this.Parameters.PublicKeyValidity,
-                    this.Parameters.PreferredUsername.NullIfEmpty(),
-                    KeyAuthorizationMethods.All,
-                    cancellationToken)
-                .ConfigureAwait(false);
+            if (this.UsePlatformManagedCredential)
+            {
+                Debug.Assert(this.credentialFactory != null);
+                Debug.Assert(this.signer != null);
+
+                //
+                // Authorize the key using OS Login or metadata-based keys.
+                //
+                return await this.credentialFactory
+                    .CreateCredentialAsync(
+                        this.Instance,
+                        this.signer,
+                        this.Parameters.PublicKeyValidity,
+                        this.Parameters.PreferredUsername.NullIfEmpty(),
+                        KeyAuthorizationMethods.All,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                Debug.Assert(this.credentialFactory == null);
+                Debug.Assert(this.signer == null);
+                Debug.Assert(this.Parameters.PreferredUsername == null);
+
+                return this.preAuthorizedCredential;
+            }
         }
 
         public override Task<ITransport> ConnectTransportAsync(
@@ -89,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public override void Dispose()
         {
-            this.signer.Dispose();
+            this.signer?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

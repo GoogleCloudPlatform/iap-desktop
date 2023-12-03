@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Ssh;
 using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
@@ -220,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
         {
-            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -362,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
         {
-            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -583,7 +584,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task ContextMenuConnectSshInNewTerminalForcesNewConnection()
         {
-            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(
@@ -670,7 +671,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             connectedSession.SetupGet(s => s.Instance).Returns(locator);
 
 
-            var context = new Mock<ISessionContext<PlatformCredential, SshParameters>>();
+            var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateSshSessionContextAsync(

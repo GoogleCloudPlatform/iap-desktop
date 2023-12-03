@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -52,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// Create a new SSH session.
         /// </summary>
         Task<ISession> CreateSessionAsync(
-            ISessionContext<PlatformCredential, SshParameters> context);
+            ISessionContext<ISshCredential, SshParameters> context);
 
         /// <summary>
         /// Create a new RDP session.
@@ -124,12 +125,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             session.ContextCommands = this.SessionMenu;
         }
 
-        private void ApplyTabStyle<TParameters>(
+        private void ApplyTabStyle<TCredential, TParameters>(
             DockContentHandler dockHandler,
             SessionTransportType transportType,
             bool isCreatedFromUrl,
             InstanceLocator instance,
-            ISessionCredential credential,
+            TCredential credential,
             TParameters sessionParameters)
         {
             //
@@ -166,7 +167,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private Task<AuthorizationResult<TCredential>> CreateTransportAndAuthorizeAsync
             <TCredential, TParameters>(
             ISessionContext<TCredential, TParameters> context)
-            where TCredential : ISessionCredential
         {
             return this.jobService.RunAsync(
                 new JobDescription(
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             InstanceLocator instance,
             ITransport transport,
             SshParameters parameters,
-            PlatformCredential credential)
+            ISshCredential credential)
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 
@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public ICommandContainer<ISession> SessionMenu { get; }
 
         public async Task<ISession> CreateSessionAsync(
-            ISessionContext<PlatformCredential, SshParameters> context)
+            ISessionContext<ISshCredential, SshParameters> context)
         {
             try
             {
