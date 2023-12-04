@@ -375,11 +375,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 //
                 try
                 {
-                    updateService.CheckForUpdates(
-                        this,
-                        out var donotCheckForUpdatesAgain);
+                    updateService.CheckForUpdates(this);
 
-                    settings.IsUpdateCheckEnabled.BoolValue = !donotCheckForUpdatesAgain;
                     settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
                 }
                 catch (Exception)

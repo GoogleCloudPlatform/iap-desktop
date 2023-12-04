@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
-            updateService.CheckForUpdates(null, out var _);
+            updateService.CheckForUpdates(null);
 
             var f = false;
             taskDialog.Verify(d => d.ShowOptionsTaskDialog(
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
-            updateService.CheckForUpdates(null, out var _);
+            updateService.CheckForUpdates(null);
 
             var f = false;
             taskDialog.Verify(d => d.ShowOptionsTaskDialog(
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
-            updateService.CheckForUpdates(null, out var _);
+            updateService.CheckForUpdates(null);
 
             var f = false;
             taskDialog.Verify(d => d.ShowOptionsTaskDialog(
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
-            updateService.CheckForUpdates(null, out var _);
+            updateService.CheckForUpdates(null);
         }
 
         [Test]
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
-            updateService.CheckForUpdates(null, out var _);
+            updateService.CheckForUpdates(null);
         }
     }
 }

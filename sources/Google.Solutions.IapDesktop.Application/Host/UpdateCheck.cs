@@ -42,9 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Check for updates and prompt the user to update.
         /// </summary>
-        void CheckForUpdates(
-            IWin32Window parent,
-            out bool donotCheckForUpdatesAgain);
+        void CheckForUpdates(IWin32Window parent);
     }
 
     public class UpdateCheck : IUpdateCheck
@@ -81,9 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
             return (this.clock.UtcNow - lastCheck).TotalDays >= DaysBetweenUpdateChecks;
         }
 
-        public void CheckForUpdates(IWin32Window parent, out bool donotCheckForUpdatesAgain)
+        public void CheckForUpdates(IWin32Window parent)
         {
-            donotCheckForUpdatesAgain = false;
             using (var cts = new CancellationTokenSource())
             {
                 //
@@ -107,19 +104,20 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     // Prompt for upgrade.
                     var selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                         parent,
-                        TaskDialogIcons.TD_SHIELD_ICON_INFO_BACKGROUND,
+                        TaskDialogIcons.TD_SHIELD_ICON_GREEN_BACKGROUND,
                         "Update available",
-                        "An update is available for IAP Desktop",
+                        "An update is available for IAP Desktop.\n\n" +
+                            $"Installed version: {this.InstalledVersion}\nAvailable version: {latestRelease.TagVersion}",
                         "Would you like to download the update now?",
-                        $"Installed version: {this.InstalledVersion}\nAvailable version: {latestRelease.TagVersion}",
+                        null,
                         new[]
                         {
-                            "Yes, download now",     // Same as pressing 'OK'
-                            "More information",
+                            "Yes, download now",
+                            "Show release notes",
                             "No, download later"
                         },
-                        "Do not check for updates again",
-                        out donotCheckForUpdatesAgain);
+                        null,
+                        out var _);
 
                     if (selectedOption == 2)
                     {
