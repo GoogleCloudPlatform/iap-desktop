@@ -19,7 +19,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<policyDefinitionResources revision="2.38" schemaVersion="1.0">
+<policyDefinitionResources revision="2.39" schemaVersion="1.0">
   <displayName/>
   <description/>
   <resources>
@@ -43,8 +43,7 @@
       </string>
 
       <string id="PrivateServiceConnectEndpoint">Enable Private Service Connect</string>
-      <string id="PrivateServiceConnectEndpoint_Description">Use custom Private Service Connect endpoint to connect 
-to connect to Google APIs.
+      <string id="PrivateServiceConnectEndpoint_Description">Use custom Private Service Connect endpoint to connect to Google APIs.
       </string>
 
       <string id="ProxyUrl">Enable HTTPS proxy</string>
@@ -62,6 +61,9 @@ to connect to Google APIs.
 
       <string id="PublicKeyValidity">SSH metadata key validity</string>
       <string id="PublicKeyValidity_Description">Lifetime (in seconds) for SSH keys published to Compute Engine instance metadata and OS Login.</string>
+
+      <string id="UsePersistentKey">Enable SSH persistent key storage</string>
+      <string id="UsePersistentKey_Description">Use persistent key for SSH authentication and store it in the user's Windows CNG key store.</string>
     </stringTable>
     <presentationTable>
       <presentation id="ProxyUrl">

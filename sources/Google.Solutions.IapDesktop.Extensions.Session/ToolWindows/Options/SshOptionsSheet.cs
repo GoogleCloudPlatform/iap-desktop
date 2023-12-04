@@ -20,13 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Ssh.Cryptography;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
@@ -63,6 +59,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 c => c.Checked,
                 viewModel,
                 m => m.UsePersistentKey,
+                bindingContext);
+            this.usePersistentKeyCheckBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsUsePersistentKeyEditable,
                 bindingContext);
 
             this.publicKeyValidityUpDown.BindObservableProperty(

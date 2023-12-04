@@ -22,7 +22,7 @@
 <policyDefinitions 
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    revision="2.38" 
+    revision="2.39" 
     schemaVersion="1.0" 
     xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
 
@@ -234,6 +234,25 @@
       <elements>
         <decimal id="PublicKeyValidity" valueName="PublicKeyValidity" minValue="300" maxValue="31536000" spinStep="60"/>
       </elements>
+    </policy>
+
+    <policy
+        name="UsePersistentKey"
+        class="Both"
+        displayName="$(string.UsePersistentKey)"
+        explainText="$(string.UsePersistentKey_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Ssh"
+        valueName="UsePersistentKey">
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
     </policy>
   </policies>
 </policyDefinitions>

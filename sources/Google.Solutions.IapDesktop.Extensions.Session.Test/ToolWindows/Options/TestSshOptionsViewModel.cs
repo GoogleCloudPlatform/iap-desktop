@@ -137,6 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
             Assert.IsTrue(viewModel.UsePersistentKey.Value);
+            Assert.IsTrue(viewModel.IsUsePersistentKeyEditable.Value);
             Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable.Value);
         }
 
@@ -151,6 +152,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
             Assert.IsFalse(viewModel.UsePersistentKey.Value);
+            Assert.IsTrue(viewModel.IsUsePersistentKeyEditable.Value);
+            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+        }
+
+        [Test]
+        public void WhenSettingDisabledByPolicy_ThenIsUsePersistentKeyEditableIsFalse()
+        {
+            var settingsRepository = CreateSettingsRepository(
+                new Dictionary<string, object>
+                {
+                    { "UsePersistentKey", 0 }
+                });
+
+            var settings = settingsRepository.GetSettings();
+            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.UsePersistentKey.Value);
+            Assert.IsFalse(viewModel.IsUsePersistentKeyEditable.Value);
             Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
         }
 
