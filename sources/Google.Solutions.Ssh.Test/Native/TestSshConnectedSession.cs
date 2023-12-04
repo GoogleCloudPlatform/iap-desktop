@@ -412,7 +412,14 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(
                 new StaticPasswordCredential(credential.Username, "ignored"),
                 new KeyboardInteractiveHandler(
-                    (name, instr, prompt, echo) => credential.Password.AsClearText())))
+                    (name, instr, prompt, echo) =>
+                    {
+                        Assert.AreEqual("Interactive authentication", name);
+                        Assert.AreEqual("Password: ", prompt);
+                        Assert.IsFalse(echo);
+
+                        return credential.Password.AsClearText();
+                    })))
             {
                 Assert.IsNotNull(authSession);
             }
@@ -531,6 +538,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 var twoFaHandler = new KeyboardInteractiveHandler(
                     (name, instruction, prompt, echo) =>
                     {
+                        Assert.AreEqual("2-step verification", name);
                         Assert.AreEqual("Password: ", prompt);
                         Assert.IsFalse(echo);
 

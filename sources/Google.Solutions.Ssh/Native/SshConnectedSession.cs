@@ -252,7 +252,8 @@ namespace Google.Solutions.Ssh.Native
 
         private SshAuthenticatedSession AuthenticateWithKeyboard(
             ISshCredential credential,
-            IKeyboardInteractiveHandler keyboardHandler)
+            IKeyboardInteractiveHandler keyboardHandler,
+            string defaultPromptName)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(credential, nameof(credential));
@@ -304,14 +305,19 @@ namespace Google.Solutions.Ssh.Native
                     SshTraceSource.Log.TraceVerbose("Keyboard/interactive prompt: {0}", promptText);
 
                     //
-                    // NB. Name and instruction aren't used by OS Login,
-                    // so flatten the structure to a single level.
+                    // NB. Name and instruction are often null or empty:
+                    //
+                    //  - OS Login 2SV sets the prompt text, but leaves name and
+                    //    instruction empty.
+                    //  - When keyboard-interactive is used to handle password-
+                    //    authentication, the prompt text contains "Password:",
+                    //    and name and instruction are empty.
                     //
                     string? responseText = null;
                     try
                     {
                         responseText = keyboardHandler.Prompt(
-                            name ?? string.Empty,
+                            name ?? defaultPromptName,
                             instruction ?? string.Empty,
                             promptText ?? string.Empty,
                             prompts[i].Echo != 0);
@@ -549,7 +555,10 @@ namespace Google.Solutions.Ssh.Native
 
                     if (requiredMethods.FirstOrDefault() == AuthenticationMetods.KeyboardInteractive)
                     {
-                        return AuthenticateWithKeyboard(credential, keyboardHandler);
+                        return AuthenticateWithKeyboard(
+                            credential, 
+                            keyboardHandler,
+                            "2-step verification");
                     }
                     else
                     {
@@ -601,7 +610,10 @@ namespace Google.Solutions.Ssh.Native
                 }
                 else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
                 {
-                    return AuthenticateWithKeyboard(credential, keyboardHandler);
+                    return AuthenticateWithKeyboard(
+                        credential, 
+                        keyboardHandler,
+                        "Interactive authentication");
                 }
                 else
                 {
