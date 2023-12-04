@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             using (var prompt = this.promptFactory.CreateDialog())
             {
-                prompt.ViewModel.Title = "2-step verification";
+                prompt.ViewModel.Title = e.Name;
                 prompt.ViewModel.Description = e.Prompt;
                 prompt.ViewModel.IsPasswordMasked = e.IsPasswordPrompt;
 
