@@ -97,10 +97,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
                 {
                     cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
-                    hwndParent = parent.Handle,
+                    hwndParent = parent?.Handle ?? IntPtr.Zero,
                     dwFlags = UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS,
-                    dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON |
-                                      UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_CANCEL_BUTTON,
+                    dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_CANCEL_BUTTON,
                     pszWindowTitle = windowTitle,
                     MainIcon = mainIcon,
                     pszMainInstruction = mainInstruction,
@@ -117,12 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     out var radioButtonPressed,
                     out verificationFlagPressed);
 
-                if (buttonPressed == UnsafeNativeMethods.IDOK)
-                {
-                    // Pick first option.
-                    return 0;
-                }
-                else if (buttonPressed >= this.ButtonIdOffset)
+                if (buttonPressed >= this.ButtonIdOffset)
                 {
                     // Option selected.
                     return buttonPressed - this.ButtonIdOffset;
