@@ -76,7 +76,6 @@ using System.Net.WebSockets;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -85,10 +84,6 @@ namespace Google.Solutions.IapDesktop
 {
     public class Program : SingletonApplicationBase
     {
-        private static readonly Version Windows10_1703 = new Version(10, 0, 15063, 0);
-        private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
-        private static readonly Version WindowsServer2022 = new Version(10, 0, 20348, 0);
-
         private static bool tracingEnabled = false;
 
         private static readonly TraceSource[] TraceSources = new[]
@@ -429,7 +424,7 @@ namespace Google.Solutions.IapDesktop
                 var themeSettingsRepository = new ThemeSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Theme"));
 
-                if (Environment.OSVersion.Version >= Windows10_1703)
+                if (OSCapabilities.IsGdiScalingSupported)
                 {
                     //
                     // Enable GDI scaling unless it has been disabled by the user.
