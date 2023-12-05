@@ -19,10 +19,8 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Moq;
@@ -44,13 +42,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             return authorization;
         }
 
-        private static IClock CreateClock(DateTime dateTime)
-        {
-            var clock = new Mock<IClock>();
-            clock.SetupGet(c => c.UtcNow).Returns(dateTime);
-            return clock.Object;
-        }
-
         private static Install CreateInstall()
         {
             return new Install(Install.DefaultBaseKeyPath);
@@ -63,13 +54,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenUserNotInternal_ThenFollowedTracksIsUnchanged(
             [Values(
-                ReleaseTrack.Normal,
-                ReleaseTrack.Rapid,
-                ReleaseTrack.Critical)] ReleaseTrack followedTracks)
+                ReleaseTrack.Critical,
+                ReleaseTrack._Default,
+                ReleaseTrack._All)] ReleaseTrack followedTracks)
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 followedTracks);
 
@@ -84,11 +74,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization(email).Object,
                 ReleaseTrack.Critical);
 
             Assert.AreEqual(ReleaseTrack._All, policy.FollowedTracks);
+        }
+
+        //---------------------------------------------------------------------
+        // DaysBetweenUpdateChecks.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUserOnRapidTrack_ThenDaysBetweenUpdateChecksIsLow()
+        {
+            var policy = new UpdatePolicy(
+                CreateInstall(),
+                CreateAuthorization("_@example.com").Object,
+                ReleaseTrack._All);
+
+            Assert.AreEqual(1, policy.DaysBetweenUpdateChecks);
+        }
+
+        [Test]
+        public void WhenUserOnDefaultTrack_ThenDaysBetweenUpdateChecksIsHigh()
+        {
+            var policy = new UpdatePolicy(
+                CreateInstall(),
+                CreateAuthorization("_@example.com").Object,
+                ReleaseTrack._Default);
+
+            Assert.AreEqual(10, policy.DaysBetweenUpdateChecks);
         }
 
         //---------------------------------------------------------------------
@@ -101,7 +116,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
@@ -118,7 +132,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
@@ -137,7 +150,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
@@ -161,7 +173,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var release = new Mock<IGitHubRelease>();
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack._All);
 
@@ -176,7 +187,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack._All);
 
@@ -193,7 +203,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var policy = new UpdatePolicy(
                 install,
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack._All);
 
@@ -205,7 +214,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var Policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
 
@@ -231,7 +239,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal);
 
@@ -257,7 +264,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateClock(DateTime.Now),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
@@ -277,37 +283,5 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             Assert.IsFalse(policy.IsUpdateAdvised(normalRelease.Object));
             Assert.IsFalse(policy.IsUpdateAdvised(rapidRelease.Object));
         }
-
-        //---------------------------------------------------------------------
-        // IsUpdateCheckDue.
-        //---------------------------------------------------------------------
-
-        //[Test]
-        //public void WhenNotEnoughDaysElapsed_ThenIsUpdateCheckDueReturnsFalse()
-        //{
-        //    var now = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        //    var policy = new UpdatePolicy(
-        //        CreateInstall(),
-        //        CreateClock(now));
-
-        //    Assert.IsFalse(policy.IsUpdateCheckDue(now));
-        //    Assert.IsFalse(policy.IsUpdateCheckDue(now.AddYears(1)));
-        //    Assert.IsFalse(policy.IsUpdateCheckDue(now.AddDays(-UpdatePolicy.DaysBetweenUpdateChecks).AddMinutes(1)));
-        //    Assert.IsFalse(policy.IsUpdateCheckDue(now.AddDays(-UpdatePolicy.DaysBetweenUpdateChecks + 1)));
-        //}
-
-        //[Test]
-        //public void WhenTooManyDaysElapsed_ThenIsUpdateCheckDueReturnsTrue()
-        //{
-        //    var now = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        //    var policy = new UpdatePolicy(
-        //        CreateInstall(),
-        //        CreateClock(now));
-
-        //    Assert.IsTrue(policy.IsUpdateCheckDue(now.AddDays(-UpdatePolicy.DaysBetweenUpdateChecks)));
-        //    Assert.IsTrue(policy.IsUpdateCheckDue(now.AddDays(-UpdatePolicy.DaysBetweenUpdateChecks - 1)));
-        //}
     }
 }

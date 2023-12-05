@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
@@ -35,27 +34,27 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// </summary>
     public class UpdatePolicy
     {
-        /// <summary>
-        /// Determines how often update checks are performed. 
-        /// A higher number implies a slower pace of updates.
-        /// </summary>
-        internal const int DaysBetweenUpdateChecks = 10; // TODO: Vary by track
-
         private readonly IInstall install;
-        private readonly IClock clock;
 
+        /// <summary>
+        /// Release tracked followed by the user.
+        /// </summary>
         public ReleaseTrack FollowedTracks { get; }
+
+        /// <summary>
+        /// Days to wait between two consecutive update checks.
+        /// </summary>
+        public ushort DaysBetweenUpdateChecks { get; }
 
         public UpdatePolicy(
             IInstall install,
-            IClock clock,
             IAuthorization authorization,
             ReleaseTrack followedTracks)
         {
             Precondition.ExpectNotNull(authorization, nameof(authorization));
+            Debug.Assert((followedTracks + 1).IsSingleFlag(), "Must include all lower tracks");
 
             this.install = install.ExpectNotNull(nameof(install));
-            this.clock = clock.ExpectNotNull(nameof(clock));
 
             //
             // Force-opt in internal domains to the rapid track.
@@ -65,6 +64,19 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
             {
                 followedTracks |= (ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
+            }
+
+            //
+            // Determine how often update checks are performed. 
+            // A higher number implies a slower pace of updates.
+            //
+            if (followedTracks.HasFlag(ReleaseTrack.Rapid))
+            {
+                this.DaysBetweenUpdateChecks = 1;
+            }
+            else
+            {
+                this.DaysBetweenUpdateChecks = 10;
             }
 
             this.FollowedTracks = followedTracks;
@@ -117,21 +129,13 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
             }
         }
-
-        /// <summary>
-        /// Determine if an update check should be performed.
-        /// </summary>
-        public bool IsUpdateCheckDue(DateTime lastCheck)
-        {
-            return (this.clock.UtcNow - lastCheck).TotalDays >= DaysBetweenUpdateChecks;
-        }
     }
 
     /// <summary>
     /// Available release tracks.
     /// </summary>
     [Flags]
-    public enum ReleaseTrack : uint
+    public enum ReleaseTrack : int
     {
         /// <summary>
         /// Critical security updates.
