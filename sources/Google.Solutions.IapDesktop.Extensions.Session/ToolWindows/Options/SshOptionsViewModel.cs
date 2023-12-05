@@ -55,6 +55,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
 
             this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.BoolValue);
+            this.IsUsePersistentKeyEditable = ObservableProperty.Build(
+                this.UsePersistentKey,
+                usePersistent => !settings.UsePersistentKey.IsReadOnly);
 
             this.PublicKeyValidityInDays = ObservableProperty.Build(
                 (decimal)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays);
@@ -98,5 +101,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         public IList<SshKeyType> AllPublicKeyTypes => publicKeyTypes;
 
         public ObservableProperty<bool> UsePersistentKey { get; private set; }
+        public ObservableFunc<bool> IsUsePersistentKeyEditable { get; private set; }
     }
 }
