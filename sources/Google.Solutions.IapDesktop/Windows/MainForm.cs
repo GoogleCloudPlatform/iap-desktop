@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;

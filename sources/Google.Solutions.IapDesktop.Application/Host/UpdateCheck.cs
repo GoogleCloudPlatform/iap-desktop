@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public const int DaysBetweenUpdateChecks = 10;
 
         private readonly IInstall install;
-        private readonly IGithubAdapter githubAdapter;
+        private readonly IGithubClient githubAdapter;
         private readonly ITaskDialog taskDialog;
         private readonly IClock clock;
 
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public UpdateCheck(
             IInstall install,
-            IGithubAdapter githubAdapter,
+            IGithubClient githubAdapter,
             ITaskDialog taskDialog,
             IClock clock)
         {

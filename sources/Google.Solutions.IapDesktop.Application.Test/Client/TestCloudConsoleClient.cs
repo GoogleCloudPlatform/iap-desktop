@@ -22,13 +22,14 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.Platform.Net;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Test.Client
 {
     [TestFixture]
     public class TestCloudConsoleClient

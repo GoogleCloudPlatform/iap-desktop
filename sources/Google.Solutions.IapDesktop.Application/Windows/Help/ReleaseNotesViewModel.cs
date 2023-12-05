@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Help
         private const ushort MaxReleases = 10;
 
         private readonly IInstall install;
-        private readonly IGithubAdapter githubAdapter;
+        private readonly IGithubClient githubAdapter;
 
         private async Task LoadAsync()
         {
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Help
 
         public ReleaseNotesViewModel(
             IInstall install,
-            IGithubAdapter githubAdapter)
+            IGithubClient githubAdapter)
         {
             this.install = install.ExpectNotNull(nameof(install));
             this.githubAdapter = githubAdapter.ExpectNotNull(nameof(githubAdapter));

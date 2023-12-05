@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
     [Service(typeof(IRdpCredentialCallback))]
     public class RdpCredentialCallback : IRdpCredentialCallback
     {
-        private readonly IExternalRestAdapter restAdapter;
+        private readonly IExternalRestClient restAdapter;
 
-        public RdpCredentialCallback(IExternalRestAdapter restAdapter)
+        public RdpCredentialCallback(IExternalRestClient restAdapter)
         {
             this.restAdapter = restAdapter;
         }

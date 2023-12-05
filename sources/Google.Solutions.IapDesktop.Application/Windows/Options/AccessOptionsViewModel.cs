@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Client;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;

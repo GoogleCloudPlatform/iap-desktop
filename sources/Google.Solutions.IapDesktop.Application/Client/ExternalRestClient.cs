@@ -29,9 +29,9 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Client
 {
     /// <summary>
-    /// Adapter for external REST resources.
+    /// Client for external REST resources.
     /// </summary>
-    public interface IExternalRestAdapter : IDisposable
+    public interface IExternalRestClient : IDisposable
     {
         /// <summary>
         /// Perform a GET request and derialize the JSON response.
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             where TModel : class;
     }
 
-    public class ExternalRestAdapter : IExternalRestAdapter
+    public class ExternalRestClient : IExternalRestClient
     {
         //
         // Use the same client for all connections to benefit

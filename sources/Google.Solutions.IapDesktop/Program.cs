@@ -85,6 +85,10 @@ namespace Google.Solutions.IapDesktop
 {
     public class Program : SingletonApplicationBase
     {
+        private static readonly Version Windows10_1703 = new Version(10, 0, 15063, 0);
+        private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
+        private static readonly Version WindowsServer2022 = new Version(10, 0, 20348, 0);
+
         private static bool tracingEnabled = false;
 
         private static readonly TraceSource[] TraceSources = new[]
@@ -391,9 +395,9 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
                 preAuthLayer.AddTransient<INotifyDialog, NotifyDialog>();
 
-                preAuthLayer.AddSingleton<IExternalRestAdapter, ExternalRestAdapter>();
+                preAuthLayer.AddSingleton<IExternalRestClient, ExternalRestClient>();
                 preAuthLayer.AddTransient<HelpClient>();
-                preAuthLayer.AddTransient<IGithubAdapter, GithubAdapter>();
+                preAuthLayer.AddTransient<IGithubClient, GithubClient>();
                 preAuthLayer.AddTransient<BugReportClient>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 

@@ -32,6 +32,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Client;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {

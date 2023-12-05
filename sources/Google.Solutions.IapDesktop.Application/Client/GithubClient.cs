@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Client
 {
-    public interface IGithubAdapter
+    public interface IGithubClient
     {
         /// <summary>
         /// Look up the most recent release.
@@ -71,13 +71,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
         string Description { get; }
     }
 
-    public class GithubAdapter : IGithubAdapter
+    public class GithubClient : IGithubClient
     {
         public const string RepositoryName = "GoogleCloudPlatform/iap-desktop";
 
-        private readonly IExternalRestAdapter restAdapter;
+        private readonly IExternalRestClient restAdapter;
 
-        public GithubAdapter(IExternalRestAdapter restAdapter)
+        public GithubClient(IExternalRestClient restAdapter)
         {
             this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
         }

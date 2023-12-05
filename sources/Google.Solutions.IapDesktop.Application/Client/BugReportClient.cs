@@ -19,10 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.Platform.Net;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Client
 {
     public class BugReportClient
     {

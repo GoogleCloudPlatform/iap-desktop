@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
 
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNoReleaseAvailable_ThenCheckForUpdatesReturns()
         {
-            var githubAdapter = new Mock<IGithubAdapter>();
+            var githubAdapter = new Mock<IGithubClient>();
             githubAdapter
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IGitHubRelease)null);
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var release = new Mock<IGitHubRelease>();
             release.SetupGet(r => r.TagVersion).Returns((Version)null);
 
-            var githubAdapter = new Mock<IGithubAdapter>();
+            var githubAdapter = new Mock<IGithubClient>();
             githubAdapter
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -158,14 +158,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var installedVersion = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<IClock>().Object).InstalledVersion;
 
             var release = new Mock<IGitHubRelease>();
             release.SetupGet(r => r.TagVersion).Returns(installedVersion);
 
-            var githubAdapter = new Mock<IGithubAdapter>();
+            var githubAdapter = new Mock<IGithubClient>();
             githubAdapter
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var release = new Mock<IGitHubRelease>();
             release.SetupGet(r => r.TagVersion).Returns(new Version(99, 99, 99, 99));
 
-            var githubAdapter = new Mock<IGithubAdapter>();
+            var githubAdapter = new Mock<IGithubClient>();
             githubAdapter
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var release = new Mock<IGitHubRelease>();
             release.SetupGet(r => r.TagVersion).Returns(new Version(99, 99, 99, 99));
 
-            var githubAdapter = new Mock<IGithubAdapter>();
+            var githubAdapter = new Mock<IGithubClient>();
             githubAdapter
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IGithubClient>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 

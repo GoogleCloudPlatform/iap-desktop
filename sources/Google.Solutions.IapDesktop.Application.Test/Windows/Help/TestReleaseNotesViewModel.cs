@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
         {
             var viewModel = new ReleaseNotesViewModel(
                 new Mock<IInstall>().Object,
-                new Mock<IGithubAdapter>().Object);
+                new Mock<IGithubClient>().Object);
 
             Assert.AreEqual("Loading...", viewModel.Summary.Value);
         }
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
         [Test]
         public async Task WhenLoadingFailed_ThenSummaryContainsError()
         {
-            var adapter = new Mock<IGithubAdapter>();
+            var adapter = new Mock<IGithubClient>();
             adapter
                 .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("mock"));
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
             var currentRelease = CreateRelease(currentVersion, "current release");
             var oldRelease = CreateRelease(new Version(2, 0, 0, 0), "old release");
 
-            var adapter = new Mock<IGithubAdapter>();
+            var adapter = new Mock<IGithubClient>();
             adapter
                 .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
             var previousRelease = CreateRelease(previousVersion, "previous release");
             var oldRelease = CreateRelease(new Version(1, 0, 0, 0), "old release");
 
-            var adapter = new Mock<IGithubAdapter>();
+            var adapter = new Mock<IGithubClient>();
             adapter
                 .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {

@@ -28,7 +28,7 @@ using Google.Solutions.Platform.Net;
 using System;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Client
 {
     public interface ICloudConsoleClient
     {

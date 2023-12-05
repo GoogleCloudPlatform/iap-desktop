@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;

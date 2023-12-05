@@ -24,7 +24,7 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;

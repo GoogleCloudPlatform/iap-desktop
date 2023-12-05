@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;

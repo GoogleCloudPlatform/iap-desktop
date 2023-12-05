@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public async Task WhenServerReturnsEmptyResult_ThenGetCredentialsReturnsEmptyCredentials()
         {
-            var adapter = new Mock<IExternalRestAdapter>();
+            var adapter = new Mock<IExternalRestClient>();
             adapter
                 .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public void WhenServerRequestFails_ThenGetCredentialsThrowsException()
         {
-            var adapter = new Mock<IExternalRestAdapter>();
+            var adapter = new Mock<IExternalRestClient>();
             adapter
                 .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public void WhenServerReturnsInvalidResponse_ThenGetCredentialsThrowsException()
         {
-            var adapter = new Mock<IExternalRestAdapter>();
+            var adapter = new Mock<IExternalRestClient>();
             adapter
                 .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public void WhenServerRequestTimesOut_ThenGetCredentialsThrowsException()
         {
-            var adapter = new Mock<IExternalRestAdapter>();
+            var adapter = new Mock<IExternalRestClient>();
             adapter
                 .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public async Task WhenServerReturnsResult_ThenGetCredentialsReturnsCredentials()
         {
-            var adapter = new Mock<IExternalRestAdapter>();
+            var adapter = new Mock<IExternalRestClient>();
             adapter
                 .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
