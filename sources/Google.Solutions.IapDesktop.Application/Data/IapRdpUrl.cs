@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;

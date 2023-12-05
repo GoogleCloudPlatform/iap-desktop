@@ -21,13 +21,13 @@
 
 using Google.Solutions.Apis.Analytics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
 {
     [TestFixture]
     public class TestTelemetryListener

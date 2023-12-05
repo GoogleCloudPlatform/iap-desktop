@@ -23,13 +23,14 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Analytics;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {
     /// <summary>
     /// Listens to selected ETW events and reports them as

@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {
     public static class HelpTopics
     {

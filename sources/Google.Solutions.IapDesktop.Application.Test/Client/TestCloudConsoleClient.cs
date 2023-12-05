@@ -23,7 +23,6 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Client;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.Platform.Net;
 using Moq;
 using NUnit.Framework;

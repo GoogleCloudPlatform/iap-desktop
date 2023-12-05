@@ -27,7 +27,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {
     public class BugReport
     {
