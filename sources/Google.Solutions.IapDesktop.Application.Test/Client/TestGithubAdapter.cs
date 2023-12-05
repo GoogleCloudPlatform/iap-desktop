@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -30,7 +30,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Test.Client
 {
     [TestFixture]
     public class TestGithubAdapter : ApplicationFixtureBase

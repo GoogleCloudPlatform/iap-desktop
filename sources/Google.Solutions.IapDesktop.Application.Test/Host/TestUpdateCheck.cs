@@ -20,8 +20,8 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.Testing.Application.Test;
 using Moq;

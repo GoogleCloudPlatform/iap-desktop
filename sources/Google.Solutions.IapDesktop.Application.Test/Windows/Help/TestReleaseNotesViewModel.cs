@@ -19,8 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Moq;
 using NUnit.Framework;

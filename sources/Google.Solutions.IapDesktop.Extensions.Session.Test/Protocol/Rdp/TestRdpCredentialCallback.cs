@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Testing.Apis;
 using Moq;
