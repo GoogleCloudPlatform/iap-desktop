@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// Policy that determines how often to check for updates,
     /// and which updates to apply.
     /// </summary>
-    internal class UpdatePolicy
+    public class UpdatePolicy
     {
         /// <summary>
         /// Determines how often update checks are performed. 
@@ -44,12 +44,30 @@ namespace Google.Solutions.IapDesktop.Application.Host
         private readonly IInstall install;
         private readonly IClock clock;
 
+        public ReleaseTrack FollowedTracks { get; }
+
         public UpdatePolicy(
             IInstall install,
-            IClock clock)
+            IClock clock,
+            IAuthorization authorization,
+            ReleaseTrack followedTracks)
         {
+            Precondition.ExpectNotNull(authorization, nameof(authorization));
+
             this.install = install.ExpectNotNull(nameof(install));
             this.clock = clock.ExpectNotNull(nameof(clock));
+
+            //
+            // Force-opt in internal domains to the rapid track.
+            //
+            if (authorization.Session is IGaiaOidcSession session && (
+                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
+                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
+            {
+                followedTracks |= (ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
+            }
+
+            this.FollowedTracks = followedTracks;
         }
 
         /// <summary>
@@ -80,25 +98,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Determine if the user should be advised to install an update.
         /// </summary>
-        public bool IsUpdateAdvised(
-            IAuthorization authorization,
-            ReleaseTrack followedTracks,
-            IGitHubRelease release) //TODO: Rename to IRelease
+        public bool IsUpdateAdvised(IGitHubRelease release) //TODO: Rename to IRelease
         {
             Precondition.ExpectNotNull(release, nameof(release));
-            Precondition.ExpectNotNull(authorization, nameof(authorization));
 
-            Debug.Assert(followedTracks.HasFlag(ReleaseTrack.Critical));
-
-            //
-            // Force-opt in internal domains to the rapid track.
-            //
-            if (authorization.Session is IGaiaOidcSession session && (
-                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
-                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
-            {
-                followedTracks |= (ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
-            }
+            Debug.Assert(this.FollowedTracks.HasFlag(ReleaseTrack.Critical));
 
             if (release.TagVersion == null ||
                 release.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
@@ -110,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             else
             {
-                return followedTracks.HasFlag(GetReleaseTrack(release));
+                return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
             }
         }
 
@@ -127,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// Available release tracks.
     /// </summary>
     [Flags]
-    internal enum ReleaseTrack : uint
+    public enum ReleaseTrack : uint
     {
         /// <summary>
         /// Critical security updates.
