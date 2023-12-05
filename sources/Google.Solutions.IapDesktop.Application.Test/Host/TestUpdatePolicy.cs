@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Moq;
@@ -34,8 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
     {
         private Mock<IAuthorization> CreateAuthorization(string email)
         {
+            var session = new Mock<IGaiaOidcSession>();
+            session.SetupGet(a => a.Email).Returns(email);
+
             var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.Email).Returns(email);
+            authorization.SetupGet(a => a.Session).Returns(session.Object);
             return authorization;
         }
 
@@ -96,21 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             release.SetupGet(r => r.Description).Returns(description);
 
             Assert.AreEqual(ReleaseTrack.Rapid, policy.GetReleaseTrack(release.Object));
-        }
-
-        [Test]
-        public void WhenDescriptionContainsOptionalTag_ThenGetReleaseTrackReturnsOptional()
-        {
-            var policy = new UpdatePolicy(
-                CreateInstall(),
-                CreateClock(DateTime.Now));
-
-            var description = "This release is [track:optional]";
-
-            var release = new Mock<IGitHubRelease>();
-            release.SetupGet(r => r.Description).Returns(description);
-
-            Assert.AreEqual(ReleaseTrack.Optional, policy.GetReleaseTrack(release.Object));
         }
 
         //---------------------------------------------------------------------
@@ -175,17 +164,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var normalRelease = new Mock<IGitHubRelease>();
             var criticalRelease = new Mock<IGitHubRelease>();
-            var optionalRelease = new Mock<IGitHubRelease>();
             var rapidRelease = new Mock<IGitHubRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
-            optionalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             rapidRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            optionalRelease.SetupGet(r => r.Description).Returns("[track:optional]");
             rapidRelease.SetupGet(r => r.Description).Returns("[track:rapid]");
 
             Assert.IsTrue(Policy.IsUpdateAdvised(
@@ -200,18 +186,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid,
                 rapidRelease.Object));
-
-            Assert.IsFalse(Policy.IsUpdateAdvised(
-                CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid,
-                optionalRelease.Object));
         }
 
         [Test]
         public void WhenReleaseNewerAndUserIsInternal_ThenIsUpdateAdvisedReturnsTrueForRapidTrackAndBelow(
             [Values(
                 "_@GOOGLE.com",
-                "_@x.joonix.Net",
                 "_@x.altostrat.COM")] string email)
         {
             var Policy = new UpdatePolicy(
@@ -220,17 +200,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var normalRelease = new Mock<IGitHubRelease>();
             var criticalRelease = new Mock<IGitHubRelease>();
-            var optionalRelease = new Mock<IGitHubRelease>();
             var rapidRelease = new Mock<IGitHubRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
-            optionalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             rapidRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            optionalRelease.SetupGet(r => r.Description).Returns("[track:optional]");
             rapidRelease.SetupGet(r => r.Description).Returns("[track:rapid]");
 
             Assert.IsTrue(Policy.IsUpdateAdvised(
@@ -245,11 +222,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization(email).Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal,
                 rapidRelease.Object));
-
-            Assert.IsFalse(Policy.IsUpdateAdvised(
-                CreateAuthorization(email).Object,
-                ReleaseTrack.Critical | ReleaseTrack.Normal,
-                optionalRelease.Object));
         }
 
         [Test]
@@ -261,17 +233,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var normalRelease = new Mock<IGitHubRelease>();
             var criticalRelease = new Mock<IGitHubRelease>();
-            var optionalRelease = new Mock<IGitHubRelease>();
             var rapidRelease = new Mock<IGitHubRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
-            optionalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             rapidRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            optionalRelease.SetupGet(r => r.Description).Returns("[track:optional]");
             rapidRelease.SetupGet(r => r.Description).Returns("[track:rapid]");
 
             Assert.IsTrue(policy.IsUpdateAdvised(
@@ -287,10 +256,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal,
                 rapidRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(
-                CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Critical | ReleaseTrack.Normal,
-                optionalRelease.Object));
         }
 
         //---------------------------------------------------------------------

@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using System;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Determines how often update checks are performed. 
         /// A higher number implies a slower pace of updates.
         /// </summary>
-        internal const int DaysBetweenUpdateChecks = 10;
+        internal const int DaysBetweenUpdateChecks = 10; // TODO: Vary by track
 
         private readonly IInstall install;
         private readonly IClock clock;
@@ -70,10 +71,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
             {
                 return ReleaseTrack.Rapid;
             }
-            else if (description.Contains("[track:optional]"))
-            {
-                return ReleaseTrack.Optional;
-            }
             else
             {
                 return ReleaseTrack.Normal;
@@ -96,9 +93,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
             //
             // Force-opt in internal domains to the rapid track.
             //
-            if (authorization.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
-                authorization.Email.EndsWith(".joonix.net", StringComparison.OrdinalIgnoreCase) ||
-                authorization.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase))
+            if (authorization.Session is IGaiaOidcSession session && (
+                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
+                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
             {
                 followedTracks |= (ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
             }
@@ -147,12 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// </summary>
         Rapid = 4,
 
-        /// <summary>
-        /// Optional feature updates that might only be relevant to few.
-        /// </summary>
-        Optional = 8,
-
         _Default = Critical | Normal,
-        _All = Critical | Normal | Rapid | Optional
+        _All = Critical | Normal | Rapid
     }
 }
