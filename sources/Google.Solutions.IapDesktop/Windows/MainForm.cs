@@ -713,7 +713,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(new BugReport());
+            this.serviceProvider.GetService<BugReportClient>().ReportBug(new BugReport());
         }
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)

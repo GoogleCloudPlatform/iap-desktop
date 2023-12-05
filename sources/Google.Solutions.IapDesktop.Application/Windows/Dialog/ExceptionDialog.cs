@@ -47,11 +47,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public class ExceptionDialog : IExceptionDialog
     {
         private readonly HelpAdapter helpAdapter;
-        private readonly BuganizerAdapter buganizerAdapter;
+        private readonly BugReportClient buganizerAdapter;
 
         public ExceptionDialog(
             HelpAdapter helpAdapter,
-            BuganizerAdapter buganizerAdapter)
+            BugReportClient buganizerAdapter)
         {
             this.helpAdapter = helpAdapter.ExpectNotNull(nameof(helpAdapter));
             this.buganizerAdapter = buganizerAdapter.ExpectNotNull(nameof(buganizerAdapter));

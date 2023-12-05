@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void reportButton_Click(object sender, EventArgs e)
         {
-            new BuganizerAdapter().ReportBug(this.report);
+            new BugReportClient().ReportBug(this.report);
         }
     }
 }
