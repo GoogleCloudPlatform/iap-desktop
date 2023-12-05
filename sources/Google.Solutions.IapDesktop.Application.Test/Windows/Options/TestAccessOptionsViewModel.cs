@@ -28,6 +28,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -73,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
@@ -110,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
             Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
@@ -126,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsDeviceCertificateAuthenticationEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
@@ -141,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
@@ -165,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.AreEqual("psc", viewModel.PrivateServiceConnectEndpoint.Value);
             Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
@@ -182,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsNull(viewModel.PrivateServiceConnectEndpoint.Value);
             Assert.IsFalse(viewModel.IsPrivateServiceConnectEnabled.Value);
@@ -204,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.AreEqual("psc-policy", viewModel.PrivateServiceConnectEndpoint.Value);
             Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
@@ -220,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter())
+                new HelpClient())
             {
                 ProbePrivateServiceConnectEndpoint = false
             };
@@ -239,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter())
+                new HelpClient())
             {
                 ProbePrivateServiceConnectEndpoint = false
             };
@@ -262,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.AreEqual(16, viewModel.ConnectionPoolLimit.Value);
         }
@@ -277,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.AreEqual(5, viewModel.ConnectionPoolLimit.Value);
         }
@@ -288,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
             viewModel.ConnectionPoolLimit.Value = 4;
@@ -315,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsPrivateServiceConnectEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
@@ -333,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsDeviceCertificateAuthenticationEnabled.Value = true;
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = "new-psc";
@@ -351,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AccessOptionsViewModel(
                 settingsRepository,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = "invalid-endpoint";
 
