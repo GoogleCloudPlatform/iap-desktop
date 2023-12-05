@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Help
         private const ushort MaxReleases = 10;
 
         private readonly IInstall install;
-        private readonly IGithubClient githubAdapter;
+        private readonly IReleaseFeed feed;
 
         private async Task LoadAsync()
         {
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Help
 
             try
             {
-                var releases = await this.githubAdapter
+                var releases = await this.feed
                     .ListReleasesAsync(MaxReleases, CancellationToken.None)
                     .ConfigureAwait(true);
 
@@ -88,10 +89,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Help
 
         public ReleaseNotesViewModel(
             IInstall install,
-            IGithubClient githubAdapter)
+            IReleaseFeed feed)
         {
             this.install = install.ExpectNotNull(nameof(install));
-            this.githubAdapter = githubAdapter.ExpectNotNull(nameof(githubAdapter));
+            this.feed = feed.ExpectNotNull(nameof(feed));
 
             this.Summary = ObservableProperty.Build("Loading...");
             this.RefreshCommand = ObservableCommand.Build(

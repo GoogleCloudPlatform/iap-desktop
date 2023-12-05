@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Moq;
@@ -33,9 +34,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
     [TestFixture]
     public class TestReleaseNotesViewModel
     {
-        private static Mock<IGitHubRelease> CreateRelease(Version version, string descripion)
+        private static Mock<IRelease> CreateRelease(Version version, string descripion)
         {
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(version);
             release.SetupGet(r => r.Description).Returns(descripion);
             return release;
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
         {
             var viewModel = new ReleaseNotesViewModel(
                 new Mock<IInstall>().Object,
-                new Mock<IGithubClient>().Object);
+                new Mock<IReleaseFeed>().Object);
 
             Assert.AreEqual("Loading...", viewModel.Summary.Value);
         }
@@ -58,14 +59,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
         [Test]
         public async Task WhenLoadingFailed_ThenSummaryContainsError()
         {
-            var adapter = new Mock<IGithubClient>();
-            adapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("mock"));
 
             var viewModel = new ReleaseNotesViewModel(
                 new Mock<IInstall>().Object,
-                adapter.Object);
+                feed.Object);
 
             await viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)
@@ -86,8 +87,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
             var currentRelease = CreateRelease(currentVersion, "current release");
             var oldRelease = CreateRelease(new Version(2, 0, 0, 0), "old release");
 
-            var adapter = new Mock<IGithubClient>();
-            adapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
                     oldRelease.Object,
@@ -97,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
 
             var viewModel = new ReleaseNotesViewModel(
                 install.Object,
-                adapter.Object);
+                feed.Object);
 
             await viewModel.RefreshCommand
                 .ExecuteAsync(CancellationToken.None)
@@ -127,8 +128,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
             var previousRelease = CreateRelease(previousVersion, "previous release");
             var oldRelease = CreateRelease(new Version(1, 0, 0, 0), "old release");
 
-            var adapter = new Mock<IGithubClient>();
-            adapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.ListReleasesAsync(It.IsAny<ushort>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
                      oldRelease.Object,
@@ -139,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
 
             var viewModel = new ReleaseNotesViewModel(
                 install.Object,
-                adapter.Object)
+                feed.Object)
             {
                 ShowAllReleases = false
             };
