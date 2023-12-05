@@ -21,7 +21,7 @@
 
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         public void SetUp()
         {
             var registry = new ServiceRegistry();
-            registry.AddMock<ICloudConsole>();
+            registry.AddMock<ICloudConsoleClient>();
 
             this.jobServiceMock = new JobServiceMock();
             registry.AddSingleton<IJobService>(this.jobServiceMock);

@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             new Timeframe(TimeSpan.FromDays(30), "Last 30 days")
         });
 
-        private readonly ICloudConsole cloudConsoleAdapter;
+        private readonly ICloudConsoleClient cloudConsoleAdapter;
         private readonly IJobService jobService;
         private readonly Service<IAuditLogClient> auditLogAdapter;
 
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         public EventLogViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
-            this.cloudConsoleAdapter = serviceProvider.GetService<ICloudConsole>();
+            this.cloudConsoleAdapter = serviceProvider.GetService<ICloudConsoleClient>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.auditLogAdapter = serviceProvider.GetService<Service<IAuditLogClient>>();
 

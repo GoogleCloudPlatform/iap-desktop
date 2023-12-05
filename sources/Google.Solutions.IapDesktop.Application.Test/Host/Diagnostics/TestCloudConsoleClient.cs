@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.Platform.Net;
 using Moq;
 using NUnit.Framework;
@@ -31,7 +31,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
 {
     [TestFixture]
-    public class TestCloudConsole
+    public class TestCloudConsoleClient
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -71,10 +71,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         public void WhenAuthenticatedWithGaiaAndEnrolled_ThenOpenInstanceDetailsUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
-            var cloudConsole = new CloudConsole(
-                CreateGaiaAuthorization(DeviceEnrollmentState.Enrolled), 
+            var cloudConsole = new CloudConsoleClient(
+                CreateGaiaAuthorization(DeviceEnrollmentState.Enrolled),
                 browser.Object);
-            
+
             cloudConsole.OpenInstanceDetails(SampleLocator);
 
             browser.Verify(b => b.Navigate(new Uri(
@@ -86,8 +86,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         public void WhenAuthenticatedWithGaiaAndNotEnrolled_ThenOpenInstanceDetailsUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
-            var cloudConsole = new CloudConsole(
-                CreateGaiaAuthorization(DeviceEnrollmentState.Disabled  ),
+            var cloudConsole = new CloudConsoleClient(
+                CreateGaiaAuthorization(DeviceEnrollmentState.Disabled),
                 browser.Object);
 
             cloudConsole.OpenInstanceDetails(SampleLocator);
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         public void WhenAuthenticatedWithWorkforceIdentity_ThenOpenInstanceDetailsUsesByoidConsole()
         {
             var browser = new Mock<IBrowser>();
-            var cloudConsole = new CloudConsole(
+            var cloudConsole = new CloudConsoleClient(
                 CreateWorkfoceIdentityAuthorization(),
                 browser.Object);
 
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         public void WhenAuthenticatedWithGaiaAndEnrolled_ThenOpenIapSecurityUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
-            var cloudConsole = new CloudConsole(
+            var cloudConsole = new CloudConsoleClient(
                 CreateGaiaAuthorization(DeviceEnrollmentState.Enrolled),
                 browser.Object);
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         public void WhenAuthenticatedWithGaiaAndNotEnrolled_ThenOpenIapSecurityUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
-            var cloudConsole = new CloudConsole(
+            var cloudConsole = new CloudConsoleClient(
                 CreateGaiaAuthorization(DeviceEnrollmentState.Disabled),
                 browser.Object);
 
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         public void WhenAuthenticatedWithWorkforceIdentity_ThenOpenIapSecurityUsesByoidConsole()
         {
             var browser = new Mock<IBrowser>();
-            var cloudConsole = new CloudConsole(
+            var cloudConsole = new CloudConsoleClient(
                 CreateWorkfoceIdentityAuthorization(),
                 browser.Object);
 

@@ -28,11 +28,9 @@ using Google.Solutions.Platform.Net;
 using System;
 using System.Net;
 
-#pragma warning disable CA1822 // Mark members as static
-
-namespace Google.Solutions.IapDesktop.Application.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 {
-    public interface ICloudConsole
+    public interface ICloudConsoleClient
     {
         /// <summary>
         /// Open IAP-TCP security page.
@@ -48,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         /// Open instance overview page.
         /// </summary>
         void OpenInstanceList(ProjectLocator project);
-        
+
         /// <summary>
         /// Open instance overview page.
         /// </summary>
@@ -65,18 +63,18 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
     }
 
-    public class CloudConsole : ICloudConsole // TODO: Test
+    public class CloudConsoleClient : ICloudConsoleClient
     {
         private readonly IAuthorization authorization;
         private readonly IBrowser browser;
 
-        internal CloudConsole(IAuthorization authorization, IBrowser browser)
+        internal CloudConsoleClient(IAuthorization authorization, IBrowser browser)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.browser = browser.ExpectNotNull(nameof(browser));
         }
 
-        public CloudConsole(IAuthorization authorization)
+        public CloudConsoleClient(IAuthorization authorization)
             : this(authorization, Browser.Default)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
