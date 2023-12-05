@@ -396,7 +396,7 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<INotifyDialog, NotifyDialog>();
 
                 preAuthLayer.AddSingleton<IExternalRestAdapter, ExternalRestAdapter>();
-                preAuthLayer.AddTransient<HelpAdapter>();
+                preAuthLayer.AddTransient<HelpClient>();
                 preAuthLayer.AddTransient<IGithubAdapter, GithubAdapter>();
                 preAuthLayer.AddTransient<BugReportClient>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();

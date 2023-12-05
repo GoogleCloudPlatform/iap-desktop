@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -46,11 +45,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     /// </summary>
     public class ExceptionDialog : IExceptionDialog
     {
-        private readonly HelpAdapter helpAdapter;
+        private readonly HelpClient helpAdapter;
         private readonly BugReportClient buganizerAdapter;
 
         public ExceptionDialog(
-            HelpAdapter helpAdapter,
+            HelpClient helpAdapter,
             BugReportClient buganizerAdapter)
         {
             this.helpAdapter = helpAdapter.ExpectNotNull(nameof(helpAdapter));

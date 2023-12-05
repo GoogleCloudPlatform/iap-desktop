@@ -24,7 +24,6 @@ using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -693,22 +692,22 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.IapOverview);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.IapOverview);
         }
 
         private void openSecureConnectDocsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.IapAccess);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.IapAccess);
         }
 
         private void openIapFirewallDocsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.CreateIapFirewallRule);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.CreateIapFirewallRule);
         }
 
         private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
@@ -718,12 +717,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.General);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.General);
         }
 
         private void viewShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.Shortcuts);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.Shortcuts);
         }
 
         private void releaseNotesToolStripMenuItem_Click(object sender, EventArgs e)

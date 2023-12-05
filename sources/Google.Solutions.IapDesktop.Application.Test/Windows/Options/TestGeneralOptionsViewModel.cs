@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsTrue(viewModel.IsUpdateCheckEnabled.Value);
             Assert.IsTrue(viewModel.IsUpdateCheckEditable.Value);
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
             Assert.IsTrue(viewModel.IsUpdateCheckEditable.Value);
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
             Assert.IsFalse(viewModel.IsUpdateCheckEditable.Value);
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsUpdateCheckEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.AreEqual("never", viewModel.LastUpdateCheck);
         }
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
         }
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsBrowserIntegrationEnabled.Value = true;
 
             await viewModel.ApplyChangesAsync();
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsBrowserIntegrationEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsTrue(viewModel.IsTelemetryEnabled.Value);
             Assert.IsTrue(viewModel.IsTelemetryEditable.Value);
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
             Assert.IsTrue(viewModel.IsTelemetryEditable.Value);
@@ -318,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
             Assert.IsFalse(viewModel.IsTelemetryEditable.Value);
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsTelemetryEnabled.Value = true;
 
             await viewModel.ApplyChangesAsync();
@@ -359,7 +359,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
             viewModel.IsTelemetryEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
@@ -378,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 this.protocolRegistryMock.Object,
                 this.telemetryCollectorMock.Object,
-                new HelpAdapter());
+                new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 

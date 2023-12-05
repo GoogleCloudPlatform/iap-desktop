@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System.Diagnostics;
@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     public class AccessInfoViewModel : ViewModelBase
     {
-        private readonly HelpAdapter helpAdapter;
+        private readonly HelpClient helpAdapter;
         private readonly IDeviceEnrollment enrollment;
 
         public string PrivateServiceConnectText { get; }
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         public AccessInfoViewModel(
             IAuthorization authorization,
             ServiceRoute route,
-            HelpAdapter helpAdapter)
+            HelpClient helpAdapter)
         {
             this.enrollment = authorization.DeviceEnrollment;
             this.helpAdapter = helpAdapter;

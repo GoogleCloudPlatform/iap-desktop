@@ -20,11 +20,8 @@
 //
 
 using Google.Solutions.Apis.Diagnostics;
-using Google.Solutions.Platform.Net;
 
-#pragma warning disable CA1822 // Mark members as static
-
-namespace Google.Solutions.IapDesktop.Application.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Host.Diagnostics
 {
     public static class HelpTopics
     {
@@ -66,13 +63,5 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             "Privacy",
             $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}");
 
-    }
-
-    public class HelpAdapter
-    {
-        public void OpenTopic(IHelpTopic topic)
-        {
-            Browser.Default.Navigate(topic.Address.ToString());
-        }
     }
 }
