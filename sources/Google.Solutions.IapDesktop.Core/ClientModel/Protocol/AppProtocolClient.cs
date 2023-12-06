@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Create command line arguments, incorporating the information
         /// from the transport if necessary.
         /// </summary>
-        string FormatArguments(
+        string? FormatArguments(
             ITransport transport,
             AppProtocolParameters parameters);
 
@@ -77,11 +77,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         ///   {username}: the username to authenticate with (can be empty)
         ///   
         /// </summary>
-        internal string ArgumentsTemplate { get; }
+        internal string? ArgumentsTemplate { get; }
 
         protected internal AppProtocolClient(
             string executable,
-            string argumentsTemplate)
+            string? argumentsTemplate)
         {
             this.Executable = executable.ExpectNotEmpty(nameof(executable));
             this.ArgumentsTemplate = argumentsTemplate;
@@ -102,11 +102,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             get => File.Exists(this.Executable);
         }
 
-        public string FormatArguments(
+        public string? FormatArguments(
             ITransport transport,
             AppProtocolParameters parameters)
         {
-            string arguments = this.ArgumentsTemplate;
+            string? arguments = this.ArgumentsTemplate;
             if (arguments != null)
             {
                 //
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 // with argument quoting.
                 //
                 if (!string.IsNullOrWhiteSpace(parameters.PreferredUsername) &&
-                    (parameters.PreferredUsername.Contains("\"") ||
+                    (parameters.PreferredUsername!.Contains("\"") ||
                      parameters.PreferredUsername.Contains("'")))
                 {
                     throw new ArgumentException("The username contains invalid characters");

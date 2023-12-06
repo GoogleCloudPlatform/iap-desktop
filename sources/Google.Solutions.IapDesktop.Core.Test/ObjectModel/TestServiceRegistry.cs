@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         public class ServiceWithServiceProviderConstructor
         {
-            public IServiceProvider Provider { get; }
+            public IServiceProvider? Provider { get; }
 
             public ServiceWithServiceProviderConstructor()
             {

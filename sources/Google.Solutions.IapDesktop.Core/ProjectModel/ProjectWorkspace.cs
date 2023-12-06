@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// <summary>
         /// Load any node. Uses cached data if available.
         /// </summary>
-        Task<IProjectModelNode> GetNodeAsync(
+        Task<IProjectModelNode?> GetNodeAsync(
             ResourceLocator locator,
             CancellationToken token);
 
@@ -109,10 +109,10 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         private readonly IProjectRepository projectRepository;
         private readonly IEventQueue eventQueue;
 
-        private ResourceLocator activeNode;
+        private ResourceLocator? activeNode;
 
         private readonly AsyncLock cacheLock = new AsyncLock();
-        private CloudNode cachedRoot = null;
+        private CloudNode? cachedRoot = null;
         private readonly IDictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
             new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>>();
 
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         accessibleProjects.Add(new ProjectNode(
                             task.Key,
                             true,
-                            project.Name));
+                            project!.Name));
 
                         CoreTraceSource.Log.TraceVerbose(
                             "Successfully loaded project {0}", task.Key);
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         accessibleProjects.Add(new ProjectNode(
                             task.Key,
                             false,
-                            null));
+                            task.Key.Name)); // Use ID instead of name.
 
                         CoreTraceSource.Log.TraceError(
                             "Failed to load project {0}: {1}",
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         .OrderBy(i => i.Name)
                         .Select(i => new InstanceNode(
                             this,
-                            i.Id.Value,
+                            i.Id!.Value,
                             new InstanceLocator(
                                 zoneLocator.ProjectId,
                                 zoneLocator.Name,
@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
             Debug.Assert(this.cachedRoot != null);
 
-            return this.cachedRoot;
+            return this.cachedRoot!;
         }
 
         public async Task<IReadOnlyCollection<IProjectModelZoneNode>> GetZoneNodesAsync(
@@ -377,7 +377,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         {
             using (CoreTraceSource.Log.TraceMethod().WithParameters(project, forceReload))
             {
-                IReadOnlyCollection<IProjectModelZoneNode> zones = null;
+                IReadOnlyCollection<IProjectModelZoneNode>? zones = null;
                 using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
                 {
                     if (!this.cachedZones.TryGetValue(
@@ -394,16 +394,14 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                 }
 
                 Debug.Assert(zones != null);
-
-                return zones;
+                return zones!;
             }
         }
 
-        public async Task<IProjectModelNode> GetNodeAsync(
+        public async Task<IProjectModelNode?> GetNodeAsync(
             ResourceLocator locator,
             CancellationToken token)
         {
-
             using (CoreTraceSource.Log.TraceMethod().WithParameters(locator))
             {
                 if (locator is ProjectLocator projectLocator)
@@ -497,17 +495,17 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             }
             else
             {
-                return SetActiveNodeAsync((ResourceLocator)null, token);
+                return SetActiveNodeAsync((ResourceLocator?)null, token);
             }
         }
 
         public async Task SetActiveNodeAsync(
-            ResourceLocator locator,
+            ResourceLocator? locator,
             CancellationToken token)
         {
             using (CoreTraceSource.Log.TraceMethod().WithParameters(locator))
             {
-                IProjectModelNode node;
+                IProjectModelNode? node;
                 if (locator != null)
                 {
                     node = await GetNodeAsync(locator, token)

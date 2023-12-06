@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id != SampleProjectId),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", null));
+                .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", new Exception()));
             return resourceManagerAdapter;
         }
 
@@ -819,7 +819,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .ConfigureAwait(true);
 
             await workspace
-                .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
+                .SetActiveNodeAsync((ResourceLocator?)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
             eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
@@ -870,7 +870,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 eventService.Object);
 
             await workspace
-                .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
+                .SetActiveNodeAsync((ResourceLocator?)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
             eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(

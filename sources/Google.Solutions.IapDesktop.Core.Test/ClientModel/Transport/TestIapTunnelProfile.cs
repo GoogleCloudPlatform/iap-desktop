@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 LoopbackEndpoint);
 
             Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1.Equals((object)null));
+            Assert.IsFalse(ref1!.Equals((object)null!));
             Assert.IsFalse(ref1 == null);
             Assert.IsFalse(null == ref1);
             Assert.IsTrue(ref1 != null);

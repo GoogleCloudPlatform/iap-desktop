@@ -51,12 +51,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return Equals(obj as InstanceTrait);
         }
 
-        public bool Equals(ITrait other)
+        public bool Equals(ITrait? other)
         {
             return other is InstanceTrait && other != null;
         }
 
-        public static bool operator ==(InstanceTrait obj1, InstanceTrait obj2)
+        public static bool operator ==(InstanceTrait? obj1, InstanceTrait? obj2)
         {
             if (obj1 is null)
             {
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(InstanceTrait obj1, InstanceTrait obj2)
+        public static bool operator !=(InstanceTrait? obj1, InstanceTrait? obj2)
         {
             return !(obj1 == obj2);
         }
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out InstanceTrait trait)
+        public static bool TryParse(string expression, out InstanceTrait? trait)
         {
             if (expression != null &&
                 Expression == new string(expression
@@ -130,12 +130,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return Equals(obj as WindowsTrait);
         }
 
-        public bool Equals(ITrait other)
+        public bool Equals(ITrait? other)
         {
             return other is WindowsTrait && other != null;
         }
 
-        public static bool operator ==(WindowsTrait obj1, WindowsTrait obj2)
+        public static bool operator ==(WindowsTrait? obj1, WindowsTrait? obj2)
         {
             if (obj1 is null)
             {
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(WindowsTrait obj1, WindowsTrait obj2)
+        public static bool operator !=(WindowsTrait? obj1, WindowsTrait? obj2)
         {
             return !(obj1 == obj2);
         }
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out WindowsTrait trait)
+        public static bool TryParse(string expression, out WindowsTrait? trait)
         {
             if (expression != null &&
                 Expression == new string(expression
@@ -209,12 +209,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return Equals(obj as LinuxTrait);
         }
 
-        public bool Equals(ITrait other)
+        public bool Equals(ITrait? other)
         {
             return other is LinuxTrait && other != null;
         }
 
-        public static bool operator ==(LinuxTrait obj1, LinuxTrait obj2)
+        public static bool operator ==(LinuxTrait? obj1, LinuxTrait? obj2)
         {
             if (obj1 is null)
             {
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(LinuxTrait obj1, LinuxTrait obj2)
+        public static bool operator !=(LinuxTrait? obj1, LinuxTrait? obj2)
         {
             return !(obj1 == obj2);
         }
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out LinuxTrait trait)
+        public static bool TryParse(string expression, out LinuxTrait? trait)
         {
             if (expression != null &&
                 Expression == new string(expression

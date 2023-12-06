@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
             return Equals(obj as AllowAllPolicy);
         }
 
-        public bool Equals(ITransportPolicy other)
+        public bool Equals(ITransportPolicy? other)
         {
             return other is AllowAllPolicy && other != null;
         }

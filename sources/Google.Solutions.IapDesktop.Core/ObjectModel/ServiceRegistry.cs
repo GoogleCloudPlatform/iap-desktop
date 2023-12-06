@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
     /// </summary>
     public class ServiceRegistry : IServiceCategoryProvider, IServiceProvider
     {
-        private readonly ServiceRegistry parent;
+        private readonly ServiceRegistry? parent;
         private readonly IDictionary<Type, SingletonStub> singletons = new Dictionary<Type, SingletonStub>();
         private readonly IDictionary<Type, Func<object>> transients = new Dictionary<Type, Func<object>>();
 
@@ -173,6 +174,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         }
 
         private TService CreateInstance<TService>()
+            where TService : class
         {
             return (TService)CreateInstance(typeof(TService));
         }
@@ -209,16 +211,22 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         }
 
         public void AddSingleton<TService>(TService singleton)
+            where TService : class
         {
+            singleton.ExpectNotNull(nameof(singleton));
+
             AddSingleton(typeof(TService), new SingletonStub(singleton));
         }
 
         public void AddSingleton<TService, TServiceClass>()
+            where TService : class
+            where TServiceClass : class
         {
             AddSingleton(typeof(TService), new SingletonStub(() => CreateInstance<TServiceClass>()));
         }
 
         public void AddSingleton<TService>()
+            where TService : class
         {
             AddSingleton<TService, TService>();
         }

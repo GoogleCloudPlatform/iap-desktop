@@ -37,8 +37,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             string name,
             IEnumerable<ITrait> requiredTraits,
             ushort remotePort,
-            IPEndPoint localEndpoint,
-            IAppProtocolClient client)
+            IPEndPoint? localEndpoint,
+            IAppProtocolClient? client)
         {
             this.Name = name.ExpectNotNull(nameof(name));
             this.RequiredTraits = requiredTraits.ExpectNotNull(nameof(requiredTraits));
@@ -65,12 +65,12 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// Local (loopback) address and port to bind to. If null, a port is
         /// selected dynamically.
         /// </summary>
-        public IPEndPoint LocalEndpoint { get; }
+        public IPEndPoint? LocalEndpoint { get; }
 
         /// <summary>
         /// Optional: Client app to launch after connecting transport.
         /// </summary>
-        public IAppProtocolClient Client { get; }
+        public IAppProtocolClient? Client { get; }
 
         //---------------------------------------------------------------------
         // IProtocol.
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return Equals(obj as AppProtocol);
         }
 
-        public bool Equals(IProtocol other)
+        public bool Equals(IProtocol? other)
         {
             //
             // NB. Ignore if the client is the same or not as the client

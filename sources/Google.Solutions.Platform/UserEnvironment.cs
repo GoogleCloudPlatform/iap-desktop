@@ -37,22 +37,24 @@ namespace Google.Solutions.Platform
         /// Expands environment-variable strings and replaces them with 
         /// the values defined for the current user.
         /// </summary>
-        public static string ExpandEnvironmentStrings(string source)
+        public static string? ExpandEnvironmentStrings(string? source)
         {
             if (string.IsNullOrEmpty(source))
             {
                 return source;
             }
 
+            Debug.Assert(source != null);
+
             var buffer = new StringBuilder(0);
             var sizeRequired = NativeMethods.ExpandEnvironmentStrings(
-                source,
+                source!,
                 buffer,
                 buffer.Capacity);
 
             buffer.EnsureCapacity(sizeRequired);
             NativeMethods.ExpandEnvironmentStrings(
-                source,
+                source!,
                 buffer,
                 buffer.Capacity);
 

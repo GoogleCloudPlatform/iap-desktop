@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             ITransportPolicy policy,
             InstanceLocator targetInstance,
             ushort targetPort,
-            IPEndPoint localEndpoint,
+            IPEndPoint? localEndpoint,
             TimeSpan probeTimeout,
             CancellationToken cancellationToken);
     }
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 }
 
                 Debug.Assert(tunnelTask != null);
-                return tunnelTask;
+                return tunnelTask!;
             }
         }
 
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             ITransportPolicy policy,
             InstanceLocator targetInstance,
             ushort targetPort,
-            IPEndPoint localEndpoint,
+            IPEndPoint? localEndpoint,
             TimeSpan probeTimeout,
             CancellationToken cancellationToken)
         {

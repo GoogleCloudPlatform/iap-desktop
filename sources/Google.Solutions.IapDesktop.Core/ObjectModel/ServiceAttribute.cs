@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         /// <summary>
         /// Interface by which the service can be looked up.
         /// </summary>
-        public Type ServiceInterface { get; }
+        public Type? ServiceInterface { get; }
 
         /// <summary>
         /// Instance lifetime of the service object.
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         public bool DelayCreation { get; set; } = true;
 
         public ServiceAttribute(
-            Type serviceInterface,
+            Type? serviceInterface,
             ServiceLifetime lifetime)
         {
             if (serviceInterface != null && !serviceInterface.IsInterface)
