@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
@@ -43,19 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
     [TestFixture]
     public class TestAuthorizedPublicKeysViewModel
     {
-        private class JobServiceMock : IJobService
-        {
-            public Task<T> RunAsync<T>(
-                JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc)
-                => jobFunc(CancellationToken.None);
-        }
-
         private static AuthorizedPublicKeysViewModel CreateViewModel(
             IConfirmationDialog confirmationDialog = null)
         {
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IJobService>(new JobServiceMock());
+            registry.AddSingleton<IJobService>(new SynchronousJobService());
             registry.AddMock<IResourceManagerClient>();
             registry.AddMock<IConfirmationDialog>();
 

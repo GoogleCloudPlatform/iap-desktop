@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.InstanceProperties;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -40,18 +41,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
     [TestFixture]
     public class TestInstancePropertiesInspectorViewModel : ApplicationFixtureBase
     {
-        private class JobServiceMock : IJobService
-        {
-            public Task<T> RunAsync<T>(
-                JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc)
-                => jobFunc(CancellationToken.None);
-        }
-
         private static InstancePropertiesInspectorViewModel CreateInstanceDetailsViewModel()
         {
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IJobService>(new JobServiceMock());
+            registry.AddSingleton<IJobService>(new SynchronousJobService());
 
             var gceAdapter = new Mock<IComputeEngineClient>();
 

@@ -27,7 +27,7 @@ namespace Google.Solutions.Common.Util
     public static class Invariant
     {
         /// <summary>
-        /// Verify that the argument is not null.
+        /// Verify that a variable is not null.
         /// </summary>
         public static T ExpectNotNull<T>(
             T? value,

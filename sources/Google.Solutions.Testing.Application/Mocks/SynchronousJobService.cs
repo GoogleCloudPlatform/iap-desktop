@@ -28,9 +28,23 @@ namespace Google.Solutions.Testing.Application.Mocks
 {
     public class SynchronousJobService : IJobService
     {
-        public Task<T> RunAsync<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
+        public int JobsCompleted { get; private set; } = 0;
+
+        public Task<T> RunAsync<T>(
+            JobDescription jobDescription,
+            Func<CancellationToken, Task<T>> jobFunc)
         {
-            return jobFunc(CancellationToken.None);
+            var result = jobFunc(CancellationToken.None);
+            this.JobsCompleted++;
+            return result;
+        }
+
+        public Task RunAsync(JobDescription jobDescription,
+            Func<CancellationToken, Task> jobFunc)
+        {
+            jobFunc(CancellationToken.None);
+            this.JobsCompleted++;
+            return Task.CompletedTask;
         }
     }
 }

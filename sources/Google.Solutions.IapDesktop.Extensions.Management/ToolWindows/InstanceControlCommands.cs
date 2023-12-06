@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 //
                 await this.serviceProvider
                     .GetService<IJobService>()
-                    .RunAsync<object>(
+                    .RunAsync(
                         new JobDescription(
                             $"{this.ActivityText} {instance.Name}...",
                             JobUserFeedbackType.BackgroundFeedback),
@@ -191,8 +191,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                                     this.controlCommand,
                                     jobToken)
                                 .ConfigureAwait(false);
-
-                            return null;
                         })
                     .ConfigureAwait(true);  // Back to original (UI) thread.
             }
@@ -273,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 //
                 await this.serviceProvider
                     .GetService<IJobService>()
-                    .RunAsync<object>(
+                    .RunAsync(
                         new JobDescription(
                             $"Joining {instance.DisplayName} to {domainName}...",
                             JobUserFeedbackType.BackgroundFeedback),
@@ -288,8 +286,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                                     credential,
                                     jobToken)
                             .ConfigureAwait(false);
-
-                            return null;
                         })
                     .ConfigureAwait(true);  // Back to original (UI) thread.
             }
