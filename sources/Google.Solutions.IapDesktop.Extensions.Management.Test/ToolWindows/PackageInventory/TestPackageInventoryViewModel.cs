@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageInventory;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -71,18 +72,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 type == PackageInventoryType.AvailablePackages ? packageInfo : null);
         }
 
-        private class JobServiceMock : IJobService
-        {
-            public Task<T> RunAsync<T>(
-                JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc)
-                => jobFunc(CancellationToken.None);
-        }
-
         private static PackageInventoryViewModel CreateViewModel(PackageInventoryType type)
         {
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IJobService>(new JobServiceMock());
+            registry.AddSingleton<IJobService>(new SynchronousJobService());
 
             var packageInventory = new Mock<IGuestOsInventory>();
             packageInventory.Setup(s => s.GetInstanceInventoryAsync(

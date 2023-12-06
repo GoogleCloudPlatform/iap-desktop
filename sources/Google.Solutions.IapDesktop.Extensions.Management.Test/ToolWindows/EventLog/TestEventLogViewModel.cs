@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -46,22 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
     [TestFixture]
     public class TestEventLogViewModel : ApplicationFixtureBase
     {
-        private JobServiceMock jobServiceMock;
+        private SynchronousJobService jobServiceMock;
         private AuditLogAdapterMock auditLogAdapter;
         private EventLogViewModel viewModel;
-
-        private class JobServiceMock : IJobService
-        {
-            public int Calls = 0;
-
-            public Task<T> RunAsync<T>(
-                JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc)
-            {
-                this.Calls++;
-                return jobFunc(CancellationToken.None);
-            }
-        }
 
         private class AuditLogAdapterMock : IAuditLogClient
         {
@@ -169,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             var registry = new ServiceRegistry();
             registry.AddMock<ICloudConsoleClient>();
 
-            this.jobServiceMock = new JobServiceMock();
+            this.jobServiceMock = new SynchronousJobService();
             registry.AddSingleton<IJobService>(this.jobServiceMock);
 
             this.auditLogAdapter = new AuditLogAdapterMock();
@@ -342,11 +330,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(1, this.jobServiceMock.Calls);
+            Assert.AreEqual(1, this.jobServiceMock.JobsCompleted);
 
             this.viewModel.SelectedTimeframeIndex = 2;
 
-            Assert.AreEqual(2, this.jobServiceMock.Calls);
+            Assert.AreEqual(2, this.jobServiceMock.JobsCompleted);
         }
     }
 }

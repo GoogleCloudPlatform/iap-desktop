@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 return;
             }
 
-            await this.jobService.RunAsync<object>(
+            await this.jobService.RunAsync(
                 new JobDescription(
                     $"Deleting SSH keys for {this.selectedItem.Key.Email}",
                     JobUserFeedbackType.BackgroundFeedback),
@@ -183,8 +183,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                                 cancellationToken)
                             .ConfigureAwait(true);
                     }
-
-                    return null;
                 }).ConfigureAwait(true);  // Back to original (UI) thread.
 
             //

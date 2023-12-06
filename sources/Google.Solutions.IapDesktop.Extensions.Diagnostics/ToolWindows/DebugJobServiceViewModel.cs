@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             try
             {
                 await this.jobService
-                    .RunAsync<object>(
+                    .RunAsync(
                         CreateJobDescription("This takes a while, but can be cancelled..."),
                         async token =>
                         {
@@ -106,8 +106,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
                             await this.eventService
                                 .PublishAsync(new StatusUpdatedEvent("Done"))
                                 .ConfigureAwait(true);
-
-                            return null;
                         })
                     .ConfigureAwait(true);
             }
@@ -130,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             try
             {
                 await this.jobService
-                    .RunAsync<object>(
+                    .RunAsync(
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         async token =>
                         {
@@ -148,8 +146,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
                             await this.eventService
                                 .PublishAsync(new StatusUpdatedEvent("Done"))
                                 .ConfigureAwait(true);
-
-                            return null;
                         })
                     .ConfigureAwait(true);
             }
@@ -172,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             try
             {
                 await this.jobService
-                    .RunAsync<object>(
+                    .RunAsync(
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         token =>
                         {
@@ -199,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             try
             {
                 await this.jobService
-                    .RunAsync<object>(
+                    .RunAsync(
                         CreateJobDescription("This takes a while, and cannot be cancelled..."),
                         token =>
                         {

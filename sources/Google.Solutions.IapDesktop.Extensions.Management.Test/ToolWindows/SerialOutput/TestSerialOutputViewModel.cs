@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOutput;
 using Google.Solutions.Testing.Apis.Integration;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -43,16 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
     [UsesCloudResources]
     public class TestSerialOutputViewModel : ApplicationFixtureBase
     {
-        private class MockJobService : IJobService
-        {
-            public Task<T> RunAsync<T>(
-                JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc)
-            {
-                return jobFunc(CancellationToken.None);
-            }
-        }
-
         private static async Task<IProjectModelInstanceNode> CreateNode(
             ResourceTask<InstanceLocator> testInstance,
             bool markAsRunning)
@@ -75,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
         {
             var serviceProvider = new ServiceRegistry();
-            serviceProvider.AddSingleton<IJobService, MockJobService>();
+            serviceProvider.AddSingleton<IJobService, SynchronousJobService>();
             serviceProvider.AddSingleton<IComputeEngineClient>(
                 new ComputeEngineClient(
                     ComputeEngineClient.CreateEndpoint(),

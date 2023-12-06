@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
@@ -146,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             return new ProjectExplorerViewModel(
                 this.projectExplorerSettings,
-                new SynchrounousJobService(),
+                new SynchronousJobService(),
                 this.eventServiceMock.Object,
                 this.sessionBrokerMock.Object,
                 workspace,
@@ -154,14 +155,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             {
                 View = new Control()
             };
-        }
-
-        private class SynchrounousJobService : IJobService
-        {
-            public Task<T> RunAsync<T>(
-                JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc)
-                => jobFunc(CancellationToken.None);
         }
 
         private async Task<ObservableCollection<ProjectExplorerViewModel.ViewModelNode>> GetInstancesAsync(

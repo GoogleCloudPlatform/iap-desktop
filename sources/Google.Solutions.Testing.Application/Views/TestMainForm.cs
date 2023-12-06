@@ -71,11 +71,26 @@ namespace Google.Solutions.Testing.Application.Views
         // IJobService.
         //---------------------------------------------------------------------
 
-        public Task<T> RunAsync<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
+        public Task<T> RunAsync<T>(
+            JobDescription jobDescription, 
+            Func<CancellationToken, Task<T>> jobFunc)
         {
             // Run on UI thread to avoid multthreading issues in tests.
             var result = jobFunc(CancellationToken.None).Result;
             return Task.FromResult(result);
+        }
+
+        public Task RunAsync(
+            JobDescription jobDescription,
+            Func<CancellationToken, Task> jobFunc)
+        {
+            return RunAsync<string>(
+                jobDescription,
+                async cancellationToken =>
+                {
+                    await jobFunc(cancellationToken).ConfigureAwait(true);
+                    return string.Empty;
+                });
         }
     }
 }

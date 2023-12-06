@@ -64,6 +64,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         Task<T> RunAsync<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc);
+
+        Task RunAsync(
+            JobDescription jobDescription,
+            Func<CancellationToken, Task> jobFunc);
     }
 
     public class JobService : IJobService
@@ -197,6 +201,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     }
                 }
             }
+        }
+
+        public Task RunAsync(
+            JobDescription jobDescription,
+            Func<CancellationToken, Task> jobFunc)
+        {
+            return RunAsync<string>(
+                jobDescription,
+                async cancellationToken =>
+                {
+                    await jobFunc(cancellationToken).ConfigureAwait(true);
+                    return string.Empty;
+                });
         }
     }
 
