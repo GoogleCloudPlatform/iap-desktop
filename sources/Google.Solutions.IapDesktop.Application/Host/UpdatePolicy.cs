@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using System;
 using System.Diagnostics;
 
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Determine which release track a release belongs to.
         /// </summary>
-        internal ReleaseTrack GetReleaseTrack(IGitHubRelease release)
+        internal ReleaseTrack GetReleaseTrack(IRelease release)
         {
             //
             // GitHub doesn't let us "tag" releases in a good way,
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Determine if the user should be advised to install an update.
         /// </summary>
-        public bool IsUpdateAdvised(IGitHubRelease release) //TODO: Rename to IRelease
+        public bool IsUpdateAdvised(IRelease release)
         {
             Precondition.ExpectNotNull(release, nameof(release));
 

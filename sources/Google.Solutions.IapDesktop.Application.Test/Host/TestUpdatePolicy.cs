@@ -21,8 +21,8 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);
 
             var track = policy.GetReleaseTrack(release.Object);
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var description = "This release is [track:critical]!!1!";
 
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);
 
             var track = policy.GetReleaseTrack(release.Object);
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var description = "This release is on the [track:rapid] track!!1!";
 
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);
 
             var track = policy.GetReleaseTrack(release.Object);
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenReleaseHasNoVersion_ThenIsUpdateAdvisedReturnsFalse()
         {
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenReleaseOlderThanInstalled_ThenIsUpdateAdvisedReturnsFalse()
         {
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(new Version(1, 0));
 
             var policy = new UpdatePolicy(
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var install = CreateInstall();
 
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(install.CurrentVersion);
 
             var policy = new UpdatePolicy(
@@ -217,9 +217,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
 
-            var normalRelease = new Mock<IGitHubRelease>();
-            var criticalRelease = new Mock<IGitHubRelease>();
-            var rapidRelease = new Mock<IGitHubRelease>();
+            var normalRelease = new Mock<IRelease>();
+            var criticalRelease = new Mock<IRelease>();
+            var rapidRelease = new Mock<IRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
@@ -242,9 +242,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical | ReleaseTrack.Normal);
 
-            var normalRelease = new Mock<IGitHubRelease>();
-            var criticalRelease = new Mock<IGitHubRelease>();
-            var rapidRelease = new Mock<IGitHubRelease>();
+            var normalRelease = new Mock<IRelease>();
+            var criticalRelease = new Mock<IRelease>();
+            var rapidRelease = new Mock<IRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
@@ -267,9 +267,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
-            var normalRelease = new Mock<IGitHubRelease>();
-            var criticalRelease = new Mock<IGitHubRelease>();
-            var rapidRelease = new Mock<IGitHubRelease>();
+            var normalRelease = new Mock<IRelease>();
+            var criticalRelease = new Mock<IRelease>();
+            var rapidRelease = new Mock<IRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
