@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// <summary>
     /// Query capabilities of host OS.
     /// </summary>
-    internal static class OSCapabilities
+    public static class OSCapabilities
     {
         private static readonly Version Windows10_1703 = new Version(10, 0, 15063, 0);
         private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
