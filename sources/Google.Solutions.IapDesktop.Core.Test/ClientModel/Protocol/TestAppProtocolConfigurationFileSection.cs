@@ -236,12 +236,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }
             };
 
-            var client = (AppProtocolClient)section.ParseClientSection();
+            var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.IsNotNull(client);
 
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-            StringAssert.Contains(programsFolder, client.Executable);
+            StringAssert.Contains(programsFolder, client!.Executable);
             StringAssert.Contains(programsFolder, client.ArgumentsTemplate);
             StringAssert.Contains("{host}", client.ArgumentsTemplate);
         }
@@ -257,9 +257,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }
             };
 
-            var client = (AppProtocolClient)section.ParseClientSection();
+            var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.IsNotNull(client);
-            Assert.IsTrue(File.Exists(client.Executable));
+            Assert.IsTrue(File.Exists(client!.Executable));
         }
 
         [Test]
@@ -274,9 +274,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }
             };
 
-            var client = (AppProtocolClient)section.ParseClientSection();
+            var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.IsNotNull(client);
-            Assert.AreEqual(fileName, client.Executable);
+            Assert.AreEqual(fileName, client!.Executable);
         }
     }
 }

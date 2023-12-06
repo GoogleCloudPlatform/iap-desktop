@@ -92,8 +92,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
             Assert.AreEqual(8080, protocol.RemotePort);
 
-            var client = (AppProtocolClient)protocol.Client;
-            Assert.AreEqual("cmd", client.Executable);
+            var client = (AppProtocolClient?)protocol.Client;
+            Assert.NotNull(client);
+            Assert.AreEqual("cmd", client!.Executable);
         }
 
         //---------------------------------------------------------------------

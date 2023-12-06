@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private static AppProtocol CreateProtocol(IAppProtocolClient client)
+        private static AppProtocol CreateProtocol(IAppProtocolClient? client)
         {
             return new AppProtocol(
                 "Test",
