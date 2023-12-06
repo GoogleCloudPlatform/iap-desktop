@@ -19,36 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Client;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
-using System;
-using System.Windows.Forms;
+using Google.Solutions.Apis.Diagnostics;
+using Google.Solutions.Platform.Net;
 
-namespace Google.Solutions.IapDesktop.Windows
+#pragma warning disable CA1822 // Mark members as static
+
+namespace Google.Solutions.IapDesktop.Application.Client
 {
-    public partial class ErrorDialog : Form
+    public class HelpClient
     {
-        private readonly BugReport report;
-
-        public ErrorDialog(Exception exception)
+        public void OpenTopic(IHelpTopic topic)
         {
-            InitializeComponent();
-
-            this.report = new BugReport(GetType(), exception);
-
-            this.errorText.Text = this.report.ToString().Replace("\n", "\r\n");
-            this.errorText.SelectionStart = 0;
-            this.errorText.SelectionLength = 0;
-        }
-
-        public static void Show(Exception e)
-        {
-            new ErrorDialog(e).ShowDialog();
-        }
-
-        private void reportButton_Click(object sender, EventArgs e)
-        {
-            new BugReportClient().ReportBug(this.report);
+            Browser.Default.Navigate(topic.Address.ToString());
         }
     }
 }

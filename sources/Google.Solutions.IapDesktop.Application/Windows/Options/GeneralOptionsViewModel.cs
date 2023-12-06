@@ -19,10 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             IRepository<IApplicationSettings> settingsRepository,
             IBrowserProtocolRegistry protocolRegistry,
             ITelemetryCollector telemetryCollector,
-            HelpAdapter helpService)
+            HelpClient helpService)
             : base("General", settingsRepository)
         {
             this.protocolRegistry = protocolRegistry;

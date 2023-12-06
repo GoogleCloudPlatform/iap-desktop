@@ -35,9 +35,9 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -395,10 +395,10 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
                 preAuthLayer.AddTransient<INotifyDialog, NotifyDialog>();
 
-                preAuthLayer.AddSingleton<IExternalRestAdapter, ExternalRestAdapter>();
-                preAuthLayer.AddTransient<HelpAdapter>();
-                preAuthLayer.AddTransient<IGithubAdapter, GithubAdapter>();
-                preAuthLayer.AddTransient<BuganizerAdapter>();
+                preAuthLayer.AddSingleton<IExternalRestClient, ExternalRestClient>();
+                preAuthLayer.AddTransient<HelpClient>();
+                preAuthLayer.AddTransient<IReleaseFeed, GithubClient>();
+                preAuthLayer.AddTransient<BugReportClient>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 preAuthLayer.AddSingleton<ProtocolRegistry>();
@@ -587,7 +587,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
-                mainLayer.AddTransient<ICloudConsole, CloudConsole>();
+                mainLayer.AddTransient<ICloudConsoleClient, CloudConsoleClient>();
                 mainLayer.AddTransient<IUpdateCheck, UpdateCheck>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();

@@ -24,7 +24,7 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
         private Mock<IComputeEngineClient> computeClientMock;
         private Mock<IResourceManagerClient> resourceManagerAdapterMock;
-        private Mock<ICloudConsole> cloudConsoleServiceMock;
+        private Mock<ICloudConsoleClient> cloudConsoleServiceMock;
         private Mock<IEventQueue> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
         private IProjectExplorerSettings projectExplorerSettings;
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     SampleLinuxInstanceInZone1
                 });
 
-            this.cloudConsoleServiceMock = new Mock<ICloudConsole>();
+            this.cloudConsoleServiceMock = new Mock<ICloudConsoleClient>();
             this.eventServiceMock = new Mock<IEventQueue>();
             this.sessionBrokerMock = new Mock<IGlobalSessionBroker>();
         }

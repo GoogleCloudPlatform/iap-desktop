@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Platform.Net;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Client
 {
-    public class BuganizerAdapter
+    public class BugReportClient
     {
         public const string BaseUrl = "https://issuetracker.google.com";
 

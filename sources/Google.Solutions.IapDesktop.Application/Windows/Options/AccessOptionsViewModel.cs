@@ -20,7 +20,8 @@
 //
 
 using Google.Solutions.Apis.Client;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -35,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public AccessOptionsViewModel(
             IRepository<IAccessSettings> settingsRepository,
-            HelpAdapter helpService)
+            HelpClient helpService)
             : base("Access", settingsRepository)
         {
 

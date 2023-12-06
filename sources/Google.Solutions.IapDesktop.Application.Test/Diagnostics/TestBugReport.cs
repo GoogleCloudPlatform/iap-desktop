@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using NUnit.Framework;
 using System;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Host.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
 {
     [TestFixture]
     public class TestBugReport

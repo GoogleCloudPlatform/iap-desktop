@@ -21,7 +21,8 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using System;
 using System.Diagnostics;
@@ -54,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public const int DaysBetweenUpdateChecks = 10;
 
         private readonly IInstall install;
-        private readonly IGithubAdapter githubAdapter;
+        private readonly IReleaseFeed feed;
         private readonly ITaskDialog taskDialog;
         private readonly IClock clock;
 
@@ -64,12 +65,12 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public UpdateCheck(
             IInstall install,
-            IGithubAdapter githubAdapter,
+            IReleaseFeed feed,
             ITaskDialog taskDialog,
             IClock clock)
         {
             this.install = install.ExpectNotNull(nameof(install));
-            this.githubAdapter = githubAdapter.ExpectNotNull(nameof(githubAdapter));
+            this.feed = feed.ExpectNotNull(nameof(feed));
             this.taskDialog = taskDialog.ExpectNotNull(nameof(taskDialog));
             this.clock = clock.ExpectNotNull(nameof(clock));
         }
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 //
                 cts.CancelAfter(this.Timeout);
 
-                var latestRelease = this.githubAdapter.FindLatestReleaseAsync(cts.Token).Result;
+                var latestRelease = this.feed.FindLatestReleaseAsync(cts.Token).Result;
                 if (latestRelease == null ||
                     latestRelease.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
                 {

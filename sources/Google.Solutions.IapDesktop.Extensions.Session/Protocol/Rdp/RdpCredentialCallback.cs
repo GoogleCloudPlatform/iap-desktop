@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Newtonsoft.Json;
 using System;
@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
     [Service(typeof(IRdpCredentialCallback))]
     public class RdpCredentialCallback : IRdpCredentialCallback
     {
-        private readonly IExternalRestAdapter restAdapter;
+        private readonly IExternalRestClient restAdapter;
 
-        public RdpCredentialCallback(IExternalRestAdapter restAdapter)
+        public RdpCredentialCallback(IExternalRestClient restAdapter)
         {
             this.restAdapter = restAdapter;
         }

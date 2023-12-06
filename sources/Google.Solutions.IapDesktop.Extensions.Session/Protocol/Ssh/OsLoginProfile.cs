@@ -29,7 +29,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;

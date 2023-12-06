@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -30,10 +30,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Test.Client
 {
     [TestFixture]
-    public class TestGithubAdapter : ApplicationFixtureBase
+    public class TestGithubClient : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
         // FindLatestReleaseAsync.
@@ -42,14 +42,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public void WhenServerReturnsError_ThenFindLatestReleaseThrowsException()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<GithubAdapter.Release>(
+                .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException("mock"));
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
@@ -60,14 +60,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenServerReturnsEmptyResult_ThenFindLatestReleaseReturnsNull()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<GithubAdapter.Release>(
+                .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GithubAdapter.Release)null);
+                .ReturnsAsync((GithubClient.Release)null);
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
 
             Assert.IsNull(await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
@@ -81,14 +81,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public void WhenServerReturnsError_ListReleasesThrowsException()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<List<GithubAdapter.Release>>(
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException("mock"));
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
@@ -99,14 +99,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenServerReturnsEmptyResult_ListReleasesReturnsEmptyList()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<List<GithubAdapter.Release>>(
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((List<GithubAdapter.Release>)null);
+                .ReturnsAsync((List<GithubClient.Release>)null);
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
 
             CollectionAssert.IsEmpty(await adapter
                 .ListReleasesAsync(1, CancellationToken.None)
@@ -120,14 +120,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenTagIsVersion_ThenTagVersionIsNotNull()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<GithubAdapter.Release>(
+                .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubAdapter.Release("1.2.3.4", null, null, null));
+                .ReturnsAsync(new GithubClient.Release("1.2.3.4", null, null, null));
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -139,14 +139,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenTagMalformed_ThenTagVersionIsNull()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<GithubAdapter.Release>(
+                .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubAdapter.Release("not a version", null, null, null));
+                .ReturnsAsync(new GithubClient.Release("not a version", null, null, null));
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -162,21 +162,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenReleaseHasNoMsiDownload_ThenDownloadUrlIsNull()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<GithubAdapter.Release>(
+                .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubAdapter.Release(
+                .ReturnsAsync(new GithubClient.Release(
                     "1.2.3.4",
                     null,
                     null,
-                    new List<GithubAdapter.ReleaseAsset>()
+                    new List<GithubClient.ReleaseAsset>()
                     {
-                        new GithubAdapter.ReleaseAsset("http://example.com/test.txt")
+                        new GithubClient.ReleaseAsset("http://example.com/test.txt")
                     }));
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -188,22 +188,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenReleaseHasMsiDownload_ThenDownloadUrlIsNull()
         {
-            var restAdapter = new Mock<IExternalRestAdapter>();
+            var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
-                .Setup(a => a.GetAsync<GithubAdapter.Release>(
+                .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubAdapter.Release(
+                .ReturnsAsync(new GithubClient.Release(
                     "1.2.3.4",
                     null,
                     null,
-                    new List<GithubAdapter.ReleaseAsset>()
+                    new List<GithubClient.ReleaseAsset>()
                     {
-                        new GithubAdapter.ReleaseAsset("http://example.com/test.txt"),
-                        new GithubAdapter.ReleaseAsset("http://example.com/download.msi")
+                        new GithubClient.ReleaseAsset("http://example.com/test.txt"),
+                        new GithubClient.ReleaseAsset("http://example.com/download.msi")
                     }));
 
-            var adapter = new GithubAdapter(restAdapter.Object);
+            var adapter = new GithubClient(restAdapter.Object);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host.Adapters
         [Test]
         public async Task WhenRepositoryExists_ThenFindLatestReleaseReturnsRelease()
         {
-            var adapter = new GithubAdapter(new ExternalRestAdapter());
+            var adapter = new GithubClient(new ExternalRestClient());
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,61 +29,20 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Host.Adapters
+namespace Google.Solutions.IapDesktop.Application.Client
 {
-    public interface IGithubAdapter
-    {
-        /// <summary>
-        /// Look up the most recent release.
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IGitHubRelease> FindLatestReleaseAsync(
-            CancellationToken cancellationToken);
-
-        /// <summary>
-        /// List latest releases.
-        /// </summary>
-        Task<IEnumerable<IGitHubRelease>> ListReleasesAsync(
-            ushort maxCount,
-            CancellationToken cancellationToken);
-    }
-
-    public interface IGitHubRelease
-    {
-        /// <summary>
-        /// Version number, if available.
-        /// </summary>
-        Version TagVersion { get; }
-
-        /// <summary>
-        /// URL to installer package.
-        /// </summary>
-        string DownloadUrl { get; }
-
-        /// <summary>
-        /// Url to website for this release.
-        /// </summary>
-        string DetailsUrl { get; }
-
-        /// <summary>
-        /// Markdown-formatted description.
-        /// </summary>
-        string Description { get; }
-    }
-
-    public class GithubAdapter : IGithubAdapter
+    public class GithubClient : IReleaseFeed
     {
         public const string RepositoryName = "GoogleCloudPlatform/iap-desktop";
 
-        private readonly IExternalRestAdapter restAdapter;
+        private readonly IExternalRestClient restAdapter;
 
-        public GithubAdapter(IExternalRestAdapter restAdapter)
+        public GithubClient(IExternalRestClient restAdapter)
         {
             this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
         }
 
-        public async Task<IEnumerable<IGitHubRelease>> ListReleasesAsync(
+        public async Task<IEnumerable<IRelease>> ListReleasesAsync(
             ushort maxCount,
             CancellationToken cancellationToken)
         {
@@ -98,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
             }
         }
 
-        public async Task<IGitHubRelease> FindLatestReleaseAsync(
+        public async Task<IRelease> FindLatestReleaseAsync(
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
@@ -130,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Host.Adapters
         // Classes for deserialization.
         //---------------------------------------------------------------------
 
-        public class Release : IGitHubRelease
+        public class Release : IRelease
         {
             [JsonProperty("tag_name")]
             public string TagName { get; }

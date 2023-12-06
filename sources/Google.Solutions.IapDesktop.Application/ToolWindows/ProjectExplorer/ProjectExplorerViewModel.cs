@@ -23,7 +23,7 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         private readonly IJobService jobService;
         private readonly IProjectWorkspace workspace;
         private readonly IGlobalSessionBroker sessionBroker;
-        private readonly ICloudConsole cloudConsoleService;
+        private readonly ICloudConsoleClient cloudConsoleService;
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectWorkspace workspace,
-            ICloudConsole cloudConsoleService)
+            ICloudConsoleClient cloudConsoleService)
         {
             this.settings = settings;
             this.jobService = jobService;
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IEventQueue eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectWorkspace workspace,
-            ICloudConsole cloudConsoleService)
+            ICloudConsoleClient cloudConsoleService)
             : this(
                 new ProjectExplorerSettings(
                     settingsRepository,

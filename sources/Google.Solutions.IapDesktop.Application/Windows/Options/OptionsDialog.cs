@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
-using Google.Solutions.IapDesktop.Application.Host.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                         appSettingsRepository,
                         serviceProvider.GetService<IBrowserProtocolRegistry>(),
                         serviceProvider.GetService<ITelemetryCollector>(),
-                        serviceProvider.GetService<HelpAdapter>()));
+                        serviceProvider.GetService<HelpClient>()));
                 dialog.ViewModel.AddSheet(
                     new NetworkOptionsSheet(),
                     new NetworkOptionsViewModel(
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                     new AccessOptionsSheet(),
                     new AccessOptionsViewModel(
                         serviceProvider.GetService<IRepository<IAccessSettings>>(),
-                        serviceProvider.GetService<HelpAdapter>()));
+                        serviceProvider.GetService<HelpClient>()));
                 dialog.ViewModel.AddSheet(
                     new AppearanceOptionsSheet(),
                     new AppearanceOptionsViewModel(serviceProvider.GetService<IRepository<IThemeSettings>>()));

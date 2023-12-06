@@ -20,8 +20,9 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Host.Adapters;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -59,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
 
@@ -76,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
 
@@ -91,16 +92,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNoReleaseAvailable_ThenCheckForUpdatesReturns()
         {
-            var githubAdapter = new Mock<IGithubAdapter>();
-            githubAdapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync((IGitHubRelease)null);
+                .ReturnsAsync((IRelease)null);
 
             var taskDialog = new Mock<ITaskDialog>();
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -122,11 +123,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenReleaseHasNoVersion_ThenCheckForUpdatesReturns()
         {
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns((Version)null);
 
-            var githubAdapter = new Mock<IGithubAdapter>();
-            githubAdapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
@@ -134,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -158,15 +159,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var installedVersion = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<IClock>().Object).InstalledVersion;
 
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(installedVersion);
 
-            var githubAdapter = new Mock<IGithubAdapter>();
-            githubAdapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
@@ -174,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -200,11 +201,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNewReleaseAvailableButDialogOperationCancelled_ThenCheckForUpdatesReturns()
         {
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(new Version(99, 99, 99, 99));
 
-            var githubAdapter = new Mock<IGithubAdapter>();
-            githubAdapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
@@ -225,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
@@ -235,11 +236,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNewReleaseAvailableButDialogCancelled_ThenCheckForUpdatesReturns()
         {
-            var release = new Mock<IGitHubRelease>();
+            var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(new Version(99, 99, 99, 99));
 
-            var githubAdapter = new Mock<IGithubAdapter>();
-            githubAdapter
+            var feed = new Mock<IReleaseFeed>();
+            feed
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
@@ -260,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
-                new Mock<IGithubAdapter>().Object,
+                new Mock<IReleaseFeed>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
 
