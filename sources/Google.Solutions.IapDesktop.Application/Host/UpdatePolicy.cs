@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
@@ -128,6 +129,16 @@ namespace Google.Solutions.IapDesktop.Application.Host
             {
                 return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
             }
+        }
+
+        public bool IsUpdateCheckDue(
+            IClock clock,
+            DateTime lastCheck)
+        {
+            clock.ExpectNotNull(nameof(clock));
+            Debug.Assert(lastCheck.Kind == DateTimeKind.Utc);
+
+            return (clock.UtcNow - lastCheck).TotalDays >= this.DaysBetweenUpdateChecks;
         }
     }
 

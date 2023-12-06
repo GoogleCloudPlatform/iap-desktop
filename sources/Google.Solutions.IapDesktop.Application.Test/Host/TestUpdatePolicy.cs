@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
@@ -282,6 +283,42 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsFalse(policy.IsUpdateAdvised(normalRelease.Object));
             Assert.IsFalse(policy.IsUpdateAdvised(rapidRelease.Object));
+        }
+
+        //---------------------------------------------------------------------
+        // IsUpdateCheckDue.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotEnoughDaysElapsed_ThenIsUpdateCheckDueReturnsFalse()
+        {
+            var clock = SystemClock.Default;
+            var now = clock.UtcNow;
+
+            var policy = new UpdatePolicy(
+                CreateInstall(),
+                CreateAuthorization("_@example.com").Object,
+                ReleaseTrack._Default);
+
+            Assert.IsFalse(policy.IsUpdateCheckDue(clock, now));
+            Assert.IsFalse(policy.IsUpdateCheckDue(clock, now.AddYears(1)));
+            Assert.IsFalse(policy.IsUpdateCheckDue(clock, now.AddDays(-policy.DaysBetweenUpdateChecks).AddMinutes(1)));
+            Assert.IsFalse(policy.IsUpdateCheckDue(clock, now.AddDays(-policy.DaysBetweenUpdateChecks + 1)));
+        }
+
+        [Test]
+        public void WhenTooManyDaysElapsed_ThenIsUpdateCheckDueReturnsTrue()
+        {
+            var clock = SystemClock.Default;
+            var now = clock.UtcNow;
+
+            var policy = new UpdatePolicy(
+                CreateInstall(),
+                CreateAuthorization("_@example.com").Object,
+                ReleaseTrack._Default);
+
+            Assert.IsTrue(policy.IsUpdateCheckDue(clock, now.AddDays(-policy.DaysBetweenUpdateChecks)));
+            Assert.IsTrue(policy.IsUpdateCheckDue(clock, now.AddDays(-policy.DaysBetweenUpdateChecks - 1)));
         }
     }
 }
