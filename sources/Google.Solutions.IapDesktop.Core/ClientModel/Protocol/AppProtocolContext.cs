@@ -98,8 +98,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             if (!this.CanLaunchClient)
             {
-                throw new InvalidOperationException(
-                    "The configuration does not contain a client");
+                throw new InvalidOperationException("No client available to launch");
             }
 
             Debug.Assert(this.protocol.Client != null);

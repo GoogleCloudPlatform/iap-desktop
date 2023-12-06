@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.Platform.Dispatch;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -145,9 +146,30 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCredentialIsNull_ThenLaunchCreatesProcess()
+        public void WhenClientCannotBeLaunched_ThenLaunchClientThrowsException()
         {
             var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(false);
+            client.SetupGet(c => c.Executable).Returns("client.exe");
+
+            var protocol = CreateProtocol(client.Object);
+            var transport = new Mock<ITransport>();
+
+            var context = new AppProtocolContext(
+                protocol,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                SampleLocator);
+
+            Assert.Throws<InvalidOperationException>(
+                () => context.LaunchClient(transport.Object));
+        }
+
+        [Test]
+        public void WhenCredentialIsNull_ThenLaunchClientCreatesProcess()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.Executable).Returns("client.exe");
             client
                 .Setup(c => c.FormatArguments(
@@ -180,9 +202,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenCredentialSet_ThenLaunchCreatesProcessAsUser()
+        public void WhenCredentialSet_ThenLaunchClientCreatesProcessAsUser()
         {
             var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.Executable).Returns("client.exe");
             client
                 .Setup(c => c.FormatArguments(
