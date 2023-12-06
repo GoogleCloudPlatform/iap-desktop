@@ -27,6 +27,7 @@ using Google.Solutions.Platform;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -184,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             /// Name of the protocol. The name isn't guaranteed to be unique.
             /// </summary>
             [JsonProperty("name")]
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
             /// <summary>
             /// Conditions for this protocol to be available. Can be
@@ -195,25 +196,25 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             /// Currently, only the && operator is available.
             /// </summary>
             [JsonProperty("condition")]
-            public string Condition { get; set; }
+            public string? Condition { get; set; }
 
             /// <summary>
             /// Remote port to connect to.
             /// </summary>
             [JsonProperty("remotePort")]
-            public string RemotePort { get; set; }
+            public string? RemotePort { get; set; }
 
             /// <summary>
             /// Optional: Local port.
             /// </summary>
             [JsonProperty("localPort")]
-            public string LocalPort { get; set; }
+            public string? LocalPort { get; set; }
 
             /// <summary>
             /// Optional: Client application to launch. 
             /// </summary>
             [JsonProperty("client")]
-            public ClientSection Client { get; set; }
+            public ClientSection? Client { get; set; }
 
             internal string ParseName()
             {
@@ -222,7 +223,8 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     throw new InvalidAppProtocolException("A name is required");
                 }
 
-                return this.Name;
+                Debug.Assert(this.Name != null);
+                return this.Name!;
             }
 
             internal IEnumerable<ITrait> ParseCondition()
@@ -243,15 +245,18 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 {
                     if (InstanceTrait.TryParse(clause, out var instanceTrait))
                     {
-                        yield return instanceTrait;
+                        Debug.Assert(instanceTrait != null);
+                        yield return instanceTrait!;
                     }
                     else if (WindowsTrait.TryParse(clause, out var windowsTrait))
                     {
-                        yield return windowsTrait;
+                        Debug.Assert(windowsTrait != null);
+                        yield return windowsTrait!;
                     }
                     else if (LinuxTrait.TryParse(clause, out var linuxTrait))
                     {
-                        yield return linuxTrait;
+                        Debug.Assert(linuxTrait != null);
+                        yield return linuxTrait!;
                     }
                     else
                     {
@@ -273,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 }
             }
 
-            internal IPEndPoint ParseLocalEndpoint()
+            internal IPEndPoint? ParseLocalEndpoint()
             {
                 var localPort = this.LocalPort?.Trim();
                 if (string.IsNullOrEmpty(localPort))
@@ -281,7 +286,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     return null;
                 }
 
-                var parts = localPort.Split(':');
+                Debug.Assert(localPort != null);
+
+                var parts = localPort!.Split(':');
                 if (parts.Length == 1)
                 {
                     //
@@ -309,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     "format <ip>:<port>.");
             }
 
-            internal IAppProtocolClient ParseClientSection()
+            internal IAppProtocolClient? ParseClientSection()
             {
                 if (this.Client == null ||
                     string.IsNullOrWhiteSpace(this.Client.Executable))
@@ -317,16 +324,19 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                     return null;
                 }
 
+                Debug.Assert(this.Client.Executable != null);
+
                 if (!UserEnvironment.TryResolveAppPath(
-                    this.Client.Executable, 
+                    this.Client.Executable!, 
                     out var executablePath))
                 {
                     executablePath = UserEnvironment.ExpandEnvironmentStrings(
-                        this.Client.Executable);
+                        this.Client.Executable!);
                 }
 
+                Debug.Assert(executablePath != null);
                 return new AppProtocolClient(
-                    executablePath,
+                    executablePath!,
                     UserEnvironment.ExpandEnvironmentStrings(this.Client.Arguments));
             }
         }
@@ -341,13 +351,13 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             ///   
             /// </summary>
             [JsonProperty("executable")]
-            public string Executable { get; set; }
+            public string? Executable { get; set; }
 
             /// <summary>
             /// Optional: Arguments to pass to executable.
             /// </summary>
             [JsonProperty("arguments")]
-            public string Arguments { get; set; }
+            public string? Arguments { get; set; }
         }
     }
 

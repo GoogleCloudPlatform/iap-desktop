@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                         other.GetValues(k).EnsureNotNull()));
         }
 
-        public virtual bool Equals(ProtocolTargetLocator other)
+        public virtual bool Equals(ProtocolTargetLocator? other)
         {
             return other != null &&
                 other is ProtocolTargetLocator locator &&
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 this.Parameters.Count;
         }
 
-        public static bool operator ==(ProtocolTargetLocator obj1, ProtocolTargetLocator obj2)
+        public static bool operator ==(ProtocolTargetLocator? obj1, ProtocolTargetLocator? obj2)
         {
             if (obj1 is null)
             {
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(ProtocolTargetLocator obj1, ProtocolTargetLocator obj2)
+        public static bool operator !=(ProtocolTargetLocator? obj1, ProtocolTargetLocator? obj2)
         {
             return !(obj1 == obj2);
         }

@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Preferred username.
         /// </summary>
-        public string PreferredUsername { get; set; } = null;
+        public string? PreferredUsername { get; set; } = null;
 
         /// <summary>
         /// Determines whether to use Windows authentication/network level

@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.Platform.Dispatch;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Network credential to use for launching the client.
         /// </summary>
-        public NetworkCredential NetworkCredential { get; set; }
+        public NetworkCredential? NetworkCredential { get; set; }
 
         public AppProtocolParameters Parameters { get; }
 
@@ -95,7 +96,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public IWin32Process LaunchClient(ITransport transport)
         {
-            var client = this.protocol.Client;
+            if (!this.CanLaunchClient)
+            {
+                throw new InvalidOperationException(
+                    "The configuration does not contain a client");
+            }
+
+            Debug.Assert(this.protocol.Client != null);
+            var client = this.protocol.Client!;
 
             if (this.NetworkCredential != null)
             {

@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         private readonly IIapListener listener;
         private readonly Task listenTask;
 
-        internal event EventHandler Closed;
+        internal event EventHandler? Closed;
 
         internal Profile Details { get; }
 
@@ -135,7 +135,9 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             this.Closed?.Invoke(this, EventArgs.Empty);
 
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
             return this.listenTask;
+#pragma warning restore VSTHRD003 // Avoid awaiting foreign Tasks
         }
 
         protected override void Dispose(bool disposing)
@@ -210,14 +212,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
             /// Custom local endpoint. If null, an endpoint is assigned
             /// automatically.
             /// </summary>
-            public IPEndPoint LocalEndpoint { get; }
+            public IPEndPoint? LocalEndpoint { get; }
 
             internal Profile(
                 IProtocol protocol,
                 ITransportPolicy policy,
                 InstanceLocator targetInstance,
                 ushort targetPort,
-                IPEndPoint localEndpoint = null)
+                IPEndPoint? localEndpoint = null)
             {
                 this.Policy = policy.ExpectNotNull(nameof(policy));
                 this.Protocol = protocol.ExpectNotNull(nameof(protocol));
@@ -236,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                     (this.LocalEndpoint?.GetHashCode() ?? 0);
             }
 
-            public bool Equals(Profile other)
+            public bool Equals(Profile? other)
             {
                 return other != null &&
                     Equals(this.Policy, other.Policy) &&
@@ -251,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 return Equals((Profile)obj);
             }
 
-            public static bool operator ==(Profile obj1, Profile obj2)
+            public static bool operator ==(Profile? obj1, Profile? obj2)
             {
                 if (obj1 is null)
                 {
@@ -261,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 return obj1.Equals(obj2);
             }
 
-            public static bool operator !=(Profile obj1, Profile obj2)
+            public static bool operator !=(Profile? obj1, Profile? obj2)
             {
                 return !(obj1 == obj2);
             }

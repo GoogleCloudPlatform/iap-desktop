@@ -43,7 +43,7 @@ namespace Google.Solutions.Platform.Dispatch
         /// </summary>
         IWin32Process CreateProcess(
             string executable,
-            string arguments);
+            string? arguments);
 
         /// <summary>
         /// Start a new process as a different user.
@@ -52,7 +52,7 @@ namespace Google.Solutions.Platform.Dispatch
         /// </summary>
         IWin32Process CreateProcessAsUser(
             string executable,
-            string arguments,
+            string? arguments,
             LogonFlags flags,
             NetworkCredential credential);
     }

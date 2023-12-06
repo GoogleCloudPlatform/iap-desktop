@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
             return Equals(obj as ProcessPolicyBase);
         }
 
-        public bool Equals(ITransportPolicy other)
+        public bool Equals(ITransportPolicy? other)
         {
             return other is ProcessPolicyBase &&
                 other.GetType() == GetType() &&
