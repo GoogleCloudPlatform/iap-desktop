@@ -19,29 +19,31 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Diagnostics
 {
-    public sealed class MessageRecorder : IMessageFilter, IDisposable
+    public sealed class MessageTraceRecorder : IMessageFilter, IDisposable
     {
         /// <summary>
         /// Circular buffer containing last N messages.
         /// </summary>
-        private readonly RecordedMessage[] history;
+        private readonly Message[] history;
         private int nextIndex = 0;
 
-        public MessageRecorder(int count) 
+        public MessageTraceRecorder(int count)
         {
-            if (count < 0) 
+            if (count < 0)
             {
                 throw new ArgumentException(nameof(count));
             }
 
-            this.history = new RecordedMessage[count];
+            this.history = new Message[count];
 
             Application.AddMessageFilter(this);
         }
@@ -53,7 +55,7 @@ namespace Google.Solutions.Mvvm.Diagnostics
             // on the STA thread, so there's no need for 
             // synchronization.
             //
-            this.history[this.nextIndex].Initialize(m);
+            this.history[this.nextIndex] = m;
             this.nextIndex = (this.nextIndex + 1) % this.history.Length;
         }
 
@@ -63,41 +65,49 @@ namespace Google.Solutions.Mvvm.Diagnostics
             return false;
         }
 
-        public IEnumerable<RecordedMessage> History
+        /// <summary>
+        /// Capture a snapshot.
+        /// </summary>
+        /// <returns></returns>
+        public MessageTrace Capture()
         {
-            get
+            var orderedMessages = new Message[this.history.Length];
+
+            for (int i = 0; i < this.history.Length; i++)
             {
-                for (int i = 0; i < this.history.Length; i++) 
-                {
-                    yield return this.history[(this.nextIndex + i) % this.history.Length];
-                }
+                orderedMessages[i] = this.history[(this.nextIndex + i) % this.history.Length];
             }
+
+            return new MessageTrace(orderedMessages);
         }
 
         public void Dispose()
         {
             Application.RemoveMessageFilter(this);
         }
+    }
 
-        public struct RecordedMessage
+    public class MessageTrace
+    {
+        public IReadOnlyList<Message> History { get; }
+
+        internal MessageTrace(IReadOnlyList<Message> messages)
         {
-            public int Msg;
-            public IntPtr Lparam;
-            public IntPtr Wparam;
+            this.History = messages.ExpectNotNull(nameof(messages));
+        }
 
-            internal void Initialize(Message msg)
+        public override string ToString()
+        {
+            var buffer = new StringBuilder();
+
+            foreach (var message in this.History)
             {
-                this.Msg = msg.Msg;
-                this.Lparam = msg.LParam;
-                this.Wparam = msg.WParam;
+                buffer.Append(
+                    $"0x{message.Msg:X8} (LParam: 0x{message.LParam.ToInt64():X16}, " +
+                    $"WParam: 0x{message.WParam.ToInt64():X16}, {(WindowMessage)message.Msg})\n");
             }
 
-            public override string ToString()
-            {
-                return 
-                    $"0x{this.Msg:X8} (LParam: 0x{this.Lparam.ToInt64():X16}, " +
-                    $"WParam: 0x{this.Wparam.ToInt64():X16}, {(WindowMessage)this.Msg})";
-            }
+            return buffer.ToString();
         }
     }
 }
