@@ -639,12 +639,13 @@ namespace Google.Solutions.IapDesktop
                 };
 
                 using (new DebugMessageThrottle(TimeSpan.FromMilliseconds(100)))
+                using (var recorder = new MessageTraceRecorder(8))
                 {
                     //
                     // Replace the standard WinForms exception dialog.
                     //
                     System.Windows.Forms.Application.ThreadException += (_, exArgs)
-                        => ShowFatalError(exArgs.Exception);
+                        => ShowFatalErrorAndExit(exArgs.Exception, recorder.Capture());
 
                     mainForm.Shown += (_, __) =>
                     {
@@ -660,7 +661,14 @@ namespace Google.Solutions.IapDesktop
                     //
                     // Show the main window.
                     //
-                    System.Windows.Forms.Application.Run(mainForm);
+                    try
+                    {
+                        System.Windows.Forms.Application.Run(mainForm);
+                    }
+                    catch (Exception e)
+                    {
+                        ShowFatalErrorAndExit(e, recorder.Capture());
+                    }
 
                     if (processFactory.ChildProcesses > 0)
                     {
@@ -690,7 +698,7 @@ namespace Google.Solutions.IapDesktop
 #if DEBUG
                             if (!e.IsCancellation())
                             {
-                                ShowFatalError(e);
+                                ShowFatalErrorAndExit(e, recorder.Capture());
                             }
 #endif
                         }
@@ -739,9 +747,9 @@ namespace Google.Solutions.IapDesktop
         }
 
         protected override void HandleSubsequentInvocationException(Exception e)
-            => ShowFatalError(e);
+            => ShowFatalErrorAndExit(e, null);
 
-        private static void ShowFatalError(Exception e)
+        private static void ShowFatalErrorAndExit(Exception e, MessageTrace messageTrace)
         {
             //
             // Ensure logs are flushed.
@@ -752,7 +760,10 @@ namespace Google.Solutions.IapDesktop
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
             //
-            ErrorDialog.Show(e);
+            ErrorDialog.Show(new BugReport(typeof(Program), e)
+            {
+                WindowMessageTrace = messageTrace
+            });
             Environment.Exit(e.HResult);
         }
 
@@ -785,7 +796,7 @@ namespace Google.Solutions.IapDesktop
             }
             catch (Exception e)
             {
-                ShowFatalError(e);
+                ShowFatalErrorAndExit(e, null);
             }
         }
 

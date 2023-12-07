@@ -30,20 +30,20 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         private readonly BugReport report;
 
-        public ErrorDialog(Exception exception)
+        public ErrorDialog(BugReport report)
         {
             InitializeComponent();
 
-            this.report = new BugReport(GetType(), exception);
+            this.report = report;
 
             this.errorText.Text = this.report.ToString().Replace("\n", "\r\n");
             this.errorText.SelectionStart = 0;
             this.errorText.SelectionLength = 0;
         }
 
-        public static void Show(Exception e)
+        public static void Show(BugReport report)
         {
-            new ErrorDialog(e).ShowDialog();
+            new ErrorDialog(report).ShowDialog();
         }
 
         private void reportButton_Click(object sender, EventArgs e)
