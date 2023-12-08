@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenUserNotInternal_ThenFollowedTracksIsUnchanged(
             [Values(
                 ReleaseTrack.Critical,
-                ReleaseTrack._Default,
-                ReleaseTrack._All)] ReleaseTrack followedTracks)
+                ReleaseTrack.Normal,
+                ReleaseTrack.Rapid)] ReleaseTrack followedTracks)
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization(email).Object,
                 ReleaseTrack.Critical);
 
-            Assert.AreEqual(ReleaseTrack._All, policy.FollowedTracks);
+            Assert.AreEqual(ReleaseTrack.Rapid, policy.FollowedTracks);
         }
 
         //---------------------------------------------------------------------
@@ -91,18 +91,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._All);
+                ReleaseTrack.Rapid);
 
             Assert.AreEqual(1, policy.DaysBetweenUpdateChecks);
         }
 
         [Test]
-        public void WhenUserOnDefaultTrack_ThenDaysBetweenUpdateChecksIsHigh()
+        public void WhenUserOnNormalTrack_ThenDaysBetweenUpdateChecksIsHigh()
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._Default);
+                ReleaseTrack.Normal);
 
             Assert.AreEqual(10, policy.DaysBetweenUpdateChecks);
         }
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._All);
+                ReleaseTrack.Rapid);
 
             Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
         }
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._All);
+                ReleaseTrack.Rapid);
 
             Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
         }
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 install,
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._All);
+                ReleaseTrack.Rapid);
 
             Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
         }
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var Policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
+                ReleaseTrack.Rapid);
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Critical | ReleaseTrack.Normal);
+                ReleaseTrack.Normal);
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._Default);
+                ReleaseTrack.Normal);
 
             Assert.IsFalse(policy.IsUpdateCheckDue(clock, now));
             Assert.IsFalse(policy.IsUpdateCheckDue(clock, now.AddYears(1)));
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack._Default);
+                ReleaseTrack.Normal);
 
             Assert.IsTrue(policy.IsUpdateCheckDue(clock, now.AddDays(-policy.DaysBetweenUpdateChecks)));
             Assert.IsTrue(policy.IsUpdateCheckDue(clock, now.AddDays(-policy.DaysBetweenUpdateChecks - 1)));

@@ -53,7 +53,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
             ReleaseTrack followedTracks)
         {
             Precondition.ExpectNotNull(authorization, nameof(authorization));
-            Debug.Assert((followedTracks + 1).IsSingleFlag(), "Must include all lower tracks");
 
             this.install = install.ExpectNotNull(nameof(install));
 
@@ -64,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
                 session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
             {
-                followedTracks |= (ReleaseTrack.Critical | ReleaseTrack.Normal | ReleaseTrack.Rapid);
+                followedTracks = ReleaseTrack.Rapid;
             }
 
             //
@@ -127,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             else
             {
-                return this.FollowedTracks.HasFlag(GetReleaseTrack(release));
+                return this.FollowedTracks >= GetReleaseTrack(release);
             }
         }
 
@@ -143,27 +142,24 @@ namespace Google.Solutions.IapDesktop.Application.Host
     }
 
     /// <summary>
-    /// Available release tracks.
+    /// Type of release tracks. Each track automatically
+    /// includes all "more critical" tracks.
     /// </summary>
-    [Flags]
     public enum ReleaseTrack : int
     {
         /// <summary>
         /// Critical security updates.
         /// </summary>
-        Critical = 1,
+        Critical = 0,
 
         /// <summary>
-        /// Normal feature updates (later stage).
+        /// Normal feature updates and critical security updates.
         /// </summary>
-        Normal = 2,
+        Normal = 1,
 
         /// <summary>
-        /// Normal feature updates (early stage).
+        /// Early feature updates and critical security updates.
         /// </summary>
-        Rapid = 4,
-
-        _Default = Critical | Normal,
-        _All = Critical | Normal | Rapid
+        Rapid = 2,
     }
 }
