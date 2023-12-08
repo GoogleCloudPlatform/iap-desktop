@@ -32,7 +32,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 {
-    internal class CheckForUpdateCommand<TContext> : MenuCommandBase<TContext>
+    public class CheckForUpdateCommand<TContext> : MenuCommandBase<TContext>
     {
         private readonly IWin32Window parentWindow;
         private readonly IInstall install;
@@ -67,26 +67,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             return this.updatePolicy.IsUpdateCheckDue(lastCheck);
         }
 
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override bool IsAvailable(TContext context)
+        private void PromptForDownload(IRelease latestRelease)
         {
-            return true;
-        }
-
-        protected override bool IsEnabled(TContext context)
-        {
-            return true;
-        }
-
-        public override async Task ExecuteAsync(TContext context) // TODO: Can throw OperationCanceledException!
-        {
-            var latestRelease = await this.feed
-                .FindLatestReleaseAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-            if (latestRelease != null && 
+            if (latestRelease != null &&
                 this.updatePolicy.IsUpdateAdvised(latestRelease))
             {
                 //
@@ -98,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     "Update available",
                     "An update is available for IAP Desktop.\n\n" +
                         $"Installed version: {this.install.CurrentVersion}\n" +
-                        $"Available version: {latestRelease.TagVersion}",   // TODO: Indicate track
+                        $"Available version: {latestRelease.TagVersion}",
                     "Would you like to download the update now?",
                     null,
                     new[]
@@ -124,6 +107,45 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                         break;
                 }
             }
+        }
+
+        public void Execute(TContext context, CancellationToken cancellationToken)
+        {
+#pragma warning disable VSTHRD002
+            var latestRelease = this.feed
+                .FindLatestReleaseAsync(cancellationToken)
+                .Result;
+#pragma warning restore VSTHRD002
+
+            PromptForDownload(latestRelease);
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override bool IsAvailable(TContext context)
+        {
+            return true;
+        }
+
+        protected override bool IsEnabled(TContext context)
+        {
+            return true;
+        }
+
+        public override void Execute(TContext context)
+        {
+            Execute(context, CancellationToken.None);
+        }
+
+        public override async Task ExecuteAsync(TContext context)
+        {
+            var latestRelease = await this.feed
+               .FindLatestReleaseAsync(CancellationToken.None)
+               .ConfigureAwait(true);
+
+            PromptForDownload(latestRelease);
         }
     }
 }

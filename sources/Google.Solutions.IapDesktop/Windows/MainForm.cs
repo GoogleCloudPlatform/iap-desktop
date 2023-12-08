@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
@@ -44,6 +45,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Platform.Net;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -363,26 +365,52 @@ namespace Google.Solutions.IapDesktop.Windows
         // Window events.
         //---------------------------------------------------------------------
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs _)
         {
             var settings = this.applicationSettings.GetSettings();
 
-            var updateService = this.serviceProvider.GetService<IUpdateCheck>();
-            if (settings.IsUpdateCheckEnabled.BoolValue &&
-                updateService.IsUpdateCheckDue(DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
+            //
+            // Check for updates.
+            //
+            var releaseTrack = settings.IsUpdateCheckEnabled.BoolValue
+                ? ReleaseTrack.Normal
+                : ReleaseTrack.Critical;
+
+            var checkForUpdates = new CheckForUpdateCommand<IMainWindow>(
+                this,
+                this.serviceProvider.GetService<IInstall>(),
+                this.serviceProvider.GetService<IUpdatePolicyFactory>(),
+                this.serviceProvider.GetService<IReleaseFeed>(),
+                this.serviceProvider.GetService<ITaskDialog>(),
+                this.serviceProvider.GetService<IBrowser>(),
+                releaseTrack);
+            if (checkForUpdates.IsAutomatedUpdateCheckDue(
+                DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
             {
-                //
-                // Time to check for updates again.
-                //
                 try
                 {
-                    updateService.CheckForUpdates(this);
+                    using (var cts = new CancellationTokenSource())
+                    {
+                        //
+                        // Check for updates. This check must be performed synchronously,
+                        // otherwise this method returns and the application exits.
+                        // In order not to block everything for too long in case of a network
+                        // problem, use a timeout.
+                        //
+                        cts.CancelAfter(TimeSpan.FromSeconds(5));
 
-                    settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
+                        checkForUpdates.Execute(this);
+
+                        settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
+                    }
                 }
-                catch (Exception)
+                catch (OperationCanceledException)
+                { 
+                }
+                catch (Exception e)
                 {
-                    // Nevermind.
+                    // Ignore in Release builds.
+                    Debug.Fail(e.FullMessage());
                 }
             }
 

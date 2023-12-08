@@ -582,13 +582,14 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
+                mainLayer.AddSingleton<IBrowser>(Browser.Default);
 
                 var projectRepository = new ProjectRepository(profile.SettingsKey.CreateSubKey("Inventory"));
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
                 mainLayer.AddTransient<ICloudConsoleClient, CloudConsoleClient>();
-                mainLayer.AddTransient<IUpdateCheck, UpdateCheck>();
+                mainLayer.AddTransient<IUpdatePolicyFactory, UpdatePolicyFactory>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 

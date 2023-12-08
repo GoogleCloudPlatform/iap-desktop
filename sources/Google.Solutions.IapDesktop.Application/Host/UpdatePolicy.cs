@@ -152,7 +152,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public bool IsUpdateCheckDue(DateTime lastCheck)
         {
-            Debug.Assert(lastCheck.Kind == DateTimeKind.Utc);
+            Debug.Assert(
+                lastCheck.Kind == DateTimeKind.Utc || 
+                lastCheck == DateTime.MinValue);
 
             return (this.clock.UtcNow - lastCheck).TotalDays >= this.DaysBetweenUpdateChecks;
         }

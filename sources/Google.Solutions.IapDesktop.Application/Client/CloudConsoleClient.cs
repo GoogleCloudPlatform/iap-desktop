@@ -68,16 +68,10 @@ namespace Google.Solutions.IapDesktop.Application.Client
         private readonly IAuthorization authorization;
         private readonly IBrowser browser;
 
-        internal CloudConsoleClient(IAuthorization authorization, IBrowser browser)
+        public CloudConsoleClient(IAuthorization authorization, IBrowser browser)
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.browser = browser.ExpectNotNull(nameof(browser));
-        }
-
-        public CloudConsoleClient(IAuthorization authorization)
-            : this(authorization, Browser.Default)
-        {
-            this.authorization = authorization.ExpectNotNull(nameof(authorization));
         }
 
         private Uri BaseUri
