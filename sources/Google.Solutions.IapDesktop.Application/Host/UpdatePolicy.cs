@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             {
                 return ReleaseTrack.Critical;
             }
-            else if (description.Contains("[track:rapid]")) // TODO: Prerelease
+            else if (description.Contains("[track:canary]"))
             {
                 return ReleaseTrack.Canary;
             }
