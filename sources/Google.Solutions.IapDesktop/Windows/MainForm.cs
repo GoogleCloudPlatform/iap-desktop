@@ -404,9 +404,6 @@ namespace Google.Solutions.IapDesktop.Windows
                         settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
                     }
                 }
-                catch (OperationCanceledException)
-                { 
-                }
                 catch (Exception e)
                 {
                     // Ignore in Release builds.

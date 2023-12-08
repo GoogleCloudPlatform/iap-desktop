@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             return this.updatePolicy.IsUpdateCheckDue(lastCheck);
         }
 
-        private void PromptForDownload(IRelease latestRelease)
+        internal void PromptForDownload(IRelease latestRelease)
         {
             if (latestRelease != null &&
                 this.updatePolicy.IsUpdateAdvised(latestRelease))
@@ -75,36 +75,43 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 //
                 // Prompt for upgrade.
                 //
-                var selectedOption = this.taskDialog.ShowOptionsTaskDialog(
-                    this.parentWindow,
-                    TaskDialogIcons.TD_SHIELD_ICON_GREEN_BACKGROUND,
-                    "Update available",
-                    "An update is available for IAP Desktop.\n\n" +
-                        $"Installed version: {this.install.CurrentVersion}\n" +
-                        $"Available version: {latestRelease.TagVersion}",
-                    "Would you like to download the update now?",
-                    null,
-                    new[]
-                    {
-                        "Yes, download now",
-                        "Show release notes",
-                        "No, download later"
-                    },
-                    null,
-                    out var _);
-
-                switch (selectedOption)
+                try
                 {
-                    case 0: // Download now.
-                        this.browser.Navigate(latestRelease.DownloadUrl ?? latestRelease.DetailsUrl);
-                        break;
+                    var selectedOption = this.taskDialog.ShowOptionsTaskDialog(
+                        this.parentWindow,
+                        TaskDialogIcons.TD_SHIELD_ICON_GREEN_BACKGROUND,
+                        "Update available",
+                        "An update is available for IAP Desktop.\n\n" +
+                            $"Installed version: {this.install.CurrentVersion}\n" +
+                            $"Available version: {latestRelease.TagVersion}",
+                        "Would you like to download the update now?",
+                        null,
+                        new[]
+                        {
+                            "Yes, download now",
+                            "Show release notes",
+                            "No, download later"
+                        },
+                        null,
+                        out var _);
 
-                    case 1: // Show release notes
-                        this.browser.Navigate(latestRelease.DetailsUrl);
-                        break;
+                    switch (selectedOption)
+                    {
+                        case 0: // Download now.
+                            this.browser.Navigate(
+                                latestRelease.DownloadUrl ?? latestRelease.DetailsUrl);
+                            break;
 
-                    default: // Later/cancel.
-                        break;
+                        case 1: // Show release notes
+                            this.browser.Navigate(latestRelease.DetailsUrl);
+                            break;
+
+                        default: // Later/cancel.
+                            break;
+                    }
+                }
+                catch (OperationCanceledException)
+                {
                 }
             }
         }
