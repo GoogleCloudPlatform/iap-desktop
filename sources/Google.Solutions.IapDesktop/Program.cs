@@ -392,7 +392,6 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddSingleton<IExternalRestClient, ExternalRestClient>();
                 preAuthLayer.AddTransient<HelpClient>();
-                preAuthLayer.AddTransient<IReleaseFeed, GithubClient>();
                 preAuthLayer.AddTransient<BugReportClient>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
@@ -570,7 +569,9 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<ILoggingClient, LoggingClient>();
                 mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();
                 mainLayer.AddSingleton<IIapClient, IapClient>();
-                mainLayer.AddTransient<IAddressResolver, AddressResolver>();
+                mainLayer.AddSingleton<IReleaseFeed>(new GithubClient(
+                    new ExternalRestClient(),
+                    OAuthClient.RepositoryName));
 
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();

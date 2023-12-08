@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,15 +34,26 @@ namespace Google.Solutions.IapDesktop.Application.Client
 {
     public class GithubClient : IReleaseFeed
     {
-        public const string RepositoryName = "GoogleCloudPlatform/iap-desktop";
-
         private readonly IExternalRestClient restAdapter;
 
-        public GithubClient(IExternalRestClient restAdapter)
+        public GithubClient(
+            IExternalRestClient restAdapter,
+            string repositoryName)
         {
             this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
+            this.Repository = repositoryName.ExpectNotEmpty(nameof(repositoryName));
+
+            Debug.Assert(repositoryName.Contains('/'));
         }
 
+        /// <summary>
+        /// Repository to source updates from, formatted as org-name/repo-name.
+        /// </summary>
+        public string Repository { get; }
+
+        /// <summary>
+        /// List recent updates
+        /// </summary>
         public async Task<IEnumerable<IRelease>> ListReleasesAsync(
             ushort maxCount,
             CancellationToken cancellationToken)
@@ -50,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             {
                 var releases = await this.restAdapter
                     .GetAsync<List<Release>>(
-                        new Uri($"https://api.github.com/repos/{RepositoryName}/releases?per_page={maxCount}"),
+                        new Uri($"https://api.github.com/repos/{Repository}/releases?per_page={maxCount}"),
                         cancellationToken)
                     .ConfigureAwait(false);
 
@@ -58,6 +70,9 @@ namespace Google.Solutions.IapDesktop.Application.Client
             }
         }
 
+        /// <summary>
+        /// Find the latest available update.
+        /// </summary>
         public async Task<IRelease> FindLatestReleaseAsync(
             CancellationToken cancellationToken)
         {
@@ -65,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             {
                 var latestRelease = await this.restAdapter
                     .GetAsync<Release>(
-                        new Uri($"https://api.github.com/repos/{RepositoryName}/releases/latest"),
+                        new Uri($"https://api.github.com/repos/{Repository}/releases/latest"),
                         cancellationToken)
                     .ConfigureAwait(false);
 

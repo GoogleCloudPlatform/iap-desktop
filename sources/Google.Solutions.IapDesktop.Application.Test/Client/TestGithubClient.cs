@@ -35,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
     [TestFixture]
     public class TestGithubClient : ApplicationFixtureBase
     {
+        private const string SampleRepository = "google/sample";
+
         //---------------------------------------------------------------------
         // FindLatestReleaseAsync.
         //---------------------------------------------------------------------
@@ -49,7 +51,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException("mock"));
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
@@ -67,7 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GithubClient.Release)null);
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
 
             Assert.IsNull(await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
@@ -88,7 +94,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException("mock"));
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
@@ -106,7 +114,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((List<GithubClient.Release>)null);
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
 
             CollectionAssert.IsEmpty(await adapter
                 .ListReleasesAsync(1, CancellationToken.None)
@@ -127,7 +137,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release("1.2.3.4", null, null, null));
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -146,7 +158,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release("not a version", null, null, null));
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -176,7 +190,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                         new GithubClient.ReleaseAsset("http://example.com/test.txt")
                     }));
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -203,7 +219,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                         new GithubClient.ReleaseAsset("http://example.com/download.msi")
                     }));
 
-            var adapter = new GithubClient(restAdapter.Object);
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
@@ -219,7 +237,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         [Test]
         public async Task WhenRepositoryExists_ThenFindLatestReleaseReturnsRelease()
         {
-            var adapter = new GithubClient(new ExternalRestClient());
+            var adapter = new GithubClient(
+                new ExternalRestClient(),
+                SampleRepository);
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
