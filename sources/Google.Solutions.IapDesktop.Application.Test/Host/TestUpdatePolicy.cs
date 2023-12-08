@@ -49,41 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         //---------------------------------------------------------------------
-        // FollowedTracks.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenUserNotInternal_ThenFollowedTracksIsUnchanged(
-            [Values(
-                ReleaseTrack.Critical,
-                ReleaseTrack.Normal,
-                ReleaseTrack.Canary)] ReleaseTrack followedTracks)
-        {
-            var policy = new UpdatePolicy(
-                CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
-                SystemClock.Default,
-                followedTracks);
-
-            Assert.AreEqual(followedTracks, policy.FollowedTrack);
-        }
-
-        [Test]
-        public void WhenUserIsInternal_ThenFollowedTracksIncludesCanary(
-            [Values(
-                "_@GOOGLE.com",
-                "_@x.altostrat.COM")] string email)
-        {
-            var policy = new UpdatePolicy(
-                CreateInstall(),
-                CreateAuthorization(email).Object,
-                SystemClock.Default,
-                ReleaseTrack.Critical);
-
-            Assert.AreEqual(ReleaseTrack.Canary, policy.FollowedTrack);
-        }
-
-        //---------------------------------------------------------------------
         // DaysBetweenUpdateChecks.
         //---------------------------------------------------------------------
 

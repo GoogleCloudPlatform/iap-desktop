@@ -219,6 +219,31 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
+        public void WhenDownloadUrlNotFound_ThenPromptForDownloadOpensDetails()
+        {
+            var browser = new Mock<IBrowser>();
+
+            var downloadUrl = "http://example.com/download";
+            var detailsUrl = "http://example.com/details";
+            var release = new Mock<IRelease>();
+            release.SetupGet(r => r.DownloadUrl).Returns(downloadUrl);
+            release.SetupGet(r => r.DetailsUrl).Returns(detailsUrl);
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicy(true),
+                new Mock<IReleaseFeed>().Object,
+                CreateDialog(0),
+                browser.Object,
+            ReleaseTrack.Critical);
+
+            command.PromptForDownload(release.Object);
+
+            browser.Verify(b => b.Navigate(detailsUrl), Times.Once);
+        }
+
+        [Test]
         public void WhenUserSelectsMoreDetails_ThenPromptForDownloadOpensDetails()
         {
             var browser = new Mock<IBrowser>();

@@ -74,16 +74,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
             this.clock = clock.ExpectNotNull(nameof(clock));
 
             //
-            // Force-opt in internal domains to the canary track.
-            //
-            if (authorization.Session is IGaiaOidcSession session && (
-                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
-                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
-            {
-                followedTrack = ReleaseTrack.Canary;
-            }
-
-            //
             // Determine how often update checks are performed. 
             // A higher number implies a slower pace of updates.
             //
@@ -133,8 +123,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public bool IsUpdateAdvised(IRelease release)
         {
             Precondition.ExpectNotNull(release, nameof(release));
-
-            Debug.Assert(this.FollowedTrack.HasFlag(ReleaseTrack.Critical));
 
             if (release.TagVersion == null ||
                 release.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)

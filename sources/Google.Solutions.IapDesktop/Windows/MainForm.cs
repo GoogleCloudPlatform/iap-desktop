@@ -55,6 +55,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using Google.Solutions.Apis.Auth.Gaia;
+using static System.Collections.Specialized.BitVector32;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -372,9 +374,28 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Check for updates.
             //
-            var releaseTrack = settings.IsUpdateCheckEnabled.BoolValue
-                ? ReleaseTrack.Normal
-                : ReleaseTrack.Critical;
+            ReleaseTrack releaseTrack;
+            if (!settings.IsUpdateCheckEnabled.BoolValue)
+            {
+                //
+                // Updates are off, but still check for critical ones.
+                //
+                releaseTrack = ReleaseTrack.Critical;
+            }
+            else if (
+                this.serviceProvider.GetService<IAuthorization>().Session is IGaiaOidcSession session && (
+                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
+                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
+            {
+                //
+                // Force-opt in internal domains to the canary track.
+                //
+                releaseTrack = ReleaseTrack.Canary;
+            }
+            else
+            {
+                releaseTrack = ReleaseTrack.Normal;
+            }
 
             var checkForUpdates = new CheckForUpdateCommand<IMainWindow>(
                 this,
