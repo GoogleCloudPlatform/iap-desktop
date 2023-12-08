@@ -50,6 +50,11 @@ namespace Google.Solutions.IapDesktop
         /// API Key (for OS Login only).
         /// </summary>
         internal static ApiKey ApiKey = new ApiKey("<<your-key-here>>");
+        
+        /// <summary>
+        /// Repository to source updates from.
+        /// </summary>
+        public const string RepositoryName = "GoogleCloudPlatform/iap-desktop";
     }
 
     internal static class AnalyticsStream
