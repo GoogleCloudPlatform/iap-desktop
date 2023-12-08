@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         {
             var adapter = new GithubClient(
                 new ExternalRestClient(),
-                SampleRepository);
+                "GoogleCloudPlatform/iap-desktop");
             var release = await adapter
                 .FindLatestReleaseAsync(CancellationToken.None)
                 .ConfigureAwait(false);
