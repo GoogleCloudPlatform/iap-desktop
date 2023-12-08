@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization("_@example.com").Object,
                 followedTracks);
 
-            Assert.AreEqual(followedTracks, policy.FollowedTracks);
+            Assert.AreEqual(followedTracks, policy.FollowedTrack);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization(email).Object,
                 ReleaseTrack.Critical);
 
-            Assert.AreEqual(ReleaseTrack.Canary, policy.FollowedTracks);
+            Assert.AreEqual(ReleaseTrack.Canary, policy.FollowedTrack);
         }
 
         //---------------------------------------------------------------------

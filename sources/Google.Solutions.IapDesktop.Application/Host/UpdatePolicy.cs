@@ -29,32 +29,49 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
+    public interface IUpdatePolicy
+    {
+        /// <summary>
+        /// Release tracked followed by the user.
+        /// </summary>
+        ReleaseTrack FollowedTrack { get; }
+
+        /// <summary>
+        /// Determine if the user should be advised to install an update.
+        /// </summary>
+        bool IsUpdateAdvised(IRelease release);
+
+        /// <summary>
+        /// Check if, given the current policy, an update check
+        /// should be performed.
+        /// </summary>
+        bool IsUpdateCheckDue(DateTime lastCheck);
+    }
+
     /// <summary>
     /// Policy that determines how often to check for updates,
     /// and which updates to apply.
     /// </summary>
-    public class UpdatePolicy
+    internal class UpdatePolicy : IUpdatePolicy
     {
+        private readonly IClock clock;
         private readonly IInstall install;
-
-        /// <summary>
-        /// Release tracked followed by the user.
-        /// </summary>
-        public ReleaseTrack FollowedTracks { get; }
 
         /// <summary>
         /// Days to wait between two consecutive update checks.
         /// </summary>
         public ushort DaysBetweenUpdateChecks { get; }
 
-        public UpdatePolicy(
+        internal UpdatePolicy(
             IInstall install,
             IAuthorization authorization,
-            ReleaseTrack followedTracks)
+            IClock clock,
+            ReleaseTrack followedTrack)
         {
             Precondition.ExpectNotNull(authorization, nameof(authorization));
 
             this.install = install.ExpectNotNull(nameof(install));
+            this.clock = clock.ExpectNotNull(nameof(clock));
 
             //
             // Force-opt in internal domains to the canary track.
@@ -63,14 +80,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
                 session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
             {
-                followedTracks = ReleaseTrack.Canary;
+                followedTrack = ReleaseTrack.Canary;
             }
 
             //
             // Determine how often update checks are performed. 
             // A higher number implies a slower pace of updates.
             //
-            if (followedTracks.HasFlag(ReleaseTrack.Canary))
+            if (followedTrack.HasFlag(ReleaseTrack.Canary))
             {
                 this.DaysBetweenUpdateChecks = 1;
             }
@@ -79,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 this.DaysBetweenUpdateChecks = 10;
             }
 
-            this.FollowedTracks = followedTracks;
+            this.FollowedTrack = followedTrack;
         }
 
         /// <summary>
@@ -107,14 +124,17 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        /// <summary>
-        /// Determine if the user should be advised to install an update.
-        /// </summary>
+        //---------------------------------------------------------------------
+        // IUpdatePolicy.
+        //---------------------------------------------------------------------
+
+        public ReleaseTrack FollowedTrack { get; }
+
         public bool IsUpdateAdvised(IRelease release)
         {
             Precondition.ExpectNotNull(release, nameof(release));
 
-            Debug.Assert(this.FollowedTracks.HasFlag(ReleaseTrack.Critical));
+            Debug.Assert(this.FollowedTrack.HasFlag(ReleaseTrack.Critical));
 
             if (release.TagVersion == null ||
                 release.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
@@ -126,18 +146,15 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             else
             {
-                return this.FollowedTracks >= GetReleaseTrack(release);
+                return this.FollowedTrack >= GetReleaseTrack(release);
             }
         }
 
-        public bool IsUpdateCheckDue(
-            IClock clock,
-            DateTime lastCheck)
+        public bool IsUpdateCheckDue(DateTime lastCheck)
         {
-            clock.ExpectNotNull(nameof(clock));
             Debug.Assert(lastCheck.Kind == DateTimeKind.Utc);
 
-            return (clock.UtcNow - lastCheck).TotalDays >= this.DaysBetweenUpdateChecks;
+            return (this.clock.UtcNow - lastCheck).TotalDays >= this.DaysBetweenUpdateChecks;
         }
     }
 
