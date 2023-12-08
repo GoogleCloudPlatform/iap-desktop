@@ -36,16 +36,13 @@ namespace Google.Solutions.IapDesktop.Application.Host
     public class UpdatePolicyFactory : IUpdatePolicyFactory
     {
         private readonly IInstall install;
-        private readonly IAuthorization authorization;
         private readonly IClock clock;
 
         public UpdatePolicyFactory(
             IInstall install, 
-            IAuthorization authorization, 
             IClock clock)
         {
             this.install = install.ExpectNotNull(nameof(install));
-            this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.clock = clock.ExpectNotNull(nameof(clock));
         }
 
@@ -53,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
         {
             return new UpdatePolicy(
                 this.install, 
-                this.authorization, 
                 this.clock,
                 followedTrack);
         }

@@ -64,12 +64,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         internal UpdatePolicy(
             IInstall install,
-            IAuthorization authorization,
             IClock clock,
             ReleaseTrack followedTrack)
         {
-            Precondition.ExpectNotNull(authorization, nameof(authorization));
-
             this.install = install.ExpectNotNull(nameof(install));
             this.clock = clock.ExpectNotNull(nameof(clock));
 

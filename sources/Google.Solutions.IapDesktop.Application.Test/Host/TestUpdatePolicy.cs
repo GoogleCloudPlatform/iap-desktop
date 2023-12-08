@@ -33,16 +33,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
     [TestFixture]
     public class TestUpdatePolicy
     {
-        private Mock<IAuthorization> CreateAuthorization(string email)
-        {
-            var session = new Mock<IGaiaOidcSession>();
-            session.SetupGet(a => a.Email).Returns(email);
-
-            var authorization = new Mock<IAuthorization>();
-            authorization.SetupGet(a => a.Session).Returns(session.Object);
-            return authorization;
-        }
-
         private static Install CreateInstall()
         {
             return new Install(Install.DefaultBaseKeyPath);
@@ -57,7 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Canary);
 
@@ -69,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Normal);
 
@@ -86,7 +74,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Critical);
 
@@ -103,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Critical);
 
@@ -122,7 +108,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Critical);
 
@@ -146,7 +131,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var release = new Mock<IRelease>();
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Canary);
 
@@ -161,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Canary);
 
@@ -178,7 +161,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var policy = new UpdatePolicy(
                 install,
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Canary);
 
@@ -190,7 +172,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var Policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Canary);
 
@@ -216,7 +197,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Normal);
 
@@ -242,7 +222,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 SystemClock.Default,
                 ReleaseTrack.Critical);
 
@@ -275,7 +254,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 clock,
                 ReleaseTrack.Normal);
 
@@ -293,7 +271,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var policy = new UpdatePolicy(
                 CreateInstall(),
-                CreateAuthorization("_@example.com").Object,
                 clock,
                 ReleaseTrack.Normal);
 
