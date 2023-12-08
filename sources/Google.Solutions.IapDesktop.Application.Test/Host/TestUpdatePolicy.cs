@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             [Values(
                 ReleaseTrack.Critical,
                 ReleaseTrack.Normal,
-                ReleaseTrack.Rapid)] ReleaseTrack followedTracks)
+                ReleaseTrack.Canary)] ReleaseTrack followedTracks)
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenUserIsInternal_ThenFollowedTracksIncludesRapid(
+        public void WhenUserIsInternal_ThenFollowedTracksIncludesCanary(
             [Values(
                 "_@GOOGLE.com",
                 "_@x.altostrat.COM")] string email)
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 CreateAuthorization(email).Object,
                 ReleaseTrack.Critical);
 
-            Assert.AreEqual(ReleaseTrack.Rapid, policy.FollowedTracks);
+            Assert.AreEqual(ReleaseTrack.Canary, policy.FollowedTracks);
         }
 
         //---------------------------------------------------------------------
@@ -86,12 +86,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUserOnRapidTrack_ThenDaysBetweenUpdateChecksIsLow()
+        public void WhenUserOnCanaryTrack_ThenDaysBetweenUpdateChecksIsLow()
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Rapid);
+                ReleaseTrack.Canary);
 
             Assert.AreEqual(1, policy.DaysBetweenUpdateChecks);
         }
@@ -147,21 +147,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenDescriptionContainsRapidTag_ThenGetReleaseTrackReturnsRapid()
+        public void WhenDescriptionContainsCanaryTag_ThenGetReleaseTrackReturnsCanary()
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
                 ReleaseTrack.Critical);
 
-            var description = "This release is on the [track:rapid] track!!1!";
+            var description = "This release is on the [track:Canary] track!!1!";
 
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);
 
             var track = policy.GetReleaseTrack(release.Object);
 
-            Assert.AreEqual(ReleaseTrack.Rapid, track);
+            Assert.AreEqual(ReleaseTrack.Canary, track);
         }
 
         //---------------------------------------------------------------------
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Rapid);
+                ReleaseTrack.Canary);
 
             Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
         }
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Rapid);
+                ReleaseTrack.Canary);
 
             Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
         }
@@ -205,34 +205,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var policy = new UpdatePolicy(
                 install,
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Rapid);
+                ReleaseTrack.Canary);
 
             Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
         }
 
         [Test]
-        public void WhenReleaseNewerAndUserOnRapidTrack_ThenIsUpdateAdvisedReturnsTrueForRapidTrackAndBelow()
+        public void WhenReleaseNewerAndUserOnCanaryTrack_ThenIsUpdateAdvisedReturnsTrueForCanaryTrackAndBelow()
         {
             var Policy = new UpdatePolicy(
                 CreateInstall(),
                 CreateAuthorization("_@example.com").Object,
-                ReleaseTrack.Rapid);
+                ReleaseTrack.Canary);
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
-            var rapidRelease = new Mock<IRelease>();
+            var CanaryRelease = new Mock<IRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
-            rapidRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
+            CanaryRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            rapidRelease.SetupGet(r => r.Description).Returns("[track:rapid]");
+            CanaryRelease.SetupGet(r => r.Description).Returns("[track:Canary]");
 
             Assert.IsTrue(Policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsTrue(Policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsTrue(Policy.IsUpdateAdvised(rapidRelease.Object));
+            Assert.IsTrue(Policy.IsUpdateAdvised(CanaryRelease.Object));
         }
 
         [Test]
@@ -245,19 +245,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
-            var rapidRelease = new Mock<IRelease>();
+            var CanaryRelease = new Mock<IRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
-            rapidRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
+            CanaryRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            rapidRelease.SetupGet(r => r.Description).Returns("[track:rapid]");
+            CanaryRelease.SetupGet(r => r.Description).Returns("[track:Canary]");
 
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(rapidRelease.Object));
+            Assert.IsFalse(policy.IsUpdateAdvised(CanaryRelease.Object));
         }
 
         [Test]
@@ -270,19 +270,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
-            var rapidRelease = new Mock<IRelease>();
+            var CanaryRelease = new Mock<IRelease>();
 
             normalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
             criticalRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
-            rapidRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
+            CanaryRelease.SetupGet(r => r.TagVersion).Returns(new Version(9, 0));
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            rapidRelease.SetupGet(r => r.Description).Returns("[track:rapid]");
+            CanaryRelease.SetupGet(r => r.Description).Returns("[track:Canary]");
 
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsFalse(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(rapidRelease.Object));
+            Assert.IsFalse(policy.IsUpdateAdvised(CanaryRelease.Object));
         }
 
         //---------------------------------------------------------------------

@@ -57,20 +57,20 @@ namespace Google.Solutions.IapDesktop.Application.Host
             this.install = install.ExpectNotNull(nameof(install));
 
             //
-            // Force-opt in internal domains to the rapid track.
+            // Force-opt in internal domains to the canary track.
             //
             if (authorization.Session is IGaiaOidcSession session && (
                 session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
                 session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
             {
-                followedTracks = ReleaseTrack.Rapid;
+                followedTracks = ReleaseTrack.Canary;
             }
 
             //
             // Determine how often update checks are performed. 
             // A higher number implies a slower pace of updates.
             //
-            if (followedTracks.HasFlag(ReleaseTrack.Rapid))
+            if (followedTracks.HasFlag(ReleaseTrack.Canary))
             {
                 this.DaysBetweenUpdateChecks = 1;
             }
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
             else if (description.Contains("[track:rapid]")) // TODO: Prerelease
             {
-                return ReleaseTrack.Rapid;
+                return ReleaseTrack.Canary;
             }
             else
             {
@@ -142,24 +142,23 @@ namespace Google.Solutions.IapDesktop.Application.Host
     }
 
     /// <summary>
-    /// Type of release tracks. Each track automatically
-    /// includes all "more critical" tracks.
+    /// Type of release tracks.
     /// </summary>
     public enum ReleaseTrack : int
     {
         /// <summary>
-        /// Critical security updates.
+        /// Includes critical security updates only.
         /// </summary>
         Critical = 0,
 
         /// <summary>
-        /// Normal feature updates and critical security updates.
+        /// Includes normal feature updates and critical security updates.
         /// </summary>
         Normal = 1,
 
         /// <summary>
-        /// Early feature updates and critical security updates.
+        /// Includes early feature updates and critical security updates.
         /// </summary>
-        Rapid = 2,
+        Canary = 2,
     }
 }
