@@ -19,17 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Windows.Help;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows.Help
+namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 {
     [TestFixture]
     public class TestReleaseNotesViewModel

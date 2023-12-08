@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
