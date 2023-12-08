@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Diagnostics;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -52,6 +53,11 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// </summary>
         public IWin32Window SourceWindow { get; set; }
 
+        /// <summary>
+        /// Trace of recent window messages, if any.
+        /// </summary>
+        public MessageTrace WindowMessageTrace { get; set; }
+
         public override string ToString()
         {
             var text = new StringBuilder();
@@ -73,6 +79,13 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
                         text.Append("\n\n");
                     }
                 }
+            }
+
+            if (this.WindowMessageTrace != null)
+            {
+                text.Append("\nMessage history:\n");
+                text.Append(this.WindowMessageTrace);
+                text.AppendLine();
             }
 
             if (this.SourceWindow == null)

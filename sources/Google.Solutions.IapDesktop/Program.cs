@@ -58,6 +58,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Diagnostics;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform;
@@ -442,7 +443,7 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),
                     profile.UserPolicyKey?.OpenSubKey("Application"));
-                
+
                 preAuthLayer.AddSingleton<IRepository<IAuthSettings>>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IOidcOfflineCredentialStore>(authSettingsRepository);
                 preAuthLayer.AddSingleton<IRepository<IAccessSettings>>(accessSettingsRepository);
@@ -637,70 +638,79 @@ namespace Google.Solutions.IapDesktop
                     this.initializedMainForm = null;
                 };
 
-                MessageThrottle.Install();
-
-                //
-                // Replace the standard WinForms exception dialog.
-                //
-                System.Windows.Forms.Application.ThreadException += (_, exArgs)
-                    => ShowFatalError(exArgs.Exception);
-
-                mainForm.Shown += (_, __) =>
+                using (new DebugMessageThrottle(TimeSpan.FromMilliseconds(100)))
+                using (var recorder = new MessageTraceRecorder(8))
                 {
                     //
-                    // Try to force the window into the foreground. This might
-                    // not be allowed in all circumstances, but ensures that the
-                    // window becomes visible after the user has completed a
-                    // (browser-based) authorization.
+                    // Replace the standard WinForms exception dialog.
                     //
-                    TrySetForegroundWindow(Process.GetCurrentProcess().Id);
-                };
+                    System.Windows.Forms.Application.ThreadException += (_, exArgs)
+                        => ShowFatalErrorAndExit(exArgs.Exception, recorder.Capture());
 
-                //
-                // Show the main window.
-                //
-                System.Windows.Forms.Application.Run(mainForm);
+                    mainForm.Shown += (_, __) =>
+                    {
+                        //
+                        // Try to force the window into the foreground. This might
+                        // not be allowed in all circumstances, but ensures that the
+                        // window becomes visible after the user has completed a
+                        // (browser-based) authorization.
+                        //
+                        TrySetForegroundWindow(Process.GetCurrentProcess().Id);
+                    };
 
-                if (processFactory.ChildProcesses > 0)
-                {
                     //
-                    // Instead of killing child processes outright, give
-                    // them a chance to close gracefully (and possibly
-                    // save any work).
+                    // Show the main window.
                     //
                     try
                     {
-                        WaitDialog.Wait(
-                            null,
-                            "Waiting for applications to close...",
-                            cancellationToken =>
-                            {
-                                //
-                                // Give child processes a fixed time to close,
-                                // but the user might cancel early.
-                                //
-                                return processFactory.CloseAsync(
-                                    TimeSpan.FromSeconds(30),
-                                    cancellationToken);
-                            });
+                        System.Windows.Forms.Application.Run(mainForm);
                     }
                     catch (Exception e)
                     {
-#if DEBUG
-                        if (!e.IsCancellation())
-                        {
-                            ShowFatalError(e);
-                        }
-#endif
+                        ShowFatalErrorAndExit(e, recorder.Capture());
                     }
+
+                    if (processFactory.ChildProcesses > 0)
+                    {
+                        //
+                        // Instead of killing child processes outright, give
+                        // them a chance to close gracefully (and possibly
+                        // save any work).
+                        //
+                        try
+                        {
+                            WaitDialog.Wait(
+                                null,
+                                "Waiting for applications to close...",
+                                cancellationToken =>
+                                {
+                                    //
+                                    // Give child processes a fixed time to close,
+                                    // but the user might cancel early.
+                                    //
+                                    return processFactory.CloseAsync(
+                                        TimeSpan.FromSeconds(30),
+                                        cancellationToken);
+                                });
+                        }
+                        catch (Exception e)
+                        {
+#if DEBUG
+                            if (!e.IsCancellation())
+                            {
+                                ShowFatalErrorAndExit(e, recorder.Capture());
+                            }
+#endif
+                        }
+                    }
+
+                    //
+                    // Ensure logs are flushed.
+                    //
+                    IsLoggingEnabled = false;
+
+                    return 0;
                 }
-
-                //
-                // Ensure logs are flushed.
-                //
-                IsLoggingEnabled = false;
-
-                return 0;
             }
         }
 
@@ -737,9 +747,9 @@ namespace Google.Solutions.IapDesktop
         }
 
         protected override void HandleSubsequentInvocationException(Exception e)
-            => ShowFatalError(e);
+            => ShowFatalErrorAndExit(e, null);
 
-        private static void ShowFatalError(Exception e)
+        private static void ShowFatalErrorAndExit(Exception e, MessageTrace messageTrace)
         {
             //
             // Ensure logs are flushed.
@@ -750,7 +760,10 @@ namespace Google.Solutions.IapDesktop
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
             //
-            ErrorDialog.Show(e);
+            ErrorDialog.Show(new BugReport(typeof(Program), e)
+            {
+                WindowMessageTrace = messageTrace
+            });
             Environment.Exit(e.HResult);
         }
 
@@ -783,7 +796,7 @@ namespace Google.Solutions.IapDesktop
             }
             catch (Exception e)
             {
-                ShowFatalError(e);
+                ShowFatalErrorAndExit(e, null);
             }
         }
 
@@ -798,39 +811,6 @@ namespace Google.Solutions.IapDesktop
                     WindowStyle = ProcessWindowStyle.Normal
                 };
                 process.Start();
-            }
-        }
-
-        /// <summary>
-        /// Debug only: Throttles window messages by introducing a sleep
-        /// between each message.
-        /// 
-        /// Can be enabled and disabled by pressing F12.
-        /// </summary>
-        private class MessageThrottle : IMessageFilter
-        {
-            public bool IsEnabled { get; private set; } = false;
-
-            public bool PreFilterMessage(ref Message m)
-            {
-                if ((WindowMessage)m.Msg == WindowMessage.WM_KEYDOWN &&
-                    (Keys)m.WParam.ToInt32() == Keys.F12)
-                {
-                    this.IsEnabled = !this.IsEnabled;
-                }
-
-                if (this.IsEnabled)
-                {
-                    Thread.Sleep(100);
-                }
-
-                return false;
-            }
-
-            [Conditional("DEBUG")]
-            public static void Install()
-            {
-                System.Windows.Forms.Application.AddMessageFilter(new MessageThrottle());
             }
         }
     }
