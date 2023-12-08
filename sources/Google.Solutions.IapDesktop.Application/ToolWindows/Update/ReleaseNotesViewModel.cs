@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Help
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 {
     public class ReleaseNotesViewModel : ViewModelBase
     {

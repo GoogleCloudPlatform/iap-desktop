@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System;
