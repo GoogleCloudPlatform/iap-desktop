@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             CredentialOption selectedOption;
             if (options.Count > 1)
             {
-                var optionIndex = this.serviceProvider.GetService<ITaskDialog>().ShowOptionsTaskDialog(
+                var optionIndex = this.serviceProvider.GetService<ILegacyTaskDialog>().ShowOptionsTaskDialog(
                     owner,
                     TaskDialogIcons.TD_INFORMATION_ICON,
                     "Credentials",

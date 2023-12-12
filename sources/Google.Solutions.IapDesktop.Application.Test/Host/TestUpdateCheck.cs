@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IReleaseFeed>().Object,
-                new Mock<ITaskDialog>().Object,
+                new Mock<ILegacyTaskDialog>().Object,
                 CreateClock(now));
 
             Assert.IsFalse(updateService.IsUpdateCheckDue(now));
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var updateService = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IReleaseFeed>().Object,
-                new Mock<ITaskDialog>().Object,
+                new Mock<ILegacyTaskDialog>().Object,
                 CreateClock(now));
 
             Assert.IsTrue(updateService.IsUpdateCheckDue(now.AddDays(-UpdateCheck.DaysBetweenUpdateChecks)));
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IRelease)null);
 
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var installedVersion = new UpdateCheck(
                 CreateInstall(),
                 new Mock<IReleaseFeed>().Object,
-                new Mock<ITaskDialog>().Object,
+                new Mock<ILegacyTaskDialog>().Object,
                 new Mock<IClock>().Object).InstalledVersion;
 
             var release = new Mock<IRelease>();
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
 
             var updateService = new UpdateCheck(
                 CreateInstall(),
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             var f = false;
             taskDialog
                 .Setup(d => d.ShowOptionsTaskDialog(
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 .Setup(a => a.FindLatestReleaseAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(release.Object);
 
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             var f = false;
             taskDialog
                 .Setup(d => d.ShowOptionsTaskDialog(

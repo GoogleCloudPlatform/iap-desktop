@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             parameters.Buttons.Add(TaskDialogStandardButton.OK);
             parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
-            HRESULT taskDialogIndirect(
+            void taskDialogIndirect(
                 ref TASKDIALOGCONFIG config,
                 out int buttonPressed,
                 out int radioButtonPressed,
@@ -65,7 +65,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 buttonPressed = TaskDialogStandardButton.OK.CommandId;
                 radioButtonPressed = -1;
                 verificationFlagChecked = false;
-                return HRESULT.S_OK;
             }
 
             var dialog = new TaskDialog()
@@ -84,7 +83,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             parameters.Buttons.Add(TaskDialogStandardButton.No);
             parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
-            HRESULT taskDialogIndirect(
+            void taskDialogIndirect(
                 ref TASKDIALOGCONFIG config,
                 out int buttonPressed,
                 out int radioButtonPressed,
@@ -96,7 +95,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 buttonPressed = TaskDialogStandardButton.Cancel.CommandId;
                 radioButtonPressed = -1;
                 verificationFlagChecked = false;
-                return HRESULT.S_OK;
             }
 
             var dialog = new TaskDialog()
@@ -126,7 +124,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             int clicks = 0;
             no.Click += (s, e) => clicks++;
 
-            HRESULT taskDialogIndirect(
+            void taskDialogIndirect(
                 ref TASKDIALOGCONFIG config,
                 out int buttonPressed,
                 out int radioButtonPressed,
@@ -139,7 +137,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 buttonPressed = TaskDialog.CommandLinkIdOffset + 1; // No
                 radioButtonPressed = -1;
                 verificationFlagChecked = false;
-                return HRESULT.S_OK;
             }
 
             var dialog = new TaskDialog()
@@ -168,7 +165,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             parameters.Buttons.Add(TaskDialogStandardButton.OK);
 
-            HRESULT taskDialogIndirect(
+            void taskDialogIndirect(
                 ref TASKDIALOGCONFIG config,
                 out int buttonPressed,
                 out int radioButtonPressed,
@@ -179,7 +176,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 buttonPressed = TaskDialogStandardButton.OK.CommandId;
                 radioButtonPressed = -1;
                 verificationFlagChecked = true;
-                return HRESULT.S_OK;
             }
 
             var dialog = new TaskDialog()

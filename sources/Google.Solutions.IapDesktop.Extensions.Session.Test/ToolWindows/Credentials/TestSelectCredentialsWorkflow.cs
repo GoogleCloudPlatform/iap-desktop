@@ -47,9 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         private ISelectCredentialsDialog CreateCredentialsWorkflow(
             bool isGrantedPermissionToGenerateCredentials,
             bool expectSilentCredentialGeneration,
-            Mock<ITaskDialog> taskDialogMock)
+            Mock<ILegacyTaskDialog> taskDialogMock)
         {
-            this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialogMock.Object);
+            this.serviceRegistry.AddSingleton<ILegacyTaskDialog>(taskDialogMock.Object);
             this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
             this.serviceRegistry.AddMock<IShowCredentialsDialog>();
 
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public async Task WhenNoCredentialsFoundAndBehaviorSetToAllow_ThenGenerateOptionIsShown(
             [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public async Task WhenCredentialsFoundAndBehaviorSetToAllow_ThenGenerateOptionIsShown(
             [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public async Task WhenNoCredentialsFoundAndPermissionGrantedAndBehaviorSetToAllowIfNoCredentialsFound_ThenGenerateOptionIsShown()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public void WhenNoCredentialsFoundAndPermissionNotGrantedAndBehaviorSetToAllowIfNoCredentialsFound_ThenJumpToSettingsOptionIsShown()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public async Task WhenCredentialsFoundAndBehaviorSetToAllowIfNoCredentialsFound_ThenDialogIsSkipped(
             [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -324,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public void WhenNoCredentialsFoundAndBehaviorSetToDisallowAndJumpToSettingsAllowed_ThenJumpToSettingsOptionIsShown()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public async Task WhenNoCredentialsFoundAndBehaviorSetToDisallowAndJumpToSettingsNotAllowed_ThenDialogIsSkipped()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -409,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public async Task WhenCredentialsFoundAndBehaviorSetToDisallow_ThenDialogIsSkipped()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public async Task WhenBehaviorSetToForceAndPermissionsGranted_ThenDialogIsSkippedAndCredentialsAreGenerated()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
 
             var credentialPrompt = CreateCredentialsWorkflow(true, true, taskDialog);
 
@@ -494,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         [Test]
         public void WhenBehaviorSetToForceAndPermissionsNotGranted_ThenJumpToSettingsOptionIsShown()
         {
-            var taskDialog = new Mock<ITaskDialog>();
+            var taskDialog = new Mock<ILegacyTaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),

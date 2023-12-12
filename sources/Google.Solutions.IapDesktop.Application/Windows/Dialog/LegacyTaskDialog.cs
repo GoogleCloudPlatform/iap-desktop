@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 {
-    public interface ITaskDialog
+    public interface ILegacyTaskDialog
     {
         int ShowOptionsTaskDialog(
             IWin32Window parent,
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     }
 
     [SkipCodeCoverage("UI code")]
-    public class TaskDialog : ITaskDialog
+    public class LegacyTaskDialog : ILegacyTaskDialog
     {
         private readonly int ButtonIdOffset = 1000;
 

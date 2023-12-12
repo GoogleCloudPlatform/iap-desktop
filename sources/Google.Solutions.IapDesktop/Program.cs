@@ -79,6 +79,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
+using Google.Solutions.Mvvm.Controls;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -234,7 +235,7 @@ namespace Google.Solutions.IapDesktop
                     //
                     try
                     {
-                        if (serviceProvider.GetService<ITaskDialog>()
+                        if (serviceProvider.GetService<ILegacyTaskDialog>()
                             .ShowOptionsTaskDialog(
                                 dialog.ViewModel.View,
                                 TaskDialogIcons.TD_ERROR_ICON,
@@ -385,6 +386,7 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddSingleton<IClock>(SystemClock.Default);
                 preAuthLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
+                preAuthLayer.AddTransient<ILegacyTaskDialog, LegacyTaskDialog>();
                 preAuthLayer.AddTransient<ITaskDialog, TaskDialog>();
                 preAuthLayer.AddTransient<ICredentialDialog, CredentialDialog>();
                 preAuthLayer.AddTransient<IInputDialog, InputDialog>();

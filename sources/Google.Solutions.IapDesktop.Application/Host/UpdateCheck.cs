@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         private readonly IInstall install;
         private readonly IReleaseFeed feed;
-        private readonly ITaskDialog taskDialog;
+        private readonly ILegacyTaskDialog taskDialog;
         private readonly IClock clock;
 
         private TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public UpdateCheck(
             IInstall install,
             IReleaseFeed feed,
-            ITaskDialog taskDialog,
+            ILegacyTaskDialog taskDialog,
             IClock clock)
         {
             this.install = install.ExpectNotNull(nameof(install));
