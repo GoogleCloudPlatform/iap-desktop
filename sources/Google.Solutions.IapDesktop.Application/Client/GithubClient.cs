@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
 #if DEBUG
         internal const ushort PageSize = 2;
 #else
-        internal const ushort MaxPerPage = 100;
+        internal const ushort PageSize = 100;
 #endif
         private readonly IExternalRestClient restAdapter;
 
