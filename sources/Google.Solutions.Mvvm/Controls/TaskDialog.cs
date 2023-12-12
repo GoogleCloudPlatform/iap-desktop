@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
         }
 
-        public TaskDialogButton ShowDialog(IWin32Window parent)
+        public DialogResult ShowDialog(IWin32Window parent)
         {
             const int CommandButtonIdOffset = 1000;
 
@@ -81,7 +82,7 @@ namespace Google.Solutions.Mvvm.Controls
                     // command link's main text, the remainder is treated as the
                     // command link's note. 
                     //
-                    var text = b.Text?.Replace('\n', ' ') ?? string.Empty;
+                    var text = b.Text.Replace('\n', ' ');
                     
                     if (b.Details != null)
                     {
@@ -170,13 +171,13 @@ namespace Google.Solutions.Mvvm.Controls
                 {
                     var pressedCommandButton = commandButtons[buttonIdPressed];
                     pressedCommandButton.PerformClick();
-                    return pressedCommandButton;
+                    return pressedCommandButton.Result;
                 }
                 else if (standardButtons.FirstOrDefault(b => b.CommandId == buttonIdPressed)
                     is var pressedStandardButton &&
                     pressedStandardButton != null)
                 {
-                    return pressedStandardButton;
+                    return pressedStandardButton.Result;
                 }
                 else
                 {
@@ -339,6 +340,12 @@ namespace Google.Solutions.Mvvm.Controls
 
     public abstract class TaskDialogButton
     {
+        protected TaskDialogButton(DialogResult result)
+        {
+            this.Result = result;
+        }
+
+        public DialogResult Result { get; }
     }
 
     /// <summary>
@@ -382,14 +389,11 @@ namespace Google.Solutions.Mvvm.Controls
         internal TaskDialogStandardButton(
             DialogResult result,
             uint commandId,
-            uint flag)
+            uint flag) : base(result)
         {
-            this.Result = result;
             this.CommandId = commandId;
             this.Flag = flag;
         }
-
-        public DialogResult Result { get; }
 
         internal uint CommandId { get; }
 
@@ -403,10 +407,18 @@ namespace Google.Solutions.Mvvm.Controls
     {
         public EventHandler Click;
 
+        public TaskDialogCommandLinkButton(
+            string text,
+            DialogResult result)
+            : base(result)
+        {
+            this.Text = text.ExpectNotNull(nameof(text));
+        }
+
         /// <summary>
         /// Command text.
         /// </summary>
-        public string Text { get; set; }
+        public string Text { get; }
 
         /// <summary>
         /// Command text.
