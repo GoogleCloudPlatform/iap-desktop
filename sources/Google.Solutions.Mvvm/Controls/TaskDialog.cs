@@ -1,7 +1,28 @@
-﻿using Google.Solutions.Common.Interop;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -11,63 +32,42 @@ namespace Google.Solutions.Mvvm.Controls
     /// <summary>
     /// A "Vista" style task dialog.
     /// </summary>
-    public class TaskDialog : IDisposable
+    public interface ITaskDialog
     {
         /// <summary>
-        /// Icon for the task dialog.
+        /// Show a dialog.
         /// </summary>
-        public TaskDialogIcon Icon { get; set; }
+        DialogResult ShowDialog(
+            IWin32Window parent, 
+            TaskDialogParameters parameters);
+    }
+
+    [SkipCodeCoverage("Requires comctl32, cannot be used in unit tests")]
+    public class TaskDialog : ITaskDialog
+    {
+        internal const int CommandLinkIdOffset = 1000;
 
         /// <summary>
-        /// Caption for title bar.
+        /// Surrogate function, for testing only.
         /// </summary>
-        public string Caption { get; set; }
+        internal NativeMethods.TaskDialogIndirectDelegate TaskDialogIndirect { get; set; }
 
-        /// <summary>
-        /// Main instruction.
-        /// </summary>
-        public string Heading { get; set; }
-
-        /// <summary>
-        /// Text content.
-        /// </summary>
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Footnote text.
-        /// </summary>
-        public string Footnote { get; set; }
-
-        /// <summary>
-        /// Command buttons to show.
-        /// </summary>
-        public IList<TaskDialogButton> Buttons { get; } = new List<TaskDialogButton>();
-
-        /// <summary>
-        /// Verification text box in footer.
-        /// </summary>
-        public TaskDialogVerificationCheckBox VerificationCheckBox { get; set; }
-
-        public EventHandler LinkClicked { get; }
-
-        public void Dispose()
+        public DialogResult ShowDialog(
+            IWin32Window parent,
+            TaskDialogParameters parameters)
         {
-        }
+            parameters.ExpectNotNull(nameof(parameters));
 
-        public DialogResult ShowDialog(IWin32Window parent)
-        {
-            const int CommandButtonIdOffset = 1000;
-
-            if (!this.Buttons.Any())
+            if (!parameters.Buttons.Any())
             {
                 throw new InvalidOperationException
                     ("The dialog must contain at least one button");
             }
 
-            var standardButtons = this.Buttons
+            var standardButtons = parameters.Buttons
                 .OfType<TaskDialogStandardButton>()
                 .ToList();
-            var commandButtons = this.Buttons
+            var commandButtons = parameters.Buttons
                 .OfType<TaskDialogCommandLinkButton>()
                 .ToList();
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Mvvm.Controls
                     // command link's note. 
                     //
                     var text = b.Text.Replace('\n', ' ');
-                    
+
                     if (b.Details != null)
                     {
                         text += $"\n{b.Details}";
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Controls
                         //
                         // Add ID offset to avoid conflict with IDOK/IDCANCEL.
                         //
-                        nButtonID = CommandButtonIdOffset + i,
+                        nButtonID = CommandLinkIdOffset + i,
                         pszButtonText = commandButtonTexts[i]
                     },
                     commandButtonsPtr + i * Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>(),
@@ -113,7 +113,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             try
             {
-                var flags = 
+                var flags =
                     TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
                     TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
                 if (commandButtons.Any())
@@ -129,47 +129,48 @@ namespace Google.Solutions.Mvvm.Controls
                     dwCommonButtons = standardButtons
                         .Select(b => b.Flag)
                         .Aggregate((f1, f2) => f1 | f2),
-                    pszWindowTitle = this.Caption,
-                    MainIcon = this.Icon?.Handle ?? IntPtr.Zero,
-                    pszMainInstruction = this.Heading,
-                    pszContent = this.Text,
+                    pszWindowTitle = parameters.Caption,
+                    MainIcon = parameters.Icon?.Handle ?? IntPtr.Zero,
+                    pszMainInstruction = parameters.Heading,
+                    pszContent = parameters.Text,
                     pButtons = commandButtonsPtr,
                     cButtons = (uint)commandButtons.Count,
-                    pszExpandedInformation = this.Footnote,
-                    pszVerificationText = this.VerificationCheckBox?.Text,
+                    pszExpandedInformation = parameters.Footnote,
+                    pszVerificationText = parameters.VerificationCheckBox?.Text,
                     pfCallback = (hwnd, notification, wParam, lParam, refData) =>
                     {
                         if (notification == TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
-                            this.LinkClicked?.Invoke(this, EventArgs.Empty);
+                            parameters.LinkClicked?.Invoke(this, EventArgs.Empty);
                         }
 
                         return HRESULT.S_OK;
                     }
                 };
-                
-                var hr = NativeMethods.TaskDialogIndirect(
+
+                var function = this.TaskDialogIndirect ?? NativeMethods.TaskDialogIndirect;
+                var hr = function(
                     ref config,
                     out var buttonIdPressed,
-                    out var radioButtonPressed,
+                    out var _,
                     out var verificationFlagPressed);
                 if (hr.Failed())
                 {
                     throw new InvalidOperationException($"The TaskDialog failed: {hr:X}");
                 }
 
-                if (this.VerificationCheckBox != null)
+                if (parameters.VerificationCheckBox != null)
                 {
-                    this.VerificationCheckBox.Checked = verificationFlagPressed;
+                    parameters.VerificationCheckBox.Checked = verificationFlagPressed;
                 }
 
                 //
                 // Map the result back to the right button.
                 //
-                if (buttonIdPressed >= CommandButtonIdOffset &&
-                    buttonIdPressed < CommandButtonIdOffset + commandButtons.Count)
+                if (buttonIdPressed >= CommandLinkIdOffset &&
+                    buttonIdPressed < CommandLinkIdOffset + commandButtons.Count)
                 {
-                    var pressedCommandButton = commandButtons[buttonIdPressed];
+                    var pressedCommandButton = commandButtons[buttonIdPressed - CommandLinkIdOffset];
                     pressedCommandButton.PerformClick();
                     return pressedCommandButton.Result;
                 }
@@ -316,163 +317,18 @@ namespace Google.Solutions.Mvvm.Controls
                 [In] IntPtr lParam,
                 [In] IntPtr refData);
 
+            internal delegate HRESULT TaskDialogIndirectDelegate(
+                [In] ref TASKDIALOGCONFIG pTaskConfig,
+                [Out] out int pnButton,
+                [Out] out int pnRadioButton,
+                [Out] out bool pfVerificationFlagChecked);
+
             [DllImport("ComCtl32", CharSet = CharSet.Unicode, PreserveSig = false)]
             internal static extern HRESULT TaskDialogIndirect(
                 [In] ref TASKDIALOGCONFIG pTaskConfig,
                 [Out] out int pnButton,
                 [Out] out int pnRadioButton,
                 [Out] out bool pfVerificationFlagChecked);
-        }
-    }
-
-    public class TaskDialogVerificationCheckBox
-    {
-        /// <summary>
-        /// Text to show next to checkbox.
-        /// </summary>
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Checkbox state.
-        /// </summary>
-        public bool Checked { get; set; }
-    }
-
-    public abstract class TaskDialogButton
-    {
-        protected TaskDialogButton(DialogResult result)
-        {
-            this.Result = result;
-        }
-
-        public DialogResult Result { get; }
-    }
-
-    /// <summary>
-    /// Standard dialog button.
-    /// </summary>
-    public class TaskDialogStandardButton : TaskDialogButton
-    {
-        private const uint TDCBF_OK_BUTTON = 0x0001;
-        private const uint TDCBF_YES_BUTTON = 0x0002;
-        private const uint TDCBF_NO_BUTTON = 0x0004;
-        private const uint TDCBF_CANCEL_BUTTON = 0x0008;
-        private const uint TDCBF_RETRY_BUTTON = 0x0010;
-        private const uint TDCBF_CLOSE_BUTTON = 0x0020;
-
-        private const uint IDOK = 1;
-        private const uint IDCANCEL = 2;
-        private const uint IDABORT = 3;
-        private const uint IDRETRY = 4;
-        private const uint IDIGNORE = 5;
-        private const uint IDYES = 6;
-        private const uint IDNO = 7;
-
-        public static readonly TaskDialogStandardButton OK =
-            new TaskDialogStandardButton(DialogResult.OK, IDOK, TDCBF_OK_BUTTON);
-
-        public static readonly TaskDialogStandardButton Cancel
-            = new TaskDialogStandardButton(DialogResult.Cancel, IDCANCEL, TDCBF_CANCEL_BUTTON);
-
-        public static readonly TaskDialogStandardButton Yes =
-            new TaskDialogStandardButton(DialogResult.Yes, IDYES, TDCBF_YES_BUTTON);
-
-        public static readonly TaskDialogStandardButton No =
-            new TaskDialogStandardButton(DialogResult.No, IDNO, TDCBF_NO_BUTTON);
-
-        public static readonly TaskDialogStandardButton Retry =
-            new TaskDialogStandardButton(DialogResult.Retry, IDRETRY, TDCBF_RETRY_BUTTON);
-
-        public static readonly TaskDialogStandardButton Abort =
-            new TaskDialogStandardButton(DialogResult.Abort, IDABORT, TDCBF_CLOSE_BUTTON);
-
-        internal TaskDialogStandardButton(
-            DialogResult result,
-            uint commandId,
-            uint flag) : base(result)
-        {
-            this.CommandId = commandId;
-            this.Flag = flag;
-        }
-
-        internal uint CommandId { get; }
-
-        internal uint Flag { get; }
-    }
-
-    /// <summary>
-    /// Custom command link.
-    /// </summary>
-    public class TaskDialogCommandLinkButton : TaskDialogButton
-    {
-        public EventHandler Click;
-
-        public TaskDialogCommandLinkButton(
-            string text,
-            DialogResult result)
-            : base(result)
-        {
-            this.Text = text.ExpectNotNull(nameof(text));
-        }
-
-        /// <summary>
-        /// Command text.
-        /// </summary>
-        public string Text { get; }
-
-        /// <summary>
-        /// Command text.
-        /// </summary>
-        public string Details { get; set; }
-
-        public void PerformClick()
-        {
-            this.Click?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    /// <summary>
-    /// Icon for the task dialog.
-    /// </summary>
-    public abstract class TaskDialogIcon : IDisposable
-    {
-        internal IntPtr Handle { get; }
-
-        protected TaskDialogIcon(IntPtr handle)
-        {
-            this.Handle = handle;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        //---------------------------------------------------------------------
-        // Stock icons.
-        //
-        // These icons don't need disposal.
-        //---------------------------------------------------------------------
-
-        public static readonly TaskDialogIcon Warning = new StockIcon(65535);
-        public static readonly TaskDialogIcon Error = new StockIcon(65534);
-        public static readonly TaskDialogIcon Information = new StockIcon(65533);
-        public static readonly TaskDialogIcon Shield = new StockIcon(65532);
-        public static readonly TaskDialogIcon ShieldGrayBackground = new StockIcon(65527);
-        public static readonly TaskDialogIcon ShieldGreenBackground = new StockIcon(65528);
-        public static readonly TaskDialogIcon ShieldInfoBackground = new StockIcon(65531);
-        public static readonly TaskDialogIcon ShieldWarningBackground = new StockIcon(65530);
-
-        private class StockIcon : TaskDialogIcon
-        {
-            public StockIcon(int id) : base(new IntPtr(id))
-            {
-            }
         }
     }
 }
