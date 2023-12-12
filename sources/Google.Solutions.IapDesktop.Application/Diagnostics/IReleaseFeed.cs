@@ -76,14 +76,21 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IRelease> FindLatestReleaseAsync(
-            bool includeCanaryReleases,
+            ReleaseFeedOptions options,
             CancellationToken cancellationToken);
 
         /// <summary>
         /// List latest releases.
         /// </summary>
         Task<IEnumerable<IRelease>> ListReleasesAsync(
-            bool includeCanaryReleases,
+            ReleaseFeedOptions options,
             CancellationToken cancellationToken);
+    }
+
+    [Flags]
+    public enum ReleaseFeedOptions
+    {
+        None = 0,
+        IncludeCanaryReleases = 1,
     }
 }

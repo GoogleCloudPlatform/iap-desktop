@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Mvvm.Theme.ControlTheme;
 
 namespace Google.Solutions.IapDesktop.Application.Client
 {
@@ -60,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// List recent releases, ordered by version number in descending order.
         /// </summary>
         public async Task<IEnumerable<IRelease>> ListReleasesAsync(
-            bool includeCanaryReleases,
+            ReleaseFeedOptions options,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
@@ -70,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 // but we shouldn't rely on that, see
                 // https://github.com/orgs/community/discussions/21901.
                 //
-                // The API also doesn't let us specify a custom order, so we habe
+                // The API also doesn't let us specify a custom order, so we have
                 // to do the ordering by ourselves.
                 //
 
@@ -98,7 +99,8 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 return allReleases
                     .EnsureNotNull()
                     .Where(r => r.TagVersion != null)
-                    .Where(r => includeCanaryReleases || !r.IsCanaryRelease)
+                    .Where(r => options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases)
+                                || !r.IsCanaryRelease)
                     .OrderByDescending(r => r.TagVersion);
             }
         }
@@ -107,13 +109,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// Find the latest available update.
         /// </summary>
         public async Task<IRelease> FindLatestReleaseAsync(
-            bool includeCanaryReleases,
+            ReleaseFeedOptions options,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 IRelease latestRelease;
-                if (!includeCanaryReleases)
+                if (!options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases))
                 {
                     //
                     // Use the whacky /latest API to avoid having
@@ -135,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     //
                     var releases = await
                         ListReleasesAsync(
-                            true,
+                            options,
                             cancellationToken)
                         .ConfigureAwait(false);
                     latestRelease = releases.FirstOrDefault();
@@ -161,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         public Task<IRelease> FindLatestReleaseAsync(
             CancellationToken cancellationToken)
         {
-            return FindLatestReleaseAsync(false, cancellationToken);
+            return FindLatestReleaseAsync(ReleaseFeedOptions.None, cancellationToken);
         }
 
         //---------------------------------------------------------------------

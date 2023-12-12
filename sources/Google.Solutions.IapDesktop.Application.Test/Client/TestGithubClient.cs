@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -58,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
-                    .FindLatestReleaseAsync(false, CancellationToken.None)
+                    .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                     .Wait());
         }
 
@@ -77,12 +78,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
 
             Assert.IsNull(await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task WhenIncludeCanaryReleasesIsTrue_ThenFindLatestReleaseIncludesPrereleases()
+        public async Task WhenIncludeCanaryReleasesIsOn_ThenFindLatestReleaseIncludesPrereleases()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -105,14 +106,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
 
             var latest = await adapter
-                .FindLatestReleaseAsync(true, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.IncludeCanaryReleases, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual("4.0.1", latest.TagVersion.ToString());
         }
 
         [Test]
-        public async Task WhenIncludeCanaryReleasesIsFalse_ThenFindLatestReleaseReturnsLatest()
+        public async Task WhenIncludeCanaryReleasesIsOff_ThenFindLatestReleaseReturnsLatest()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -127,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
 
             var latest = await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual("3.0.1", latest.TagVersion.ToString());
@@ -153,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
-                    .ListReleasesAsync(false, CancellationToken.None)
+                    .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                     .Wait());
         }
 
@@ -172,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
 
             CollectionAssert.IsEmpty(await adapter
-                .ListReleasesAsync(false, CancellationToken.None)
+                .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
@@ -216,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
             
             var releases = await adapter
-                .ListReleasesAsync(false, CancellationToken.None)
+                .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(4, releases.Count());
@@ -232,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task WhenIncludeCanaryReleasesIsTrue_ThenListReleasesIncludesPrereleases()
+        public async Task WhenIncludeCanaryReleasesIsOn_ThenListReleasesIncludesPrereleases()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -254,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
             
             var releases = await adapter
-                .ListReleasesAsync(true, CancellationToken.None)
+                .ListReleasesAsync(ReleaseFeedOptions.IncludeCanaryReleases, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(4, releases.Count());
@@ -270,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task WhenIncludeCanaryReleasesIsFalse_ThenListReleasesIgnoresPrereleases()
+        public async Task WhenIncludeCanaryReleasesIsOff_ThenListReleasesIgnoresPrereleases()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -292,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
             
             var releases = await adapter
-                .ListReleasesAsync(false, CancellationToken.None)
+                .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(2, releases.Count());
@@ -323,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -344,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -377,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -407,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -425,7 +426,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 new ExternalRestClient(),
                 "GoogleCloudPlatform/iap-desktop");
             var release = await adapter
-                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);

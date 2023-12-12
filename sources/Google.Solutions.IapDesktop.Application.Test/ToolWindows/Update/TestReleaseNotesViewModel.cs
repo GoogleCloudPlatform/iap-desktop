@@ -60,7 +60,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         {
             var feed = new Mock<IReleaseFeed>();
             feed
-                .Setup(a => a.ListReleasesAsync(false, It.IsAny<CancellationToken>()))
+                .Setup(a => a.ListReleasesAsync(
+                    ReleaseFeedOptions.None, 
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("mock"));
 
             var viewModel = new ReleaseNotesViewModel(
@@ -88,7 +90,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             var feed = new Mock<IReleaseFeed>();
             feed
-                .Setup(a => a.ListReleasesAsync(false, It.IsAny<CancellationToken>()))
+                .Setup(a => a.ListReleasesAsync(
+                    ReleaseFeedOptions.None, 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
                     oldRelease.Object,
                     currentRelease.Object,
@@ -129,7 +133,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             var feed = new Mock<IReleaseFeed>();
             feed
-                .Setup(a => a.ListReleasesAsync(false, It.IsAny<CancellationToken>()))
+                .Setup(a => a.ListReleasesAsync(
+                    ReleaseFeedOptions.None, 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] {
                      oldRelease.Object,
                      currentRelease.Object,

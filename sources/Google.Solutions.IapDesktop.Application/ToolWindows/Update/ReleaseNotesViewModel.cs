@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             try
             {
                 var releases = await this.feed
-                    .ListReleasesAsync(false, CancellationToken.None)
+                    .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 foreach (var release in releases
