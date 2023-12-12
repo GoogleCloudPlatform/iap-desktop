@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using System;
@@ -42,7 +41,6 @@ namespace Google.Solutions.Mvvm.Controls
             TaskDialogParameters parameters);
     }
 
-    [SkipCodeCoverage("Requires comctl32, cannot be used in unit tests")]
     public class TaskDialog : ITaskDialog
     {
         internal const int CommandLinkIdOffset = 1000;
