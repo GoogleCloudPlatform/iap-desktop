@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop
                     //
                     try
                     {
-                        if (serviceProvider.GetService<ITaskDialog>()
+                        if (serviceProvider.GetService<ILegacyTaskDialog>()
                             .ShowOptionsTaskDialog(
                                 dialog.ViewModel.View,
                                 TaskDialogIcons.TD_ERROR_ICON,
@@ -385,7 +385,7 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddSingleton<IClock>(SystemClock.Default);
                 preAuthLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
-                preAuthLayer.AddTransient<ITaskDialog, TaskDialog>();
+                preAuthLayer.AddTransient<ILegacyTaskDialog, LegacyTaskDialog>();
                 preAuthLayer.AddTransient<ICredentialDialog, CredentialDialog>();
                 preAuthLayer.AddTransient<IInputDialog, InputDialog>();
                 preAuthLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
