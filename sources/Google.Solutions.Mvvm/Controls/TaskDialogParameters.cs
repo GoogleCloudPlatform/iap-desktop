@@ -66,7 +66,12 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         public TaskDialogVerificationCheckBox VerificationCheckBox { get; set; }
 
-        public EventHandler LinkClicked { get; }
+        public event EventHandler LinkClicked;
+
+        internal void PerformLinkClick()
+        {
+            this.LinkClicked?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public class TaskDialogVerificationCheckBox

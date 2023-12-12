@@ -87,9 +87,9 @@ namespace Google.Solutions.Mvvm.Controls
                         text += $"\n{b.Details}";
                     }
 
-                    return b;
+                    return text;
                 })
-                .Select(b => Marshal.StringToHGlobalUni(b.Text))
+                .Select(text => Marshal.StringToHGlobalUni(text))
                 .ToArray();
             var commandButtonsPtr = Marshal.AllocHGlobal(
                 Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>() * commandButtons.Count);
@@ -121,7 +121,7 @@ namespace Google.Solutions.Mvvm.Controls
 
                 var config = new TASKDIALOGCONFIG()
                 {
-                    cbSize = (uint)Marshal.SizeOf(typeof(TASKDIALOGCONFIG)),
+                    cbSize = (uint)Marshal.SizeOf<TASKDIALOGCONFIG>(),
                     hwndParent = parent?.Handle ?? IntPtr.Zero,
                     dwFlags = flags,
                     dwCommonButtons = standardButtons
@@ -131,7 +131,7 @@ namespace Google.Solutions.Mvvm.Controls
                     MainIcon = parameters.Icon?.Handle ?? IntPtr.Zero,
                     pszMainInstruction = parameters.Heading,
                     pszContent = parameters.Text,
-                    pButtons = commandButtonsPtr,
+                    pButtons = commandButtons.Any() ? commandButtonsPtr : IntPtr.Zero,
                     cButtons = (uint)commandButtons.Count,
                     pszExpandedInformation = parameters.Footnote,
                     pszVerificationText = parameters.VerificationCheckBox?.Text,
@@ -139,7 +139,7 @@ namespace Google.Solutions.Mvvm.Controls
                     {
                         if (notification == TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
-                            parameters.LinkClicked?.Invoke(this, EventArgs.Empty);
+                            parameters.PerformLinkClick();
                         }
 
                         return HRESULT.S_OK;
@@ -147,16 +147,12 @@ namespace Google.Solutions.Mvvm.Controls
                 };
 
                 var function = this.TaskDialogIndirect ?? NativeMethods.TaskDialogIndirect;
-                var hr = function(
+                function(
                     ref config,
                     out var buttonIdPressed,
                     out var _,
                     out var verificationFlagPressed);
-                if (hr.Failed())
-                {
-                    throw new InvalidOperationException($"The TaskDialog failed: {hr:X}");
-                }
-
+                
                 if (parameters.VerificationCheckBox != null)
                 {
                     parameters.VerificationCheckBox.Checked = verificationFlagPressed;
@@ -315,14 +311,14 @@ namespace Google.Solutions.Mvvm.Controls
                 [In] IntPtr lParam,
                 [In] IntPtr refData);
 
-            internal delegate HRESULT TaskDialogIndirectDelegate(
+            internal delegate void TaskDialogIndirectDelegate(
                 [In] ref TASKDIALOGCONFIG pTaskConfig,
                 [Out] out int pnButton,
                 [Out] out int pnRadioButton,
                 [Out] out bool pfVerificationFlagChecked);
 
             [DllImport("ComCtl32", CharSet = CharSet.Unicode, PreserveSig = false)]
-            internal static extern HRESULT TaskDialogIndirect(
+            internal static extern void TaskDialogIndirect(
                 [In] ref TASKDIALOGCONFIG pTaskConfig,
                 [Out] out int pnButton,
                 [Out] out int pnRadioButton,
