@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             try
             {
                 var releases = await this.feed
-                    .ListReleasesAsync(MaxReleases, CancellationToken.None)
+                    .ListReleasesAsync(false, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 foreach (var release in releases
@@ -60,7 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     .Where(r => this.ShowAllReleases ||
                                 this.install.PreviousVersion == null ||
                                 this.install.PreviousVersion < r.TagVersion)
-                    .OrderByDescending(r => r.TagVersion))
+                    .OrderByDescending(r => r.TagVersion)
+                    .Take(MaxReleases))
                 {
                     summary.AppendLine();
                     summary.AppendFormat("## Release {0}", release.TagVersion);

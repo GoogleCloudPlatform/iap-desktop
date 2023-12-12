@@ -26,6 +26,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
-                    .FindLatestReleaseAsync(CancellationToken.None)
+                    .FindLatestReleaseAsync(false, CancellationToken.None)
                     .Wait());
         }
 
@@ -76,8 +77,60 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
 
             Assert.IsNull(await adapter
-                .FindLatestReleaseAsync(CancellationToken.None)
+                .FindLatestReleaseAsync(false, CancellationToken.None)
                 .ConfigureAwait(false));
+        }
+
+        [Test]
+        public async Task WhenIncludeCanaryReleasesIsTrue_ThenFindLatestReleaseIncludesPrereleases()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases?" +
+                        $"per_page={GithubClient.PageSize}&page=1"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<GithubClient.Release>
+                {
+                    new GithubClient.Release("3.0.1", null, null, true, null),
+                    new GithubClient.Release("1.0.0", null, null, null, null),
+                    new GithubClient.Release("1.0.1", null, null, false, null),
+                    new GithubClient.Release("2.0.1", null, null, true, null),
+                    new GithubClient.Release("4.0.1", null, null, true, null),
+                });
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+
+            var latest = await adapter
+                .FindLatestReleaseAsync(true, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual("4.0.1", latest.TagVersion.ToString());
+        }
+
+        [Test]
+        public async Task WhenIncludeCanaryReleasesIsFalse_ThenFindLatestReleaseReturnsLatest()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.Release>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases/latest"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GithubClient.Release("3.0.1", null, null, false, null));
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+
+            var latest = await adapter
+                .FindLatestReleaseAsync(false, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual("3.0.1", latest.TagVersion.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -85,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenServerReturnsError_ListReleasesThrowsException()
+        public void WhenServerReturnsError_ThenListReleasesThrowsException()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -100,12 +153,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             ExceptionAssert.ThrowsAggregateException<HttpRequestException>(
                 () => adapter
-                    .ListReleasesAsync(1, CancellationToken.None)
+                    .ListReleasesAsync(false, CancellationToken.None)
                     .Wait());
         }
 
         [Test]
-        public async Task WhenServerReturnsEmptyResult_ListReleasesReturnsEmptyList()
+        public async Task WhenServerReturnsEmptyResult_ThenListReleasesReturnsEmptyList()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -119,8 +172,137 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 SampleRepository);
 
             CollectionAssert.IsEmpty(await adapter
-                .ListReleasesAsync(1, CancellationToken.None)
+                .ListReleasesAsync(false, CancellationToken.None)
                 .ConfigureAwait(false));
+        }
+
+        [Test]
+        public async Task WhenServerReturnsMultiplePages_ThenListReleasesReturnsOrderedList()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases?" +
+                        $"per_page={GithubClient.PageSize}&page=1"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<GithubClient.Release>
+                {
+                    new GithubClient.Release("1.0.0", null, null, false, null),
+                    new GithubClient.Release("3.1.1", null, null, false, null),
+                });
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases?" +
+                        $"per_page={GithubClient.PageSize}&page=2"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<GithubClient.Release>
+                {
+                    new GithubClient.Release("2.0.0", null, null, false, null),
+                    new GithubClient.Release(null,    null, null, false, null),
+                    new GithubClient.Release("2.0.1", null, null, false, null),
+                });
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases?" +
+                        $"per_page={GithubClient.PageSize}&page=3"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<GithubClient.Release>());
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+            
+            var releases = await adapter
+                .ListReleasesAsync(false, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(4, releases.Count());
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "3.1.1",
+                    "2.0.1",
+                    "2.0.0",
+                    "1.0.0",
+                },
+                releases.Select(r => r.TagVersion.ToString()));
+        }
+
+        [Test]
+        public async Task WhenIncludeCanaryReleasesIsTrue_ThenListReleasesIncludesPrereleases()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases?" +
+                        $"per_page={GithubClient.PageSize}&page=1"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<GithubClient.Release>
+                {
+                    new GithubClient.Release("3.0.1", null, null, true, null),
+                    new GithubClient.Release("1.0.0", null, null, null, null),
+                    new GithubClient.Release("1.0.1", null, null, false, null),
+                    new GithubClient.Release("2.0.1", null, null, true, null),
+                });
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+            
+            var releases = await adapter
+                .ListReleasesAsync(true, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(4, releases.Count());
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "3.0.1",
+                    "2.0.1",
+                    "1.0.1",
+                    "1.0.0",
+                },
+                releases.Select(r => r.TagVersion.ToString()));
+        }
+
+        [Test]
+        public async Task WhenIncludeCanaryReleasesIsFalse_ThenListReleasesIgnoresPrereleases()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<List<GithubClient.Release>>(
+                    new Uri(
+                        $"https://api.github.com/repos/{SampleRepository}/releases?" +
+                        $"per_page={GithubClient.PageSize}&page=1"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<GithubClient.Release>
+                {
+                    new GithubClient.Release("3.0.1", null, null, true, null),
+                    new GithubClient.Release("1.0.0", null, null, null, null),
+                    new GithubClient.Release("1.0.1", null, null, false, null),
+                    new GithubClient.Release("2.0.1", null, null, true, null),
+                });
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+            
+            var releases = await adapter
+                .ListReleasesAsync(false, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(2, releases.Count());
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "1.0.1",
+                    "1.0.0",
+                },
+                releases.Select(r => r.TagVersion.ToString()));
         }
 
         //---------------------------------------------------------------------
@@ -135,13 +317,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubClient.Release("1.2.3.4", null, null, null));
+                .ReturnsAsync(new GithubClient.Release("1.2.3.4", null, null, false, null));
 
             var adapter = new GithubClient(
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(CancellationToken.None)
+                .FindLatestReleaseAsync(false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -156,13 +338,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubClient.Release("not a version", null, null, null));
+                .ReturnsAsync(new GithubClient.Release("not a version", null, null, false, null));
 
             var adapter = new GithubClient(
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(CancellationToken.None)
+                .FindLatestReleaseAsync(false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -185,6 +367,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     "1.2.3.4",
                     null,
                     null,
+                    null,
                     new List<GithubClient.ReleaseAsset>()
                     {
                         new GithubClient.ReleaseAsset("http://example.com/test.txt")
@@ -194,7 +377,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(CancellationToken.None)
+                .FindLatestReleaseAsync(false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -213,6 +396,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     "1.2.3.4",
                     null,
                     null,
+                    null,
                     new List<GithubClient.ReleaseAsset>()
                     {
                         new GithubClient.ReleaseAsset("http://example.com/test.txt"),
@@ -223,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
             var release = await adapter
-                .FindLatestReleaseAsync(CancellationToken.None)
+                .FindLatestReleaseAsync(false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
@@ -241,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 new ExternalRestClient(),
                 "GoogleCloudPlatform/iap-desktop");
             var release = await adapter
-                .FindLatestReleaseAsync(CancellationToken.None)
+                .FindLatestReleaseAsync(false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);

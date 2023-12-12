@@ -50,6 +50,11 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// Markdown-formatted description.
         /// </summary>
         string Description { get; }
+
+        /// <summary>
+        /// Check if this is a canary-only release.
+        /// </summary>
+        bool IsCanaryRelease { get; }
     }
 
     /// <summary>
@@ -66,10 +71,19 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             CancellationToken cancellationToken);
 
         /// <summary>
+        /// Look up the most recent release.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IRelease> FindLatestReleaseAsync(
+            bool includeCanaryReleases,
+            CancellationToken cancellationToken);
+
+        /// <summary>
         /// List latest releases.
         /// </summary>
         Task<IEnumerable<IRelease>> ListReleasesAsync(
-            ushort maxCount,
+            bool includeCanaryReleases,
             CancellationToken cancellationToken);
     }
 }
