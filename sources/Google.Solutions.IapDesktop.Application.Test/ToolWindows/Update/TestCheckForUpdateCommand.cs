@@ -25,11 +25,13 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
@@ -54,42 +56,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             return policyFactory.Object;
         }
 
-        private static ITaskDialog CreateDialog(int result)
+        private static ITaskDialog CreateDialog(string commandLinkToClick)
         {
-            bool save;
             var dialog = new Mock<ITaskDialog>();
             dialog
-                .Setup(d => d.ShowOptionsTaskDialog(
+                .Setup(d => d.ShowDialog(
                     It.IsAny<IWin32Window>(),
-                    It.IsAny<IntPtr>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<IList<string>>(),
-                    It.IsAny<string>(),
-                    out save))
-                .Returns(result);
+                    It.IsAny<TaskDialogParameters>()))
+                .Callback<IWin32Window,TaskDialogParameters>((w, p) =>
+                {
+                    p.Buttons
+                        .OfType<TaskDialogCommandLinkButton>()
+                        .First(b => b.Text == commandLinkToClick)
+                        .PerformClick();
+                })
+                .Returns(DialogResult.OK);
                     
             return dialog.Object;
         }
 
         private static ITaskDialog CreateCancelledDialog()
         {
-            bool save;
             var dialog = new Mock<ITaskDialog>();
             dialog
-                .Setup(d => d.ShowOptionsTaskDialog(
+                .Setup(d => d.ShowDialog(
                     It.IsAny<IWin32Window>(),
-                    It.IsAny<IntPtr>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<IList<string>>(),
-                    It.IsAny<string>(),
-                    out save))
-                .Throws(new OperationCanceledException());
+                    It.IsAny<TaskDialogParameters>()))
+                .Returns(DialogResult.Cancel);
 
             return dialog.Object;
         }
@@ -209,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IInstall>().Object,
                 CreateUpdatePolicy(true),
                 new Mock<IReleaseFeed>().Object,
-                CreateDialog(0),
+                CreateDialog("Yes, download now"),
                 browser.Object,
             ReleaseTrack.Critical);
 
@@ -223,10 +216,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         {
             var browser = new Mock<IBrowser>();
 
-            var downloadUrl = "http://example.com/download";
             var detailsUrl = "http://example.com/details";
             var release = new Mock<IRelease>();
-            release.SetupGet(r => r.DownloadUrl).Returns(downloadUrl);
             release.SetupGet(r => r.DetailsUrl).Returns(detailsUrl);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
@@ -234,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IInstall>().Object,
                 CreateUpdatePolicy(true),
                 new Mock<IReleaseFeed>().Object,
-                CreateDialog(0),
+                CreateDialog("Yes, download now"),
                 browser.Object,
             ReleaseTrack.Critical);
 
@@ -259,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IInstall>().Object,
                 CreateUpdatePolicy(true),
                 new Mock<IReleaseFeed>().Object,
-                CreateDialog(1),
+                CreateDialog("Show release notes"),
                 browser.Object,
             ReleaseTrack.Critical);
 
@@ -278,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IInstall>().Object,
                 CreateUpdatePolicy(true),
                 new Mock<IReleaseFeed>().Object,
-                CreateDialog(2),
+                CreateDialog("No, download later"),
                 browser.Object,
             ReleaseTrack.Critical);
 

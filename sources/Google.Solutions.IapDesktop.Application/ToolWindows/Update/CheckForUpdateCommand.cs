@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using System;
 using System.Threading;
@@ -75,44 +76,49 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 //
                 // Prompt for upgrade.
                 //
-                try
+                var dialogParameters = new TaskDialogParameters()
                 {
-                    var selectedOption = this.taskDialog.ShowOptionsTaskDialog(
-                        this.parentWindow,
-                        TaskDialogIcons.TD_SHIELD_ICON_GREEN_BACKGROUND,
-                        "Update available",
-                        "An update is available for IAP Desktop.\n\n" +
-                            $"Installed version: {this.install.CurrentVersion}\n" +
-                            $"Available version: {latestRelease.TagVersion}",
-                        "Would you like to download the update now?",
-                        null,
-                        new[]
-                        {
-                            "Yes, download now",
-                            "Show release notes",
-                            "No, download later"
-                        },
-                        null,
-                        out var _);
+                    Icon = TaskDialogIcon.ShieldGreenBackground,
+                    Caption = "Update available",
+                    Heading = "An update is available for IAP Desktop.\n\n" +
+                        $"Installed version: {this.install.CurrentVersion}\n" +
+                        $"Available version: {latestRelease.TagVersion}",
+                    Text = "Would you like to download the update now?"
+                };
+                dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
-                    switch (selectedOption)
-                    {
-                        case 0: // Download now.
-                            this.browser.Navigate(
-                                latestRelease.DownloadUrl ?? latestRelease.DetailsUrl);
-                            break;
+                //
+                // Download release.
+                //
+                var downloadButton = new TaskDialogCommandLinkButton(
+                    "Yes, download now",
+                    DialogResult.OK);
+                downloadButton.Click += (_, __) => this.browser.Navigate(
+                    latestRelease.DownloadUrl ??
+                    latestRelease.DetailsUrl);
+                dialogParameters.Buttons.Add(downloadButton);
 
-                        case 1: // Show release notes
-                            this.browser.Navigate(latestRelease.DetailsUrl);
-                            break;
+                //
+                // Show release notes.
+                //
+                var showReleaseNotes = new TaskDialogCommandLinkButton(
+                    "Show release notes",
+                    DialogResult.OK);
+                showReleaseNotes.Click += (_, __) => this.browser.Navigate(
+                    latestRelease.DetailsUrl);
+                dialogParameters.Buttons.Add(showReleaseNotes);
 
-                        default: // Later/cancel.
-                            break;
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                }
+                //
+                // No, later.
+                //
+                var laterButton = new TaskDialogCommandLinkButton(
+                    "No, download later",
+                    DialogResult.Cancel);
+                dialogParameters.Buttons.Add(laterButton);
+
+                this.taskDialog.ShowDialog(
+                    this.parentWindow,
+                    dialogParameters);
             }
         }
 
