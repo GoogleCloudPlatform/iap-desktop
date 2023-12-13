@@ -124,9 +124,14 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 
         public void Execute(TContext context, CancellationToken cancellationToken)
         {
-#pragma warning disable VSTHRD002
             var latestRelease = this.feed
-                .FindLatestReleaseAsync(cancellationToken)
+                .FindLatestReleaseAsync(
+                    this.updatePolicy.FollowedTrack == ReleaseTrack.Canary
+                        ? ReleaseFeedOptions.IncludeCanaryReleases
+                        : ReleaseFeedOptions.None,
+                    cancellationToken)
+
+#pragma warning disable VSTHRD002
                 .Result;
 #pragma warning restore VSTHRD002
 

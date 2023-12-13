@@ -41,12 +41,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
     public class TestCheckForUpdateCommand
     {
         private static IUpdatePolicyFactory CreateUpdatePolicy(
-            bool adviceAllUpdates)
+            bool adviseAllUpdates)
         {
             var policy = new Mock<IUpdatePolicy>();
             policy
                 .Setup(p => p.IsUpdateAdvised(It.IsAny<IRelease>()))
-                .Returns(adviceAllUpdates);
+                .Returns(adviseAllUpdates);
 
             var policyFactory = new Mock<IUpdatePolicyFactory>();
             policyFactory
@@ -277,5 +277,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             browser.Verify(b => b.Navigate(It.IsAny<string>()), Times.Never);
         }
+
+        //---------------------------------------------------------------------
+        // Execute.
+        //---------------------------------------------------------------------
+
     }
 }
