@@ -380,7 +380,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider.GetService<IReleaseFeed>(),
                 this.serviceProvider.GetService<ITaskDialog>(),
                 this.serviceProvider.GetService<IBrowser>());
-            if (checkForUpdates.IsAutomatedUpdateCheckDue(
+            if (checkForUpdates.IsAutomatedCheckDue(
                 DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
             {
                 try
@@ -395,7 +395,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         //
                         cts.CancelAfter(TimeSpan.FromSeconds(5));
 
-                        checkForUpdates.Execute(this);
+                        checkForUpdates.Execute(this, cts.Token);
 
                         settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
                     }

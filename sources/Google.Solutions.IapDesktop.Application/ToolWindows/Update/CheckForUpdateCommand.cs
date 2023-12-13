@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 .GetPolicy();
         }
 
-        public bool IsAutomatedUpdateCheckDue(DateTime lastCheck)
+        public bool IsAutomatedCheckDue(DateTime lastCheck)
         {
             return this.updatePolicy.IsUpdateCheckDue(lastCheck);
         }

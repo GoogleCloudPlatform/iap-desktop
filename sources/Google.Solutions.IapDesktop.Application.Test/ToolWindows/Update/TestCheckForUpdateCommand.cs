@@ -93,11 +93,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         //---------------------------------------------------------------------
-        // IsAutomatedUpdateCheckDue.
+        // IsAutomatedCheckDue.
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsAutomatedUpdateCheckDue()
+        public void IsAutomatedCheckDue()
         {
             var policy = new Mock<IUpdatePolicy>();
             policy
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IBrowser>().Object);
 
             var time = DateTime.Now;
-            Assert.IsTrue(command.IsAutomatedUpdateCheckDue(time));
+            Assert.IsTrue(command.IsAutomatedCheckDue(time));
 
             policy.Verify(p => p.IsUpdateCheckDue(time), Times.Once);
         }

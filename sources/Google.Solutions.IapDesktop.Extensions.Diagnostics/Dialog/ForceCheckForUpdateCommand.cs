@@ -45,7 +45,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
             IBrowser browser)
             : base(parentWindow, install, updatePolicyFactory, feed, taskDialog, browser)
         {
-            //TODO: Reload policy each time
         }
 
         protected override bool IsUpdateAdvised(IRelease release)
