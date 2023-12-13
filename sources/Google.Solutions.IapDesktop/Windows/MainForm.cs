@@ -35,7 +35,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -56,6 +55,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.Apis.Auth.Gaia;
 using static System.Collections.Specialized.BitVector32;
+using Google.Solutions.IapDesktop.Application.Windows.Update;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types

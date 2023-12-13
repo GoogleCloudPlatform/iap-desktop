@@ -26,7 +26,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Help
+namespace Google.Solutions.IapDesktop.Application.Windows.Update
 {
     public partial class ReleaseNotesView : DocumentWindow, IView<ReleaseNotesViewModel>
     {

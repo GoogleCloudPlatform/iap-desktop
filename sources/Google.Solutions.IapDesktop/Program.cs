@@ -48,7 +48,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows.ProjectPicker;
@@ -80,6 +79,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.IapDesktop.Application.Windows.Update;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
