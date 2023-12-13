@@ -33,8 +33,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 {
@@ -273,5 +275,45 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         // Execute.
         //---------------------------------------------------------------------
 
+        [Test]
+        public void WhenPolicyUsesNormalOrCriticalTrack_ThenExecuteReadsCanaryFeed(
+            [Values(ReleaseTrack.Normal, ReleaseTrack.Critical)] ReleaseTrack track)
+        {
+            var feed = new Mock<IReleaseFeed>();
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, track),
+                feed.Object,
+                CreateCancelledDialog(),
+                new Mock<IBrowser>().Object);
+
+            command.Execute(null, CancellationToken.None);
+
+            feed.Verify(f => f.FindLatestReleaseAsync(
+                ReleaseFeedOptions.None, 
+                CancellationToken.None), 
+                Times.Once);
+        }
+
+        [Test]
+        public void WhenPolicyUsesCanaryTrack_ThenExecuteReadsCanaryFeed()
+        {
+            var feed = new Mock<IReleaseFeed>();
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, ReleaseTrack.Canary),
+                feed.Object,
+                CreateCancelledDialog(),
+                new Mock<IBrowser>().Object);
+
+            command.Execute(null, CancellationToken.None);
+
+            feed.Verify(f => f.FindLatestReleaseAsync(
+                ReleaseFeedOptions.IncludeCanaryReleases,
+                CancellationToken.None),
+                Times.Once);
+        }
     }
 }
