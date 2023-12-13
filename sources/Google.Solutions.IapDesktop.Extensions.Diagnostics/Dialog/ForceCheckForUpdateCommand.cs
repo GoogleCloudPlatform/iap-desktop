@@ -50,15 +50,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
         protected override bool IsUpdateAdvised(IRelease release)
         {
             //
-            // Advise all updates since this is a forced update check.
-            //
             // NB. The FeedOptions make sure won't suggest canary updates
             // if the user isn't on the canary track.
             //
             Debug.Assert(!release.IsCanaryRelease || 
                 this.FeedOptions == ReleaseFeedOptions.IncludeCanaryReleases);
 
-            return true;
+            if (release.TagVersion == null ||
+                release.TagVersion.CompareTo(this.InstalledVersion) <= 0)
+            {
+                //
+                // Installed version is up to date.
+                //
+                return false;
+            }
+            else
+            {
+                //
+                // This is a forced update check, ignore the update policy
+                // and advise all updates.
+                //
+                return true;
+            }
         }
     }
 }

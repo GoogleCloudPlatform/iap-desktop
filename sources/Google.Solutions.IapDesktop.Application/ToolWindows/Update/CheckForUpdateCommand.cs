@@ -50,6 +50,11 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 : ReleaseFeedOptions.None;
         }
 
+        protected Version InstalledVersion
+        {
+            get => this.install.CurrentVersion;
+        }
+
         protected virtual bool IsUpdateAdvised(IRelease release)
         {
             return this.updatePolicy.IsUpdateAdvised(release);
