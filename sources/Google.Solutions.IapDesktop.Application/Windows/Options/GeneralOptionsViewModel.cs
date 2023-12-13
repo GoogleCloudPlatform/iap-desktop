@@ -81,7 +81,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
-                : DateTime.FromBinary(settings.LastUpdateCheck.LongValue).ToString();
+                : DateTime
+                    .FromBinary(settings.LastUpdateCheck.LongValue)
+                    .ToLocalTime()
+                    .ToString();
 
             this.IsBrowserIntegrationEnabled.Value = this.protocolRegistry.IsRegistered(
                 IapRdpUrl.Scheme,
