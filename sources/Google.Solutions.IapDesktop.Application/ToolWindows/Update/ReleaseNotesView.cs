@@ -20,13 +20,14 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System;
 using System.Drawing;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Update
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 {
     public partial class ReleaseNotesView : DocumentWindow, IView<ReleaseNotesViewModel>
     {

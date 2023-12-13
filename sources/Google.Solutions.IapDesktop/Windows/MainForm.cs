@@ -55,7 +55,6 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.Apis.Auth.Gaia;
 using static System.Collections.Specialized.BitVector32;
-using Google.Solutions.IapDesktop.Application.Windows.Update;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types
