@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
@@ -44,6 +45,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
             IBrowser browser)
             : base(parentWindow, install, updatePolicyFactory, feed, taskDialog, browser)
         {
+            //TODO: Reload policy each time
+        }
+
+        protected override bool IsUpdateAdvised(IRelease release)
+        {
+            //
+            // Advise all updates since this is a forced update check.
+            //
+            // NB. The FeedOptions make sure won't suggest canary updates
+            // if the user isn't on the canary track.
+            //
+            Debug.Assert(!release.IsCanaryRelease || 
+                this.FeedOptions == ReleaseFeedOptions.IncludeCanaryReleases);
+
+            return true;
         }
     }
 }

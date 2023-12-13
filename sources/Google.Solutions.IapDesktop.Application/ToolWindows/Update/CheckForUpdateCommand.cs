@@ -43,6 +43,18 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         private readonly ITaskDialog taskDialog;
         private readonly IBrowser browser;
 
+        protected ReleaseFeedOptions FeedOptions
+        {
+            get => this.updatePolicy.FollowedTrack == ReleaseTrack.Canary
+                ? ReleaseFeedOptions.IncludeCanaryReleases
+                : ReleaseFeedOptions.None;
+        }
+
+        protected virtual bool IsUpdateAdvised(IRelease release)
+        {
+            return this.updatePolicy.IsUpdateAdvised(release);
+        }
+
         public CheckForUpdateCommand(
             IWin32Window parentWindow,
             IInstall install,
@@ -70,8 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 
         internal void PromptForDownload(IRelease latestRelease)
         {
-            if (latestRelease != null &&
-                this.updatePolicy.IsUpdateAdvised(latestRelease))
+            if (latestRelease != null && IsUpdateAdvised(latestRelease))
             {
                 //
                 // Prompt for upgrade.
@@ -126,9 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         {
             var latestRelease = this.feed
                 .FindLatestReleaseAsync(
-                    this.updatePolicy.FollowedTrack == ReleaseTrack.Canary
-                        ? ReleaseFeedOptions.IncludeCanaryReleases
-                        : ReleaseFeedOptions.None,
+                    this.FeedOptions,
                     cancellationToken)
 
 #pragma warning disable VSTHRD002
@@ -160,7 +169,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         public override async Task ExecuteAsync(TContext context)
         {
             var latestRelease = await this.feed
-               .FindLatestReleaseAsync(CancellationToken.None)
+               .FindLatestReleaseAsync(
+                    this.FeedOptions, 
+                    CancellationToken.None)
                .ConfigureAwait(true);
 
             PromptForDownload(latestRelease);
