@@ -105,17 +105,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void WhenDescriptionContainsCanaryTag_ThenGetReleaseTrackReturnsCanary()
+        public void WhenPrerelease_ThenGetReleaseTrackReturnsCanary()
         {
             var policy = new UpdatePolicy(
                 CreateInstall(),
                 SystemClock.Default,
                 ReleaseTrack.Critical);
 
-            var description = "This release is on the [track:canary] track!!1!";
+            var description = "This release is on the canary track!!1!";
 
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);
+            release.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
             var track = policy.GetReleaseTrack(release.Object);
 
@@ -186,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            canaryRelease.SetupGet(r => r.Description).Returns("[track:canary]");
+            canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
             Assert.IsTrue(Policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsTrue(Policy.IsUpdateAdvised(normalRelease.Object));
@@ -211,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            canaryRelease.SetupGet(r => r.Description).Returns("[track:canary]");
+            canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
@@ -236,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             normalRelease.SetupGet(r => r.Description).Returns("");
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
-            canaryRelease.SetupGet(r => r.Description).Returns("[track:canary]");
+            canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsFalse(policy.IsUpdateAdvised(normalRelease.Object));

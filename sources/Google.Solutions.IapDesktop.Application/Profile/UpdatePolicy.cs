@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
             {
                 return ReleaseTrack.Critical;
             }
-            else if (description.Contains("[track:canary]"))
+            else if (release.IsCanaryRelease)
             {
                 return ReleaseTrack.Canary;
             }
