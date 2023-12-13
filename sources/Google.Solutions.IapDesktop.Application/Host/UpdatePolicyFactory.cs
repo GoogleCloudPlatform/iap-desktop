@@ -21,37 +21,72 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
-    public interface IUpdatePolicyFactory
+    public interface IUpdatePolicyFactory // TODO: Move to profile
     {
         /// <summary>
         /// Get policy for a specific track.
         /// </summary>
-        IUpdatePolicy GetPolicy(ReleaseTrack followedTrack);
+        IUpdatePolicy GetPolicy();
     }
 
     public class UpdatePolicyFactory : IUpdatePolicyFactory
     {
+        private readonly IRepository<IApplicationSettings> settingsRepository;
+        private readonly IAuthorization authorization;
         private readonly IInstall install;
         private readonly IClock clock;
-
+        
         public UpdatePolicyFactory(
+            IRepository<IApplicationSettings> settingsRepository,
+            IAuthorization authorization,
             IInstall install, 
             IClock clock)
         {
+            this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.install = install.ExpectNotNull(nameof(install));
             this.clock = clock.ExpectNotNull(nameof(clock));
         }
 
-        public IUpdatePolicy GetPolicy(ReleaseTrack followedTrack)
+        public IUpdatePolicy GetPolicy()
         {
+            //
+            // Determine user's release track.
+            //
+            ReleaseTrack releaseTrack;
+            if (!this.settingsRepository.GetSettings().IsUpdateCheckEnabled.BoolValue)
+            {
+                //
+                // Updates are off, but still check for critical ones.
+                //
+                releaseTrack = ReleaseTrack.Critical;
+            }
+            else if (
+                this.authorization.Session is IGaiaOidcSession session && (
+                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
+                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
+            {
+                //
+                // Force-opt in internal domains to the canary track.
+                //
+                releaseTrack = ReleaseTrack.Canary;
+            }
+            else
+            {
+                releaseTrack = ReleaseTrack.Normal;
+            }
+
             return new UpdatePolicy(
                 this.install, 
                 this.clock,
-                followedTrack);
+                releaseTrack);
         }
     }
 }

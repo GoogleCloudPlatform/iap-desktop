@@ -373,37 +373,13 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Check for updates.
             //
-            ReleaseTrack releaseTrack;
-            if (!settings.IsUpdateCheckEnabled.BoolValue)
-            {
-                //
-                // Updates are off, but still check for critical ones.
-                //
-                releaseTrack = ReleaseTrack.Critical;
-            }
-            else if (
-                this.serviceProvider.GetService<IAuthorization>().Session is IGaiaOidcSession session && (
-                session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
-                session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
-            {
-                //
-                // Force-opt in internal domains to the canary track.
-                //
-                releaseTrack = ReleaseTrack.Canary;
-            }
-            else
-            {
-                releaseTrack = ReleaseTrack.Normal;
-            }
-
             var checkForUpdates = new CheckForUpdateCommand<IMainWindow>(
                 this,
                 this.serviceProvider.GetService<IInstall>(),
                 this.serviceProvider.GetService<IUpdatePolicyFactory>(),
                 this.serviceProvider.GetService<IReleaseFeed>(),
                 this.serviceProvider.GetService<ITaskDialog>(),
-                this.serviceProvider.GetService<IBrowser>(),
-                releaseTrack);
+                this.serviceProvider.GetService<IBrowser>());
             if (checkForUpdates.IsAutomatedUpdateCheckDue(
                 DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
             {

@@ -48,8 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             IUpdatePolicyFactory updatePolicyFactory,
             IReleaseFeed feed,
             ITaskDialog taskDialog,
-            IBrowser browser,
-            ReleaseTrack releaseTrack)
+            IBrowser browser)
             : base("Check for &updates")
         {
             this.parentWindow = parentWindow.ExpectNotNull(nameof(parentWindow));
@@ -60,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 
             this.updatePolicy = updatePolicyFactory
                 .ExpectNotNull(nameof(updatePolicyFactory))
-                .GetPolicy(releaseTrack);
+                .GetPolicy();
         }
 
         public bool IsAutomatedUpdateCheckDue(DateTime lastCheck)
