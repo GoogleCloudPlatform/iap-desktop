@@ -89,6 +89,13 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         {
             if (latestRelease != null && IsUpdateAdvised(latestRelease))
             {
+                var nameOfUpdate = this.updatePolicy.GetReleaseTrack(latestRelease) switch
+                { 
+                    ReleaseTrack.Canary => "An optional update",
+                    ReleaseTrack.Critical => "A critical security update",
+                    _ => "An update",
+                };
+
                 //
                 // Prompt for upgrade.
                 //
@@ -96,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 {
                     Icon = TaskDialogIcon.ShieldGreenBackground,
                     Caption = "Update available",
-                    Heading = "An update is available for IAP Desktop.\n\n" +
+                    Heading = $"{nameOfUpdate} is available for IAP Desktop.\n\n" +
                         $"Installed version: {this.install.CurrentVersion}\n" +
                         $"Available version: {latestRelease.TagVersion}",
                     Text = "Would you like to download the update now?"

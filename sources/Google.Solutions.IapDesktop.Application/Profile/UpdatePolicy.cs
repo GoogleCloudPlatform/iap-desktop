@@ -20,8 +20,6 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
@@ -47,6 +45,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// should be performed.
         /// </summary>
         bool IsUpdateCheckDue(DateTime lastCheck);
+
+        /// <summary>
+        /// Determine which release track a release belongs to.
+        /// </summary>
+        ReleaseTrack GetReleaseTrack(IRelease release);
     }
 
     /// <summary>
@@ -87,10 +90,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile
             this.FollowedTrack = followedTrack;
         }
 
-        /// <summary>
-        /// Determine which release track a release belongs to.
-        /// </summary>
-        internal ReleaseTrack GetReleaseTrack(IRelease release)
+
+        //---------------------------------------------------------------------
+        // IUpdatePolicy.
+        //---------------------------------------------------------------------
+
+        public ReleaseTrack FollowedTrack { get; }
+
+        public ReleaseTrack GetReleaseTrack(IRelease release)
         {
             //
             // GitHub doesn't let us "tag" releases in a good way,
@@ -111,12 +118,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                 return ReleaseTrack.Normal;
             }
         }
-
-        //---------------------------------------------------------------------
-        // IUpdatePolicy.
-        //---------------------------------------------------------------------
-
-        public ReleaseTrack FollowedTrack { get; }
 
         public bool IsUpdateAdvised(IRelease release)
         {
