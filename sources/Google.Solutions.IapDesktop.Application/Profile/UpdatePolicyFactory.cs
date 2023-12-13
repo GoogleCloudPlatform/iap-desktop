@@ -23,12 +23,13 @@ using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Host
+namespace Google.Solutions.IapDesktop.Application.Profile
 {
-    public interface IUpdatePolicyFactory // TODO: Move to profile
+    public interface IUpdatePolicyFactory
     {
         /// <summary>
         /// Get policy for a specific track.
@@ -42,11 +43,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
         private readonly IAuthorization authorization;
         private readonly IInstall install;
         private readonly IClock clock;
-        
+
         public UpdatePolicyFactory(
             IRepository<IApplicationSettings> settingsRepository,
             IAuthorization authorization,
-            IInstall install, 
+            IInstall install,
             IClock clock)
         {
             this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
@@ -84,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
 
             return new UpdatePolicy(
-                this.install, 
+                this.install,
                 this.clock,
                 releaseTrack);
         }

@@ -24,10 +24,11 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Host;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Host
+namespace Google.Solutions.IapDesktop.Application.Profile
 {
     public interface IUpdatePolicy
     {
@@ -119,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public bool IsUpdateAdvised(IRelease release)
         {
-            Precondition.ExpectNotNull(release, nameof(release));
+            release.ExpectNotNull(nameof(release));
 
             if (release.TagVersion == null ||
                 release.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
@@ -138,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public bool IsUpdateCheckDue(DateTime lastCheck)
         {
             Debug.Assert(
-                lastCheck.Kind == DateTimeKind.Utc || 
+                lastCheck.Kind == DateTimeKind.Utc ||
                 lastCheck == DateTime.MinValue);
 
             return (this.clock.UtcNow - lastCheck).TotalDays >= this.DaysBetweenUpdateChecks;
