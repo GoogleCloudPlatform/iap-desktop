@@ -29,11 +29,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Mvvm.Theme.ControlTheme;
 
 namespace Google.Solutions.IapDesktop.Application.Client
 {
     public class GithubClient : IReleaseFeed
     {
+#if DEBUG
+        internal const ushort PageSize = 2;
+#else
+        internal const ushort PageSize = 100;
+#endif
         private readonly IExternalRestClient restAdapter;
 
         public GithubClient(
@@ -52,21 +58,50 @@ namespace Google.Solutions.IapDesktop.Application.Client
         public string Repository { get; }
 
         /// <summary>
-        /// List recent updates
+        /// List recent releases, ordered by version number in descending order.
         /// </summary>
         public async Task<IEnumerable<IRelease>> ListReleasesAsync(
-            ushort maxCount,
+            ReleaseFeedOptions options,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var releases = await this.restAdapter
-                    .GetAsync<List<Release>>(
-                        new Uri($"https://api.github.com/repos/{Repository}/releases?per_page={maxCount}"),
-                        cancellationToken)
-                    .ConfigureAwait(false);
+                //
+                // NB. The releases API seems to order results by published_at, 
+                // but we shouldn't rely on that, see
+                // https://github.com/orgs/community/discussions/21901.
+                //
+                // The API also doesn't let us specify a custom order, so we have
+                // to do the ordering by ourselves.
+                //
 
-                return releases.EnsureNotNull();
+                var allReleases = new List<IRelease>();
+                for (int pageNumber = 1; ; pageNumber++)
+                {
+                    var page = await this.restAdapter
+                        .GetAsync<List<Release>>(
+                            new Uri(
+                                $"https://api.github.com/repos/{Repository}/releases?" +
+                                $"per_page={PageSize}&page={pageNumber}"),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    if (page == null || page.Count == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        allReleases.AddRange(page);
+                    }
+                }
+
+                return allReleases
+                    .EnsureNotNull()
+                    .Where(r => r.TagVersion != null)
+                    .Where(r => options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases)
+                                || !r.IsCanaryRelease)
+                    .OrderByDescending(r => r.TagVersion);
             }
         }
 
@@ -74,15 +109,39 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// Find the latest available update.
         /// </summary>
         public async Task<IRelease> FindLatestReleaseAsync(
+            ReleaseFeedOptions options,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var latestRelease = await this.restAdapter
-                    .GetAsync<Release>(
-                        new Uri($"https://api.github.com/repos/{Repository}/releases/latest"),
-                        cancellationToken)
-                    .ConfigureAwait(false);
+                IRelease latestRelease;
+                if (!options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases))
+                {
+                    //
+                    // Use the whacky /latest API to avoid having
+                    // to page over dozens of releases.
+                    //
+                    // The /latest API ignores prereleases
+                    //
+                    latestRelease = await this.restAdapter
+                        .GetAsync<Release>(
+                            new Uri($"https://api.github.com/repos/{Repository}/releases/latest"),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    //
+                    // Use the latest release (by version), regardless of
+                    // whether it's a prerelease or not.
+                    //
+                    var releases = await
+                        ListReleasesAsync(
+                            options,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                    latestRelease = releases.FirstOrDefault();
+                }
 
                 if (latestRelease == null)
                 {
@@ -91,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 else
                 {
                     ApplicationTraceSource.Log.TraceVerbose(
-                        "Found new release: {0}", latestRelease.TagName);
+                        "Found new release: {0}", latestRelease.TagVersion);
 
                     //
                     // New release available.
@@ -99,6 +158,12 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     return latestRelease;
                 }
             }
+        }
+
+        public Task<IRelease> FindLatestReleaseAsync(
+            CancellationToken cancellationToken)
+        {
+            return FindLatestReleaseAsync(ReleaseFeedOptions.None, cancellationToken);
         }
 
         //---------------------------------------------------------------------
@@ -119,16 +184,21 @@ namespace Google.Solutions.IapDesktop.Application.Client
             [JsonProperty("assets")]
             public List<ReleaseAsset> Assets { get; }
 
+            [JsonProperty("prerelease")]
+            public bool IsCanaryRelease { get; }
+
             [JsonConstructor]
             public Release(
                 [JsonProperty("tag_name")] string tagName,
                 [JsonProperty("html_url")] string htmlUrl,
                 [JsonProperty("body")] string body,
+                [JsonProperty("prerelease")] bool? prerelease,
                 [JsonProperty("assets")] List<ReleaseAsset> assets)
             {
                 this.TagName = tagName;
                 this.HtmlUrl = htmlUrl;
                 this.Body = body;
+                this.IsCanaryRelease = prerelease == true;
                 this.Assets = assets;
             }
 
