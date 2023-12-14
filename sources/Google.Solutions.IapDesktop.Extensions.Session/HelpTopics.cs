@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
 
         public static readonly IHelpTopic TroubleshootingSsh = new HelpTopic(
             "SSH troubleshooting",
-            $"http://localhost:8000/iap-desktop/troubleshooting-ssh/?{GaParameters}"); //TODO: Add real link
+            $"https://googlecloudplatform.github.io/iap-desktop/troubleshooting-ssh/?{GaParameters}");
 
     }
 }
