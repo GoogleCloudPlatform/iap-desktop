@@ -140,12 +140,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
 
         public async Task DeleteSelectedItemAsync(CancellationToken cancellationToken)
         {
-            Debug.Assert(this.selectedItem != null);
+            //
+            // Capture current item, the selection might change any time.
+            //
+            var item = this.selectedItem;
+            if (item == null)
+            {
+                return;
+            }
+
             Debug.Assert(this.IsDeleteButtonEnabled);
             Debug.Assert(this.View != null);
 
             var question = "Are you sure you want to delete this key?";
-            if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.ProjectMetadata)
+            if (item.AuthorizationMethod == KeyAuthorizationMethods.ProjectMetadata)
             {
                 question += " This change affects all VM instances in the project.";
             }
@@ -153,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             if (this.confirmationDialog.Confirm(
                 this.View,
                 question,
-                "Delete key for user " + this.selectedItem.Key.Email,
+                "Delete key for user " + item.Key.Email,
                 "Delete key") != DialogResult.Yes)
             {
                 return;
@@ -161,15 +169,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
 
             await this.jobService.RunAsync(
                 new JobDescription(
-                    $"Deleting SSH keys for {this.selectedItem.Key.Email}",
+                    $"Deleting SSH keys for {item.Key.Email}",
                     JobUserFeedbackType.BackgroundFeedback),
                 async jobToken =>
                 {
-                    if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                    if (item.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                     {
                         await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
                                 this.osLoginService.GetInstance(),
-                                this.selectedItem,
+                                item,
                                 cancellationToken)
                             .ConfigureAwait(true);
                     }
@@ -179,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                                 this.computeClient.GetInstance(),
                                 this.resourceManagerAdapter.GetInstance(),
                                 this.ModelKey,
-                                this.selectedItem,
+                                item,
                                 cancellationToken)
                             .ConfigureAwait(true);
                     }
