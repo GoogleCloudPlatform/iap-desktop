@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Windows.Help
+namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 {
     partial class ReleaseNotesView
     {

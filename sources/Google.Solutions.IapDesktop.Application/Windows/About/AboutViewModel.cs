@@ -35,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
     public class AboutViewModel : ViewModelBase
     {
         public AboutViewModel(
-            IUpdateCheck updateService,
+            IInstall install,
             IThemeService themeService)
         {
             this.Information = $"IAP Desktop\n" +
-                $"Version {updateService.InstalledVersion}\n" +
+                $"Version {install.CurrentVersion}\n" +
                 $".NET {ClrVersion.Version}";
             this.Copyright = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
 

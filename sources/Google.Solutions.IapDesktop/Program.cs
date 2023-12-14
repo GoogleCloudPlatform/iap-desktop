@@ -48,7 +48,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.About;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Application.Windows.Help;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows.ProjectPicker;
@@ -582,13 +581,14 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
                 mainLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
+                mainLayer.AddSingleton<IBrowser>(Browser.Default);
 
                 var projectRepository = new ProjectRepository(profile.SettingsKey.CreateSubKey("Inventory"));
                 mainLayer.AddSingleton<IProjectRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
                 mainLayer.AddTransient<ICloudConsoleClient, CloudConsoleClient>();
-                mainLayer.AddTransient<IUpdateCheck, UpdateCheck>();
+                mainLayer.AddTransient<IUpdatePolicyFactory, UpdatePolicyFactory>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 
