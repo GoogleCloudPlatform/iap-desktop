@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             return this.updatePolicy.IsUpdateCheckDue(lastCheck);
         }
 
-        internal void PromptForDownload(IRelease latestRelease)
+        internal void PromptForAction(IRelease latestRelease)
         {
             if (latestRelease == null)
             {
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             else if (
                 latestRelease.Survey != null && 
                 this.EnableSurveys &&
-                (this.LastSurveyVersion == null || this.LastSurveyVersion < latestRelease.TagVersion)) // TODO: test
+                (this.LastSurveyVersion == null || this.LastSurveyVersion < latestRelease.TagVersion))
             {
                 var dialogParameters = new TaskDialogParameters()
                 {
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 .Result;
 #pragma warning restore VSTHRD002
 
-            PromptForDownload(latestRelease);
+            PromptForAction(latestRelease);
         }
 
         //---------------------------------------------------------------------
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     CancellationToken.None)
                .ConfigureAwait(true);
 
-            PromptForDownload(latestRelease);
+            PromptForAction(latestRelease);
         }
     }
 }
