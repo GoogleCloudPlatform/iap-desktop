@@ -50,6 +50,16 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         IEnumSetting<SecurityProtocolType> TlsVersions { get; }
         IStringSetting FullScreenDevices { get; }
         IStringSetting CollapsedProjects { get; }
+
+        /// <summary>
+        /// Participate in surveys.
+        /// </summary>
+        IBoolSetting IsSurveyEnabled { get; }
+
+        /// <summary>
+        /// Last release version for which the user has taken a survey.
+        /// </summary>
+        IStringSetting LastSurveyVersion { get; }
     }
 
     /// <summary>
@@ -115,6 +125,10 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public IStringSetting CollapsedProjects { get; private set; }
 
+            public IBoolSetting IsSurveyEnabled { get; private set; }
+
+            public IStringSetting LastSurveyVersion { get; private set; }
+
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.IsMainWindowMaximized,
@@ -130,7 +144,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.ProxyPassword,
                 this.TlsVersions,
                 this.FullScreenDevices,
-                this.CollapsedProjects
+                this.CollapsedProjects,
+                this.IsSurveyEnabled,
+                this.LastSurveyVersion
             };
 
             public static ApplicationSettings FromKey(
@@ -268,6 +284,21 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     CollapsedProjects = RegistryStringSetting.FromKey(
                         "CollapsedProjects",
                         "CollapsedProjects",
+                        null,
+                        null,
+                        null,
+                        settingsKey,
+                        _ => true),
+                    IsSurveyEnabled = RegistryBoolSetting.FromKey(
+                        "IsSurveyEnabled",
+                        "IsSurveyEnabled",
+                        null,
+                        null,
+                        true,
+                        settingsKey),
+                    LastSurveyVersion = RegistryStringSetting.FromKey(
+                        "LastSurveyVersion",
+                        "LastSurveyVersion",
                         null,
                         null,
                         null,

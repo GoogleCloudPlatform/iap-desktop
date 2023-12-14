@@ -135,6 +135,105 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         //---------------------------------------------------------------------
+        // FindLatestReleaseAsync - survey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenReleaseDoesNotIncludeSurvey_ThenFindLatestReleaseReturnsReleaseWithoutSurvey()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.Release>(
+                    new Uri($"https://api.github.com/repos/{SampleRepository}/releases/latest"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GithubClient.Release("3.0.1", null, null, false, null));
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+
+            var latest = await adapter
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(latest.Survey);
+        }
+
+        [Test]
+        public async Task WhenSurveyDownloadFails_ThenFindLatestReleaseReturnsReleaseWithoutSurvey()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.Release>(
+                    new Uri($"https://api.github.com/repos/{SampleRepository}/releases/latest"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GithubClient.Release(
+                    "3.0.1",
+                    null,
+                    null,
+                    false,
+                    new List<GithubClient.ReleaseAsset>
+                    {
+                        new GithubClient.ReleaseAsset("https://github/Survey.dat")
+                    }));
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.ReleaseSurvey>(
+                    new Uri("https://github/Survey.dat"),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new TimeoutException("mock"));
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+
+            var latest = await adapter
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(latest.Survey);
+        }
+
+        [Test]
+        public async Task WhenReleaseIncludesSurvey_ThenFindLatestReleaseReturnsReleaseWithSurvey()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.Release>(
+                    new Uri($"https://api.github.com/repos/{SampleRepository}/releases/latest"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GithubClient.Release(
+                    "3.0.1", 
+                    null, 
+                    null,
+                    false, 
+                    new List<GithubClient.ReleaseAsset>
+                    {
+                        new GithubClient.ReleaseAsset("https://github/Survey.dat")
+                    }));
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.ReleaseSurvey>(
+                    new Uri("https://github/Survey.dat"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GithubClient.ReleaseSurvey(
+                    "title",
+                    "description",
+                    "http://survey.example.com/"));
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+
+            var latest = await adapter
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(latest.Survey);
+            Assert.AreEqual("title", latest.Survey.Title);
+            Assert.AreEqual("description", latest.Survey.Description);
+            Assert.AreEqual("http://survey.example.com/", latest.Survey.Url);
+        }
+
+        //---------------------------------------------------------------------
         // ListReleases.
         //---------------------------------------------------------------------
 

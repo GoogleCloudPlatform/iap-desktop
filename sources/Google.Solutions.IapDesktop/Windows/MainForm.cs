@@ -394,9 +394,22 @@ namespace Google.Solutions.IapDesktop.Windows
                         //
                         cts.CancelAfter(TimeSpan.FromSeconds(5));
 
+                        //
+                        // Prompt for survey unless the user has opted out.
+                        //
+                        checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.BoolValue;
+                        if (Version.TryParse(
+                            settings.LastSurveyVersion.StringValue, 
+                            out var lastSurveyVersion))
+                        {
+                            checkForUpdates.LastSurveyVersion = lastSurveyVersion;
+                        }
+
                         checkForUpdates.Execute(this, cts.Token);
 
                         settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
+                        settings.IsSurveyEnabled.BoolValue = checkForUpdates.EnableSurveys;
+                        settings.LastSurveyVersion.StringValue = checkForUpdates.LastSurveyVersion?.ToString();
                     }
                 }
                 catch (Exception e)
