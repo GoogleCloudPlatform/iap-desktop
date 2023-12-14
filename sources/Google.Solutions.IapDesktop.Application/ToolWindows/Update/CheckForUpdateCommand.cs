@@ -43,6 +43,18 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         private readonly ITaskDialog taskDialog;
         private readonly IBrowser browser;
 
+        /// <summary>
+        /// Get or set whether to show survey notifications. Updated
+        /// to reflect the user's opt-out decision after the command
+        /// has been executed.
+        /// </summary>
+        public bool EnableSurveys { get; set; } = false;
+
+        /// <summary>
+        /// Last release version for which the user has taken a survey.
+        /// </summary>
+        public Version LastSurveyVersion { get; set; }
+
         protected ReleaseFeedOptions FeedOptions
         {
             get => this.updatePolicy.FollowedTrack == ReleaseTrack.Canary
@@ -85,9 +97,13 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             return this.updatePolicy.IsUpdateCheckDue(lastCheck);
         }
 
-        internal void PromptForDownload(IRelease latestRelease)
+        internal void PromptForAction(IRelease latestRelease)
         {
-            if (latestRelease != null && IsUpdateAdvised(latestRelease))
+            if (latestRelease == null)
+            {
+                return;
+            }
+            else if (IsUpdateAdvised(latestRelease))
             {
                 var nameOfUpdate = this.updatePolicy.GetReleaseTrack(latestRelease) switch
                 { 
@@ -143,6 +159,55 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     this.parentWindow,
                     dialogParameters);
             }
+            else if (
+                latestRelease.Survey != null && 
+                this.EnableSurveys &&
+                (this.LastSurveyVersion == null || this.LastSurveyVersion < latestRelease.TagVersion))
+            {
+                var dialogParameters = new TaskDialogParameters()
+                {
+                    Caption = "Tell us what you think",
+                    Heading = latestRelease.Survey.Title,
+                    Text = latestRelease.Survey.Description,
+                };
+                dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+
+                //
+                // Open survey.
+                //
+                var openButton = new TaskDialogCommandLinkButton(
+                    "Take the survey",
+                    DialogResult.OK);
+                openButton.Click += (_, __) =>
+                {
+                    this.browser.Navigate(latestRelease.Survey.Url);
+                    this.LastSurveyVersion = latestRelease.TagVersion;
+                };
+                dialogParameters.Buttons.Add(openButton);
+
+                //
+                // No, later.
+                //
+                var laterButton = new TaskDialogCommandLinkButton(
+                    "Maybe later",
+                    DialogResult.Cancel);
+                dialogParameters.Buttons.Add(laterButton);
+
+                //
+                // Opt-out.
+                //
+                dialogParameters.VerificationCheckBox = new TaskDialogVerificationCheckBox(
+                    "Don't show this message again")
+                {
+                    Checked = false
+                };
+
+                this.taskDialog.ShowDialog(
+                    this.parentWindow,
+                    dialogParameters);
+
+                this.EnableSurveys = !dialogParameters.VerificationCheckBox.Checked;
+            }
         }
 
         public void Execute(TContext context, CancellationToken cancellationToken)
@@ -156,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 .Result;
 #pragma warning restore VSTHRD002
 
-            PromptForDownload(latestRelease);
+            PromptForAction(latestRelease);
         }
 
         //---------------------------------------------------------------------
@@ -186,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     CancellationToken.None)
                .ConfigureAwait(true);
 
-            PromptForDownload(latestRelease);
+            PromptForAction(latestRelease);
         }
     }
 }

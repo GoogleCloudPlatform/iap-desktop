@@ -124,11 +124,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         //---------------------------------------------------------------------
-        // PromptForDownload.
+        // PromptForAction - download.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReleaseIsNull_ThenPromptForDownloadReturns()
+        public void WhenReleaseIsNull_ThenPromptForActionReturns()
         {
             var policy = new Mock<IUpdatePolicy>();
             var policyFactory = new Mock<IUpdatePolicyFactory>();
@@ -144,13 +144,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
 
-            command.PromptForDownload(null);
+            command.PromptForAction(null);
 
             policy.Verify(p => p.IsUpdateAdvised(It.IsAny<IRelease>()), Times.Never);
         }
 
         [Test]
-        public void WhenPolicyDoesNotAdviseUpdate_ThenPromptForDownloadReturns()
+        public void WhenPolicyDoesNotAdviseUpdate_ThenPromptForActionReturns()
         {
             var policy = new Mock<IUpdatePolicy>();
             var policyFactory = new Mock<IUpdatePolicyFactory>();
@@ -166,13 +166,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
 
-            command.PromptForDownload(new Mock<IRelease>().Object);
+            command.PromptForAction(new Mock<IRelease>().Object);
 
             policy.Verify(p => p.IsUpdateAdvised(It.IsAny<IRelease>()), Times.Once);
         }
 
         [Test]
-        public void WhenUserCancels_ThenPromptForDownloadReturns()
+        public void WhenUserCancels_ThenPromptForActionReturns()
         {
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
@@ -182,11 +182,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
 
-            command.PromptForDownload(new Mock<IRelease>().Object);
+            command.PromptForAction(new Mock<IRelease>().Object);
         }
 
         [Test]
-        public void WhenUserSelectsDownload_ThenPromptForDownloadOpensDownload()
+        public void WhenUserSelectsDownload_ThenPromptForActionOpensDownload()
         {
             var browser = new Mock<IBrowser>();
 
@@ -202,13 +202,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateDialog("Yes, download now"),
                 browser.Object);
 
-            command.PromptForDownload(release.Object);
+            command.PromptForAction(release.Object);
 
             browser.Verify(b => b.Navigate(downloadUrl), Times.Once);
         }
 
         [Test]
-        public void WhenDownloadUrlNotFound_ThenPromptForDownloadOpensDetails()
+        public void WhenDownloadUrlNotFound_ThenPromptForActionOpensDetails()
         {
             var browser = new Mock<IBrowser>();
 
@@ -224,13 +224,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateDialog("Yes, download now"),
                 browser.Object);
 
-            command.PromptForDownload(release.Object);
+            command.PromptForAction(release.Object);
 
             browser.Verify(b => b.Navigate(detailsUrl), Times.Once);
         }
 
         [Test]
-        public void WhenUserSelectsMoreDetails_ThenPromptForDownloadOpensDetails()
+        public void WhenUserSelectsMoreDetails_ThenPromptForActionOpensDetails()
         {
             var browser = new Mock<IBrowser>();
 
@@ -248,13 +248,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateDialog("Show release notes"),
                 browser.Object);
 
-            command.PromptForDownload(release.Object);
+            command.PromptForAction(release.Object);
 
             browser.Verify(b => b.Navigate(detailsUrl), Times.Once);
         }
 
         [Test]
-        public void WhenUserSelectsLater_ThenPromptForDownloadReturns()
+        public void WhenUserSelectsLater_ThenPromptForActionReturns()
         {
             var browser = new Mock<IBrowser>();
 
@@ -266,9 +266,155 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateDialog("No, download later"),
                 browser.Object);
 
-            command.PromptForDownload(new Mock<IRelease>().Object);
+            command.PromptForAction(new Mock<IRelease>().Object);
 
             browser.Verify(b => b.Navigate(It.IsAny<string>()), Times.Never);
+        }
+
+        //---------------------------------------------------------------------
+        // PromptForAction - survey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenReleaseHasNoSurvey_ThenPromptForActionReturns()
+        {
+            var release = new Mock<IRelease>();
+            release.SetupGet(r => r.Survey).Returns((IReleaseSurvey)null);
+
+            var dialog = new Mock<ITaskDialog>();
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                new Mock<IReleaseFeed>().Object,
+                dialog.Object,
+                new Mock<IBrowser>().Object)
+            {
+                EnableSurveys = true
+            };
+
+            command.PromptForAction(release.Object);
+
+            dialog.Verify(b => b.ShowDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<TaskDialogParameters>()), 
+                Times.Never);
+        }
+
+        [Test]
+        public void WhenReleaseHasSurveyButSurveysAreDisabled_ThenPromptForActionReturns()
+        {
+            var survey = new Mock<IReleaseSurvey>();
+            var release = new Mock<IRelease>();
+            release.SetupGet(r => r.Survey).Returns(survey.Object);
+
+            var dialog = new Mock<ITaskDialog>();
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                new Mock<IReleaseFeed>().Object,
+                dialog.Object,
+                new Mock<IBrowser>().Object)
+            {
+                EnableSurveys = false
+            };
+
+            command.PromptForAction(release.Object);
+
+            dialog.Verify(b => b.ShowDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<TaskDialogParameters>()),
+                Times.Never);
+        }
+
+        [Test]
+        public void WhenReleaseHasSurveyButSurveysWasTakenBefore_ThenPromptForActionReturns()
+        {
+            var lastVersion = new Version("2.1.3");
+
+            var survey = new Mock<IReleaseSurvey>();
+            var release = new Mock<IRelease>();
+            release.SetupGet(r => r.TagVersion).Returns(lastVersion);
+            release.SetupGet(r => r.Survey).Returns(survey.Object);
+
+            var dialog = new Mock<ITaskDialog>();
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                new Mock<IReleaseFeed>().Object,
+                dialog.Object,
+                new Mock<IBrowser>().Object)
+            {
+                EnableSurveys = true,
+                LastSurveyVersion = lastVersion
+            };
+
+            command.PromptForAction(release.Object);
+
+            dialog.Verify(b => b.ShowDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<TaskDialogParameters>()),
+                Times.Never);
+        }
+
+        [Test]
+        public void WhenReleaseHasSurvey_ThenPromptForActionShowsDialog()
+        {
+            var survey = new Mock<IReleaseSurvey>();
+            var release = new Mock<IRelease>();
+            release.SetupGet(r => r.TagVersion).Returns(new Version("2.1.3"));
+            release.SetupGet(r => r.Survey).Returns(survey.Object);
+
+            var dialog = new Mock<ITaskDialog>();
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                new Mock<IReleaseFeed>().Object,
+                dialog.Object,
+                new Mock<IBrowser>().Object)
+            {
+                EnableSurveys = true,
+                LastSurveyVersion = new Version("1.0")
+            };
+
+            command.PromptForAction(release.Object);
+
+            dialog.Verify(b => b.ShowDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<TaskDialogParameters>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void WhenUserOpensSurvey_ThenPromptForActionUpdatesLastSurveyVersion()
+        {
+            var survey = new Mock<IReleaseSurvey>();
+            var release = new Mock<IRelease>();
+            release.SetupGet(r => r.TagVersion).Returns(new Version("2.1.3"));
+            release.SetupGet(r => r.Survey).Returns(survey.Object);
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                new Mock<IReleaseFeed>().Object,
+                CreateDialog("Take the survey"),
+                new Mock<IBrowser>().Object)
+            {
+                EnableSurveys = true,
+                LastSurveyVersion = new Version("1.0")
+            };
+
+            command.PromptForAction(release.Object);
+
+            Assert.AreEqual(release.Object.TagVersion, command.LastSurveyVersion);
         }
 
         //---------------------------------------------------------------------

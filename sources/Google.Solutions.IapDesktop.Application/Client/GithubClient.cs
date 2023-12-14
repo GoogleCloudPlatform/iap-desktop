@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Json;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
@@ -114,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                IRelease latestRelease;
+                Release latestRelease;
                 if (!options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases))
                 {
                     //
@@ -125,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     //
                     latestRelease = await this.restAdapter
                         .GetAsync<Release>(
-                            new Uri($"https://api.github.com/repos/{Repository}/releases/latest"),
+                            new Uri($"https://api.github.com/repos/{this.Repository}/releases/latest"),
                             cancellationToken)
                         .ConfigureAwait(false);
                 }
@@ -140,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                             options,
                             cancellationToken)
                         .ConfigureAwait(false);
-                    latestRelease = releases.FirstOrDefault();
+                    latestRelease = (Release)releases.FirstOrDefault();
                 }
 
                 if (latestRelease == null)
@@ -151,6 +152,42 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 {
                     ApplicationTraceSource.Log.TraceVerbose(
                         "Found new release: {0}", latestRelease.TagVersion);
+
+                    var surveyAssetUrl = latestRelease
+                        .Assets
+                        .EnsureNotNull()
+                        .FirstOrDefault(u => u.DownloadUrl.EndsWith(
+                            "survey.dat", 
+                            StringComparison.OrdinalIgnoreCase))?
+                        .DownloadUrl;
+                    if (surveyAssetUrl != null)
+                    {
+                        ApplicationTraceSource.Log.TraceVerbose(
+                            "Found survey: {0}", surveyAssetUrl);
+
+                        //
+                        // Try to load survey details.
+                        //
+                        try
+                        {
+                            var survey = await this.restAdapter
+                               .GetAsync<ReleaseSurvey>(
+                                   new Uri(surveyAssetUrl),
+                                   cancellationToken)
+                               .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(survey.Title) &&
+                                !string.IsNullOrEmpty(survey.Description) &&
+                                !string.IsNullOrEmpty(survey.Url))
+                            {
+                                latestRelease.Survey = survey;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // Ignore in Release builds.
+                            Debug.Fail(e.FullMessage());
+                        }
+                    }
 
                     //
                     // New release available.
@@ -217,13 +254,19 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 }
             }
 
-            public string DownloadUrl => this
-                .Assets
-                .EnsureNotNull()
-                .FirstOrDefault(u => u.DownloadUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))?
-                .DownloadUrl;
+            public string DownloadUrl
+            {
+                get => this
+                    .Assets
+                    .EnsureNotNull()
+                    .FirstOrDefault(u => u.DownloadUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))?
+                    .DownloadUrl;
+            }
+
+            public IReleaseSurvey Survey { get; internal set; }
 
             public string DetailsUrl => this.HtmlUrl;
+
             public string Description => this.Body;
         }
 
@@ -236,6 +279,28 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 [JsonProperty("browser_download_url")] string downloadUrl)
             {
                 this.DownloadUrl = downloadUrl;
+            }
+        }
+
+        public class ReleaseSurvey : IReleaseSurvey
+        {
+            [JsonProperty("title")]
+            public string Title { get; }
+
+            [JsonProperty("description")]
+            public string Description { get; }
+
+            [JsonProperty("url")]
+            public string Url { get; }
+
+            public ReleaseSurvey(
+                [JsonProperty("title")] string title,
+                [JsonProperty("description")] string description,
+                [JsonProperty("url")] string url)
+            {
+                this.Title = title;
+                this.Description = description;
+                this.Url = url;
             }
         }
     }

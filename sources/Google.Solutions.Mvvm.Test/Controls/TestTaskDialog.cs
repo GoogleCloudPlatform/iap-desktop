@@ -157,10 +157,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var parameters = new TaskDialogParameters()
             {
-                VerificationCheckBox = new TaskDialogVerificationCheckBox()
-                {
-                    Text = "check me"
-                }
+                VerificationCheckBox = new TaskDialogVerificationCheckBox("check me")
             };
 
             parameters.Buttons.Add(TaskDialogStandardButton.OK);

@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         string DownloadUrl { get; }
 
         /// <summary>
-        /// Url to website for this release.
+        /// URL to website for this release.
         /// </summary>
         string DetailsUrl { get; }
 
@@ -52,9 +52,35 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         string Description { get; }
 
         /// <summary>
-        /// Check if this is a canary-only release.
+        /// Check if this is a canary release.
         /// </summary>
         bool IsCanaryRelease { get; }
+
+        /// <summary>
+        /// Survey associated with this release.
+        /// </summary>
+        IReleaseSurvey Survey { get; }
+    }
+
+    /// <summary>
+    /// A survey.
+    /// </summary>
+    public interface IReleaseSurvey
+    {
+        /// <summary>
+        /// Title of the survey.
+        /// </summary>
+        string Title { get; }
+
+        /// <summary>
+        /// Description.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
+        /// URL to survey.
+        /// </summary>
+        string Url { get; }
     }
 
     /// <summary>
