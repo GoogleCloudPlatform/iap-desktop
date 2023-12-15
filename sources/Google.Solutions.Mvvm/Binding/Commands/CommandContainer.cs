@@ -249,11 +249,11 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             // Virtual properties.
             //-----------------------------------------------------------------
 
-            public virtual string Text => null;
+            public virtual string? Text => null;
 
-            public virtual string ToolTip => null;
+            public virtual string? ToolTip => null;
 
-            public virtual Image Image => null;
+            public virtual Image? Image => null;
 
             public virtual Keys ShortcutKeys => Keys.None;
 
@@ -321,7 +321,14 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
             internal void OnContextUpdated()
             {
-                switch (this.command.QueryState(this.container.ContextSource.Context))
+                var context = this.container.ContextSource.Context;
+                if (context == null)
+                {
+                    this.IsVisible = false;
+                    return;
+                }
+
+                switch (this.command.QueryState(context))
                 {
                     case CommandState.Disabled:
                         this.IsVisible = true;
@@ -354,14 +361,14 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             // Read-only observable properties.
             //-----------------------------------------------------------------
 
-            public override string Text => this.command.Text;
+            public override string? Text => this.command.Text;
 
-            public override string ToolTip
+            public override string? ToolTip
                 => this.DisplayStyle == ToolStripItemDisplayStyle.Image
                     ? this.command.Text.Replace("&", "")
                     : null;
 
-            public override Image Image => this.command.Image;
+            public override Image? Image => this.command.Image;
 
             public override Keys ShortcutKeys => this.command.ShortcutKeys;
 
