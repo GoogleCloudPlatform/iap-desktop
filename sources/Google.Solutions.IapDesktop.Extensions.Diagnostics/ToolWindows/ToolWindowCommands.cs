@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             // Cause unreasonable stress on the windowing system
             // by opening and closing a lot of document windows.
             //
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 500; i++)
             {
                 this.toolWindowHost
                     .GetToolWindow<AutoCloseView, AutoCloseViewModel>()
