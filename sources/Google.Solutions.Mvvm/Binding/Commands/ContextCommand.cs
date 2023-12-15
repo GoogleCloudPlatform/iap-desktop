@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     /// </summary>
     public class ContextCommand<TContext> : CommandBase, IContextCommand<TContext>
     {
-        private string id;
+        private string? id;
         private readonly Func<TContext, Task> executeFunc;
         private readonly Func<TContext, CommandState> queryStateFunc;
 
@@ -39,8 +39,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             string text,
             Func<TContext, CommandState> queryStateFunc,
             Func<TContext, Task> executeFunc)
+            : base(text)
         {
-            this.Text = text;
             this.queryStateFunc = queryStateFunc;
             this.executeFunc = executeFunc;
         }
@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             set => this.id = value;
         }
 
-        public Image Image { get; set; }
+        public Image? Image { get; set; }
         
         public Keys ShortcutKeys { get; set; }
 

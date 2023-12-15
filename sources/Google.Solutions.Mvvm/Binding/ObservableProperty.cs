@@ -50,8 +50,8 @@ namespace Google.Solutions.Mvvm.Binding
     public abstract class ObservablePropertyBase<T>
          : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
     {
-        private LinkedList<IObservableProperty> dependents;
-        public event PropertyChangedEventHandler PropertyChanged;
+        private LinkedList<IObservableProperty>? dependents;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public virtual void RaisePropertyChange()
         {
@@ -59,12 +59,9 @@ namespace Google.Solutions.Mvvm.Binding
                 this,
                 new PropertyChangedEventArgs("Value"));
 
-            if (this.dependents != null)
+            foreach (var dependent in this.dependents.EnsureNotNull())
             {
-                foreach (var dependent in this.dependents)
-                {
-                    dependent.RaisePropertyChange();
-                }
+                dependent.RaisePropertyChange();
             }
         }
 
@@ -125,6 +122,13 @@ namespace Google.Solutions.Mvvm.Binding
             {
                 Debug.Assert(this.viewModel.View != null);
                 Debug.Assert(this.viewModel.View is ISynchronizeInvoke);
+
+                if (this.viewModel.View == null)
+                {
+                    throw new InvalidOperationException(
+                        "View model is not bound to a view");
+                }
+
                 return ((ISynchronizeInvoke)this.viewModel.View);
             }
         }

@@ -26,19 +26,20 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     /// determines the availability of commands.
     /// </summary>
     public interface IContextSource<TContext>
+        where TContext : class
     {
-        TContext Context { get; }
+        TContext? Context { get; }
     }
 
     /// <summary>
     /// Basic context source implementation.
     /// </summary>
-    public class ContextSource<TContext>
-        : ViewModelBase, IContextSource<TContext>
+    public class ContextSource<TContext> : ViewModelBase, IContextSource<TContext>
+        where TContext : class
     {
-        private TContext context;
+        private TContext? context;
 
-        public TContext Context
+        public TContext? Context
         {
             get => this.context;
             set

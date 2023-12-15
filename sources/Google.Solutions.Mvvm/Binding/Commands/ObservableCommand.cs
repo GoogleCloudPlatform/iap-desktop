@@ -55,13 +55,14 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             string text,
             Func<CancellationToken, Task> executeFunc,
             IObservableProperty<bool> canExecute)
+            : base(text) 
         {
-            this.Text = text;
             this.CanExecute = canExecute;
             this.executeFunc = executeFunc;
         }
 
-        public override string Id => null;
+        //TODO: Does removing this override impact GA tracking?
+        //public override string Id => null;
 
         public IObservableProperty<bool> CanExecute { get; }
 
