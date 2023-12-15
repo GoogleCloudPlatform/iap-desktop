@@ -32,8 +32,8 @@ namespace Google.Solutions.Mvvm.Controls
     [SkipCodeCoverage("Pure UI code")]
     public partial class SearchableList<TModelItem> : UserControl
     {
-        public event EventHandler LoadingChanged;
-        public event EventHandler SearchTermChanged;
+        public event EventHandler? LoadingChanged;
+        public event EventHandler? SearchTermChanged;
 
         public SearchableList()
         {

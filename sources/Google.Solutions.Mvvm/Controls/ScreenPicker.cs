@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private Point currentMouseLocation = new Point(0, 0);
 
-        private ObservableCollection<TModelItem> model = null;
+        private ObservableCollection<TModelItem>? model = null;
 
         public ScreenPicker()
         {
