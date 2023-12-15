@@ -315,7 +315,7 @@ namespace Google.Solutions.Mvvm.Theme
             public static extern int SetWindowTheme(
                 IntPtr hWnd,
                 string textSubAppName,
-                string textSubIdList);
+                string? textSubIdList);
 
 
             [DllImport("gdi32.dll")]

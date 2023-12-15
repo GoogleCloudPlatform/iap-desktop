@@ -6,7 +6,6 @@
     <Description>MVVM and controls library</Description>
     
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
