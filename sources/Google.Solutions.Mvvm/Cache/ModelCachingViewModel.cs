@@ -33,13 +33,22 @@ namespace Google.Solutions.Mvvm.Cache
     /// View model that maintains an LRU cache of models.
     /// </summary>
     public abstract class ModelCachingViewModelBase<TModelKey, TModel> : ViewModelBase
+        where TModel : class
+        where TModelKey : class
     {
         private readonly LeastRecentlyUsedCache<TModelKey, TModel> modelCache;
 
-        private CancellationTokenSource tokenSourceForCurrentTask = null;
+        private CancellationTokenSource? tokenSourceForCurrentTask = null;
 
-        protected TModel Model { get; private set; }
-        protected TModelKey ModelKey { get; private set; }
+        /// <summary>
+        /// Current model.
+        /// </summary>
+        protected TModel? Model { get; private set; }
+
+        /// <summary>
+        /// Current key.
+        /// </summary>
+        protected TModelKey? ModelKey { get; private set; }
 
         protected ModelCachingViewModelBase(int cacheCapacity)
         {
@@ -98,6 +107,11 @@ namespace Google.Solutions.Mvvm.Cache
 
         protected Task InvalidateAsync()
         {
+            if (this.ModelKey == null)
+            {
+                return Task.CompletedTask;
+            }
+
             this.modelCache.Remove(this.ModelKey);
             return SwitchToModelAsync(this.ModelKey);
         }
