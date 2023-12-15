@@ -62,7 +62,7 @@ namespace Google.Solutions.Mvvm.Controls
         // Events.
         //---------------------------------------------------------------------
 
-        public LinkClickedEventHandler LinkClicked;
+        public LinkClickedEventHandler? LinkClicked;
 
         protected void OnLinkClicked(LinkClickedEventArgs args)
         {
@@ -80,7 +80,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// The intermediate RTF.
         /// </summary>
-        internal string Rtf { get; private set; }
+        internal string? Rtf { get; private set; }
 
         /// <summary>
         /// Gets or sets the Markdown text to bew rendered.

@@ -118,7 +118,7 @@ namespace Google.Solutions.Mvvm.Controls
                             (NativeMethods.ENLINK64)m.GetLParam(typeof(NativeMethods.ENLINK64)));
                     }
 
-                    if (lnk.msg == NativeMethods.WM_LBUTTONDOWN)
+                    if (lnk.msg == NativeMethods.WM_LBUTTONDOWN && lnk.charrange != null)
                     {
                         var href = CharRangeToString(lnk.charrange);
                         if (!string.IsNullOrEmpty(href))
@@ -158,7 +158,7 @@ namespace Google.Solutions.Mvvm.Controls
                 public int msg = 0;
                 public IntPtr wParam = IntPtr.Zero;
                 public IntPtr lParam = IntPtr.Zero;
-                public CHARRANGE charrange = null;
+                public CHARRANGE? charrange = null;
             }
 
             [StructLayout(LayoutKind.Sequential)]
@@ -178,7 +178,7 @@ namespace Google.Solutions.Mvvm.Controls
             [StructLayout(LayoutKind.Sequential)]
             public class TEXTRANGE
             {
-                public CHARRANGE chrg;
+                public CHARRANGE? chrg;
 
                 // NB. Allocated by caller, zero terminated by RichEdit
                 public IntPtr lpstrText;
