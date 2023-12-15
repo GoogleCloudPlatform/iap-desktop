@@ -83,7 +83,7 @@ namespace Google.Solutions.Mvvm.Shell
         private struct CacheKey
         {
             public FileAttributes Attributes;
-            public string FileExtension;
+            public string? FileExtension;
             public IconFlags Flags;
 
             public override bool Equals(object obj)

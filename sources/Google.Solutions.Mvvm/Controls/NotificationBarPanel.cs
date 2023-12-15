@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         [Browsable(true)]
         [Category("Appearance")]
-        public override string Text
+        public override string? Text
         {
             get => this.infoLabel?.Text;
             set

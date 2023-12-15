@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -214,7 +215,7 @@ namespace Google.Solutions.Mvvm.Binding
                     case NotifyCollectionChangedAction.Add:
                         {
                             var index = e.NewStartingIndex;
-                            foreach (var newModelItem in newModelItems)
+                            foreach (var newModelItem in newModelItems.EnsureNotNull())
                             {
                                 this.view.Insert(
                                     index++,

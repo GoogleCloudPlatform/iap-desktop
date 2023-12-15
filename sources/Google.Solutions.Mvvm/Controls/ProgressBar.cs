@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -32,7 +33,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public abstract class ProgressBarBase : Control
     {
-        internal Timer timer;
+        internal Timer? timer;
         private int value;
         private int maximum = 100;
         private int speed = 1;
@@ -130,7 +131,8 @@ namespace Google.Solutions.Mvvm.Controls
                 // Only run the timer when the control is
                 // visible.
                 //
-                this.timer.Enabled = this.Visible && !this.DesignMode;
+                Debug.Assert(this.timer != null);
+                this.timer!.Enabled = this.Visible && !this.DesignMode;
             }
         }
     }
