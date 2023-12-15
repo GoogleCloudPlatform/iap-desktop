@@ -21,6 +21,9 @@
 
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
@@ -126,6 +129,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
                   _ => true,
                   _ => true)
         {
+        }
+    }
+
+    [MenuCommand(typeof(DebugMenu), Rank = 0x108)]
+    [Service]
+    public class OpenAndCloseLotsOfToolWindows : MenuCommandBase<DebugMenu.Context>
+    {
+        private readonly IToolWindowHost toolWindowHost;
+
+        public OpenAndCloseLotsOfToolWindows(IToolWindowHost toolWindowHost)
+            : base("Open and &close lots of windows")
+        {
+            this.toolWindowHost = toolWindowHost;
+        }
+
+        public override async Task ExecuteAsync(DebugMenu.Context context)
+        {
+            Debug.Assert(IsAvailable(context) && IsEnabled(context));
+
+            //
+            // Cause unreasonable stress on the windowing system
+            // by opening and closing a lot of document windows.
+            //
+            for (int i = 0; i < 500; i++)
+            {
+                this.toolWindowHost
+                    .GetToolWindow<AutoCloseView, AutoCloseViewModel>()
+                    .Show();
+
+                await Task.Delay(100);
+            }
+        }
+
+        protected override bool IsAvailable(DebugMenu.Context context)
+        {
+            return true;
+        }
+
+        protected override bool IsEnabled(DebugMenu.Context context)
+        {
+            return true;
         }
     }
 }
