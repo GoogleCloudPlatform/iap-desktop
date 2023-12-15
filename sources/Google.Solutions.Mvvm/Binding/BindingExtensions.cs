@@ -311,7 +311,7 @@ namespace Google.Solutions.Mvvm.Binding
         public abstract class Binding : IDisposable
         {
             public bool IsBusy { get; internal set; } = false;
-            public Binding Peer { get; internal set; }
+            public Binding? Peer { get; internal set; }
             public abstract void Dispose();
         }
 

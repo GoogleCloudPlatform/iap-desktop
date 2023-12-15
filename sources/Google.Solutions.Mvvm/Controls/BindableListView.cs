@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -34,16 +35,16 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public class BindableListView<TModelItem> : ListView
     {
-        private ICollection<TModelItem> model;
+        private ICollection<TModelItem>? model;
 
         private readonly IDictionary<int, Func<TModelItem, string>> columnAccessors =
             new Dictionary<int, Func<TModelItem, string>>();
-        private Func<TModelItem, int> imageIndexAccessor = null;
+        private Func<TModelItem, int>? imageIndexAccessor = null;
 
         [Browsable(true)]
         public bool AutoResizeColumnsOnUpdate { get; set; } = false;
 
-        private string ExtractColumnValue(int columnIndex, TModelItem modelItem)
+        private string? ExtractColumnValue(int columnIndex, TModelItem modelItem)
         {
             if (this.columnAccessors.TryGetValue(columnIndex, out var accessorFunc))
             {
@@ -106,8 +107,8 @@ namespace Google.Solutions.Mvvm.Controls
         // Selection properties.
         //---------------------------------------------------------------------
 
-        public event EventHandler SelectedModelItemsChanged;
-        public event EventHandler SelectedModelItemChanged;
+        public event EventHandler? SelectedModelItemsChanged;
+        public event EventHandler? SelectedModelItemChanged;
 
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
@@ -299,7 +300,7 @@ namespace Google.Solutions.Mvvm.Controls
                         .OfType<TModelItem>());
 
                     this.Items.Clear();
-                    AddViewItems(this.model);
+                    AddViewItems(this.model.EnsureNotNull());
 
                     break;
 
