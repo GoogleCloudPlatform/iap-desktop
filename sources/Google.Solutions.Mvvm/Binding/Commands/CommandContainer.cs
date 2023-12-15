@@ -375,8 +375,17 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             {
                 try
                 {
+                    var context = this.container.ContextSource.Context;
+                    if (context == null)
+                    {
+                        //
+                        // Context disappeared again, nevermind.
+                        //
+                        return;
+                    }
+
                     await this.command
-                        .ExecuteAsync(this.container.ContextSource.Context)
+                        .ExecuteAsync(context)
                         .ConfigureAwait(true);
 
                     this.container.bindingContext.OnCommandExecuted(this.command);
