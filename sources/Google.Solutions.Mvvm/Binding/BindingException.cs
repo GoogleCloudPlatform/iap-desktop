@@ -29,12 +29,4 @@ namespace Google.Solutions.Mvvm.Binding
         {
         }
     }
-
-    internal class InvalidBindingContextException : BindingException
-    {
-        public InvalidBindingContextException() 
-            : base("The binding context is missing or invalid")
-        {
-        }
-    }
 }

@@ -115,14 +115,14 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 //
                 // Prompt for upgrade.
                 //
-                var dialogParameters = new TaskDialogParameters()
-                {
-                    Icon = TaskDialogIcon.ShieldGreenBackground,
-                    Caption = "Update available",
-                    Heading = $"{nameOfUpdate} is available for IAP Desktop.\n\n" +
+                var dialogParameters = new TaskDialogParameters(
+                    "Update available",
+                    $"{nameOfUpdate} is available for IAP Desktop.\n\n" +
                         $"Installed version: {this.install.CurrentVersion}\n" +
                         $"Available version: {latestRelease.TagVersion}",
-                    Text = "Would you like to download the update now?"
+                    "Would you like to download the update now?")
+                {
+                    Icon = TaskDialogIcon.ShieldGreenBackground,
                 };
                 dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
@@ -164,12 +164,10 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 this.EnableSurveys &&
                 (this.LastSurveyVersion == null || this.LastSurveyVersion < latestRelease.TagVersion))
             {
-                var dialogParameters = new TaskDialogParameters()
-                {
-                    Caption = "Tell us what you think",
-                    Heading = latestRelease.Survey.Title,
-                    Text = latestRelease.Survey.Description,
-                };
+                var dialogParameters = new TaskDialogParameters(
+                    "Tell us what you think",
+                    latestRelease.Survey.Title,
+                    latestRelease.Survey.Description);
                 dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
                 //

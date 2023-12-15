@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenButtonsEmpty_ThenShowDialogThrowsException()
         {
-            var parameters = new TaskDialogParameters();
+            var parameters = new TaskDialogParameters("heading", "caption", "text");
             Assert.Throws<InvalidOperationException>(
                 () => new TaskDialog().ShowDialog(null, parameters));
         }
@@ -48,7 +48,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenOkClicked_ThenShowDialogReturnsOk()
         {
-            var parameters = new TaskDialogParameters();
+            var parameters = new TaskDialogParameters("heading", "caption", "text");
             parameters.Buttons.Add(TaskDialogStandardButton.OK);
             parameters.Buttons.Add(TaskDialogStandardButton.OK);
             parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenCancelClicked_ThenShowDialogReturnsCancel()
         {
-            var parameters = new TaskDialogParameters();
+            var parameters = new TaskDialogParameters("heading", "caption", "text");
             parameters.Buttons.Add(TaskDialogStandardButton.Yes);
             parameters.Buttons.Add(TaskDialogStandardButton.No);
             parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
@@ -112,7 +112,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenCommandLinkButtonClicked_ThenShowDialogInvokesHandler()
         {
-            var parameters = new TaskDialogParameters();
+            var parameters = new TaskDialogParameters("heading", "caption", "text");
             parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
             var yes = new TaskDialogCommandLinkButton("Yes", DialogResult.Yes);
@@ -155,7 +155,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenVerificationCheckboxChecked_ThenShowDialogUpdatesParameters()
         {
-            var parameters = new TaskDialogParameters()
+            var parameters = new TaskDialogParameters("heading", "caption", "text")
             {
                 VerificationCheckBox = new TaskDialogVerificationCheckBox("check me")
             };
