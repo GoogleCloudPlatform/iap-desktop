@@ -361,12 +361,41 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInvokeSucceeds_ThenContextIsNotified()
+        public void WhenContextIsNull_ThenCommandIsNotExecuted()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>(),
+                bindingContext.Object))
+            {
+                container.AddCommand(
+                    new ContextCommand<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx => Task.CompletedTask)
+                    {
+                        IsDefault = true
+                    });
+
+                container.ExecuteDefaultCommand();
+
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandExecuted(It.IsAny<ICommand>()),
+                    Times.Never);
+            }
+        }
+
+        [Test]
+        public void WhenInvokeSucceeds_ThenContextIsNotified()
+        {
+            var bindingContext = new Mock<IBindingContext>();
+            using (var container = new CommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                new ContextSource<string>()
+                {
+                    Context = "test"
+                },
                 bindingContext.Object))
             {
                 container.AddCommand(
@@ -392,7 +421,10 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>(),
+                new ContextSource<string>()
+                {
+                    Context = "test"
+                },
                 bindingContext.Object))
             {
                 container.AddCommand(
@@ -421,7 +453,10 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>(),
+                new ContextSource<string>()
+                {
+                    Context = "test"
+                },
                 bindingContext.Object))
             {
                 container.AddCommand(
@@ -450,7 +485,10 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>(),
+                new ContextSource<string>()
+                {
+                    Context = "test"
+                },
                 bindingContext.Object))
             {
                 Exception exception = null;
