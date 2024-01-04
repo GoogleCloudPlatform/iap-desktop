@@ -35,6 +35,8 @@ namespace Google.Solutions.Iap.Protocol
     /// </summary>
     public interface ISshRelayTarget
     {
+        bool IsMutualTlsEnabled { get; }
+
         Task<INetworkStream> ConnectAsync(CancellationToken token);
 
         Task<INetworkStream> ReconnectAsync(

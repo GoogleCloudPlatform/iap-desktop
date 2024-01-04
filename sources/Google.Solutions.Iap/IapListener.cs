@@ -164,7 +164,18 @@ namespace Google.Solutions.Iap
             //
             // Start listening before returning from the menthod.
             //
-            this.listener.Start(BacklogLength);
+            try
+            {
+                this.listener.Start(BacklogLength);
+            }
+            catch (SocketException e) when (e.SocketErrorCode == SocketError.AccessDenied)
+            {
+                //
+                // This can happen if the endpoint overlaps with a persistent port
+                // reservation.
+                //
+                throw new PortAccessDeniedException(this.listener.LocalEndpoint);
+            }
 
             //
             // All communication is then handled asynchronously.
@@ -226,6 +237,16 @@ namespace Google.Solutions.Iap
                     }
                 }
             });
+        }
+    }
+
+    public class PortAccessDeniedException : Exception
+    {
+        public PortAccessDeniedException(EndPoint endpoint)
+            : base(
+                  $"Attempting to bind to port {endpoint} failed, " +
+                  "possibly because of a persistent port reservation")
+        {
         }
     }
 }

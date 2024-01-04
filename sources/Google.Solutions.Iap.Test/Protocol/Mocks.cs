@@ -132,6 +132,8 @@ namespace Google.Solutions.Iap.Test.Protocol
         public int ConnectCount { get; private set; } = 0;
         public int ReconnectCount { get; private set; } = 0;
 
+        public bool IsMutualTlsEnabled => false;
+
         public Task<INetworkStream> ConnectAsync(CancellationToken token)
         {
             var result = Task.FromResult(this.ExpectedStreams[this.ConnectCount + this.ReconnectCount]);

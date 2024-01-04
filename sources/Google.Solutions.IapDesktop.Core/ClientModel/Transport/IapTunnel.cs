@@ -27,6 +27,7 @@ using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using System;
 using System.Diagnostics;
@@ -34,6 +35,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.IapDesktop.Core.ClientModel.Transport.IapTunnel;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 {
@@ -287,6 +289,89 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                 this.client = client.ExpectNotNull(nameof(client));
             }
 
+            protected internal virtual IIapListener CreateListener(
+                ISshRelayTarget target,
+                ITransportPolicy policy,
+                IPEndPoint localEndpoint)
+            {
+                return new IapListener(
+                    target,
+                    policy,
+                    localEndpoint);
+            }
+
+            internal virtual IapTunnel CreateTunnel(
+                Profile profile,
+                ISshRelayTarget target,
+                CancellationToken cancellationToken)
+            {
+                using (CoreTraceSource.Log.TraceMethod().WithParameters(profile, target))
+                {
+                    if (profile.LocalEndpoint != null)
+                    {
+                        //
+                        // Use requested endpoint.
+                        //
+                        var listener = CreateListener(
+                            target,
+                            profile.Policy,
+                            profile.LocalEndpoint);
+
+                        return new IapTunnel(
+                            listener,
+                            profile,
+                            target.IsMutualTlsEnabled ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
+                    }
+                    else
+                    {
+                        //
+                        // Dynamically allocate an endpoint.
+                        //
+                        // Try to use the same port number every time. For
+                        // client apps, this helps avoid polluting their
+                        // connection history and possibly to save credentials.
+                        // 
+                        var portFinder = new PortFinder();
+                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.ProjectId));
+                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Zone));
+                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Name));
+                        portFinder.AddSeed(BitConverter.GetBytes(profile.TargetPort));
+
+                        for (int attempt = 0; ; attempt++)
+                        {
+                            var localEndpoint = new IPEndPoint(
+                                IPAddress.Loopback,
+                                portFinder.FindPort(out var _));
+
+                            try
+                            {
+                                var listener = CreateListener(
+                                    target,
+                                    profile.Policy,
+                                    localEndpoint);
+
+                                return new IapTunnel(
+                                    listener,
+                                    profile,
+                                    target.IsMutualTlsEnabled ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
+                            }
+                            catch (PortAccessDeniedException) when (attempt + 1 < 5)
+                            {
+                                //
+                                // This port didn't work, probably because HNS (or some
+                                // other application) has a persistent port reservation
+                                // in that range.
+                                //
+                                // Amend the seed and try again. As long as the port reservation
+                                // stays the same, we'll still get deterministic results.
+                                //
+                                portFinder.AddSeed(BitConverter.GetBytes(localEndpoint.Port));
+                            }
+                        }
+                    }
+                }
+            }
+
             public virtual async Task<IapTunnel> CreateTunnelAsync(
                 Profile profile,
                 TimeSpan probeTimeout,
@@ -314,36 +399,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         .ProbeAsync(probeTimeout)
                         .ConfigureAwait(false);
 
-                    var localEndpoint = profile.LocalEndpoint;
-                    if (localEndpoint == null)
-                    {
-                        //
-                        // Try to use the same port number every time. For
-                        // client apps, this helps avoid polluting their
-                        // connection history and possibly to save credentials.
-                        // 
-                        var portFinder = new PortFinder();
-                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.ProjectId));
-                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Zone));
-                        portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Name));
-                        portFinder.AddSeed(BitConverter.GetBytes(profile.TargetPort));
-
-                        localEndpoint = new IPEndPoint(
-                            IPAddress.Loopback,
-                            portFinder.FindPort(out var _));
-                    }
-
-                    var listener = new IapListener(
-                        target,
-                        profile.Policy,
-                        localEndpoint);
-
-                    var tunnel = new IapTunnel(
-                        listener,
-                        profile,
-                        target.IsMutualTlsEnabled ? IapTunnelFlags.Mtls : IapTunnelFlags.None);
-
-                    return tunnel;
+                    return CreateTunnel(profile, target, cancellationToken);
                 }
             }
         }

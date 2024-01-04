@@ -19,13 +19,18 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -233,6 +238,52 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 Assert.AreSame(listenTask, tunnel.CloseAsync());
                 Assert.IsTrue(token.IsCancellationRequested);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Factory.
+        //---------------------------------------------------------------------
+
+        private class DeniedAccessFactoryMock : IapTunnel.Factory
+        {
+            internal List<ushort> ProbedPorts { get; } = new List<ushort>();
+
+            public DeniedAccessFactoryMock(IIapClient client) : base(client)
+            {
+            }
+
+            protected internal override IIapListener CreateListener(
+                ISshRelayTarget target, 
+                ITransportPolicy policy, 
+                IPEndPoint localEndpoint)
+            {
+                this.ProbedPorts.Add((ushort)localEndpoint.Port);
+                throw new PortAccessDeniedException(localEndpoint);
+            }
+        }
+
+        [Test]
+        public void WhenPortAccessDenied_CreateTunnelRetriesWithDifferentPorts()
+        {
+            var protocol = new Mock<IProtocol>();
+            var policy = new Mock<ITransportPolicy>();
+            var profile = new IapTunnel.Profile(
+                protocol.Object,
+                policy.Object,
+                SampleInstance,
+                22,
+                null);
+
+            var factory = new DeniedAccessFactoryMock(new Mock<IIapClient>().Object);
+
+            Assert.Throws<PortAccessDeniedException>(
+                () => factory.CreateTunnel(
+                profile,
+                new Mock<ISshRelayTarget>().Object,
+                CancellationToken.None));
+            
+            Assert.AreEqual(5, factory.ProbedPorts.Count);
+            Assert.AreEqual(5, factory.ProbedPorts.Distinct().Count());
         }
     }
 }
