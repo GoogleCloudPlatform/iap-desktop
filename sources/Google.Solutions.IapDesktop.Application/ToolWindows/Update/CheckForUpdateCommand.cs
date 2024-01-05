@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 // Open survey.
                 //
                 var openButton = new TaskDialogCommandLinkButton(
-                    "Take the survey",
+                    "Start survey",
                     DialogResult.OK);
                 openButton.Click += (_, __) =>
                 {

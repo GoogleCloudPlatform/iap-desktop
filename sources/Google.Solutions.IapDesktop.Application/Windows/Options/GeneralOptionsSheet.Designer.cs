@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.enableUpdateCheckBox.Name = "enableUpdateCheckBox";
             this.enableUpdateCheckBox.Size = new System.Drawing.Size(252, 22);
             this.enableUpdateCheckBox.TabIndex = 7;
-            this.enableUpdateCheckBox.Text = "Show a notification when an update is available";
+            this.enableUpdateCheckBox.Text = "Notify me when an update is available";
             this.enableUpdateCheckBox.UseVisualStyleBackColor = true;
             // 
             // browserIntegrationBox
