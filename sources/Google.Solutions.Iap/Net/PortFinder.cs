@@ -106,6 +106,7 @@ namespace Google.Solutions.Iap.Net
                     // Preferred port is available.
                     //
                     isPreferred = true;
+                    
                     return preferredPort;
                 }
             }

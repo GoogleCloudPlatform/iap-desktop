@@ -64,6 +64,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             public ServerWebSocketConnection Server => this.connection.Server;
 
+            public bool IsMutualTlsEnabled => false;
+
             public Endpoint(
                 WebSocketServer server,
                 WebSocketConnection connection)
