@@ -221,11 +221,23 @@ namespace Google.Solutions.Apis.Client
                             this.Proxy?.Credentials != null && 
                             attempt == 0)
                         {
-                            //TODO: Log, probe.
-                            Debug.WriteLine("NTLM retry");
+                            var message = e.FullMessage();
+                            ApiTraceSource.Log.TraceWarning(
+                                "NTLM proxy authentication failed, retrying", 
+                                message);
+                            ApiEventSource.Log.HttpNtlmProxyRequestFailed(
+                                webResponse.ResponseUri.AbsoluteUri, 
+                                message);
+
+                            //
+                            // Retry request.
+                            //
                         }
                         else
                         {
+                            //
+                            // It's not worth retrying.
+                            //
                             throw;
                         }
                     }
