@@ -154,7 +154,7 @@ namespace Google.Solutions.Common.Test.Util
             Assert.IsTrue(new InvalidComObjectException().IsComException());
             Assert.IsTrue(new AggregateException(new COMException()).IsComException());
             Assert.IsTrue(new TargetInvocationException(new COMException()).IsComException());
-            Assert.IsTrue(new InvalidOperationException("...", new COMException()).IsComException());
+            Assert.IsFalse(new InvalidOperationException("...", new COMException()).IsComException());
         }
     }
 }
