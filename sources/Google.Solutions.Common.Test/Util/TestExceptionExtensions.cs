@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Google.Solutions.Common.Test.Util
 {
@@ -140,6 +141,20 @@ namespace Google.Solutions.Common.Test.Util
             StringAssert.Contains(
                 "CreateException() +IL_00",
                 s);
+        }
+
+        //---------------------------------------------------------------------
+        // IsComException.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsComException()
+        {
+            Assert.IsTrue(new COMException().IsComException());
+            Assert.IsTrue(new InvalidComObjectException().IsComException());
+            Assert.IsTrue(new AggregateException(new COMException()).IsComException());
+            Assert.IsTrue(new TargetInvocationException(new COMException()).IsComException());
+            Assert.IsTrue(new InvalidOperationException("...", new COMException()).IsComException());
         }
     }
 }

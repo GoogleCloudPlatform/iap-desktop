@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,6 +57,11 @@ namespace Google.Solutions.Common.Util
         public static bool IsCancellation(this Exception e)
         {
             return e.Is<TaskCanceledException>() || e.Is<OperationCanceledException>();
+        }
+
+        public static bool IsComException(this Exception e)
+        {
+            return e.Is<COMException>() || e.Is<InvalidComObjectException>();
         }
 
         public static string FullMessage(this Exception exception)

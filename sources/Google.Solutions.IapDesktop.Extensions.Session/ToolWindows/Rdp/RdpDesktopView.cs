@@ -517,11 +517,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
                     return value;
                 }
-                catch (COMException e)
+                catch (Exception e) when (e.IsComException())
                 {
                     //
                     // During an unorderly disconnect, it's possible that we
-                    // get an exception here, cf. b/251163460.
+                    // get an exception here, cf. b/251163460. This can manifest
+                    // itself in a COMException or a InvalidComObjectException.
                     //
                     ApplicationTraceSource.Log.TraceError(e);
                     return false;
@@ -542,11 +543,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
                     return value;
                 }
-                catch (COMException e)
+                catch (Exception e) when (e.IsComException())
                 {
                     //
                     // During an unorderly disconnect, it's possible that we
-                    // get an exception here, cf. b/251163460.
+                    // get an exception here, cf. b/251163460. This can manifest
+                    // itself in a COMException or a InvalidComObjectException.
                     //
                     ApplicationTraceSource.Log.TraceError(e);
                     return false;
