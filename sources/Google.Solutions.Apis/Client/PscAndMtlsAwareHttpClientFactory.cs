@@ -24,7 +24,9 @@ using Google.Apis.Http;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -141,7 +143,10 @@ namespace Google.Solutions.Apis.Client
 
             protected override HttpClientHandler CreateClientHandler()
             {
-                var handler = base.CreateClientHandler();
+                var handler = new NtlmResilientWebRequestHandler()
+                {
+                    Proxy = WebRequest.DefaultWebProxy,
+                };
 
                 //
                 // Bypass proxy for accessing PSC endpoint.
@@ -155,7 +160,7 @@ namespace Google.Solutions.Apis.Client
                         this.directions.BaseUri,
                         this.directions.Host);
                 }
-                
+
                 if (this.directions.UseClientCertificate &&
                     HttpClientHandlerExtensions.CanUseClientCertificates &&
                     this.deviceEnrollment.Certificate != null)
@@ -173,6 +178,79 @@ namespace Google.Solutions.Apis.Client
                 }
 
                 return handler;
+            }
+        }
+
+        private class NtlmResilientWebRequestHandler : WebRequestHandler
+        {
+            protected async override Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request, 
+                CancellationToken cancellationToken)
+            {
+                //
+                // The System.Net stack supports NTLM proxy authentication and
+                // works reliably when requests are submitted sequentially.
+                // However, when we're sending multiple requests in parallel,
+                // authentication occasionally fails with SEC_E_INVALID_TOKEN in
+                // NTAuthentication.GetOutgoingBlob.
+                //
+                // This error seems to be caused by a race condition in the BCL,
+                // but there's little we can do to avoid it. 
+                //
+                // When we see a 407 error with an NTLM challenge-header, we
+                // are either (a) hitting the aforementioned issue or (b),
+                // our credentials were simply invalid.
+                //
+                // If it's (a), there's a good chance that a retry helps. If it's
+                // (b), a retry at least won't hurt.
+                //
+                for (int attempt = 0; ; attempt++)
+                {
+                    try
+                    {
+                        return await base
+                            .SendAsync(request, cancellationToken)
+                            .ConfigureAwait(false);
+                    }
+                    catch (HttpRequestException e) when (
+                        e.InnerException is WebException webException &&
+                        webException.Response is HttpWebResponse webResponse &&
+                        IsNtlmProxyAuthenticationRequiredResponse(webResponse))
+                    {
+                        if (this.UseProxy &&
+                            this.Proxy?.Credentials != null && 
+                            attempt == 0)
+                        {
+                            var message = e.FullMessage();
+                            ApiTraceSource.Log.TraceWarning(
+                                "NTLM proxy authentication failed, retrying", 
+                                message);
+                            ApiEventSource.Log.HttpNtlmProxyRequestFailed(
+                                webResponse.ResponseUri.AbsoluteUri, 
+                                message);
+
+                            //
+                            // Retry request.
+                            //
+                        }
+                        else
+                        {
+                            //
+                            // It's not worth retrying.
+                            //
+                            throw;
+                        }
+                    }
+                }
+            }
+
+            private static bool IsNtlmProxyAuthenticationRequiredResponse(HttpWebResponse response)
+            {
+                return
+                    response.StatusCode == HttpStatusCode.ProxyAuthenticationRequired &&
+                    response.Headers.Get("Proxy-Authenticate") is var proxyAuthHeader &&
+                    proxyAuthHeader != null &&
+                    proxyAuthHeader.StartsWith("NTLM ");
             }
         }
     }
