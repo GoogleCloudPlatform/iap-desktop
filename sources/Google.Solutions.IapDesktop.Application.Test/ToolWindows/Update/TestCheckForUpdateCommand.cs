@@ -405,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IInstall>().Object,
                 CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
-                CreateDialog("Take the survey"),
+                CreateDialog("Start survey"),
                 new Mock<IBrowser>().Object)
             {
                 EnableSurveys = true,
