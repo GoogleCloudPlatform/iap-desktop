@@ -13,7 +13,8 @@ IAP Desktop supports 3 ways to configure proxy server settings:
     IAP Desktop downloads and evaluates the file and applies proxy settings accordingly.
 
 When you use (2) or (3), you can optionally specify a username and password if your
-proxy server requires authentication. 
+proxy server requires authentication. IAP Desktop supports Kerberos, NTLM, and Basic for
+proxy authentication.
 
 All proxy server settings can be viewed
 and modified under **Tools > Options > Network**:
@@ -45,6 +46,9 @@ permits HTTPS connections to the following domains:
 * `cloudresourcemanager.googleapis.com`
 * `logging.googleapis.com`
 * `sts.googleapis.com`
+* `tunnel.cloudproxy.app`
+* `www.google-analytics.com`
+* `api.github.com`
 
 The IAP TCP forwarding tunnels that IAP Desktop uses to create SSH and RDP connections
 use WebSockets. Make sure that your proxy server permits WebSocket communication to the following domain:
