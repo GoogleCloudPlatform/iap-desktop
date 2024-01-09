@@ -422,6 +422,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
                 advancedSettings.HotKeyFullScreen = (int)leaveFullScreenVirtualKey;
 
+                // https://interopevents.blob.core.windows.net/events/2023/RDP%20IO%20Lab/PDF/DavidBelanger_Authentication%20-%20RDP%20IO%20Labs%20March%202023.pdf
+
+                //var advancedSettings = (IMsTscAdvancedSettings)this.rdpClient.GetOcx();
+                advancedSettings.PluginDlls = "C:\\Windows\\System32\\webauthn.dll";
+
+                // https://learn.microsoft.com/en-us/windows/win32/termserv/imsrdpextendedsettings-property
+                var extendedSettings = (IMsRdpExtendedSettings)this.rdpClient.GetOcx();
+                //extendedSettings.set_Property("DisableTouchRemoting", true);
+                //extendedSettings.set_Property("RedirectWebAuthn", true);
+
                 this.connecting = true;
                 this.rdpClient.Connect();
                 this.viewModel.State.Value = RdpViewModel.ConnectionState.Connecting;
