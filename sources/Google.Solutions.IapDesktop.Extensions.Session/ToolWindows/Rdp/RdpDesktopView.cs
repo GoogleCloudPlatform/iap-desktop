@@ -39,6 +39,7 @@ using System;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -53,6 +54,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
     public partial class RdpDesktopView
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
+        private const string WebAuthnPlugin = "webauthn.dll";
+
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventQueue eventService;
         private readonly IControlTheme theme;
@@ -422,15 +425,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
                 advancedSettings.HotKeyFullScreen = (int)leaveFullScreenVirtualKey;
 
-                // https://interopevents.blob.core.windows.net/events/2023/RDP%20IO%20Lab/PDF/DavidBelanger_Authentication%20-%20RDP%20IO%20Labs%20March%202023.pdf
-
-                //var advancedSettings = (IMsTscAdvancedSettings)this.rdpClient.GetOcx();
-                advancedSettings.PluginDlls = "C:\\Windows\\System32\\webauthn.dll";
-
-                // https://learn.microsoft.com/en-us/windows/win32/termserv/imsrdpextendedsettings-property
-                var extendedSettings = (IMsRdpExtendedSettings)this.rdpClient.GetOcx();
-                //extendedSettings.set_Property("DisableTouchRemoting", true);
-                //extendedSettings.set_Property("RedirectWebAuthn", true);
+                //
+                // Enable WebAuthn redirection. This requires at least 22H2, both client- and server-side.
+                //
+                // Once the plugin DLL is loaded, WebAuthn redirection is enabled automatically
+                // unless there's a client- or server-side policy that disabled WebAuthn redirection.
+                //
+                // See also:
+                // https://interopevents.blob.core.windows.net/events/2023/RDP%20IO%20Lab/ \
+                // PDF/DavidBelanger_Authentication%20-%20RDP%20IO%20Labs%20March%202023.pdf
+                //
+                if (this.viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled)
+                {
+                    var webauthnPluginPath = Path.Combine(Environment.SystemDirectory, WebAuthnPlugin);
+                    if (File.Exists(webauthnPluginPath))
+                    {
+                        try
+                        {
+                            advancedSettings.PluginDlls = webauthnPluginPath;
+                            ApplicationTraceSource.Log.TraceInformation(
+                                "Loaded RDP plugin {0}", webauthnPluginPath);
+                        }
+                        catch (Exception e)
+                        {
+                            ApplicationTraceSource.Log.TraceWarning(
+                                "Loading RDP plugin {0} failed: {1}",
+                                webauthnPluginPath,
+                                e.Message);
+                        }
+                    }
+                }
 
                 this.connecting = true;
                 this.rdpClient.Connect();

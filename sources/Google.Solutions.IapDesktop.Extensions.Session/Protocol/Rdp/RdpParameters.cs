@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpRedirectPort RedirectPort { get; set; } = RdpRedirectPort._Default;
         public RdpRedirectDrive RedirectDrive { get; set; } = RdpRedirectDrive._Default;
         public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
+        public RdpRedirectWebAuthn RedirectWebAuthn { get; set; } = RdpRedirectWebAuthn._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
 
         /// <summary>
@@ -216,6 +217,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
         [Browsable(false)]
         _Default = Disabled
+    }
+
+    public enum RdpRedirectWebAuthn
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Enabled
     }
 
     public enum RdpNetworkLevelAuthentication
