@@ -97,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public RegistryEnumSetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
         public RegistryEnumSetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
         public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
+        public RegistryEnumSetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
         public RegistryEnumSetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
@@ -126,6 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpRedirectPort,
             this.RdpRedirectDrive,
             this.RdpRedirectDevice,
+            this.RdpRedirectWebAuthn,
 
             this.RdpUserAuthenticationBehavior,
             this.RdpNetworkLevelAuthentication,
@@ -362,6 +364,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectDevice._Default,
                 key);
+            this.RdpRedirectWebAuthn = RegistryEnumSetting<RdpRedirectWebAuthn>.FromKey(
+                "RdpRedirectWebAuthn",
+                "Redirect WebAuthn authenticators",
+                "Use local security key or Windows Hello device for WebAuthn authentication.",
+                Categories.RdpResources,
+                Protocol.Rdp.RdpRedirectWebAuthn._Default,
+                key);
             this.RdpHookWindowsKeys = RegistryEnumSetting<RdpHookWindowsKeys>.FromKey(
                 "RdpHookWindowsKeys",
                 "Enable Windows shortcuts",
@@ -491,6 +500,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 baseSettings.RdpRedirectDrive.OverlayBy(overlaySettings.RdpRedirectDrive);
             prototype.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
                 baseSettings.RdpRedirectDevice.OverlayBy(overlaySettings.RdpRedirectDevice);
+            prototype.RdpRedirectWebAuthn = (RegistryEnumSetting<RdpRedirectWebAuthn>)
+                baseSettings.RdpRedirectWebAuthn.OverlayBy(overlaySettings.RdpRedirectWebAuthn);
             prototype.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
                 baseSettings.RdpHookWindowsKeys.OverlayBy(overlaySettings.RdpHookWindowsKeys);
 

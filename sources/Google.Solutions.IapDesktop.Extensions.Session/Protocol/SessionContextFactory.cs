@@ -169,6 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.RedirectPort = settings.RdpRedirectPort.EnumValue;
             context.Parameters.RedirectDrive = settings.RdpRedirectDrive.EnumValue;
             context.Parameters.RedirectDevice = settings.RdpRedirectDevice.EnumValue;
+            context.Parameters.RedirectWebAuthn = settings.RdpRedirectWebAuthn.EnumValue;
             context.Parameters.HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue;
 
             return context;
