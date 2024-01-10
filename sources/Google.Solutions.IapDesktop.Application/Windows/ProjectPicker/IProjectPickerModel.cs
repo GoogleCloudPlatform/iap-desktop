@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
     public interface IProjectPickerModel
     {
         Task<FilteredProjectList> ListProjectsAsync(
-            string prefix,
+            string? prefix,
             int maxResults,
             CancellationToken cancellationToken);
     }

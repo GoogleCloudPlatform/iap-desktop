@@ -33,13 +33,15 @@ namespace Google.Solutions.Mvvm.Binding
     }
 
     public interface IObservableProperty<T> : IObservableProperty, INotifyPropertyChanged
+        where T : class
     {
-        T Value { get; }
+        T? Value { get; }
     }
 
     public interface IObservableWritableProperty<T> : IObservableProperty, INotifyPropertyChanged
+        where T : class
     {
-        T Value { get; set; }
+        T? Value { get; set; }
     }
 
     public interface ISourceProperty : IObservableProperty
@@ -49,6 +51,7 @@ namespace Google.Solutions.Mvvm.Binding
 
     public abstract class ObservablePropertyBase<T>
          : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
+        where T : class
     {
         private LinkedList<IObservableProperty>? dependents;
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -75,17 +78,18 @@ namespace Google.Solutions.Mvvm.Binding
             this.dependents.AddLast(property);
         }
 
-        public abstract T Value { get; set; }
+        public abstract T? Value { get; set; }
     }
 
     /// <summary>
     /// Simple observable property.
     /// </summary>
     public class ObservableProperty<T> : ObservablePropertyBase<T>
+        where T : class
     {
-        private T value;
+        private T? value;
 
-        internal ObservableProperty(T initialValue)
+        internal ObservableProperty(T? initialValue)
         {
             this.value = initialValue;
         }
@@ -93,7 +97,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Get or set the value, raises a change event.
         /// </summary>
-        public override T Value
+        public override T? Value
         {
             get => this.value;
             set
@@ -105,12 +109,13 @@ namespace Google.Solutions.Mvvm.Binding
     }
 
     internal class ThreadSafeObservableProperty<T> : ObservableProperty<T>
+        where T : class
     {
         private readonly ViewModelBase viewModel;
 
         internal ThreadSafeObservableProperty(
             ViewModelBase viewModel,
-            T initialValue)
+            T? initialValue)
             : base(initialValue)
         {
             this.viewModel = viewModel.ExpectNotNull(nameof(viewModel));
@@ -136,7 +141,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Get or set the value, raises a change event.
         /// </summary>
-        public override T Value
+        public override T? Value
         {
             get
             {

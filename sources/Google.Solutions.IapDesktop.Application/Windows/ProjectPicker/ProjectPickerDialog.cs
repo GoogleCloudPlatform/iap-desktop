@@ -43,13 +43,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             IWin32Window owner,
             string caption,
             IResourceManagerClient resourceManager,
-            out IReadOnlyCollection<ProjectLocator> selectedProjects);
+            out IReadOnlyCollection<ProjectLocator>? selectedProjects);
 
         DialogResult SelectLocalProjects(
             IWin32Window owner,
             string caption,
             IReadOnlyCollection<IProjectModelProjectNode> projects,
-            out IReadOnlyCollection<ProjectLocator> selectedProjects);
+            out IReadOnlyCollection<ProjectLocator>? selectedProjects);
     }
 
     public class ProjectPickerDialog : IProjectPickerDialog
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             IWin32Window owner,
             string caption,
             IProjectPickerModel model,
-            out IReadOnlyCollection<ProjectLocator> selectedProjects)
+            out IReadOnlyCollection<ProjectLocator>? selectedProjects)
         {
             var viewModel = new ProjectPickerViewModel(model);
             viewModel.DialogText.Value = caption;
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             IWin32Window owner,
             string caption,
             IResourceManagerClient resourceManager,
-            out IReadOnlyCollection<ProjectLocator> selectedProjects)
+            out IReadOnlyCollection<ProjectLocator>? selectedProjects)
         {
             return SelectProjects(
                 owner,
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             IWin32Window owner,
             string caption,
             IReadOnlyCollection<IProjectModelProjectNode> projects,
-            out IReadOnlyCollection<ProjectLocator> selectedProjects)
+            out IReadOnlyCollection<ProjectLocator>? selectedProjects)
         {
             var model = new StaticModel(projects
                 .Select(p => new Project()
@@ -149,12 +149,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             }
 
             public async Task<FilteredProjectList> ListProjectsAsync(
-                string prefix,
+                string? prefix,
                 int maxResults,
                 CancellationToken cancellationToken)
             {
                 return await this.resourceManager.ListProjectsAsync(
-                        string.IsNullOrEmpty(prefix)
+                        prefix == null || string.IsNullOrEmpty(prefix)
                             ? null // All projects.
                             : ProjectFilter.ByTerm(prefix),
                         maxResults,
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             }
 
             public Task<FilteredProjectList> ListProjectsAsync(
-                string prefix,
+                string? prefix,
                 int maxResults,
                 CancellationToken cancellationToken)
             {

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
         private const int MaxResults = 100;
         private readonly IProjectPickerModel model;
 
-        private string filter;
+        private string? filter;
 
         public ProjectPickerViewModel(IProjectPickerModel model)
         {
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
         // "Input" properties.
         //---------------------------------------------------------------------
 
-        public string Filter
+        public string? Filter
         {
             get => this.filter;
             set
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task FilterAsync(string filter)
+        public async Task FilterAsync(string? filter)
         {
             //
             // Update property synchrounously.
