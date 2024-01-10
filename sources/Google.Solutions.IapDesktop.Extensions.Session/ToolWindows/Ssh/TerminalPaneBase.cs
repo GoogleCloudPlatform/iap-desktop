@@ -30,6 +30,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -251,11 +252,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             Close();
         }
 
+        [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
         private void OnFormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
         {
+            //
             // Mark this pane as being in closing state even though it is still
             // visible at this point. The flag ensures that this pane is
             // not considered by TryGetExistingPane anymore.
+            //
             this.IsFormClosing = true;
 
             this.ViewModel.DisconnectAsync().Wait();
