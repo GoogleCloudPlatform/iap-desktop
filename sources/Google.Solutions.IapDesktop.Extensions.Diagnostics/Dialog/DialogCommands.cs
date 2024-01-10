@@ -92,12 +92,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
 
         public override void Execute(DebugMenu.Context context)
         {
-            var dialogParameters = new TaskDialogParameters()
+            var dialogParameters = new TaskDialogParameters(
+                "Caption",
+                "Heading",
+                 "Text")
             {
-                Icon = TaskDialogIcon.ShieldGreenBackground,
-                Caption = "Caption",
-                Heading = "Heading",
-                Text = "Text"
+                Icon = TaskDialogIcon.ShieldGreenBackground
             };
             dialogParameters.Buttons.Add(TaskDialogStandardButton.OK);
             dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);

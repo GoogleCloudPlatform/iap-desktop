@@ -55,7 +55,10 @@ namespace Google.Solutions.Mvvm.Controls
             this.Format += (_, e) =>
             {
                 var v = ((Enum)e.Value);
-                e.Value = v.GetAttribute<DisplayAttribute>().Name ?? v.ToString();
+                if (v != null)
+                {
+                    e.Value = v.GetAttribute<DisplayAttribute>()?.Name ?? v.ToString();
+                }
             };
 
             //
@@ -75,7 +78,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             private readonly IObservableWritableProperty<TEnum> property;
 
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
 
             private bool IsEnumValueDisplayed(string enumValue)
             {

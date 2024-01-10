@@ -48,7 +48,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Surrogate function, for testing only.
         /// </summary>
-        internal NativeMethods.TaskDialogIndirectDelegate TaskDialogIndirect { get; set; }
+        internal NativeMethods.TaskDialogIndirectDelegate? TaskDialogIndirect { get; set; }
 
         public DialogResult ShowDialog(
             IWin32Window parent,
@@ -272,10 +272,10 @@ namespace Google.Solutions.Mvvm.Controls
             public int nDefaultRadioButton;
 
             [MarshalAs(UnmanagedType.LPWStr)]
-            public string pszVerificationText;
+            public string? pszVerificationText;
 
             [MarshalAs(UnmanagedType.LPWStr)]
-            public string pszExpandedInformation;
+            public string? pszExpandedInformation;
 
             [MarshalAs(UnmanagedType.LPWStr)]
             public string pszExpandedControlText;

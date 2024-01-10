@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Controls
         [Browsable(true)]
         [Category("Behavior")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public ContextMenuStrip Menu { get; set; }
+        public ContextMenuStrip? Menu { get; set; }
 
         [DefaultValue(20)]
         [Browsable(true)]

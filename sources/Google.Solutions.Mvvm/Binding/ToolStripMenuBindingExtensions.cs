@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -37,9 +38,9 @@ namespace Google.Solutions.Mvvm.Binding
             this ToolStripMenuItem item,
             TModel model,
             Func<TModel, bool> isSeparator,
-            Expression<Func<TModel, string>> getText,
-            Expression<Func<TModel, string>> getToolTip,
-            Expression<Func<TModel, Image>> getImage,
+            Expression<Func<TModel, string?>> getText,
+            Expression<Func<TModel, string?>> getToolTip,
+            Expression<Func<TModel, Image?>> getImage,
             Expression<Func<TModel, Keys>> getShortcuts,
             Expression<Func<TModel, bool>> isVisible,
             Expression<Func<TModel, bool>> isEnabled,
@@ -117,9 +118,9 @@ namespace Google.Solutions.Mvvm.Binding
             this ToolStripItemCollection view,
             ObservableCollection<TModel> modelCollection,
             Func<TModel, bool> isSeparator,
-            Expression<Func<TModel, string>> getText,
-            Expression<Func<TModel, string>> getToolTip,
-            Expression<Func<TModel, Image>> getImage,
+            Expression<Func<TModel, string?>> getText,
+            Expression<Func<TModel, string?>> getToolTip,
+            Expression<Func<TModel, Image?>> getImage,
             Expression<Func<TModel, Keys>> getShortcuts,
             Expression<Func<TModel, bool>> isVisible,
             Expression<Func<TModel, bool>> isEnabled,
@@ -214,7 +215,7 @@ namespace Google.Solutions.Mvvm.Binding
                     case NotifyCollectionChangedAction.Add:
                         {
                             var index = e.NewStartingIndex;
-                            foreach (var newModelItem in newModelItems)
+                            foreach (var newModelItem in newModelItems.EnsureNotNull())
                             {
                                 this.view.Insert(
                                     index++,

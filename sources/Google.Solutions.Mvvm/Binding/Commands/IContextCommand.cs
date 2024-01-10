@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         /// <summary>
         /// Optional icon.
         /// </summary>
-        Image Image { get; }
+        Image? Image { get; }
 
         /// <summary>
         /// Accelerator for command.

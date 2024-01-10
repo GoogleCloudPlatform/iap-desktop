@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Interop
 
         public IntPtr WindowHandle { get; private set; }
 
-        public event EventHandler<Exception> UnhandledException;
+        public event EventHandler<Exception>? UnhandledException;
         public bool IsDisposed { get; private set; }
 
         public SubclassCallback(

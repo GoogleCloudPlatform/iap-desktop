@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,40 +20,13 @@
 //
 
 using System;
-using System.ComponentModel;
-
 
 namespace Google.Solutions.Mvvm.Binding
 {
-    /// <summary>
-    /// Observable property that is derived from one or more
-    /// other properties.
-    /// </summary>
-    public class ObservableFunc<T> : IObservableProperty<T>
+    internal class BindingException : Exception
     {
-        private readonly Func<T> func;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public T Value => this.func();
-
-        internal ObservableFunc(
-            Func<T> func,
-            params ISourceProperty[] sources)
+        public BindingException(string message) : base(message)
         {
-            this.func = func;
-
-            foreach (var source in sources)
-            {
-                source.AddDependentProperty(this);
-            }
-        }
-
-        public void RaisePropertyChange()
-        {
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs("Value"));
         }
     }
 }

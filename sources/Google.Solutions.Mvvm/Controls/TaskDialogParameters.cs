@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Icon for the task dialog.
         /// </summary>
-        public TaskDialogIcon Icon { get; set; }
+        public TaskDialogIcon? Icon { get; set; }
 
         /// <summary>
         /// Caption for title bar.
@@ -54,7 +54,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Footnote text.
         /// </summary>
-        public string Footnote { get; set; }
+        public string? Footnote { get; set; }
 
         /// <summary>
         /// Command buttons to show.
@@ -64,9 +64,16 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Verification text box in footer.
         /// </summary>
-        public TaskDialogVerificationCheckBox VerificationCheckBox { get; set; }
+        public TaskDialogVerificationCheckBox? VerificationCheckBox { get; set; }
 
-        public event EventHandler LinkClicked;
+        public event EventHandler? LinkClicked;
+
+        public TaskDialogParameters(string caption, string heading, string text)
+        {
+            this.Caption = caption;
+            this.Heading = heading;
+            this.Text = text;
+        }
 
         internal void PerformLinkClick()
         {
@@ -159,7 +166,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public class TaskDialogCommandLinkButton : TaskDialogButton
     {
-        public EventHandler Click;
+        public EventHandler? Click;
 
         public TaskDialogCommandLinkButton(
             string text,
@@ -177,7 +184,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Command text.
         /// </summary>
-        public string Details { get; set; }
+        public string? Details { get; set; }
 
         public void PerformClick()
         {

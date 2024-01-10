@@ -28,7 +28,12 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     /// </summary>
     public abstract class CommandBase : ICommand
     {
-        private string activityText;
+        private string? activityText;
+
+        protected CommandBase(string text)
+        {
+            this.Text = text;
+        }
 
         public virtual string Id
         {

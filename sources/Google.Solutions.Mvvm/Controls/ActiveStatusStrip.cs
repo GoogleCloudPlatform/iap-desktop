@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Controls
         private Color inactiveBackColor = Control.DefaultBackColor;
         private Color inactiveForeColor = Control.DefaultForeColor;
 
-        public EventHandler ActiveChanged;
+        public EventHandler? ActiveChanged;
 
         private void UpdateForeColor()
         {

@@ -37,15 +37,15 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
-        private IFileSystem fileSystem = null;
+        private IFileSystem? fileSystem = null;
         private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
         internal DirectoryTreeView Directories => this.directoryTree;
         internal FileListView Files => this.fileList;
 
-        private Breadcrumb root;
-        private Breadcrumb navigationState;
+        private Breadcrumb? root;
+        private Breadcrumb? navigationState;
 
         //---------------------------------------------------------------------
         // Privates.
@@ -100,9 +100,9 @@ namespace Google.Solutions.Mvvm.Controls
         // Events.
         //---------------------------------------------------------------------
 
-        public event EventHandler<ExceptionEventArgs> NavigationFailed;
-        public event EventHandler CurrentDirectoryChanged;
-        public event EventHandler SelectedFilesChanged;
+        public event EventHandler<ExceptionEventArgs>? NavigationFailed;
+        public event EventHandler? CurrentDirectoryChanged;
+        public event EventHandler? SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
             => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
@@ -125,11 +125,27 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Directory that is currently being viewed.
         /// </summary>
-        public IFileItem CurrentDirectory => this.navigationState.Directory;
+        public IFileItem? CurrentDirectory
+        {
+            get => this.navigationState?.Directory;
+        }
 
-        public string CurrentPath => string.Join(
-                this.directoryTree.PathSeparator,
-                this.navigationState.Path);
+        public string? CurrentPath
+        {
+            get
+            {
+                if (this.navigationState == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return string.Join(
+                        this.directoryTree.PathSeparator,
+                        this.navigationState.Path);
+                }
+            }
+        }
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -139,6 +155,11 @@ namespace Google.Solutions.Mvvm.Controls
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
             Debug.Assert(this.fileSystem != null);
+
+            if (this.fileSystem == null)
+            {
+                throw new InvalidOperationException("Control is not bound");
+            }
 
             //
             // NB. Both controls must use the same file items so that expansion
@@ -152,10 +173,10 @@ namespace Google.Solutions.Mvvm.Controls
                     .ConfigureAwait(true);
                 Debug.Assert(children != null);
 
-                this.listFilesCache[folder] = children;
+                this.listFilesCache[folder] = children!;
             }
 
-            return children;
+            return children!;
         }
 
         private async Task ShowDirectoryContentsAsync(IFileItem folder)
@@ -262,6 +283,11 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async void fileList_DoubleClick(object sender, EventArgs args)
         {
+            if (this.root == null || this.CurrentDirectory == null)
+            {
+                throw new InvalidOperationException("Control is not bound");
+            }
+
             if (this.fileList.SelectedModelItem.Type.IsFile)
             {
                 return;
@@ -315,6 +341,11 @@ namespace Google.Solutions.Mvvm.Controls
         public async Task NavigateAsync(IEnumerable<string> path)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
+            
+            if (this.root == null || this.navigationState == null)
+            {
+                throw new InvalidOperationException("Control is not bound");
+            }
 
             //
             // Reset to root.
@@ -337,6 +368,11 @@ namespace Google.Solutions.Mvvm.Controls
         public async Task NavigateDownAsync(string directoryName)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
+            if (this.root == null ||
+                this.navigationState == null)
+            {
+                throw new InvalidOperationException("Control is not bound");
+            }
 
             //
             // Expand the node and wait for it to be populated.
@@ -371,6 +407,11 @@ namespace Google.Solutions.Mvvm.Controls
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
 
+            if (this.root == null || this.navigationState == null)
+            {
+                throw new InvalidOperationException("Control is not bound");
+            }
+
             if (this.navigationState.Parent == null)
             {
                 //
@@ -389,12 +430,12 @@ namespace Google.Solutions.Mvvm.Controls
 
         public class Breadcrumb
         {
-            public Breadcrumb Parent { get; }
+            public Breadcrumb? Parent { get; }
             public IFileItem Directory => this.TreeNode.Model;
             internal DirectoryTreeView.Node TreeNode { get; }
 
             internal Breadcrumb(
-                Breadcrumb parent,
+                Breadcrumb? parent,
                 BindableTreeView<IFileItem>.Node treeNode)
             {
                 this.Parent = parent;

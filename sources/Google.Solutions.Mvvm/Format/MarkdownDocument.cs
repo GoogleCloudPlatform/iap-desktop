@@ -90,9 +90,9 @@ namespace Google.Solutions.Mvvm.Format
         /// </summary>
         public abstract class Node
         {
-            private Node next;
-            private Node firstChild;
-            protected Node lastChild;
+            private Node? next;
+            private Node? firstChild;
+            protected Node? lastChild;
 
             /// <summary>
             /// List direct children of this node.
@@ -121,6 +121,8 @@ namespace Google.Solutions.Mvvm.Format
             /// <param name="block"></param>
             protected void AppendNode(Node block)
             {
+                Debug.Assert((this.firstChild == null) == (this.lastChild == null));
+
                 if (this.firstChild == null)
                 {
                     Debug.Assert(this.lastChild == null);
@@ -129,7 +131,9 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    this.lastChild.next = block;
+                    Debug.Assert(this.lastChild != null);
+
+                    this.lastChild!.next = block;
                     this.lastChild = block;
                 }
             }
@@ -586,7 +590,7 @@ namespace Google.Solutions.Mvvm.Format
 
                 if ((token.Value == "_" || token.Value == "*" || token.Value == "**" || token.Value == "`") &&
                     remainder.FirstOrDefault() is Token next &&
-                    next != null &&
+                    next != null! &&
                     next.Type == TokenType.Text &&
                     next.Value.Length >= 1 &&
                     !NonLineBreakingWhitespace.Contains(next.Value[0]))
@@ -707,7 +711,7 @@ namespace Google.Solutions.Mvvm.Format
             private readonly string delimiter;
             private bool bodyCompleted = false;
 
-            public string Text { get; protected set; }
+            public string Text { get; protected set; } = string.Empty;
 
             public bool IsStrong => this.delimiter == "**";
             public bool IsCode => this.delimiter == "`";
@@ -753,7 +757,7 @@ namespace Google.Solutions.Mvvm.Format
             private bool linkBodyCompleted = false;
             private bool linkHrefCompleted = false;
             protected override string Summary => $"[Link href={this.Href}]";
-            public string Href { get; protected set; }
+            public string Href { get; protected set; } = string.Empty;
 
             protected override bool TryConsumeToken(Token token, IEnumerable<Token> remainder)
             {
@@ -769,7 +773,7 @@ namespace Google.Solutions.Mvvm.Format
                     //
                     // Building the link href.
                     //
-                    if (this.Href == null && token == new Token(TokenType.Delimiter, "("))
+                    if (this.Href == string.Empty && token == new Token(TokenType.Delimiter, "("))
                     {
                         return true;
                     }

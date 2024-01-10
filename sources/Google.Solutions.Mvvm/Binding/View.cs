@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Binding
     internal interface IThemedView<TViewModel> : IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        IControlTheme Theme { get; set; }
+        void SetTheme(IControlTheme theme);
     }
 
     /// <summary>
@@ -141,7 +141,10 @@ namespace Google.Solutions.Mvvm.Binding
             return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
         }
 
-        public IControlTheme Theme { get; set; }
+        /// <summary>
+        /// Get or set the theme to apply, optional.
+        /// </summary>
+        public IControlTheme? Theme { get; set; }
 
         internal ViewFactory(IServiceProvider serviceProvider)
         {
@@ -193,7 +196,10 @@ namespace Google.Solutions.Mvvm.Binding
 
         public TViewModel ViewModel { get; }
 
-        public IControlTheme Theme { get; set; }
+        /// <summary>
+        /// Get or set the theme to apply, optional.
+        /// </summary>
+        public IControlTheme? Theme { get; set; }
 
         internal Dialog(IServiceProvider serviceProvider, TViewModel viewModel)
         {
@@ -219,7 +225,10 @@ namespace Google.Solutions.Mvvm.Binding
 
             var bindingContext = (IBindingContext)
                 this.serviceProvider.GetService(typeof(IBindingContext));
-            Debug.Assert(bindingContext != null);
+            if (bindingContext == null)
+            {
+                throw new BindingException("Binding context not available");
+            }
 
             //
             // Create view, show, and dispose it.
@@ -232,7 +241,7 @@ namespace Google.Solutions.Mvvm.Binding
                 if (this.Theme != null &&
                     view is IThemedView<TViewModel> themedView && themedView != null)
                 {
-                    themedView.Theme = this.Theme;
+                    themedView.SetTheme(this.Theme);
                 }
 
                 //
@@ -265,16 +274,19 @@ namespace Google.Solutions.Mvvm.Binding
     /// Hydrated view that can be used as a standalone window.
     /// </summary>
     public sealed class Window<TView, TViewModel>
-        where TView : IView<TViewModel>
+        where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
         private readonly IServiceProvider serviceProvider;
 
-        private TView form;
+        private TView? form;
 
         public TViewModel ViewModel { get; }
 
-        public IControlTheme Theme { get; set; }
+        /// <summary>
+        /// Get or set the theme to apply, optional.
+        /// </summary>
+        public IControlTheme? Theme { get; set; }
 
         internal Window(IServiceProvider serviceProvider, TViewModel viewModel)
         {
@@ -288,7 +300,7 @@ namespace Google.Solutions.Mvvm.Binding
         public static void Bind(
             TView view,
             TViewModel viewModel,
-            IControlTheme theme,
+            IControlTheme? theme,
             IBindingContext bindingContext)
         {
             var viewControl = (ContainerControl)(object)view;
@@ -299,7 +311,7 @@ namespace Google.Solutions.Mvvm.Binding
             if (theme != null &&
                 view is IThemedView<TViewModel> themedView && themedView != null)
             {
-                themedView.Theme = theme;
+                themedView.SetTheme(theme);
             }
 
             //
@@ -334,11 +346,17 @@ namespace Google.Solutions.Mvvm.Binding
                     // Create view and bind it.
                     //
                     var view = (TView)this.serviceProvider.GetService(typeof(TView));
-                    Debug.Assert(view != null);
+                    if (view == null)
+                    {
+                        throw new BindingException($"No view of type {typeof(TView)} available");
+                    }
 
                     var bindingContext = (IBindingContext)
                         this.serviceProvider.GetService(typeof(IBindingContext));
-                    Debug.Assert(bindingContext != null);
+                    if (bindingContext == null)
+                    {
+                        throw new BindingException("Binding context not available");
+                    }
 
                     Bind(view, this.ViewModel, this.Theme, bindingContext);
 

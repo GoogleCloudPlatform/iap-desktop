@@ -906,6 +906,7 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
 
         private class CallbackSource<TContext> : IContextSource<TContext>
+            where TContext : class
         {
             private readonly Func<TContext> queryCurrentContextFunc;
 

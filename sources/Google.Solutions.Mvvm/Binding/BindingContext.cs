@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// Notify that a command failed.
         /// </summary>
         void OnCommandFailed(
-            IWin32Window window,
+            IWin32Window? window,
             ICommand command, 
             Exception exception);
 

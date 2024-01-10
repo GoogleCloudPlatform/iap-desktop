@@ -38,18 +38,18 @@ namespace Google.Solutions.Mvvm.Binding
         /// View that the view model has been bound to. Null if
         /// binding has not occurred yet.
         /// </summary>
-        public IWin32Window View { get; set; }
+        public IWin32Window? View { get; set; }
 
         //---------------------------------------------------------------------
         // INotifyPropertyChanged and helpers.
         //---------------------------------------------------------------------
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Notify observers about a property change.
         /// </summary>
-        protected void RaisePropertyChange([CallerMemberName] string propertyName = null)
+        protected void RaisePropertyChange([CallerMemberName] string? propertyName = null)
         {
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
