@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
@@ -31,13 +32,18 @@ namespace Google.Solutions.Mvvm.Binding
     [SkipCodeCoverage("UI code")]
     public partial class PropertiesView : CompositeForm, IThemedView<PropertiesViewModel>
     {
-        public IControlTheme Theme { get; set; }
+        private IControlTheme? theme;
 
         public PropertiesView()
         {
             InitializeComponent();
 
             this.Shown += (_, __) => this.tabs.Focus();
+        }
+
+        public void SetTheme(IControlTheme theme)
+        {
+            this.theme = theme.ExpectNotNull(nameof(theme));
         }
 
         public void Bind(PropertiesViewModel viewModel, IBindingContext bindingContext)
@@ -96,7 +102,7 @@ namespace Google.Solutions.Mvvm.Binding
                 Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
                     sheet.View,
                     sheet.ViewModel,
-                    this.Theme,
+                    this.theme,
                     bindingContext);
             }
         }

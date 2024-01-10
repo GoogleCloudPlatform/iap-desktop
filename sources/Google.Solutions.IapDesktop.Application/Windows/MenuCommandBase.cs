@@ -54,9 +54,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         protected abstract bool IsEnabled(TContext context);
 
         public MenuCommandBase(string text)
+            : base(text)
         {
             Debug.Assert(text.Contains("&"), "Command text should have a mnemonic");
-            this.Text = text;
         }
 
         //---------------------------------------------------------------------

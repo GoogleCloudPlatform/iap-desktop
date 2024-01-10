@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Binding
     internal interface IThemedView<TViewModel> : IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        IControlTheme Theme { get; set; }
+        void SetTheme(IControlTheme theme);
     }
 
     /// <summary>
@@ -241,7 +241,7 @@ namespace Google.Solutions.Mvvm.Binding
                 if (this.Theme != null &&
                     view is IThemedView<TViewModel> themedView && themedView != null)
                 {
-                    themedView.Theme = this.Theme;
+                    themedView.SetTheme(this.Theme);
                 }
 
                 //
@@ -311,7 +311,7 @@ namespace Google.Solutions.Mvvm.Binding
             if (theme != null &&
                 view is IThemedView<TViewModel> themedView && themedView != null)
             {
-                themedView.Theme = theme;
+                themedView.SetTheme(theme);
             }
 
             //
