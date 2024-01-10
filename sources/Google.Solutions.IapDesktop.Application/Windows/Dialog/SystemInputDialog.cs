@@ -32,10 +32,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     /// </summary>
     internal class SystemInputDialog : CompositeForm
     {
+
         /// <summary>
         /// Value provided by user.
         /// </summary>
-        public string Value { get; private set; }
+        public string? Value { get; private set; }
 
         public SystemInputDialog(InputDialogParameters parameters)
         {

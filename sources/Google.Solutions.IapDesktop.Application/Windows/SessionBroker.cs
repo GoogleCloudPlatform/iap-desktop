@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// <summary>
         /// Return active session, or null if no session is active.
         /// </summary>
-        ISession ActiveSession { get; }
+        ISession? ActiveSession { get; }
 
         /// <summary>
         /// Check if there is a session for a VM instance.
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// </summary>
         bool TryActivateSession(
             InstanceLocator vmInstance,
-            out ISession session);
+            out ISession? session);
 
         /// <summary>
         /// Return a list of all sessions.
@@ -126,7 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             // On pop-up of the menu, query the active session and use it as context.
             //
             this.SessionMenu = this.mainForm.AddMenu(
-                "&Session", 1,
+                "&Session", 
+                1,
                 () => this.ActiveSession);
         }
 
@@ -146,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 .Any();
         }
 
-        public ISession ActiveSession
+        public ISession? ActiveSession
         {
             //
             // NB. The active content might be in a float window.
@@ -236,8 +237,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
     public class SessionEndedEvent : SessionBrokerEventBase
     {
-        public Exception Exception { get; }
-
         public SessionEndedEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }

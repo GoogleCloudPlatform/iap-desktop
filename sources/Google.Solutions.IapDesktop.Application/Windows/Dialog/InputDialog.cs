@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public delegate void ValidationCallback(
             string input,
             out bool valid,
-            out string warning);
+            out string? warning);
     }
 
     public class InputDialog : IInputDialog

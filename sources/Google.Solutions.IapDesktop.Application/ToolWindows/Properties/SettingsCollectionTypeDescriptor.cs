@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             public override string Category => this.setting.Category;
             public override bool IsBrowsable => true;
 
-            public override Type ComponentType => null;
+            public override Type? ComponentType => null;
 
             public override bool IsReadOnly => false;
 
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             public override AttributeCollection Attributes
                 => new AttributeCollection(new PasswordPropertyTextAttribute(true));
 
-            public override object GetValue(object component)
+            public override object? GetValue(object component)
             {
                 return this.setting.IsDefault
                     ? null

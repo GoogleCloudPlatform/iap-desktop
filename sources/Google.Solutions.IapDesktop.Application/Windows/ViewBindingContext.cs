@@ -58,6 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         }
 
         public void OnCommandFailed(
+            IWin32Window? window,
             ICommand command,
             Exception exception)
         {
