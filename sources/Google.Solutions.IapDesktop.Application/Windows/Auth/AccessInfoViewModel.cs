@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
+using System;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
@@ -65,6 +66,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 case DeviceEnrollmentState.Enrolled:
                     this.DeviceCertificateLinkText = "Enabled";
                     break;
+
+                default:
+                    throw new ArgumentException(nameof(this.enrollment.State));
             }
         }
 

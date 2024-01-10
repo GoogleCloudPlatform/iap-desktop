@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 // on the window thread, the callback won't run
                 // after Start() was called.
                 //
-                Exception exception = null;
+                Exception? exception = null;
                 var tx = asyncFunc(tokenSource.Token).ContinueWith(
                     t => {
                         dialog.Finish();

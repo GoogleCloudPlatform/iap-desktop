@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Version that was installed previously. Null if the user never upgraded.
         /// </summary>
-        Version PreviousVersion { get; }
+        Version? PreviousVersion { get; }
 
         /// <summary>
         /// Base registry key for profiles, etc.
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 // Read the machine GUID. This is unique ID that's generated
                 // during Windows setup.
                 //
-                var machineGuid = (string)crptoKey?.GetValue("MachineGuid") ?? string.Empty;
+                var machineGuid = (string?)crptoKey?.GetValue("MachineGuid") ?? string.Empty;
 
                 //
                 // Create a hash and use the first few bytes as unique ID.
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
                     Debug.Assert(history != null);
 
-                    history.Add(this.CurrentVersion.ToString());
+                    history!.Add(this.CurrentVersion.ToString());
 
                     key.SetValue(
                         VersionHistoryValueName,
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        public Version PreviousVersion
+        public Version? PreviousVersion
         {
             get
             {

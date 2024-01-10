@@ -109,13 +109,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// <summary>
         /// Find the latest available update.
         /// </summary>
-        public async Task<IRelease> FindLatestReleaseAsync(
+        public async Task<IRelease?> FindLatestReleaseAsync(
             ReleaseFeedOptions options,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                Release latestRelease;
+                Release? latestRelease;
                 if (!options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases))
                 {
                     //
@@ -175,7 +175,8 @@ namespace Google.Solutions.IapDesktop.Application.Client
                                    new Uri(surveyAssetUrl),
                                    cancellationToken)
                                .ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(survey.Title) &&
+                            if (survey != null &&
+                                !string.IsNullOrEmpty(survey.Title) &&
                                 !string.IsNullOrEmpty(survey.Description) &&
                                 !string.IsNullOrEmpty(survey.Url))
                             {
@@ -197,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             }
         }
 
-        public Task<IRelease> FindLatestReleaseAsync(
+        public Task<IRelease?> FindLatestReleaseAsync(
             CancellationToken cancellationToken)
         {
             return FindLatestReleaseAsync(ReleaseFeedOptions.None, cancellationToken);
@@ -239,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 this.Assets = assets;
             }
 
-            public Version TagVersion
+            public Version? TagVersion
             {
                 get
                 {
@@ -254,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 }
             }
 
-            public string DownloadUrl
+            public string? DownloadUrl
             {
                 get => this
                     .Assets
@@ -263,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     .DownloadUrl;
             }
 
-            public IReleaseSurvey Survey { get; internal set; }
+            public IReleaseSurvey? Survey { get; internal set; }
 
             public string DetailsUrl => this.HtmlUrl;
 

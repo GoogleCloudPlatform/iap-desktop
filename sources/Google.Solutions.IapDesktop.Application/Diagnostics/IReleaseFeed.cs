@@ -34,12 +34,12 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// <summary>
         /// Version number, if available.
         /// </summary>
-        Version TagVersion { get; }
+        Version? TagVersion { get; }
 
         /// <summary>
         /// URL to installer package.
         /// </summary>
-        string DownloadUrl { get; }
+        string? DownloadUrl { get; }
 
         /// <summary>
         /// URL to website for this release.
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// <summary>
         /// Survey associated with this release.
         /// </summary>
-        IReleaseSurvey Survey { get; }
+        IReleaseSurvey? Survey { get; }
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IRelease> FindLatestReleaseAsync(
+        Task<IRelease?> FindLatestReleaseAsync(
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IRelease> FindLatestReleaseAsync(
+        Task<IRelease?> FindLatestReleaseAsync(
             ReleaseFeedOptions options,
             CancellationToken cancellationToken);
 

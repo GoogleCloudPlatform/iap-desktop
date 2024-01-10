@@ -32,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {
     public class BugReport
     {
-        private readonly Exception exception;
-        private readonly Type source;
+        private readonly Exception? exception;
+        private readonly Type? source;
 
         public BugReport()
             : this(null, null)
@@ -41,8 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         }
 
         public BugReport(
-            Type source,
-            Exception exception)
+            Type? source,
+            Exception? exception)
         {
             this.source = source;
             this.exception = exception;
@@ -51,12 +51,12 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// <summary>
         /// Window that produced the issue, if any.
         /// </summary>
-        public IWin32Window SourceWindow { get; set; }
+        public IWin32Window? SourceWindow { get; set; }
 
         /// <summary>
         /// Trace of recent window messages, if any.
         /// </summary>
-        public MessageTrace WindowMessageTrace { get; set; }
+        public MessageTrace? WindowMessageTrace { get; set; }
 
         public override string ToString()
         {

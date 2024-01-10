@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         public void ActivateCustomProxySettings(
             Uri proxyAddress,
             IEnumerable<string> bypassList,
-            ICredentials credentials)
+            ICredentials? credentials)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 proxyAddress,
@@ -91,9 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     WebRequest.DefaultWebProxy = new WebProxy(proxyAddress)
                     {
                         Credentials = credentials,
-                        BypassList = bypassList
-                            .EnsureNotNull()
-                            .ToArray()
+                        BypassList = bypassList.ToArray()
                     };
                 }
             }
@@ -101,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
         public void ActivateProxyAutoConfigSettings(
             Uri pacAddress,
-            ICredentials credentials)
+            ICredentials? credentials)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 pacAddress,
@@ -158,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
         public void ActivateSettings(IApplicationSettings settings)
         {
-            NetworkCredential GetProxyCredential()
+            NetworkCredential? GetProxyCredential()
             {
                 if (!string.IsNullOrEmpty(settings.ProxyUsername.StringValue))
                 {
@@ -176,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             {
                 ActivateCustomProxySettings(
                     new Uri(settings.ProxyUrl.StringValue),
-                    null,
+                    Enumerable.Empty<string>(),
                     GetProxyCredential());
             }
             else if (!string.IsNullOrEmpty(settings.ProxyPacUrl.StringValue))

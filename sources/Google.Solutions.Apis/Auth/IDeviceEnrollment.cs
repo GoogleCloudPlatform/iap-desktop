@@ -30,7 +30,7 @@ namespace Google.Solutions.Apis.Auth
     public interface IDeviceEnrollment
     {
         DeviceEnrollmentState State { get; }
-        X509Certificate2 Certificate { get; }
+        X509Certificate2? Certificate { get; }
     }
 
     public enum DeviceEnrollmentState

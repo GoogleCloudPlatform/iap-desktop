@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         private DeviceEnrollment(
             DeviceEnrollmentState state,
-            X509Certificate2 certificate)
+            X509Certificate2? certificate)
         {
             this.State = state;
             this.Certificate = certificate;
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         //---------------------------------------------------------------------
 
         public DeviceEnrollmentState State { get; private set; }
-        public X509Certificate2 Certificate { get; private set; }
+        public X509Certificate2? Certificate { get; private set; }
 
         //---------------------------------------------------------------------
         // Publics.
@@ -133,10 +133,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             // Consider custom configuration and EV default certificate. These
             // take precedence over group policies.
             //
-            X509Certificate2 deviceCertificate = null;
+            X509Certificate2? deviceCertificate = null;
             if (ChromeCertificateSelector.TryParse(
                 settings.DeviceCertificateSelector.StringValue,
-                out var selector))
+                out var selector) && 
+                selector != null)
             {
                 deviceCertificate = FirstCertificateMatchingPolicy(
                     new ChromeAutoSelectCertificateForUrlsPolicy.Builder()

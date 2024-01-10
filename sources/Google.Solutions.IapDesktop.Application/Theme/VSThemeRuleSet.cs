@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal abstract class VSThemeRuleSetBase
     {
-        private static Bitmap listBackgroundImage;
+        private static Bitmap? listBackgroundImage;
 
         private readonly IconInverter darkModeIconInverter;
 
