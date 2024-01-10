@@ -10,15 +10,14 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using MSTSCLib;
 using Google.Solutions.Mvvm.Shell;
+using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     public class RdpClient : UserControl
     {
         private readonly Google.Solutions.Tsc.MsRdpClient client;
-        private readonly IMsRdpClientAdvancedSettings6 advancedSettings;
         private readonly IMsRdpClientNonScriptable5 nonScriptable;
-        private readonly IMsRdpClientSecuredSettings securedSettings;
 
         private ConnectionState state = ConnectionState.NotConnected;
 
@@ -32,13 +31,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 Size = new System.Drawing.Size(100, 100),
             };
 
-            this.nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
-            this.advancedSettings = this.client.AdvancedSettings7;
-            this.securedSettings = this.client.SecuredSettings2;
-
-            this.nonScriptable.AllowCredentialSaving = false;
-            this.nonScriptable.PromptForCredentials = false;
-            this.nonScriptable.NegotiateSecurityLayer = true;
 
             ((System.ComponentModel.ISupportInitialize)(this.client)).BeginInit();
             this.SuspendLayout();
@@ -64,6 +56,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             this.Controls.Add(this.client);
             ((System.ComponentModel.ISupportInitialize)(this.client)).EndInit();
+
+
+            this.nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
+
+            this.nonScriptable.AllowCredentialSaving = false;
+            this.nonScriptable.PromptForCredentials = false;
+            this.nonScriptable.NegotiateSecurityLayer = true;
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            this.client.Size = this.Size;
         }
 
         //---------------------------------------------------------------------
@@ -162,6 +168,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <summary>
         /// Server to connect to.
         /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Server
         {
             get => this.client.Server;
@@ -175,19 +183,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <summary>
         /// Server port to connect to.
         /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ushort ServerPort
         {
-            get => (ushort)this.advancedSettings.RDPPort;
+            get => (ushort)this.client.AdvancedSettings7.RDPPort;
             set
             {
                 ExpectState(ConnectionState.NotConnected);
-                this.advancedSettings.RDPPort = value;
+                this.client.AdvancedSettings7.RDPPort = value;
             }
         }
 
         /// <summary>
         /// NetBIOS domain to use for authentication.
         /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Domain
         {
             get => this.client.Domain;
@@ -201,6 +213,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <summary>
         /// UPN or username to use for authentication.
         /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Username
         {
             get => this.client.UserName;
@@ -214,12 +228,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <summary>
         /// Password to use for authentication.
         /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Password
         {
             set
             {
                 ExpectState(ConnectionState.NotConnected);
-                this.advancedSettings.ClearTextPassword = value;
+                this.client.AdvancedSettings7.ClearTextPassword = value;
             }
         }
 
@@ -236,6 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         public event EventHandler StateChanged;
 
+        [Browsable(true)]
         public ConnectionState State
         {
             get => this.state;

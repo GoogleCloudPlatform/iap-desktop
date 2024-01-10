@@ -28,12 +28,82 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.connectButton = new System.Windows.Forms.Button();
+            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Session.Controls.RdpClient();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
+            this.splitContainer.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // splitContainer
+            // 
+            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer.Name = "splitContainer";
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.connectButton);
+            this.splitContainer.Panel1.Controls.Add(this.propertyGrid);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.rdpClient);
+            this.splitContainer.Size = new System.Drawing.Size(800, 450);
+            this.splitContainer.SplitterDistance = 266;
+            this.splitContainer.TabIndex = 0;
+            // 
+            // connectButton
+            // 
+            this.connectButton.Location = new System.Drawing.Point(12, 415);
+            this.connectButton.Name = "connectButton";
+            this.connectButton.Size = new System.Drawing.Size(75, 23);
+            this.connectButton.TabIndex = 1;
+            this.connectButton.Text = "Connect";
+            this.connectButton.UseVisualStyleBackColor = true;
+            // 
+            // propertyGrid
+            // 
+            this.propertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.propertyGrid.Location = new System.Drawing.Point(0, 3);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.Size = new System.Drawing.Size(263, 381);
+            this.propertyGrid.TabIndex = 0;
+            // 
+            // rdpClient
+            // 
+            this.rdpClient.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rdpClient.Location = new System.Drawing.Point(0, 0);
+            this.rdpClient.Name = "rdpClient";
+            this.rdpClient.Size = new System.Drawing.Size(530, 450);
+            this.rdpClient.TabIndex = 0;
+            // 
+            // TestRdpClient
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.splitContainer);
+            this.Name = "TestRdpClient";
             this.Text = "TestRdpClient";
+            this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+            this.splitContainer.ResumeLayout(false);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.PropertyGrid propertyGrid;
+        private Session.Controls.RdpClient rdpClient;
     }
 }
