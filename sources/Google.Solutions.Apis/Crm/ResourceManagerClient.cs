@@ -108,7 +108,7 @@ namespace Google.Solutions.Apis.Crm
         }
 
         public async Task<FilteredProjectList> ListProjectsAsync(
-            ProjectFilter filter,
+            ProjectFilter? filter,
             int? maxResults,
             CancellationToken cancellationToken)
         {

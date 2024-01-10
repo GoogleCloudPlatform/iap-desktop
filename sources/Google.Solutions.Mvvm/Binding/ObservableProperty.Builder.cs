@@ -28,8 +28,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Create a non-thread safe property.
         /// <returns></returns>
-        public static ObservableProperty<T> Build<T>(T? initialValue)
-            where T : class
+        public static ObservableProperty<T> Build<T>(T initialValue)
         {
             return new ObservableProperty<T>(initialValue);
         }
@@ -39,17 +38,15 @@ namespace Google.Solutions.Mvvm.Binding
         /// on a certain thread context.
         /// <returns></returns>
         public static ObservableProperty<T> Build<T>(
-            T? initialValue,
+            T initialValue,
             ViewModelBase viewModel)
-            where T : class
         {
             return new ThreadSafeObservableProperty<T>(viewModel, initialValue);
         }
 
         public static ObservableFunc<TResult> Build<T1, TResult>(
             ObservableProperty<T1> source,
-            Func<T1?, TResult> func)
-            where T1 : class
+            Func<T1, TResult> func)
         {
             return new ObservableFunc<TResult>(
                 () => func(source.Value),
@@ -59,9 +56,7 @@ namespace Google.Solutions.Mvvm.Binding
         public static ObservableFunc<TResult> Build<T1, T2, TResult>(
             ObservableProperty<T1> source1,
             ObservableProperty<T2> source2,
-            Func<T1?, T2?, TResult> func)
-            where T1 : class
-            where T2 : class
+            Func<T1, T2, TResult> func)
         {
             return new ObservableFunc<TResult>(
                 () => func(source1.Value, source2.Value),
@@ -73,10 +68,7 @@ namespace Google.Solutions.Mvvm.Binding
             ObservableProperty<T1> source1,
             ObservableProperty<T2> source2,
             ObservableProperty<T3> source3,
-            Func<T1?, T2?, T3?, TResult> func)
-            where T1 : class
-            where T2 : class
-            where T3 : class
+            Func<T1, T2, T3, TResult> func)
         {
             return new ObservableFunc<TResult>(
                 () => func(source1.Value, source2.Value, source3.Value),
@@ -90,11 +82,7 @@ namespace Google.Solutions.Mvvm.Binding
             ObservableProperty<T2> source2,
             ObservableProperty<T3> source3,
             ObservableProperty<T4> source4,
-            Func<T1?, T2?, T3?, T4?, TResult> func)
-            where T1 : class
-            where T2 : class
-            where T3 : class
-            where T4 : class
+            Func<T1, T2, T3, T4, TResult> func)
         {
             return new ObservableFunc<TResult>(
                 () => func(source1.Value, source2.Value, source3.Value, source4.Value),
