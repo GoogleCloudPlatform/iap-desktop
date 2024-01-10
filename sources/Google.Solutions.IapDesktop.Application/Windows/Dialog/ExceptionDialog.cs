@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public interface IExceptionDialog
     {
         void Show(
-            IWin32Window parent,
+            IWin32Window? parent,
             string caption,
             Exception e);
     }
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         }
 
         private void ShowErrorDialogWithHelp(
-            IWin32Window parent,
+            IWin32Window? parent,
             string caption,
             string message,
             string details,

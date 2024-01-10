@@ -86,8 +86,18 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                 ? (SchemaVersion)(uint)version
                 : SchemaVersion.Initial;
 
-        private UserProfile()
+        private UserProfile(
+            string name, 
+            RegistryKey settingsKey, 
+            RegistryKey machinePolicyKey, 
+            RegistryKey userPolicyKey, 
+            bool isDefault)
         {
+            this.Name = name;
+            this.SettingsKey = settingsKey;
+            this.MachinePolicyKey = machinePolicyKey;
+            this.UserPolicyKey = userPolicyKey;
+            this.IsDefault = isDefault;
         }
 
         public static bool IsValidProfileName(string name)
@@ -175,14 +185,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                             RegistryValueKind.DWord);
                     }
 
-                    return new UserProfile()
-                    {
-                        Name = DefaultProfileName,
-                        IsDefault = true,
-                        MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
-                        UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
-                        SettingsKey = profileKey
-                    };
+                    return new UserProfile(
+                        DefaultProfileName,
+                        profileKey,
+                        hklm.OpenSubKey(PoliciesKeyPath),
+                        hkcu.OpenSubKey(PoliciesKeyPath),
+                        true);
                 }
                 else
                 {
@@ -195,14 +203,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                         throw new ProfileNotFoundException("Unknown profile: " + name);
                     }
 
-                    return new UserProfile()
-                    {
-                        Name = name,
-                        IsDefault = false,
-                        MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
-                        UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
-                        SettingsKey = profileKey
-                    };
+                    return new UserProfile(
+                        name,
+                        profileKey,
+                        hklm.OpenSubKey(PoliciesKeyPath),
+                        hkcu.OpenSubKey(PoliciesKeyPath),
+                        false);
                 }
             }
         }

@@ -51,9 +51,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
         private RegistryStringSetting(
             string key,
             string title,
-            string description,
-            string category,
-            string defaultValue,
+            string? description,
+            string? category,
+            string? defaultValue,
             string value,
             bool isSpecified,
             Func<string, bool> validate,
@@ -74,9 +74,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
         public static RegistryStringSetting FromKey(
             string key,
             string title,
-            string description,
-            string category,
-            string defaultValue,
+            string? description,
+            string? category,
+            string? defaultValue,
             RegistryKey backingKey,
             Func<string, bool> validate)
         {
