@@ -1,4 +1,7 @@
-﻿using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+﻿using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
@@ -17,6 +20,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestRdpClient
     {
+        private const string InvalidServer = "8.8.8.8";
+
         private RdpDiagnosticsWindow CreateWindow()
         {
             var window = new RdpDiagnosticsWindow();
@@ -33,6 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         {
             using (var window = CreateWindow())
             {
+                window.Client.ConnectionFailed += (_, args)
+                    => MessageBox.Show(window, args.Exception.FullMessage());
+
                 window.ShowDialog();
             }
         }
@@ -228,6 +236,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
                 Assert.NotNull(eventArgs);
                 Assert.AreEqual(RdpClient.DisconnectReason.FormClosed, eventArgs.Reason);
+            }
+        }
+
+        [WindowsFormsTest]
+        public async Task WhenServerInvalid_ThenControlRaisesEvent()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Client.Server = InvalidServer;
+                window.Client.ConnectionTimeout = TimeSpan.FromSeconds(1);
+
+                window.Show();
+
+                ExceptionEventArgs eventArgs = null;
+                window.Client.ConnectionFailed += (_, e) => eventArgs = e;
+
+                //
+                // Connect to non-existing server.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                    .ConfigureAwait(true);
+
+                Assert.NotNull(eventArgs);
+                Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs.Exception);
+
+                window.Close();
             }
         }
     }

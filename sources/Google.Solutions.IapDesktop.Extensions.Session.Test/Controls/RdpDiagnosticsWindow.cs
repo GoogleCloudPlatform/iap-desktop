@@ -36,8 +36,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
             this.rdpClient.StateChanged += (_, __) 
                 => this.Text = this.rdpClient.State.ToString();
-            this.rdpClient.ConnectionFailed += (_, args) 
-                => MessageBox.Show(this, args.Exception.FullMessage());
         }
 
         public RdpClient Client

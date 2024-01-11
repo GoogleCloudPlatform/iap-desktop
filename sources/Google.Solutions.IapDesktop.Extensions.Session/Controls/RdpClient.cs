@@ -164,11 +164,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     // NB. This does not trigger an OnDisconnected event.
                     //
                     this.client.Disconnect();
-                    this.State = ConnectionState.NotConnected;
 
                     this.ConnectionClosed?.Invoke(
                         this,
                         new ConnectionClosedEventArgs(DisconnectReason.FormClosed));
+
+                    this.State = ConnectionState.NotConnected;
                 }
                 catch (Exception e)
                 {
@@ -286,10 +287,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.errorCode))
             {
-                this.State = ConnectionState.NotConnected;
                 this.ConnectionFailed?.Invoke(
                     this,
                     new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
+
+                this.State = ConnectionState.NotConnected;
             }
         }
 
@@ -303,10 +305,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             {
                 if (!e.IsIgnorable)
                 {
-                    this.State = ConnectionState.NotConnected;
                     this.ConnectionFailed?.Invoke(
                         this,
                         new ExceptionEventArgs(e));
+
+                    this.State = ConnectionState.NotConnected;
                 }
             }
         }
@@ -329,8 +332,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
             { 
-                this.State = ConnectionState.NotConnected;
-
                 //
                 // Make sure to leave full-screen mode, otherwise
                 // we're showing a dead control full-screen.
@@ -365,6 +366,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 {
                     this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
                 }
+
+                this.State = ConnectionState.NotConnected;
             }
         }
 
