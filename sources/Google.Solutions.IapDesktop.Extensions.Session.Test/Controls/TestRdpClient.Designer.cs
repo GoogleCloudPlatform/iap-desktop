@@ -32,6 +32,7 @@
             this.connectButton = new System.Windows.Forms.Button();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Session.Controls.RdpClient();
+            this.fullScreenButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -46,6 +47,7 @@
             // 
             // splitContainer.Panel1
             // 
+            this.splitContainer.Panel1.Controls.Add(this.fullScreenButton);
             this.splitContainer.Panel1.Controls.Add(this.connectButton);
             this.splitContainer.Panel1.Controls.Add(this.propertyGrid);
             // 
@@ -84,6 +86,15 @@
             this.rdpClient.Size = new System.Drawing.Size(846, 684);
             this.rdpClient.TabIndex = 0;
             // 
+            // fullScreenButton
+            // 
+            this.fullScreenButton.Location = new System.Drawing.Point(94, 649);
+            this.fullScreenButton.Name = "fullScreenButton";
+            this.fullScreenButton.Size = new System.Drawing.Size(75, 23);
+            this.fullScreenButton.TabIndex = 2;
+            this.fullScreenButton.Text = "Fullscreen";
+            this.fullScreenButton.UseVisualStyleBackColor = true;
+            // 
             // TestRdpClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -106,5 +117,6 @@
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private Session.Controls.RdpClient rdpClient;
+        private System.Windows.Forms.Button fullScreenButton;
     }
 }

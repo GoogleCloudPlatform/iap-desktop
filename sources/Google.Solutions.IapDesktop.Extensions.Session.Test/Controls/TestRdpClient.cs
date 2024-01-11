@@ -30,7 +30,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.rdpClient.ConnectionFailed += (_, args) 
                 => MessageBox.Show(this, args.Exception.FullMessage());
 
-            this.rdpClient.EnableNetworkLevelAuthentication = true;
             this.rdpClient.Username = ".\\admin";
             this.rdpClient.Password = "admin";
             this.rdpClient.Server = Dns.GetHostEntry("rdptesthost").AddressList.First().ToString();

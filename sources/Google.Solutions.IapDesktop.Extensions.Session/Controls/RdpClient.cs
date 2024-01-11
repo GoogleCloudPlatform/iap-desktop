@@ -14,6 +14,8 @@ using System.ComponentModel;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
+using System.Runtime.InteropServices;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -25,6 +27,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private ConnectionState state = ConnectionState.NotConnected;
 
+        private readonly DeferredCallback deferResize;
+
         public RdpClient()
         {
             this.client = new Google.Solutions.Tsc.MsRdpClient
@@ -34,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 Name = "client",
                 Size = new System.Drawing.Size(100, 100),
             };
-
+            this.deferResize = new DeferredCallback(PerformDeferredResize, TimeSpan.FromMilliseconds(200));
 
             ((System.ComponentModel.ISupportInitialize)(this.client)).BeginInit();
             this.SuspendLayout();
@@ -69,20 +73,107 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.clientNonScriptable.NegotiateSecurityLayer = true;
             
             this.clientAdvancedSettings = this.client.AdvancedSettings7;
-            //this.clientAdvancedSettings.EnableCredSspSupport = true;
+            this.clientAdvancedSettings.EnableCredSspSupport = true;
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+
             this.client.Dispose();
+            this.deferResize.Dispose();
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            this.client.Size = this.Size;
+            //
+            // Do not resize immediately since there might be another resize
+            // event coming in a few milliseconds. 
+            //
+
+            this.deferResize.Invoke();
+        }
+
+        //---------------------------------------------------------------------
+        // Resiying.
+        //---------------------------------------------------------------------
+
+        private void PerformDeferredResize(DeferredCallback cb)
+        {
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                if (this.client.Size == this.Size)
+                {
+                    //
+                    // Nothing to do here.
+                    //
+                }
+                else if (!this.Visible)
+                {
+                    //
+                    // Form is closing, better not touch anything.
+                    //
+                }
+                else if (this.State == ConnectionState.NotConnected)
+                {
+                    //
+                    // Resize control only, no RDP involved yet.
+                    //
+                    this.client.Size = this.Size;
+                }
+                else if (this.State == ConnectionState.LoggedOn)
+                {
+                    //
+                    // It's safe to resize in this state.
+                    //
+                    // First, resize the control.
+                    //
+                    this.client.Size = this.Size;
+
+                    //
+                    // Resize the session.
+                    //
+                    var newSize = this.Size;
+                    try
+                    {
+                        //
+                        // Try to adjust settings without reconnecting - this only works when
+                        // (1) The server is running 2012R2 or newer
+                        // (2) The logon process has completed.
+                        //
+                        this.client.UpdateSessionDisplaySettings(
+                            (uint)newSize.Width,
+                            (uint)newSize.Height,
+                            (uint)newSize.Width,
+                            (uint)newSize.Height,
+                            0,  // Landscape
+                            1,  // No desktop scaling
+                            1); // No device scaling
+                    }
+                    catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
+                    {
+                        ApplicationTraceSource.Log.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
+
+                        //
+                        // Revert to classic, reconnect-based resizing.
+                        //
+                        this.State = ConnectionState.Connecting;
+                        this.client.Reconnect((uint)newSize.Width, (uint)newSize.Height);
+                    }
+                }
+                else if (
+                    this.State == ConnectionState.Connecting ||
+                    this.state == ConnectionState.Connected)
+                {
+                    //
+                    // It's not size to resize now, but it will
+                    // be in a bit. So try again later.
+                    //
+                    cb.Invoke();
+                }
+            }
         }
 
         //---------------------------------------------------------------------
