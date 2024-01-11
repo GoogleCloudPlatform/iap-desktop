@@ -151,7 +151,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 args.Cancel = true;
                 return;
             }
-            else if (this.State == ConnectionState.Connected)
+            else if (
+                this.State == ConnectionState.Connected ||
+                this.State == ConnectionState.LoggedOn)
             {
                 try
                 {
@@ -163,6 +165,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                     this.client.Disconnect();
                     this.State = ConnectionState.NotConnected;
+
+                    this.ConnectionClosed?.Invoke(
+                        this,
+                        new ConnectionClosedEventArgs(DisconnectReason.FormClosed));
                 }
                 catch (Exception e)
                 {
@@ -278,10 +284,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
-            this.State = ConnectionState.NotConnected;
-            this.ConnectionFailed?.Invoke(
-                this,
-                new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.errorCode))
+            {
+                this.State = ConnectionState.NotConnected;
+                this.ConnectionFailed?.Invoke(
+                    this,
+                    new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
+            }
         }
 
         private void OnLogonError(
@@ -289,18 +298,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             IMsTscAxEvents_OnLogonErrorEvent args)
         {
             var e = new RdpLogonException(args.lError);
-            if (!e.IsIgnorable)
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e))
             {
-                this.State = ConnectionState.NotConnected;
-                this.ConnectionFailed?.Invoke(
-                    this,
-                    new ExceptionEventArgs(e));
+                if (!e.IsIgnorable)
+                {
+                    this.State = ConnectionState.NotConnected;
+                    this.ConnectionFailed?.Invoke(
+                        this,
+                        new ExceptionEventArgs(e));
+                }
             }
         }
 
         private void OnLoginComplete(object sender, EventArgs e)
         {
-            this.State = ConnectionState.LoggedOn; ;
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                this.State = ConnectionState.LoggedOn;
+            }
         }
 
         private void OnDisconnected(
@@ -326,25 +342,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // 
                 this.MainWindow.Focus();
 
-
-                
-
-                // TODO: Port rest
-
-                this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                if (this.State != ConnectionState.Connecting && e.IsTimeout)
+                {
+                    //
+                    // An already-established connection timed out, this is common when
+                    // connecting to Windows 10 VMs.
+                    //
+                    // NB. The same error code can occur during the initial connection,
+                    // but then it should be treated as an error.
+                    //
+                    this.ConnectionClosed?.Invoke(
+                        this,
+                        new ConnectionClosedEventArgs(DisconnectReason.Timeout));
+                }
+                else if (e.IsUserDisconnect)
+                {
+                    this.ConnectionClosed?.Invoke(
+                        this,
+                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                }
+                else if (!e.IsIgnorable)
+                {
+                    this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                }
             }
         }
 
         private void OnConnected(object sender, EventArgs e)
         {
-            this.State = ConnectionState.Connected;
-
             using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(this.client.ConnectedStatusText))
             {
-
+                this.State = ConnectionState.Connected;
             }
-            // TODO: Port rest
         }
 
 
@@ -361,7 +391,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             Debug.Assert(this.State == ConnectionState.Connecting);
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                this.AuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
+                this.ServerAuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -403,10 +433,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private void OnAutoReconnected(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
-            //TODO: port rest
 
-
-            this.State = ConnectionState.LoggedOn;
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                this.State = ConnectionState.LoggedOn;
+            }
         }
 
         private void OnFocusReleased(
@@ -734,9 +765,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // State tracking.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Connection state has changed.
+        /// </summary>
         public event EventHandler StateChanged;
+
+        /// <summary>
+        /// Connection closed abnormally.
+        /// </summary>
         public event EventHandler<ExceptionEventArgs> ConnectionFailed;
-        internal event EventHandler AuthenticationWarningDisplayed;
+
+
+        /// <summary>
+        /// Connection closed normally.
+        /// </summary>
+        public event EventHandler<ConnectionClosedEventArgs> ConnectionClosed;
+
+        /// <summary>
+        /// The server authentication warning has been displayed.
+        /// </summary>
+        internal event EventHandler ServerAuthenticationWarningDisplayed;
 
         private void ExpectState(ConnectionState expectedState)
         {
@@ -821,6 +869,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             await this.deferResize
                 .WaitForCompletionAsync()
                 .ConfigureAwait(true);
+        }
+
+        public class ConnectionClosedEventArgs : EventArgs
+        {
+            internal ConnectionClosedEventArgs(DisconnectReason reason)
+            {
+                this.Reason = reason;
+            }
+
+            public DisconnectReason Reason { get; }
+        }
+
+        public enum DisconnectReason
+        {
+            Timeout,
+            DisconnectedByUser,
+            FormClosed
         }
     }
 }

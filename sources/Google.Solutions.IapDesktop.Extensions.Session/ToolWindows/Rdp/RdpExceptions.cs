@@ -214,6 +214,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.DisconnectReason == 3 ||
             this.DisconnectReason == 264;
 
+        public bool IsUserDisconnect =>
+            this.DisconnectReason == 2;
+
         public bool IsIgnorable =>
             this.DisconnectReason <= 3 ||
             this.DisconnectReason == 263 ||  // Dismissed server auth warning.

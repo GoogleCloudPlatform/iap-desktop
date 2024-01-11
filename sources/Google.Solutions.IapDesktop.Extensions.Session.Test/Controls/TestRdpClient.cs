@@ -198,5 +198,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Close();
             }
         }
+
+        [WindowsFormsTest]
+        public async Task WhenWindowClosed_ThenControlRaisesEvent()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Show();
+
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                RdpClient.ConnectionClosedEventArgs eventArgs = null;
+                window.Client.ConnectionClosed += (_, e) => eventArgs = e;
+
+                //
+                // Close window.
+                //
+                window.Close();
+
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                    .ConfigureAwait(true);
+
+                Assert.NotNull(eventArgs);
+                Assert.AreEqual(RdpClient.DisconnectReason.FormClosed, eventArgs.Reason);
+            }
+        }
     }
 }
