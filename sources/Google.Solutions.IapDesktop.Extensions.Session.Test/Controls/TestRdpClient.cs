@@ -26,13 +26,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             InitializeComponent();
             this.propertyGrid.SelectedObject = this.rdpClient;
             this.connectButton.Click += (_, __) => this.rdpClient.Connect();
-            this.fullScreenButton.Click += (_, __) => this.rdpClient.TryEnterFullScreen(this, null);
+            this.fullScreenButton.Click += (_, __) => this.rdpClient.TryEnterFullScreen(null);
 
             this.rdpClient.StateChanged += (_, __) 
                 => this.Text = this.rdpClient.State.ToString();
             this.rdpClient.ConnectionFailed += (_, args) 
                 => MessageBox.Show(this, args.Exception.FullMessage());
 
+            this.rdpClient.MainWindow = this;
             this.rdpClient.Username = ".\\admin";
             this.rdpClient.Password = "admin";
             this.rdpClient.Server = Dns.GetHostEntry("rdptesthost").AddressList.First().ToString();

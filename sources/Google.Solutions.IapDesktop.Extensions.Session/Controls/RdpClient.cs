@@ -299,16 +299,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
-            this.State = ConnectionState.NotConnected;
-
-
             var e = new RdpDisconnectedException(
-                args.discReason,
-                this.client.GetErrorDescription((uint)args.discReason, 0));
+                    args.discReason,
+                    this.client.GetErrorDescription((uint)args.discReason, 0));
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
-            {
+            { 
+                this.State = ConnectionState.NotConnected;
+
+                //
+                // Make sure to leave full-screen mode, otherwise
+                // we're showing a dead control full-screen.
+                //
+                this.ContainerFullScreen = false;
+
+                //
+                // Force focus back to main window. 
+                // 
+                this.MainWindow.Focus();
+
+
+                
+
                 // TODO: Port rest
+
                 this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
             }
         }
@@ -427,7 +441,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void OnRequestLeaveFullScreen(object sender, EventArgs e)
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
+            Debug.Assert(
+                this.State == ConnectionState.LoggedOn ||
+                (this.State == ConnectionState.Connecting && !this.ContainerFullScreen));
 
             this.ContainerFullScreen = false;
         }
@@ -436,6 +452,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             //TODO: port rest
         }
+
+        //---------------------------------------------------------------------
+        // Basic properties.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Outmost window that can be used to pass the focus to. This
+        /// can be the parent window, but doesn't have to be.
+        /// </summary>
+        public Form MainWindow { get; set; }
 
         //---------------------------------------------------------------------
         // Connection properties.
@@ -872,8 +898,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 }
             }
 
-            this.client.Connect();
+            //
+            // Reset state in case we're connecting for the second time.
+            //
             this.State = ConnectionState.Connecting;
+            this.client.FullScreen = false;
+            this.client.DesktopHeight = this.Size.Height;
+            this.client.DesktopWidth = this.Size.Width;
+
+            this.client.Connect();
         }
 
         //---------------------------------------------------------------------
@@ -891,13 +924,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private class FullScreenContext
         {
-            public IWin32Window Parent { get; }
-
             public Rectangle? Bounds { get; }
 
-            public FullScreenContext(IWin32Window parent, Rectangle? bounds)
+            public FullScreenContext(Rectangle? bounds)
             {
-                this.Parent = parent.ExpectNotNull(nameof(parent));
                 this.Bounds = bounds;
             }
         }
@@ -915,10 +945,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             Debug.Assert(source.Controls.Count == 0);
         }
 
-        private bool ContainerFullScreen
+        public bool ContainerFullScreen
         {
             get => fullScreenForm != null && fullScreenForm.Visible;
-            set
+            private set
             {
                 if (value == this.ContainerFullScreen)
                 {
@@ -972,7 +1002,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     // Set the parent to the window we want to bring to the front
                     // when the user clicks minimize on the conection bar.
                     //
-                    fullScreenForm.Show(this.fullScreenContext.Parent);
+                    Debug.Assert(this.MainWindow != null);
+                    fullScreenForm.Show(this.MainWindow);
 
                     //
                     // Resize to fit new form.
@@ -1015,18 +1046,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <param name="parentWindow">Outmost window</param>
         /// <param name="customBounds">Custom bounds for multi-screen full-screen</param>
         /// <returns></returns>
-        public bool TryEnterFullScreen(
-            IWin32Window parentWindow,
-            Rectangle? customBounds)
+        public bool TryEnterFullScreen(Rectangle? customBounds)
         {
+            if (this.MainWindow == null)
+            {
+                throw new InvalidOperationException("Main window must be set");
+            }
+
             if (!this.CanEnterFullScreen)
             {
                 return false;
             }
 
-            this.fullScreenContext = new FullScreenContext(
-                parentWindow,
-                customBounds);
+            this.fullScreenContext = new FullScreenContext(customBounds);
 
             this.client.FullScreenTitle = this.ConnectionBarText;
             this.client.FullScreen = true;
