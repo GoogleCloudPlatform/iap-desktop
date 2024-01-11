@@ -450,7 +450,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void OnRequestContainerMinimize(object sender, EventArgs e)
         {
-            //TODO: port rest
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                //
+                // Minimize this window.
+                //
+                fullScreenForm.WindowState = FormWindowState.Minimized;
+
+                //
+                // Minimize the main form (which is still running in the 
+                // back)
+                //
+                this.MainWindow.WindowState = FormWindowState.Minimized;
+            }
         }
 
         //---------------------------------------------------------------------
