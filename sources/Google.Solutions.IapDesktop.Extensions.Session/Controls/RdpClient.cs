@@ -17,6 +17,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -32,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private ConnectionState state = ConnectionState.NotConnected;
 
         private readonly DeferredCallback deferResize;
+        private Form parentForm = null;
 
         public RdpClient()
         {
@@ -104,13 +106,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // As a user control, we don't get a FormClosing event,
             // so attach to the parent form.
             //
-            bool formClosingRegistered = false;
             this.VisibleChanged += (_, __) =>
             {
-                if (!formClosingRegistered && FindForm() is Form form)
+                if (this.parentForm == null && FindForm() is Form form)
                 {
+                    this.parentForm = form;
                     form.FormClosing += OnFormClosing;
-                    formClosingRegistered = true;
                 }
             };
         }
@@ -204,40 +205,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                     // It's safe to resize in this state.
                     //
-                    // First, resize the control.
                     //
-                    this.client.Size = this.Size;
-
-                    //
-                    // Resize the session.
-                    //
-                    var newSize = this.Size;
-                    try
-                    {
-                        //
-                        // Try to adjust settings without reconnecting - this only works when
-                        // (1) The server is running 2012R2 or newer
-                        // (2) The logon process has completed.
-                        //
-                        this.client.UpdateSessionDisplaySettings(
-                            (uint)newSize.Width,
-                            (uint)newSize.Height,
-                            (uint)newSize.Width,
-                            (uint)newSize.Height,
-                            0,  // Landscape
-                            1,  // No desktop scaling
-                            1); // No device scaling
-                    }
-                    catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
-                    {
-                        ApplicationTraceSource.Log.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
-
-                        //
-                        // Revert to classic, reconnect-based resizing.
-                        //
-                        this.State = ConnectionState.Connecting;
-                        this.client.Reconnect((uint)newSize.Width, (uint)newSize.Height);
-                    }
+                    DangerousResizeClient(this.Size);
                 }
                 else if (
                     this.State == ConnectionState.Connecting ||
@@ -249,6 +218,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                     cb.Invoke();
                 }
+            }
+        }
+
+        private void DangerousResizeClient(Size newSize)
+        {
+            //
+            // First, resize the control.
+            //
+            // NB. newSize might be different from this.Size if we're in
+            // full-screen mode.
+            //
+            this.client.Size = newSize;
+
+            //
+            // Resize the session.
+            //
+            try
+            {
+                //
+                // Try to adjust settings without reconnecting - this only works when
+                // (1) The server is running 2012R2 or newer
+                // (2) The logon process has completed.
+                //
+                this.client.UpdateSessionDisplaySettings(
+                    (uint)newSize.Width,
+                    (uint)newSize.Height,
+                    (uint)newSize.Width,
+                    (uint)newSize.Height,
+                    0,  // Landscape
+                    1,  // No desktop scaling
+                    1); // No device scaling
+            }
+            catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
+            {
+                ApplicationTraceSource.Log.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
+
+                //
+                // Revert to classic, reconnect-based resizing.
+                //
+                this.State = ConnectionState.Connecting;
+                this.client.Reconnect((uint)newSize.Width, (uint)newSize.Height);
             }
         }
 
@@ -412,14 +422,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn);
 
-            //TODO: port rest
+            this.ContainerFullScreen = true;
         }
 
         private void OnRequestLeaveFullScreen(object sender, EventArgs e)
         {
-
             Debug.Assert(this.State == ConnectionState.LoggedOn);
-            //TODO: port rest
+
+            this.ContainerFullScreen = false;
         }
 
         private void OnRequestContainerMinimize(object sender, EventArgs e)
@@ -866,33 +876,162 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.State = ConnectionState.Connecting;
         }
 
+        //---------------------------------------------------------------------
+        // Full-screen mode.
+        //
+        // In container-handled mode, setting FullScreen to true..
+        //
+        // - calls the OnRequestGoFullScreen event,
+        // - shows the connection bar (if enabled)
+        // - changes hotkeys
+        //
+        // However, it does not resize the control automatically.
+        //
+        //---------------------------------------------------------------------
+
+        private class FullScreenContext
+        {
+            public IWin32Window Parent { get; }
+
+            public Rectangle? Bounds { get; }
+
+            public FullScreenContext(IWin32Window parent, Rectangle? bounds)
+            {
+                this.Parent = parent.ExpectNotNull(nameof(parent));
+                this.Bounds = bounds;
+            }
+        }
+
+        private FullScreenContext fullScreenContext = null;
+        private static Form fullScreenForm = null;
+
+        private static void MoveControls(Control source, Control target)
+        {
+            var controls = new Control[source.Controls.Count];
+            source.Controls.CopyTo(controls, 0);
+            source.Controls.Clear();
+            target.Controls.AddRange(controls);
+
+            Debug.Assert(source.Controls.Count == 0);
+        }
+
+        private bool ContainerFullScreen
+        {
+            get => fullScreenForm != null && fullScreenForm.Visible;
+            set
+            {
+                if (value == this.ContainerFullScreen)
+                {
+                    //
+                    // Nothing to do.
+                    //
+                    return;
+                }
+                else if (value)
+                {
+                    Debug.Assert(this.fullScreenContext != null);
+
+                    //
+                    // Enter full-screen.
+                    //
+                    // To provide a true full screen experience, we create a
+                    // new window and temporarily move all controls to this window.
+                    //
+                    // NB. The RDP ActiveX has some quirk where the connection bar
+                    // disappears when you go full-screen a second time and the
+                    // hosting window is different from the first time.
+                    // By using a single/static window and keeping it around
+                    // after first use, we ensure that the form is always the
+                    // same, thus circumventing the quirk.
+                    //
+                    if (fullScreenForm == null)
+                    {
+                        //
+                        // First time to go full screen, create the
+                        // full-screen window.
+                        //
+                        fullScreenForm = new Form()
+                        {
+                            Icon = this.parentForm.Icon,
+                            FormBorderStyle = FormBorderStyle.None,
+                            StartPosition = FormStartPosition.Manual,
+                            TopMost = true,
+                            ShowInTaskbar = false
+                        };
+                    }
+
+                    //
+                    // Use current screen bounds if none specified.
+                    //
+                    fullScreenForm.Bounds = 
+                        this.fullScreenContext.Bounds ?? Screen.FromControl(this).Bounds;
+
+                    MoveControls(this, fullScreenForm);
+
+                    //
+                    // Set the parent to the window we want to bring to the front
+                    // when the user clicks minimize on the conection bar.
+                    //
+                    fullScreenForm.Show(this.fullScreenContext.Parent);
+
+                    //
+                    // Resize to fit new form.
+                    //
+                    DangerousResizeClient(fullScreenForm.Size);
+                }
+                else
+                {
+                    //
+                    // Return from full-screen.
+                    //
+
+                    MoveControls(fullScreenForm, this);
+
+                    //
+                    // Only hide the window, we might need it again.
+                    //
+                    fullScreenForm.Hide();
+
+                    //
+                    // Resize back to original size.
+                    //
+                    this.deferResize.Invoke();
+
+                    this.fullScreenContext = null;
+                    Debug.Assert(!this.ContainerFullScreen);
+                }
+            }
+        }
+
+
         public bool CanEnterFullScreen
         {
             get => this.State == ConnectionState.LoggedOn;
         }
 
-        public void EnterFullScreen()
+        /// <summary>
+        /// Enter full screen.
+        /// </summary>
+        /// <param name="parentWindow">Outmost window</param>
+        /// <param name="customBounds">Custom bounds for multi-screen full-screen</param>
+        /// <returns></returns>
+        public bool TryEnterFullScreen(
+            IWin32Window parentWindow,
+            Rectangle? customBounds)
         {
             if (!this.CanEnterFullScreen)
             {
-                return;
+                return false;
             }
 
-            //
-            // In container-handled mode, setting FullScreen to true..
-            //
-            // - calls the OnRequestGoFullScreen event,
-            // - shows the connection bar (if enabled)
-            // - changes hotkeys
-            //
-            // However, it does not resize the control. We need to do this
-            // ourselves.
-            //
-            Debug.Assert(this.clientAdvancedSettings.ContainerHandledFullScreen == 1);
-            
+            this.fullScreenContext = new FullScreenContext(
+                parentWindow,
+                customBounds);
 
             this.client.FullScreenTitle = this.ConnectionBarText;
             this.client.FullScreen = true;
+
+            return true;
         }
 
         //---------------------------------------------------------------------
