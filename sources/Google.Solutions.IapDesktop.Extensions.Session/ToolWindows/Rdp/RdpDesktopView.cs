@@ -242,6 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 nonScriptable.PromptForCredentials = false;
                 nonScriptable.NegotiateSecurityLayer = true;
 
+
                 switch (this.viewModel.Parameters.AuthenticationLevel)
                 {
                     case RdpAuthenticationLevel.NoServerAuthentication:

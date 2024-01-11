@@ -28,6 +28,7 @@ using System.Text;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
+    //TODO: Move to Controls namespace
     [Serializable]
     public class RdpException : ApplicationException
     {
@@ -212,6 +213,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         public bool IsTimeout =>
             this.DisconnectReason == 3 ||
             this.DisconnectReason == 264;
+
+        public bool IsUserDisconnect =>
+            this.DisconnectReason == 2;
 
         public bool IsIgnorable =>
             this.DisconnectReason <= 3 ||

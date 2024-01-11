@@ -5,6 +5,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     
     <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.1.1" />
