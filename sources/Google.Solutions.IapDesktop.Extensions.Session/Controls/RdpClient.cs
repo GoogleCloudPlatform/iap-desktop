@@ -974,6 +974,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             Debug.Assert(source.Controls.Count == 0);
         }
 
+        /// <summary>
+        /// Gets or sets full-scren mode for the containing window.
+        /// 
+        /// This property should only be changes from within RDP
+        /// callbacks.
+        /// </summary>
         public bool ContainerFullScreen
         {
             get => fullScreenForm != null && fullScreenForm.Visible;
@@ -1063,22 +1069,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        /// <summary>
+        /// Check if the client is currently in full-screen mode.
+        /// </summary>
         public bool IsFullScreen
         {
             get => this.client.FullScreen;
         }
 
+        /// <summary>
+        /// Check if the current state is suitable for entering
+        /// full-screen mode.
+        /// </summary>
         public bool CanEnterFullScreen
         {
             get => this.State == ConnectionState.LoggedOn;
         }
 
         /// <summary>
-        /// Enter full screen.
+        /// Enter full screen mode.
         /// </summary>
-        /// <param name="parentWindow">Outmost window</param>
-        /// <param name="customBounds">Custom bounds for multi-screen full-screen</param>
-        /// <returns></returns>
         public bool TryEnterFullScreen(Rectangle? customBounds)
         {
             if (this.MainWindow == null)
@@ -1099,6 +1109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             return true;
         }
 
+        /// <summary>
+        /// Leave full-screen mode.
+        /// </summary>
         public bool TryLeaveFullScreen()
         {
             if (!this.IsFullScreen)
@@ -1118,6 +1131,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         public event EventHandler<ExceptionEventArgs> ConnectionFailed;
         internal event EventHandler AuthenticationWarningDisplayed;
 
+        private void ExpectState(ConnectionState expectedState)
+        {
+            if (this.State != expectedState)
+            {
+                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
+            }
+        }
+
+        /// <summary>
+        /// Current state of the connection.
+        /// </summary>
         [Browsable(true)]
         public ConnectionState State
         {
@@ -1133,19 +1157,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-        private void ExpectState(ConnectionState expectedState)
-        {
-            if (this.State != expectedState)
-            {
-                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
-            }
-        }
-
         public enum ConnectionState
         {
+            /// <summary>
+            /// Client not connected yet or an existing connection has 
+            /// been lost.
+            /// </summary>
             NotConnected,
+
+            /// <summary>
+            /// Client is in the process of connecting.
+            /// </summary>
             Connecting,
+
+            /// <summary>
+            /// Client connected, but user log on hasn't completed yet.
+            /// </summary>
             Connected,
+
+            /// <summary>
+            /// User logged on, session is ready to use.
+            /// </summary>
             LoggedOn,
         }
 

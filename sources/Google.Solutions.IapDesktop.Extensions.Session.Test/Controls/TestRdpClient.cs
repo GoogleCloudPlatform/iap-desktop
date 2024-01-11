@@ -80,6 +80,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
+        public async Task MinimizeAndRestoreFullScreenWindow()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Show();
+
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                //
+                // Enter full-screen.
+                //
+                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.IsTrue(window.Client.CanEnterFullScreen);
+                Assert.IsTrue(window.Client.TryEnterFullScreen(null));
+                Assert.IsTrue(window.Client.IsFullScreen);
+
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                //
+                // Minimize.
+                //
+                window.WindowState = FormWindowState.Minimized;
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                //
+                // Restore.
+                //
+                window.WindowState = FormWindowState.Normal;
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                //
+                // Disonnect.
+                //
+                window.Close();
+            }
+        }
+
+        [WindowsFormsTest]
         public async Task EnterAndLeaveFullscreen()
         {
             using (var window = CreateWindow())
