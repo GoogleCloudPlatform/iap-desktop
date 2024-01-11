@@ -242,7 +242,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 nonScriptable.PromptForCredentials = false;
                 nonScriptable.NegotiateSecurityLayer = true;
 
-                //TODO: port everything below!
 
                 switch (this.viewModel.Parameters.AuthenticationLevel)
                 {

@@ -16,14 +16,18 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     public class RdpClient : UserControl
     {
+        private const string WebAuthnPlugin = "webauthn.dll";
+
         private readonly Google.Solutions.Tsc.MsRdpClient client;
         private readonly IMsRdpClientNonScriptable5 clientNonScriptable;
         private readonly IMsRdpClientAdvancedSettings6 clientAdvancedSettings;
+        private readonly IMsRdpClientSecuredSettings clientSecuredSettings;
 
         private ConnectionState state = ConnectionState.NotConnected;
 
@@ -43,8 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             ((System.ComponentModel.ISupportInitialize)(this.client)).BeginInit();
             this.SuspendLayout();
 
-            // this.client.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("client.OcxState")));
-
+            
+            //
+            // Hook up events.
+            //
             this.client.OnConnecting += new System.EventHandler(this.OnConnecting);
             this.client.OnConnected += new System.EventHandler(this.OnConnected);
             this.client.OnLoginComplete += new System.EventHandler(this.OnLoginComplete);
@@ -65,7 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.Controls.Add(this.client);
             ((System.ComponentModel.ISupportInitialize)(this.client)).EndInit();
 
-
+            //
+            // Set basic configuration.
+            //
+            this.clientSecuredSettings = this.client.SecuredSettings2;
             this.clientNonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
 
             this.clientNonScriptable.AllowCredentialSaving = false;
@@ -74,6 +83,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             
             this.clientAdvancedSettings = this.client.AdvancedSettings7;
             this.clientAdvancedSettings.EnableCredSspSupport = true;
+            this.clientAdvancedSettings.keepAliveInterval = 60000;
+            this.clientAdvancedSettings.PerformanceFlags = 0; // Enable all features.
+            this.clientAdvancedSettings.EnableAutoReconnect = true;
+            this.clientAdvancedSettings.MaxReconnectAttempts = 10;
+            this.clientAdvancedSettings.EnableWindowsKey = 1;
+
+            //
+            // Bitmap persistence consumes vast amounts of memory, so keep
+            // it disabled.
+            //
+            this.clientAdvancedSettings.BitmapPersistence = 0;
+
+            //
+            // Trigger OnRequestGoFullScreen event.
+            //
+            this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
+
+            //
+            // As a user control, we don't get a FormClosing event,
+            // so attach to the parent form.
+            //
+            bool formClosingRegistered = false;
+            this.VisibleChanged += (_, __) =>
+            {
+                if (!formClosingRegistered && FindForm() is Form form)
+                {
+                    form.FormClosing += OnFormClosing;
+                    formClosingRegistered = true;
+                }
+            };
         }
 
         protected override void Dispose(bool disposing)
@@ -92,16 +131,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // Do not resize immediately since there might be another resize
             // event coming in a few milliseconds. 
             //
-
             this.deferResize.Invoke();
         }
 
+        protected void OnFormClosing(object sender, FormClosingEventArgs args)
+        {
+            if (this.State == ConnectionState.Connecting)
+            {
+                //
+                // Veto this event as it might cause the ActiveX to crash.
+                //
+                ApplicationTraceSource.Log.TraceVerbose(
+                    "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
+
+                args.Cancel = true;
+                return;
+            }
+            else if (this.State == ConnectionState.Connected)
+            {
+                try
+                {
+                    ApplicationTraceSource.Log.TraceVerbose(
+                        "RemoteDesktopPane: Disconnecting because form is closing");
+
+                    //
+                    // NB. This does not trigger an OnDisconnected event.
+                    //
+                    this.client.Disconnect();
+                    this.State = ConnectionState.NotConnected;
+                }
+                catch (Exception e)
+                {
+                    ApplicationTraceSource.Log.TraceVerbose(
+                        "RemoteDesktopPane: Disconnecting failed");
+
+                    this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
-        // Resiying.
+        // Resizing.
         //---------------------------------------------------------------------
 
         private void PerformDeferredResize(DeferredCallback cb)
         {
+            // TODO: check IsFullscreenMinimized
+
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (this.client.Size == this.Size)
@@ -349,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         //---------------------------------------------------------------------
-        // Publics.
+        // Connection properties.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -428,7 +504,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         /// <summary>
-        /// NetworkLevelAuthentication (CredSSP).
+        /// Enable Network Level Authentication (CredSSP).
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -450,11 +526,338 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        /// <summary>
+        /// Server authentication level.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public uint ServerAuthenticationLevel
+        {
+            get => this.clientAdvancedSettings.AuthenticationLevel;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.AuthenticationLevel = value;
+            }
+        }
+
+        /// <summary>
+        /// Show a credential prompt if invalid credentials were passed.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableCredentialPrompt
+        {
+            get => this.clientNonScriptable.AllowPromptingForCredentials;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientNonScriptable.AllowPromptingForCredentials = value;
+            }
+        }
+
+        /// <summary>
+        /// Connection Timeout, including time allowed to enter user credentials.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TimeSpan ConnectionTimeout
+        {
+            get => TimeSpan.FromSeconds(this.clientAdvancedSettings.singleConnectionTimeout);
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+
+                //
+                // Apply timeouts. Note that the control might take
+                // about twice the configured timeout before sending a 
+                // OnDisconnected event.
+                //
+                this.clientAdvancedSettings.singleConnectionTimeout = (int)value.TotalSeconds;
+                this.clientAdvancedSettings.overallConnectionTimeout = (int)value.TotalSeconds;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Connection Bar properties.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Display the (blue) connection bar at the top.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableConnectionBar
+        {
+            get => this.clientAdvancedSettings.DisplayConnectionBar;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.DisplayConnectionBar = value;
+            }
+        }
+
+        /// <summary>
+        /// Display a minimize button in the (blue) connection bar at the top.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableConnectionBarMinimizeButton
+        {
+            get => this.clientAdvancedSettings.ConnectionBarShowMinimizeButton;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.ConnectionBarShowMinimizeButton = value;
+            }
+        }
+
+        /// <summary>
+        /// Pin the (blue) connection bar at the top.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableConnectionBarPin
+        {
+            get => this.clientAdvancedSettings.PinConnectionBar;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.PinConnectionBar = value;
+            }
+        }
+
+        /// <summary>
+        /// Text to show in connection bar at the top.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string ConnectionBarText
+        {
+            get => this.clientNonScriptable.ConnectionBarText;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientNonScriptable.ConnectionBarText = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Device properties.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Redirect the clipboard.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableClipboardRedirection
+        {
+            get => this.clientAdvancedSettings.RedirectClipboard;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.RedirectClipboard = value;
+            }
+        }
+
+        /// <summary>
+        /// Redirect local printers.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnablePrinterRedirection
+        {
+            get => this.clientAdvancedSettings.RedirectPrinters;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.RedirectPrinters = value;
+            }
+        }
+
+        /// <summary>
+        /// Redirect local smart cards.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableSmartCardRedirection
+        {
+            get => this.clientAdvancedSettings.RedirectSmartCards;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.RedirectSmartCards = value;
+            }
+        }
+
+        /// <summary>
+        /// Redirect local drives.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableDriveRedirection
+        {
+            get => this.clientAdvancedSettings.RedirectDrives;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.RedirectDrives = value;
+            }
+        }
+
+        /// <summary>
+        /// Redirect local devices.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableDeviceRedirection
+        {
+            get => this.clientAdvancedSettings.RedirectDevices;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.RedirectDevices = value;
+            }
+        }
+
+        /// <summary>
+        /// Redirect local ports.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnablePortRedirection
+        {
+            get => this.clientAdvancedSettings.RedirectPorts;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.RedirectPorts = value;
+            }
+        }
+
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableWebAuthnRedirection { get; set; }
+
+        //---------------------------------------------------------------------
+        // Hotkey properties.
+        //---------------------------------------------------------------------
+
+        public Keys FocusHotKey
+        {
+            //
+            // NB. The Ctrl+Alt modifiers are implied by the HotKeyFocusRelease properties.
+            //
+            get => (Keys)this.clientAdvancedSettings.HotKeyFocusReleaseLeft | Keys.Control | Keys.Alt;
+            set
+            {
+                Debug.Assert(value.HasFlag(Keys.Control));
+                Debug.Assert(value.HasFlag(Keys.Alt));
+
+                var keyWithoutModifiers = (int)(value & ~(Keys.Control | Keys.Alt));
+
+                this.clientAdvancedSettings.HotKeyFocusReleaseLeft = keyWithoutModifiers;
+                this.clientAdvancedSettings.HotKeyFocusReleaseRight = keyWithoutModifiers;
+            }
+        }
+
+        public Keys LeaveFullScreenHotKey
+        {
+            //
+            // NB. The Ctrl+Alt modifiers are implied by the HotKeyFullScreen properties.
+            //
+            get => (Keys)this.clientAdvancedSettings.HotKeyFullScreen | Keys.Control | Keys.Alt;
+            set
+            {
+                Debug.Assert(value.HasFlag(Keys.Control));
+                Debug.Assert(value.HasFlag(Keys.Alt));
+
+                var keyWithoutModifiers = (int)(value & ~(Keys.Control | Keys.Alt));
+
+                this.clientAdvancedSettings.HotKeyFullScreen = keyWithoutModifiers;
+                this.clientAdvancedSettings.HotKeyFullScreen = keyWithoutModifiers;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Sound and color properties.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Control where to play audio:
+        /// 
+        /// 0 - play locally
+        /// 1 - play on server
+        /// 3 - do not play
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int AudioRedirectionMode
+        {
+            get => this.clientSecuredSettings.AudioRedirectionMode;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientSecuredSettings.AudioRedirectionMode = value;
+            }
+        }
+
+        /// <summary>
+        /// Color depth, in bits
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int ColorDepth
+        {
+            get => this.client.ColorDepth;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.client.ColorDepth = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Public methods.
+        //---------------------------------------------------------------------
+
         public void Connect()
         {
             ExpectState(ConnectionState.NotConnected);
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Server));
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Username));
+
+            if (this.EnableWebAuthnRedirection)
+            {
+                //
+                // Load WebAuthn plugin. This requires at least 22H2, both client- and server-side.
+                //
+                // Once the plugin DLL is loaded, WebAuthn redirection is enabled automatically
+                // unless there's a client- or server-side policy that disabled WebAuthn redirection.
+                //
+                // See also:
+                // https://interopevents.blob.core.windows.net/events/2023/RDP%20IO%20Lab/ \
+                // PDF/DavidBelanger_Authentication%20-%20RDP%20IO%20Labs%20March%202023.pdf
+                //
+                var webauthnPluginPath = Path.Combine(Environment.SystemDirectory, WebAuthnPlugin);
+                if (File.Exists(webauthnPluginPath))
+                {
+                    try
+                    {
+                        this.clientAdvancedSettings.PluginDlls = webauthnPluginPath;
+                        ApplicationTraceSource.Log.TraceInformation(
+                            "Loaded RDP plugin {0}", webauthnPluginPath);
+                    }
+                    catch (Exception e)
+                    {
+                        ApplicationTraceSource.Log.TraceWarning(
+                            "Loading RDP plugin {0} failed: {1}",
+                            webauthnPluginPath,
+                            e.Message);
+                    }
+                }
+            }
 
             this.client.Connect();
             this.State = ConnectionState.Connecting;
