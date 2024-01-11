@@ -56,19 +56,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         {
             Show();
 
+            //
+            // Connect.
+            //
             this.rdpClient.Connect();
-
             await this.rdpClient
                 .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
                 .ConfigureAwait(true);
 
-  //          await Task.Delay(200);
-//            Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
+            //
+            // Enter full-screen.
+            //
+            Assert.IsFalse(this.rdpClient.IsFullScreen);
+            Assert.IsTrue(this.rdpClient.CanEnterFullScreen);
+            Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
+            Assert.IsTrue(this.rdpClient.IsFullScreen);
 
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
-                .ConfigureAwait(true);
+            //
+            // Leave full-screen.
+            //
+            Assert.IsTrue(this.rdpClient.TryLeaveFullScreen());
+            Assert.IsFalse(this.rdpClient.IsFullScreen);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            //
+            // Enter full-screen again.
+            //
+            Assert.IsFalse(this.rdpClient.IsFullScreen);
+            Assert.IsTrue(this.rdpClient.CanEnterFullScreen);
+            Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
+            Assert.IsTrue(this.rdpClient.IsFullScreen);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            //
+            // Leave full-screen again.
+            //
+            Assert.IsTrue(this.rdpClient.TryLeaveFullScreen());
+            Assert.IsFalse(this.rdpClient.IsFullScreen);
+
+            //
+            // Disonnect.
+            //
+            Close();
         }
     }
 }

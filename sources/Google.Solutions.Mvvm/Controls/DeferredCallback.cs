@@ -20,6 +20,8 @@
 //
 
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
@@ -28,10 +30,13 @@ namespace Google.Solutions.Mvvm.Controls
     /// Callback that is invoked after a delay has elapsed.
     /// If invoked multiple times during the delay, the callback
     /// is only executed once.
+    /// 
+    /// Note that this class is not thread-safe.
     /// </summary>
     public sealed class DeferredCallback : IDisposable
     {
         private readonly Timer timer;
+        private TaskCompletionSource<object?> nextCompletion;
 
         public DeferredCallback(
             Action<DeferredCallback> callback,
@@ -42,11 +47,17 @@ namespace Google.Solutions.Mvvm.Controls
                 Interval = delay.Milliseconds
             };
 
+            this.nextCompletion = new TaskCompletionSource<object?>();
+
             this.timer.Tick += (_, __) =>
             {
                 this.timer.Enabled = false;
                 callback(this);
+
+                this.nextCompletion.SetResult(null);
+                this.nextCompletion = new TaskCompletionSource<object?>();
             };
+
         }
 
         public void Invoke()
@@ -66,6 +77,21 @@ namespace Google.Solutions.Mvvm.Controls
         public bool IsCallbackPending
         {
             get => this.timer.Enabled;
+        }
+
+        /// <summary>
+        /// Wait for deferred callback to complete. For testing.
+        /// </summary>
+        public Task WaitForCallbackCompletedAsync() // TODO: test
+        {
+            if (this.IsCallbackPending)
+            {
+                return this.nextCompletion.Task;
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 }

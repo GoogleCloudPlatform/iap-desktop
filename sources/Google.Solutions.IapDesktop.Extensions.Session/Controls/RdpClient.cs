@@ -929,6 +929,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             this.State = ConnectionState.Connecting;
             this.client.FullScreen = false;
+            this.client.Size = this.Size;
             this.client.DesktopHeight = this.Size.Height;
             this.client.DesktopWidth = this.Size.Width;
 
@@ -1060,6 +1061,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        public bool IsFullScreen
+        {
+            get => this.client.FullScreen;
+        }
 
         public bool CanEnterFullScreen
         {
@@ -1089,6 +1094,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.client.FullScreenTitle = this.ConnectionBarText;
             this.client.FullScreen = true;
 
+            return true;
+        }
+
+        public bool TryLeaveFullScreen()
+        {
+            if (!this.IsFullScreen)
+            {
+                return false;
+            }
+
+            this.client.FullScreen = false;
             return true;
         }
 
@@ -1131,13 +1147,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             LoggedOn,
         }
 
-        internal Task AwaitStateAsync(ConnectionState state)
+        internal async Task AwaitStateAsync(ConnectionState state) // TODO: add timeout
         {
             Debug.Assert(!this.InvokeRequired);
 
             if (this.State == state)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             var completionSource = new TaskCompletionSource<ConnectionState>();
@@ -1153,7 +1169,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             };
 
             this.StateChanged += callback;
-            return completionSource.Task;
+            
+            await completionSource
+                .Task
+                .ConfigureAwait(true);
+
+            //
+            // There might be a resize pending.
+            //
+            await this.deferResize
+                .WaitForCallbackCompletedAsync()
+                .ConfigureAwait(true);
         }
     }
 }
