@@ -1,5 +1,6 @@
 ﻿using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
@@ -46,6 +47,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         public void ShowTestUi()
         {
             ShowDialog();
+        }
+
+
+        [InteractiveTest]
+        [Test]
+        public async Task EnterAndLeaveFullscreen()
+        {
+            Show();
+
+            this.rdpClient.Connect();
+
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
+
+  //          await Task.Delay(200);
+//            Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
+
+
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                .ConfigureAwait(true);
         }
     }
 }

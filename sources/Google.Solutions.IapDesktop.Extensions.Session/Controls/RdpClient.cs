@@ -18,6 +18,7 @@ using Google.Solutions.Common.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -177,8 +178,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void PerformDeferredResize(DeferredCallback cb)
         {
-            // TODO: check IsFullscreenMinimized
-
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (this.client.Size == this.Size)
@@ -191,6 +190,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 {
                     //
                     // Form is closing, better not touch anything.
+                    //
+                }
+                else if (fullScreenForm != null && fullScreenForm.WindowState == FormWindowState.Minimized)
+                {
+                    //
+                    // During a restore, we might receive a request to resize
+                    // to normal size. We must ignore that.
                     //
                 }
                 else if (this.State == ConnectionState.NotConnected)
@@ -405,8 +411,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
+            Debug.Assert(this.MainWindow != null);
 
-            //TODO: port rest
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                //
+                // Release focus and move it to the main window. This ensures
+                // that any other shortcuts start applying again.
+                //
+                this.MainWindow.Focus();
+            }
         }
 
         private void OnRemoteDesktopSizeChange(
@@ -1092,6 +1106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             get => this.state;
             private set
             {
+                Debug.Assert(!this.InvokeRequired);
                 if (this.state != value)
                 {
                     this.state = value;
@@ -1114,6 +1129,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             Connecting,
             Connected,
             LoggedOn,
+        }
+
+        internal Task AwaitStateAsync(ConnectionState state)
+        {
+            Debug.Assert(!this.InvokeRequired);
+
+            if (this.State == state)
+            {
+                return Task.CompletedTask;
+            }
+
+            var completionSource = new TaskCompletionSource<ConnectionState>();
+
+            EventHandler callback = null;
+            callback = (object sender, EventArgs args) =>
+            {
+                if (this.State == state)
+                {
+                    this.StateChanged -= callback;
+                    completionSource.SetResult(this.State);
+                }
+            };
+
+            this.StateChanged += callback;
+            return completionSource.Task;
         }
     }
 }
