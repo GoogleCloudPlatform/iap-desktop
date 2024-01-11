@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -39,12 +38,12 @@ namespace Google.Solutions.Mvvm.Controls
         private TaskCompletionSource<object?> nextCompletion;
 
         public DeferredCallback(
-            Action<DeferredCallback> callback,
+            Action<IDeferredCallbackContext> callback,
             TimeSpan delay)
         {
             this.timer = new Timer()
             {
-                Interval = delay.Milliseconds
+                Interval = (int)delay.TotalMilliseconds
             };
 
             this.nextCompletion = new TaskCompletionSource<object?>();
@@ -52,15 +51,34 @@ namespace Google.Solutions.Mvvm.Controls
             this.timer.Tick += (_, __) =>
             {
                 this.timer.Enabled = false;
-                callback(this);
 
-                this.nextCompletion.SetResult(null);
-                this.nextCompletion = new TaskCompletionSource<object?>();
+                var context = new CallbackContext();
+                callback(context);
+
+                if (context.IsDeferralRequested)
+                {
+                    //
+                    // Schedule again.
+                    //
+                    Schedule();
+                }
+                else
+                {
+                    //
+                    // Done, notify waiters.
+                    //
+                    this.nextCompletion.SetResult(null);
+                    this.nextCompletion = new TaskCompletionSource<object?>();
+                }
             };
 
         }
 
-        public void Invoke()
+        /// <summary>
+        /// Schedule a callback. When a callback has been scheduled
+        /// already, the callbacks are coalesced.
+        /// </summary>
+        public void Schedule()
         {
             //
             // Reset the timer.
@@ -69,12 +87,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.timer.Start();
         }
 
-        public void Dispose()
-        {
-            this.timer.Dispose();
-        }
-
-        public bool IsCallbackPending
+        public bool IsPending
         {
             get => this.timer.Enabled;
         }
@@ -82,9 +95,9 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Wait for deferred callback to complete. For testing.
         /// </summary>
-        public Task WaitForCallbackCompletedAsync() // TODO: test
+        public Task WaitForCompletionAsync() // TODO: test
         {
-            if (this.IsCallbackPending)
+            if (this.IsPending)
             {
                 return this.nextCompletion.Task;
             }
@@ -93,5 +106,36 @@ namespace Google.Solutions.Mvvm.Controls
                 return Task.CompletedTask;
             }
         }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.timer.Dispose();
+        }
+
+        //---------------------------------------------------------------------
+        // IDeferredCallbackContext.
+        //---------------------------------------------------------------------
+
+        private class CallbackContext : IDeferredCallbackContext
+        {
+            internal bool IsDeferralRequested { get; private set; } = false;
+
+            public void Defer()
+            {
+                this.IsDeferralRequested = true;
+            }
+        }
+    }
+
+    public interface IDeferredCallbackContext
+    {
+        /// <summary>
+        /// Defer the callback to a later point.
+        /// </summary>
+        void Defer();
     }
 }

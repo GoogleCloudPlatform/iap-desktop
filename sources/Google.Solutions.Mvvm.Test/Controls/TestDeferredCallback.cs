@@ -20,10 +20,11 @@
 //
 
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 using System.Threading;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Test.Controls
 {
@@ -31,34 +32,34 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestDeferredCallback
     {
-        [Test]
-        public void MultipleInvocationsAreCoalesced()
+        [WindowsFormsTest]
+        public async Task MultipleInvocationsAreCoalesced()
         {
             int invocations = 0;
-            using (var callback = new DeferredCallback(
+            DeferredCallback callback = null;
+            using (callback = new DeferredCallback(
                 cb =>
                 {
-                    Assert.IsFalse(cb.IsCallbackPending);
+                    Assert.IsFalse(callback.IsPending);
                     invocations++;
                 },
                 TimeSpan.FromMilliseconds(10)))
             {
-                callback.Invoke();
-                callback.Invoke();
-                callback.Invoke();
+                callback.Schedule();
+                callback.Schedule();
+                callback.Schedule();
 
-                for (int i = 0; callback.IsCallbackPending && i < 50; i++)
-                {
-                    Thread.Sleep(1);
-                    Application.DoEvents();
-                }
+                var ctx = SynchronizationContext.Current;
+                await callback
+                    .WaitForCompletionAsync()
+                    .ConfigureAwait(false);
 
                 Assert.AreEqual(1, invocations);
             }
         }
 
-        [Test]
-        public void CallbackCanDeferItself()
+        [WindowsFormsTest]
+        public async Task WhenCallbackDefersItself_ThenCallbackIsInvokedAgain()
         {
             int invocations = 0;
             using (var callback = new DeferredCallback(
@@ -68,23 +69,28 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                     if (invocations < 2)
                     {
-                        cb.Invoke();
+                        cb.Defer();
                     }
                 },
                 TimeSpan.FromMilliseconds(10)))
             {
-                callback.Invoke();
-                callback.Invoke();
-                callback.Invoke();
-
-                for (int i = 0; callback.IsCallbackPending && i < 50; i++)
-                {
-                    Thread.Sleep(1);
-                    Application.DoEvents();
-                }
+                callback.Schedule();
+                
+                await callback
+                    .WaitForCompletionAsync()
+                    .ConfigureAwait(true);
 
                 Assert.AreEqual(2, invocations);
             }
+        }
+
+        [WindowsFormsTest]
+        public async Task WhenNoCallbackScheduled_ThenWaitForCompletionReturns()
+        {
+            var callback = new DeferredCallback(_ => { }, TimeSpan.FromSeconds(1));
+            await callback
+                .WaitForCompletionAsync()
+                .ConfigureAwait(true);
         }
     }
 }

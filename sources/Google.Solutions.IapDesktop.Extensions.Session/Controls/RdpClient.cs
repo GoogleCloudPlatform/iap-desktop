@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // Do not resize immediately since there might be another resize
             // event coming in a few milliseconds. 
             //
-            this.deferResize.Invoke();
+            this.deferResize.Schedule();
         }
 
         protected void OnFormClosing(object sender, FormClosingEventArgs args)
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Resizing.
         //---------------------------------------------------------------------
 
-        private void PerformDeferredResize(DeferredCallback cb)
+        private void PerformDeferredResize(IDeferredCallbackContext context)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     // It's not size to resize now, but it will
                     // be in a bit. So try again later.
                     //
-                    cb.Invoke();
+                    context.Defer();
                 }
             }
         }
@@ -1055,7 +1055,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                     // Resize back to original size.
                     //
-                    this.deferResize.Invoke();
+                    this.deferResize.Schedule();
 
                     this.fullScreenContext = null;
                     Debug.Assert(!this.ContainerFullScreen);
@@ -1180,7 +1180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // There might be a resize pending.
             //
             await this.deferResize
-                .WaitForCallbackCompletedAsync()
+                .WaitForCompletionAsync()
                 .ConfigureAwait(true);
         }
     }
