@@ -1,10 +1,12 @@
 ﻿using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -33,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.rdpClient.Username = ".\\admin";
             this.rdpClient.Password = "admin";
             this.rdpClient.Server = Dns.GetHostEntry("rdptesthost").AddressList.First().ToString();
+
+            ApplicationTraceSource.Log.Listeners.Add(new DefaultTraceListener());
         }
 
         [InteractiveTest]

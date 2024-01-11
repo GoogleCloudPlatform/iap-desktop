@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.fullScreenButton = new System.Windows.Forms.Button();
             this.connectButton = new System.Windows.Forms.Button();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Session.Controls.RdpClient();
-            this.fullScreenButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -58,6 +58,16 @@
             this.splitContainer.SplitterDistance = 300;
             this.splitContainer.TabIndex = 0;
             // 
+            // fullScreenButton
+            // 
+            this.fullScreenButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fullScreenButton.Location = new System.Drawing.Point(94, 649);
+            this.fullScreenButton.Name = "fullScreenButton";
+            this.fullScreenButton.Size = new System.Drawing.Size(75, 23);
+            this.fullScreenButton.TabIndex = 2;
+            this.fullScreenButton.Text = "Fullscreen";
+            this.fullScreenButton.UseVisualStyleBackColor = true;
+            // 
             // connectButton
             // 
             this.connectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -81,19 +91,14 @@
             // rdpClient
             // 
             this.rdpClient.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rdpClient.FocusHotKey = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.Left)));
+            this.rdpClient.LeaveFullScreenHotKey = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.Cancel)));
             this.rdpClient.Location = new System.Drawing.Point(0, 0);
             this.rdpClient.Name = "rdpClient";
             this.rdpClient.Size = new System.Drawing.Size(846, 684);
             this.rdpClient.TabIndex = 0;
-            // 
-            // fullScreenButton
-            // 
-            this.fullScreenButton.Location = new System.Drawing.Point(94, 649);
-            this.fullScreenButton.Name = "fullScreenButton";
-            this.fullScreenButton.Size = new System.Drawing.Size(75, 23);
-            this.fullScreenButton.TabIndex = 2;
-            this.fullScreenButton.Text = "Fullscreen";
-            this.fullScreenButton.UseVisualStyleBackColor = true;
             // 
             // TestRdpClient
             // 

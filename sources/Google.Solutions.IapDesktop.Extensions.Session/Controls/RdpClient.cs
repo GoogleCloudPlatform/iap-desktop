@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
-            this.State = ConnectionState.ConnectionLost;
+            this.State = ConnectionState.NotConnected;
             this.ConnectionFailed?.Invoke(
                 this,
                 new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             var e = new RdpLogonException(args.lError);
             if (!e.IsIgnorable)
             {
-                this.State = ConnectionState.ConnectionLost;
+                this.State = ConnectionState.NotConnected;
                 this.ConnectionFailed?.Invoke(
                     this,
                     new ExceptionEventArgs(e));
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
-            this.State = ConnectionState.ConnectionLost;
+            this.State = ConnectionState.NotConnected;
 
 
             var e = new RdpDisconnectedException(
@@ -372,6 +372,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.State ==ConnectionState.Connecting);
             //TODO: port rest
+
+
+            this.State = ConnectionState.LoggedOn;
         }
 
         private void OnFocusReleased(
@@ -899,7 +902,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             Connecting,
             Connected,
             LoggedOn,
-            ConnectionLost
         }
     }
 }
