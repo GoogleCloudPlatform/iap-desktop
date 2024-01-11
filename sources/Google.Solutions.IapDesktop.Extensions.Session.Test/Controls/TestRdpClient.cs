@@ -1,14 +1,9 @@
-﻿using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+﻿using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -20,138 +15,133 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public partial class TestRdpClient : Form
+    public class TestRdpClient
     {
-        public TestRdpClient()
+        private RdpDiagnosticsWindow CreateWindow()
         {
-            InitializeComponent();
-            this.propertyGrid.SelectedObject = this.rdpClient;
-            this.connectButton.Click += (_, __) => this.rdpClient.Connect();
-            this.fullScreenButton.Click += (_, __) => this.rdpClient.TryEnterFullScreen(null);
-
-            this.rdpClient.StateChanged += (_, __) 
-                => this.Text = this.rdpClient.State.ToString();
-            this.rdpClient.ConnectionFailed += (_, args) 
-                => MessageBox.Show(this, args.Exception.FullMessage());
-
-            this.rdpClient.MainWindow = this;
-            this.rdpClient.Username = ".\\admin";
-            this.rdpClient.Password = "admin";
-            this.rdpClient.Server = Dns.GetHostEntry("rdptesthost").AddressList.First().ToString();
-
-            ApplicationTraceSource.Log.Listeners.Add(new DefaultTraceListener());
+            var window = new RdpDiagnosticsWindow();
+            window.Client.MainWindow = window;
+            window.Client.Username = ".\\admin";
+            window.Client.Password = "admin";
+            window.Client.Server = Dns.GetHostEntry("rdptesthost").AddressList.First().ToString();
+            return window;
         }
-
-        //TODO: Move tests to separate class and reinitialze form for each test
 
         [InteractiveTest]
         [Test]
         public void ShowTestUi()
         {
-            ShowDialog();
+            using (var window = CreateWindow())
+            {
+                window.ShowDialog();
+            }
         }
 
-        [InteractiveTest]
-        [Test]
+        [WindowsFormsTest]
         public async Task ResizeWindow()
         {
-            Show();
+            using (var window = CreateWindow())
+            {
+                window.Show();
 
-            //
-            // Connect.
-            //
-            this.rdpClient.Connect();
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
 
-            //
-            // Maximize.
-            //
-            this.WindowState = FormWindowState.Maximized;
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
+                //
+                // Maximize.
+                //
+                window.WindowState = FormWindowState.Maximized;
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+                await Task.Delay(TimeSpan.FromSeconds(1));
 
-            //
-            // Restore.
-            //
-            this.WindowState = FormWindowState.Normal;
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
+                //
+                // Restore.
+                //
+                window.WindowState = FormWindowState.Normal;
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+                await Task.Delay(TimeSpan.FromSeconds(1));
 
-            //
-            // Disonnect.
-            //
-            Close();
+                //
+                // Disonnect.
+                //
+                window.Close();
+            }
         }
 
-        [InteractiveTest]
-        [Test]
+        [WindowsFormsTest]
         public async Task EnterAndLeaveFullscreen()
         {
-            Show();
+            using (var window = CreateWindow())
+            {
+                window.Show();
 
-            //
-            // Connect.
-            //
-            this.rdpClient.Connect();
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
 
-            //
-            // Enter full-screen.
-            //
-            Assert.IsFalse(this.rdpClient.IsFullScreen);
-            Assert.IsTrue(this.rdpClient.CanEnterFullScreen);
-            Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
-            Assert.IsTrue(this.rdpClient.IsFullScreen);
+                //
+                // Enter full-screen.
+                //
+                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.IsTrue(window.Client.CanEnterFullScreen);
+                Assert.IsTrue(window.Client.TryEnterFullScreen(null));
+                Assert.IsTrue(window.Client.IsFullScreen);
 
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
-            await Task.Delay(TimeSpan.FromSeconds(1));
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+                await Task.Delay(TimeSpan.FromSeconds(1));
 
-            //
-            // Leave full-screen.
-            //
-            Assert.IsTrue(this.rdpClient.TryLeaveFullScreen());
-            Assert.IsFalse(this.rdpClient.IsFullScreen);
+                //
+                // Leave full-screen.
+                //
+                Assert.IsTrue(window.Client.TryLeaveFullScreen());
+                Assert.IsFalse(window.Client.IsFullScreen);
 
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
-            await Task.Delay(TimeSpan.FromSeconds(1));
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+                await Task.Delay(TimeSpan.FromSeconds(1));
 
-            //
-            // Enter full-screen again.
-            //
-            Assert.IsFalse(this.rdpClient.IsFullScreen);
-            Assert.IsTrue(this.rdpClient.CanEnterFullScreen);
-            Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
-            Assert.IsTrue(this.rdpClient.IsFullScreen);
+                //
+                // Enter full-screen again.
+                //
+                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.IsTrue(window.Client.CanEnterFullScreen);
+                Assert.IsTrue(window.Client.TryEnterFullScreen(null));
+                Assert.IsTrue(window.Client.IsFullScreen);
 
-            await this.rdpClient
-                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
-                .ConfigureAwait(true);
-            await Task.Delay(TimeSpan.FromSeconds(1));
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+                await Task.Delay(TimeSpan.FromSeconds(1));
 
-            //
-            // Leave full-screen again.
-            //
-            Assert.IsTrue(this.rdpClient.TryLeaveFullScreen());
-            Assert.IsFalse(this.rdpClient.IsFullScreen);
+                //
+                // Leave full-screen again.
+                //
+                Assert.IsTrue(window.Client.TryLeaveFullScreen());
+                Assert.IsFalse(window.Client.IsFullScreen);
 
-            //
-            // Disonnect.
-            //
-            Close();
+                //
+                // Disonnect.
+                //
+                window.Close();
+            }
         }
     }
 }

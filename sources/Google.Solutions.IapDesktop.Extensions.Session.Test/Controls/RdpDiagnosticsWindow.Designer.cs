@@ -1,6 +1,6 @@
 ﻿namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
-    partial class TestRdpClient
+    partial class RdpDiagnosticsWindow
     {
         /// <summary>
         /// Required designer variable.

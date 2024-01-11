@@ -7,6 +7,10 @@ using NUnit.Framework.Internal.Commands;
 
 namespace Google.Solutions.Testing.Apis
 {
+    /// <summary>
+    /// Test that requires a WindowsFormsSynchronizationContext because
+    /// it might be using await-calls that require messages to be pumped.
+    /// </summary>
     public sealed class WindowsFormsTestAttribute : TestAttribute, IApplyToTest, IWrapSetUpTearDown
     {
         public new void ApplyToTest(NUnit.Framework.Internal.Test test)
@@ -22,19 +26,45 @@ namespace Google.Solutions.Testing.Apis
 
         private sealed class WindowsFormsTestCommand : DelegatingTestCommand
         {
-            public WindowsFormsTestCommand(TestCommand innerCommand) : base(innerCommand)
+            public WindowsFormsTestCommand(TestCommand innerCommand)
+                : base(innerCommand)
             {
             }
 
             public override TestResult Execute(TestExecutionContext context)
             {
-                if (!(SynchronizationContext.Current is WindowsFormsSynchronizationContext))
+                var originalContext = SynchronizationContext.Current;
+                if (originalContext is WindowsFormsSynchronizationContext)
                 {
+                    //
+                    // Context is ok already.
+                    //
+
                     SynchronizationContext.SetSynchronizationContext(
                         new WindowsFormsSynchronizationContext());
-                }
 
-                return innerCommand.Execute(context);
+                    return this.innerCommand.Execute(context);
+                }
+                else
+                {
+                    //
+                    // Temporarily swap contexts.
+                    //
+
+                    SynchronizationContext.SetSynchronizationContext(
+                        new WindowsFormsSynchronizationContext());
+
+                    try
+                    {
+                        return this.innerCommand.Execute(context);
+                    }
+                    finally
+                    {
+
+                        SynchronizationContext.SetSynchronizationContext(
+                            originalContext);
+                    }
+                }
             }
         }
     }
