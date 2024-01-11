@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             ((System.ComponentModel.ISupportInitialize)(this.client)).BeginInit();
             this.SuspendLayout();
 
-            
+
             //
             // Hook up events.
             //
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.clientNonScriptable.AllowCredentialSaving = false;
             this.clientNonScriptable.PromptForCredentials = false;
             this.clientNonScriptable.NegotiateSecurityLayer = true;
-            
+
             this.clientAdvancedSettings = this.client.AdvancedSettings7;
             this.clientAdvancedSettings.EnableCredSspSupport = true;
             this.clientAdvancedSettings.keepAliveInterval = 60000;
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.clientAdvancedSettings.BitmapPersistence = 0;
 
             //
-            // Trigger OnRequestGoFullScreen event.
+            // Let us handle full-screen mode ourselves.
             //
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
@@ -319,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private void OnConnecting(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
-            
+
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             { }
         }
@@ -370,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void OnAutoReconnected(object sender, EventArgs e)
         {
-            Debug.Assert(this.State ==ConnectionState.Connecting);
+            Debug.Assert(this.State == ConnectionState.Connecting);
             //TODO: port rest
 
 
@@ -864,6 +864,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             this.client.Connect();
             this.State = ConnectionState.Connecting;
+        }
+
+        public bool CanEnterFullScreen
+        {
+            get => this.State == ConnectionState.LoggedOn;
+        }
+
+        public void EnterFullScreen()
+        {
+            if (!this.CanEnterFullScreen)
+            {
+                return;
+            }
+
+            //
+            // In container-handled mode, setting FullScreen to true..
+            //
+            // - calls the OnRequestGoFullScreen event,
+            // - shows the connection bar (if enabled)
+            // - changes hotkeys
+            //
+            // However, it does not resize the control. We need to do this
+            // ourselves.
+            //
+            Debug.Assert(this.clientAdvancedSettings.ContainerHandledFullScreen == 1);
+            
+
+            this.client.FullScreenTitle = this.ConnectionBarText;
+            this.client.FullScreen = true;
         }
 
         //---------------------------------------------------------------------

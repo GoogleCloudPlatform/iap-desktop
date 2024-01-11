@@ -26,6 +26,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             InitializeComponent();
             this.propertyGrid.SelectedObject = this.rdpClient;
             this.connectButton.Click += (_, __) => this.rdpClient.Connect();
+            this.fullScreenButton.Click += (_, __) => this.rdpClient.EnterFullScreen();
 
             this.rdpClient.StateChanged += (_, __) 
                 => this.Text = this.rdpClient.State.ToString();
