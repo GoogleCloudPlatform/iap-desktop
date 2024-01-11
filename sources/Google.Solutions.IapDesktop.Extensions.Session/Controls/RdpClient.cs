@@ -103,6 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
+            // TODO: Disable UDP.
+
             //
             // As a user control, we don't get a FormClosing event,
             // so attach to the parent form.
@@ -1147,7 +1149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             LoggedOn,
         }
 
-        internal async Task AwaitStateAsync(ConnectionState state) // TODO: add timeout
+        internal async Task AwaitStateAsync(ConnectionState state)
         {
             Debug.Assert(!this.InvokeRequired);
 

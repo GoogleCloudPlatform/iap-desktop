@@ -42,6 +42,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             ApplicationTraceSource.Log.Listeners.Add(new DefaultTraceListener());
         }
 
+        //TODO: Move tests to separate class and reinitialze form for each test
+
         [InteractiveTest]
         [Test]
         public void ShowTestUi()
@@ -49,6 +51,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             ShowDialog();
         }
 
+        [InteractiveTest]
+        [Test]
+        public async Task ResizeWindow()
+        {
+            Show();
+
+            //
+            // Connect.
+            //
+            this.rdpClient.Connect();
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
+
+            //
+            // Maximize.
+            //
+            this.WindowState = FormWindowState.Maximized;
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            //
+            // Restore.
+            //
+            this.WindowState = FormWindowState.Normal;
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            //
+            // Disonnect.
+            //
+            Close();
+        }
 
         [InteractiveTest]
         [Test]
@@ -72,6 +113,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
             Assert.IsTrue(this.rdpClient.IsFullScreen);
 
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
             await Task.Delay(TimeSpan.FromSeconds(1));
 
             //
@@ -80,6 +124,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             Assert.IsTrue(this.rdpClient.TryLeaveFullScreen());
             Assert.IsFalse(this.rdpClient.IsFullScreen);
 
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
             await Task.Delay(TimeSpan.FromSeconds(1));
 
             //
@@ -90,6 +137,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             Assert.IsTrue(this.rdpClient.TryEnterFullScreen(null));
             Assert.IsTrue(this.rdpClient.IsFullScreen);
 
+            await this.rdpClient
+                .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                .ConfigureAwait(true);
             await Task.Delay(TimeSpan.FromSeconds(1));
 
             //
