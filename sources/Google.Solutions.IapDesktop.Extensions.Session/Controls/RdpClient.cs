@@ -1,16 +1,31 @@
-﻿
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
 using AxMSTSCLib;
-using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
-using Google.Solutions.Tsc;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using MSTSCLib;
-using Google.Solutions.Mvvm.Shell;
 using System.ComponentModel;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
@@ -23,6 +38,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
+    /// <summary>
+    /// Wrapper control for the native RDP client that implements
+    /// a smooth full-screen experience and uses a state machine
+    /// to ensure more reliable operation.
+    /// </summary>
     public partial class RdpClient : UserControl
     {
         private const string WebAuthnPlugin = "webauthn.dll";
@@ -119,23 +139,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             };
         }
 
+        //---------------------------------------------------------------------
+        // Basic properties.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Outmost window that can be used to pass the focus to. This
+        /// can be the parent window, but doesn't have to be.
+        /// </summary>
+        public Form MainWindow { get; set; }
+
+        //---------------------------------------------------------------------
+        // Closing & disposing.
+        //---------------------------------------------------------------------
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
             this.client.Dispose();
             this.deferResize.Dispose();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-
-            //
-            // Do not resize immediately since there might be another resize
-            // event coming in a few milliseconds. 
-            //
-            this.deferResize.Schedule();
         }
 
         protected void OnFormClosing(object sender, FormClosingEventArgs args)
@@ -184,6 +207,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         //---------------------------------------------------------------------
         // Resizing.
         //---------------------------------------------------------------------
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            //
+            // Do not resize immediately since there might be another resize
+            // event coming in a few milliseconds. 
+            //
+            this.deferResize.Schedule();
+        }
 
         private void PerformDeferredResize(IDeferredCallbackContext context)
         {
@@ -380,7 +414,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-
         private void OnConnecting(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
@@ -392,6 +425,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private void OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
+
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 this.ServerAuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
@@ -516,17 +550,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         //---------------------------------------------------------------------
-        // Basic properties.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Outmost window that can be used to pass the focus to. This
-        /// can be the parent window, but doesn't have to be.
-        /// </summary>
-        public Form MainWindow { get; set; }
-
-
-        //---------------------------------------------------------------------
         // Public methods.
         //---------------------------------------------------------------------
 
@@ -582,25 +605,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         //---------------------------------------------------------------------
         // Full-screen mode.
         //
-        // In container-handled mode, setting FullScreen to true..
+        // NB. In container-handled mode, setting FullScreen to true..
         //
         // - calls the OnRequestGoFullScreen event,
         // - shows the connection bar (if enabled)
         // - changes hotkeys
         //
         // However, it does not resize the control automatically.
-        //
         //---------------------------------------------------------------------
-
-        private class FullScreenContext
-        {
-            public Rectangle? Bounds { get; }
-
-            public FullScreenContext(Rectangle? bounds)
-            {
-                this.Bounds = bounds;
-            }
-        }
 
         private FullScreenContext fullScreenContext = null;
         private static Form fullScreenForm = null;
@@ -872,6 +884,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             await this.deferResize
                 .WaitForCompletionAsync()
                 .ConfigureAwait(true);
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        private class FullScreenContext
+        {
+            public Rectangle? Bounds { get; }
+
+            public FullScreenContext(Rectangle? bounds)
+            {
+                this.Bounds = bounds;
+            }
         }
 
         public class ConnectionClosedEventArgs : EventArgs
