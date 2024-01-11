@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Testing.Apis.Integration;
+﻿using Google.Solutions.Common.Util;
+using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         {
             InitializeComponent();
             this.propertyGrid.SelectedObject = this.rdpClient;
-            this.connectButton.Click += (_, __) => this.rdpClient.Connect();
+            this.rdpClient.StateChanged += (_, __) => this.Text = this.rdpClient.State.ToString();
+            this.connectButton.Click += (_, __) =>
+            {
+                try
+                {
+                    this.rdpClient.Connect();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(this, e.FullMessage());
+                }
+            };
+
+            this.rdpClient.EnableNetworkLevelAuthentication = true;
+            this.rdpClient.Username = ".\\admin";
+            this.rdpClient.Password = "admin";
+            this.rdpClient.Server = "rdptesthost";
         }
 
         [InteractiveTest]

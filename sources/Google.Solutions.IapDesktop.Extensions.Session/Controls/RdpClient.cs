@@ -11,13 +11,15 @@ using System.Windows.Forms;
 using MSTSCLib;
 using Google.Solutions.Mvvm.Shell;
 using System.ComponentModel;
+using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     public class RdpClient : UserControl
     {
         private readonly Google.Solutions.Tsc.MsRdpClient client;
-        private readonly IMsRdpClientNonScriptable5 nonScriptable;
+        private readonly IMsRdpClientNonScriptable5 clientNonScriptable;
+        private readonly IMsRdpClientAdvancedSettings6 clientAdvancedSettings;
 
         private ConnectionState state = ConnectionState.NotConnected;
 
@@ -58,11 +60,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             ((System.ComponentModel.ISupportInitialize)(this.client)).EndInit();
 
 
-            this.nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
+            this.clientNonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
 
-            this.nonScriptable.AllowCredentialSaving = false;
-            this.nonScriptable.PromptForCredentials = false;
-            this.nonScriptable.NegotiateSecurityLayer = true;
+            this.clientNonScriptable.AllowCredentialSaving = false;
+            this.clientNonScriptable.PromptForCredentials = false;
+            this.clientNonScriptable.NegotiateSecurityLayer = true;
+            
+            this.clientAdvancedSettings = this.client.AdvancedSettings7;
+            //this.clientAdvancedSettings.EnableCredSspSupport = true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            this.client.Dispose();
         }
 
         protected override void OnResize(EventArgs e)
@@ -191,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             set
             {
                 ExpectState(ConnectionState.NotConnected);
-                this.client.AdvancedSettings7.RDPPort = value;
+                this.clientAdvancedSettings.RDPPort = value;
             }
         }
 
@@ -232,16 +243,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Password
         {
+            get => "*";
             set
             {
                 ExpectState(ConnectionState.NotConnected);
-                this.client.AdvancedSettings7.ClearTextPassword = value;
+                this.clientAdvancedSettings.ClearTextPassword = value;
+            }
+        }
+
+        /// <summary>
+        /// NetworkLevelAuthentication (CredSSP).
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableNetworkLevelAuthentication
+        {
+            get => this.clientAdvancedSettings.EnableCredSspSupport;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.EnableCredSspSupport = value;
+
+                if (!value)
+                {
+                    //
+                    // To disable NLA, we must enable server authentication.
+                    //
+                    this.clientAdvancedSettings.AuthenticationLevel = 2;
+                }
             }
         }
 
         public void Connect()
         {
             ExpectState(ConnectionState.NotConnected);
+            Precondition.ExpectNotEmpty(this.Server, nameof(this.Server));
+            Precondition.ExpectNotEmpty(this.Server, nameof(this.Username));
 
             this.client.Connect();
         }

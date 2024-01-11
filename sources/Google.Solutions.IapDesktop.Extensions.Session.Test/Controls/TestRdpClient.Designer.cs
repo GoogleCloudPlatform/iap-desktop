@@ -52,13 +52,14 @@
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.rdpClient);
-            this.splitContainer.Size = new System.Drawing.Size(800, 450);
-            this.splitContainer.SplitterDistance = 266;
+            this.splitContainer.Size = new System.Drawing.Size(1150, 684);
+            this.splitContainer.SplitterDistance = 300;
             this.splitContainer.TabIndex = 0;
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(12, 415);
+            this.connectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.connectButton.Location = new System.Drawing.Point(12, 649);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(75, 23);
             this.connectButton.TabIndex = 1;
@@ -72,7 +73,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.propertyGrid.Location = new System.Drawing.Point(0, 3);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(263, 381);
+            this.propertyGrid.Size = new System.Drawing.Size(297, 615);
             this.propertyGrid.TabIndex = 0;
             // 
             // rdpClient
@@ -80,14 +81,14 @@
             this.rdpClient.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rdpClient.Location = new System.Drawing.Point(0, 0);
             this.rdpClient.Name = "rdpClient";
-            this.rdpClient.Size = new System.Drawing.Size(530, 450);
+            this.rdpClient.Size = new System.Drawing.Size(846, 684);
             this.rdpClient.TabIndex = 0;
             // 
             // TestRdpClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1150, 684);
             this.Controls.Add(this.splitContainer);
             this.Name = "TestRdpClient";
             this.Text = "TestRdpClient";
