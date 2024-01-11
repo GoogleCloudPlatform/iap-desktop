@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,23 +23,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         {
             InitializeComponent();
             this.propertyGrid.SelectedObject = this.rdpClient;
-            this.rdpClient.StateChanged += (_, __) => this.Text = this.rdpClient.State.ToString();
-            this.connectButton.Click += (_, __) =>
-            {
-                try
-                {
-                    this.rdpClient.Connect();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(this, e.FullMessage());
-                }
-            };
+            this.connectButton.Click += (_, __) => this.rdpClient.Connect();
+
+            this.rdpClient.StateChanged += (_, __) 
+                => this.Text = this.rdpClient.State.ToString();
+            this.rdpClient.ConnectionFailed += (_, args) 
+                => MessageBox.Show(this, args.Exception.FullMessage());
 
             this.rdpClient.EnableNetworkLevelAuthentication = true;
             this.rdpClient.Username = ".\\admin";
             this.rdpClient.Password = "admin";
-            this.rdpClient.Server = "rdptesthost";
+            this.rdpClient.Server = Dns.GetHostEntry("rdptesthost").AddressList.First().ToString();
         }
 
         [InteractiveTest]

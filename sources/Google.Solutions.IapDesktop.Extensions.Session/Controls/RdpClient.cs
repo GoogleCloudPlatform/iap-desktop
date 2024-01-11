@@ -12,6 +12,8 @@ using MSTSCLib;
 using Google.Solutions.Mvvm.Shell;
 using System.ComponentModel;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Common.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -91,85 +93,168 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
+            this.State = ConnectionState.ConnectionLost;
+            this.ConnectionFailed?.Invoke(
+                this,
+                new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
         }
 
         private void OnLogonError(
             object sender,
             IMsTscAxEvents_OnLogonErrorEvent args)
         {
+            var e = new RdpLogonException(args.lError);
+            if (!e.IsIgnorable)
+            {
+                this.State = ConnectionState.ConnectionLost;
+                this.ConnectionFailed?.Invoke(
+                    this,
+                    new ExceptionEventArgs(e));
+            }
         }
 
         private void OnLoginComplete(object sender, EventArgs e)
         {
+            this.State = ConnectionState.LoggedOn; ;
         }
 
         private void OnDisconnected(
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
+            this.State = ConnectionState.ConnectionLost;
+
+
+            var e = new RdpDisconnectedException(
+                args.discReason,
+                this.client.GetErrorDescription((uint)args.discReason, 0));
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
+            {
+                // TODO: Port rest
+                this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+            }
         }
 
         private void OnConnected(object sender, EventArgs e)
         {
+            this.State = ConnectionState.Connected;
+
+            using (ApplicationTraceSource.Log.TraceMethod()
+                .WithParameters(this.client.ConnectedStatusText))
+            {
+
+            }
+            // TODO: Port rest
         }
 
 
         private void OnConnecting(object sender, EventArgs e)
         {
+            Debug.Assert(this.State == ConnectionState.Connecting);
+            
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            { }
         }
 
         private void OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
+            Debug.Assert(this.State == ConnectionState.Connecting);
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                this.AuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void OnWarning(
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.warningCode))
+            { }
         }
 
         private void OnAutoReconnecting2(
             object sender,
             IMsTscAxEvents_OnAutoReconnecting2Event args)
         {
+            Debug.Assert(
+                this.State == ConnectionState.Connecting ||
+                this.State == ConnectionState.Connected ||
+                this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                var e = new RdpDisconnectedException(
+                    args.disconnectReason,
+                    this.client.GetErrorDescription((uint)args.disconnectReason, 0));
+
+                ApplicationTraceSource.Log.TraceVerbose(
+                    "Reconnect attempt {0}/{1} - {2} - {3}",
+                    args.attemptCount,
+                    args.maxAttemptCount,
+                    e.Message,
+                    args.networkAvailable);
+
+
+                this.State = ConnectionState.Connecting;
+            }
         }
 
         private void OnAutoReconnected(object sender, EventArgs e)
         {
+            Debug.Assert(this.State ==ConnectionState.Connecting);
+            //TODO: port rest
         }
 
         private void OnFocusReleased(
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
+
+            //TODO: port rest
         }
 
         private void OnRemoteDesktopSizeChange(
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
+            Debug.Assert(
+                this.State == ConnectionState.Connecting ||
+                this.State == ConnectionState.Connected ||
+                this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            { }
         }
 
         private void OnServiceMessageReceived(
             object sender,
             IMsTscAxEvents_OnServiceMessageReceivedEvent e)
         {
-        }
-
-        private void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
+            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.serviceMessage))
+            { }
         }
 
         private void OnRequestGoFullScreen(object sender, EventArgs e)
         {
+            Debug.Assert(
+                this.State == ConnectionState.Connected ||
+                this.State == ConnectionState.LoggedOn);
+
+            //TODO: port rest
         }
 
         private void OnRequestLeaveFullScreen(object sender, EventArgs e)
         {
+
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+            //TODO: port rest
         }
 
         private void OnRequestContainerMinimize(object sender, EventArgs e)
         {
+            //TODO: port rest
         }
 
         //---------------------------------------------------------------------
@@ -281,6 +366,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Username));
 
             this.client.Connect();
+            this.State = ConnectionState.Connecting;
         }
 
         //---------------------------------------------------------------------
@@ -288,6 +374,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         //---------------------------------------------------------------------
 
         public event EventHandler StateChanged;
+        public event EventHandler<ExceptionEventArgs> ConnectionFailed;
+        internal event EventHandler AuthenticationWarningDisplayed;
 
         [Browsable(true)]
         public ConnectionState State

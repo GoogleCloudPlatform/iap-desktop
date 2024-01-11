@@ -28,6 +28,7 @@ using System.Text;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
+    //TODO: Move to Controls namespace
     [Serializable]
     public class RdpException : ApplicationException
     {
