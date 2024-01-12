@@ -19,10 +19,8 @@
 // under the License.
 //
 
-using AxMSTSCLib;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
@@ -36,14 +34,11 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
-using MSTSCLib;
 using System;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -60,10 +55,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         private readonly IControlTheme theme;
 
         private RdpViewModel viewModel;
-        private bool useAllScreensForFullScreen = false;
-
+        
         // For testing only.
-        internal event EventHandler AuthenticationWarningDisplayed;
+        internal event EventHandler AuthenticationWarningDisplayed; //TODO: Trigger this event
 
         public bool IsFormClosing { get; private set; } = false;
 
@@ -428,6 +422,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private void rdpClient_StateChanged(object sender, System.EventArgs e)
         {
+            if (this.rdpClient.State == RdpClient.ConnectionState.Connected)
+            {
+                this.eventService
+                    .PublishAsync(new SessionStartedEvent(this.Instance))
+                    .ContinueWith(_ => { });
+            }
+
             if (this.rdpClient.State == RdpClient.ConnectionState.Connected ||
                 this.rdpClient.State == RdpClient.ConnectionState.LoggedOn)
             {
@@ -496,7 +497,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // restore it when it ends.
         //---------------------------------------------------------------------
 
-        //TODO: Deadlock when closing float window
         private Form rescueWindow = null;
 
         protected override Size DefaultFloatWindowClientSize => this.Size;
@@ -511,7 +511,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             {
                 this.rescueWindow = new Form();
                 this.rdpClient.Parent = this.rescueWindow;
-                //TODO: test that this still works - this.rdpClient.ContainingControl = this.rescueWindow;
             }
 
             base.OnDockBegin();
@@ -522,7 +521,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             if (this.rescueWindow != null && this.rdpClient != null)
             {
                 this.rdpClient.Parent = this;
-                //TODO: test that this still works - this.rdpClient.ContainingControl = this;
                 this.rdpClient.Size = this.Size;
                 this.rescueWindow.Close();
                 this.rescueWindow = null;

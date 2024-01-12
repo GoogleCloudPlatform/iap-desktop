@@ -218,6 +218,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                         this,
                         new ConnectionClosedEventArgs(DisconnectReason.FormClosed));
 
+                    //
+                    // Eagerly dispose the control. If we don't do it here,
+                    // we risk a deadlock later.
+                    //
+                    this.client.Dispose();
+
                     this.State = ConnectionState.NotConnected;
                 }
                 catch (Exception e)
@@ -307,6 +313,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 //
                 return;
             }
+
+            Debug.Assert(!this.client.IsDisposed);
 
             //
             // First, resize the control.
@@ -412,8 +420,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
-                bool isFullScreenDisconnect = this.client.FullScreen;
-
                 //
                 // Make sure to leave full-screen mode, otherwise
                 // we're showing a dead control full-screen.
@@ -449,10 +455,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                         this,
                         new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
                 }
-                else if (e.IsUserDisconnectedLocally && isFullScreenDisconnect)
+                else if (e.IsUserDisconnectedLocally)
                 {
                     //
-                    // User clicked X in the connection bar.
+                    // User clicked X in the connection bar or aborted a reconnect
                     //
                     this.ConnectionClosed?.Invoke(
                         this,
@@ -617,6 +623,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         public void Connect()
         {
+            Debug.Assert(!this.client.IsDisposed);
+
             ExpectState(ConnectionState.NotConnected);
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Server));
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Username));
