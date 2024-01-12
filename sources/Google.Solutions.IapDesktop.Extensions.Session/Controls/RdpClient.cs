@@ -148,9 +148,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     this.parentForm.FormClosing -= OnFormClosing;
                 }
 
-                if (this.Parent != null)
+                if (this.Parent?.FindForm() is Form newParent)
                 {
-                    this.parentForm = this.Parent.FindForm();
+                    this.parentForm = newParent;
                     this.parentForm.FormClosing += OnFormClosing;
 
                     this.client.ContainingControl = this.parentForm;
@@ -857,7 +857,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
 
-        public void ShowSecurityScreen() // TODO: test
+        public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
@@ -870,7 +870,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-        public void ShowTaskManager()// TODO: test
+        public void ShowTaskManager()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
@@ -883,7 +883,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-        public void SendKeys(params Keys[] keys)// TODO: test
+        public void SendKeys(params Keys[] keys)
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
