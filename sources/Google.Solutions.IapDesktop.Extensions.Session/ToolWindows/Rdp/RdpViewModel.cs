@@ -30,18 +30,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
     [Service]
     public class RdpViewModel : ViewModelBase
     {
-        public enum ConnectionState
-        {
-            Uninitialized,
-            Connecting,
-            Connected,
-            LoggedOn,
-            ConnectionLost
-        }
-
         public RdpViewModel()
         {
-            this.State = ObservableProperty.Build(ConnectionState.Uninitialized);
         }
 
         //---------------------------------------------------------------------
@@ -66,6 +56,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public ObservableProperty<ConnectionState> State { get; }
     }
 }

@@ -56,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private readonly DeferredCallback deferResize;
         private Form parentForm = null;
+        private int keysSent = 0;
 
         public RdpClient()
         {
@@ -123,6 +124,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
+
+            this.clientAdvancedSettings.allowBackgroundInput = 1;
+
             //
             // As a user control, we don't get a FormClosing event,
             // so attach to the parent form.
@@ -132,8 +136,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 if (this.parentForm == null && FindForm() is Form form)
                 {
                     this.parentForm = form;
-                    form.FormClosing += OnFormClosing;
+                    this.parentForm.FormClosing += OnFormClosing;
+
+                    this.client.ContainingControl = this.parentForm;
                 }
+            };
+            this.ParentChanged += (_, __) =>
+            {
+                this.parentForm.FormClosing -= OnFormClosing;
+
+                this.parentForm = this.Parent.FindForm();
+                this.parentForm.FormClosing += OnFormClosing;
+
+                this.client.ContainingControl = this.parentForm;
             };
         }
 
@@ -270,6 +285,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void DangerousResizeClient(Size newSize)
         {
+            if (this.Size.Width == 0 || this.Size.Height == 0)
+            {
+                //
+                // Probably the window is being minimized. Ignore
+                // that event since it merely causes stress on the
+                // RDP control.
+                //
+                return;
+            }
+
             //
             // First, resize the control.
             //
@@ -773,6 +798,55 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.client.FullScreen = false;
             return true;
         }
+
+
+        public void ShowSecurityScreen() // TODO: test
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.Menu,
+                    Keys.Delete);
+            }
+        }
+
+        public void ShowTaskManager()// TODO: test
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.ShiftKey,
+                    Keys.Escape);
+            }
+        }
+
+        public void SendKeys(params Keys[] keys)// TODO: test
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                this.client.Focus();
+
+                var nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
+
+                if (this.keysSent++ == 0)
+                {
+                    // The RDP control sometimes swallows the first key combination
+                    // that is sent. So start by a harmless ESC.
+                    SendKeys(Keys.Escape);
+                }
+
+                nonScriptable.SendKeys(keys);
+            }
+        }
+
 
         //---------------------------------------------------------------------
         // State tracking.

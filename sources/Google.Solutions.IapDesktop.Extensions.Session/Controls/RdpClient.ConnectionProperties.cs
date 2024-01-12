@@ -344,6 +344,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Hotkey properties.
         //---------------------------------------------------------------------
 
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys FocusHotKey
         {
             //
@@ -362,6 +364,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys LeaveFullScreenHotKey
         {
             //
@@ -380,6 +384,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int KeyboardHookMode
+        {
+            get => this.clientSecuredSettings.KeyboardHookMode;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientSecuredSettings.KeyboardHookMode = value;
+            }
+        }
         //---------------------------------------------------------------------
         // Sound and color properties.
         //---------------------------------------------------------------------

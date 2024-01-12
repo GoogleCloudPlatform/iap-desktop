@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Tsc;
@@ -55,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RdpDesktopView));
-            this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             this.overlayPanel = new System.Windows.Forms.Panel();
             this.waitPanel = new System.Windows.Forms.Panel();
             this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
@@ -63,18 +63,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.reconnectLabel = new System.Windows.Forms.Label();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
-            this.rdpClient = new MsRdpClient();
+            this.rdpClient = new RdpClient();
             this.overlayPanel.SuspendLayout();
             this.waitPanel.SuspendLayout();
             this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             this.SuspendLayout();
-            // 
-            // reconnectToResizeTimer
-            // 
-            this.reconnectToResizeTimer.Interval = 1000;
-            this.reconnectToResizeTimer.Tick += new System.EventHandler(this.reconnectToResizeTimer_Tick);
             // 
             // overlayPanel
             // 
@@ -156,25 +151,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.rdpClient.Enabled = true;
             this.rdpClient.Location = new System.Drawing.Point(0, 0);
             this.rdpClient.Name = "rdpClient";
-            this.rdpClient.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("rdpClient.OcxState")));
             this.rdpClient.Size = new System.Drawing.Size(763, 431);
             this.rdpClient.TabIndex = 0;
-            this.rdpClient.OnConnecting += new System.EventHandler(this.rdpClient_OnConnecting);
-            this.rdpClient.OnConnected += new System.EventHandler(this.rdpClient_OnConnected);
-            this.rdpClient.OnLoginComplete += new System.EventHandler(this.rdpClient_OnLoginComplete);
-            this.rdpClient.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(this.rdpClient_OnDisconnected);
-            this.rdpClient.OnRequestGoFullScreen += new System.EventHandler(this.rdpClient_OnRequestGoFullScreen);
-            this.rdpClient.OnRequestLeaveFullScreen += new System.EventHandler(this.rdpClient_OnRequestLeaveFullScreen);
-            this.rdpClient.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(this.rdpClient_OnFatalError);
-            this.rdpClient.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(this.rdpClient_OnWarning);
-            this.rdpClient.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(this.rdpClient_OnRemoteDesktopSizeChange);
-            this.rdpClient.OnRequestContainerMinimize += new System.EventHandler(this.rdpClient_OnRequestContainerMinimize);
-            this.rdpClient.OnAuthenticationWarningDisplayed += new System.EventHandler(this.rdpClient_OnAuthenticationWarningDisplayed);
-            this.rdpClient.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(this.rdpClient_OnLogonError);
-            this.rdpClient.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(this.rdpClient_OnFocusReleased);
-            this.rdpClient.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(this.rdpClient_OnServiceMessageReceived);
-            this.rdpClient.OnAutoReconnected += new System.EventHandler(this.rdpClient_OnAutoReconnected);
-            this.rdpClient.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(this.rdpClient_OnAutoReconnecting2);
+            this.rdpClient.ConnectionFailed += rdpClient_ConnectionFailed;
+            this.rdpClient.ConnectionClosed += rdpClient_ConnectionClosed;
+            this.rdpClient.StateChanged += rdpClient_StateChanged;
             // 
             // RemoteDesktopView
             // 
@@ -186,8 +167,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RemoteDesktopView";
             this.Text = "RemoteDesktopPane";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RemoteDesktopPane_FormClosing);
-            this.SizeChanged += new System.EventHandler(this.RemoteDesktopPane_SizeChanged);
             this.overlayPanel.ResumeLayout(false);
             this.waitPanel.ResumeLayout(false);
             this.reconnectPanel.ResumeLayout(false);
@@ -200,9 +179,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         #endregion
 
-        private MsRdpClient rdpClient;
+        private RdpClient rdpClient;
         private CircularProgressBar spinner;
-        private System.Windows.Forms.Timer reconnectToResizeTimer;
         private System.Windows.Forms.Panel reconnectPanel;
         private System.Windows.Forms.Label reconnectLabel;
         private System.Windows.Forms.LinkLabel reconnectButton;
