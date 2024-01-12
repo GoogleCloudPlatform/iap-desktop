@@ -123,8 +123,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
-            // TODO: Disable UDP.
-
             //
             // As a user control, we don't get a FormClosing event,
             // so attach to the parent form.

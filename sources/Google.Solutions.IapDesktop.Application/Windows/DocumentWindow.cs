@@ -40,28 +40,28 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// Hotkey to move focus to current document, or release focus
         /// back to main window.
         /// </summary>
-        public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
+        public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;//TODO: remove
 
         /// <summary>
         /// Hotkey to enter full-screen.
         /// </summary>
-        public const Keys EnterFullScreenHotKey = Keys.F11;
+        public const Keys EnterFullScreenHotKey = Keys.F11; //TODO: remove
 
         /// <summary>
         /// Hotkey to leave full-screen.
         /// </summary>
-        public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
+        public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;//TODO: remove
 
         //
         // Full screen form -- created lazily. There can only be one window
         // full scnreen at a time, so it's static.
         //
-        private static Form fullScreenForm = null;
+        private static Form fullScreenForm = null;//TODO: remove
 
         protected IMainWindow MainWindow { get; }
         private readonly IRepository<IApplicationSettings> settingsRepository;
 
-        protected static void MoveControls(Form source, Form target)
+        protected static void MoveControls(Form source, Form target)//TODO: remove
         {
             var controls = new Control[source.Controls.Count];
             source.Controls.CopyTo(controls, 0);
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             Debug.Assert(source.Controls.Count == 0);
         }
 
-        protected Rectangle BoundsOfAllScreens
+        protected Rectangle BoundsOfAllScreens//TODO: remove
         {
             get
             {
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 }
             };
         }
-
+        //TODO: remove
         //---------------------------------------------------------------------
         // Full-screen support.
         //---------------------------------------------------------------------

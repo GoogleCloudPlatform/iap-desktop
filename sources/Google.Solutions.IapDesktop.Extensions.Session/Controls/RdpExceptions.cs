@@ -26,22 +26,21 @@ using System.Text;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
-    //TODO: Move to Controls namespace
     [Serializable]
-    public class RdpException : ApplicationException
+    public abstract class RdpException : ApplicationException
     {
         protected RdpException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
 
-        public RdpException()
+        protected RdpException()
         {
         }
 
-        public RdpException(string message) : base(message)
+        protected RdpException(string message) : base(message)
         {
         }
 
@@ -51,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         }
     }
 
-    [Serializable]
     public class RdpLogonException : RdpException
     {
         private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
@@ -105,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         }
     }
 
-    [Serializable]
     public class RdpFatalException : RdpException
     {
         private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
@@ -148,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         }
     }
 
-    [Serializable]
     public class RdpDisconnectedException : RdpException
     {
         private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
