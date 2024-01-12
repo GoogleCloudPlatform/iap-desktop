@@ -143,12 +143,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             };
             this.ParentChanged += (_, __) =>
             {
-                this.parentForm.FormClosing -= OnFormClosing;
+                if (this.parentForm != null)
+                {
+                    this.parentForm.FormClosing -= OnFormClosing;
+                }
 
-                this.parentForm = this.Parent.FindForm();
-                this.parentForm.FormClosing += OnFormClosing;
+                if (this.Parent != null)
+                {
+                    this.parentForm = this.Parent.FindForm();
+                    this.parentForm.FormClosing += OnFormClosing;
 
-                this.client.ContainingControl = this.parentForm;
+                    this.client.ContainingControl = this.parentForm;
+                }
             };
         }
 
@@ -176,7 +182,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         protected void OnFormClosing(object sender, FormClosingEventArgs args)
         {
-            if (this.State == ConnectionState.Connecting)
+            if (this.State == ConnectionState.Disconnecting)
+            {
+                //
+                // Form is being closed as a result of a disconnect
+                // (not the other way round).
+                //
+            }
+            else if (this.State == ConnectionState.Connecting)
             {
                 //
                 // Veto this event as it might cause the ActiveX to crash.
@@ -344,6 +357,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.errorCode))
             {
+                //
+                // Make sure to leave full-screen mode.
+                //
+                this.ContainerFullScreen = false;
+
                 this.ConnectionFailed?.Invoke(
                     this,
                     new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
@@ -360,6 +378,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e))
             {
+                //
+                // Make sure to leave full-screen mode.
+                //
+                this.ContainerFullScreen = false;
+
                 if (!e.IsIgnorable)
                 {
                     this.ConnectionFailed?.Invoke(
@@ -388,7 +411,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     this.client.GetErrorDescription((uint)args.discReason, 0));
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
-            { 
+            {
+                bool isFullScreenDisconnect = this.client.FullScreen;
+
                 //
                 // Make sure to leave full-screen mode, otherwise
                 // we're showing a dead control full-screen.
@@ -399,6 +424,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // Force focus back to main window. 
                 // 
                 this.MainWindow.Focus();
+
+                this.State = ConnectionState.Disconnecting;
 
                 if (this.State != ConnectionState.Connecting && e.IsTimeout)
                 {
@@ -413,8 +440,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                         this,
                         new ConnectionClosedEventArgs(DisconnectReason.Timeout));
                 }
-                else if (e.IsUserDisconnect)
+                else if (e.IsUserDisconnectedRemotely)
                 {
+                    //
+                    // User signed out or clicked Start > Disconnect. 
+                    //
+                    this.ConnectionClosed?.Invoke(
+                        this,
+                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                }
+                else if (e.IsUserDisconnectedLocally && isFullScreenDisconnect)
+                {
+                    //
+                    // User clicked X in the connection bar.
+                    //
                     this.ConnectionClosed?.Invoke(
                         this,
                         new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
@@ -750,7 +789,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         public bool IsFullScreen
         {
-            get => this.client.FullScreen;
+            get 
+            {
+                try
+                {
+                    return this.client.FullScreen;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
 
         /// <summary>
@@ -916,6 +965,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             /// Client connected, but user log on hasn't completed yet.
             /// </summary>
             Connected,
+
+            Disconnecting,
 
             /// <summary>
             /// User logged on, session is ready to use.

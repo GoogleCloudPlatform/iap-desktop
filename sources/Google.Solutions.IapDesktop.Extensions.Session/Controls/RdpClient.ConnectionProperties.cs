@@ -395,6 +395,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 this.clientSecuredSettings.KeyboardHookMode = value;
             }
         }
+
         //---------------------------------------------------------------------
         // Sound and color properties.
         //---------------------------------------------------------------------

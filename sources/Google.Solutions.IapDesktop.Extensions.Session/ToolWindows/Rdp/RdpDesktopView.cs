@@ -117,13 +117,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
-                // Make sure we're not fullscreen anymore.
-                LeaveFullScreen();
-
-                await this.eventService.PublishAsync(
-                    new SessionAbortedEvent(this.Instance, e))
+                await this.eventService
+                    .PublishAsync(new SessionAbortedEvent(this.Instance, e))
                     .ConfigureAwait(true);
+
                 this.exceptionDialog.Show(this, caption, e);
+                
                 Close();
             }
         }
@@ -211,6 +210,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.theme?.ApplyTo(this);
                 UpdateLayout(LayoutMode.Wait);
                 ResumeLayout();
+
+                this.rdpClient.MainWindow = (Form)this.MainWindow;
 
                 //
                 // Basic connection settings.
@@ -354,6 +355,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         protected override void OnSizeChanged(EventArgs e)
         {
+            if (this.rdpClient != null && this.rdpClient.IsFullScreen)
+            {
+                //
+                // Ignore, any attempted size change might
+                // just screw up full-screen mode.
+                //
+                return;
+            }
+
             base.OnSizeChanged(e);
 
             //
@@ -384,18 +394,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private void rdpClient_ConnectionClosed(object sender, RdpClient.ConnectionClosedEventArgs e)
         {
-            if (e.Reason == RdpClient.DisconnectReason.FormClosed)
+            switch (e.Reason)
             {
-                //
-                // User closed the form.
-                //
-            }
-            else
-            {
-                //
-                // Allow user to reconnect.
-                //
-                UpdateLayout(LayoutMode.Reconnect);
+                case RdpClient.DisconnectReason.FormClosed:
+                    //
+                    // User closed the form.
+                    //
+                    break;
+
+                case RdpClient.DisconnectReason.DisconnectedByUser:
+                    //
+                    // User-initiated signout.
+                    //
+                    Close();
+                    break;
+
+                default:
+                    //
+                    // Something else - allow user to reconnect.
+                    //
+                    UpdateLayout(LayoutMode.Reconnect);
+                    break;
             }
         }
 
@@ -477,6 +496,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // restore it when it ends.
         //---------------------------------------------------------------------
 
+        //TODO: Deadlock when closing float window
         private Form rescueWindow = null;
 
         protected override Size DefaultFloatWindowClientSize => this.Size;

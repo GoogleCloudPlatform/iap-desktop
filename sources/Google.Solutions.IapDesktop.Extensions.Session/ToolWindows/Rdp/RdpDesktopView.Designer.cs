@@ -68,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.waitPanel.SuspendLayout();
             this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             this.SuspendLayout();
             // 
             // overlayPanel
@@ -172,7 +171,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.reconnectPanel.ResumeLayout(false);
             this.reconnectPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).EndInit();
             this.ResumeLayout(false);
 
         }

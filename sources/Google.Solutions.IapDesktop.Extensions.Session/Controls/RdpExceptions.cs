@@ -209,8 +209,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         public bool IsTimeout =>
             this.DisconnectReason == 3 ||
             this.DisconnectReason == 264;
+        
+        public bool IsUserDisconnectedLocally =>
+            this.DisconnectReason == 1;
 
-        public bool IsUserDisconnect =>
+        public bool IsUserDisconnectedRemotely =>
             this.DisconnectReason == 2;
 
         public bool IsIgnorable =>

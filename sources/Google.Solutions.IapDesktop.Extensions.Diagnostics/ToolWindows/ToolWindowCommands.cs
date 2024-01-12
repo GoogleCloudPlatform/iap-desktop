@@ -72,21 +72,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
         }
     }
 
-    [MenuCommand(typeof(DebugMenu), Rank = 0x104)]
-    [Service]
-    public class OpenFullScreenPaneToolWindow
-        : OpenToolWindowCommand<DebugMenu.Context, DebugFullScreenView, DebugFullScreenViewModel>
-    {
-        public OpenFullScreenPaneToolWindow(IToolWindowHost toolWindowHost)
-            : base(
-                  toolWindowHost,
-                  "&Full screen pane",
-                  _ => true,
-                  _ => true)
-        {
-        }
-    }
-
     [MenuCommand(typeof(DebugMenu), Rank = 0x105)]
     [Service]
     public class OpenThemeToolWindow

@@ -52,26 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// </summary>
         public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
 
-        //
-        // Full screen form -- created lazily. There can only be one window
-        // full scnreen at a time, so it's static.
-        //
-        private static Form fullScreenForm = null;//TODO: remove
-
         protected IMainWindow MainWindow { get; }
-        private readonly IRepository<IApplicationSettings> settingsRepository;
 
-        protected static void MoveControls(Form source, Form target)//TODO: remove
-        {
-            var controls = new Control[source.Controls.Count];
-            source.Controls.CopyTo(controls, 0);
-            source.Controls.Clear();
-            target.Controls.AddRange(controls);
+        private readonly IRepository<IApplicationSettings> settingsRepository;//TODO: move down
 
-            Debug.Assert(source.Controls.Count == 0);
-        }
-
-        protected Rectangle BoundsOfAllScreens//TODO: remove
+        protected Rectangle BoundsOfAllScreens//TODO: move down
         {
             get
             {
@@ -156,113 +141,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     this.Size = this.PreviousNonFloatingSize.Value;
                 }
             };
-        }
-        //TODO: remove
-        //---------------------------------------------------------------------
-        // Full-screen support.
-        //---------------------------------------------------------------------
-
-        protected static bool IsFullscreen
-            => fullScreenForm != null && fullScreenForm.Visible;
-
-        protected static bool IsFullscreenMinimized
-            => fullScreenForm != null && fullScreenForm.WindowState == FormWindowState.Minimized;
-
-        protected void EnterFullscreen(bool allScreens)
-        {
-            using (ApplicationTraceSource.Log.TraceMethod()
-                .WithParameters(allScreens))
-            {
-                if (IsFullscreen)
-                {
-                    // In full screen mode already.
-                    return;
-                }
-
-                //
-                // NB. You can make a docking window full-screen, but it
-                // is not possible to hide its frame. To provide a true
-                // full screen experience, we create a new window and 
-                // temporarily move all controls to this window.
-                //
-                // NB. The RDP ActiveX has some quirk where the connection bar
-                // disappears when you go full-screen a second time and the
-                // hosting window is different from the first time.
-                // By using a single/static window and keeping it around
-                // after first use, we ensure that the form is always the
-                // same, thus circumventing the quirk.
-                //
-
-                if (fullScreenForm == null)
-                {
-                    //
-                    // First time to go full screen, create the
-                    // full-screen window.
-                    //
-                    fullScreenForm = new Form()
-                    {
-                        Icon = Resources.logo,
-                        FormBorderStyle = FormBorderStyle.None,
-                        StartPosition = FormStartPosition.Manual,
-                        TopMost = true,
-                        ShowInTaskbar = false
-                    };
-                }
-
-                fullScreenForm.Bounds = allScreens
-                    ? this.BoundsOfAllScreens
-                    : Screen.FromControl(this).Bounds;
-
-                MoveControls(this, fullScreenForm);
-
-                //
-                // Make parent of main form so that when we minimize/
-                // restore, this window comes up front.
-                //
-                fullScreenForm.Show(this.MainWindow);
-            }
-        }
-
-        protected void LeaveFullScreen()
-        {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                if (!IsFullscreen)
-                {
-                    // Not in full screen mode.
-                    return;
-                }
-
-                MoveControls(fullScreenForm, this);
-
-                //
-                // Only hide the window, we might need it again.
-                //
-                fullScreenForm.Hide();
-            }
-        }
-
-        protected static bool IsAnyDocumentInFullScreen
-            => fullScreenForm != null && fullScreenForm.Visible;
-
-        protected void MinimizeWindow()
-        {
-            if (!IsFullscreen)
-            {
-                // Not in full screen mode.
-                return;
-            }
-
-            //
-            // Minimize this window.
-            //
-            fullScreenForm.WindowState = FormWindowState.Minimized;
-
-            //
-            // Minimize the main form (which is still running in the 
-            // back)
-            //
-            this.MainWindow.Minimize();
         }
 
         //---------------------------------------------------------------------
