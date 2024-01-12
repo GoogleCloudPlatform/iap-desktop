@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         private RdpViewModel viewModel;
         
         // For testing only.
-        internal event EventHandler AuthenticationWarningDisplayed; //TODO: Trigger this event
+        internal event EventHandler AuthenticationWarningDisplayed;
 
         public bool IsFormClosing { get; private set; } = false;
 
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         internal LayoutMode Mode { get; private set; }
 
-        private void UpdateLayout(LayoutMode mode)
+        private void UpdateLayout(LayoutMode mode) // TODO: reorder/group methods.
         {
             if (this.rdpClient == null)
             {
@@ -336,11 +336,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.rdpClient.State == RdpClient.ConnectionState.LoggedOn;
         }
 
-        public bool IsConnecting
-        {
-            get => this.rdpClient.State == RdpClient.ConnectionState.Connecting;
-        }
-
         public bool CanEnterFullScreen => this.rdpClient.CanEnterFullScreen;
 
         //---------------------------------------------------------------------
@@ -382,6 +377,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 .ContinueWith(_ => { });
         }
 
+        private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                try
+                {
+                    //
+                    // Occasionally, reconnecting fails with a non-descriptive
+                    // E_FAIL error. There isn't much to do about it, so treat
+                    // it as fatal error and close the window.
+                    //
+                    Reconnect();
+                }
+                catch (Exception ex)
+                {
+                    await ShowErrorAndClose("Failed to reconnect", ex)
+                        .ConfigureAwait(true);
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // RDP callbacks.
         //---------------------------------------------------------------------
@@ -412,7 +428,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
         }
 
-        private async void rdpClient_ConnectionFailed(object sender, ExceptionEventArgs e)
+        private async void rdpClient_ConnectionFailed(object _, ExceptionEventArgs e)
         {
             await ShowErrorAndClose(
                     "Connect Remote Desktop session failed",
@@ -420,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 .ConfigureAwait(true);
         }
 
-        private void rdpClient_StateChanged(object sender, System.EventArgs e)
+        private void rdpClient_StateChanged(object _, System.EventArgs e)
         {
             if (this.rdpClient.State == RdpClient.ConnectionState.Connected)
             {
@@ -436,25 +452,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
         }
 
-        private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void rdpClient_ServerAuthenticationWarningDisplayed(object _, System.EventArgs e)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                try
-                {
-                    //
-                    // Occasionally, reconnecting fails with a non-descriptive
-                    // E_FAIL error. There isn't much to do about it, so treat
-                    // it as fatal error and close the window.
-                    //
-                    Reconnect();
-                }
-                catch (Exception ex)
-                {
-                    await ShowErrorAndClose("Failed to reconnect", ex)
-                        .ConfigureAwait(true);
-                }
-            }
+            this.AuthenticationWarningDisplayed?.Invoke(this, e);
         }
 
         //---------------------------------------------------------------------

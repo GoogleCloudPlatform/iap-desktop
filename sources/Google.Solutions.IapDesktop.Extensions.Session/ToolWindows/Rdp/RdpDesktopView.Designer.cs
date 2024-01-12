@@ -154,6 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.rdpClient.TabIndex = 0;
             this.rdpClient.ConnectionFailed += rdpClient_ConnectionFailed;
             this.rdpClient.ConnectionClosed += rdpClient_ConnectionClosed;
+            this.rdpClient.ServerAuthenticationWarningDisplayed += rdpClient_ServerAuthenticationWarningDisplayed;
             this.rdpClient.StateChanged += rdpClient_StateChanged;
             // 
             // RemoteDesktopView
