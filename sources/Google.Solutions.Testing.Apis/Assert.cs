@@ -28,6 +28,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis
 {
@@ -180,6 +181,39 @@ namespace Google.Solutions.Testing.Apis
                 1,
                 callbacks,
                 $"Expected CollectionChanged callback for {expected}");
+        }
+    }
+
+    public static class EventAssert
+    {
+        public static async Task<TArgs> AssertRaisesEventAsync<TArgs>(
+            Action<Action<TArgs>> registerEvent,
+            TimeSpan timeout)
+            where TArgs : EventArgs
+        {
+            var completionSource = new TaskCompletionSource<TArgs>();
+            registerEvent(args => completionSource.SetResult(args));
+
+            if (await Task
+                .WhenAny(completionSource.Task, Task.Delay(timeout))
+                .ConfigureAwait(true) == completionSource.Task)
+            {
+                return completionSource.Task.Result;
+            }
+            else
+            {
+                throw new AssertionException(
+                    "Timeout elapsed before event");
+            }
+        }
+
+        public static Task<TArgs> AssertRaisesEventAsync<TArgs>(
+            Action<Action<TArgs>> registerEvent)
+            where TArgs : EventArgs
+        {
+            return AssertRaisesEventAsync<TArgs>(
+                registerEvent, 
+                TimeSpan.FromSeconds(30));
         }
     }
 }

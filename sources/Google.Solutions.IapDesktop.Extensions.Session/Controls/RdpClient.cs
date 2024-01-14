@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
     /// <summary>
     /// Wrapper control for the native RDP client. Implements
     /// a smooth full-screen experience and uses a state machine
-    /// to ensure more reliable operation.
+    /// to ensure reliable operation.
     /// </summary>
     public partial class RdpClient : UserControl
     {

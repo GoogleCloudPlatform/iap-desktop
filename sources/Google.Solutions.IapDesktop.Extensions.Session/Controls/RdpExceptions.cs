@@ -181,6 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             {2566, "Internal security error."},
             {2567, "The specified user has no account."},
             {2822, "Encryption error."},
+            {2825, "The remote computer requires Network Level Authentication, which your computer does not support." },
             {2823, "The account is disabled."},
             {3078, "Decryption error."},
             {3079, "The account is restricted."},
