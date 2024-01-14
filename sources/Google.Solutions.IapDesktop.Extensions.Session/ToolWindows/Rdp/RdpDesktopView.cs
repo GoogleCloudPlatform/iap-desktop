@@ -49,9 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
     public partial class RdpDesktopView
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
-        // TODO: Test idle disconnect handling
-        // TODO: Run all RDP tests
-
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventQueue eventService;
         private readonly IControlTheme theme;

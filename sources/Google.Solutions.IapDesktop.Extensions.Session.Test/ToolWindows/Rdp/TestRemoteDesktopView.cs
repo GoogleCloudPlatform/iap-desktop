@@ -180,9 +180,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             [Values(RdpConnectionBarState.AutoHide, RdpConnectionBarState.Off, RdpConnectionBarState.Pinned)]
             RdpConnectionBarState connectionBarState,
 
-            [Values(RdpDesktopSize.ClientSize, RdpDesktopSize.ScreenSize)]
-            RdpDesktopSize desktopSize,
-
             [Values(RdpAudioMode.DoNotPlay, RdpAudioMode.PlayLocally, RdpAudioMode.PlayOnServer)]
             RdpAudioMode audioMode,
 
@@ -214,7 +211,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 var rdpParameters = new RdpParameters()
                 {
                     ConnectionBar = connectionBarState,
-                    DesktopSize = desktopSize,
                     AudioMode = audioMode,
                     RedirectClipboard = redirectClipboard,
                     AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,

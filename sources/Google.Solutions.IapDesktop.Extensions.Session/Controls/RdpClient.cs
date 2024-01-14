@@ -36,10 +36,10 @@ using System.IO;
 using System.Drawing;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reorder methods
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls 
 {
     /// <summary>
-    /// Wrapper control for the native RDP client that implements
+    /// Wrapper control for the native RDP client. Implements
     /// a smooth full-screen experience and uses a state machine
     /// to ensure more reliable operation.
     /// </summary>
@@ -63,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
             this.client = new Google.Solutions.Tsc.MsRdpClient
             {
                 Enabled = true,
-                Location = new System.Drawing.Point(0, 0),
+                Location = new Point(0, 0),
                 Name = "client",
-                Size = new System.Drawing.Size(100, 100),
+                Size = new Size(100, 100),
             };
             this.deferResize = new DeferredCallback(PerformDeferredResize, TimeSpan.FromMilliseconds(200));
 
@@ -112,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
             this.clientAdvancedSettings.EnableAutoReconnect = true;
             this.clientAdvancedSettings.MaxReconnectAttempts = 10;
             this.clientAdvancedSettings.EnableWindowsKey = 1;
+            this.clientAdvancedSettings.allowBackgroundInput = 1;
 
             //
             // Bitmap persistence consumes vast amounts of memory, so keep
@@ -124,12 +125,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
             //
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
-
-            this.clientAdvancedSettings.allowBackgroundInput = 1;
-
             //
             // As a user control, we don't get a FormClosing event,
-            // so attach to the parent form.
+            // so attach to the parent form. The parent form might change
+            // during a docking operation.
             //
             this.VisibleChanged += (_, __) =>
             {
@@ -159,14 +158,127 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
         }
 
         //---------------------------------------------------------------------
-        // Basic properties.
+        // State tracking.
+        //
+        // Many MSTSCAX operations only work reliably when the control is in
+        // a certain state, but the control won't reliably tell us which state
+        // it is in. Thus, we maintain a state machine to track the control's
+        // state.
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Outmost window that can be used to pass the focus to. This
-        /// can be the parent window, but doesn't have to be.
+        /// Connection state has changed.
         /// </summary>
-        public Form MainWindow { get; set; }
+        public event EventHandler StateChanged;
+
+        /// <summary>
+        /// Connection closed abnormally.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs> ConnectionFailed;
+
+        /// <summary>
+        /// Connection closed normally.
+        /// </summary>
+        public event EventHandler<ConnectionClosedEventArgs> ConnectionClosed;
+
+        /// <summary>
+        /// The server authentication warning has been displayed.
+        /// </summary>
+        internal event EventHandler ServerAuthenticationWarningDisplayed;
+
+        private void ExpectState(ConnectionState expectedState)
+        {
+            if (this.State != expectedState)
+            {
+                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
+            }
+        }
+
+        /// <summary>
+        /// Current state of the connection.
+        /// </summary>
+        [Browsable(true)]
+        public ConnectionState State
+        {
+            get => this.state;
+            private set
+            {
+                Debug.Assert(!this.InvokeRequired);
+                if (this.state != value)
+                {
+                    this.state = value;
+                    this.StateChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public enum ConnectionState
+        {
+            /// <summary>
+            /// Client not connected yet or an existing connection has 
+            /// been lost.
+            /// </summary>
+            NotConnected,
+
+            /// <summary>
+            /// Client is in the process of connecting.
+            /// </summary>
+            Connecting,
+
+            /// <summary>
+            /// Client connected, but user log on hasn't completed yet.
+            /// </summary>
+            Connected,
+
+            /// <summary>
+            /// Client is disconnecting.
+            /// </summary>
+            Disconnecting,
+
+            /// <summary>
+            /// User logged on, session is ready to use.
+            /// </summary>
+            LoggedOn
+        }
+
+        /// <summary>
+        /// Wait until a certain state has been reached. Mainly
+        /// intended for testing.
+        /// </summary>
+        internal async Task AwaitStateAsync(ConnectionState state)
+        {
+            Debug.Assert(!this.InvokeRequired);
+
+            if (this.State == state)
+            {
+                return;
+            }
+
+            var completionSource = new TaskCompletionSource<ConnectionState>();
+
+            EventHandler callback = null;
+            callback = (object sender, EventArgs args) =>
+            {
+                if (this.State == state)
+                {
+                    this.StateChanged -= callback;
+                    completionSource.SetResult(this.State);
+                }
+            };
+
+            this.StateChanged += callback;
+
+            await completionSource
+                .Task
+                .ConfigureAwait(true);
+
+            //
+            // There might be a resize pending, await that too.
+            //
+            await this.deferResize
+                .WaitForCompletionAsync()
+                .ConfigureAwait(true);
+        }
 
         //---------------------------------------------------------------------
         // Closing & disposing.
@@ -204,6 +316,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn)
             {
+                //
+                // Attempt an orderly disconnect.
+                //
                 try
                 {
                     ApplicationTraceSource.Log.TraceVerbose(
@@ -267,7 +382,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
                     // Form is closing, better not touch anything.
                     //
                 }
-                else if (fullScreenForm != null && fullScreenForm.WindowState == FormWindowState.Minimized)
+                else if (
+                    fullScreenForm != null && 
+                    fullScreenForm.WindowState == FormWindowState.Minimized)
                 {
                     //
                     // During a restore, we might receive a request to resize
@@ -286,7 +403,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
                     //
                     // It's safe to resize in this state.
                     //
-                    //
                     DangerousResizeClient(this.Size);
                 }
                 else if (
@@ -294,8 +410,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
                     this.state == ConnectionState.Connected)
                 {
                     //
-                    // It's not size to resize now, but it will
-                    // be in a bit. So try again later.
+                    // It's not safe to resize now, but it will
+                    // be once we're connected. So try again later.
                     //
                     context.Defer();
                 }
@@ -330,7 +446,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
             try
             {
                 //
-                // Try to adjust settings without reconnecting - this only works when
+                // Try to adjust settings without reconnecting - this  works when
+                //
                 // (1) The server is running 2012R2 or newer
                 // (2) The logon process has completed.
                 //
@@ -345,7 +462,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
             }
             catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
             {
-                ApplicationTraceSource.Log.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
+                ApplicationTraceSource.Log.TraceWarning(
+                    "Adjusting desktop size (w/o) reconnect failed.");
 
                 //
                 // Revert to classic, reconnect-based resizing.
@@ -621,6 +739,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
         // Public methods.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Outmost window that can be used to pass the focus to. 
+        /// In case of an MDI environment, this should be the outmost 
+        /// window, not the direct parent window.
+        /// </summary>
+        public Form MainWindow { get; set; }
+
         public void Connect()
         {
             Debug.Assert(!this.client.IsDisposed);
@@ -670,6 +795,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
             this.client.DesktopWidth = this.Size.Width;
 
             this.client.Connect();
+        }
+
+        public void ShowSecurityScreen()
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.Menu,
+                    Keys.Delete);
+            }
+        }
+
+        public void ShowTaskManager()
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.ShiftKey,
+                    Keys.Escape);
+            }
+        }
+
+        public void SendKeys(params Keys[] keys)
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                this.client.Focus();
+
+                var nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
+
+                if (this.keysSent++ == 0)
+                {
+                    // The RDP control sometimes swallows the first key combination
+                    // that is sent. So start by a harmless ESC.
+                    SendKeys(Keys.Escape);
+                }
+
+                nonScriptable.SendKeys(keys);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -854,167 +1026,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reord
 
             this.client.FullScreen = false;
             return true;
-        }
-
-
-        public void ShowSecurityScreen()
-        {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                SendKeys(
-                    Keys.ControlKey,
-                    Keys.Menu,
-                    Keys.Delete);
-            }
-        }
-
-        public void ShowTaskManager()
-        {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                SendKeys(
-                    Keys.ControlKey,
-                    Keys.ShiftKey,
-                    Keys.Escape);
-            }
-        }
-
-        public void SendKeys(params Keys[] keys)
-        {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                this.client.Focus();
-
-                var nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
-
-                if (this.keysSent++ == 0)
-                {
-                    // The RDP control sometimes swallows the first key combination
-                    // that is sent. So start by a harmless ESC.
-                    SendKeys(Keys.Escape);
-                }
-
-                nonScriptable.SendKeys(keys);
-            }
-        }
-
-
-        //---------------------------------------------------------------------
-        // State tracking.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Connection state has changed.
-        /// </summary>
-        public event EventHandler StateChanged;
-
-        /// <summary>
-        /// Connection closed abnormally.
-        /// </summary>
-        public event EventHandler<ExceptionEventArgs> ConnectionFailed;
-
-
-        /// <summary>
-        /// Connection closed normally.
-        /// </summary>
-        public event EventHandler<ConnectionClosedEventArgs> ConnectionClosed;
-
-        /// <summary>
-        /// The server authentication warning has been displayed.
-        /// </summary>
-        internal event EventHandler ServerAuthenticationWarningDisplayed;
-
-        private void ExpectState(ConnectionState expectedState)
-        {
-            if (this.State != expectedState)
-            {
-                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
-            }
-        }
-
-        /// <summary>
-        /// Current state of the connection.
-        /// </summary>
-        [Browsable(true)]
-        public ConnectionState State
-        {
-            get => this.state;
-            private set
-            {
-                Debug.Assert(!this.InvokeRequired);
-                if (this.state != value)
-                {
-                    this.state = value;
-                    this.StateChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public enum ConnectionState
-        {
-            /// <summary>
-            /// Client not connected yet or an existing connection has 
-            /// been lost.
-            /// </summary>
-            NotConnected,
-
-            /// <summary>
-            /// Client is in the process of connecting.
-            /// </summary>
-            Connecting,
-
-            /// <summary>
-            /// Client connected, but user log on hasn't completed yet.
-            /// </summary>
-            Connected,
-
-            Disconnecting,
-
-            /// <summary>
-            /// User logged on, session is ready to use.
-            /// </summary>
-            LoggedOn,
-        }
-
-        internal async Task AwaitStateAsync(ConnectionState state)
-        {
-            Debug.Assert(!this.InvokeRequired);
-
-            if (this.State == state)
-            {
-                return;
-            }
-
-            var completionSource = new TaskCompletionSource<ConnectionState>();
-
-            EventHandler callback = null;
-            callback = (object sender, EventArgs args) =>
-            {
-                if (this.State == state)
-                {
-                    this.StateChanged -= callback;
-                    completionSource.SetResult(this.State);
-                }
-            };
-
-            this.StateChanged += callback;
-            
-            await completionSource
-                .Task
-                .ConfigureAwait(true);
-
-            //
-            // There might be a resize pending.
-            //
-            await this.deferResize
-                .WaitForCompletionAsync()
-                .ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
