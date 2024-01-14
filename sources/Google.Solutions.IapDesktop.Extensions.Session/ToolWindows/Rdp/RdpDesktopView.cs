@@ -25,6 +25,7 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -48,11 +49,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
     public partial class RdpDesktopView
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
-        private const string WebAuthnPlugin = "webauthn.dll";
+        // TODO: Test idle disconnect handling
+        // TODO: Run all RDP tests
 
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventQueue eventService;
         private readonly IControlTheme theme;
+        private readonly IRepository<IApplicationSettings> settingsRepository;
 
         private RdpViewModel viewModel;
         
@@ -70,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         internal LayoutMode Mode { get; private set; }
 
-        private void UpdateLayout(LayoutMode mode) // TODO: reorder/group methods.
+        private void UpdateLayout(LayoutMode mode)
         {
             if (this.rdpClient == null)
             {
@@ -122,6 +125,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         }
 
         //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        public RdpDesktopView(IServiceProvider serviceProvider)
+            : base(serviceProvider)
+        {
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.eventService = serviceProvider.GetService<IEventQueue>();
+            this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
+            this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
+        }
+
+        //---------------------------------------------------------------------
         // Statics.
         //---------------------------------------------------------------------
 
@@ -144,18 +160,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             // NB. The active content might be in a float window.
             //
             return mainForm.MainPanel.ActivePane?.ActiveContent as RdpDesktopView;
-        }
-
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public RdpDesktopView(IServiceProvider serviceProvider)
-            : base(serviceProvider)
-        {
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.eventService = serviceProvider.GetService<IEventQueue>();
-            this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
         }
 
         //---------------------------------------------------------------------
@@ -463,9 +467,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         public bool TrySetFullscreen(FullScreenMode mode)
         {
-            var customBounds = mode == FullScreenMode.AllScreens
-                ? (Rectangle?)BoundsOfAllScreens
-                : null;
+            Rectangle? customBounds;
+            if (mode == FullScreenMode.SingleScreen)
+            {
+                //
+                // Normal full screen.
+                //
+                customBounds = null;
+            }
+            else
+            {
+                //
+                // Use all configured screns.
+                //
+                // NB. The list of devices might include devices that
+                // do not exist anymore. 
+                //
+                var selectedDevices = (this.settingsRepository.GetSettings()
+                    .FullScreenDevices.StringValue ?? string.Empty)
+                        .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
+                        .ToHashSet();
+
+                var screens = Screen.AllScreens
+                    .Where(s => selectedDevices.Contains(s.DeviceName));
+
+                if (!screens.Any())
+                {
+                    //
+                    // Default to all screens.
+                    //
+                    screens = Screen.AllScreens;
+                }
+
+                var r = new Rectangle();
+                foreach (var s in screens)
+                {
+                    r = Rectangle.Union(r, s.Bounds);
+                }
+
+                customBounds = r;
+            }
 
             return this.rdpClient.TryEnterFullScreen(customBounds);
         }

@@ -19,10 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Interop;
 using System;
@@ -54,42 +52,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         protected IMainWindow MainWindow { get; }
 
-        private readonly IRepository<IApplicationSettings> settingsRepository;//TODO: move down
-
-        protected Rectangle BoundsOfAllScreens//TODO: move down
-        {
-            get
-            {
-                //
-                // Read list of screen devices to use.
-                // 
-                // NB. The list of devices might include devices that
-                // do not exist anymore. 
-                //
-                var selectedDevices = (this.settingsRepository.GetSettings()
-                    .FullScreenDevices.StringValue ?? string.Empty)
-                        .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
-                        .ToHashSet();
-
-                var screens = Screen.AllScreens
-                    .Where(s => selectedDevices.Contains(s.DeviceName));
-
-                if (!screens.Any())
-                {
-                    // Default to all screens.
-                    screens = Screen.AllScreens;
-                }
-
-                var r = new Rectangle();
-                foreach (var s in screens)
-                {
-                    r = Rectangle.Union(r, s.Bounds);
-                }
-
-                return r;
-            }
-        }
-
         /// <summary>
         /// Size of window when it was not floating.
         /// </summary>
@@ -101,14 +63,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public DocumentWindow()
         {
-            // Constructor is for designer only.
+            Debug.Assert(
+                this.DesignMode,
+                "Constructor is for designer only");
         }
 
         public DocumentWindow(
             IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.Document)
         {
-            this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
             this.MainWindow = serviceProvider.GetService<IMainWindow>();
 
             this.DockAreas = DockAreas.Document | DockAreas.Float;

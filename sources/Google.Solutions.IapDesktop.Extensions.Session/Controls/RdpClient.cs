@@ -36,7 +36,7 @@ using System.IO;
 using System.Drawing;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls // TODO: reorder methods
 {
     /// <summary>
     /// Wrapper control for the native RDP client that implements
