@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -34,14 +35,14 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
-    [InteractiveTest]
     [TestFixture]
+    [InteractiveTest]
     [Apartment(ApartmentState.STA)]
     public class TestRdpClient
     {
         private const string InvalidServer = "8.8.8.8";
 
-        private RdpDiagnosticsWindow CreateWindow()
+        protected RdpDiagnosticsWindow CreateWindow()
         {
             var window = new RdpDiagnosticsWindow();
             window.Client.MainWindow = window;
@@ -287,5 +288,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Close();
             }
         }
+
     }
 }

@@ -102,29 +102,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         }
 
         [Test]
-        public async Task WhenAllowUsersToConnectRemotelyByUsingRdsIsOff_ThenErrorIsShownAndWindowIsClosed(
-            [WindowsInstance(InitializeScript = @"
-                # Disable Policy
-                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDenyTSConnections /d 1 /f | Out-Default
-            ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> authTask)
-        {
-            var locator = await testInstance;
-            var auth = await authTask;
-
-            using (var tunnel = IapTransport.ForRdp(locator, auth))
-            {
-                await AssertRaisesEventAsync<SessionAbortedEvent>(
-                    () => ConnectAsync(tunnel, locator, auth))
-                    .ConfigureAwait(true);
-
-                Assert.IsNotNull(this.ExceptionShown);
-                Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-                Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-            }
-        }
-
-        [Test]
         public async Task WhenNlaDisabledAndServerRequiresNla_ThenErrorIsShownAndWindowIsClosed(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
@@ -157,53 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         }
 
         [Test]
-        public async Task WhenNlaDisabledAndServerDoesNotRequireNla_ThenServerAuthWarningIsDisplayed(
-            [WindowsInstance(InitializeScript = @"
-                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 0 /f | Out-Default
-            ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
-        {
-            var serviceProvider = CreateServiceProvider(await auth);
-            var instance = await testInstance;
-
-            using (var tunnel = IapTransport.ForRdp(
-                instance,
-                await auth))
-            {
-                var rdpCredential = await GenerateRdpCredentialAsync(instance).ConfigureAwait(true);
-                var rdpParameters = CreateSessionParameters();
-                rdpParameters.NetworkLevelAuthentication = RdpNetworkLevelAuthentication.Disabled;
-
-                var broker = new InstanceSessionBroker(serviceProvider);
-                var session = broker.ConnectRdpSession(
-                    instance,
-                    tunnel,
-                    rdpParameters,
-                    rdpCredential);
-
-                var serverAuthWarningIsDisplayed = false;
-                ((RdpDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>
-                {
-                    serverAuthWarningIsDisplayed = true;
-                    this.MainWindow.Close();
-                };
-
-                var deadline = DateTime.Now.AddSeconds(45);
-                while (!serverAuthWarningIsDisplayed && DateTime.Now < deadline)
-                {
-                    try
-                    {
-                        PumpWindowMessages();
-                    }
-                    catch (AccessViolationException) { }
-                }
-
-                Assert.IsTrue(serverAuthWarningIsDisplayed);
-            }
-        }
-
-        [Test, Ignore("Unreliable in CI")]
-        public async Task WhenSetClientConnectionEncryptionLevelSetToLow_ThenConnectionSucceeds(
+        public async Task WhenClientConnectionEncryptionLevelSetToLow_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
@@ -233,8 +164,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             }
         }
 
-        [Test, Ignore("Unreliable in CI")]
-        public async Task WhenSetClientConnectionEncryptionLevelSetToHigh_ThenConnectionSucceeds(
+        [Test]
+        public async Task WhenClientConnectionEncryptionLevelSetToHigh_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 3 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,

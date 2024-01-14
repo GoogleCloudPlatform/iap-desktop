@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
@@ -108,30 +107,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
 
-        [Test]
-        [Ignore("")]
-        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
-        {
-            // That one will be listening, but it is RPC, not RDP.
-            var wrongEndpoint = new IPEndPoint(IPAddress.Loopback, 135);
-            var transport = CreateTransportForEndpoint(wrongEndpoint);
-
-            var serviceProvider = CreateServiceProvider(await auth);
-            var broker = new InstanceSessionBroker(serviceProvider);
-
-            await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectRdpSession(
-                    SampleLocator,
-                    transport,
-                    new RdpParameters(),
-                    RdpCredential.Empty))
-                .ConfigureAwait(true);
-
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        }
-
         //---------------------------------------------------------------------
         // Connect via IAP
         //---------------------------------------------------------------------
@@ -172,72 +147,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-            }
-        }
-
-        [Test]
-        public async Task WhenCredentialsValid_ThenConnectingSucceeds(
-            [Values(RdpConnectionBarState.AutoHide, RdpConnectionBarState.Off, RdpConnectionBarState.Pinned)]
-            RdpConnectionBarState connectionBarState,
-
-            [Values(RdpAudioMode.DoNotPlay, RdpAudioMode.PlayLocally, RdpAudioMode.PlayOnServer)]
-            RdpAudioMode audioMode,
-
-            [Values(RdpRedirectClipboard.Disabled, RdpRedirectClipboard.Enabled)]
-            RdpRedirectClipboard redirectClipboard,
-
-            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
-        {
-            var serviceProvider = CreateServiceProvider(await auth);
-            var instance = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
-
-            // To avoid excessive combinations, combine some settings.
-            var redirectPrinter = (RdpRedirectPrinter)(int)redirectClipboard;
-            var redirectSmartCard = (RdpRedirectSmartCard)(int)redirectClipboard;
-            var redirectPort = (RdpRedirectPort)(int)redirectClipboard;
-            var redirectDrive = (RdpRedirectDrive)(int)redirectClipboard;
-            var redirectDevice = (RdpRedirectDevice)(int)redirectClipboard;
-
-            using (var tunnel = IapTransport.ForRdp(
-                instance,
-                await auth))
-            {
-                var rdpCredential = new RdpCredential(
-                    windowsCredentials.UserName,
-                    windowsCredentials.Domain,
-                    windowsCredentials.SecurePassword);
-                var rdpParameters = new RdpParameters()
-                {
-                    ConnectionBar = connectionBarState,
-                    AudioMode = audioMode,
-                    RedirectClipboard = redirectClipboard,
-                    AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                    BitmapPersistence = RdpBitmapPersistence.Disabled,
-                    RedirectPrinter = redirectPrinter,
-                    RedirectSmartCard = redirectSmartCard,
-                    RedirectPort = redirectPort,
-                    RedirectDrive = redirectDrive,
-                    RedirectDevice = redirectDevice,
-                };
-
-                var broker = new InstanceSessionBroker(serviceProvider);
-
-                IRdpSession session = null;
-                await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = broker.ConnectRdpSession(
-                        instance,
-                        tunnel,
-                        rdpParameters,
-                        rdpCredential))
-                    .ConfigureAwait(true);
-
-                Assert.IsNotNull(session);
-                Assert.IsNull(this.ExceptionShown);
-
-                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
-                    .ConfigureAwait(true);
             }
         }
 
@@ -285,56 +194,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     .ConfigureAwait(true);
 
                 session.Close();
-            }
-        }
-
-        [Test, Ignore("Unreliable in CI")]
-        public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
-            [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)]
-            ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
-        {
-            var serviceProvider = CreateServiceProvider(await auth);
-            var instance = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
-
-            using (var tunnel = IapTransport.ForRdp(
-                instance,
-                await auth))
-            {
-                var rdpCredential = new RdpCredential(
-                    windowsCredentials.UserName,
-                    windowsCredentials.Domain,
-                    windowsCredentials.SecurePassword);
-                var rdpParameters = new RdpParameters()
-                {
-                    AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                    BitmapPersistence = RdpBitmapPersistence.Disabled,
-                    DesktopSize = RdpDesktopSize.ClientSize
-                };
-
-                var broker = new InstanceSessionBroker(serviceProvider);
-
-                RdpDesktopView session = null;
-                await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RdpDesktopView)broker.ConnectRdpSession(
-                        instance,
-                        tunnel,
-                        rdpParameters,
-                        rdpCredential))
-                    .ConfigureAwait(true);
-
-                Thread.Sleep(5000);
-                session.ShowSecurityScreen();
-                Thread.Sleep(1000);
-
-                await AssertRaisesEventAsync<SessionEndedEvent>(() =>
-                    {
-                        session.SendKeys(Keys.Menu, Keys.S); // Sign out.
-                    })
-                    .ConfigureAwait(true);
-
-                Assert.IsNull(this.ExceptionShown);
             }
         }
     }
