@@ -706,6 +706,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn);
 
+            if (this.fullScreenContext == null)
+            {
+                //
+                // Request was initiated by shortcut, not from the
+                // application. Use a default context.
+                //
+                this.fullScreenContext = new FullScreenContext(null);
+            }
+
             this.ContainerFullScreen = true;
         }
 
