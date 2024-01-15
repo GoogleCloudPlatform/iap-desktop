@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
     [TestFixture]
     public class TestConnectionSettingsService
     {
-        private const string SampleProjectId = "project-1";
+        private static readonly ProjectLocator SampleProject = new ProjectLocator("project-1");
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
@@ -51,9 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             this.service = new ConnectionSettingsService(settingsRepository);
 
             // Set some initial project settings.
-            projectRepository.AddProject(new ProjectLocator(SampleProjectId));
+            projectRepository.AddProject(SampleProject);
 
-            var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
+            var projectSettings = settingsRepository.GetProjectSettings(SampleProject);
             projectSettings.RdpDomain.Value = "project-domain";
             settingsRepository.SetProjectSettings(projectSettings);
         }
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         private IProjectModelProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectModelProjectNode>();
-            projectNode.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
+            projectNode.SetupGet(n => n.Project).Returns(SampleProject);
 
             return projectNode.Object;
         }
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         private IProjectModelZoneNode CreateZoneNode()
         {
             var zoneNode = new Mock<IProjectModelZoneNode>();
-            zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
+            zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProject.ProjectId, "zone-1"));
 
             return zoneNode.Object;
         }
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance).Returns(
-                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
+                new InstanceLocator(SampleProject, "zone-1", "instance-1"));
             vmNode.SetupGet(n => n.OperatingSystem).Returns(
                 isWindows ? OperatingSystems.Windows : OperatingSystems.Linux);
 

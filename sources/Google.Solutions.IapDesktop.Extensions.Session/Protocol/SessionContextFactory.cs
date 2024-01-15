@@ -45,6 +45,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Apis.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
@@ -142,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private RdpContext CreateRdpContext(
             InstanceLocator instance,
             RdpCredential credential,
-            InstanceConnectionSettings settings,
+            ConnectionSettingsBase settings,
             RdpParameters.ParameterSources sources)
         {
             var context = new RdpContext(
@@ -202,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 settings.Save();
             }
 
-            var instanceSettings = (InstanceConnectionSettings)settings.TypedCollection;
+            var instanceSettings = (ConnectionSettingsBase)settings.TypedCollection;
             var credential = CreateRdpCredentialFromSettings(instanceSettings);
 
             if (flags.HasFlag(RdpCreateSessionFlags.ForcePasswordPrompt))
@@ -231,7 +232,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             url.ExpectNotNull(nameof(url));
 
             RdpParameters.ParameterSources sources;
-            InstanceConnectionSettings settings;
+
+            ConnectionSettingsBase settings = new ConnectionSettingsBase(url);
             var existingNode = await this.workspace
                 .GetNodeAsync(url.Instance, cancellationToken)
                 .ConfigureAwait(true);
@@ -240,13 +242,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // We have a full set of settings for this VM, so use that as basis.
                 //
-                settings = (InstanceConnectionSettings)
-                    this.settingsService.GetConnectionSettings(vmNode).TypedCollection;
-
-                //
-                // Apply parameters from URL on top.
-                //
-                settings.ApplySettingsFromUrl(url);
+                settings.ApplyDefaults(this.settingsService
+                    .GetConnectionSettings(vmNode)
+                    .TypedCollection);
 
                 sources = RdpParameters.ParameterSources.Inventory
                     | RdpParameters.ParameterSources.Url;
@@ -256,7 +254,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // We don't have that VM in the inventory, all we have is the URL.
                 //
-                settings = InstanceConnectionSettings.FromUrl(url);
                 sources = RdpParameters.ParameterSources.Url;
             }
 
@@ -314,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             Debug.Assert(node.IsSshSupported());
 
             var sshSettings = this.sshSettingsRepository.GetSettings();
-            var settings = (InstanceConnectionSettings)this.settingsService
+            var settings = (ConnectionSettingsBase)this.settingsService
                 .GetConnectionSettings(node)
                 .TypedCollection;
 

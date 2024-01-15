@@ -19,11 +19,15 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
@@ -56,26 +60,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Projects.
         //---------------------------------------------------------------------
 
-        public ProjectConnectionSettings GetProjectSettings(string projectId)
+        public ConnectionSettingsBase GetProjectSettings(ProjectLocator project)// TODO: test
         {
-            using (var key = this.projectRepository.OpenRegistryKey(projectId))
+            using (var key = this.projectRepository.OpenRegistryKey(project.Name))
             {
                 if (key == null)
                 {
-                    throw new KeyNotFoundException(projectId);
+                    throw new KeyNotFoundException(project.Name);
                 }
 
-                return ProjectConnectionSettings.FromKey(projectId, key);
+                return new ConnectionSettingsBase(project, key);
             }
         }
 
-        public void SetProjectSettings(ProjectConnectionSettings settings)
+        public void SetProjectSettings(ConnectionSettingsBase settings)
         {
-            using (var key = this.projectRepository.OpenRegistryKey(settings.ProjectId))
+            if (!(settings.Resource is ProjectLocator project))
+            {
+                throw new ArgumentException(nameof(settings));
+            }    
+
+            using (var key = this.projectRepository.OpenRegistryKey(project.ProjectId))
             {
                 if (key == null)
                 {
-                    throw new KeyNotFoundException(settings.ProjectId);
+                    throw new KeyNotFoundException(project.ProjectId);
                 }
 
                 settings.Save(key);
@@ -86,25 +95,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Zones.
         //---------------------------------------------------------------------
 
-        public ZoneConnectionSettings GetZoneSettings(string projectId, string zoneId)
+        public ConnectionSettingsBase GetZoneSettings(ZoneLocator zone)// TODO: test
         {
             using (var key = this.projectRepository.OpenRegistryKey(
-                projectId,
-                ZonePrefix + zoneId,
+                zone.ProjectId,
+                ZonePrefix + zone.Name,
                 true))
             {
-                return ZoneConnectionSettings.FromKey(
-                    projectId,
-                    zoneId,
-                    key);
+                //
+                // Return zone settings, applying project settings
+                // as defaults.
+                //
+                var settings = new ConnectionSettingsBase(zone, key);
+                settings.ApplyDefaults(GetProjectSettings(zone.Project));
+                return settings;
             }
         }
 
-        public void SetZoneSettings(ZoneConnectionSettings settings)
+        public void SetZoneSettings(ConnectionSettingsBase settings)
         {
+            if (!(settings.Resource is ZoneLocator zone))
+            {
+                throw new ArgumentException(nameof(settings));
+            }
+
             using (var key = this.projectRepository.OpenRegistryKey(
-                settings.ProjectId,
-                ZonePrefix + settings.ZoneId,
+                zone.ProjectId,
+                ZonePrefix + zone.Name,
                 true))
             {
                 settings.Save(key);
@@ -115,25 +132,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public InstanceConnectionSettings GetVmInstanceSettings(string projectId, string instanceName)
+        public ConnectionSettingsBase GetVmInstanceSettings(InstanceLocator instance) // TODO: test
         {
             using (var key = this.projectRepository.OpenRegistryKey(
-                projectId,
-                VmPrefix + instanceName,
+                instance.ProjectId,
+                VmPrefix + instance.Name,
                 true))
             {
-                return InstanceConnectionSettings.FromKey(
-                    projectId,
-                    instanceName,
-                    key);
+                //
+                // Return zone settings, applying zone settings
+                // as defaults.
+                //
+                var settings = new ConnectionSettingsBase(instance, key);
+                settings.ApplyDefaults(GetZoneSettings(
+                    new ZoneLocator(instance.ProjectId, instance.Zone)));
+                return settings;
             }
         }
 
-        public void SetVmInstanceSettings(InstanceConnectionSettings settings)
+        public void SetVmInstanceSettings(ConnectionSettingsBase settings)
         {
+            if (!(settings.Resource is InstanceLocator instance))
+            {
+                throw new ArgumentException(nameof(settings));
+            }
+
             using (var key = this.projectRepository.OpenRegistryKey(
-                settings.ProjectId,
-                VmPrefix + settings.InstanceName,
+                instance.ProjectId,
+                VmPrefix + instance.Name,
                 true))
             {
                 settings.Save(key);

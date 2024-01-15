@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
             // Set some initial project settings.
             projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
-            var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
+            var projectSettings = settingsRepository.GetProjectSettings(new ProjectLocator(SampleProjectId));
             projectSettings.RdpDomain.Value = "project-domain";
             settingsRepository.SetProjectSettings(projectSettings);
         }

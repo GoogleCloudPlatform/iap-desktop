@@ -34,6 +34,8 @@ namespace Google.Solutions.Apis.Locator
         public abstract string ResourceType { get; }
         public string Name { get; }
 
+        public ProjectLocator Project => new ProjectLocator(this.ProjectId);//TODO: add test
+
         protected static string StripUrlPrefix(string resourceReference)
         {
             if (resourceReference.StartsWith(ComputeGoogleapisPrefix))

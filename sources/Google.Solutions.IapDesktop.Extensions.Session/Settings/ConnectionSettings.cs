@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
@@ -41,176 +42,31 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
-    public abstract class ConnectionSettingsBase : ISettingsCollection
+    public class ConnectionSettingsBase : ISettingsCollection // TODO: rename to ConnectionSettings
     {
-        private static class Categories
+        /// <summary>
+        /// Resource (instance, zone, project) that these settings apply to.
+        /// </summary>
+        public ResourceLocator Resource { get; }
+
+        /// <summary>
+        /// Create new empty settings.
+        /// </summary>
+        /// <param name="resource"></param>
+        internal ConnectionSettingsBase(ResourceLocator resource)
+            : this(resource, null)
         {
-            private const ushort MaxIndex = 7;
-
-            private static string Order(ushort order, string name)
-            {
-                //
-                // The PropertyGrid control doesn't let us explicitly specify the
-                // order of categories. To work around that limitation, prefix 
-                // category names with zero-width spaces so that alphabetical 
-                // sorting yields the desired result.
-                //
-
-                Debug.Assert(order <= MaxIndex);
-                return new string('\u200B', MaxIndex - order) + name;
-            }
-
-            public static readonly string WindowsCredentials = Order(0, "Windows Credentials");
-
-            public static readonly string RdpConnection = Order(1, "Remote Desktop Connection");
-            public static readonly string RdpDisplay = Order(2, "Remote Desktop Display");
-            public static readonly string RdpResources = Order(3, "Remote Desktop Resources");
-            public static readonly string RdpSecurity = Order(4, "Remote Desktop Security Settings");
-
-            public static readonly string SshConnection = Order(5, "SSH Connection");
-            public static readonly string SshCredentials = Order(6, "SSH Credentials");
-
-            public static readonly string AppCredentials = Order(7, "SQL Server");
         }
 
-        //---------------------------------------------------------------------
-        // RDP settings.
-        //---------------------------------------------------------------------
-
-        public RegistryStringSetting RdpUsername { get; private set; }
-        public RegistrySecureStringSetting RdpPassword { get; private set; }
-        public RegistryStringSetting RdpDomain { get; private set; }
-        public RegistryEnumSetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
-        public RegistryEnumSetting<RdpDesktopSize> RdpDesktopSize { get; private set; }
-        public RegistryEnumSetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
-        public RegistryEnumSetting<RdpColorDepth> RdpColorDepth { get; private set; }
-        public RegistryEnumSetting<RdpAudioMode> RdpAudioMode { get; private set; }
-        public RegistryEnumSetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
-        public RegistryEnumSetting<RdpBitmapPersistence> RdpBitmapPersistence { get; private set; }
-        public RegistryEnumSetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
-        public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
-        public RegistryDwordSetting RdpPort { get; private set; }
-        public RegistryEnumSetting<SessionTransportType> RdpTransport { get; private set; }
-        public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
-        public RegistryEnumSetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
-        public RegistryEnumSetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
-        public RegistryEnumSetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
-        public RegistryEnumSetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
-        public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
-        public RegistryEnumSetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
-        public RegistryEnumSetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
-
-        internal IEnumerable<ISetting> RdpSettings => new ISetting[]
+        /// <summary>
+        /// Initialize settings from a registry key.
+        /// </summary>
+        public ConnectionSettingsBase(
+            ResourceLocator resource,
+            RegistryKey key)
         {
-            //
-            // NB. The order determines the default order in the PropertyGrid
-            // (assuming the PropertyGrid doesn't force alphabetical order).
-            //
-            this.RdpTransport,
-            this.RdpConnectionTimeout,
-            this.RdpPort,
-            
-            this.RdpUsername,
-            this.RdpPassword,
-            this.RdpDomain,
+            this.Resource = resource.ExpectNotNull(nameof(resource));
 
-            this.RdpBitmapPersistence,
-            this.RdpColorDepth,
-            this.RdpDesktopSize,
-            this.RdpConnectionBar,
-
-            this.RdpAudioMode,
-            this.RdpHookWindowsKeys,
-            this.RdpRedirectClipboard,
-            this.RdpRedirectPrinter,
-            this.RdpRedirectSmartCard,
-            this.RdpRedirectPort,
-            this.RdpRedirectDrive,
-            this.RdpRedirectDevice,
-            this.RdpRedirectWebAuthn,
-
-            this.RdpUserAuthenticationBehavior,
-            this.RdpNetworkLevelAuthentication,
-            this.RdpAuthenticationLevel,
-        };
-
-        //---------------------------------------------------------------------
-        // SSH settings.
-        //---------------------------------------------------------------------
-
-        public RegistryDwordSetting SshPort { get; private set; }
-        public RegistryEnumSetting<SessionTransportType> SshTransport { get; private set; }
-        public RegistryStringSetting SshUsername { get; private set; }
-        public RegistrySecureStringSetting SshPassword { get; private set; }
-        public RegistryDwordSetting SshConnectionTimeout { get; private set; }
-        public RegistryEnumSetting<SshPublicKeyAuthentication> SshPublicKeyAuthentication { get; private set; }
-
-        internal IEnumerable<ISetting> SshSettings => new ISetting[]
-        {
-            //
-            // NB. The order determines the default order in the PropertyGrid
-            // (assuming the PropertyGrid doesn't force alphabetical order).
-            //
-            this.SshTransport,
-            this.SshConnectionTimeout,
-            this.SshPort,
-            this.SshPublicKeyAuthentication,
-            this.SshUsername,
-            this.SshPassword,
-        };
-
-        //---------------------------------------------------------------------
-        // App settings.
-        //---------------------------------------------------------------------
-
-        public RegistryStringSetting AppUsername { get; private set; }
-        public RegistryEnumSetting<AppNetworkLevelAuthenticationState> AppNetworkLevelAuthentication { get; private set; }
-
-        internal IEnumerable<ISetting> AppSettings => new ISetting[]
-        {
-            //
-            // NB. The order determines the default order in the PropertyGrid
-            // (assuming the PropertyGrid doesn't force alphabetical order).
-            //
-            this.AppUsername,
-            this.AppNetworkLevelAuthentication
-        };
-
-        //---------------------------------------------------------------------
-        // Filtering.
-        //---------------------------------------------------------------------
-
-        internal bool AppliesTo(
-            ISetting setting,
-            IProjectModelInstanceNode node)
-        {
-            if (this.SshSettings.Contains(setting))
-            {
-                return node.IsSshSupported();
-            }
-            else if (this.RdpSettings.Contains(setting))
-            {
-                return node.IsRdpSupported();
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // IRegistrySettingsCollection.
-        //---------------------------------------------------------------------
-
-        public IEnumerable<ISetting> Settings
-        {
-            get => this.RdpSettings
-                .Concat(this.SshSettings)
-                .Concat(this.AppSettings);
-        }
-
-        protected void InitializeFromKey(RegistryKey key)
-        {
             //
             // RDP Settings.
             //
@@ -454,142 +310,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             Debug.Assert(this.Settings.All(s => s != null));
         }
 
-        protected static void ApplyOverlay<T>(
-            T prototype,
-            ConnectionSettingsBase baseSettings,
-            ConnectionSettingsBase overlaySettings)
-            where T : ConnectionSettingsBase
+        /// <summary>
+        /// Create settings from a URL.
+        /// </summary>
+        public ConnectionSettingsBase(IapRdpUrl url)
+            : this(url.Instance)
         {
-            prototype.RdpUsername = (RegistryStringSetting)
-                baseSettings.RdpUsername.OverlayBy(overlaySettings.RdpUsername);
-            prototype.RdpPassword = (RegistrySecureStringSetting)
-                baseSettings.RdpPassword.OverlayBy(overlaySettings.RdpPassword);
-            prototype.RdpDomain = (RegistryStringSetting)
-                baseSettings.RdpDomain.OverlayBy(overlaySettings.RdpDomain);
-            prototype.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
-                baseSettings.RdpConnectionBar.OverlayBy(overlaySettings.RdpConnectionBar);
-            prototype.RdpDesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
-                baseSettings.RdpDesktopSize.OverlayBy(overlaySettings.RdpDesktopSize);
-            prototype.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
-                baseSettings.RdpAuthenticationLevel.OverlayBy(overlaySettings.RdpAuthenticationLevel);
-            prototype.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
-                baseSettings.RdpColorDepth.OverlayBy(overlaySettings.RdpColorDepth);
-            prototype.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
-                baseSettings.RdpAudioMode.OverlayBy(overlaySettings.RdpAudioMode);
-            prototype.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
-                baseSettings.RdpUserAuthenticationBehavior.OverlayBy(overlaySettings.RdpUserAuthenticationBehavior);
-            prototype.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
-                baseSettings.RdpBitmapPersistence.OverlayBy(overlaySettings.RdpBitmapPersistence);
-            prototype.RdpNetworkLevelAuthentication = (RegistryEnumSetting<RdpNetworkLevelAuthentication>)
-                baseSettings.RdpNetworkLevelAuthentication.OverlayBy(overlaySettings.RdpNetworkLevelAuthentication);
-            prototype.RdpConnectionTimeout = (RegistryDwordSetting)
-                baseSettings.RdpConnectionTimeout.OverlayBy(overlaySettings.RdpConnectionTimeout);
-            prototype.RdpPort = (RegistryDwordSetting)
-                baseSettings.RdpPort.OverlayBy(overlaySettings.RdpPort);
-            prototype.RdpTransport = (RegistryEnumSetting<SessionTransportType>)
-                baseSettings.RdpTransport.OverlayBy(overlaySettings.RdpTransport);
-            prototype.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
-                baseSettings.RdpRedirectClipboard.OverlayBy(overlaySettings.RdpRedirectClipboard);
-            prototype.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
-                baseSettings.RdpRedirectPrinter.OverlayBy(overlaySettings.RdpRedirectPrinter);
-            prototype.RdpRedirectSmartCard = (RegistryEnumSetting<RdpRedirectSmartCard>)
-                baseSettings.RdpRedirectSmartCard.OverlayBy(overlaySettings.RdpRedirectSmartCard);
-            prototype.RdpRedirectPort = (RegistryEnumSetting<RdpRedirectPort>)
-                baseSettings.RdpRedirectPort.OverlayBy(overlaySettings.RdpRedirectPort);
-            prototype.RdpRedirectDrive = (RegistryEnumSetting<RdpRedirectDrive>)
-                baseSettings.RdpRedirectDrive.OverlayBy(overlaySettings.RdpRedirectDrive);
-            prototype.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
-                baseSettings.RdpRedirectDevice.OverlayBy(overlaySettings.RdpRedirectDevice);
-            prototype.RdpRedirectWebAuthn = (RegistryEnumSetting<RdpRedirectWebAuthn>)
-                baseSettings.RdpRedirectWebAuthn.OverlayBy(overlaySettings.RdpRedirectWebAuthn);
-            prototype.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
-                baseSettings.RdpHookWindowsKeys.OverlayBy(overlaySettings.RdpHookWindowsKeys);
-
-            prototype.SshPort = (RegistryDwordSetting)
-                baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);
-            prototype.SshTransport = (RegistryEnumSetting<SessionTransportType>)
-                baseSettings.SshTransport.OverlayBy(overlaySettings.SshTransport);
-            prototype.SshPublicKeyAuthentication = (RegistryEnumSetting<SshPublicKeyAuthentication>)
-                baseSettings.SshPublicKeyAuthentication.OverlayBy(overlaySettings.SshPublicKeyAuthentication);
-            prototype.SshUsername = (RegistryStringSetting)
-                baseSettings.SshUsername.OverlayBy(overlaySettings.SshUsername);
-            prototype.SshPassword = (RegistrySecureStringSetting)
-                baseSettings.SshPassword.OverlayBy(overlaySettings.SshPassword);
-            prototype.SshConnectionTimeout = (RegistryDwordSetting)
-                baseSettings.SshConnectionTimeout.OverlayBy(overlaySettings.SshConnectionTimeout);
-
-            prototype.AppUsername = (RegistryStringSetting)
-                baseSettings.AppUsername.OverlayBy(overlaySettings.AppUsername);
-            prototype.AppNetworkLevelAuthentication = (RegistryEnumSetting<AppNetworkLevelAuthenticationState>)
-                baseSettings.AppNetworkLevelAuthentication.OverlayBy(overlaySettings.AppNetworkLevelAuthentication);
-
-            Debug.Assert(prototype.Settings.All(s => s != null));
-            Debug.Assert(baseSettings.Settings.All(s => s != null));
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    // VM instance.
-    //-------------------------------------------------------------------------
-
-    public class InstanceConnectionSettings : ConnectionSettingsBase
-    {
-        public string ProjectId { get; }
-        public string InstanceName { get; }
-
-        private InstanceConnectionSettings(string projectId, string instanceName)
-        {
-            this.ProjectId = projectId;
-            this.InstanceName = instanceName;
-        }
-
-        protected InstanceConnectionSettings ApplyDefaults(ZoneConnectionSettings zoneSettings)
-        {
-            var prototype = new InstanceConnectionSettings(this.ProjectId, this.InstanceName);
-            ApplyOverlay(prototype, zoneSettings, this);
-            return prototype;
-        }
-
-        //-------------------------------------------------------------------------
-        // Create.
-        //-------------------------------------------------------------------------
-
-        public static InstanceConnectionSettings FromKey(
-            string projectId,
-            string instanceName,
-            RegistryKey registryKey)
-        {
-
-            var settings = new InstanceConnectionSettings(projectId, instanceName);
-            settings.InitializeFromKey(registryKey);
-            return settings;
-        }
-
-        internal static InstanceConnectionSettings CreateNew(
-            string projectId,
-            string instanceName)
-        {
-            return FromKey(
-                projectId,
-                instanceName,
-                null);  // Apply defaults.
-        }
-
-        internal static InstanceConnectionSettings CreateNew(InstanceLocator instance)
-            => CreateNew(
-                instance.ProjectId,
-                instance.Name);
-
-
-        //-------------------------------------------------------------------------
-        // To/from URL.
-        //-------------------------------------------------------------------------
-
-        internal void ApplySettingsFromUrl(IapRdpUrl url)
-        {
-            Debug.Assert(this.InstanceName == url.Instance.Name);
-            Debug.Assert(this.ProjectId == url.Instance.ProjectId);
-
+            //
+            // Apply values from URL.
             //
             // NB. Ignore passwords in URLs.
             //
@@ -609,17 +337,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     }
                 }
             }
-        }
-
-        public static InstanceConnectionSettings FromUrl(IapRdpUrl url)
-        {
-            var settings = CreateNew(
-                url.Instance.ProjectId,
-                url.Instance.Name);
-
-            settings.ApplySettingsFromUrl(url);
-
-            return settings;
         }
 
         public NameValueCollection ToUrlQuery()
@@ -644,84 +361,443 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
             return collection;
         }
+
+        //TODO: make private, expose OverlayBy
+        internal void ApplyDefaults(ConnectionSettingsBase defaults)
+        {
+            defaults.ExpectNotNull(nameof(defaults));
+
+            //
+            // Apply defaults.
+            //
+            this.RdpUsername = (RegistryStringSetting)
+                defaults.RdpUsername.OverlayBy(this.RdpUsername);
+            this.RdpPassword = (RegistrySecureStringSetting)
+                defaults.RdpPassword.OverlayBy(this.RdpPassword);
+            this.RdpDomain = (RegistryStringSetting)
+                defaults.RdpDomain.OverlayBy(this.RdpDomain);
+            this.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
+                defaults.RdpConnectionBar.OverlayBy(this.RdpConnectionBar);
+            this.RdpDesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
+                defaults.RdpDesktopSize.OverlayBy(this.RdpDesktopSize);
+            this.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
+                defaults.RdpAuthenticationLevel.OverlayBy(this.RdpAuthenticationLevel);
+            this.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
+                defaults.RdpColorDepth.OverlayBy(this.RdpColorDepth);
+            this.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
+                defaults.RdpAudioMode.OverlayBy(this.RdpAudioMode);
+            this.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
+                defaults.RdpUserAuthenticationBehavior.OverlayBy(this.RdpUserAuthenticationBehavior);
+            this.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
+                defaults.RdpBitmapPersistence.OverlayBy(this.RdpBitmapPersistence);
+            this.RdpNetworkLevelAuthentication = (RegistryEnumSetting<RdpNetworkLevelAuthentication>)
+                defaults.RdpNetworkLevelAuthentication.OverlayBy(this.RdpNetworkLevelAuthentication);
+            this.RdpConnectionTimeout = (RegistryDwordSetting)
+                defaults.RdpConnectionTimeout.OverlayBy(this.RdpConnectionTimeout);
+            this.RdpPort = (RegistryDwordSetting)
+                defaults.RdpPort.OverlayBy(this.RdpPort);
+            this.RdpTransport = (RegistryEnumSetting<SessionTransportType>)
+                defaults.RdpTransport.OverlayBy(this.RdpTransport);
+            this.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
+                defaults.RdpRedirectClipboard.OverlayBy(this.RdpRedirectClipboard);
+            this.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
+                defaults.RdpRedirectPrinter.OverlayBy(this.RdpRedirectPrinter);
+            this.RdpRedirectSmartCard = (RegistryEnumSetting<RdpRedirectSmartCard>)
+                defaults.RdpRedirectSmartCard.OverlayBy(this.RdpRedirectSmartCard);
+            this.RdpRedirectPort = (RegistryEnumSetting<RdpRedirectPort>)
+                defaults.RdpRedirectPort.OverlayBy(this.RdpRedirectPort);
+            this.RdpRedirectDrive = (RegistryEnumSetting<RdpRedirectDrive>)
+                defaults.RdpRedirectDrive.OverlayBy(this.RdpRedirectDrive);
+            this.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
+                defaults.RdpRedirectDevice.OverlayBy(this.RdpRedirectDevice);
+            this.RdpRedirectWebAuthn = (RegistryEnumSetting<RdpRedirectWebAuthn>)
+                defaults.RdpRedirectWebAuthn.OverlayBy(this.RdpRedirectWebAuthn);
+            this.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
+                defaults.RdpHookWindowsKeys.OverlayBy(this.RdpHookWindowsKeys);
+
+            this.SshPort = (RegistryDwordSetting)
+                defaults.SshPort.OverlayBy(this.SshPort);
+            this.SshTransport = (RegistryEnumSetting<SessionTransportType>)
+                defaults.SshTransport.OverlayBy(this.SshTransport);
+            this.SshPublicKeyAuthentication = (RegistryEnumSetting<SshPublicKeyAuthentication>)
+                defaults.SshPublicKeyAuthentication.OverlayBy(this.SshPublicKeyAuthentication);
+            this.SshUsername = (RegistryStringSetting)
+                defaults.SshUsername.OverlayBy(this.SshUsername);
+            this.SshPassword = (RegistrySecureStringSetting)
+                defaults.SshPassword.OverlayBy(this.SshPassword);
+            this.SshConnectionTimeout = (RegistryDwordSetting)
+                defaults.SshConnectionTimeout.OverlayBy(this.SshConnectionTimeout);
+
+            this.AppUsername = (RegistryStringSetting)
+                defaults.AppUsername.OverlayBy(this.AppUsername);
+            this.AppNetworkLevelAuthentication = (RegistryEnumSetting<AppNetworkLevelAuthenticationState>)
+                defaults.AppNetworkLevelAuthentication.OverlayBy(this.AppNetworkLevelAuthentication);
+
+            Debug.Assert(this.Settings.All(s => s != null));
+            Debug.Assert(this.Settings.All(s => s != null));
+        }
+
+        //---------------------------------------------------------------------
+        // RDP settings.
+        //---------------------------------------------------------------------
+
+        public RegistryStringSetting RdpUsername { get; private set; }
+        public RegistrySecureStringSetting RdpPassword { get; private set; }
+        public RegistryStringSetting RdpDomain { get; private set; }
+        public RegistryEnumSetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
+        public RegistryEnumSetting<RdpDesktopSize> RdpDesktopSize { get; private set; }
+        public RegistryEnumSetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
+        public RegistryEnumSetting<RdpColorDepth> RdpColorDepth { get; private set; }
+        public RegistryEnumSetting<RdpAudioMode> RdpAudioMode { get; private set; }
+        public RegistryEnumSetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
+        public RegistryEnumSetting<RdpBitmapPersistence> RdpBitmapPersistence { get; private set; }
+        public RegistryEnumSetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
+        public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
+        public RegistryDwordSetting RdpPort { get; private set; }
+        public RegistryEnumSetting<SessionTransportType> RdpTransport { get; private set; }
+        public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
+        public RegistryEnumSetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
+        public RegistryEnumSetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
+        public RegistryEnumSetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
+        public RegistryEnumSetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
+        public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
+        public RegistryEnumSetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
+        public RegistryEnumSetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
+
+        internal IEnumerable<ISetting> RdpSettings => new ISetting[]
+        {
+            //
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
+            //
+            this.RdpTransport,
+            this.RdpConnectionTimeout,
+            this.RdpPort,
+            
+            this.RdpUsername,
+            this.RdpPassword,
+            this.RdpDomain,
+
+            this.RdpBitmapPersistence,
+            this.RdpColorDepth,
+            this.RdpDesktopSize,
+            this.RdpConnectionBar,
+
+            this.RdpAudioMode,
+            this.RdpHookWindowsKeys,
+            this.RdpRedirectClipboard,
+            this.RdpRedirectPrinter,
+            this.RdpRedirectSmartCard,
+            this.RdpRedirectPort,
+            this.RdpRedirectDrive,
+            this.RdpRedirectDevice,
+            this.RdpRedirectWebAuthn,
+
+            this.RdpUserAuthenticationBehavior,
+            this.RdpNetworkLevelAuthentication,
+            this.RdpAuthenticationLevel,
+        };
+
+        //---------------------------------------------------------------------
+        // SSH settings.
+        //---------------------------------------------------------------------
+
+        public RegistryDwordSetting SshPort { get; private set; }
+        public RegistryEnumSetting<SessionTransportType> SshTransport { get; private set; }
+        public RegistryStringSetting SshUsername { get; private set; }
+        public RegistrySecureStringSetting SshPassword { get; private set; }
+        public RegistryDwordSetting SshConnectionTimeout { get; private set; }
+        public RegistryEnumSetting<SshPublicKeyAuthentication> SshPublicKeyAuthentication { get; private set; }
+
+        internal IEnumerable<ISetting> SshSettings => new ISetting[]
+        {
+            //
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
+            //
+            this.SshTransport,
+            this.SshConnectionTimeout,
+            this.SshPort,
+            this.SshPublicKeyAuthentication,
+            this.SshUsername,
+            this.SshPassword,
+        };
+
+        //---------------------------------------------------------------------
+        // App settings.
+        //---------------------------------------------------------------------
+
+        public RegistryStringSetting AppUsername { get; private set; }
+        public RegistryEnumSetting<AppNetworkLevelAuthenticationState> AppNetworkLevelAuthentication { get; private set; }
+
+        internal IEnumerable<ISetting> AppSettings => new ISetting[]
+        {
+            //
+            // NB. The order determines the default order in the PropertyGrid
+            // (assuming the PropertyGrid doesn't force alphabetical order).
+            //
+            this.AppUsername,
+            this.AppNetworkLevelAuthentication
+        };
+
+        //---------------------------------------------------------------------
+        // Filtering.
+        //---------------------------------------------------------------------
+
+        internal bool AppliesTo(
+            ISetting setting,
+            IProjectModelInstanceNode node)
+        {
+            if (this.SshSettings.Contains(setting))
+            {
+                return node.IsSshSupported();
+            }
+            else if (this.RdpSettings.Contains(setting))
+            {
+                return node.IsRdpSupported();
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ISettingsCollection.
+        //---------------------------------------------------------------------
+
+        public IEnumerable<ISetting> Settings
+        {
+            get => this.RdpSettings
+                .Concat(this.SshSettings)
+                .Concat(this.AppSettings);
+        }
+
+        private static class Categories
+        {
+            private const ushort MaxIndex = 7;
+
+            private static string Order(ushort order, string name)
+            {
+                //
+                // The PropertyGrid control doesn't let us explicitly specify the
+                // order of categories. To work around that limitation, prefix 
+                // category names with zero-width spaces so that alphabetical 
+                // sorting yields the desired result.
+                //
+
+                Debug.Assert(order <= MaxIndex);
+                return new string('\u200B', MaxIndex - order) + name;
+            }
+
+            public static readonly string WindowsCredentials = Order(0, "Windows Credentials");
+
+            public static readonly string RdpConnection = Order(1, "Remote Desktop Connection");
+            public static readonly string RdpDisplay = Order(2, "Remote Desktop Display");
+            public static readonly string RdpResources = Order(3, "Remote Desktop Resources");
+            public static readonly string RdpSecurity = Order(4, "Remote Desktop Security Settings");
+
+            public static readonly string SshConnection = Order(5, "SSH Connection");
+            public static readonly string SshCredentials = Order(6, "SSH Credentials");
+
+            public static readonly string AppCredentials = Order(7, "SQL Server");
+        }
     }
+    // TODO: remove stuff below
+    ////-------------------------------------------------------------------------
+    //// VM instance.
+    ////-------------------------------------------------------------------------
 
-    //-------------------------------------------------------------------------
-    // Zone.
-    //-------------------------------------------------------------------------
+    //public class InstanceConnectionSettings : ConnectionSettingsBase
+    //{
+    //    public string ProjectId { get; }
+    //    public string InstanceName { get; }
 
-    public class ZoneConnectionSettings : ConnectionSettingsBase
-    {
-        public string ProjectId { get; }
-        public string ZoneId { get; }
+    //    private InstanceConnectionSettings(string projectId, string instanceName)
+    //    {
+    //        this.ProjectId = projectId;
+    //        this.InstanceName = instanceName;
+    //    }
 
-        private ZoneConnectionSettings(string projectId, string zoneId)
-        {
-            this.ProjectId = projectId;
-            this.ZoneId = zoneId;
-        }
+    //    protected InstanceConnectionSettings ApplyDefaults(ZoneConnectionSettings zoneSettings)
+    //    {
+    //        var prototype = new InstanceConnectionSettings(this.ProjectId, this.InstanceName);
+    //        ApplyOverlay(prototype, zoneSettings, this);
+    //        return prototype;
+    //    }
 
-        public static ZoneConnectionSettings FromKey(
-            string projectId,
-            string zoneId,
-            RegistryKey registryKey)
-        {
+    //    //-------------------------------------------------------------------------
+    //    // Create.
+    //    //-------------------------------------------------------------------------
 
-            var settings = new ZoneConnectionSettings(projectId, zoneId);
-            settings.InitializeFromKey(registryKey);
-            return settings;
-        }
+    //    public static InstanceConnectionSettings FromKey(
+    //        string projectId,
+    //        string instanceName,
+    //        RegistryKey registryKey)
+    //    {
 
-        public static ZoneConnectionSettings CreateNew(
-            string projectId,
-            string zoneId)
-        {
-            return FromKey(
-                projectId,
-                zoneId,
-                null);  // Apply defaults.
-        }
+    //        var settings = new InstanceConnectionSettings(projectId, instanceName);
+    //        settings.InitializeFromKey(registryKey);
+    //        return settings;
+    //    }
 
-        public InstanceConnectionSettings OverlayBy(InstanceConnectionSettings instanceSettings)
-        {
-            var result = InstanceConnectionSettings.CreateNew(
-                instanceSettings.ProjectId,
-                instanceSettings.InstanceName);
-            ApplyOverlay(result, this, instanceSettings);
-            return result;
-        }
-    }
+    //    internal static InstanceConnectionSettings CreateNew(
+    //        string projectId,
+    //        string instanceName)
+    //    {
+    //        return FromKey(
+    //            projectId,
+    //            instanceName,
+    //            null);  // Apply defaults.
+    //    }
 
-    //-------------------------------------------------------------------------
-    // Project.
-    //-------------------------------------------------------------------------
+    //    internal static InstanceConnectionSettings CreateNew(InstanceLocator instance)
+    //        => CreateNew(
+    //            instance.ProjectId,
+    //            instance.Name);
 
-    public class ProjectConnectionSettings : ConnectionSettingsBase
-    {
-        public string ProjectId { get; }
 
-        private ProjectConnectionSettings(string projectId)
-        {
-            this.ProjectId = projectId;
-        }
+    //    //-------------------------------------------------------------------------
+    //    // To/from URL.
+    //    //-------------------------------------------------------------------------
 
-        public static ProjectConnectionSettings FromKey(
-            string ProjectId,
-            RegistryKey registryKey)
-        {
+    //    internal void ApplySettingsFromUrl(IapRdpUrl url)
+    //    {
+    //        Debug.Assert(this.InstanceName == url.Instance.Name);
+    //        Debug.Assert(this.ProjectId == url.Instance.ProjectId);
 
-            var settings = new ProjectConnectionSettings(ProjectId);
-            settings.InitializeFromKey(registryKey);
-            return settings;
-        }
+    //        //
+    //        // NB. Ignore passwords in URLs.
+    //        //
+    //        foreach (var setting in this.Settings
+    //            .Where(s => !(s is RegistrySecureStringSetting)))
+    //        {
+    //            var value = url.Parameters.Get(setting.Key);
+    //            if (!string.IsNullOrEmpty(value))
+    //            {
+    //                try
+    //                {
+    //                    setting.Value = value;
+    //                }
+    //                catch (Exception)
+    //                {
+    //                    // Ignore, keeping the previous value.
+    //                }
+    //            }
+    //        }
+    //    }
 
-        public ZoneConnectionSettings OverlayBy(ZoneConnectionSettings zoneSettings)
-        {
-            var result = ZoneConnectionSettings.CreateNew(
-                zoneSettings.ProjectId,
-                zoneSettings.ZoneId);
-            ApplyOverlay(result, this, zoneSettings);
-            return result;
-        }
-    }
+    //    public static InstanceConnectionSettings FromUrl(IapRdpUrl url)
+    //    {
+    //        var settings = CreateNew(
+    //            url.Instance.ProjectId,
+    //            url.Instance.Name);
+
+    //        settings.ApplySettingsFromUrl(url);
+
+    //        return settings;
+    //    }
+
+    //    public NameValueCollection ToUrlQuery()
+    //    {
+    //        // NB. Do not allow passwords to leak into URLs.
+    //        var collection = new NameValueCollection();
+    //        foreach (var setting in this.Settings
+    //            .Where(s => !(s is RegistrySecureStringSetting))
+    //            .Where(s => !s.IsDefault))
+    //        {
+    //            if (setting.Value is Enum enumValue)
+    //            {
+    //                // Use numeric value instead of symbol because
+    //                // the numeric value is stable.
+    //                collection.Add(setting.Key, ((int)setting.Value).ToString());
+    //            }
+    //            else
+    //            {
+    //                collection.Add(setting.Key, setting.Value.ToString());
+    //            }
+    //        }
+
+    //        return collection;
+    //    }
+    //}
+
+    ////-------------------------------------------------------------------------
+    //// Zone.
+    ////-------------------------------------------------------------------------
+
+    //public class ZoneConnectionSettings : ConnectionSettingsBase
+    //{
+    //    public string ProjectId { get; }
+    //    public string ZoneId { get; }
+
+    //    private ZoneConnectionSettings(string projectId, string zoneId)
+    //    {
+    //        this.ProjectId = projectId;
+    //        this.ZoneId = zoneId;
+    //    }
+
+    //    public static ZoneConnectionSettings FromKey(
+    //        string projectId,
+    //        string zoneId,
+    //        RegistryKey registryKey)
+    //    {
+
+    //        var settings = new ZoneConnectionSettings(projectId, zoneId);
+    //        settings.InitializeFromKey(registryKey);
+    //        return settings;
+    //    }
+
+    //    public static ZoneConnectionSettings CreateNew(
+    //        string projectId,
+    //        string zoneId)
+    //    {
+    //        return FromKey(
+    //            projectId,
+    //            zoneId,
+    //            null);  // Apply defaults.
+    //    }
+
+    //    public InstanceConnectionSettings OverlayBy(InstanceConnectionSettings instanceSettings)
+    //    {
+    //        var result = InstanceConnectionSettings.CreateNew(
+    //            instanceSettings.ProjectId,
+    //            instanceSettings.InstanceName);
+    //        ApplyOverlay(result, this, instanceSettings);
+    //        return result;
+    //    }
+    //}
+
+    ////-------------------------------------------------------------------------
+    //// Project.
+    ////-------------------------------------------------------------------------
+
+    //public class ProjectConnectionSettings : ConnectionSettingsBase
+    //{
+    //    public string ProjectId { get; }
+
+    //    private ProjectConnectionSettings(string projectId)
+    //    {
+    //        this.ProjectId = projectId;
+    //    }
+
+    //    public static ProjectConnectionSettings FromKey(
+    //        string ProjectId,
+    //        RegistryKey registryKey)
+    //    {
+
+    //        var settings = new ProjectConnectionSettings(ProjectId);
+    //        settings.InitializeFromKey(registryKey);
+    //        return settings;
+    //    }
+
+    //    public ZoneConnectionSettings OverlayBy(ZoneConnectionSettings zoneSettings)
+    //    {
+    //        var result = ZoneConnectionSettings.CreateNew(
+    //            zoneSettings.ProjectId,
+    //            zoneSettings.ZoneId);
+    //        ApplyOverlay(result, this, zoneSettings);
+    //        return result;
+    //    }
+    //}
 }

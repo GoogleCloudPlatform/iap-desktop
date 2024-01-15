@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         private static Mock<IConnectionSettingsService> CreateSettingsService(
-            InstanceConnectionSettings settings)
+            ConnectionSettingsBase settings)
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public void WhenFlagsUnsupported_ThenCreateContextThrowsException()
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settings = new ConnectionSettingsBase(SampleLocator);
             var settingsService = CreateSettingsService(settings);
 
             var factory = new AppProtocolContextFactory(
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public async Task WhenFlagsClear_ThenCreateContextUsesNoNetworkCredentials()
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settings = new ConnectionSettingsBase(SampleLocator);
             var settingsService = CreateSettingsService(settings);
 
             var factory = new AppProtocolContextFactory(
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public async Task WhenTryUseRdpNetworkCredentialsIsSetButNoCredentialsFound_ThenCreateContextUsesNoNetworkCredentials()
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settings = new ConnectionSettingsBase(SampleLocator);
             var settingsService = CreateSettingsService(settings);
 
             var factory = new AppProtocolContextFactory(
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public async Task WhenTryUseRdpNetworkCredentials_ThenCreateContextUsesRdpNetworkCredentials()
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settings = new ConnectionSettingsBase(SampleLocator);
             settings.RdpUsername.StringValue = "user";
             settings.RdpPassword.ClearTextValue = "password";
             settings.RdpDomain.StringValue = "domain";
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         [Test]
         public async Task CreateContextAppliesSettings()
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator);
+            var settings = new ConnectionSettingsBase(SampleLocator);
             settings.AppUsername.StringValue = "user";
             settings.AppNetworkLevelAuthentication.EnumValue 
                 = AppNetworkLevelAuthenticationState.Disabled;

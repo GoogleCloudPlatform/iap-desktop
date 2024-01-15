@@ -23,7 +23,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
@@ -66,37 +65,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (node is IProjectModelProjectNode projectNode)
             {
-                return this.repository.GetProjectSettings(projectNode.Project.ProjectId)
+                return this.repository
+                    .GetProjectSettings(projectNode.Project)
+
+                    // Save back to same repository.
                     .ToPersistentSettingsCollection(s => this.repository.SetProjectSettings(s));
             }
             else if (node is IProjectModelZoneNode zoneNode)
             {
-                var projectSettings = this.repository.GetProjectSettings(
-                    zoneNode.Zone.ProjectId);
-                var zoneSettings = this.repository.GetZoneSettings(
-                    zoneNode.Zone.ProjectId,
-                    zoneNode.Zone.Name);
+                return this.repository
+                    .GetZoneSettings(zoneNode.Zone)
 
-                // Apply overlay to get effective settings.
-                return projectSettings
-                    .OverlayBy(zoneSettings)
+                    // Save back to same repository.
                     .ToPersistentSettingsCollection(s => this.repository.SetZoneSettings(s));
             }
             else if (node is IProjectModelInstanceNode vmNode)
             {
-                var projectSettings = this.repository.GetProjectSettings(
-                    vmNode.Instance.ProjectId);
-                var zoneSettings = this.repository.GetZoneSettings(
-                    vmNode.Instance.ProjectId,
-                    vmNode.Instance.Zone);
-                var instanceSettings = this.repository.GetVmInstanceSettings(
-                    vmNode.Instance.ProjectId,
-                    vmNode.Instance.Name);
-
-                // Apply overlay to get effective settings.
-                return projectSettings
-                    .OverlayBy(zoneSettings)
-                    .OverlayBy(instanceSettings)
+                return this.repository
+                    .GetVmInstanceSettings(vmNode.Instance)
 
                     // Save back to same repository.
                     .ToPersistentSettingsCollection(s => this.repository.SetVmInstanceSettings(s))
