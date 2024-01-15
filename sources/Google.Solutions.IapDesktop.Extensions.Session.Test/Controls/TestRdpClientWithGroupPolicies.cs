@@ -87,6 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Client.Server = "localhost";
                 window.Client.ServerPort = (ushort)tunnel.Tunnel.LocalEndpoint.Port;
 
+                window.Show();
                 window.Client.Connect();
 
                 await window.Client
@@ -113,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                     .ConfigureAwait(true);
 
                 window.Client.MainWindow = window;
-                window.Client.Username = $@".\{rdpCredential.User}";
+                window.Client.Username = rdpCredential.User;
                 window.Client.Password = rdpCredential.Password.AsClearText();
                 window.Client.Server = "localhost";
                 window.Client.ServerPort = (ushort)tunnel.Tunnel.LocalEndpoint.Port;
@@ -214,6 +215,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> authTask)
         {
             return ConnectionSucceeds(instanceTask, authTask);
+        }
+
+        [WindowsFormsTest]
+        public async Task WhenRestrictedAdminModeEnabled_ThenConnectionSucceeds(
+            [WindowsInstance(InitializeScript = @"
+                & reg add ""HKLM\System\CurrentControlSet\Control\Lsa"" /t REG_DWORD /v DisableRestrictedAdmin /d 0 /f | Out-Default
+            ")] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> authTask)
+        {
+            var instance = await instanceTask;
+            var auth = await authTask;
+
+            using (var window = new RdpDiagnosticsWindow())
+            using (var tunnel = IapTransport.ForRdp(instance, auth))
+            {
+                var rdpCredential = await
+                    GenerateRdpCredentialAsync(instance)
+                    .ConfigureAwait(true);
+
+                window.Client.MainWindow = window;
+                window.Client.Username = rdpCredential.User;
+                window.Client.Password = rdpCredential.Password.AsClearText();
+                window.Client.Server = "localhost";
+                window.Client.ServerPort = (ushort)tunnel.Tunnel.LocalEndpoint.Port;
+
+                window.Client.EnableRestrictedAdminMode = true;
+
+                window.Show();
+                window.Client.Connect();
+
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                window.Close();
+            }
         }
     }
 }

@@ -104,6 +104,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         /// <summary>
+        /// Connection Timeout, including time allowed to enter user credentials.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TimeSpan ConnectionTimeout
+        {
+            get => TimeSpan.FromSeconds(this.clientAdvancedSettings.singleConnectionTimeout);
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+
+                //
+                // Apply timeouts. Note that the control might take
+                // about twice the configured timeout before sending a 
+                // OnDisconnected event.
+                //
+                this.clientAdvancedSettings.singleConnectionTimeout = (int)value.TotalSeconds;
+                this.clientAdvancedSettings.overallConnectionTimeout = (int)value.TotalSeconds;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Security properties.
+        //---------------------------------------------------------------------
+
+        /// <summary>
         /// Enable Network Level Authentication (CredSSP).
         /// </summary>
         [Browsable(true)]
@@ -157,24 +183,82 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         /// <summary>
-        /// Connection Timeout, including time allowed to enter user credentials.
+        /// Enable 'restricted admin' mode.
+        /// 
+        /// Note the following:
+        /// 
+        /// 1. Restricted admin mode must be enabled on the server first:
+        ///    
+        ///    New-ItemProperty -Path"HKLM:\System\CurrentControlSet\Control\Lsa" `
+        ///      -Name "DisableRestrictedAdmin"
+        ///      -Value 0 `
+        ///      -PropertyType DWORD -Force
+        ///      
+        ///    See 'Microsoft Security Advisory 2871997' for details:
+        ///    https://learn.microsoft.com/en-us/security-updates/securityadvisories/2016/2871997
+        ///    
+        ///    Optionally, it can be enforced via GPO:
+        ///    
+        ///    Computer Configuration\Policies\Administrative Templates\System\Credentials Delegation
+        ///    > 'Restrict delegation of credentials to remote servers' = enabled
+        ///    
+        /// 2. Restricted admin mode only works for users that have local admin
+        ///    rights on the target machine.
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public TimeSpan ConnectionTimeout
+        public bool EnableRestrictedAdminMode
         {
-            get => TimeSpan.FromSeconds(this.clientAdvancedSettings.singleConnectionTimeout);
+            get
+            {
+                try
+                {
+                    return (bool)this.clientExtendedSettings.get_Property("RestrictedLogon");
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
             set
             {
                 ExpectState(ConnectionState.NotConnected);
+                this.clientExtendedSettings.set_Property("RestrictedLogon", value);
+            }
+        }
 
-                //
-                // Apply timeouts. Note that the control might take
-                // about twice the configured timeout before sending a 
-                // OnDisconnected event.
-                //
-                this.clientAdvancedSettings.singleConnectionTimeout = (int)value.TotalSeconds;
-                this.clientAdvancedSettings.overallConnectionTimeout = (int)value.TotalSeconds;
+        /// <summary>
+        /// Enable remote credential guard (RCG).
+        /// 
+        /// Note the following:
+        /// 
+        /// 1. Restricted admin mode must be enabled on the server first
+        ///    (same as for restricted admin mode).
+        ///    
+        /// 2. RCG requires Kerberos.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableRemoteCredentialGuard
+        {
+            get
+            {
+                try
+                {
+                    return 
+                        (bool)this.clientExtendedSettings.get_Property("DisableCredentialsDelegation") &&
+                        (bool)this.clientExtendedSettings.get_Property("RedirectedAuthentication");
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientExtendedSettings.set_Property("DisableCredentialsDelegation", value); 
+                this.clientExtendedSettings.set_Property("RedirectedAuthentication", value);
             }
         }
 

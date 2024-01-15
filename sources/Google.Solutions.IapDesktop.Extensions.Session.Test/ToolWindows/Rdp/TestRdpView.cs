@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     windowsCredentials.UserName,
                     windowsCredentials.Domain,
                     windowsCredentials.SecurePassword);
-                var rdpPparameters = new RdpParameters();
+                var rdpParameters = new RdpParameters();
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     () => session = (RdpView)broker.ConnectRdpSession(
                         instance,
                         tunnel,
-                        rdpPparameters,
+                        rdpParameters,
                         rdpCredential))
                     .ConfigureAwait(true);
 

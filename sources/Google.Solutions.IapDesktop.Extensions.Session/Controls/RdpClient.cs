@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private readonly IMsRdpClientNonScriptable5 clientNonScriptable;
         private readonly IMsRdpClientAdvancedSettings6 clientAdvancedSettings;
         private readonly IMsRdpClientSecuredSettings clientSecuredSettings;
+        private readonly IMsRdpExtendedSettings clientExtendedSettings;
 
         private ConnectionState state = ConnectionState.NotConnected;
 
@@ -124,6 +125,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // Let us handle full-screen mode ourselves.
             //
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
+
+            this.clientExtendedSettings = (IMsRdpExtendedSettings)this.client.GetOcx();
 
             //
             // As a user control, we don't get a FormClosing event,
