@@ -100,13 +100,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Categories.RdpDisplay,
                 RdpConnectionBarState._Default,
                 key);
-            this.RdpDesktopSize = RegistryEnumSetting<RdpDesktopSize>.FromKey(
-                "DesktopSize",
-                "Desktop size",
-                "Size of remote desktop.",
-                Categories.RdpDisplay,
-                Protocol.Rdp.RdpDesktopSize._Default,
-                key);
             this.RdpAuthenticationLevel = RegistryEnumSetting<RdpAuthenticationLevel>.FromKey(
                 "AuthenticationLevel",
                 "Server authentication",
@@ -134,13 +127,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 null, // Hidden.
                 null, // Hidden.
                 Protocol.Rdp.RdpUserAuthenticationBehavior._Default,
-                key);
-            this.RdpBitmapPersistence = RegistryEnumSetting<RdpBitmapPersistence>.FromKey(
-                "BitmapPersistence",
-                "Bitmap caching",
-                "Use persistent bitmap cache. Enabling caching substantially increases memory usage.",
-                Categories.RdpDisplay,
-                Protocol.Rdp.RdpBitmapPersistence._Default,
                 key);
             this.RdpNetworkLevelAuthentication = RegistryEnumSetting<RdpNetworkLevelAuthentication>.FromKey(
                 "NetworkLevelAuthentication",
@@ -379,8 +365,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.RdpDomain.OverlayBy(overlay.RdpDomain);
             merged.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
                 this.RdpConnectionBar.OverlayBy(overlay.RdpConnectionBar);
-            merged.RdpDesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
-                this.RdpDesktopSize.OverlayBy(overlay.RdpDesktopSize);
             merged.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
                 this.RdpAuthenticationLevel.OverlayBy(overlay.RdpAuthenticationLevel);
             merged.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
@@ -389,8 +373,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.RdpAudioMode.OverlayBy(overlay.RdpAudioMode);
             merged.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
                 this.RdpUserAuthenticationBehavior.OverlayBy(overlay.RdpUserAuthenticationBehavior);
-            merged.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
-                this.RdpBitmapPersistence.OverlayBy(overlay.RdpBitmapPersistence);
             merged.RdpNetworkLevelAuthentication = (RegistryEnumSetting<RdpNetworkLevelAuthentication>)
                 this.RdpNetworkLevelAuthentication.OverlayBy(overlay.RdpNetworkLevelAuthentication);
             merged.RdpConnectionTimeout = (RegistryDwordSetting)
@@ -447,12 +429,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public RegistrySecureStringSetting RdpPassword { get; private set; }
         public RegistryStringSetting RdpDomain { get; private set; }
         public RegistryEnumSetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
-        public RegistryEnumSetting<RdpDesktopSize> RdpDesktopSize { get; private set; }
         public RegistryEnumSetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
         public RegistryEnumSetting<RdpColorDepth> RdpColorDepth { get; private set; }
         public RegistryEnumSetting<RdpAudioMode> RdpAudioMode { get; private set; }
         public RegistryEnumSetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
-        public RegistryEnumSetting<RdpBitmapPersistence> RdpBitmapPersistence { get; private set; }
         public RegistryEnumSetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
         public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
         public RegistryDwordSetting RdpPort { get; private set; }
@@ -480,9 +460,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpPassword,
             this.RdpDomain,
 
-            this.RdpBitmapPersistence,
             this.RdpColorDepth,
-            this.RdpDesktopSize,
             this.RdpConnectionBar,
 
             this.RdpAudioMode,

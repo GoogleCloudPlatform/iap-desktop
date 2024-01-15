@@ -80,13 +80,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpPassword.IsDefault);
             Assert.IsTrue(settings.RdpDomain.IsDefault);
             Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
-            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
             Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
             Assert.IsTrue(settings.RdpColorDepth.IsDefault);
             Assert.IsTrue(settings.RdpAudioMode.IsDefault);
             Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
-            Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
             Assert.IsTrue(settings.RdpPort.IsDefault);
             Assert.IsTrue(settings.RdpTransport.IsDefault);
@@ -175,13 +173,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpPassword.IsDefault);
             Assert.IsTrue(settings.RdpDomain.IsDefault);
             Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
-            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
             Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
             Assert.IsTrue(settings.RdpColorDepth.IsDefault);
             Assert.IsTrue(settings.RdpAudioMode.IsDefault);
             Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
-            Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
             Assert.IsTrue(settings.RdpPort.IsDefault);
             Assert.IsTrue(settings.RdpTransport.IsDefault);
@@ -248,12 +244,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpPassword.IsDefault);
             Assert.IsTrue(settings.RdpDomain.IsDefault);
             Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
-            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
             Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
             Assert.IsTrue(settings.RdpColorDepth.IsDefault);
             Assert.IsTrue(settings.RdpAudioMode.IsDefault);
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
-            Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
             Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
             Assert.IsTrue(settings.RdpRedirectPrinter.IsDefault);
@@ -274,7 +268,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var originalSettings = this.repository.GetInstanceSettings(instance);
             originalSettings.RdpUsername.Value = "user-1";
             originalSettings.RdpConnectionBar.Value = RdpConnectionBarState.Pinned;
-            originalSettings.RdpDesktopSize.Value = RdpDesktopSize.ScreenSize;
             originalSettings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.RequireServerAuthentication;
             originalSettings.RdpColorDepth.Value = RdpColorDepth.DeepColor;
             originalSettings.RdpAudioMode.Value = RdpAudioMode.DoNotPlay;
@@ -294,7 +287,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             Assert.AreEqual("user-1", settings.RdpUsername.Value);
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.RdpDesktopSize.Value);
             Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, settings.RdpAuthenticationLevel.Value);
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.RdpColorDepth.Value);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);

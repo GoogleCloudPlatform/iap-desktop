@@ -139,7 +139,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics
                 WriteTextbox("RdpPort");
                 WriteTextbox("CredentialCallbackUrl");
                 WriteCombobox<RdpConnectionBarState>("ConnectionBar");
-                WriteCombobox<RdpDesktopSize>("DesktopSize");
                 WriteCombobox<RdpColorDepth>("ColorDepth");
                 WriteCombobox<RdpAudioMode>("AudioMode");
                 WriteCombobox<RdpRedirectClipboard>("RedirectClipboard");

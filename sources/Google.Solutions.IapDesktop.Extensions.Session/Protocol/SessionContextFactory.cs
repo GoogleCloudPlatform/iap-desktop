@@ -156,11 +156,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.TransportType = settings.RdpTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
             context.Parameters.ConnectionBar = settings.RdpConnectionBar.EnumValue;
-            context.Parameters.DesktopSize = settings.RdpDesktopSize.EnumValue;
             context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue;
             context.Parameters.ColorDepth = settings.RdpColorDepth.EnumValue;
             context.Parameters.AudioMode = settings.RdpAudioMode.EnumValue;
-            context.Parameters.BitmapPersistence = settings.RdpBitmapPersistence.EnumValue;
             context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue;
             context.Parameters.UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue;
             context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.EnumValue;

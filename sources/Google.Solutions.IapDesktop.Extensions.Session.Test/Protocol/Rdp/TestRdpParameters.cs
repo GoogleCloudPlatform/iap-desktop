@@ -38,11 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.AreEqual(RdpParameters.DefaultPort, parameters.Port);
             Assert.AreEqual(RdpParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
             Assert.AreEqual(RdpConnectionBarState._Default, parameters.ConnectionBar);
-            Assert.AreEqual(RdpDesktopSize._Default, parameters.DesktopSize);
             Assert.AreEqual(RdpAuthenticationLevel._Default, parameters.AuthenticationLevel);
             Assert.AreEqual(RdpColorDepth._Default, parameters.ColorDepth);
             Assert.AreEqual(RdpAudioMode._Default, parameters.AudioMode);
-            Assert.AreEqual(RdpBitmapPersistence._Default, parameters.BitmapPersistence);
             Assert.AreEqual(RdpNetworkLevelAuthentication._Default, parameters.NetworkLevelAuthentication);
             Assert.AreEqual(RdpUserAuthenticationBehavior._Default, parameters.UserAuthenticationBehavior);
             Assert.AreEqual(RdpRedirectClipboard._Default, parameters.RedirectClipboard);
