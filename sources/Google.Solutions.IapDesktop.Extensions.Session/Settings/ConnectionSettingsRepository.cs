@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public ConnectionSettings GetVmInstanceSettings(InstanceLocator instance) // TODO: test
+        public ConnectionSettings GetInstanceSettings(InstanceLocator instance) // TODO: test
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 instance.ProjectId,
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             }
         }
 
-        public void SetVmInstanceSettings(ConnectionSettings settings)
+        public void SetInstanceSettings(ConnectionSettings settings)
         {
             if (!(settings.Resource is InstanceLocator instance))
             {

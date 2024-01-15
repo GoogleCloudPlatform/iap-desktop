@@ -82,10 +82,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             else if (node is IProjectModelInstanceNode vmNode)
             {
                 return this.repository
-                    .GetVmInstanceSettings(vmNode.Instance)
+                    .GetInstanceSettings(vmNode.Instance)
 
                     // Save back to same repository.
-                    .ToPersistentSettingsCollection(s => this.repository.SetVmInstanceSettings(s))
+                    .ToPersistentSettingsCollection(s => this.repository.SetInstanceSettings(s))
 
                     // Hide any settings that are not applicable to this instance.
                     .ToFilteredSettingsCollection((coll, setting) => coll.AppliesTo(setting, vmNode));

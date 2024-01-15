@@ -231,17 +231,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetVmInstanceSettings(instance);
+                this.repository.GetInstanceSettings(instance);
             });
         }
 
         [Test]
-        public void WhenVmInstanceIdDoesNotExist_GetZoneSettingsReturnsDefaults()
+        public void WhenInstanceIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
             this.projectRepository.AddProject(instance.Project);
-            var settings = this.repository.GetVmInstanceSettings(instance);
+            var settings = this.repository.GetInstanceSettings(instance);
 
             Assert.AreEqual(instance, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
             this.projectRepository.AddProject(instance.Project);
-            var originalSettings = this.repository.GetVmInstanceSettings(instance);
+            var originalSettings = this.repository.GetInstanceSettings(instance);
             originalSettings.RdpUsername.Value = "user-1";
             originalSettings.RdpConnectionBar.Value = RdpConnectionBarState.Pinned;
             originalSettings.RdpDesktopSize.Value = RdpDesktopSize.ScreenSize;
@@ -287,10 +287,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpPort.Value = 13389;
             originalSettings.RdpTransport.Value = SessionTransportType.Vpc;
 
-            this.repository.SetVmInstanceSettings(originalSettings);
+            this.repository.SetInstanceSettings(originalSettings);
 
 
-            var settings = this.repository.GetVmInstanceSettings(instance);
+            var settings = this.repository.GetInstanceSettings(instance);
 
             Assert.AreEqual("user-1", settings.RdpUsername.Value);
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
@@ -314,15 +314,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
             this.projectRepository.AddProject(instance.Project);
-            var originalSettings = this.repository.GetVmInstanceSettings(instance);
+            var originalSettings = this.repository.GetInstanceSettings(instance);
             originalSettings.RdpUsername.Value = "user-1";
-            this.repository.SetVmInstanceSettings(originalSettings);
+            this.repository.SetInstanceSettings(originalSettings);
 
             this.projectRepository.RemoveProject(instance.Project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetVmInstanceSettings(instance);
+                this.repository.GetInstanceSettings(instance);
             });
         }
     }
