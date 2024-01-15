@@ -22,14 +22,15 @@
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Application.Test
 {
     /// <summary>
-    /// Annotation for test fixtures that use RDP.
+    /// Annotation for test fixtures that use or modify the
+    /// system proxy autoconfiguration settings.
     /// </summary>
-    public class RdpTestAttribute : CategoryAttribute //TODO: Rename to RequiresRdp
+    public class RequiresProxyAutoconfigAttribute : CategoryAttribute
     {
-        public RdpTestAttribute() : base("RdpTest")
+        public RequiresProxyAutoconfigAttribute() : base("ProxyAutoconfigTest")
         {
         }
     }

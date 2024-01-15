@@ -26,7 +26,7 @@ using Google.Solutions.Tsc;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
-    partial class RdpDesktopView
+    partial class RdpView
     {
         /// <summary>
         /// Required designer variable.
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RdpDesktopView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RdpView));
             this.overlayPanel = new System.Windows.Forms.Panel();
             this.waitPanel = new System.Windows.Forms.Panel();
             this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();

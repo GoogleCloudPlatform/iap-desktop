@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestFileBrowserUi
     {
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void TestUI()
         {

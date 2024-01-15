@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Downlo
             return file;
         }
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void TestUI()
         {

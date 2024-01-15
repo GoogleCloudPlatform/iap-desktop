@@ -20,15 +20,16 @@
 //
 
 using NUnit.Framework;
+using System;
 
-namespace Google.Solutions.Testing.Apis.Integration
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 {
     /// <summary>
-    /// Annotation for test fixtures that require user interaction.
+    /// Annotation for test fixtures that use RDP.
     /// </summary>
-    public class InteractiveTestAttribute : CategoryAttribute
+    public class RequiresRdpAttribute : CategoryAttribute
     {
-        public InteractiveTestAttribute() : base("InteractiveTest")
+        public RequiresRdpAttribute() : base("RdpTest")
         {
         }
     }

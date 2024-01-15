@@ -46,7 +46,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
     [Service]
-    public partial class RdpDesktopView //TODO: Rename to RdpView
+    public partial class RdpView //TODO: Rename to RdpView
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Ctor.
         //---------------------------------------------------------------------
 
-        public RdpDesktopView(IServiceProvider serviceProvider)
+        public RdpView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
@@ -138,25 +138,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Statics.
         //---------------------------------------------------------------------
 
-        public static RdpDesktopView TryGetExistingPane(
+        public static RdpView TryGetExistingPane(
             IMainWindow mainForm,
             InstanceLocator vmInstance)
         {
             return mainForm.MainPanel
                 .Documents
                 .EnsureNotNull()
-                .OfType<RdpDesktopView>()
+                .OfType<RdpView>()
                 .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
                 .FirstOrDefault();
         }
 
-        public static RdpDesktopView TryGetActivePane(
+        public static RdpView TryGetActivePane(
             IMainWindow mainForm)
         {
             //
             // NB. The active content might be in a float window.
             //
-            return mainForm.MainPanel.ActivePane?.ActiveContent as RdpDesktopView;
+            return mainForm.MainPanel.ActivePane?.ActiveContent as RdpView;
         }
 
         //---------------------------------------------------------------------

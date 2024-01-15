@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
     [UsesCloudResources]
-    [RdpTest]
+    [RequiresRdp]
     [Apartment(ApartmentState.STA)]
     public class TestRdpClientWithGroupPolicies
     {

@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    [InteractiveTest]
+    [RequiresInteraction]
     public class TestWaitDialog : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------

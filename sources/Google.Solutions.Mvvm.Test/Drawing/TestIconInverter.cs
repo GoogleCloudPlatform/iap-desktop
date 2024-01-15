@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             this.invertGraysCheckBox.CheckStateChanged += (_, __) => Apply();
         }
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void InvertIcon()
         {

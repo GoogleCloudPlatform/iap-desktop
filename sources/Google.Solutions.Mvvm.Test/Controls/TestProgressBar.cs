@@ -126,7 +126,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // CircularProgressBar.
         //---------------------------------------------------------------------
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void DefiniteCircularProgressBar()
         {
@@ -151,7 +151,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void IndeterminateCircularProgressBar()
         {
@@ -178,7 +178,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // LinearProgressBar.
         //---------------------------------------------------------------------
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void DefiniteLinearProgressBar()
         {
@@ -203,7 +203,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void IndeterminateLinearProgressBar()
         {

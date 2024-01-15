@@ -502,7 +502,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        [InteractiveTest]
+        [RequiresInteraction]
         [Apartment(ApartmentState.STA)]
         public void TestCommandBindingUi()
         {
