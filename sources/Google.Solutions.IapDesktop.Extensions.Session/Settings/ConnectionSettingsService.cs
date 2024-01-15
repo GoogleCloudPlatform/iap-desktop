@@ -27,7 +27,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
-    public interface IConnectionSettingsService
+    public interface IConnectionSettingsService // TODO: merge into repository
     {
         bool IsConnectionSettingsAvailable(IProjectModelNode node);
         IPersistentSettingsCollection<ConnectionSettings> GetConnectionSettings(
