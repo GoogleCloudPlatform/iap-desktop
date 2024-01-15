@@ -216,11 +216,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.rdpClient.Username = this.viewModel.Credential.User;
                 this.rdpClient.ServerPort = this.viewModel.Port;
                 this.rdpClient.Password = this.viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                this.rdpClient.ConnectionTimeout = this.viewModel.Parameters.ConnectionTimeout;
 
                 //
                 // Connection security settings.
                 //
-
                 switch (this.viewModel.Parameters.AuthenticationLevel)
                 {
                     case RdpAuthenticationLevel.NoServerAuthentication:
@@ -236,13 +236,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                         break;
                 }
 
-                this.rdpClient.EnableCredentialPrompt=
-                    this.viewModel.Parameters.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure;
+                this.rdpClient.EnableCredentialPrompt =
+                    (this.viewModel.Parameters.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure);
                 this.rdpClient.EnableNetworkLevelAuthentication =
                     (this.viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
-
-                this.rdpClient.ConnectionTimeout = this.viewModel.Parameters.ConnectionTimeout;
-
+                this.rdpClient.EnableRestrictedAdminMode = 
+                    (this.viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled);
+                
                 //
                 // Connection bar settings.
                 //

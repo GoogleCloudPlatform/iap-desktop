@@ -220,6 +220,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Categories.RdpResources,
                 Protocol.Rdp.RdpHookWindowsKeys._Default,
                 key);
+            this.RdpRestrictedAdminMode = RegistryEnumSetting<RdpRestrictedAdminMode>.FromKey(
+                "RdpRestrictedAdminMode",
+                "Restricted Admin mode",
+                "Disable the transmission of reusable credentials to the VM. This mode requires " +
+                    "a user account with local administrator privileges on the VM, and the " +
+                    "VM must be configured to permit Restricted Admin mode.",
+                Categories.RdpSecurity,
+                Protocol.Rdp.RdpRestrictedAdminMode._Default,
+                key);
 
             //
             // SSH Settings.
@@ -397,6 +406,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.RdpRedirectWebAuthn.OverlayBy(overlay.RdpRedirectWebAuthn);
             merged.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
                 this.RdpHookWindowsKeys.OverlayBy(overlay.RdpHookWindowsKeys);
+            merged.RdpRestrictedAdminMode = (RegistryEnumSetting<RdpRestrictedAdminMode>)
+                this.RdpRestrictedAdminMode.OverlayBy(overlay.RdpRestrictedAdminMode);
 
             merged.SshPort = (RegistryDwordSetting)
                 this.SshPort.OverlayBy(overlay.SshPort);
@@ -445,6 +456,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
         public RegistryEnumSetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
         public RegistryEnumSetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
+        public RegistryEnumSetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; private set; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -476,6 +488,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpUserAuthenticationBehavior,
             this.RdpNetworkLevelAuthentication,
             this.RdpAuthenticationLevel,
+            this.RdpRestrictedAdminMode,
         };
 
         //---------------------------------------------------------------------

@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
         public RdpRedirectWebAuthn RedirectWebAuthn { get; set; } = RdpRedirectWebAuthn._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
+        public RdpRestrictedAdminMode RestrictedAdminMode { get; set; } = RdpRestrictedAdminMode._Default;
 
         /// <summary>
         /// Sources where these parameters were obtained from.
@@ -229,4 +230,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         [Browsable(false)]
         _Default = FullScreenOnly
     }
+
+    public enum RdpRestrictedAdminMode
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
 }
