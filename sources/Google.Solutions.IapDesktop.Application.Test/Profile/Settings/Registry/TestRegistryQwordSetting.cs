@@ -44,6 +44,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         }
 
         //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        {
+            var setting = RegistryQwordSetting.FromKey(
+                "test",
+                "title",
+                "description",
+                "category",
+                17,
+                null,
+                0, 100);
+
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+
+            setting.LongValue = 1;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsDefault);
+
+            setting.LongValue = setting.DefaultValue;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+        }
+
+        //---------------------------------------------------------------------
         // Load.
         //---------------------------------------------------------------------
 

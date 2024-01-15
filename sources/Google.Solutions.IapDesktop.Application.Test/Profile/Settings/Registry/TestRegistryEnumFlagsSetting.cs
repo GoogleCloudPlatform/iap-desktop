@@ -53,6 +53,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         }
 
         //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        {
+            var setting = RegistryEnumSetting<Toppings>.FromKey(
+                "test",
+                "title",
+                "description",
+                "category",
+                Toppings.None,
+                null);
+
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+
+            setting.EnumValue = Toppings.Cheese;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsDefault);
+
+            setting.EnumValue = setting.DefaultValue;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+        }
+
+        //---------------------------------------------------------------------
         // Load.
         //---------------------------------------------------------------------
 

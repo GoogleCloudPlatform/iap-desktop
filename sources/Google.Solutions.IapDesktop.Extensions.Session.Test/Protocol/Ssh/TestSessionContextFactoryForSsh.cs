@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.SshPort.IntValue = 2222;
             settings.SshUsername.StringValue = "user";
             settings.SshConnectionTimeout.Value = (int)TimeSpan.FromSeconds(123).TotalSeconds;
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task WhenPublicKeyAuthDisabled_ThenCreateSshSessionContextUsesPasswordCredential(
             [Values("user", "", null)] string username)
         {
-            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.SshPublicKeyAuthentication.EnumValue = SshPublicKeyAuthentication.Disabled;
             settings.SshUsername.StringValue = username;
 
@@ -242,9 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    InstanceConnectionSettings
-                        .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
+                .Returns(new ConnectionSettings(SampleLocator)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
@@ -276,9 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    InstanceConnectionSettings
-                        .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
+                .Returns(new ConnectionSettings(SampleLocator)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);
@@ -320,9 +316,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    InstanceConnectionSettings
-                        .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
+                .Returns(new ConnectionSettings(SampleLocator)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = CreateInstanceNodeMock(OperatingSystems.Linux);

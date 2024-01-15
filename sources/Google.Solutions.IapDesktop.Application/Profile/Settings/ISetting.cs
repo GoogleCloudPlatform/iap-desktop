@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         object Value { get; set; }
 
         /// <summary>
-        /// Determines whether the current value is equivalent o
+        /// Determines whether the current value is equivalent to
         /// the default value.
         /// </summary>
         bool IsDefault { get; }

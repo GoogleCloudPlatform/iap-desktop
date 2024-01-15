@@ -63,17 +63,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetProjectSettings("some-project");
+                this.repository.GetProjectSettings(new ProjectLocator("project-1"));
             });
         }
 
         [Test]
         public void WhenProjectIdExists_GetProjectSettingsReturnsDefaults()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var settings = this.repository.GetProjectSettings("pro-1");
+            var project = new ProjectLocator("project-1");
 
-            Assert.AreEqual("pro-1", settings.ProjectId);
+            this.projectRepository.AddProject(project);
+            var settings = this.repository.GetProjectSettings(project);
+
+            Assert.AreEqual(project, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
             Assert.IsTrue(settings.RdpPassword.IsDefault);
             Assert.IsTrue(settings.RdpDomain.IsDefault);
@@ -93,23 +95,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenProjectSettingsSaved_GetProjectSettingsReturnsData()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetProjectSettings("pro-1");
+            var project = new ProjectLocator("project-1");
+
+            this.projectRepository.AddProject(project);
+            var originalSettings = this.repository.GetProjectSettings(project);
             originalSettings.RdpUsername.Value = "user";
 
             this.repository.SetProjectSettings(originalSettings);
 
-            var settings = this.repository.GetProjectSettings(originalSettings.ProjectId);
+            var settings = this.repository.GetProjectSettings(project);
 
-            Assert.AreEqual(originalSettings.ProjectId, settings.ProjectId);
+            Assert.AreEqual(originalSettings.Resource, settings.Resource);
             Assert.AreEqual(originalSettings.RdpUsername.Value, settings.RdpUsername.Value);
         }
 
         [Test]
         public void WhenProjectSettingsSavedTwice_GetProjectSettingsReturnsLatestData()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetProjectSettings("pro-1");
+            var project = new ProjectLocator("project-1");
+
+            this.projectRepository.AddProject(project);
+            var originalSettings = this.repository.GetProjectSettings(project);
             originalSettings.RdpUsername.Value = "user";
 
             this.repository.SetProjectSettings(originalSettings);
@@ -117,25 +123,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpUsername.Value = "new-user";
             this.repository.SetProjectSettings(originalSettings);
 
-            var settings = this.repository.GetProjectSettings(originalSettings.ProjectId);
+            var settings = this.repository.GetProjectSettings(project);
 
-            Assert.AreEqual(originalSettings.ProjectId, settings.ProjectId);
+            Assert.AreEqual(originalSettings.Resource, settings.Resource);
             Assert.AreEqual(originalSettings.RdpUsername.Value, settings.RdpUsername.Value);
         }
 
         [Test]
         public void WhenProjectSettingsDeleted_GetProjectSettingsThrowsKeyNotFoundException()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetProjectSettings("pro-1");
+            var project = new ProjectLocator("project-1");
+
+            this.projectRepository.AddProject(project);
+            var originalSettings = this.repository.GetProjectSettings(project);
             originalSettings.RdpUsername.Value = "user";
             this.repository.SetProjectSettings(originalSettings);
 
-            this.projectRepository.RemoveProject(new ProjectLocator(originalSettings.ProjectId));
+            this.projectRepository.RemoveProject(project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetProjectSettings(originalSettings.ProjectId);
+                this.repository.GetProjectSettings(project);
             });
         }
 
@@ -146,20 +154,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenProjectIdDoesNotExist_GetZoneSettingsThrowsKeyNotFoundException()
         {
+            var zone = new ZoneLocator("project-1", "zone-1");
+
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetZoneSettings("nonexisting-project", "zone-id");
+                this.repository.GetZoneSettings(zone);
             });
         }
 
         [Test]
         public void WhenZoneIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var settings = this.repository.GetZoneSettings("pro-1", "zone-1");
+            var zone = new ZoneLocator("project-1", "zone-1");
 
-            Assert.AreEqual("pro-1", settings.ProjectId);
-            Assert.AreEqual("zone-1", settings.ZoneId);
+            this.projectRepository.AddProject(zone.Project);
+            var settings = this.repository.GetZoneSettings(zone);
+
+            Assert.AreEqual(zone, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
             Assert.IsTrue(settings.RdpPassword.IsDefault);
             Assert.IsTrue(settings.RdpDomain.IsDefault);
@@ -179,28 +190,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenSetValidZoneSettings_GetZoneSettingsReturnSameValues()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetZoneSettings("pro-1", "zone-1");
-            originalSettings.RdpUsername.Value = "user-1";
+            var zone = new ZoneLocator("project-1", "zone-1");
 
+            this.projectRepository.AddProject(zone.Project);
+            var originalSettings = this.repository.GetZoneSettings(zone);
+            originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetZoneSettings(originalSettings);
 
-            Assert.AreEqual("user-1", this.repository.GetZoneSettings("pro-1", "zone-1").RdpUsername.Value);
+            var settings = this.repository.GetZoneSettings(zone);
+
+            Assert.AreEqual("user-1", settings.RdpUsername.Value);
         }
 
         [Test]
         public void WhenProjectSettingsDeleted_ZoneSettingsAreDeletedToo()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetZoneSettings("pro-1", "zone-1");
+            var zone = new ZoneLocator("project-1", "zone-1");
+
+            this.projectRepository.AddProject(zone.Project);
+            var originalSettings = this.repository.GetZoneSettings(zone);
             originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetZoneSettings(originalSettings);
 
-            this.projectRepository.RemoveProject(new ProjectLocator("pro-1"));
+            this.projectRepository.RemoveProject(zone.Project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetZoneSettings("pro-1", "zone-1");
+                this.repository.GetZoneSettings(zone);
             });
         }
 
@@ -211,20 +227,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenProjectIdDoesNotExist_GetVmInstanceSettingsThrowsKeyNotFoundException()
         {
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetVmInstanceSettings("nonexisting-project", "vm-id");
+                this.repository.GetInstanceSettings(instance);
             });
         }
 
         [Test]
-        public void WhenVmInstanceIdDoesNotExist_GetZoneSettingsReturnsDefaults()
+        public void WhenInstanceIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var settings = this.repository.GetVmInstanceSettings("pro-1", "instance-1");
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-            Assert.AreEqual("pro-1", settings.ProjectId);
-            Assert.AreEqual("instance-1", settings.InstanceName);
+            this.projectRepository.AddProject(instance.Project);
+            var settings = this.repository.GetInstanceSettings(instance);
+
+            Assert.AreEqual(instance, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
             Assert.IsTrue(settings.RdpPassword.IsDefault);
             Assert.IsTrue(settings.RdpDomain.IsDefault);
@@ -249,8 +268,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenSetValidVmInstanceSettings_GetVmInstanceSettingsReturnSameValues()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+            this.projectRepository.AddProject(instance.Project);
+            var originalSettings = this.repository.GetInstanceSettings(instance);
             originalSettings.RdpUsername.Value = "user-1";
             originalSettings.RdpConnectionBar.Value = RdpConnectionBarState.Pinned;
             originalSettings.RdpDesktopSize.Value = RdpDesktopSize.ScreenSize;
@@ -266,10 +287,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpPort.Value = 13389;
             originalSettings.RdpTransport.Value = SessionTransportType.Vpc;
 
-            this.repository.SetVmInstanceSettings(originalSettings);
+            this.repository.SetInstanceSettings(originalSettings);
 
 
-            var settings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
+            var settings = this.repository.GetInstanceSettings(instance);
 
             Assert.AreEqual("user-1", settings.RdpUsername.Value);
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
@@ -290,16 +311,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenProjectSettingsDeleted_VmInstanceSettingsAreDeletedToo()
         {
-            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
-            var originalSettings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
-            originalSettings.RdpUsername.Value = "user-1";
-            this.repository.SetVmInstanceSettings(originalSettings);
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-            this.projectRepository.RemoveProject(new ProjectLocator("pro-1"));
+            this.projectRepository.AddProject(instance.Project);
+            var originalSettings = this.repository.GetInstanceSettings(instance);
+            originalSettings.RdpUsername.Value = "user-1";
+            this.repository.SetInstanceSettings(originalSettings);
+
+            this.projectRepository.RemoveProject(instance.Project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetVmInstanceSettings("pro-1", "vm-1");
+                this.repository.GetInstanceSettings(instance);
             });
         }
     }

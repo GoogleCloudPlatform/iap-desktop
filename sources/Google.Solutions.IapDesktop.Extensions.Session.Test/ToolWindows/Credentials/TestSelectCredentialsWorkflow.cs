@@ -58,12 +58,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .Setup(s => s.CreateCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<Extensions.Session.Settings.ConnectionSettings>(),
                     It.Is<bool>(silent => silent == expectSilentCredentialGeneration)))
                 .Callback(
                     (IWin32Window owner,
                     InstanceLocator instanceRef,
-                    ConnectionSettingsBase settings,
+                    Extensions.Session.Settings.ConnectionSettings settings,
                     bool silent) =>
                     {
                         settings.RdpUsername.Value = "bob";
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 false,
                 taskDialog);
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             await credentialPrompt
                 .SelectCredentialsAsync(
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 isGrantedPermissionToGenerateCredentials,
                 false,
                 taskDialog);
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.StringValue = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
 
             var credentialPrompt = CreateCredentialsWorkflow(true, false, taskDialog);
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             await credentialPrompt
                 .SelectCredentialsAsync(
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             var credentialPrompt = CreateCredentialsWorkflow(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.SelectCredentialsAsync(
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 false,
                 taskDialog);
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.StringValue = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             var credentialPrompt = CreateCredentialsWorkflow(true, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.SelectCredentialsAsync(
@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
 
             var credentialPrompt = CreateCredentialsWorkflow(true, false, taskDialog);
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             await credentialPrompt
                 .SelectCredentialsAsync(
@@ -423,7 +423,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
 
             var credentialPrompt = CreateCredentialsWorkflow(true, false, taskDialog);
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.StringValue = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
@@ -463,7 +463,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
 
             var credentialPrompt = CreateCredentialsWorkflow(true, true, taskDialog);
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             await credentialPrompt
                 .SelectCredentialsAsync(
@@ -509,7 +509,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             var credentialPrompt = CreateCredentialsWorkflow(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
 
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.SelectCredentialsAsync(

@@ -32,7 +32,9 @@ namespace Google.Solutions.Apis.Locator
 
         public string ProjectId { get; }
         public abstract string ResourceType { get; }
-        public string Name { get; }
+        public string Name { get; } //TODO: rename to Id
+
+        public ProjectLocator Project => new ProjectLocator(this.ProjectId);
 
         protected static string StripUrlPrefix(string resourceReference)
         {

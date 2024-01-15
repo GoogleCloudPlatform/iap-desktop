@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
+using static Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry.TestRegistryEnumFlagsSetting;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
 {
@@ -38,6 +39,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         public void SetUp()
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+        }
+
+        //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        {
+            var setting = RegistryEnumSetting<Toppings>.FromKey(
+                "test",
+                "title",
+                "description",
+                "category",
+                Toppings.None,
+                null);
+
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+
+            setting.EnumValue = Toppings.Cheese;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsDefault);
+
+            setting.EnumValue = setting.DefaultValue;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
         }
 
         //---------------------------------------------------------------------
