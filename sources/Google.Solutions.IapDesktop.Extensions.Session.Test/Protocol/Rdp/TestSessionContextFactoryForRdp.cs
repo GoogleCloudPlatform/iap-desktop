@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public async Task WhenUsingForcePasswordPromptFlag_ThenCreateRdpSessionContextByNodeUsesClearPassword()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "existinguser";
             settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public async Task WhenUsingDefaultFlags_ThenCreateRdpSessionContextByNodeUsesPersistentCredentials()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "existinguser";
             settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             credentialDialog.Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<ConnectionSettings>(),
                     RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
 
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<ConnectionSettings>(),
                     RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
 
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public async Task WhenUrlContainsUsernameAndCredentialsExist_ThenCreateRdpSessionContextByUrlUsesUsernameFromUrl()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "existinguser";
             settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<ConnectionSettings>(),
                     RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>()));
 

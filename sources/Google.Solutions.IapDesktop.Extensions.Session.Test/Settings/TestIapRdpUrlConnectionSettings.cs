@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenVmInstanceSettingsAreAllDefaults_ThenToUrlQueryReturnsEmptyCollection()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
 
             Assert.AreEqual(0, settings.ToUrlQuery().Count);
         }
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenVmInstanceSettingsArePopulated_ThenToUrlQueryExcludesPassword()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "bob";
             settings.RdpPassword.ClearTextValue = "secret";
             settings.RdpRedirectClipboard.EnumValue = RdpRedirectClipboard.Disabled;
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenSettingsContainsEscapableChars_ThenToStringEscapesThem()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "Tom & Jerry?";
             settings.RdpDomain.Value = "\"?\"";
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenParseStringCreatedByToString_ResultIsSame()
         {
-            var settings = new ConnectionSettingsBase(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "user";
             settings.RdpDomain.Value = "domain";
             settings.RdpConnectionBar.Value = RdpConnectionBarState.Off;
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 settings.ToUrlQuery());
 
-            var copy = new ConnectionSettingsBase(url);
+            var copy = new ConnectionSettings(url);
 
             Assert.AreEqual("user", copy.RdpUsername.Value);
             Assert.AreEqual("domain", copy.RdpDomain.Value);
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenQueryStringMissing_ThenSettingsUsesDefaults()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
-            var settings = new ConnectionSettingsBase(url);
+            var settings = new ConnectionSettings(url);
 
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenQueryStringContainsNonsense_ThenSettingsUsesDefaults()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&_");
-            var settings = new ConnectionSettingsBase(url);
+            var settings = new ConnectionSettings(url);
 
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 "ConnectionBar=-1&DesktopSize=a&AuthenticationLevel=null&ColorDepth=&" +
                 "AudioMode=9999&RedirectClipboard=b&RedirectClipboard=c&" +
                 "CredentialGenerationBehavior=-11");
-            var settings = new ConnectionSettingsBase(url);
+            var settings = new ConnectionSettings(url);
 
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "userNAME=John%20Doe&PassworD=ignore&Domain=%20%20mydomain&");
-            var settings = new ConnectionSettingsBase(url);
+            var settings = new ConnectionSettings(url);
 
             Assert.AreEqual("John Doe", settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=1&DesktopSize=1&AuthenticationLevel=0&ColorDepth=2&" +
                 "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0&Rdpport=13389");
-            var settings = new ConnectionSettingsBase(url);
+            var settings = new ConnectionSettings(url);
 
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
             Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.RdpDesktopSize.Value);
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var queryParameters = new NameValueCollection();
             queryParameters.Add("AudioMode", emptyValue);
 
-            var settings = new ConnectionSettingsBase(
+            var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
 
             Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.EnumValue);
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var queryParameters = new NameValueCollection();
             queryParameters.Add("AudioMode", invalidValue);
 
-            var settings = new ConnectionSettingsBase(
+            var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
 
             Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.EnumValue);
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var queryParameters = new NameValueCollection();
             queryParameters.Add("AudioMode", "2");
 
-            var settings = new ConnectionSettingsBase(
+            var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
 
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.EnumValue);

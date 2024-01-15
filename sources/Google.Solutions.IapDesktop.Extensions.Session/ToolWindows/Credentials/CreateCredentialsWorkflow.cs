@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         Task CreateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
-            ConnectionSettingsBase settings,
+            Settings.ConnectionSettings settings,
             bool silent);
 
         Task<bool> IsGrantedPermissionToGenerateCredentials(
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         public async Task CreateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            ConnectionSettingsBase settings,
+            Settings.ConnectionSettings settings,
             bool silent)
         {
             var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)

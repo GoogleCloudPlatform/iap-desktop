@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         Task SelectCredentialsAsync(
            IWin32Window owner,
            InstanceLocator instanceLocator,
-           ConnectionSettingsBase settings,
+           Settings.ConnectionSettings settings,
            RdpCredentialGenerationBehavior allowedBehavior,
            bool allowJumpToSettings);
     }
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         public async Task SelectCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            ConnectionSettingsBase settings,
+            Settings.ConnectionSettings settings,
             RdpCredentialGenerationBehavior allowedBehavior,
             bool allowJumpToSettings)
         {

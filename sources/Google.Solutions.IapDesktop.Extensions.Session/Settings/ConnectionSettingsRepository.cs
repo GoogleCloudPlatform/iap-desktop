@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Projects.
         //---------------------------------------------------------------------
 
-        public ConnectionSettingsBase GetProjectSettings(ProjectLocator project)// TODO: test
+        public ConnectionSettings GetProjectSettings(ProjectLocator project)// TODO: test
         {
             using (var key = this.projectRepository.OpenRegistryKey(project.Name))
             {
@@ -69,11 +69,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     throw new KeyNotFoundException(project.Name);
                 }
 
-                return new ConnectionSettingsBase(project, key);
+                return new ConnectionSettings(project, key);
             }
         }
 
-        public void SetProjectSettings(ConnectionSettingsBase settings)
+        public void SetProjectSettings(ConnectionSettings settings)
         {
             if (!(settings.Resource is ProjectLocator project))
             {
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Zones.
         //---------------------------------------------------------------------
 
-        public ConnectionSettingsBase GetZoneSettings(ZoneLocator zone)// TODO: test
+        public ConnectionSettings GetZoneSettings(ZoneLocator zone)// TODO: test
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 zone.ProjectId,
@@ -107,11 +107,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 // as defaults.
                 //
                 return GetProjectSettings(zone.Project)
-                    .OverlayBy(new ConnectionSettingsBase(zone, key));
+                    .OverlayBy(new ConnectionSettings(zone, key));
             }
         }
 
-        public void SetZoneSettings(ConnectionSettingsBase settings)
+        public void SetZoneSettings(ConnectionSettings settings)
         {
             if (!(settings.Resource is ZoneLocator zone))
             {
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public ConnectionSettingsBase GetVmInstanceSettings(InstanceLocator instance) // TODO: test
+        public ConnectionSettings GetVmInstanceSettings(InstanceLocator instance) // TODO: test
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 instance.ProjectId,
@@ -143,11 +143,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 // as defaults.
                 //
                 return GetZoneSettings(new ZoneLocator(instance.ProjectId, instance.Zone))
-                    .OverlayBy(new ConnectionSettingsBase(instance, key));
+                    .OverlayBy(new ConnectionSettings(instance, key));
             }
         }
 
-        public void SetVmInstanceSettings(ConnectionSettingsBase settings)
+        public void SetVmInstanceSettings(ConnectionSettings settings)
         {
             if (!(settings.Resource is InstanceLocator instance))
             {

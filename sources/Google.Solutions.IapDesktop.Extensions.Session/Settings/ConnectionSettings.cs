@@ -42,7 +42,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
-    public class ConnectionSettingsBase : ISettingsCollection // TODO: rename to ConnectionSettings
+    public class ConnectionSettings : ISettingsCollection
     {
         /// <summary>
         /// Resource (instance, zone, project) that these settings apply to.
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// Create new empty settings.
         /// </summary>
         /// <param name="resource"></param>
-        internal ConnectionSettingsBase(ResourceLocator resource)
+        internal ConnectionSettings(ResourceLocator resource)
             : this(resource, null)
         {
         }
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Initialize settings from a registry key.
         /// </summary>
-        public ConnectionSettingsBase(
+        public ConnectionSettings(
             ResourceLocator resource,
             RegistryKey key)
         {
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Create settings from a URL.
         /// </summary>
-        public ConnectionSettingsBase(IapRdpUrl url)
+        public ConnectionSettings(IapRdpUrl url)
             : this(url.Instance)
         {
             //
@@ -362,11 +362,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             return collection;
         }
 
-        internal ConnectionSettingsBase OverlayBy(ConnectionSettingsBase overlay)
+        internal ConnectionSettings OverlayBy(ConnectionSettings overlay)
         {
             overlay.ExpectNotNull(nameof(overlay));
 
-            var merged = new ConnectionSettingsBase(overlay.Resource);
+            var merged = new ConnectionSettings(overlay.Resource);
 
             //
             // Apply this.

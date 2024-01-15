@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     public interface IConnectionSettingsService
     {
         bool IsConnectionSettingsAvailable(IProjectModelNode node);
-        IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
+        IPersistentSettingsCollection<ConnectionSettings> GetConnectionSettings(
             IProjectModelNode node);
     }
 
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                    node is IProjectModelInstanceNode;
         }
 
-        public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
+        public IPersistentSettingsCollection<ConnectionSettings> GetConnectionSettings(
             IProjectModelNode node)
         {
             if (node is IProjectModelProjectNode projectNode)

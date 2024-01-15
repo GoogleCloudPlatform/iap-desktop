@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         //---------------------------------------------------------------------
 
         private static RdpCredential CreateRdpCredentialFromSettings(
-            ConnectionSettingsBase settings)
+            ConnectionSettings settings)
         {
             return new RdpCredential(
                 settings.RdpUsername.StringValue,
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private RdpContext CreateRdpContext(
             InstanceLocator instance,
             RdpCredential credential,
-            ConnectionSettingsBase settings,
+            ConnectionSettings settings,
             RdpParameters.ParameterSources sources)
         {
             var context = new RdpContext(
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 settings.Save();
             }
 
-            var instanceSettings = (ConnectionSettingsBase)settings.TypedCollection;
+            var instanceSettings = (ConnectionSettings)settings.TypedCollection;
             var credential = CreateRdpCredentialFromSettings(instanceSettings);
 
             if (flags.HasFlag(RdpCreateSessionFlags.ForcePasswordPrompt))
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             url.ExpectNotNull(nameof(url));
 
             RdpParameters.ParameterSources sources;
-            ConnectionSettingsBase settings;
+            ConnectionSettings settings;
             var existingNode = await this.workspace
                 .GetNodeAsync(url.Instance, cancellationToken)
                 .ConfigureAwait(true);
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 settings = this.settingsService
                     .GetConnectionSettings(vmNode).TypedCollection
-                    .OverlayBy(new ConnectionSettingsBase(url));
+                    .OverlayBy(new ConnectionSettings(url));
 
                 sources = RdpParameters.ParameterSources.Inventory
                     | RdpParameters.ParameterSources.Url;
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // We don't have that VM in the inventory, all we have is the URL.
                 //
-                settings = new ConnectionSettingsBase(url);
+                settings = new ConnectionSettings(url);
                 sources = RdpParameters.ParameterSources.Url;
             }
 
