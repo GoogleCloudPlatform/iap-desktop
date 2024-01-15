@@ -46,7 +46,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
     [Service]
-    public partial class RdpView //TODO: Rename to RdpView
+    public partial class RdpView 
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
         private readonly IExceptionDialog exceptionDialog;

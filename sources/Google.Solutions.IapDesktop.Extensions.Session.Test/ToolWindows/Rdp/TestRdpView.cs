@@ -130,8 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 var rdpParameters = new RdpParameters()
                 {
                     AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                    UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure,
-                    DesktopSize = RdpDesktopSize.ClientSize
+                    UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure
                 };
 
                 var broker = new InstanceSessionBroker(serviceProvider);
