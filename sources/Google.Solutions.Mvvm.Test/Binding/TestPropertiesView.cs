@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             window.Form.Close();
         }
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void TestUi()
         {

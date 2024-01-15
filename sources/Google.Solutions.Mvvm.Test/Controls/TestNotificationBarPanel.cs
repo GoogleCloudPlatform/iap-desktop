@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // UI tests.
         //---------------------------------------------------------------------
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void ShowTestUi()
         {

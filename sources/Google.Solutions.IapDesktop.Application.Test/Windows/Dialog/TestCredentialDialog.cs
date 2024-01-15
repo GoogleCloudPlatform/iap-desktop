@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         // PromptForWindowsCredentials.
         //---------------------------------------------------------------------
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void PromptForWindowsCredentials()
         {
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         // PromptForUsername.
         //---------------------------------------------------------------------
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void PromptForUsername()
         {

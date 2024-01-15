@@ -20,15 +20,17 @@
 //
 
 using NUnit.Framework;
+using System;
 
-namespace Google.Solutions.Testing.Apis.Integration
+namespace Google.Solutions.IapDesktop.Application.Test
 {
     /// <summary>
-    /// Annotation for test fixtures that require user interaction.
+    /// Annotation for test fixtures that use or modify the
+    /// system proxy autoconfiguration settings.
     /// </summary>
-    public class InteractiveTestAttribute : CategoryAttribute
+    public class RequiresProxyAutoconfigAttribute : CategoryAttribute
     {
-        public InteractiveTestAttribute() : base("InteractiveTest")
+        public RequiresProxyAutoconfigAttribute() : base("ProxyAutoconfigTest")
         {
         }
     }

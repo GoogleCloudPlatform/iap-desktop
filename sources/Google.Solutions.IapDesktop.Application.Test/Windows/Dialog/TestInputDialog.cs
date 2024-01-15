@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         // Prompt.
         //---------------------------------------------------------------------
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void Prompt()
         {

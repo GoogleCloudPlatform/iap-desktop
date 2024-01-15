@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 => MessageBox.Show(this, args.LinkText);
         }
 
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void ShowTestUi()
         {

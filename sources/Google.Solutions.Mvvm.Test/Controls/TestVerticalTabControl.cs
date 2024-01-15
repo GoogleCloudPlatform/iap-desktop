@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestVerticalTabControl
     {
-        [InteractiveTest]
+        [RequiresInteraction]
         [Test]
         public void TestUI()
         {

@@ -36,7 +36,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]
-    [InteractiveTest]
+    [RequiresInteraction]
     [Apartment(ApartmentState.STA)]
     public class TestRdpClient
     {
