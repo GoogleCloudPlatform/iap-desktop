@@ -45,6 +45,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         }
 
         //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        {
+            var setting = RegistrySecureStringSetting.FromKey(
+                "test",
+                "title",
+                "description",
+                "category",
+                null,
+                DataProtectionScope.CurrentUser);
+
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+
+            setting.ClearTextValue = "value";
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsDefault);
+
+            setting.Value = setting.DefaultValue;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+        }
+
+        //---------------------------------------------------------------------
         // Load.
         //---------------------------------------------------------------------
 

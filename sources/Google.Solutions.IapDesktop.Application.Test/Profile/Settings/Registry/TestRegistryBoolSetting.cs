@@ -44,6 +44,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         }
 
         //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        {
+            var setting = RegistryBoolSetting.FromKey(
+                "test",
+                "title",
+                "description",
+                "category",
+                false,
+                null);
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+
+            setting.BoolValue = true;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsDefault);
+
+            setting.BoolValue = setting.DefaultValue;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+        }
+
+        //---------------------------------------------------------------------
         // Load.
         //---------------------------------------------------------------------
 

@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         public bool IsDefault => Equals(this.DefaultValue, this.Value);
 
-        public bool IsSpecified { get; }
+        public bool IsSpecified { get; private set; }
 
         public object Value
         {
@@ -90,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 }
 
                 this.IsDirty = !Equals(typedValue, this.currentValue);
+                this.IsSpecified = true;
                 this.currentValue = typedValue;
             }
         }

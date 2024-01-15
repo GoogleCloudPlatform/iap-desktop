@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
+using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
 {
@@ -41,6 +42,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+        }
+
+        //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        {
+            var setting = RegistryStringSetting.FromKey(
+                "test",
+                "title",
+                "description",
+                "category",
+                "blue",
+                null,
+                _ => true);
+
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
+
+            setting.StringValue = "red";
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsDefault);
+
+            setting.StringValue = setting.DefaultValue;
+
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsDefault);
         }
 
         //---------------------------------------------------------------------

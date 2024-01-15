@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Projects.
         //---------------------------------------------------------------------
 
-        public ConnectionSettings GetProjectSettings(ProjectLocator project)// TODO: test
+        public ConnectionSettings GetProjectSettings(ProjectLocator project)
         {
             using (var key = this.projectRepository.OpenRegistryKey(project.Name))
             {
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Zones.
         //---------------------------------------------------------------------
 
-        public ConnectionSettings GetZoneSettings(ZoneLocator zone)// TODO: test
+        public ConnectionSettings GetZoneSettings(ZoneLocator zone)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 zone.ProjectId,
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public ConnectionSettings GetInstanceSettings(InstanceLocator instance) // TODO: test
+        public ConnectionSettings GetInstanceSettings(InstanceLocator instance)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 instance.ProjectId,
