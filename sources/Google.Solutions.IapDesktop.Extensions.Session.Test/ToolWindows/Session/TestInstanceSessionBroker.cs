@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         private IServiceProvider CreateServiceProvider(IAuthorization authorization)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
-            registry.AddTransient<RdpDesktopView>();
+            registry.AddTransient<RdpView>();
             registry.AddTransient<RdpViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        [RdpTest]
+        [RequiresRdp]
         public async Task WhenRdpSessionExists_ThenTryActivateSucceeds(
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 var broker = new InstanceSessionBroker(serviceProvider);
                 IRdpSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                        () => session = (RdpDesktopView)broker.ConnectRdpSession(
+                        () => session = (RdpView)broker.ConnectRdpSession(
                             instance,
                             tunnel,
                             rdpParameters,
@@ -142,8 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
                 Assert.IsNull(this.ExceptionShown);
 
-                Assert.AreSame(session, RdpDesktopView.TryGetActivePane(this.MainWindow));
-                Assert.AreSame(session, RdpDesktopView.TryGetExistingPane(this.MainWindow, instance));
+                Assert.AreSame(session, RdpView.TryGetActivePane(this.MainWindow));
+                Assert.AreSame(session, RdpView.TryGetExistingPane(this.MainWindow, instance));
                 Assert.IsTrue(broker.IsConnected(instance));
                 Assert.IsTrue(broker.TryActivate(instance, out var _));
 

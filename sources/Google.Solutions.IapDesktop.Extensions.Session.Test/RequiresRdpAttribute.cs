@@ -27,9 +27,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
     /// <summary>
     /// Annotation for test fixtures that use RDP.
     /// </summary>
-    public class RdpTestAttribute : CategoryAttribute //TODO: Rename to RequiresRdp
+    public class RequiresRdpAttribute : CategoryAttribute
     {
-        public RdpTestAttribute() : base("RdpTest")
+        public RequiresRdpAttribute() : base("RdpTest")
         {
         }
     }

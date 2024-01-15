@@ -47,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 {
     [TestFixture]
     [UsesCloudResources]
-    [RdpTest]
-    public class TestRemoteDesktopView : WindowTestFixtureBase
+    [RequiresRdp]
+    public class TestRdpView : WindowTestFixtureBase
     {
         //
         // Use a larger machine type as all this RDP'ing consumes a fair
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         private IServiceProvider CreateServiceProvider(IAuthorization authorization)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
-            registry.AddTransient<RdpDesktopView>();
+            registry.AddTransient<RdpView>();
             registry.AddTransient<RdpViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
@@ -171,9 +171,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                RdpDesktopView session = null;
+                RdpView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RdpDesktopView)broker.ConnectRdpSession(
+                    () => session = (RdpView)broker.ConnectRdpSession(
                         instance,
                         tunnel,
                         rdpPparameters,

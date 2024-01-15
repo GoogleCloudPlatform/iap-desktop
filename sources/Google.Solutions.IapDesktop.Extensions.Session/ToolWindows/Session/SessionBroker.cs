@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 
-            var window = this.toolWindowHost.GetToolWindow<RdpDesktopView, RdpViewModel>();
+            var window = this.toolWindowHost.GetToolWindow<RdpView, RdpViewModel>();
 
             window.ViewModel.Instance = instance;
             window.ViewModel.Server = IPAddress.IsLoopback(transport.Endpoint.Address)
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public ISession ActiveSession
         {
-            get => (ISession)RdpDesktopView.TryGetActivePane(this.mainForm)
+            get => (ISession)RdpView.TryGetActivePane(this.mainForm)
                     ?? SshTerminalView.TryGetActivePane(this.mainForm)
                     ?? null;
         }
@@ -296,14 +296,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public bool IsConnected(InstanceLocator vmInstance)
         {
             return
-                RdpDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
+                RdpView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
                 SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
         }
 
         public bool TryActivate(InstanceLocator vmInstance, out ISession session)
         {
-            if (RdpDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
-                RdpDesktopView existingRdpSession &&
+            if (RdpView.TryGetExistingPane(this.mainForm, vmInstance) is
+                RdpView existingRdpSession &&
                 existingRdpSession != null)
             {
                 // Pane found, activate.
