@@ -45,7 +45,6 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Apis.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 {
@@ -232,19 +231,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             url.ExpectNotNull(nameof(url));
 
             RdpParameters.ParameterSources sources;
-
-            ConnectionSettingsBase settings = new ConnectionSettingsBase(url);
+            ConnectionSettingsBase settings;
             var existingNode = await this.workspace
                 .GetNodeAsync(url.Instance, cancellationToken)
                 .ConfigureAwait(true);
             if (existingNode is IProjectModelInstanceNode vmNode)
             {
                 //
-                // We have a full set of settings for this VM, so use that as basis.
+                // We have a full set of settings for this VM, so use
+                // that as basis and apply parameters from URL on top.
                 //
-                settings.ApplyDefaults(this.settingsService
-                    .GetConnectionSettings(vmNode)
-                    .TypedCollection);
+                settings = this.settingsService
+                    .GetConnectionSettings(vmNode).TypedCollection
+                    .OverlayBy(new ConnectionSettingsBase(url));
 
                 sources = RdpParameters.ParameterSources.Inventory
                     | RdpParameters.ParameterSources.Url;
@@ -254,6 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // We don't have that VM in the inventory, all we have is the URL.
                 //
+                settings = new ConnectionSettingsBase(url);
                 sources = RdpParameters.ParameterSources.Url;
             }
 
@@ -311,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             Debug.Assert(node.IsSshSupported());
 
             var sshSettings = this.sshSettingsRepository.GetSettings();
-            var settings = (ConnectionSettingsBase)this.settingsService
+            var settings = this.settingsService
                 .GetConnectionSettings(node)
                 .TypedCollection;
 

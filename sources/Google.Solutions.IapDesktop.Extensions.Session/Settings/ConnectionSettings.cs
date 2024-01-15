@@ -362,79 +362,81 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             return collection;
         }
 
-        //TODO: make private, expose OverlayBy
-        internal void ApplyDefaults(ConnectionSettingsBase defaults)
+        internal ConnectionSettingsBase OverlayBy(ConnectionSettingsBase overlay)
         {
-            defaults.ExpectNotNull(nameof(defaults));
+            overlay.ExpectNotNull(nameof(overlay));
+
+            var merged = new ConnectionSettingsBase(overlay.Resource);
 
             //
-            // Apply defaults.
+            // Apply this.
             //
-            this.RdpUsername = (RegistryStringSetting)
-                defaults.RdpUsername.OverlayBy(this.RdpUsername);
-            this.RdpPassword = (RegistrySecureStringSetting)
-                defaults.RdpPassword.OverlayBy(this.RdpPassword);
-            this.RdpDomain = (RegistryStringSetting)
-                defaults.RdpDomain.OverlayBy(this.RdpDomain);
-            this.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
-                defaults.RdpConnectionBar.OverlayBy(this.RdpConnectionBar);
-            this.RdpDesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
-                defaults.RdpDesktopSize.OverlayBy(this.RdpDesktopSize);
-            this.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
-                defaults.RdpAuthenticationLevel.OverlayBy(this.RdpAuthenticationLevel);
-            this.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
-                defaults.RdpColorDepth.OverlayBy(this.RdpColorDepth);
-            this.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
-                defaults.RdpAudioMode.OverlayBy(this.RdpAudioMode);
-            this.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
-                defaults.RdpUserAuthenticationBehavior.OverlayBy(this.RdpUserAuthenticationBehavior);
-            this.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
-                defaults.RdpBitmapPersistence.OverlayBy(this.RdpBitmapPersistence);
-            this.RdpNetworkLevelAuthentication = (RegistryEnumSetting<RdpNetworkLevelAuthentication>)
-                defaults.RdpNetworkLevelAuthentication.OverlayBy(this.RdpNetworkLevelAuthentication);
-            this.RdpConnectionTimeout = (RegistryDwordSetting)
-                defaults.RdpConnectionTimeout.OverlayBy(this.RdpConnectionTimeout);
-            this.RdpPort = (RegistryDwordSetting)
-                defaults.RdpPort.OverlayBy(this.RdpPort);
-            this.RdpTransport = (RegistryEnumSetting<SessionTransportType>)
-                defaults.RdpTransport.OverlayBy(this.RdpTransport);
-            this.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
-                defaults.RdpRedirectClipboard.OverlayBy(this.RdpRedirectClipboard);
-            this.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
-                defaults.RdpRedirectPrinter.OverlayBy(this.RdpRedirectPrinter);
-            this.RdpRedirectSmartCard = (RegistryEnumSetting<RdpRedirectSmartCard>)
-                defaults.RdpRedirectSmartCard.OverlayBy(this.RdpRedirectSmartCard);
-            this.RdpRedirectPort = (RegistryEnumSetting<RdpRedirectPort>)
-                defaults.RdpRedirectPort.OverlayBy(this.RdpRedirectPort);
-            this.RdpRedirectDrive = (RegistryEnumSetting<RdpRedirectDrive>)
-                defaults.RdpRedirectDrive.OverlayBy(this.RdpRedirectDrive);
-            this.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
-                defaults.RdpRedirectDevice.OverlayBy(this.RdpRedirectDevice);
-            this.RdpRedirectWebAuthn = (RegistryEnumSetting<RdpRedirectWebAuthn>)
-                defaults.RdpRedirectWebAuthn.OverlayBy(this.RdpRedirectWebAuthn);
-            this.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
-                defaults.RdpHookWindowsKeys.OverlayBy(this.RdpHookWindowsKeys);
+            merged.RdpUsername = (RegistryStringSetting)
+                this.RdpUsername.OverlayBy(overlay.RdpUsername);
+            merged.RdpPassword = (RegistrySecureStringSetting)
+                this.RdpPassword.OverlayBy(overlay.RdpPassword);
+            merged.RdpDomain = (RegistryStringSetting)
+                this.RdpDomain.OverlayBy(overlay.RdpDomain);
+            merged.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
+                this.RdpConnectionBar.OverlayBy(overlay.RdpConnectionBar);
+            merged.RdpDesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
+                this.RdpDesktopSize.OverlayBy(overlay.RdpDesktopSize);
+            merged.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
+                this.RdpAuthenticationLevel.OverlayBy(overlay.RdpAuthenticationLevel);
+            merged.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
+                this.RdpColorDepth.OverlayBy(overlay.RdpColorDepth);
+            merged.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
+                this.RdpAudioMode.OverlayBy(overlay.RdpAudioMode);
+            merged.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
+                this.RdpUserAuthenticationBehavior.OverlayBy(overlay.RdpUserAuthenticationBehavior);
+            merged.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
+                this.RdpBitmapPersistence.OverlayBy(overlay.RdpBitmapPersistence);
+            merged.RdpNetworkLevelAuthentication = (RegistryEnumSetting<RdpNetworkLevelAuthentication>)
+                this.RdpNetworkLevelAuthentication.OverlayBy(overlay.RdpNetworkLevelAuthentication);
+            merged.RdpConnectionTimeout = (RegistryDwordSetting)
+                this.RdpConnectionTimeout.OverlayBy(overlay.RdpConnectionTimeout);
+            merged.RdpPort = (RegistryDwordSetting)
+                this.RdpPort.OverlayBy(overlay.RdpPort);
+            merged.RdpTransport = (RegistryEnumSetting<SessionTransportType>)
+                this.RdpTransport.OverlayBy(overlay.RdpTransport);
+            merged.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
+                this.RdpRedirectClipboard.OverlayBy(overlay.RdpRedirectClipboard);
+            merged.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
+                this.RdpRedirectPrinter.OverlayBy(overlay.RdpRedirectPrinter);
+            merged.RdpRedirectSmartCard = (RegistryEnumSetting<RdpRedirectSmartCard>)
+                this.RdpRedirectSmartCard.OverlayBy(overlay.RdpRedirectSmartCard);
+            merged.RdpRedirectPort = (RegistryEnumSetting<RdpRedirectPort>)
+                this.RdpRedirectPort.OverlayBy(overlay.RdpRedirectPort);
+            merged.RdpRedirectDrive = (RegistryEnumSetting<RdpRedirectDrive>)
+                this.RdpRedirectDrive.OverlayBy(overlay.RdpRedirectDrive);
+            merged.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
+                this.RdpRedirectDevice.OverlayBy(overlay.RdpRedirectDevice);
+            merged.RdpRedirectWebAuthn = (RegistryEnumSetting<RdpRedirectWebAuthn>)
+                this.RdpRedirectWebAuthn.OverlayBy(overlay.RdpRedirectWebAuthn);
+            merged.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
+                this.RdpHookWindowsKeys.OverlayBy(overlay.RdpHookWindowsKeys);
 
-            this.SshPort = (RegistryDwordSetting)
-                defaults.SshPort.OverlayBy(this.SshPort);
-            this.SshTransport = (RegistryEnumSetting<SessionTransportType>)
-                defaults.SshTransport.OverlayBy(this.SshTransport);
-            this.SshPublicKeyAuthentication = (RegistryEnumSetting<SshPublicKeyAuthentication>)
-                defaults.SshPublicKeyAuthentication.OverlayBy(this.SshPublicKeyAuthentication);
-            this.SshUsername = (RegistryStringSetting)
-                defaults.SshUsername.OverlayBy(this.SshUsername);
-            this.SshPassword = (RegistrySecureStringSetting)
-                defaults.SshPassword.OverlayBy(this.SshPassword);
-            this.SshConnectionTimeout = (RegistryDwordSetting)
-                defaults.SshConnectionTimeout.OverlayBy(this.SshConnectionTimeout);
+            merged.SshPort = (RegistryDwordSetting)
+                this.SshPort.OverlayBy(overlay.SshPort);
+            merged.SshTransport = (RegistryEnumSetting<SessionTransportType>)
+                this.SshTransport.OverlayBy(overlay.SshTransport);
+            merged.SshPublicKeyAuthentication = (RegistryEnumSetting<SshPublicKeyAuthentication>)
+                this.SshPublicKeyAuthentication.OverlayBy(overlay.SshPublicKeyAuthentication);
+            merged.SshUsername = (RegistryStringSetting)
+                this.SshUsername.OverlayBy(overlay.SshUsername);
+            merged.SshPassword = (RegistrySecureStringSetting)
+                this.SshPassword.OverlayBy(overlay.SshPassword);
+            merged.SshConnectionTimeout = (RegistryDwordSetting)
+                this.SshConnectionTimeout.OverlayBy(overlay.SshConnectionTimeout);
 
-            this.AppUsername = (RegistryStringSetting)
-                defaults.AppUsername.OverlayBy(this.AppUsername);
-            this.AppNetworkLevelAuthentication = (RegistryEnumSetting<AppNetworkLevelAuthenticationState>)
-                defaults.AppNetworkLevelAuthentication.OverlayBy(this.AppNetworkLevelAuthentication);
+            merged.AppUsername = (RegistryStringSetting)
+                this.AppUsername.OverlayBy(overlay.AppUsername);
+            merged.AppNetworkLevelAuthentication = (RegistryEnumSetting<AppNetworkLevelAuthenticationState>)
+                this.AppNetworkLevelAuthentication.OverlayBy(overlay.AppNetworkLevelAuthentication);
 
-            Debug.Assert(this.Settings.All(s => s != null));
-            Debug.Assert(this.Settings.All(s => s != null));
+            Debug.Assert(merged.Settings.All(s => s != null));
+
+            return merged;
         }
 
         //---------------------------------------------------------------------

@@ -106,9 +106,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 // Return zone settings, applying project settings
                 // as defaults.
                 //
-                var settings = new ConnectionSettingsBase(zone, key);
-                settings.ApplyDefaults(GetProjectSettings(zone.Project));
-                return settings;
+                return GetProjectSettings(zone.Project)
+                    .OverlayBy(new ConnectionSettingsBase(zone, key));
             }
         }
 
@@ -143,10 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 // Return zone settings, applying zone settings
                 // as defaults.
                 //
-                var settings = new ConnectionSettingsBase(instance, key);
-                settings.ApplyDefaults(GetZoneSettings(
-                    new ZoneLocator(instance.ProjectId, instance.Zone)));
-                return settings;
+                return GetZoneSettings(new ZoneLocator(instance.ProjectId, instance.Zone))
+                    .OverlayBy(new ConnectionSettingsBase(instance, key));
             }
         }
 
