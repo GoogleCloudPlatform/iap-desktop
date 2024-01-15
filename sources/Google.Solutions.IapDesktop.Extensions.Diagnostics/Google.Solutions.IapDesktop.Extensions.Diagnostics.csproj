@@ -30,10 +30,6 @@
     <Compile Update="ToolWindows\DebugDockingView.Designer.cs">
       <DependentUpon>DebugDockingView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\DebugFullScreenView.cs" />
-    <Compile Update="ToolWindows\DebugFullScreenView.Designer.cs">
-      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
-    </Compile>
     <Compile Update="ToolWindows\DebugJobServiceView.cs" />
     <Compile Update="ToolWindows\DebugJobServiceView.Designer.cs">
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>
@@ -70,9 +66,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\DebugDockingView.resx">
       <DependentUpon>DebugDockingView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\DebugFullScreenView.resx">
-      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\DebugJobServiceView.resx">
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>

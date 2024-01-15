@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
@@ -160,13 +161,17 @@ namespace Google.Solutions.Iap
 
             try
             {
-                Debug.Assert(SystemPatch.UnrestrictUserAgentHeader.IsInstalled);
+                Debug.Assert(
+                    Assembly.GetEntryAssembly() == null || // Running tests.
+                    SystemPatch.UnrestrictUserAgentHeader.IsInstalled);
 
                 //
                 // NB. User-Agent is a restricted header, so this call fails
                 // unless un-restricted using UnrestrictUserAgentHeader.
                 //
-                websocket.Options.SetRequestHeader("User-Agent", this.UserAgent.ToString());
+                websocket.Options.SetRequestHeader(
+                    "User-Agent", 
+                    this.UserAgent.ToString());
             }
             catch (ArgumentException)
             {

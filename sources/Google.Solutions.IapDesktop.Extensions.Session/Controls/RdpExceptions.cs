@@ -26,22 +26,20 @@ using System.Text;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
-    //TODO: Move to Controls namespace
-    [Serializable]
-    public class RdpException : ApplicationException
+    public abstract class RdpException : ApplicationException
     {
         protected RdpException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
 
-        public RdpException()
+        protected RdpException()
         {
         }
 
-        public RdpException(string message) : base(message)
+        protected RdpException(string message) : base(message)
         {
         }
 
@@ -51,13 +49,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         }
     }
 
-    [Serializable]
     public class RdpLogonException : RdpException
     {
         private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
+            //
             // Documented error descrriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-onlogonerror
+            //
             {-7, "Winlogon is displaying the Disconnect Refused dialog box."},
             {-6, "Winlogon is displaying the No Permissions dialog box."},
             {-5, "Winlogon is displaying the Session Contention dialog box."},
@@ -65,12 +64,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             {-2, "Winlogon is continuing with the logon process."},
             {-4, "Winlogon is displaying the Reconnect dialog box."},
             {-1, "The user was denied access."},
-            {0, "The logon failed because the logon credentials are not valid."},
-            {2, "Another logon or post-logon error occurred. The Remote Desktop client displays a logon screen to the user."},
-            {1, "The password is expired. The user must update their password to continue logging on."},
-            {3, "The Remote Desktop client displays a dialog box that contains important information for the user."},
-            {-1073741714, "The user name and authentication information are valid, but authentication was blocked due to restrictions on the user account, such as time-of-day restrictions."},
-            {-1073741715, "The attempted logon is not valid. This is due to either an incorrect user name or incorrect authentication information."},
+            {0,  "The logon failed because the logon credentials are not valid."},
+            {2,  "Another logon or post-logon error occurred. The Remote Desktop client displays a " +
+                 "logon screen to the user."},
+            {1,  "The password is expired. The user must update their password to continue logging on."},
+            {3,  "The Remote Desktop client displays a dialog box that contains important information for the user."},
+            {-1073741714, "The user name and authentication information are valid, but authentication " +
+                 "was blocked due to restrictions on the user account, such as time-of-day restrictions."},
+            {-1073741715, "The attempted logon is not valid. This is due to either an incorrect user " +
+                  "name or incorrect authentication information."},
             {-1073741276, "The password is expired. The user must update their password to continue logging on."}
         };
 
@@ -98,20 +100,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             this.ErrorCode = errorCode;
         }
-
-        protected RdpLogonException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 
-    [Serializable]
     public class RdpFatalException : RdpException
     {
         private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
+            //
             // Documented error descrriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-onfatalerror
+            //
             {0, "An unknown error has occurred." },
             {2, "An out-of-memory error has occurred." },
             {3, "A window-creation error has occurred." },
@@ -125,7 +123,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             get
             {
-
                 if (knownErrors.TryGetValue(this.ErrorCode, out var message))
                 {
                     return message;
@@ -141,20 +138,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             this.ErrorCode = errorCode;
         }
-
-        protected RdpFatalException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 
-    [Serializable]
     public class RdpDisconnectedException : RdpException
     {
         private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
+            //
             // Documented error descrriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-ondisconnected
+            //
             {0, "No information is available."},
             {1, "Local disconnection. This is not an error code."},
             {2, "Remote disconnection by user. This is not an error code."},
@@ -188,6 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             {2566, "Internal security error."},
             {2567, "The specified user has no account."},
             {2822, "Encryption error."},
+            {2825, "The remote computer requires Network Level Authentication, which your computer does not support." },
             {2823, "The account is disabled."},
             {3078, "Decryption error."},
             {3079, "The account is restricted."},
@@ -199,12 +193,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             {4360, "Connection to server was lost." },
             {4615, "The user password must be changed before logging on for the first time."},
             {5639, "The policy does not support delegation of credentials to the target server."},
-            {5895, "Delegation of credentials to the target server is not allowed unless mutual authentication has been achieved."},
-            {6151, "No authority could be contacted for authentication. The domain name of the authenticating party could be wrong, the domain could be unreachable, or there might have been a trust relationship failure."},
+            {5895, "Delegation of credentials to the target server is not allowed unless mutual " +
+                   "authentication has been achieved."},
+            {6151, "No authority could be contacted for authentication. The domain name of the authenticating " +
+                   "party could be wrong, the domain could be unreachable, or there might have " +
+                   "been a trust relationship failure."},
             {6919, "The received certificate is expired."},
             {7175, "An incorrect PIN was presented to the smart card."},
             {7943, "Login aborted" },
-            {8455, "The server authentication policy does not allow connection requests using saved credentials. The user must enter new credentials."},
+            {8455, "The server authentication policy does not allow connection requests using " +
+                   "saved credentials. The user must enter new credentials."},
             {8711, "The smart card is blocked."}
         };
 
@@ -213,8 +211,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         public bool IsTimeout =>
             this.DisconnectReason == 3 ||
             this.DisconnectReason == 264;
+        
+        public bool IsUserDisconnectedLocally =>
+            this.DisconnectReason == 1;
 
-        public bool IsUserDisconnect =>
+        public bool IsUserDisconnectedRemotely =>
             this.DisconnectReason == 2;
 
         public bool IsIgnorable =>
@@ -257,11 +258,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             : base(CreateMessage(disconnectReason, description))
         {
             this.DisconnectReason = disconnectReason;
-        }
-
-        protected RdpDisconnectedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
         }
     }
 }

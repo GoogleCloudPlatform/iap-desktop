@@ -95,7 +95,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Wait for deferred callback to complete. For testing.
         /// </summary>
-        public Task WaitForCompletionAsync() // TODO: test
+        public Task WaitForCompletionAsync()
         {
             if (this.IsPending)
             {

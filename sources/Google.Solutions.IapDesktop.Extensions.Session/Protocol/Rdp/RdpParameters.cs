@@ -32,11 +32,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public ushort Port { get; set; } = DefaultPort;
         public TimeSpan ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
         public RdpConnectionBarState ConnectionBar { get; set; } = RdpConnectionBarState._Default;
-        public RdpDesktopSize DesktopSize { get; set; } = RdpDesktopSize._Default;
+        public RdpDesktopSize DesktopSize { get; set; } = RdpDesktopSize._Default; //TODO: remove
         public RdpAuthenticationLevel AuthenticationLevel { get; set; } = RdpAuthenticationLevel._Default;
         public RdpColorDepth ColorDepth { get; set; } = RdpColorDepth._Default;
         public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
-        public RdpBitmapPersistence BitmapPersistence { get; set; } = RdpBitmapPersistence._Default;
+        public RdpBitmapPersistence BitmapPersistence { get; set; } = RdpBitmapPersistence._Default; //TODO: remove
         public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
         public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
         public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
