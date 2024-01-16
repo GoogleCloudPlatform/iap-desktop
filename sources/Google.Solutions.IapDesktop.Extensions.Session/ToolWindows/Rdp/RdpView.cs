@@ -42,6 +42,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
@@ -521,6 +522,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         public void SendKeys(params Keys[] keys)
         {
             this.rdpClient.SendKeys(keys);
+        }
+
+        public bool CanTransferFiles
+        {
+            get => (this.viewModel.Parameters.RedirectClipboard == RdpRedirectClipboard.Enabled);
+        }
+
+        public Task DownloadFilesAsync()
+        {
+            ShowTooltip(
+                "Copy and paste files here",
+                "You can use copy and paste to transfer files between " +
+                "your local computer and the VM.");
+
+            return Task.CompletedTask;
         }
 
         //---------------------------------------------------------------------

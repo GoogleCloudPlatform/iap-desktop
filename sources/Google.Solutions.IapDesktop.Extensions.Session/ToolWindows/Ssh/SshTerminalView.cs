@@ -89,6 +89,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         // ISshTerminalSession.
         //---------------------------------------------------------------------
 
+        public bool CanTransferFiles => true;
+
         public Task DownloadFilesAsync()
         {
             return this.viewModel.DownloadFilesAsync();

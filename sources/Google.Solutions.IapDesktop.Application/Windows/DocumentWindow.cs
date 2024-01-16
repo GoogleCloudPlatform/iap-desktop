@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         // Publics.
         //---------------------------------------------------------------------
 
-        public void ShowTooltip(string title, string text)
+        protected void ShowTooltip(string title, string text)
         {
             var toolTip = new ToolTip()
             {
@@ -122,7 +122,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             };
 
             toolTip.Show(string.Empty, this, 0);
-            toolTip.Show(text, this, new Point(25, 25), 4000);
+            toolTip.Show(
+                text, 
+                this, 
+                new Point(this.Width / 10, this.Height / 10),
+                4000);
         }
 
         //---------------------------------------------------------------------

@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
@@ -39,9 +40,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         bool IsConnected { get; }
 
         /// <summary>
-        /// Show tooltip for this session.
+        /// Check if the session supports downloading and uploading
+        /// files.
         /// </summary>
-        void ShowTooltip(string title, string text);
+        bool CanTransferFiles { get; }
+
+        /// <summary>
+        /// Download a file from the remote VM.
+        /// </summary>
+        Task DownloadFilesAsync();
     }
 
     public interface ISessionBroker
