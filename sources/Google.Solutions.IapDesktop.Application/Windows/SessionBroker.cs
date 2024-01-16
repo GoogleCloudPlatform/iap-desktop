@@ -37,6 +37,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// Check if session is connected (and not dead).
         /// </summary>
         bool IsConnected { get; }
+
+        /// <summary>
+        /// Show tooltip for this session.
+        /// </summary>
+        void ShowTooltip(string title, string text);
     }
 
     public interface ISessionBroker

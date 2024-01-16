@@ -194,15 +194,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             protected override bool IsEnabled(ISession session)
             {
-                return session != null &&
-                    session is ISshTerminalSession sshSession &&
-                    sshSession.IsConnected;
+                return session != null && session.IsConnected;
             }
 
             public override Task ExecuteAsync(ISession session)
             {
-                var sshSession = (ISshTerminalSession)session;
-                return sshSession.DownloadFilesAsync();
+                if (session is ISshTerminalSession sshSession)
+                {
+                    return sshSession.DownloadFilesAsync();
+                }
+                else if (session is IRdpSession)
+                {
+                    //TODO: check if clipboard sharing is enabled
+                    session.ShowTooltip(
+                        "Download a file",
+                        "Use copy and paste to transfer files between " +
+                        "your local computer and the VM.");
+                }
+
+                return Task.CompletedTask;
             }
         }
     }
