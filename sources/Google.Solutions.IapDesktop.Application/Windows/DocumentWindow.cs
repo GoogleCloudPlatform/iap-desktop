@@ -107,6 +107,29 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         }
 
         //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        protected void ShowTooltip(string title, string text)
+        {
+            var toolTip = new ToolTip()
+            {
+                AutoPopDelay = 2000,
+                InitialDelay = 0,
+                IsBalloon = true,
+                ShowAlways = true,
+                ToolTipTitle = title
+            };
+
+            toolTip.Show(string.Empty, this, 0);
+            toolTip.Show(
+                text, 
+                this, 
+                new Point(this.Width / 10, this.Height / 10),
+                4000);
+        }
+
+        //---------------------------------------------------------------------
         // Drag/docking support.
         //---------------------------------------------------------------------
 

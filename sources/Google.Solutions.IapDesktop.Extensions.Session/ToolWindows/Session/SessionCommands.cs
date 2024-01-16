@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -69,6 +68,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 Image = Resources.DownloadFile_16,
                 ActivityText = "Downloading files"
             };
+            this.UploadFiles = new UploadFilesCommand("U&pload files...")
+            {
+                Image = Resources.UploadFile_16,
+                ActivityText = "Uploading files"
+            };
         }
 
         //---------------------------------------------------------------------
@@ -81,6 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public IContextCommand<ISession> ShowSecurityScreen { get; }
         public IContextCommand<ISession> ShowTaskManager { get; }
         public IContextCommand<ISession> DownloadFiles { get; }
+        public IContextCommand<ISession> UploadFiles { get; }
 
         //---------------------------------------------------------------------
         // Generic session commands.
@@ -112,6 +117,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             public override void Execute(ISession session)
             {
                 session.Close();
+            }
+        }
+
+        private class DownloadFilesCommand : SessionCommandBase
+        {
+            public DownloadFilesCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session.IsConnected &&
+                    session.CanTransferFiles;
+            }
+
+            public override Task ExecuteAsync(ISession session)
+            {
+                return session.DownloadFilesAsync();
+            }
+        }
+
+        private class UploadFilesCommand : SessionCommandBase
+        {
+            public UploadFilesCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session.IsConnected &&
+                    session.CanTransferFiles;
+            }
+
+            public override Task ExecuteAsync(ISession session)
+            {
+                return session.UploadFilesAsync();
             }
         }
 
@@ -182,30 +225,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             {
                 var rdpSession = (IRdpSession)session;
                 rdpSession.ShowTaskManager();
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // SSH session commands.
-        //---------------------------------------------------------------------
-
-        private class DownloadFilesCommand : SessionCommandBase
-        {
-            public DownloadFilesCommand(string text) : base(text)
-            {
-            }
-
-            protected override bool IsEnabled(ISession session)
-            {
-                return session != null &&
-                    session is ISshTerminalSession sshSession &&
-                    sshSession.IsConnected;
-            }
-
-            public override Task ExecuteAsync(ISession session)
-            {
-                var sshSession = (ISshTerminalSession)session;
-                return sshSession.DownloadFilesAsync();
             }
         }
     }

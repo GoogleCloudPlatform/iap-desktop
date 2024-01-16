@@ -89,9 +89,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         // ISshTerminalSession.
         //---------------------------------------------------------------------
 
+        public bool CanTransferFiles => true;
+
         public Task DownloadFilesAsync()
         {
             return this.viewModel.DownloadFilesAsync();
+        }
+
+        public Task UploadFilesAsync()
+        {
+            ShowTooltip(
+                "Drag files to upload",
+                "Drag a local file and drop it here to upload it to the VM.");
+
+            return Task.CompletedTask;
         }
 
         //---------------------------------------------------------------------

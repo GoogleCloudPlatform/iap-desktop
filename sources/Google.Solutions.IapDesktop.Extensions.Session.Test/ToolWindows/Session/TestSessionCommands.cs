@@ -201,8 +201,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         {
             var sessionCommands = new SessionCommands();
 
-            var connectedSession = new Mock<ISshTerminalSession>();
+            var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+            connectedSession.SetupGet(s => s.CanTransferFiles).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -210,11 +211,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenNotApplicable_ThenDownloadFilesIsDisabled()
+        public void WhenNotConnected_ThenDownloadFilesIsDisabled()
         {
             var sessionCommands = new SessionCommands();
 
-            var disconnectedSession = new Mock<ISshTerminalSession>();
+            var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var rdpSession = new Mock<IRdpSession>();
@@ -226,6 +227,83 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             Assert.AreEqual(
                 CommandState.Disabled,
                 sessionCommands.DownloadFiles.QueryState(rdpSession.Object));
+        }
+
+        [Test]
+        public void WhenFileTransferNotSupported_ThenDownloadFilesIsDisabled()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+            connectedSession.SetupGet(s => s.CanTransferFiles).Returns(false);
+
+            var rdpSession = new Mock<IRdpSession>();
+            rdpSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.DownloadFiles.QueryState(connectedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.DownloadFiles.QueryState(rdpSession.Object));
+        }
+
+        //---------------------------------------------------------------------
+        // UploadFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenUploadFilesIsEnabled()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+            connectedSession.SetupGet(s => s.CanTransferFiles).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.UploadFiles.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotConnected_ThenUploadFilesIsDisabled()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var disconnectedSession = new Mock<ISession>();
+            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            var rdpSession = new Mock<IRdpSession>();
+            rdpSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.UploadFiles.QueryState(disconnectedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.UploadFiles.QueryState(rdpSession.Object));
+        }
+
+        [Test]
+        public void WhenFileTransferNotSupported_ThenUploadFilesIsDisabled()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+            connectedSession.SetupGet(s => s.CanTransferFiles).Returns(false);
+
+            var rdpSession = new Mock<IRdpSession>();
+            rdpSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.UploadFiles.QueryState(connectedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.UploadFiles.QueryState(rdpSession.Object));
         }
     }
 }
