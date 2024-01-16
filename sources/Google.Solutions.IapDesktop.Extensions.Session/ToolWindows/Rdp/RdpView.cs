@@ -533,7 +533,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             ShowTooltip(
                 "Copy and paste files here",
-                "You can use copy and paste to transfer files between " +
+                "Use copy and paste to transfer files between " +
+                "your local computer and the VM.");
+
+            return Task.CompletedTask;
+        }
+
+        public Task UploadFilesAsync()
+        {
+            ShowTooltip(
+                "Paste files to upload",
+                "Use copy and paste to transfer files between " +
                 "your local computer and the VM.");
 
             return Task.CompletedTask;

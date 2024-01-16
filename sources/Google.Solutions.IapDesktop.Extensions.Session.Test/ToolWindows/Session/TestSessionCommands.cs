@@ -227,5 +227,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CommandState.Disabled,
                 sessionCommands.DownloadFiles.QueryState(rdpSession.Object));
         }
-    }
+    }//TODO: add tests for upload
 }

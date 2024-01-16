@@ -360,6 +360,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.Disconnect);
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.DownloadFiles);
+            menu.AddCommand(sessionCommands.UploadFiles);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
         }

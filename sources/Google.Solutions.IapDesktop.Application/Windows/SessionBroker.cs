@@ -49,6 +49,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// Download a file from the remote VM.
         /// </summary>
         Task DownloadFilesAsync();
+        
+        /// <summary>
+        /// Upload a file to the remote VM.
+        /// </summary>
+        Task UploadFilesAsync();
     }
 
     public interface ISessionBroker
