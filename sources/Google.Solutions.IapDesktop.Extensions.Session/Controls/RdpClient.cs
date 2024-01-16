@@ -651,7 +651,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     e.Message,
                     args.networkAvailable);
 
-
                 this.State = ConnectionState.Connecting;
             }
         }

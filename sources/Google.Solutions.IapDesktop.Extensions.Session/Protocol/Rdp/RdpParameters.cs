@@ -222,8 +222,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         //
         // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
         //
-        Never = 0,
-        Always = 1,
+        Disabled = 0,
+        Enabled = 1,
         FullScreenOnly = 2,
 
 

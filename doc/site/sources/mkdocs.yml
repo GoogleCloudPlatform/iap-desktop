@@ -94,6 +94,7 @@ nav:
       - 'Connect to VMs from within a web browser': 'connect-by-url.md'
     - 'Use IAP Desktop':
       - 'Tool windows':
+        - 'Connection settings': 'toolwindow-connection-settings.md'
         - 'Instance properties': 'toolwindow-instance-properties.md'
         - 'Event log': 'toolwindow-eventlog.md'
         - 'Serial port output': 'toolwindow-serial-port-output.md'
