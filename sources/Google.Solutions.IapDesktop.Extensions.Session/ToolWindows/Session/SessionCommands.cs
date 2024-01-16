@@ -40,15 +40,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 FullScreenMode.SingleScreen)
             {
                 Image = Resources.Fullscreen_16,
-                ShortcutKeys = DocumentWindow.EnterFullScreenHotKey,
                 ActivityText = "Activating full screen"
+
+                //
+                // NB. Don't set shortcut key here as the RDP control
+                // traps the key already.
+                //
             };
             this.EnterFullScreenOnAllScreens = new FullScreenCommand(
                 "&Full screen (multiple displays)",
                 FullScreenMode.AllScreens)
             {
                 Image = Resources.Fullscreen_16,
-                ShortcutKeys = Keys.F11 | Keys.Shift,
                 ActivityText = "Activating full screen"
             };
             this.Disconnect = new DisconnectCommand("&Disconnect")
