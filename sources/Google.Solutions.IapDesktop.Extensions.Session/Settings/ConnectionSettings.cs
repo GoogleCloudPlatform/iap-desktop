@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 _ => true);
             this.RdpConnectionBar = RegistryEnumSetting<RdpConnectionBarState>.FromKey(
                 "ConnectionBar",
-                "Show connection bar",
+                "Connection bar",
                 "Show connection bar in full-screen mode.",
                 Categories.RdpDisplay,
                 RdpConnectionBarState._Default,
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 key);
             this.RdpHookWindowsKeys = RegistryEnumSetting<RdpHookWindowsKeys>.FromKey(
                 "RdpHookWindowsKeys",
-                "Enable Windows shortcuts",
+                "Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpHookWindowsKeys._Default,

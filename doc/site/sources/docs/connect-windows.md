@@ -62,7 +62,7 @@ an entire zone or projects:
 1.  In the **Connection Settings** window, customize settings as needed. The settings apply to all VM instances
     in the respective zone or project, unless explicitly overridden.
 
-
+For more information about customizing connection settings, see [Connection settings](toolwindow-connection-settings.md).
 
 
 ## Frequently Asked Questions
