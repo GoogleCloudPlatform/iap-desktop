@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             };
             this.UploadFiles = new UploadFilesCommand("U&pload files...")
             {
-                Image = Resources.DownloadFile_16, //TODO: Logo
+                Image = Resources.UploadFile_16,
                 ActivityText = "Uploading files"
             };
         }
