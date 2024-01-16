@@ -141,15 +141,7 @@
    <td><code>Ctrl + Alt + Home</code></td>
   </tr>
   <tr>
-   <td>Full screen</td>
-   <td><code>F11</code></td>
-  </tr>
-  <tr>
-   <td>Full screen (multiple displays)</td>
-   <td><code>Shift + F11</code></td>
-  </tr>
-  <tr>
-   <td>Exit full screen</td>
+   <td>Toggle full screen</td>
    <td><code>Ctrl + Alt + F11</code></td>
   </tr>
   <tr>
