@@ -54,17 +54,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenSessionFound_ThenExecuteDoesNotCreateNewSession()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var contextFactory = serviceProvider.AddMock<ISessionContextFactory>();
-            var sessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
-
+            var sessionBroker = new Mock<ISessionBroker>();
             var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
-                .Setup(s => s.TryActivate(SampleLocator, out session))
+                .Setup(s => s.TryActivateSession(SampleLocator, out session))
                 .Returns(true);
+
+            var contextFactory = new Mock<ISessionContextFactory>();
 
             var command = new ConnectRdpUrlCommand(
                 contextFactory.Object,
+                new Mock<ISessionFactory>().Object,
                 sessionBroker.Object);
 
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
@@ -80,26 +80,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenNoSessionFound_ThenExecuteCreatesNewSession()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
-            var contextFactory = serviceProvider.AddMock<ISessionContextFactory>();
+            var contextFactory = new Mock<ISessionContextFactory>();
             contextFactory
                 .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))
                 .ReturnsAsync(context.Object);
 
-            var sessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
-            sessionBroker
+            var sessionFactory = new Mock<ISessionFactory>();
+            sessionFactory
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
 
+            var sessionBroker = new Mock<ISessionBroker>();
             ISession nullSession;
             sessionBroker
-                .Setup(s => s.TryActivate(SampleLocator, out nullSession))
+                .Setup(s => s.TryActivateSession(SampleLocator, out nullSession))
                 .Returns(false);
 
             var command = new ConnectRdpUrlCommand(
                 contextFactory.Object,
+                sessionFactory.Object,
                 sessionBroker.Object);
 
             await command

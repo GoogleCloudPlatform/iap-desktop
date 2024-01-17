@@ -20,13 +20,17 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
+    /// <summary>
+    /// An active session to a VM.
+    /// </summary>
     public interface ISession : IDisposable
     {
         /// <summary>
@@ -54,10 +58,34 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// Upload a file to the remote VM.
         /// </summary>
         Task UploadFilesAsync();
+
+        /// <summary>
+        /// Instance this session is connected to.
+        /// </summary>
+        InstanceLocator Instance { get; }
+
+        /// <summary>
+        /// Check if the session is in the process of closing.
+        /// </summary>
+        bool IsClosing { get; }
+
+        /// <summary>
+        /// Switch focus to this session.
+        /// </summary>
+        void ActivateSession(); 
     }
 
+    /// <summary>
+    /// Broker that keeps track of active sessions.
+    /// </summary>
     public interface ISessionBroker
     {
+        /// <summary>
+        /// Command menu for sessions, exposed in the main menu
+        /// and as context menu.
+        /// </summary>
+        ICommandContainer<ISession> SessionMenu { get; }
+
         /// <summary>
         /// Return active session, or null if no session is active.
         /// </summary>
@@ -71,75 +99,76 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// <summary>
         /// Activate session to VM instance, if any.
         /// </summary>
-        bool TryActivate(
+        bool TryActivateSession(
             InstanceLocator vmInstance,
             out ISession session);
     }
 
-    public interface IGlobalSessionBroker : ISessionBroker
+    public class SessionBroker : ISessionBroker
     {
-    }
+        private readonly IMainWindow mainForm;
 
-    /// <summary>
-    /// Meta-broker that maintains a list of connection brokers
-    /// and forwards requests to these.
-    /// </summary>
-    public class GlobalSessionBroker : IGlobalSessionBroker
-    {
-        private readonly IServiceCategoryProvider serviceProvider;
-
-        public GlobalSessionBroker(IServiceCategoryProvider serviceProvider)
+        public SessionBroker(IMainWindow mainForm)
         {
-            this.serviceProvider = serviceProvider;
+            this.mainForm = mainForm.ExpectNotNull(nameof(mainForm));
+
+            //
+            // Register Session menu.
+            //
+            // On pop-up of the menu, query the active session and use it as context.
+            //
+            this.SessionMenu = this.mainForm.AddMenu(
+                "&Session", 1,
+                () => this.ActiveSession);
         }
+
+        //---------------------------------------------------------------------
+        // ISessionBroker.
+        //---------------------------------------------------------------------
+        
+        public ICommandContainer<ISession> SessionMenu { get; }
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            foreach (var broker in this.serviceProvider
-                .GetServicesByCategory<ISessionBroker>())
-            {
-                if (broker.IsConnected(vmInstance))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryActivate(
-            InstanceLocator vmInstance,
-            out ISession session)
-        {
-            foreach (var broker in this.serviceProvider
-                .GetServicesByCategory<ISessionBroker>())
-            {
-                if (broker.TryActivate(vmInstance, out session))
-                {
-                    Debug.Assert(session != null);
-                    return true;
-                }
-            }
-
-            session = null;
-            return false;
+            return this.mainForm.MainPanel
+                .Documents
+                .EnsureNotNull()
+                .OfType<ISession>()
+                .Where(pane => pane.Instance == vmInstance && !pane.IsClosing)
+                .Any();
         }
 
         public ISession ActiveSession
         {
-            get
-            {
-                foreach (var broker in this.serviceProvider
-                    .GetServicesByCategory<ISessionBroker>())
-                {
-                    var session = broker.ActiveSession;
-                    if (session != null)
-                    {
-                        return session;
-                    }
-                }
+            //
+            // NB. The active content might be in a float window.
+            //
+            get => this.mainForm.MainPanel.ActivePane?.ActiveContent as ISession;
+        }
 
-                return null;
+        public bool TryActivateSession(
+            InstanceLocator vmInstance,
+            out ISession session)
+        {
+            var existingSession = this.mainForm.MainPanel
+                .Documents
+                .EnsureNotNull()
+                .OfType<ISession>()
+                .Where(pane => pane.Instance == vmInstance && !pane.IsClosing)
+                .FirstOrDefault();
+            if (existingSession != null)
+            {
+                //
+                // Session found, activate.
+                //
+                existingSession.ActivateSession();
+                session = existingSession;
+                return true;
+            }
+            else
+            {
+                session = null;
+                return false;
             }
         }
     }

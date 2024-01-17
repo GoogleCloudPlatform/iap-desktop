@@ -249,7 +249,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<ISessionContextFactory>(),
                 serviceProvider.GetService<IProjectWorkspace>(),
-                serviceProvider.GetService<IInstanceSessionBroker>());
+                serviceProvider.GetService<ISessionFactory>(),
+                serviceProvider.GetService<ISessionBroker>());
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(
@@ -353,7 +354,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             // Session menu.
             //
             var sessionCommands = new SessionCommands();
-            var menu = serviceProvider.GetService<IInstanceSessionBroker>().SessionMenu;
+            var menu = serviceProvider.GetService<ISessionBroker>().SessionMenu;
             menu.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
             menu.AddCommand(connectCommands.DuplicateSession);

@@ -41,14 +41,11 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    public interface IInstanceSessionBroker : ISessionBroker
+    /// <summary>
+    /// Factory for SSH and RDP sessions.
+    /// </summary>
+    public interface ISessionFactory
     {
-        /// <summary>
-        /// Command menu for sessions, exposed in the main menu
-        /// and as context menu.
-        /// </summary>
-        ICommandContainer<ISession> SessionMenu { get; }
-
         /// <summary>
         /// Create a new SSH session.
         /// </summary>
@@ -62,48 +59,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             ISessionContext<RdpCredential, RdpParameters> context);
     }
 
-    [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
-    [ServiceCategory(typeof(ISessionBroker))]
-    public class InstanceSessionBroker : IInstanceSessionBroker
+    [Service(typeof(ISessionFactory), ServiceLifetime.Singleton)]
+    public class SessionFactory : ISessionFactory
     {
         private const TabAccentColorIndex AccentColorForNonIapSessions = TabAccentColorIndex.Hightlight1;
         private const TabAccentColorIndex AccentColorForUrlBasedSessions = TabAccentColorIndex.Hightlight2;
 
-        private readonly IToolWindowHost toolWindowHost;
         private readonly IMainWindow mainForm;
+        private readonly ISessionBroker sessionBroker;
+        private readonly IToolWindowHost toolWindowHost;
         private readonly IJobService jobService;
 
-        public InstanceSessionBroker(
+        public SessionFactory(
             IMainWindow mainForm,
+            ISessionBroker sessionBroker,
             IToolWindowHost toolWindowHost,
             IJobService jobService)
         {
             this.mainForm = mainForm;
+            this.sessionBroker = sessionBroker;
             this.toolWindowHost = toolWindowHost;
             this.jobService = jobService;
-
-            //
-            // NB. The ServiceCategory attribute causes this class to be 
-            // announced to the global connection broker.
-            //
-
-            //
-            // Register Session menu.
-            //
-            // On pop-up of the menu, query the active session and use it as context.
-            //
-            this.SessionMenu = this.mainForm.AddMenu(
-                "&Session", 1,
-                () => this.ActiveSession);
-        }
-
-        internal InstanceSessionBroker(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<IMainWindow>(),
-                  serviceProvider.GetService<IToolWindowHost>(),
-                  serviceProvider.GetService<IJobService>())
-        {
-
         }
 
         //---------------------------------------------------------------------
@@ -122,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Add context menu.
             //
             Debug.Assert(session.ContextCommands == null);
-            session.ContextCommands = this.SessionMenu;
+            session.ContextCommands = this.sessionBroker.SessionMenu;
         }
 
         private void ApplyTabStyle<TCredential, TParameters>(
@@ -283,55 +259,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         }
 
         //---------------------------------------------------------------------
-        // ISessionBroker.
+        // ISessionFactory.
         //---------------------------------------------------------------------
-
-        public ISession ActiveSession
-        {
-            get => (ISession)RdpView.TryGetActivePane(this.mainForm)
-                    ?? SshTerminalView.TryGetActivePane(this.mainForm)
-                    ?? null;
-        }
-
-        public bool IsConnected(InstanceLocator vmInstance)
-        {
-            return
-                RdpView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
-                SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
-        }
-
-        public bool TryActivate(InstanceLocator vmInstance, out ISession session)
-        {
-            if (RdpView.TryGetExistingPane(this.mainForm, vmInstance) is
-                RdpView existingRdpSession &&
-                existingRdpSession != null)
-            {
-                // Pane found, activate.
-                existingRdpSession.SwitchToDocument();
-                session = existingRdpSession;
-                return true;
-            }
-            else if (SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) is
-                SshTerminalView existingSshSession &&
-                existingSshSession != null)
-            {
-                // Pane found, activate.
-                existingSshSession.SwitchToDocument();
-                session = existingSshSession;
-                return true;
-            }
-            else
-            {
-                session = null;
-                return false;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // IInstanceSessionBroker.
-        //---------------------------------------------------------------------
-
-        public ICommandContainer<ISession> SessionMenu { get; }
 
         public async Task<ISession> CreateSessionAsync(
             ISessionContext<ISshCredential, SshParameters> context)

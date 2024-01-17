@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         public InstanceLocator Instance => this.ViewModel.Instance;
 
-        public bool IsFormClosing { get; private set; } = false;
+        public bool IsClosing { get; private set; } = false;
 
         public override string Text
         {
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             // visible at this point. The flag ensures that this pane is
             // not considered by TryGetExistingPane anymore.
             //
-            this.IsFormClosing = true;
+            this.IsClosing = true;
 
             this.ViewModel.DisconnectAsync().Wait();
         }

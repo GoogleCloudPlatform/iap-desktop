@@ -38,18 +38,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             UrlCommands urlCommands,
             ISessionContextFactory sessionContextFactory,
             IProjectWorkspace workspace,
-            IInstanceSessionBroker sessionBroker)
+            ISessionFactory sessionFactory,
+            ISessionBroker sessionBroker)
         {
             //
             // Install command for launching URLs.
             //
             urlCommands.LaunchRdpUrl = new ConnectRdpUrlCommand(
                 sessionContextFactory,
+                sessionFactory,
                 sessionBroker);
 
             this.ToolbarActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextFactory,
+                sessionFactory,
                 sessionBroker,
                 workspace)
             {
@@ -62,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.ContextMenuActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextFactory,
+                sessionFactory,
                 sessionBroker,
                 workspace)
             {
@@ -74,6 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.ContextMenuConnectRdpAsUser = new ConnectInstanceCommand(
                 "Connect &as user...",
                 sessionContextFactory,
+                sessionFactory,
                 sessionBroker,
                 workspace)
             {
@@ -87,6 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.ContextMenuConnectSshInNewTerminal = new ConnectInstanceCommand(
                 "Connect in &new terminal",
                 sessionContextFactory,
+                sessionFactory,
                 sessionBroker,
                 workspace)
             {

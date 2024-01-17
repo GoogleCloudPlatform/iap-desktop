@@ -38,11 +38,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionS
         internal const string DefaultWindowTitle = "Connection settings";
 
         private readonly IConnectionSettingsService settingsService;
-        private readonly IGlobalSessionBroker globalSessionBroker;
+        private readonly ISessionBroker globalSessionBroker;
 
         public ConnectionSettingsViewModel(
             IConnectionSettingsService settingsService,
-            IGlobalSessionBroker globalSessionBroker)
+            ISessionBroker globalSessionBroker)
         {
             this.settingsService = settingsService;
             this.globalSessionBroker = globalSessionBroker;

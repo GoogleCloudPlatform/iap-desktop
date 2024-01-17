@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // For testing only.
         internal event EventHandler AuthenticationWarningDisplayed;
 
-        public bool IsFormClosing { get; private set; } = false;
+        public bool IsClosing { get; private set; } = false;
 
         internal enum LayoutMode
         {
@@ -133,31 +133,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.eventService = serviceProvider.GetService<IEventQueue>();
             this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
             this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
-        }
-
-        //---------------------------------------------------------------------
-        // Statics.
-        //---------------------------------------------------------------------
-
-        public static RdpView TryGetExistingPane(
-            IMainWindow mainForm,
-            InstanceLocator vmInstance)
-        {
-            return mainForm.MainPanel
-                .Documents
-                .EnsureNotNull()
-                .OfType<RdpView>()
-                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
-                .FirstOrDefault();
-        }
-
-        public static RdpView TryGetActivePane(
-            IMainWindow mainForm)
-        {
-            //
-            // NB. The active content might be in a float window.
-            //
-            return mainForm.MainPanel.ActivePane?.ActiveContent as RdpView;
         }
 
         //---------------------------------------------------------------------
@@ -372,7 +347,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             // visible at this point. The flag ensures that this pane is
             // not considered by TryGetExistingPane anymore.
             //
-            this.IsFormClosing = true;
+            this.IsClosing = true;
 
             this.eventService
                 .PublishAsync(new SessionEndedEvent(this.Instance))

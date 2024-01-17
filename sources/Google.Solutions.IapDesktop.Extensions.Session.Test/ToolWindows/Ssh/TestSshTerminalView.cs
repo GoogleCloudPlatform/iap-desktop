@@ -140,7 +140,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var broker = new InstanceSessionBroker(serviceProvider);
+            var broker = new SessionFactory(
+                serviceProvider.GetService<IMainWindow>(),
+                serviceProvider.GetService<ISessionBroker>(),
+                serviceProvider.GetService<IToolWindowHost>(),
+                serviceProvider.GetService<IJobService>());
 
             var sshParameters = new SshParameters()
             {
@@ -223,7 +227,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var transport = CreateTransportForEndpoint(this.UnboundEndpoint);
 
             var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(serviceProvider);
+            var broker = new SessionFactory(
+                serviceProvider.GetService<IMainWindow>(),
+                serviceProvider.GetService<ISessionBroker>(),
+                serviceProvider.GetService<IToolWindowHost>(),
+                serviceProvider.GetService<IJobService>());
 
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
             await AssertRaisesEventAsync<SessionAbortedEvent>(
@@ -255,7 +263,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var transport = CreateTransportForEndpoint(this.NonSshEndpoint);
 
             var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(serviceProvider);
+            var broker = new SessionFactory(
+                serviceProvider.GetService<IMainWindow>(),
+                serviceProvider.GetService<ISessionBroker>(),
+                serviceProvider.GetService<IToolWindowHost>(),
+                serviceProvider.GetService<IJobService>());
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential))
@@ -288,7 +300,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(serviceProvider);
+            var broker = new SessionFactory(
+                serviceProvider.GetService<IMainWindow>(),
+                serviceProvider.GetService<ISessionBroker>(),
+                serviceProvider.GetService<IToolWindowHost>(),
+                serviceProvider.GetService<IJobService>());
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential))
