@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private Mock<IResourceManagerClient> resourceManagerAdapterMock;
         private Mock<ICloudConsoleClient> cloudConsoleServiceMock;
         private Mock<IEventQueue> eventServiceMock;
-        private Mock<IGlobalSessionBroker> sessionBrokerMock;
+        private Mock<ISessionBroker> sessionBrokerMock;
         private IProjectExplorerSettings projectExplorerSettings;
 
         [SetUp]
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             this.cloudConsoleServiceMock = new Mock<ICloudConsoleClient>();
             this.eventServiceMock = new Mock<IEventQueue>();
-            this.sessionBrokerMock = new Mock<IGlobalSessionBroker>();
+            this.sessionBrokerMock = new Mock<ISessionBroker>();
         }
 
         private ProjectExplorerViewModel CreateViewModel()

@@ -43,11 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     public interface IInstanceSessionBroker
     {
-        /// <summary>
-        /// Command menu for sessions, exposed in the main menu
-        /// and as context menu.
-        /// </summary>
-        ICommandContainer<ISession> SessionMenu { get; }
+        ISessionBroker SessionBroker { get; }
 
         /// <summary>
         /// Create a new SSH session.
@@ -63,47 +59,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     }
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
-    [ServiceCategory(typeof(ISessionBroker))]
     public class InstanceSessionBroker : IInstanceSessionBroker // TODO: Rename to ...Factory
     {
         private const TabAccentColorIndex AccentColorForNonIapSessions = TabAccentColorIndex.Hightlight1;
         private const TabAccentColorIndex AccentColorForUrlBasedSessions = TabAccentColorIndex.Hightlight2;
 
-        private readonly IToolWindowHost toolWindowHost;
         private readonly IMainWindow mainForm;
+        private readonly IToolWindowHost toolWindowHost;
         private readonly IJobService jobService;
 
         public InstanceSessionBroker(
             IMainWindow mainForm,
+            ISessionBroker sessionBroker,
             IToolWindowHost toolWindowHost,
             IJobService jobService)
         {
             this.mainForm = mainForm;
+            this.SessionBroker = sessionBroker;
             this.toolWindowHost = toolWindowHost;
             this.jobService = jobService;
-
-            //
-            // NB. The ServiceCategory attribute causes this class to be 
-            // announced to the global connection broker.
-            //
-
-            //
-            // Register Session menu.
-            //
-            // On pop-up of the menu, query the active session and use it as context.
-            //
-            this.SessionMenu = this.mainForm.AddMenu(
-                "&Session", 1,
-                () => this.ActiveSession);
-        }
-
-        internal InstanceSessionBroker(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<IMainWindow>(),
-                  serviceProvider.GetService<IToolWindowHost>(),
-                  serviceProvider.GetService<IJobService>())
-        {
-
         }
 
         //---------------------------------------------------------------------
@@ -122,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Add context menu.
             //
             Debug.Assert(session.ContextCommands == null);
-            session.ContextCommands = this.SessionMenu;
+            session.ContextCommands = this.SessionBroker.SessionMenu;
         }
 
         private void ApplyTabStyle<TCredential, TParameters>(
@@ -332,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         // IInstanceSessionBroker.
         //---------------------------------------------------------------------
 
-        public ICommandContainer<ISession> SessionMenu { get; }
+        public ISessionBroker SessionBroker { get; }
 
         public async Task<ISession> CreateSessionAsync(
             ISessionContext<ISshCredential, SshParameters> context)

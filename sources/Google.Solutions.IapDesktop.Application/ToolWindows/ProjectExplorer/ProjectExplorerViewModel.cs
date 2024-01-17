@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
     {
         private readonly IJobService jobService;
         private readonly IProjectWorkspace workspace;
-        private readonly IGlobalSessionBroker sessionBroker;
+        private readonly ISessionBroker sessionBroker;
         private readonly ICloudConsoleClient cloudConsoleService;
 
         private ViewModelNode selectedNode;
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IProjectExplorerSettings settings,
             IJobService jobService,
             IEventQueue eventService,
-            IGlobalSessionBroker sessionBroker,
+            ISessionBroker sessionBroker,
             IProjectWorkspace workspace,
             ICloudConsoleClient cloudConsoleService)
         {
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IRepository<IApplicationSettings> settingsRepository,
             IJobService jobService,
             IEventQueue eventService,
-            IGlobalSessionBroker sessionBroker,
+            ISessionBroker sessionBroker,
             IProjectWorkspace workspace,
             ICloudConsoleClient cloudConsoleService)
             : this(

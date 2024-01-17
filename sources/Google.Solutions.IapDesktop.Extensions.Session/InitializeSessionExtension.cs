@@ -353,7 +353,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             // Session menu.
             //
             var sessionCommands = new SessionCommands();
-            var menu = serviceProvider.GetService<IInstanceSessionBroker>().SessionMenu;
+            var menu = serviceProvider.GetService<ISessionBroker>().SessionMenu;
             menu.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
             menu.AddCommand(connectCommands.DuplicateSession);

@@ -27,6 +27,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     public interface ISshTerminalSession : ISession
     {
-        InstanceLocator Instance { get; }
     }
 }

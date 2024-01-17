@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -69,6 +70,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     public interface ISessionBroker
     {
         /// <summary>
+        /// Command menu for sessions, exposed in the main menu
+        /// and as context menu.
+        /// </summary>
+        ICommandContainer<ISession> SessionMenu { get; }
+
+        /// <summary>
         /// Return active session, or null if no session is active.
         /// </summary>
         ISession ActiveSession { get; }
@@ -86,18 +93,29 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             out ISession session);
     }
 
-    public interface IGlobalSessionBroker : ISessionBroker// TODO: Remove
-    {
-    }
-
-    public class GlobalSessionBroker : IGlobalSessionBroker // TODO: Rename
+    public class GlobalSessionBroker : ISessionBroker // TODO: Rename, split file
     {
         private readonly IMainWindow mainForm;
 
         public GlobalSessionBroker(IMainWindow mainForm)
         {
             this.mainForm = mainForm.ExpectNotNull(nameof(mainForm));
+
+            //
+            // Register Session menu.
+            //
+            // On pop-up of the menu, query the active session and use it as context.
+            //
+            this.SessionMenu = this.mainForm.AddMenu(
+                "&Session", 1,
+                () => this.ActiveSession);
         }
+
+        //---------------------------------------------------------------------
+        // ISessionBroker.
+        //---------------------------------------------------------------------
+        
+        public ICommandContainer<ISession> SessionMenu { get; }
 
         public bool IsConnected(InstanceLocator vmInstance)
         {

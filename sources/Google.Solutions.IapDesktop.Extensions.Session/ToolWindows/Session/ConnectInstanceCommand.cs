@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
         private readonly ISessionContextFactory sessionContextFactory;
-        private readonly IInstanceSessionBroker sessionBroker;
+        private readonly IInstanceSessionBroker sessionBroker; // TODO: rename
         private readonly IProjectWorkspace workspace;
 
         public bool AvailableForSsh { get; set; } = false;
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Try to activate existing session, if any.
             //
             if (!this.ForceNewConnection && 
-                this.sessionBroker.TryActivate(instanceNode.Instance, out session))
+                this.sessionBroker.SessionBroker.TryActivate(instanceNode.Instance, out session))
             {
                 //
                 // There is an existing session, and it's now active.

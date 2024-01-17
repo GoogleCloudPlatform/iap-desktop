@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public override async Task ExecuteAsync(IapRdpUrl url)
         {
-            if (this.sessionBroker.TryActivate(url.Instance, out var activeSession))
+            if (this.sessionBroker.SessionBroker.TryActivate(url.Instance, out var activeSession))
             {
                 //
                 // There is an existing session, and it's now active.
