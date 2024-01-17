@@ -30,23 +30,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
     [TestFixture]
     public class TestWindowsUser
     {
-        private static IAuthorization CreateAuthorization(string email)
+        private static IOidcSession CreateSession(string email)
         {
             var session = new Mock<IOidcSession>();
             session
                 .SetupGet(a => a.Username)
                 .Returns(email);
 
-            var authorization = new Mock<IAuthorization>();
-            authorization
-                .SetupGet(a => a.Session)
-                .Returns(session.Object);
-
-            return authorization.Object;
+            return session.Object;
         }
 
         //---------------------------------------------------------------------
-        // SuggestFromGoogleEmailAddress.
+        // IsUserPrincipalName.
+        //---------------------------------------------------------------------
+
+        public void WhenNameIsValid_ThenIsUserPrincipalNameReturnsTrue(
+            [Values("user@domain.com", "a@b.c")]string upn)
+        {
+            Assert.IsTrue(WindowsUser.IsUserPrincipalName(upn));
+        }
+
+        public void WhenNameIsInvalid_ThenIsUserPrincipalNameReturnsFalse(
+            [Values("user@", "@user", "a.b@c")] string upn)
+        {
+            Assert.IsFalse(WindowsUser.IsUserPrincipalName(upn));
+        }
+
+        //---------------------------------------------------------------------
+        // IsLocalUsername.
+        //---------------------------------------------------------------------
+
+        public void WhenNameIsValid__ThenIsNetbiosUsernameReturnsTrue(
+            [Values("user", "u")] string name)
+        {
+            Assert.IsTrue(WindowsUser.IsLocalUsername(name));
+        }
+
+        public void WhenNameIsInvalid_ThenIsNetbiosUsernameReturnsFalse(
+            [Values("DOMAIN\\user", "u12345678901234567890", "user@domain.tld")] string name)
+        {
+            Assert.IsFalse(WindowsUser.IsLocalUsername(name));
+        }
+
+        //---------------------------------------------------------------------
+        // SuggestUsername.
         //---------------------------------------------------------------------
 
         [Test]
@@ -55,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             Assert.AreEqual(
                 "bob.b",
                 WindowsUser.SuggestUsername(
-                    CreateAuthorization("bob.b@example.com")));
+                    CreateSession("bob.b@example.com")));
         }
 
         [Test]
@@ -64,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             Assert.AreEqual(
                 "bob01234567890123456",
                 WindowsUser.SuggestUsername(
-                    CreateAuthorization("bob01234567890123456789@example.com")));
+                    CreateSession("bob01234567890123456789@example.com")));
         }
 
         [Test]
@@ -73,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             Assert.AreEqual(
                 Environment.UserName,
                 WindowsUser.SuggestUsername(
-                    CreateAuthorization(null)));
+                    CreateSession(null)));
         }
 
         [Test]
@@ -82,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             Assert.AreEqual(
                 Environment.UserName,
                 WindowsUser.SuggestUsername(
-                    CreateAuthorization("bob")));
+                    CreateSession("bob")));
         }
     }
 }
