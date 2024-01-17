@@ -138,27 +138,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         //---------------------------------------------------------------------
         // Statics.
         //---------------------------------------------------------------------
+        //TODO: Remove
+        //public static RdpView TryGetExistingPane(
+        //    IMainWindow mainForm,
+        //    InstanceLocator vmInstance)
+        //{
+        //    return mainForm.MainPanel
+        //        .Documents
+        //        .EnsureNotNull()
+        //        .OfType<RdpView>()
+        //        .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
+        //        .FirstOrDefault();
+        //}
 
-        public static RdpView TryGetExistingPane(
-            IMainWindow mainForm,
-            InstanceLocator vmInstance)
-        {
-            return mainForm.MainPanel
-                .Documents
-                .EnsureNotNull()
-                .OfType<RdpView>()
-                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
-                .FirstOrDefault();
-        }
-
-        public static RdpView TryGetActivePane(
-            IMainWindow mainForm)
-        {
-            //
-            // NB. The active content might be in a float window.
-            //
-            return mainForm.MainPanel.ActivePane?.ActiveContent as RdpView;
-        }
+        //public static RdpView TryGetActivePane(
+        //    IMainWindow mainForm)
+        //{
+        //    //
+        //    // NB. The active content might be in a float window.
+        //    //
+        //    return mainForm.MainPanel.ActivePane?.ActiveContent as RdpView;
+        //}
 
         //---------------------------------------------------------------------
         // Publics.

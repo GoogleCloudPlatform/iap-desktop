@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
@@ -54,6 +56,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// Upload a file to the remote VM.
         /// </summary>
         Task UploadFilesAsync();
+
+        /// <summary>
+        /// Instance this session is connected to.
+        /// </summary>
+        InstanceLocator Instance { get; }
+
+        bool IsFormClosing { get; } //TODO: Rename to IsClosing.
+        void SwitchToDocument(); //TODO: Rename to Activate
     }
 
     public interface ISessionBroker
@@ -76,70 +86,60 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             out ISession session);
     }
 
-    public interface IGlobalSessionBroker : ISessionBroker
+    public interface IGlobalSessionBroker : ISessionBroker// TODO: Remove
     {
     }
 
-    /// <summary>
-    /// Meta-broker that maintains a list of connection brokers
-    /// and forwards requests to these.
-    /// </summary>
-    public class GlobalSessionBroker : IGlobalSessionBroker
+    public class GlobalSessionBroker : IGlobalSessionBroker // TODO: Rename
     {
-        private readonly IServiceCategoryProvider serviceProvider;
+        private readonly IMainWindow mainForm;
 
-        public GlobalSessionBroker(IServiceCategoryProvider serviceProvider)
+        public GlobalSessionBroker(IMainWindow mainForm)
         {
-            this.serviceProvider = serviceProvider;
+            this.mainForm = mainForm.ExpectNotNull(nameof(mainForm));
         }
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            foreach (var broker in this.serviceProvider
-                .GetServicesByCategory<ISessionBroker>())
-            {
-                if (broker.IsConnected(vmInstance))
-                {
-                    return true;
-                }
-            }
+            return this.mainForm.MainPanel
+                .Documents
+                .EnsureNotNull()
+                .OfType<ISession>()
+                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
+                .Any();
+        }
 
-            return false;
+        public ISession ActiveSession
+        {
+            //
+            // NB. The active content might be in a float window.
+            //
+            get => this.mainForm.MainPanel.ActivePane?.ActiveContent as ISession;
         }
 
         public bool TryActivate(
             InstanceLocator vmInstance,
             out ISession session)
         {
-            foreach (var broker in this.serviceProvider
-                .GetServicesByCategory<ISessionBroker>())
+            var existingSession = this.mainForm.MainPanel
+                .Documents
+                .EnsureNotNull()
+                .OfType<ISession>()
+                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
+                .FirstOrDefault();
+            if (existingSession != null)
             {
-                if (broker.TryActivate(vmInstance, out session))
-                {
-                    Debug.Assert(session != null);
-                    return true;
-                }
+                //
+                // Session found, activate.
+                //
+                existingSession.SwitchToDocument();
+                session = existingSession;
+                return true;
             }
-
-            session = null;
-            return false;
-        }
-
-        public ISession ActiveSession
-        {
-            get
+            else
             {
-                foreach (var broker in this.serviceProvider
-                    .GetServicesByCategory<ISessionBroker>())
-                {
-                    var session = broker.ActiveSession;
-                    if (session != null)
-                    {
-                        return session;
-                    }
-                }
-
-                return null;
+                session = null;
+                return false;
             }
         }
     }

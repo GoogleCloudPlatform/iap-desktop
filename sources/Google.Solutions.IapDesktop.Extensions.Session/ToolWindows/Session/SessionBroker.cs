@@ -41,7 +41,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    public interface IInstanceSessionBroker : ISessionBroker
+    public interface IInstanceSessionBroker
     {
         /// <summary>
         /// Command menu for sessions, exposed in the main menu
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
     [ServiceCategory(typeof(ISessionBroker))]
-    public class InstanceSessionBroker : IInstanceSessionBroker
+    public class InstanceSessionBroker : IInstanceSessionBroker // TODO: Rename to ...Factory
     {
         private const TabAccentColorIndex AccentColorForNonIapSessions = TabAccentColorIndex.Hightlight1;
         private const TabAccentColorIndex AccentColorForUrlBasedSessions = TabAccentColorIndex.Hightlight2;
@@ -286,46 +286,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         // ISessionBroker.
         //---------------------------------------------------------------------
 
-        public ISession ActiveSession
-        {
-            get => (ISession)RdpView.TryGetActivePane(this.mainForm)
-                    ?? SshTerminalView.TryGetActivePane(this.mainForm)
-                    ?? null;
-        }
+        //TODO: Remove
+        //public ISession ActiveSession
+        //{
+        //    get => (ISession)RdpView.TryGetActivePane(this.mainForm)
+        //            ?? SshTerminalView.TryGetActivePane(this.mainForm)
+        //            ?? null;
+        //}
 
-        public bool IsConnected(InstanceLocator vmInstance)
-        {
-            return
-                RdpView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
-                SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
-        }
+        //public bool IsConnected(InstanceLocator vmInstance)
+        //{
+        //    return
+        //        RdpView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
+        //        SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
+        //}
 
-        public bool TryActivate(InstanceLocator vmInstance, out ISession session)
-        {
-            if (RdpView.TryGetExistingPane(this.mainForm, vmInstance) is
-                RdpView existingRdpSession &&
-                existingRdpSession != null)
-            {
-                // Pane found, activate.
-                existingRdpSession.SwitchToDocument();
-                session = existingRdpSession;
-                return true;
-            }
-            else if (SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) is
-                SshTerminalView existingSshSession &&
-                existingSshSession != null)
-            {
-                // Pane found, activate.
-                existingSshSession.SwitchToDocument();
-                session = existingSshSession;
-                return true;
-            }
-            else
-            {
-                session = null;
-                return false;
-            }
-        }
+        //public bool TryActivate(InstanceLocator vmInstance, out ISession session)
+        //{
+        //    if (RdpView.TryGetExistingPane(this.mainForm, vmInstance) is
+        //        RdpView existingRdpSession &&
+        //        existingRdpSession != null)
+        //    {
+        //        // Pane found, activate.
+        //        existingRdpSession.SwitchToDocument();
+        //        session = existingRdpSession;
+        //        return true;
+        //    }
+        //    else if (SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) is
+        //        SshTerminalView existingSshSession &&
+        //        existingSshSession != null)
+        //    {
+        //        // Pane found, activate.
+        //        existingSshSession.SwitchToDocument();
+        //        session = existingSshSession;
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        session = null;
+        //        return false;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         // IInstanceSessionBroker.
