@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
@@ -32,47 +33,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     [Service]
     public class SessionCommands
     {
-        public SessionCommands()
+        public SessionCommands(ISessionBroker sessionBroker)
         {
             this.EnterFullScreenOnSingleScreen = new FullScreenCommand(
                 "&Full screen",
-                FullScreenMode.SingleScreen)
-            {
-                Image = Resources.Fullscreen_16,
-                ActivityText = "Activating full screen"
-
-                //
-                // NB. Don't set shortcut key here as the RDP control
-                // traps the key already.
-                //
-            };
+                FullScreenMode.SingleScreen);
             this.EnterFullScreenOnAllScreens = new FullScreenCommand(
                 "&Full screen (multiple displays)",
-                FullScreenMode.AllScreens)
-            {
-                Image = Resources.Fullscreen_16,
-                ActivityText = "Activating full screen"
-            };
-            this.Disconnect = new DisconnectCommand("&Disconnect")
-            {
-                Image = Resources.Disconnect_16,
-                ShortcutKeys = Keys.Control | Keys.F4,
-                ActivityText = "Disconnecting"
-            };
-            this.ShowSecurityScreen = new ShowSecurityScreenCommand(
-                "Show &security screen (send Ctrl+Alt+Esc)");
-            this.ShowTaskManager = new ShowTaskManagerCommand(
-                "Open &task manager (send Ctrl+Shift+Esc)");
-            this.DownloadFiles = new DownloadFilesCommand("Do&wnload files...")
-            {
-                Image = Resources.DownloadFile_16,
-                ActivityText = "Downloading files"
-            };
-            this.UploadFiles = new UploadFilesCommand("U&pload files...")
-            {
-                Image = Resources.UploadFile_16,
-                ActivityText = "Uploading files"
-            };
+                FullScreenMode.AllScreens);
+            this.Close = new CloseCommand();
+            this.ShowSecurityScreen = new ShowSecurityScreenCommand();
+            this.ShowTaskManager = new ShowTaskManagerCommand();
+            this.DownloadFiles = new DownloadFilesCommand();
+            this.UploadFiles = new UploadFilesCommand();
+            this.CloseAll = new CloseAllCommand(sessionBroker);
+            this.CloseAllButThis = new CloseAllButThisCommand(sessionBroker);
         }
 
         //---------------------------------------------------------------------
@@ -81,11 +56,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public IContextCommand<ISession> EnterFullScreenOnSingleScreen { get; }
         public IContextCommand<ISession> EnterFullScreenOnAllScreens { get; }
-        public IContextCommand<ISession> Disconnect { get; }
+        public IContextCommand<ISession> Close { get; }
         public IContextCommand<ISession> ShowSecurityScreen { get; }
         public IContextCommand<ISession> ShowTaskManager { get; }
         public IContextCommand<ISession> DownloadFiles { get; }
         public IContextCommand<ISession> UploadFiles { get; }
+        public IContextCommand<ISession> CloseAll { get; }
+        public IContextCommand<ISession> CloseAllButThis { get; }
 
         //---------------------------------------------------------------------
         // Generic session commands.
@@ -103,27 +80,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             }
         }
 
-        private class DisconnectCommand : SessionCommandBase
-        {
-            public DisconnectCommand(string text) : base(text)
-            {
-            }
-
-            protected override bool IsEnabled(ISession session)
-            {
-                return session != null && session.IsConnected;
-            }
-
-            public override void Execute(ISession session)
-            {
-                session.Close();
-            }
-        }
-
         private class DownloadFilesCommand : SessionCommandBase
         {
-            public DownloadFilesCommand(string text) : base(text)
+            public DownloadFilesCommand() 
+                : base("Do&wnload files...")
             {
+                this.Image = Resources.DownloadFile_16;
+                this.ActivityText = "Downloading files";
             }
 
             protected override bool IsEnabled(ISession session)
@@ -141,8 +104,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class UploadFilesCommand : SessionCommandBase
         {
-            public UploadFilesCommand(string text) : base(text)
+            public UploadFilesCommand() 
+                : base("U&pload files...")
             {
+                this.Image = Resources.UploadFile_16;
+                this.ActivityText = "Uploading files";
             }
 
             protected override bool IsEnabled(ISession session)
@@ -155,6 +121,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             public override Task ExecuteAsync(ISession session)
             {
                 return session.UploadFilesAsync();
+            }
+        }
+
+        private class CloseCommand : SessionCommandBase
+        {
+            public CloseCommand()
+                : base("&Close")
+            {
+                this.Image = Resources.Disconnect_16;
+                this.ShortcutKeys = Keys.Control | Keys.F4;
+                this.ActivityText = "Disconnecting";
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null && session.IsConnected;
+            }
+
+            public override void Execute(ISession session)
+            {
+                session.Close();
+            }
+        }
+
+        private class CloseAllCommand : SessionCommandBase
+        {
+            private readonly ISessionBroker broker;
+
+            public CloseAllCommand(ISessionBroker broker) 
+                : base("Close &all")
+            {
+                this.broker = broker.ExpectNotNull(nameof(broker));
+            }
+
+            protected override bool IsEnabled(ISession _)
+            {
+                return true;
+            }
+
+            public override void Execute(ISession _)
+            {
+                foreach (var session in this.broker.Sessions)
+                {
+                    session.Close();
+                }
+            }
+        }
+
+        private class CloseAllButThisCommand : SessionCommandBase
+        {
+            private readonly ISessionBroker broker;
+
+            public CloseAllButThisCommand(ISessionBroker broker) 
+                : base("Close &others")
+            {
+                this.broker = broker.ExpectNotNull(nameof(broker));
+            }
+
+            protected override bool IsEnabled(ISession _)
+            {
+                return true;
+            }
+
+            public override void Execute(ISession current)
+            {
+                foreach (var session in this.broker.Sessions)
+                {
+                    if (session != current)
+                    {
+                        session.Close();
+                    }
+                }
             }
         }
 
@@ -171,6 +209,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 FullScreenMode mode) : base(text)
             {
                 this.mode = mode;
+                this.Image = Resources.Fullscreen_16;
+                this.ActivityText = "Activating full screen";
+
+                //
+                // NB. Don't set shortcut key here as the RDP control
+                // traps the key already.
+                //
             }
 
             protected override bool IsEnabled(ISession session)
@@ -190,7 +235,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class ShowSecurityScreenCommand : SessionCommandBase
         {
-            public ShowSecurityScreenCommand(string text) : base(text)
+            public ShowSecurityScreenCommand() 
+                : base("Show &security screen (send Ctrl+Alt+Esc)")
             {
             }
 
@@ -210,7 +256,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class ShowTaskManagerCommand : SessionCommandBase
         {
-            public ShowTaskManagerCommand(string text) : base(text)
+            public ShowTaskManagerCommand() 
+                : base("Open &task manager (send Ctrl+Shift+Esc)")
             {
             }
 

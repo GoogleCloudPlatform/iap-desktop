@@ -26,6 +26,8 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
@@ -51,7 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedRdpSession = new Mock<IRdpSession>();
             connectedRdpSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -68,14 +71,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedFullScreenRdpSession = new Mock<IRdpSession>();
             connectedFullScreenRdpSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedFullScreenRdpSession.SetupGet(s => s.CanEnterFullScreen).Returns(false);
 
-            var disconnectedRdpSession = new Mock<IRdpSession>();
-            disconnectedRdpSession.SetupGet(s => s.IsConnected).Returns(false);
+            var closedRdpSession = new Mock<IRdpSession>();
+            closedRdpSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var sshSession = new Mock<ISshTerminalSession>();
 
@@ -84,40 +88,136 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 GetFullScreenCommand(sessionCommands, mode).QueryState(connectedFullScreenRdpSession.Object));
             Assert.AreEqual(
                 CommandState.Disabled,
-                GetFullScreenCommand(sessionCommands, mode).QueryState(disconnectedRdpSession.Object));
+                GetFullScreenCommand(sessionCommands, mode).QueryState(closedRdpSession.Object));
             Assert.AreEqual(
                 CommandState.Disabled,
                 GetFullScreenCommand(sessionCommands, mode).QueryState(sshSession.Object));
         }
 
         //---------------------------------------------------------------------
-        // Disconnect.
+        // Close.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenDisconnectIsEnabled()
+        public void WhenApplicable_ThenCloseIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                sessionCommands.Disconnect.QueryState(connectedSession.Object));
+                sessionCommands.Close.QueryState(connectedSession.Object));
         }
 
         [Test]
-        public void WhenNotApplicable_ThenDisconnectIsDisabled()
+        public void WhenNotApplicable_ThenCloseIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
-            var disconnectedSession = new Mock<ISession>();
-            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+            var closedSession = new Mock<ISession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                sessionCommands.Disconnect.QueryState(disconnectedSession.Object));
+                sessionCommands.Close.QueryState(closedSession.Object));
+        }
+
+        [Test]
+        public async Task Close()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var session = new Mock<ISession>();
+            await sessionCommands.Close
+                .ExecuteAsync(session.Object)
+                .ConfigureAwait(true);
+
+            session.Verify(s => s.Close(), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // CloseAll.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenCloseAllIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.CloseAll.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public async Task CloseAll()
+        {
+            var session1 = new Mock<ISession>();
+            var session2 = new Mock<ISession>();
+
+            var sessionBroker = new Mock<ISessionBroker>();
+            sessionBroker
+                .SetupGet(b => b.Sessions)
+                .Returns(new[] { session1.Object, session2.Object });
+
+            var sessionCommands = new SessionCommands(sessionBroker.Object);
+
+            await sessionCommands.CloseAll
+                .ExecuteAsync(session1.Object)
+                .ConfigureAwait(true);
+
+            session1.Verify(s => s.Close(), Times.Once);
+            session2.Verify(s => s.Close(), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // CloseAllButThis.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenCloseAllButThisIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.CloseAllButThis.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public async Task CloseAllButThis()
+        {
+            var session1 = new Mock<ISession>();
+            var session2 = new Mock<ISession>();
+            var session3 = new Mock<ISession>();
+
+            var sessionBroker = new Mock<ISessionBroker>();
+            sessionBroker
+                .SetupGet(b => b.Sessions)
+                .Returns(new[] { session1.Object, session2.Object, session3.Object });
+
+            var sessionCommands = new SessionCommands(sessionBroker.Object);
+
+            await sessionCommands.CloseAllButThis
+                .ExecuteAsync(session2.Object)
+                .ConfigureAwait(true);
+
+            session1.Verify(s => s.Close(), Times.Once);
+            session2.Verify(s => s.Close(), Times.Never);
+            session3.Verify(s => s.Close(), Times.Once);
         }
 
         //---------------------------------------------------------------------
@@ -127,7 +227,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenShowSecurityScreenIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -140,17 +241,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotApplicable_ThenShowSecurityScreenIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
-            var disconnectedSession = new Mock<IRdpSession>();
-            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+            var closedSession = new Mock<IRdpSession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var sshSession = new Mock<ISshTerminalSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                sessionCommands.ShowSecurityScreen.QueryState(disconnectedSession.Object));
+                sessionCommands.ShowSecurityScreen.QueryState(closedSession.Object));
             Assert.AreEqual(
                 CommandState.Disabled,
                 sessionCommands.ShowSecurityScreen.QueryState(sshSession.Object));
@@ -163,7 +265,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenShowTaskManagerIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -176,17 +279,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotApplicable_ThenShowTaskManagerIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
-            var disconnectedSession = new Mock<IRdpSession>();
-            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+            var closedSession = new Mock<IRdpSession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var sshSession = new Mock<ISshTerminalSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                sessionCommands.ShowTaskManager.QueryState(disconnectedSession.Object));
+                sessionCommands.ShowTaskManager.QueryState(closedSession.Object));
             Assert.AreEqual(
                 CommandState.Disabled,
                 sessionCommands.ShowTaskManager.QueryState(sshSession.Object));
@@ -199,7 +303,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenDownloadFilesIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -213,17 +318,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenDownloadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
-            var disconnectedSession = new Mock<ISession>();
-            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+            var closedSession = new Mock<ISession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var rdpSession = new Mock<IRdpSession>();
             rdpSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                sessionCommands.DownloadFiles.QueryState(disconnectedSession.Object));
+                sessionCommands.DownloadFiles.QueryState(closedSession.Object));
             Assert.AreEqual(
                 CommandState.Disabled,
                 sessionCommands.DownloadFiles.QueryState(rdpSession.Object));
@@ -232,7 +338,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenFileTransferNotSupported_ThenDownloadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -256,7 +363,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenUploadFilesIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -270,17 +378,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenUploadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
-            var disconnectedSession = new Mock<ISession>();
-            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+            var closedSession = new Mock<ISession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
             var rdpSession = new Mock<IRdpSession>();
             rdpSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                sessionCommands.UploadFiles.QueryState(disconnectedSession.Object));
+                sessionCommands.UploadFiles.QueryState(closedSession.Object));
             Assert.AreEqual(
                 CommandState.Disabled,
                 sessionCommands.UploadFiles.QueryState(rdpSession.Object));
@@ -289,7 +398,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenFileTransferNotSupported_ThenUploadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -305,5 +415,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CommandState.Disabled,
                 sessionCommands.UploadFiles.QueryState(rdpSession.Object));
         }
+
     }
 }

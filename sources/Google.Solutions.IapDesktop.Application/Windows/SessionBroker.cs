@@ -19,12 +19,15 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
@@ -92,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         ISession ActiveSession { get; }
 
         /// <summary>
-        /// Check if there is an active session for a VM instance.
+        /// Check if there is a session for a VM instance.
         /// </summary>
         bool IsConnected(InstanceLocator vmInstance);
 
@@ -102,6 +105,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         bool TryActivateSession(
             InstanceLocator vmInstance,
             out ISession session);
+
+        /// <summary>
+        /// Return a list of all sessions.
+        /// </summary>
+        IReadOnlyCollection<ISession> Sessions { get; }
     }
 
     public class SessionBroker : ISessionBroker
@@ -169,6 +177,27 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             {
                 session = null;
                 return false;
+            }
+        }
+
+        public IReadOnlyCollection<ISession> Sessions
+        {
+            get
+            {
+                var floatWindowDocs = this.mainForm.MainPanel
+                    .FloatWindows
+                    .EnsureNotNull()
+                    .SelectMany(fw => fw.DockPanel.Documents.EnsureNotNull());
+
+                var mainWindowDocs = this.mainForm.MainPanel
+                    .Documents
+                    .EnsureNotNull();
+
+                return mainWindowDocs
+                    .Concat(floatWindowDocs)
+                    .OfType<ISession>()
+                    .Where(pane => !pane.IsClosing)
+                    .ToList();
             }
         }
     }
