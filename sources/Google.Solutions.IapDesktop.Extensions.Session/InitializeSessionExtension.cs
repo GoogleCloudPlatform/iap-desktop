@@ -353,12 +353,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             //
             // Session menu.
             //
-            var sessionCommands = new SessionCommands();
-            var menu = serviceProvider.GetService<ISessionBroker>().SessionMenu;
+            var sessionBroker = serviceProvider.GetService<ISessionBroker>();
+            var sessionCommands = new SessionCommands(sessionBroker);
+            var menu = sessionBroker.SessionMenu;
             menu.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
             menu.AddCommand(connectCommands.DuplicateSession);
             menu.AddCommand(sessionCommands.Disconnect);
+            menu.AddCommand(sessionCommands.CloseAll);
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.DownloadFiles);
             menu.AddCommand(sessionCommands.UploadFiles);

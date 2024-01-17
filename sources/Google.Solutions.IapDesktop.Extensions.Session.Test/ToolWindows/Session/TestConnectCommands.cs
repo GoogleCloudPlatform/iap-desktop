@@ -627,7 +627,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenDuplicateSessionIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -640,7 +641,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotApplicable_ThenDuplicateSessionIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -653,7 +655,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task DuplicateSessionForcesNewConnection()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var locator = new InstanceLocator("project-1", "zone-1", "instance-1");
 

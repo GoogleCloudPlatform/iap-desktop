@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
@@ -32,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     [Service]
     public class SessionCommands
     {
-        public SessionCommands()
+        public SessionCommands(ISessionBroker sessionBroker)
         {
             this.EnterFullScreenOnSingleScreen = new FullScreenCommand(
                 "&Full screen",
@@ -73,6 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 Image = Resources.UploadFile_16,
                 ActivityText = "Uploading files"
             };
+            this.CloseAll = new CloseAllCommand("Close &all", sessionBroker);
         }
 
         //---------------------------------------------------------------------
@@ -86,6 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public IContextCommand<ISession> ShowTaskManager { get; }
         public IContextCommand<ISession> DownloadFiles { get; }
         public IContextCommand<ISession> UploadFiles { get; }
+        public IContextCommand<ISession> CloseAll { get; }
 
         //---------------------------------------------------------------------
         // Generic session commands.
@@ -155,6 +158,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             public override Task ExecuteAsync(ISession session)
             {
                 return session.UploadFilesAsync();
+            }
+        }
+
+        private class CloseAllCommand : SessionCommandBase
+        {
+            private readonly ISessionBroker broker;
+
+            public CloseAllCommand(
+                string text,
+                ISessionBroker broker) : base(text)
+            {
+                this.broker = broker.ExpectNotNull(nameof(broker));
+            }
+
+            protected override bool IsEnabled(ISession _)
+            {
+                return true;
+            }
+
+            public override void Execute(ISession _)
+            {
+                foreach (var session in this.broker.Sessions)
+                {
+                    session.Close();
+                }
             }
         }
 

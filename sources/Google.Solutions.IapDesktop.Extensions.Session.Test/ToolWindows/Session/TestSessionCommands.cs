@@ -51,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedRdpSession = new Mock<IRdpSession>();
             connectedRdpSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -68,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedFullScreenRdpSession = new Mock<IRdpSession>();
             connectedFullScreenRdpSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -97,7 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenDisconnectIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -110,7 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotApplicable_ThenDisconnectIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -127,7 +131,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenShowSecurityScreenIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -140,7 +145,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotApplicable_ThenShowSecurityScreenIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var disconnectedSession = new Mock<IRdpSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -163,7 +169,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenShowTaskManagerIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -176,7 +183,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotApplicable_ThenShowTaskManagerIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var disconnectedSession = new Mock<IRdpSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -199,7 +207,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenDownloadFilesIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -213,7 +222,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenDownloadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -232,7 +242,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenFileTransferNotSupported_ThenDownloadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -256,7 +267,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenApplicable_ThenUploadFilesIsEnabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -270,7 +282,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenNotConnected_ThenUploadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -289,7 +302,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void WhenFileTransferNotSupported_ThenUploadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands();
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -305,5 +319,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CommandState.Disabled,
                 sessionCommands.UploadFiles.QueryState(rdpSession.Object));
         }
+
     }
 }
