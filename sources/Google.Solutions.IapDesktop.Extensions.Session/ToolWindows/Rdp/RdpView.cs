@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // For testing only.
         internal event EventHandler AuthenticationWarningDisplayed;
 
-        public bool IsFormClosing { get; private set; } = false;
+        public bool IsClosing { get; private set; } = false;
 
         internal enum LayoutMode
         {
@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             // visible at this point. The flag ensures that this pane is
             // not considered by TryGetExistingPane anymore.
             //
-            this.IsFormClosing = true;
+            this.IsClosing = true;
 
             this.eventService
                 .PublishAsync(new SessionEndedEvent(this.Instance))

@@ -47,6 +47,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows
             this.bindingContext = serviceProvider.GetService<IBindingContext>();
         }
 
+        public void ActivateSession()
+        {
+            SwitchToDocument();
+        }
+
         //---------------------------------------------------------------------
         // Context menu.
         //---------------------------------------------------------------------

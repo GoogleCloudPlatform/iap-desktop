@@ -66,8 +66,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// </summary>
         InstanceLocator Instance { get; }
 
-        bool IsFormClosing { get; } //TODO: Rename to IsClosing.
-        void SwitchToDocument(); //TODO: Rename to Activate
+        /// <summary>
+        /// Check if the session is in the process of closing.
+        /// </summary>
+        bool IsClosing { get; }
+
+        /// <summary>
+        /// Switch focus to this session.
+        /// </summary>
+        void ActivateSession(); 
     }
 
     /// <summary>
@@ -94,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// <summary>
         /// Activate session to VM instance, if any.
         /// </summary>
-        bool TryActivate(
+        bool TryActivateSession(
             InstanceLocator vmInstance,
             out ISession session);
     }
@@ -129,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 .Documents
                 .EnsureNotNull()
                 .OfType<ISession>()
-                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
+                .Where(pane => pane.Instance == vmInstance && !pane.IsClosing)
                 .Any();
         }
 
@@ -141,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             get => this.mainForm.MainPanel.ActivePane?.ActiveContent as ISession;
         }
 
-        public bool TryActivate(
+        public bool TryActivateSession(
             InstanceLocator vmInstance,
             out ISession session)
         {
@@ -149,14 +156,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 .Documents
                 .EnsureNotNull()
                 .OfType<ISession>()
-                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
+                .Where(pane => pane.Instance == vmInstance && !pane.IsClosing)
                 .FirstOrDefault();
             if (existingSession != null)
             {
                 //
                 // Session found, activate.
                 //
-                existingSession.SwitchToDocument();
+                existingSession.ActivateSession();
                 session = existingSession;
                 return true;
             }

@@ -499,7 +499,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sessionBroker = new Mock<ISessionBroker>();
             ISession session;
             sessionBroker.Verify(
-                s => s.TryActivate(It.IsAny<InstanceLocator>(), out session), 
+                s => s.TryActivateSession(It.IsAny<InstanceLocator>(), out session), 
                 Times.Never);
 
             contextFactory.Verify(

@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Try to activate existing session, if any.
             //
             if (!this.ForceNewConnection && 
-                this.sessionBroker.TryActivate(instanceNode.Instance, out session))
+                this.sessionBroker.TryActivateSession(instanceNode.Instance, out session))
             {
                 //
                 // There is an existing session, and it's now active.

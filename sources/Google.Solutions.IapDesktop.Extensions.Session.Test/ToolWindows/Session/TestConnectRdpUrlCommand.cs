@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sessionBroker = new Mock<ISessionBroker>();
             var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
-                .Setup(s => s.TryActivate(SampleLocator, out session))
+                .Setup(s => s.TryActivateSession(SampleLocator, out session))
                 .Returns(true);
 
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sessionBroker = new Mock<ISessionBroker>();
             ISession nullSession;
             sessionBroker
-                .Setup(s => s.TryActivate(SampleLocator, out nullSession))
+                .Setup(s => s.TryActivateSession(SampleLocator, out nullSession))
                 .Returns(false);
 
             var command = new ConnectRdpUrlCommand(
