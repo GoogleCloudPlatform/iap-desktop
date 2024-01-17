@@ -359,14 +359,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
             menu.AddCommand(connectCommands.DuplicateSession);
-            menu.AddCommand(sessionCommands.Close);
-            menu.AddCommand(sessionCommands.CloseAll);
-            menu.AddCommand(sessionCommands.CloseAllButThis);
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.DownloadFiles);
             menu.AddCommand(sessionCommands.UploadFiles);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
+            menu.AddSeparator();
+            menu.AddCommand(sessionCommands.Close);
+            menu.AddCommand(sessionCommands.CloseAll);
+            menu.AddCommand(sessionCommands.CloseAllButThis);
         }
     }
 }
