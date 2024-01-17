@@ -180,6 +180,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         //---------------------------------------------------------------------
+        // CloseAllButThis.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenCloseAllButThisIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.CloseAllButThis.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public async Task CloseAllButThis()
+        {
+            var session1 = new Mock<ISession>();
+            var session2 = new Mock<ISession>();
+            var session3 = new Mock<ISession>();
+
+            var sessionBroker = new Mock<ISessionBroker>();
+            sessionBroker
+                .SetupGet(b => b.Sessions)
+                .Returns(new[] { session1.Object, session2.Object, session3.Object });
+
+            var sessionCommands = new SessionCommands(sessionBroker.Object);
+
+            await sessionCommands.CloseAllButThis
+                .ExecuteAsync(session2.Object)
+                .ConfigureAwait(true);
+
+            session1.Verify(s => s.Close(), Times.Once);
+            session2.Verify(s => s.Close(), Times.Never);
+            session3.Verify(s => s.Close(), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
         // ShowSecurityScreen.
         //---------------------------------------------------------------------
 

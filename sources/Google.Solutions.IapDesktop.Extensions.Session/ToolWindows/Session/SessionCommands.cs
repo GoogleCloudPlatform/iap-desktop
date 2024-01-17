@@ -75,6 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 ActivityText = "Uploading files"
             };
             this.CloseAll = new CloseAllCommand("Close &all", sessionBroker);
+            this.CloseAllButThis = new CloseAllButThisCommand("Close &others", sessionBroker);
         }
 
         //---------------------------------------------------------------------
@@ -89,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public IContextCommand<ISession> DownloadFiles { get; }
         public IContextCommand<ISession> UploadFiles { get; }
         public IContextCommand<ISession> CloseAll { get; }
+        public IContextCommand<ISession> CloseAllButThis { get; }
 
         //---------------------------------------------------------------------
         // Generic session commands.
@@ -182,6 +184,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 foreach (var session in this.broker.Sessions)
                 {
                     session.Close();
+                }
+            }
+        }
+
+        private class CloseAllButThisCommand : SessionCommandBase
+        {
+            private readonly ISessionBroker broker;
+
+            public CloseAllButThisCommand(
+                string text,
+                ISessionBroker broker) : base(text)
+            {
+                this.broker = broker.ExpectNotNull(nameof(broker));
+            }
+
+            protected override bool IsEnabled(ISession _)
+            {
+                return true;
+            }
+
+            public override void Execute(ISession current)
+            {
+                foreach (var session in this.broker.Sessions)
+                {
+                    if (session != current)
+                    {
+                        session.Close();
+                    }
                 }
             }
         }

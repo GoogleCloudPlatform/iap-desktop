@@ -361,6 +361,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(connectCommands.DuplicateSession);
             menu.AddCommand(sessionCommands.Close);
             menu.AddCommand(sessionCommands.CloseAll);
+            menu.AddCommand(sessionCommands.CloseAllButThis);
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.DownloadFiles);
             menu.AddCommand(sessionCommands.UploadFiles);
