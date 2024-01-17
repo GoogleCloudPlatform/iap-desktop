@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenInstanceIsRunning_ThenInformationTextIsSet()
         {
-            var broker = new Mock<IGlobalSessionBroker>();
+            var broker = new Mock<ISessionBroker>();
             broker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(true);
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenInstanceIsNotRunning_ThenInformationTextIsNull()
         {
-            var broker = new Mock<IGlobalSessionBroker>();
+            var broker = new Mock<ISessionBroker>();
             broker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(false);
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenInspectedObjectIsNull()
         {
-            var broker = new Mock<IGlobalSessionBroker>();
+            var broker = new Mock<ISessionBroker>();
             broker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(false);
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenInspectedObjectIsSet()
         {
-            var broker = new Mock<IGlobalSessionBroker>();
+            var broker = new Mock<ISessionBroker>();
             broker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(false);
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToZoneNode_ThenInspectedObjectIsSet()
         {
-            var broker = new Mock<IGlobalSessionBroker>();
+            var broker = new Mock<ISessionBroker>();
             broker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(false);
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenInspectedObjectIsSet()
         {
-            var broker = new Mock<IGlobalSessionBroker>();
+            var broker = new Mock<ISessionBroker>();
             broker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(false);

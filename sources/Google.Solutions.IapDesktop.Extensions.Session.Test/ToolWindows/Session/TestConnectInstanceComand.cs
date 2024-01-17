@@ -47,12 +47,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
         private static ConnectInstanceCommand CreateCommand(
             Mock<ISessionContextFactory> sessionContextFactory,
-            Mock<IInstanceSessionBroker> sessionBroker,
+            Mock<IInstanceSessionBroker> sessionFactory,
+            Mock<ISessionBroker> sessionBroker,
             Mock<IProjectWorkspace> workspace)
         {
             return new ConnectInstanceCommand(
                 "&test",
                 sessionContextFactory.Object,
+                sessionFactory.Object,
                 sessionBroker.Object,
                 workspace.Object)
             {
@@ -78,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public async Task ExecuteSetsActiveNode()
         {
             var workspace = new Mock<IProjectWorkspace>();
-            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            var sessionBroker = new Mock<ISessionBroker>();
             var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out session))
@@ -86,6 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var command = CreateCommand(
                 new Mock<ISessionContextFactory>(),
+                new Mock<IInstanceSessionBroker>(),
                 sessionBroker,
                 workspace);
 
@@ -108,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public async Task WhenRdpSessionFound_ThenExecuteDoesNotCreateNewSession()
         {
             var contextFactory = new Mock<ISessionContextFactory>();
-            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            var sessionBroker = new Mock<ISessionBroker>();
             var session = (ISession)new Mock<IRdpSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out session))
@@ -116,6 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var command = CreateCommand(
                 contextFactory,
+                new Mock<IInstanceSessionBroker>(),
                 sessionBroker,
                 new Mock<IProjectWorkspace>());
 
@@ -147,10 +151,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(context.Object);
 
-            var sessionBroker = new Mock<IInstanceSessionBroker>();
-            sessionBroker
+            var sessionFactory = new Mock<IInstanceSessionBroker>();
+            sessionFactory
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
+
+            var sessionBroker = new Mock<ISessionBroker>();
             ISession nullSession;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
@@ -158,6 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var command = CreateCommand(
                 contextFactory,
+                sessionFactory,
                 sessionBroker,
                 new Mock<IProjectWorkspace>());
 
@@ -188,11 +195,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(context.Object);
 
-            var sessionBroker = new Mock<IInstanceSessionBroker>();
-            sessionBroker
+            var sessionFactory = new Mock<IInstanceSessionBroker>();
+            sessionFactory
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
 
+            var sessionBroker = new Mock<ISessionBroker>();
             var session = (ISession)new Mock<ISshTerminalSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out session))
@@ -200,6 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var command = CreateCommand(
                 contextFactory,
+                sessionFactory,
                 sessionBroker,
                 new Mock<IProjectWorkspace>());
             command.ForceNewConnection = false;
@@ -233,13 +242,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(context.Object);
 
-            var sessionBroker = new Mock<IInstanceSessionBroker>();
-            sessionBroker
+            var sessionFactory = new Mock<IInstanceSessionBroker>();
+            sessionFactory
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
 
+            var sessionBroker = new Mock<ISessionBroker>();
             var command = CreateCommand(
                 contextFactory,
+                sessionFactory,
                 sessionBroker,
                 new Mock<IProjectWorkspace>());
             command.ForceNewConnection = true;
@@ -272,11 +283,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(context.Object);
 
-            var sessionBroker = new Mock<IInstanceSessionBroker>();
-            sessionBroker
+            var sessionFactory = new Mock<IInstanceSessionBroker>();
+            sessionFactory
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);
 
+            var sessionBroker = new Mock<ISessionBroker>();
             ISession nullSession;
             sessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
@@ -284,6 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var command = CreateCommand(
                 contextFactory,
+                sessionFactory,
                 sessionBroker,
                 new Mock<IProjectWorkspace>());
 

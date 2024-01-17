@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
@@ -36,14 +37,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
         private readonly ISessionContextFactory sessionContextFactory;
-        private readonly IInstanceSessionBroker sessionBroker;
+        private readonly IInstanceSessionBroker sessionFactory;
+        private readonly ISessionBroker sessionBroker;
 
         public ConnectRdpUrlCommand(
             ISessionContextFactory sessionContextFactory,
-            IInstanceSessionBroker sessionBroker)
+            IInstanceSessionBroker sessionFactory,
+            ISessionBroker sessionBroker)
             : base("Launch &RDP URL")
         {
             this.sessionContextFactory = sessionContextFactory;
+            this.sessionFactory = sessionFactory;
             this.sessionBroker = sessionBroker;
         }
 
@@ -59,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public override async Task ExecuteAsync(IapRdpUrl url)
         {
-            if (this.sessionBroker.SessionBroker.TryActivate(url.Instance, out var activeSession))
+            if (this.sessionBroker.TryActivate(url.Instance, out var activeSession))
             {
                 //
                 // There is an existing session, and it's now active.
@@ -76,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     .CreateRdpSessionContextAsync(url, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                var session = await this.sessionBroker
+                var session = await this.sessionFactory
                     .CreateSessionAsync(context)
                     .ConfigureAwait(true);
 

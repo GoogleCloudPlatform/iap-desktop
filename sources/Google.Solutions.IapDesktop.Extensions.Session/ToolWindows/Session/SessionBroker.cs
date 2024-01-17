@@ -43,8 +43,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     public interface IInstanceSessionBroker
     {
-        ISessionBroker SessionBroker { get; }
-
         /// <summary>
         /// Create a new SSH session.
         /// </summary>
@@ -65,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private const TabAccentColorIndex AccentColorForUrlBasedSessions = TabAccentColorIndex.Hightlight2;
 
         private readonly IMainWindow mainForm;
+        private readonly ISessionBroker sessionBroker;
         private readonly IToolWindowHost toolWindowHost;
         private readonly IJobService jobService;
 
@@ -75,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             IJobService jobService)
         {
             this.mainForm = mainForm;
-            this.SessionBroker = sessionBroker;
+            this.sessionBroker = sessionBroker;
             this.toolWindowHost = toolWindowHost;
             this.jobService = jobService;
         }
@@ -96,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Add context menu.
             //
             Debug.Assert(session.ContextCommands == null);
-            session.ContextCommands = this.SessionBroker.SessionMenu;
+            session.ContextCommands = this.sessionBroker.SessionMenu;
         }
 
         private void ApplyTabStyle<TCredential, TParameters>(
@@ -305,8 +304,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         //---------------------------------------------------------------------
         // IInstanceSessionBroker.
         //---------------------------------------------------------------------
-
-        public ISessionBroker SessionBroker { get; }
 
         public async Task<ISession> CreateSessionAsync(
             ISessionContext<ISshCredential, SshParameters> context)

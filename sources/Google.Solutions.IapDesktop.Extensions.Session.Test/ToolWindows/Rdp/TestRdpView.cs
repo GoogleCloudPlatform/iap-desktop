@@ -91,7 +91,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             var transport = CreateTransportForEndpoint(unboundEndpoint);
 
             var serviceProvider = CreateServiceProvider(await auth);
-            var broker = new InstanceSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(
+                serviceProvider.GetService<IMainWindow>(),
+                serviceProvider.GetService<ISessionBroker>(),
+                serviceProvider.GetService<IToolWindowHost>(),
+                serviceProvider.GetService<IJobService>());
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectRdpSession(
                     SampleLocator,
@@ -133,7 +137,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure
                 };
 
-                var broker = new InstanceSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(
+                    serviceProvider.GetService<IMainWindow>(),
+                    serviceProvider.GetService<ISessionBroker>(),
+                    serviceProvider.GetService<IToolWindowHost>(),
+                    serviceProvider.GetService<IJobService>());
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(
                     () => broker.ConnectRdpSession(
@@ -168,7 +176,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     windowsCredentials.SecurePassword);
                 var rdpParameters = new RdpParameters();
 
-                var broker = new InstanceSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(
+                    serviceProvider.GetService<IMainWindow>(),
+                    serviceProvider.GetService<ISessionBroker>(),
+                    serviceProvider.GetService<IToolWindowHost>(),
+                    serviceProvider.GetService<IJobService>());
 
                 RdpView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(

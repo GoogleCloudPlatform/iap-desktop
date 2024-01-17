@@ -39,7 +39,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
         private readonly ISessionContextFactory sessionContextFactory;
-        private readonly IInstanceSessionBroker sessionBroker; // TODO: rename
+        private readonly ISessionBroker sessionBroker;
+        private readonly IInstanceSessionBroker sessionFactory;
         private readonly IProjectWorkspace workspace;
 
         public bool AvailableForSsh { get; set; } = false;
@@ -50,11 +51,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public ConnectInstanceCommand(
             string text,
             ISessionContextFactory sessionContextFactory,
-            IInstanceSessionBroker sessionBroker,
+            IInstanceSessionBroker sessionFactory,
+            ISessionBroker sessionBroker,
             IProjectWorkspace workspace)
             : base(text)
         {
             this.sessionContextFactory = sessionContextFactory;
+            this.sessionFactory = sessionFactory;
             this.sessionBroker = sessionBroker;
             this.workspace = workspace;
         }
@@ -94,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             // Try to activate existing session, if any.
             //
             if (!this.ForceNewConnection && 
-                this.sessionBroker.SessionBroker.TryActivate(instanceNode.Instance, out session))
+                this.sessionBroker.TryActivate(instanceNode.Instance, out session))
             {
                 //
                 // There is an existing session, and it's now active.
@@ -123,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
                 try
                 {
-                    session = await this.sessionBroker
+                    session = await this.sessionFactory
                         .CreateSessionAsync(context)
                         .ConfigureAwait(true);
                 }
@@ -141,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
                 try
                 {
-                    session = await this.sessionBroker
+                    session = await this.sessionFactory
                         .CreateSessionAsync(context)
                         .ConfigureAwait(true);
                 }
