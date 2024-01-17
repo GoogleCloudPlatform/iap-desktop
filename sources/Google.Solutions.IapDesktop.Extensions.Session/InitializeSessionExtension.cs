@@ -359,7 +359,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
             menu.AddCommand(connectCommands.DuplicateSession);
-            menu.AddCommand(sessionCommands.Disconnect);
+            menu.AddCommand(sessionCommands.Close);
             menu.AddCommand(sessionCommands.CloseAll);
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.DownloadFiles);

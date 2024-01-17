@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 Image = Resources.Fullscreen_16,
                 ActivityText = "Activating full screen"
             };
-            this.Disconnect = new DisconnectCommand("&Disconnect")
+            this.Close = new DisconnectCommand("&Disconnect")
             {
                 Image = Resources.Disconnect_16,
                 ShortcutKeys = Keys.Control | Keys.F4,
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public IContextCommand<ISession> EnterFullScreenOnSingleScreen { get; }
         public IContextCommand<ISession> EnterFullScreenOnAllScreens { get; }
-        public IContextCommand<ISession> Disconnect { get; }
+        public IContextCommand<ISession> Close { get; }
         public IContextCommand<ISession> ShowSecurityScreen { get; }
         public IContextCommand<ISession> ShowTaskManager { get; }
         public IContextCommand<ISession> DownloadFiles { get; }

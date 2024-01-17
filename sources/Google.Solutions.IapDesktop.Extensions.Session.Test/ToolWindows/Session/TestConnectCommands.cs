@@ -635,7 +635,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                sessionCommands.Disconnect.QueryState(connectedSession.Object));
+                sessionCommands.Close.QueryState(connectedSession.Object));
         }
 
         [Test]
@@ -649,7 +649,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                sessionCommands.Disconnect.QueryState(disconnectedSession.Object));
+                sessionCommands.Close.QueryState(disconnectedSession.Object));
         }
 
         [Test]
