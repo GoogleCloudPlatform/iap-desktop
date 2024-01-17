@@ -21,10 +21,8 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 

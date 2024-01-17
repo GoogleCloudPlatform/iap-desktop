@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Google.Solutions.Common.Util
 {
@@ -34,7 +35,9 @@ namespace Google.Solutions.Common.Util
             string variableName)
             where T : class
         {
-            Debug.Assert(value != null);
+            Debug.Assert(
+                Assembly.GetEntryAssembly() == null || // Running a test case
+                value != null);
 
             if (value == null)
             {

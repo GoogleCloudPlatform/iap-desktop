@@ -259,53 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         }
 
         //---------------------------------------------------------------------
-        // ISessionBroker.
-        //---------------------------------------------------------------------
-
-        //TODO: Remove
-        //public ISession ActiveSession
-        //{
-        //    get => (ISession)RdpView.TryGetActivePane(this.mainForm)
-        //            ?? SshTerminalView.TryGetActivePane(this.mainForm)
-        //            ?? null;
-        //}
-
-        //public bool IsConnected(InstanceLocator vmInstance)
-        //{
-        //    return
-        //        RdpView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
-        //        SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
-        //}
-
-        //public bool TryActivate(InstanceLocator vmInstance, out ISession session)
-        //{
-        //    if (RdpView.TryGetExistingPane(this.mainForm, vmInstance) is
-        //        RdpView existingRdpSession &&
-        //        existingRdpSession != null)
-        //    {
-        //        // Pane found, activate.
-        //        existingRdpSession.SwitchToDocument();
-        //        session = existingRdpSession;
-        //        return true;
-        //    }
-        //    else if (SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) is
-        //        SshTerminalView existingSshSession &&
-        //        existingSshSession != null)
-        //    {
-        //        // Pane found, activate.
-        //        existingSshSession.SwitchToDocument();
-        //        session = existingSshSession;
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        session = null;
-        //        return false;
-        //    }
-        //}
-
-        //---------------------------------------------------------------------
-        // IInstanceSessionBroker.
+        // ISessionFactory.
         //---------------------------------------------------------------------
 
         public async Task<ISession> CreateSessionAsync(
