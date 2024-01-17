@@ -24,6 +24,8 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Application.Views;
 using NUnit.Framework;
+using System.Threading.Tasks;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
@@ -32,6 +34,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+
+        private class MockSession : DockContent, ISession
+        {
+            public bool IsConnected { get; set; } = true;
+
+            public bool CanTransferFiles { get; set; } = false;
+
+            public InstanceLocator Instance { get; set; }
+
+            public bool IsClosing { get; set; } = false;
+
+            public void ActivateSession()
+            {
+            }
+
+            public Task DownloadFilesAsync()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Task UploadFilesAsync()
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
 
         //---------------------------------------------------------------------
         // ActiveSession.
@@ -61,6 +90,60 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             }
         }
 
+        [Test]
+        public void WhenOnlyOtherSessionsFound_ThenIsConnectedReturnsFalse()
+        {
+            using (var form = new TestMainForm())
+            {
+                var broker = new SessionBroker(form);
+
+                var session = new MockSession()
+                {
+                    Instance = new InstanceLocator("project-1", "zone-1", "other-1")
+                };
+                new DockContent().Show(form.MainPanel, DockState.Document);
+                session.Show(form.MainPanel, DockState.Document);
+
+                Assert.IsFalse(broker.IsConnected(SampleLocator));
+            }
+        }
+
+        [Test]
+        public void WhenMatchingSessionFound_ThenIsConnectedReturnsTrue()
+        {
+            using (var form = new TestMainForm())
+            {
+                var broker = new SessionBroker(form);
+
+                var session = new MockSession()
+                {
+                    Instance = SampleLocator,
+                    IsClosing = false
+                };
+                session.Show(form.MainPanel, DockState.Document);
+
+                Assert.IsTrue(broker.IsConnected(SampleLocator));
+            }
+        }
+
+        [Test]
+        public void WhenMatchingSessionIsClosing_ThenIsConnectedReturnsFalse()
+        {
+            using (var form = new TestMainForm())
+            {
+                var broker = new SessionBroker(form);
+
+                var session = new MockSession()
+                {
+                    Instance = SampleLocator,
+                    IsClosing = true
+                };
+                session.Show(form.MainPanel, DockState.Document);
+
+                Assert.IsFalse(broker.IsConnected(SampleLocator));
+            }
+        }
+
         //---------------------------------------------------------------------
         // TryActivate.
         //---------------------------------------------------------------------
@@ -73,6 +156,48 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 var broker = new SessionBroker(form);
                 Assert.IsFalse(broker.TryActivateSession(SampleLocator, out var _));
+            }
+        }
+
+        [Test]
+        public void WhenMatchingSessionFound_ThenTryActivateReturnsTrue()
+        {
+            using (var form = new TestMainForm())
+            {
+                var broker = new SessionBroker(form);
+
+                var session = new MockSession()
+                {
+                    Instance = SampleLocator,
+                    IsClosing = false
+                };
+                session.Show(form.MainPanel, DockState.Document);
+
+                Assert.IsTrue(broker.TryActivateSession(
+                    SampleLocator, 
+                    out var activated));
+                Assert.AreSame(session, activated);
+            }
+        }
+
+        [Test]
+        public void WhenMatchingSessionIsClosing_ThenTryActivateReturnsFalse()
+        {
+            using (var form = new TestMainForm())
+            {
+                var broker = new SessionBroker(form);
+
+                var session = new MockSession()
+                {
+                    Instance = SampleLocator,
+                    IsClosing = true
+                };
+                session.Show(form.MainPanel, DockState.Document);
+
+                Assert.IsFalse(broker.TryActivateSession(
+                    SampleLocator,
+                    out var activated));
+                Assert.IsNull(activated);
             }
         }
     }
