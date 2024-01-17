@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var broker = new InstanceSessionBroker(
+            var broker = new SessionFactory(
                 serviceProvider.GetService<IMainWindow>(),
                 serviceProvider.GetService<ISessionBroker>(),
                 serviceProvider.GetService<IToolWindowHost>(),
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var transport = CreateTransportForEndpoint(this.UnboundEndpoint);
 
             var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(
+            var broker = new SessionFactory(
                 serviceProvider.GetService<IMainWindow>(),
                 serviceProvider.GetService<ISessionBroker>(),
                 serviceProvider.GetService<IToolWindowHost>(),
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var transport = CreateTransportForEndpoint(this.NonSshEndpoint);
 
             var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(
+            var broker = new SessionFactory(
                 serviceProvider.GetService<IMainWindow>(),
                 serviceProvider.GetService<ISessionBroker>(),
                 serviceProvider.GetService<IToolWindowHost>(),
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 .ConfigureAwait(true);
 
             var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(
+            var broker = new SessionFactory(
                 serviceProvider.GetService<IMainWindow>(),
                 serviceProvider.GetService<ISessionBroker>(),
                 serviceProvider.GetService<IToolWindowHost>(),

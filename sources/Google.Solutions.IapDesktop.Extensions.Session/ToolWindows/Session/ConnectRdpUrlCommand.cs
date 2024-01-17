@@ -37,12 +37,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
         private readonly ISessionContextFactory sessionContextFactory;
-        private readonly IInstanceSessionBroker sessionFactory;
+        private readonly ISessionFactory sessionFactory;
         private readonly ISessionBroker sessionBroker;
 
         public ConnectRdpUrlCommand(
             ISessionContextFactory sessionContextFactory,
-            IInstanceSessionBroker sessionFactory,
+            ISessionFactory sessionFactory,
             ISessionBroker sessionBroker)
             : base("Launch &RDP URL")
         {

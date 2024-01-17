@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     {
         private readonly ISessionContextFactory sessionContextFactory;
         private readonly ISessionBroker sessionBroker;
-        private readonly IInstanceSessionBroker sessionFactory;
+        private readonly ISessionFactory sessionFactory;
         private readonly IProjectWorkspace workspace;
 
         public bool AvailableForSsh { get; set; } = false;
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public ConnectInstanceCommand(
             string text,
             ISessionContextFactory sessionContextFactory,
-            IInstanceSessionBroker sessionFactory,
+            ISessionFactory sessionFactory,
             ISessionBroker sessionBroker,
             IProjectWorkspace workspace)
             : base(text)

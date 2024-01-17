@@ -30,6 +30,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
+    /// <summary>
+    /// An active session to a VM.
+    /// </summary>
     public interface ISession : IDisposable
     {
         /// <summary>
@@ -67,6 +70,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         void SwitchToDocument(); //TODO: Rename to Activate
     }
 
+    /// <summary>
+    /// Broker that keeps track of active sessions.
+    /// </summary>
     public interface ISessionBroker
     {
         /// <summary>
@@ -93,11 +99,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             out ISession session);
     }
 
-    public class GlobalSessionBroker : ISessionBroker // TODO: Rename, split file
+    public class SessionBroker : ISessionBroker
     {
         private readonly IMainWindow mainForm;
 
-        public GlobalSessionBroker(IMainWindow mainForm)
+        public SessionBroker(IMainWindow mainForm)
         {
             this.mainForm = mainForm.ExpectNotNull(nameof(mainForm));
 

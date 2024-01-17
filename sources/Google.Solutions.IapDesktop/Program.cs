@@ -580,7 +580,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddTransient<IWindowsCredentialGenerator, WindowsCredentialGenerator>();
                 mainLayer.AddSingleton<IJobService, JobService>();
                 mainLayer.AddSingleton<IEventQueue>(eventService);
-                mainLayer.AddSingleton<ISessionBroker, GlobalSessionBroker>();
+                mainLayer.AddSingleton<ISessionBroker, SessionBroker>();
                 mainLayer.AddSingleton<IBrowser>(Browser.Default);
 
                 var projectRepository = new ProjectRepository(profile.SettingsKey.CreateSubKey("Inventory"));

@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             UrlCommands urlCommands,
             ISessionContextFactory sessionContextFactory,
             IProjectWorkspace workspace,
-            IInstanceSessionBroker sessionFactory,
+            ISessionFactory sessionFactory,
             ISessionBroker sessionBroker)
         {
             //

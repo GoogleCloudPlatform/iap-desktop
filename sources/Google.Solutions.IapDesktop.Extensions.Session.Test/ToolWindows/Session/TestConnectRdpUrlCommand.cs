@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var command = new ConnectRdpUrlCommand(
                 contextFactory.Object,
-                new Mock<IInstanceSessionBroker>().Object,
+                new Mock<ISessionFactory>().Object,
                 sessionBroker.Object);
 
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))
                 .ReturnsAsync(context.Object);
 
-            var sessionFactory = new Mock<IInstanceSessionBroker>();
+            var sessionFactory = new Mock<ISessionFactory>();
             sessionFactory
                 .Setup(s => s.CreateSessionAsync(context.Object))
                 .ReturnsAsync(new Mock<ISession>().Object);

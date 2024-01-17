@@ -41,7 +41,10 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    public interface IInstanceSessionBroker
+    /// <summary>
+    /// Factory for SSH and RDP sessions.
+    /// </summary>
+    public interface ISessionFactory
     {
         /// <summary>
         /// Create a new SSH session.
@@ -56,8 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             ISessionContext<RdpCredential, RdpParameters> context);
     }
 
-    [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
-    public class InstanceSessionBroker : IInstanceSessionBroker // TODO: Rename to ...Factory
+    [Service(typeof(ISessionFactory), ServiceLifetime.Singleton)]
+    public class SessionFactory : ISessionFactory
     {
         private const TabAccentColorIndex AccentColorForNonIapSessions = TabAccentColorIndex.Hightlight1;
         private const TabAccentColorIndex AccentColorForUrlBasedSessions = TabAccentColorIndex.Hightlight2;
@@ -67,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private readonly IToolWindowHost toolWindowHost;
         private readonly IJobService jobService;
 
-        public InstanceSessionBroker(
+        public SessionFactory(
             IMainWindow mainForm,
             ISessionBroker sessionBroker,
             IToolWindowHost toolWindowHost,

@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             var transport = CreateTransportForEndpoint(unboundEndpoint);
 
             var serviceProvider = CreateServiceProvider(await auth);
-            var broker = new InstanceSessionBroker(
+            var broker = new SessionFactory(
                 serviceProvider.GetService<IMainWindow>(),
                 serviceProvider.GetService<ISessionBroker>(),
                 serviceProvider.GetService<IToolWindowHost>(),
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure
                 };
 
-                var broker = new InstanceSessionBroker(
+                var broker = new SessionFactory(
                     serviceProvider.GetService<IMainWindow>(),
                     serviceProvider.GetService<ISessionBroker>(),
                     serviceProvider.GetService<IToolWindowHost>(),
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     windowsCredentials.SecurePassword);
                 var rdpParameters = new RdpParameters();
 
-                var broker = new InstanceSessionBroker(
+                var broker = new SessionFactory(
                     serviceProvider.GetService<IMainWindow>(),
                     serviceProvider.GetService<ISessionBroker>(),
                     serviceProvider.GetService<IToolWindowHost>(),

@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<ISessionContextFactory>(),
                 serviceProvider.GetService<IProjectWorkspace>(),
-                serviceProvider.GetService<IInstanceSessionBroker>(),
+                serviceProvider.GetService<ISessionFactory>(),
                 serviceProvider.GetService<ISessionBroker>());
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
