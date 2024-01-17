@@ -26,19 +26,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 {
     internal static class WindowsUser
     {
-        public static string SuggestUsername(IAuthorization authorization)
+        //
+        // Criteria for local Windows user accounts:
+        //
+        // (1) cannot be identical to any other user or group name on the computer
+        // (2) can contain up to 20 uppercase or lowercase characters
+        // (3) must not contain " / \ [ ] : ; | = , + * ? < >
+        // (4) must not consist solely of periods(.) or spaces.
+        //
+        // See https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc783323(v=ws.10)
+        //
+
+        private static readonly char[] DiallowedLocalUsernameCharacters
+            = new[] { '"', '/', '\\', '[', ']', ':', ';', '|', '=', ',', '+', '*', '?', '<', '>' }; 
+
+        internal static bool IsUserPrincipalName(string username)
+        {
+            var at = username.IndexOf('@');
+            var lastDot = username.LastIndexOf('.');
+            return !string.IsNullOrEmpty(username) &&
+                 at > 0 &&
+                 lastDot > at;
+        }
+
+        internal static bool IsLocalUsername(string username)
+        {
+            return !string.IsNullOrEmpty(username) &&
+                !IsUserPrincipalName(username) &&
+                username.Length > 0 && username.Length <= 20 &&
+                username.IndexOfAny(DiallowedLocalUsernameCharacters) == -1;
+
+        }
+
+        public static string SuggestUsername(IOidcSession session)
         {
             //
-            // Criteria for local Windows user accounts:
-            //
-            // (1) cannot be identical to any other user or group name on the computer
-            // (2) can contain up to 20 uppercase or lowercase characters
-            // (3) must not contain " / \ [ ] : ; | = , + * ? < >
-            // (4) must not consist solely of periods(.) or spaces.
-            //
-            // See https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc783323(v=ws.10)
-            //
             // Rules for Google email addresses:
+            //
             // (1) must be 6-30 characters in length
             // (2) must only contain a-z, A-Z, 0-9, ., _
             //
@@ -47,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
             // - We must truncate to 20 chars.
             //
 
-            var email = authorization.Session.Username;
+            var email = session.Username;
 
             int atIndex;
             if (!string.IsNullOrEmpty(email) && (atIndex = email.IndexOf('@')) > 0)

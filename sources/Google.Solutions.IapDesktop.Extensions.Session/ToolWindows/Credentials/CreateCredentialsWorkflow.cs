@@ -60,9 +60,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             Settings.ConnectionSettings settings,
             bool silent)
         {
-            var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
-                ? WindowsUser.SuggestUsername(this.serviceProvider.GetService<IAuthorization>())
-                : settings.RdpUsername.StringValue;
+            var username = WindowsUser.IsLocalUsername(settings.RdpUsername.StringValue)
+                ? settings.RdpUsername.StringValue
+                : WindowsUser.SuggestUsername(this.serviceProvider.GetService<IAuthorization>().Session);
 
             if (!silent)
             {
