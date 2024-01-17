@@ -30,6 +30,17 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestLicenseLocator : CommonFixtureBase
     {
         [Test]
+        public void Project()
+        {
+            var ref1 = new LicenseLocator("project-1", "type-1");
+            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = LicenseLocator.Parse(
@@ -68,6 +79,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
                 "/project-1/project-1/global/licenses/windows-10-enterprise-byol"));
         }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenPathInvalid_ParseThrowsArgumentException()
@@ -138,6 +153,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsTrue(null != ref1);
         }
 
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
@@ -158,6 +177,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 LicenseLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
+
+        //---------------------------------------------------------------------
+        // IsWindowsLicense.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenLicenseIsFromWindowsCloud_ThenIsWindowsLicenseReturnsTrue()

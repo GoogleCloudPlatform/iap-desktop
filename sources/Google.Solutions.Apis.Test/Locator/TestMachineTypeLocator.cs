@@ -29,6 +29,16 @@ namespace Google.Solutions.Apis.Test.Locator
     [TestFixture]
     public class TestMachineTypeLocator : CommonFixtureBase
     {
+        [Test]
+        public void Project()
+        {
+            var ref1 = new MachineTypeLocator("project-1", "zone-1", "type-1");
+            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenPathIsValid_ParseReturnsObject()
@@ -95,6 +105,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 "/"));
         }
 
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
@@ -152,6 +166,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsTrue(ref1 != null);
             Assert.IsTrue(null != ref1);
         }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()

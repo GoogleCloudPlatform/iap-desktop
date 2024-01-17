@@ -114,7 +114,7 @@ namespace Google.Solutions.Apis.Locator
 	
 		public class InstanceLocator : ResourceLocator, IEquatable<InstanceLocator>
 		{
-            public string Zone { get; } // Todo: rename to ZoneId, add Zone
+            public string Zone { get; }
             public override string ResourceType => "instances";
 
             [JsonConstructor]
