@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
@@ -181,12 +182,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public IReadOnlyCollection<ISession> Sessions
         {
-            get => this.mainForm.MainPanel
-                .Documents
-                .EnsureNotNull()
-                .OfType<ISession>()
-                .Where(pane => !pane.IsClosing)
-                .ToList();
+            get
+            {
+                var floatWindowDocs = this.mainForm.MainPanel
+                    .FloatWindows
+                    .EnsureNotNull()
+                    .SelectMany(fw => fw.DockPanel.Documents.EnsureNotNull());
+
+                var mainWindowDocs = this.mainForm.MainPanel
+                    .Documents
+                    .EnsureNotNull();
+
+                return mainWindowDocs
+                    .Concat(floatWindowDocs)
+                    .OfType<ISession>()
+                    .Where(pane => !pane.IsClosing)
+                    .ToList();
+            }
         }
     }
 
