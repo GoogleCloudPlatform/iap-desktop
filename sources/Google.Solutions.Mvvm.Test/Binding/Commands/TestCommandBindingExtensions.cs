@@ -173,7 +173,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandExecuted(
-                        It.Is<ICommand>(c => c == command)),
+                        It.Is<ICommandBase>(c => c == command)),
                     Times.Once);
 
                 form.Close();
@@ -209,7 +209,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
                         form,
-                        It.Is<ICommand>(c => c == command),
+                        It.Is<ICommandBase>(c => c == command),
                         It.IsAny<ArgumentException>()),
                     Times.Once);
 
@@ -246,7 +246,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
                         null,
-                        It.Is<ICommand>(c => c == command),
+                        It.Is<ICommandBase>(c => c == command),
                         It.IsAny<TaskCanceledException>()),
                     Times.Never);
 

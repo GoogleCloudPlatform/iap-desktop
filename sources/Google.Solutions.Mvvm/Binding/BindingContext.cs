@@ -34,14 +34,14 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Notify that a command executed successfully.
         /// </summary>
-        void OnCommandExecuted(ICommand command);
+        void OnCommandExecuted(ICommandBase command);
 
         /// <summary>
         /// Notify that a command failed.
         /// </summary>
         void OnCommandFailed(
             IWin32Window? window,
-            ICommand command, 
+            ICommandBase command, 
             Exception exception);
 
         /// <summary>

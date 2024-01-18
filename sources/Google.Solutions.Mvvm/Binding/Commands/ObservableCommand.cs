@@ -37,11 +37,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         IObservableProperty<bool> CanExecute { get; }
 
         /// <summary>
-        /// Executes the command.
-        /// </summary>
-        Task ExecuteAsync(CancellationToken cancellationToken);
-
-        /// <summary>
         /// Text to show in error messages.
         /// </summary>
         new string ActivityText { get; set; }
