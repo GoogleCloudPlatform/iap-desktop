@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Drawing;
@@ -33,72 +32,47 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     /// </summary>
     internal class SystemInputDialog : CompositeForm
     {
-        private static void DefaultValidateInput(
-            string input,
-            out bool valid,
-            out string warning)
-        {
-            valid = !string.IsNullOrEmpty(input);
-            warning = null;
-        }
-
-        private InputDialogParameters.ValidationCallback validateInput = DefaultValidateInput;
-
         /// <summary>
         /// Value provided by user.
         /// </summary>
         public string Value { get; private set; }
 
-        /// <summary>
-        /// Validation callback, optional.
-        /// </summary>
-        public InputDialogParameters.ValidationCallback ValidateInput
-        {
-            get => this.validateInput;
-            set
-            {
-                value.ExpectNotNull(nameof(value));
-                this.validateInput = value;
-            }
-        }
-
-        /// <summary>
-        /// Cue to show in text box.
-        /// </summary>
-        public string Cue { get; set; }
-
-        public SystemInputDialog(string title, string caption, string message)
+        public SystemInputDialog(InputDialogParameters parameters)
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterParent;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = SizeGripStyle.Hide;
 
-            this.Size = new Size(450, 225);
+            var messageSize = TextRenderer.MeasureText(parameters.Message, this.Font);
+            this.Size = new Size(
+                Math.Max(450, messageSize.Width + 40),
+                Math.Max(225, messageSize.Height + 200)); // TODO: this breaks when theme is applied
 
             //
             // Header and description.
             //
             this.Controls.Add(new Label()
             {
-                Text = title,
+                Text = parameters.Title,
                 Location = new Point(24, 12),
                 AutoSize = false,
                 Size = new Size(this.Width - 50, 20),
             });
             this.Controls.Add(new HeaderLabel()
             {
-                Text = caption,
+                Text = parameters.Caption,
                 Location = new Point(24 - 2, 40),
                 AutoSize = false,
                 Size = new Size(this.Width - 50, 30),
             });
+
             this.Controls.Add(new Label()
             {
-                Text = message,
+                Text = parameters.Message,
                 Location = new Point(24, 80),
                 AutoSize = false,
-                Size = new Size(this.Width - 50, 20),
+                Size = new Size(messageSize.Width + 10, messageSize.Height + 10),
             });
 
             //
@@ -107,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             var okButton = new Button()
             {
                 DialogResult = DialogResult.OK,
-                Location = new Point(24, 168),
+                Location = new Point(24, 148 + messageSize.Height),
                 Size = new Size(200, 30),
                 Text = "OK",
                 Enabled = false,
@@ -119,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             var cancelButton = new Button()
             {
                 DialogResult = DialogResult.Cancel,
-                Location = new Point(230, 168),
+                Location = new Point(230, 148 + messageSize.Height),
                 Size = new Size(200, 30),
                 Text = "Cancel",
                 TabIndex = 2
@@ -130,37 +104,45 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             //
             // Username.
             //
-            var usernameTextBox = new TextBox()
+            var textBox = new TextBox()
             {
-                Location = new Point(24 + 2, 112),
+                Location = new Point(24 + 2, 92 + messageSize.Height),
                 Size = new Size(296, 30),
                 TabIndex = 0,
-                MaxLength = 64,
+                MaxLength = 64
             };
-            this.Controls.Add(usernameTextBox);
+
+            if (parameters.IsPassword)
+            {
+                textBox.PasswordChar = '*';
+                textBox.UseSystemPasswordChar = true;
+            }
+
+            this.Controls.Add(textBox);
 
             var warningLabel = new Label()
             {
-                Location = new Point(24, 136),
+                Location = new Point(24, 116 + messageSize.Height),
                 Size = new Size(296, 20),
                 AutoSize = false,
                 ForeColor = Color.Red
             };
             this.Controls.Add(warningLabel);
 
-            usernameTextBox.HandleCreated += (_, __) =>
+            textBox.HandleCreated += (_, __) =>
             {
-                if (!string.IsNullOrEmpty(this.Cue))
+                if (!string.IsNullOrEmpty(parameters.Cue))
                 {
-                    usernameTextBox.SetCueBanner(this.Cue, true);
+                    textBox.SetCueBanner(parameters.Cue, true);
                 }
             };
 
-            usernameTextBox.TextChanged += (_, __) =>
+            textBox.TextChanged += (_, __) =>
             {
-                this.Value = usernameTextBox.Text;
+                this.Value = textBox.Text;
 
-                this.validateInput(usernameTextBox.Text, out var valid, out var warning);
+                var validationCallback = parameters.Validate ?? ValidateIsNullOrEmpty;
+                validationCallback(textBox.Text, out var valid, out var warning);
 
                 okButton.Enabled = valid;
                 warningLabel.Visible = !valid;
@@ -181,6 +163,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     NativeMethods.WM_NCLBUTTONDOWN, 
                     NativeMethods.HT_CAPTION, 0);
             }
+        }
+
+        /// <summary>
+        /// Default validation handler.
+        /// </summary>
+        private static void ValidateIsNullOrEmpty(
+            string input,
+            out bool valid,
+            out string warning)
+        {
+            valid = !string.IsNullOrEmpty(input);
+            warning = null;
         }
 
         //---------------------------------------------------------------------

@@ -178,10 +178,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string message,
             out string username)
         {
-            using (var dialog = new SystemInputDialog("Security", caption, message)
-            {
-                Cue = "User name"
-            })
+            using (var dialog = new SystemInputDialog(
+                new InputDialogParameters()
+                {
+                    Title = "Security",
+                    Caption = caption,
+                    Message = message,
+                    Cue = "User name"
+                }))
             {
                 try
                 {
