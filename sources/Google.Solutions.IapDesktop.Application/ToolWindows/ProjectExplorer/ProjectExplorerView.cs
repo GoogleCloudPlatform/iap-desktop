@@ -250,9 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                     _ => this.viewModel.IsCloudConsoleCommandVisible
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    _ => InvokeAction(
-                        () => this.viewModel.ConfigureIapAccess(),
-                        "Opening Cloud Console"))
+                    _ => this.viewModel.ConfigureIapAccess())
                 {
                     Id = "ConfigureIapAccess",
                     ActivityText = "Opening Cloud Console"

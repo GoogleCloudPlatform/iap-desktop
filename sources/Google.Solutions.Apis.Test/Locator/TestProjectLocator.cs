@@ -30,6 +30,17 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestProjectLocator : CommonFixtureBase
     {
         [Test]
+        public void Project()
+        {
+            var ref1 = new ProjectLocator("project-1");
+            Assert.AreEqual(ref1, ref1.Project);
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = ProjectLocator.Parse(
@@ -68,6 +79,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "/project-1"));
         }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenPathInvalid_ParseThrowsArgumentException()
@@ -134,6 +149,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsTrue(ref1 != null);
             Assert.IsTrue(null != ref1);
         }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()

@@ -29,6 +29,10 @@ namespace Google.Solutions.Apis.Test.Locator
     [TestFixture]
     public class TestAccessLevelLocator : CommonFixtureBase
     {
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenPathIsValid_ParseReturnsObject()
         {
@@ -49,6 +53,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
                 "/"));
         }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
@@ -107,6 +115,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsTrue(ref1 != null);
             Assert.IsTrue(null != ref1);
         }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()

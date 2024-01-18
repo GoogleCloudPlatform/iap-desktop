@@ -29,6 +29,17 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestInstanceLocator : CommonFixtureBase
     {
         [Test]
+        public void Project()
+        {
+            var ref1 = new InstanceLocator("project-1", "zone-1", "instance-1");
+            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central-1/instances/instance-1";
@@ -48,6 +59,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 InstanceLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()

@@ -30,6 +30,17 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestZoneLocator : CommonFixtureBase
     {
         [Test]
+        public void Project()
+        {
+            var ref1 = new ZoneLocator("project-1", "zone-1");
+            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = ZoneLocator.Parse(
@@ -77,6 +88,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "projects/project-1/zones"));
         }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
@@ -135,6 +150,10 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsTrue(ref1 != null);
             Assert.IsTrue(null != ref1);
         }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()

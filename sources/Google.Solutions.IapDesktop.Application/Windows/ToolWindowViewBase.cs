@@ -519,29 +519,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         // Utility methods.
         //---------------------------------------------------------------------
 
-        protected void InvokeAction(
-            Action action,
-            string actionName)
-        {
-            Debug.Assert(
-                actionName.Contains("ing "),
-                "Action name should be formatted like 'Doing something'");
-
-            try
-            {
-                action();
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.exceptionDialog
-                    .Show(this, $"{actionName} failed", e);
-            }
-        }
-
         protected async Task InvokeActionAsync(
             Func<Task> action,
             string actionName)
