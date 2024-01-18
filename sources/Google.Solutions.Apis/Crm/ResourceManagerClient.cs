@@ -233,16 +233,22 @@ namespace Google.Solutions.Apis.Crm
                 .Replace("'", "");
         }
 
+        /// <summary>
+        /// Create filter for a specific project ID.
+        /// </summary>
         public static ProjectFilter ByProjectId(string projectId)
         {
             projectId = Sanitize(projectId);
             return new ProjectFilter($"id:\"{projectId}\"");
         }
 
-        public static ProjectFilter ByPrefix(string idOrNamePrefix)
+        /// <summary>
+        /// Create filter for projects whose name or ID matches a term.
+        /// </summary>
+        public static ProjectFilter ByTerm(string term)
         {
-            idOrNamePrefix = Sanitize(idOrNamePrefix);
-            return new ProjectFilter($"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"");
+            term = Sanitize(term);
+            return new ProjectFilter($"name:\"*{term}*\" OR id:\"*{term}*\"");
         }
 
         public override string ToString()

@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
                 return await this.resourceManager.ListProjectsAsync(
                         string.IsNullOrEmpty(prefix)
                             ? null // All projects.
-                            : ProjectFilter.ByPrefix(prefix),
+                            : ProjectFilter.ByTerm(prefix),
                         maxResults,
                         cancellationToken)
                     .ConfigureAwait(false);
