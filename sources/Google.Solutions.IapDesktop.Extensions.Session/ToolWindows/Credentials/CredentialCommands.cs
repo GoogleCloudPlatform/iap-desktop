@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         public IContextCommand<IProjectModelNode> ContextMenuNewCredentials { get; }
         public IContextCommand<IProjectModelNode> ToolbarNewCredentials { get; }
 
-        private class NewCredentialsCommand : MenuCommandBase<IProjectModelNode> //TODO: Test
+        private class NewCredentialsCommand : MenuCommandBase<IProjectModelNode>
         {
             private readonly IWin32Window window;
             private readonly IConnectionSettingsService settingsService;
