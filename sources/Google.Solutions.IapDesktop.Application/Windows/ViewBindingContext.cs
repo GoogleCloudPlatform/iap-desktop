@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public void OnCommandFailed(
             IWin32Window window,
-            ICommand command,
+            ICommandBase command,
             Exception exception)
         {
             //
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 exception);
         }
 
-        public void OnCommandExecuted(ICommand command)
+        public void OnCommandExecuted(ICommandBase command)
         {
             if (command.Id != null)
             {

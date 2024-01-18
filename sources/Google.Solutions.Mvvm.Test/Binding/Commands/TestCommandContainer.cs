@@ -382,7 +382,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 container.ExecuteDefaultCommand();
 
                 bindingContext.Verify(
-                    ctx => ctx.OnCommandExecuted(It.IsAny<ICommand>()),
+                    ctx => ctx.OnCommandExecuted(It.IsAny<ICommandBase>()),
                     Times.Never);
             }
         }
@@ -411,7 +411,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 container.ExecuteDefaultCommand();
 
                 bindingContext.Verify(
-                    ctx => ctx.OnCommandExecuted(It.IsAny<ICommand>()),
+                    ctx => ctx.OnCommandExecuted(It.IsAny<ICommandBase>()),
                     Times.Once);
             }
         }
@@ -442,7 +442,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
                         null,
-                        It.IsAny<ICommand>(),
+                        It.IsAny<ICommandBase>(),
                         It.IsAny<ArgumentException>()),
                     Times.Once);
             }
@@ -474,7 +474,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
                         null,
-                        It.IsAny<ICommand>(),
+                        It.IsAny<ICommandBase>(),
                         It.IsAny<Exception>()),
                     Times.Never);
             }
@@ -496,9 +496,9 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Setup(
                     ctx => ctx.OnCommandFailed(
                         null,
-                        It.IsAny<ICommand>(),
+                        It.IsAny<ICommandBase>(),
                         It.IsAny<Exception>()))
-                    .Callback<IWin32Window, ICommand, Exception>((w, c, e) => exception = e);
+                    .Callback<IWin32Window, ICommandBase, Exception>((w, c, e) => exception = e);
 
                 container.AddCommand(
                     new ContextCommand<string>(
@@ -552,7 +552,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
                         null,
-                        It.IsAny<ICommand>(),
+                        It.IsAny<ICommandBase>(),
                         It.IsAny<Exception>()),
                     Times.Never);
             }

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,27 +19,19 @@
 // under the License.
 //
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
-    /// A command that can be sufaced in a menu or some other
-    /// control.
+    /// Command that can be executed as-is.
     /// </summary>
-    public interface ICommand
+    public interface ICommand : ICommandBase
     {
         /// <summary>
-        /// ID, used for tracing.
+        /// Executes the command.
         /// </summary>
-        string Id { get; }
-
-        /// <summary>
-        /// Caption, shown in UI.
-        /// </summary>
-        string Text { get; }
-
-        /// <summary>
-        /// Caption when command is executing, shown in error dialogs.
-        /// </summary>
-        string ActivityText { get; }
+        Task ExecuteAsync(CancellationToken cancellationToken);
     }
 }

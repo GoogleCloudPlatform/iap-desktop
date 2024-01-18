@@ -26,7 +26,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     /// <summary>
     /// Base class for commands.
     /// </summary>
-    public abstract class CommandBase : ICommand
+    public abstract class CommandBase : ICommandBase
     {
         private string? activityText;
 

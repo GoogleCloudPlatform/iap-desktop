@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -41,8 +43,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             Func<TContext, Task> executeFunc)
             : base(text)
         {
-            this.queryStateFunc = queryStateFunc;
-            this.executeFunc = executeFunc;
+            this.queryStateFunc = queryStateFunc.ExpectNotNull(nameof(queryStateFunc));
+            this.executeFunc = executeFunc.ExpectNotNull(nameof(executeFunc));
         }
 
         public ContextCommand(
@@ -73,13 +75,23 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         public bool IsDefault { get; set; }
 
         public Task ExecuteAsync(TContext context)
-            => this.executeFunc(context);
+        {
+            if (this.QueryState(context) != CommandState.Enabled)
+            {
+                throw new InvalidOperationException(
+                    "The command is unavailable or not enabled");
+            }
+
+            return this.executeFunc(context);
+        }
 
         public CommandState QueryState(TContext context)
-            => this.queryStateFunc(context);
+        {
+            return this.queryStateFunc(context);
+        }
     }
 
-    public static class CommandExtensions
+    public static class CommandExtensions // TODO: Move to command container
     {
         public static ICommandContainer<TContext> AddCommand<TContext>(
             this ICommandContainer<TContext> container,

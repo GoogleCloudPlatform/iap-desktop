@@ -19,51 +19,26 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using System;
-using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
-    /// Command that can requires a context to be executed.
-    /// Typically sufaced as a context menu item.
+    /// Common base interface for commands.
     /// </summary>
-    public interface IContextCommand<TContext> : ICommandBase
+    public interface ICommandBase
     {
         /// <summary>
-        /// Queries if command should be enabled or not.
+        /// ID, used for tracing.
         /// </summary>
-        CommandState QueryState(TContext context);
+        string Id { get; }
 
         /// <summary>
-        /// Executes the command.
+        /// Caption, shown in UI.
         /// </summary>
-        Task ExecuteAsync(TContext context);
+        string Text { get; }
 
         /// <summary>
-        /// Optional icon.
+        /// Caption when command is executing, shown in error dialogs.
         /// </summary>
-        Image? Image { get; }
-
-        /// <summary>
-        /// Accelerator for command.
-        /// </summary>
-        Keys ShortcutKeys { get; }
-
-        /// <summary>
-        /// Check if command should be executed by default.
-        /// </summary>
-        bool IsDefault { get; }
-    }
-
-    public enum CommandState
-    {
-        Enabled,
-        Disabled,
-        Unavailable
+        string ActivityText { get; }
     }
 }
