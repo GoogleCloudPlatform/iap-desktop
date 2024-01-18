@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             this.headlineLabel.Name = "headlineLabel";
             this.headlineLabel.Size = new System.Drawing.Size(274, 30);
             this.headlineLabel.TabIndex = 8;
-            this.headlineLabel.Text = "Generate logon credentials";
+            this.headlineLabel.Text = "New logon credentials";
             // 
             // usernameReservedLabel
             // 
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Generate logon credentials";
+            this.Text = "New logon credentials";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -1,6 +1,7 @@
 ﻿using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -52,12 +53,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 IWin32Window window,
                 IConnectionSettingsService settingsService,
                 ICreateCredentialsWorkflow workflow) 
-                : base("New Windows &credentials...")
+                : base("New logon &credentials...")
             {
                 this.window = window;
                 this.settingsService = settingsService;
                 this.workflow = workflow;
+
+                this.Image = Resources.AddCredentials_16;
+                this.ActivityText = "Generating new Windows logon credentials";
             }
+
+            public override string Id => "GenerateWindowsCredentials";
 
             protected override bool IsAvailable(IProjectModelNode node)
             {
