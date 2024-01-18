@@ -63,56 +63,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
-        private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
-            IProjectModelNode node)
-        {
-            return node is IProjectModelInstanceNode vmNode &&
-                        vmNode.IsRunning &&
-                        vmNode.IsWindowsInstance()
-                ? CommandState.Enabled
-                : CommandState.Disabled;
-        }
-
-        private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode && vmNode.IsWindowsInstance())
-            {
-                return vmNode.IsRunning
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Commands.
-        //---------------------------------------------------------------------
-
-        private async Task GenerateCredentialsAsync(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode)
-            {
-                Debug.Assert(vmNode.IsWindowsInstance());
-
-                var settingsService = this.serviceProvider
-                    .GetService<IConnectionSettingsService>();
-                var settings = settingsService.GetConnectionSettings(vmNode);
-
-                await this.serviceProvider.GetService<ICreateCredentialsWorkflow>()
-                    .CreateCredentialsAsync(
-                        this.window,
-                        vmNode.Instance,
-                        settings.TypedCollection,
-                        false)
-                    .ConfigureAwait(true);
-
-                settings.Save();
-            }
-        }
-
         /// <summary>
         /// Load the default app protocols embedded into the assembly.
         /// </summary>
@@ -294,28 +244,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             //
             // Generate credentials (Windows/RDP only).
             //
+            var credentialCommands = new CredentialCommands(
+                mainForm,
+                serviceProvider.GetService<IConnectionSettingsService>(),
+                serviceProvider.GetService<ICreateCredentialsWorkflow>());
+
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "&Generate Windows logon credentials...",
-                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
-                    GenerateCredentialsAsync)
-                {
-                    Id = "GenerateWindowsCredentials",
-                    Image = Resources.AddCredentials_16,
-                    ActivityText = "Generating Windows logon credentials"
-                },
+                credentialCommands.ContextMenuNewCredentials,
                 4);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Generate Windows logon credentials",
-                    GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
-                    GenerateCredentialsAsync)
-                {
-                    Id = "GenerateWindowsCredentials",
-                    Image = Resources.AddCredentials_16,
-                    ActivityText = "Generating Windows logon credentials"
-                });
+                credentialCommands.ToolbarNewCredentials);
 
             //
             // Connection settings.
