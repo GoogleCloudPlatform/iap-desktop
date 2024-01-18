@@ -194,7 +194,7 @@ namespace Google.Solutions.Apis.Test.Crm
             var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 
             var result = await client.ListProjectsAsync(
-                    ProjectFilter.ByPrefix(prefix),
+                    ProjectFilter.ByTerm(prefix),
                     10,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -211,7 +211,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTermContainsSpecialCharacters_ThenByProjectIdIgnoresThem()
+        public void WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
         {
             Assert.AreEqual(
                 "id:\"foo-bar\"",
@@ -219,11 +219,19 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public void WhenTermContainsSpecialCharacters_ThenByPrefixIgnoresThem()
+        public void WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
         {
             Assert.AreEqual(
-                "name:\"foo-bar*\" OR id:\"foo-bar*\"",
-                ProjectFilter.ByPrefix("foo:'\"-bar").ToString());
+                "name:\"*foo-bar*\" OR id:\"*foo-bar*\"",
+                ProjectFilter.ByTerm("foo:'\"-bar").ToString());
+        }
+
+        [Test]
+        public void WhenTermEmpty_ThenByTermReturnsFilter()
+        {
+            Assert.AreEqual(
+                "name:\"**\" OR id:\"**\"",
+                ProjectFilter.ByTerm(string.Empty).ToString());
         }
     }
 }
