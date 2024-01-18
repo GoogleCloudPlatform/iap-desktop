@@ -75,11 +75,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         public void Prompt()
         {
             Prompt(
-                "The quick brown fox jumps over the lazy dog.\n" +
-                "The quick brown fox jumps over the lazy dog.\n" +
-                "The quick brown fox jumps over the lazy dog.\n" +
-                "The quick brown fox jumps over the lazy dog.\n" +
-                "The quick brown fox jumps over the lazy dog.\n" +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
                 "Enter a number",
                 false);
             Prompt("Enter a number.", false);

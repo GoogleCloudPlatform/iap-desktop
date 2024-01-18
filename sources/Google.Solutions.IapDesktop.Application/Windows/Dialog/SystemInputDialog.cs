@@ -44,10 +44,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.ShowInTaskbar = false;
             this.SizeGripStyle = SizeGripStyle.Hide;
 
-            var messageSize = TextRenderer.MeasureText(parameters.Message, this.Font);
-            this.Size = new Size(
-                Math.Max(450, messageSize.Width + 40),
-                Math.Max(225, messageSize.Height + 200)); // TODO: this breaks when theme is applied
+            SuspendLayout();
+
+            this.Size = new Size(450, 225);
 
             //
             // Header and description.
@@ -58,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 Location = new Point(24, 12),
                 AutoSize = false,
                 Size = new Size(this.Width - 50, 20),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             });
             this.Controls.Add(new HeaderLabel()
             {
@@ -65,51 +65,32 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 Location = new Point(24 - 2, 40),
                 AutoSize = false,
                 Size = new Size(this.Width - 50, 30),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             });
 
-            this.Controls.Add(new Label()
+            var messageLabelInitialSize = new Size(this.Width - 50, 20);
+            var messageLabel = new Label()
             {
                 Text = parameters.Message,
                 Location = new Point(24, 80),
-                AutoSize = false,
-                Size = new Size(messageSize.Width + 10, messageSize.Height + 10),
-            });
-
-            //
-            // Buttons.
-            //
-            var okButton = new Button()
-            {
-                DialogResult = DialogResult.OK,
-                Location = new Point(24, 148 + messageSize.Height),
-                Size = new Size(200, 30),
-                Text = "OK",
-                Enabled = false,
-                TabIndex = 1
+                AutoSize = true,
+                Size = messageLabelInitialSize,
+                MaximumSize = new Size(this.Width - 50, 400),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             };
-            this.Controls.Add(okButton);
-            this.AcceptButton = okButton;
-
-            var cancelButton = new Button()
-            {
-                DialogResult = DialogResult.Cancel,
-                Location = new Point(230, 148 + messageSize.Height),
-                Size = new Size(200, 30),
-                Text = "Cancel",
-                TabIndex = 2
-            };
-            this.Controls.Add(cancelButton);
-            this.CancelButton = cancelButton;
+            this.Controls.Add(messageLabel);
 
             //
-            // Username.
+            // Text.
             //
             var textBox = new TextBox()
             {
-                Location = new Point(24 + 2, 92 + messageSize.Height),
+                Location = new Point(24 + 2, 112),
                 Size = new Size(296, 30),
+                AutoSize = true,
                 TabIndex = 0,
-                MaxLength = 64
+                MaxLength = 64,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
             };
 
             if (parameters.IsPassword)
@@ -122,12 +103,42 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             var warningLabel = new Label()
             {
-                Location = new Point(24, 116 + messageSize.Height),
+                Location = new Point(24, 136),
                 Size = new Size(296, 20),
                 AutoSize = false,
-                ForeColor = Color.Red
+                ForeColor = Color.Red,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
             };
             this.Controls.Add(warningLabel);
+
+            //
+            // Buttons.
+            //
+            var okButton = new Button()
+            {
+                DialogResult = DialogResult.OK,
+                Location = new Point(24, 168),
+                Size = new Size(200, 30),
+                Text = "OK",
+                Enabled = false,
+                TabIndex = 1,
+                Anchor = AnchorStyles.Left | AnchorStyles.Bottom,
+            };
+            this.Controls.Add(okButton);
+            this.AcceptButton = okButton;
+
+            var cancelButton = new Button()
+            {
+                DialogResult = DialogResult.Cancel,
+                Location = new Point(230, 168),
+                Size = new Size(200, 30),
+                Text = "Cancel",
+                TabIndex = 2,
+                Anchor = AnchorStyles.Left | AnchorStyles.Bottom,
+            };
+            this.Controls.Add(cancelButton);
+            this.CancelButton = cancelButton;
+
 
             textBox.HandleCreated += (_, __) =>
             {
@@ -148,6 +159,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 warningLabel.Visible = !valid;
                 warningLabel.Text = warning ?? string.Empty;
             };
+
+            ResumeLayout();
+
+            //
+            // Grow form based how much the textbox grew.
+            //
+            this.Height += messageLabel.Height - messageLabelInitialSize.Height;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
