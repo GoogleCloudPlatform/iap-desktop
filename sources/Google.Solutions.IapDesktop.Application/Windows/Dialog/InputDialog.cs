@@ -60,6 +60,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public string Cue { get; set; }
 
         /// <summary>
+        /// Mask input as password.
+        /// </summary>
+        public bool IsPassword { get; set; }
+
+        /// <summary>
         /// Callback for validating input.
         /// </summary>
         public ValidationCallback Validate { get; set; }
@@ -97,14 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         {
             parameters.ExpectValid();
 
-            using (var dialog = new SystemInputDialog(
-                parameters.Title,
-                parameters.Caption,
-                parameters.Message))
+            using (var dialog = new SystemInputDialog(parameters))
             {
-                dialog.ValidateInput = parameters.Validate;
-                dialog.Cue = parameters.Cue;
-
                 try
                 {
                     this.themeService

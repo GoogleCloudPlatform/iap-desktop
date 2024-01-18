@@ -37,9 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         // Prompt.
         //---------------------------------------------------------------------
 
-        [RequiresInteraction]
-        [Test]
-        public void Prompt()
+        public void Prompt(string message, bool password)
         {
             void validate(
                 string value,
@@ -61,14 +59,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 {
                     Title = "This is the title",
                     Caption = "This is the caption",
-                    Message = "Enter a number",
-                    Validate = validate
+                    Message = message,
+                    Validate = validate,
+                    IsPassword = password
                 },
                 out var input) == DialogResult.OK)
             {
                 Assert.NotNull(input);
                 Assert.IsTrue(int.TryParse(input, out var _));
             }
+        }
+
+        [RequiresInteraction]
+        [Test]
+        public void Prompt()
+        {
+            Prompt(
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "The quick brown fox jumps over the lazy dog. " +
+                "Enter a number",
+                false);
+            Prompt("Enter a number.", false);
+            Prompt("Enter a numeric password.", true);
         }
     }
 }
