@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ConfigureAwait(false);
 
             resourceManager.Verify(a => a.ListProjectsAsync(
-                    It.Is<ProjectFilter>(f => f.ToString() == "name:\"test*\" OR id:\"test*\""),
+                    It.Is<ProjectFilter>(f => f.ToString() == "name:\"*test*\" OR id:\"*test*\""),
                     It.IsAny<Nullable<int>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
