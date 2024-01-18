@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
+        //TODO: remove
         private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
             IProjectModelNode node)
         {
@@ -72,7 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
-
+        
+        //TODO: remove
         private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectModelNode node)
         {
             if (node is IProjectModelInstanceNode vmNode && vmNode.IsWindowsInstance())
