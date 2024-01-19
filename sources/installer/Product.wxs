@@ -292,12 +292,6 @@
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
                 Vital="yes"/>
               <File
-                Id="FileGoogleApisAuthPlatformServicesDll"
-                Name="Google.Apis.Auth.PlatformServices.dll"
-                DiskId="1"
-                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
-                Vital="yes"/>
-              <File
                 Id="FileGoogleApisComputeV1Dll"
                 Name="Google.Apis.Compute.v1.dll"
                 DiskId="1"
@@ -326,12 +320,6 @@
                 Name="Google.Apis.dll"
                 DiskId="1"
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.dll"
-                Vital="yes"/>
-              <File
-                Id="FileGoogleApisPlatformServicesDll"
-                Name="Google.Apis.PlatformServices.dll"
-                DiskId="1"
-                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
                 Vital="yes"/>
               <File
                 Id="FileGoogleApisCloudOSLoginV1Dll"

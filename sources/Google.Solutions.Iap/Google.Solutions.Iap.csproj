@@ -6,10 +6,10 @@
     <Description>IAP client library</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.61.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.61.0.3103" />
-    <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
+    <PackageReference Include="Google.Apis" Version="1.66.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.66.0.3286" />
+    <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>

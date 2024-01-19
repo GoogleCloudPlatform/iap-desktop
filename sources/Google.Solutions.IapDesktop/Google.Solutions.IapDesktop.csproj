@@ -20,18 +20,23 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
-    <PackageReference Include="Google.Apis" Version="1.61.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.61.0.2950" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.61.0.3103" />
-    <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+    <PackageReference Include="Google.Apis" Version="1.66.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.66.0.3216" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.66.0.3286" />
+    <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NetFramework.Analyzers" Version="3.3.2">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+
+    <!-- 
+      These packages contain tools and we must use specific versions of them. 
+      Comment out these references before running Update-Package.
+    -->
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="5.1.23" />
     <PackageReference Include="WiX" Version="3.11.2" />
