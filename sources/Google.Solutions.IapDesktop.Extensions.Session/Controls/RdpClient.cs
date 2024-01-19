@@ -315,6 +315,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 args.Cancel = true;
                 return;
             }
+            else if (this.IsFullScreen)
+            {
+                //
+                // Veto this event as it would leave an orphaned full-screen
+                // window.
+                //
+                ApplicationTraceSource.Log.TraceVerbose(
+                    "RemoteDesktopPane: Aborting FormClosing because control is full-screen");
+
+                args.Cancel = true;
+                return;
+            }
             else if (
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn)
@@ -976,6 +988,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         /// <summary>
+        /// Check if any instance of this control currently uses
+        /// full-screen mode.
+        /// </summary>
+        private static bool IsFullScreenFormVisible
+        {
+            get => fullScreenForm != null && fullScreenForm.Visible;
+        }
+
+        /// <summary>
         /// Check if the client is currently in full-screen mode.
         /// </summary>
         public bool IsFullScreen
@@ -999,7 +1020,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         public bool CanEnterFullScreen
         {
-            get => this.State == ConnectionState.LoggedOn;
+            get => this.State == ConnectionState.LoggedOn && !IsFullScreenFormVisible;
         }
 
         /// <summary>
