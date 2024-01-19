@@ -43,10 +43,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.StartPosition = FormStartPosition.CenterParent;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = SizeGripStyle.Hide;
+            this.AutoScaleMode = AutoScaleMode.Font;
 
             SuspendLayout();
 
-            this.Size = new Size(450, 225);
+            this.Size = new Size(450, 245);
 
             //
             // Header and description.
@@ -85,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             //
             var textBox = new TextBox()
             {
-                Location = new Point(24 + 2, 112),
+                Location = new Point(24 + 2, 132),
                 Size = new Size(296, 30),
                 AutoSize = true,
                 TabIndex = 0,
@@ -103,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             var warningLabel = new Label()
             {
-                Location = new Point(24, 136),
+                Location = new Point(24, 156),
                 Size = new Size(296, 20),
                 AutoSize = false,
                 ForeColor = Color.Red,
@@ -117,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             var okButton = new Button()
             {
                 DialogResult = DialogResult.OK,
-                Location = new Point(24, 168),
+                Location = new Point(24, 188),
                 Size = new Size(200, 30),
                 Text = "OK",
                 Enabled = false,
@@ -130,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             var cancelButton = new Button()
             {
                 DialogResult = DialogResult.Cancel,
-                Location = new Point(230, 168),
+                Location = new Point(230, 188),
                 Size = new Size(200, 30),
                 Text = "Cancel",
                 TabIndex = 2,
