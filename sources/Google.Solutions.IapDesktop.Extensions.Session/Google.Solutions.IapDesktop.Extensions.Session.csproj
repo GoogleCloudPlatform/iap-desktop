@@ -86,12 +86,6 @@
     <Compile Update="ToolWindows\Download\DownloadFileView.Designer.cs">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\Ssh\SshAuthenticationPromptView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\Ssh\SshAuthenticationPromptView.Designer.cs">
-      <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
-    </Compile>
     <Compile Update="ToolWindows\Ssh\SshTerminalView.cs" />
     <Compile Update="ToolWindows\Ssh\TerminalPaneBase.cs" />
     <Compile Update="ToolWindows\Ssh\TerminalPaneBase.Designer.cs">
@@ -141,9 +135,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Download\DownloadFileView.resx">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\Ssh\SshAuthenticationPromptView.resx">
-      <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Ssh\TerminalPaneBase.resx">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
