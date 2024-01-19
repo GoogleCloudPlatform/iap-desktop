@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Google.Solutions.IapDesktop.props" />
+  <Import Project="..\Google.Solutions.IapDesktop.Tools.props" />
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <AssemblyName>IapDesktop</AssemblyName>
@@ -32,9 +33,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="5.1.23" />
-    <PackageReference Include="WiX" Version="3.11.2" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
