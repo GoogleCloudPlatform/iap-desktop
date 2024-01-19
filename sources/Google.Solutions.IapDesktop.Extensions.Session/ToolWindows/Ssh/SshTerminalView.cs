@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
     public class SshTerminalView : TerminalViewBase, ISshTerminalSession, IView<SshTerminalViewModel>
     {
         private SshTerminalViewModel viewModel;
-        private readonly ViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel> promptFactory;
+        private readonly IInputDialog inputDialog;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -46,8 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         public SshTerminalView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            this.promptFactory = serviceProvider.GetViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel>();
-            this.promptFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+            this.inputDialog = serviceProvider.GetService<IInputDialog>();
         }
 
         public void Bind(
@@ -68,20 +68,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         {
             Debug.Assert(!this.InvokeRequired);
 
-            using (var prompt = this.promptFactory.CreateDialog())
+            void ValidationCallback(
+                string input,
+                out bool valid,
+                out string warning)
             {
-                prompt.ViewModel.Title = e.Name;
-                prompt.ViewModel.Description = e.Prompt;
-                prompt.ViewModel.IsPasswordMasked = e.IsPasswordPrompt;
+                valid = !string.IsNullOrEmpty(input);
+                warning = null;
+            }
 
-                if (prompt.ShowDialog(this) == DialogResult.OK)
+            if (this.inputDialog.Prompt(
+                this,
+                new InputDialogParameters()
                 {
-                    e.Response = prompt.ViewModel.Input;
-                }
-                else
-                {
-                    throw new OperationCanceledException();
-                }
+                    Caption = e.Name,
+                    Title = e.Name,
+                    IsPassword = e.IsPasswordPrompt,
+                    Message = e.Prompt,
+                    Validate = ValidationCallback
+                },
+                out var userInput) == DialogResult.OK)
+            {
+                e.Response = userInput;
+            }
+            else
+            {
+                throw new OperationCanceledException();
             }
         }
 
