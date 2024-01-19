@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
   <ItemGroup>
-    <-- These packages contain tools and we must use specific versions of them. -->
+    <!-- These packages contain tools and we must use specific versions of them. -->
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="5.1.23" />
     <PackageReference Include="WiX" Version="3.11.2" />
