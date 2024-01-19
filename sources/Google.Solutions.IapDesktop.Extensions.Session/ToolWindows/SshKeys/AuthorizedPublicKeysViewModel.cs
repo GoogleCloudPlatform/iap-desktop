@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Cache;
 using System;
 using System.Diagnostics;
@@ -69,6 +70,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.IsLoading = ObservableProperty.Build(false);
             this.WindowTitle = ObservableProperty.Build<string>(null);
             this.InformationText = ObservableProperty.Build<string>(null);
+
+            this.RefreshCommand = ObservableCommand.Build(
+                "Refresh",
+                InvalidateAsync);
+            this.DeleteSelectedItemCommand = ObservableCommand.Build(
+                "Delete",
+                DeleteSelectedItemAsync);
         }
 
         public void ResetWindowTitleAndInformationBar()
@@ -132,13 +140,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             }
         }
 
+
+        //---------------------------------------------------------------------
+        // Commands.
+        //---------------------------------------------------------------------
+
+        internal IObservableCommand RefreshCommand { get; }
+        internal IObservableCommand DeleteSelectedItemCommand { get; }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
-        public Task RefreshAsync() => InvalidateAsync();
-
-        public async Task DeleteSelectedItemAsync(CancellationToken cancellationToken)
+        private async Task DeleteSelectedItemAsync(CancellationToken cancellationToken)
         {
             //
             // Capture current item, the selection might change any time.
