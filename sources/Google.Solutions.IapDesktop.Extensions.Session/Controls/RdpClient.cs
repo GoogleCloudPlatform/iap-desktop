@@ -348,12 +348,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                         this,
                         new ConnectionClosedEventArgs(DisconnectReason.FormClosed));
 
-                    //
-                    // Eagerly dispose the control. If we don't do it here,
-                    // we risk a deadlock later.
-                    //
-                    this.client.Dispose();
-
                     this.State = ConnectionState.NotConnected;
                 }
                 catch (Exception e)
@@ -364,6 +358,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
                 }
             }
+
+            //
+            // Eagerly dispose the control. If we don't do it here,
+            // the ActiveX might lock up later.
+            //
+            this.client.Dispose();
         }
 
         //---------------------------------------------------------------------
