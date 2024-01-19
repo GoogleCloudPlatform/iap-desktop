@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
@@ -116,6 +117,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 bindingContext);
             this.keysList.SearchOnKeyDown = true;
             this.keysList.List.MultiSelect = false;
+
+            //
+            // Bind commands.
+            //
+            this.refreshToolStripButton.BindObservableCommand(
+                this.viewModel,
+                m => m.RefreshCommand,
+                bindingContext);
+            this.deleteToolStripButton.BindObservableCommand(
+                this.viewModel,
+                m => m.DeleteSelectedItemCommand,
+                bindingContext);
         }
 
         //---------------------------------------------------------------------
@@ -133,36 +146,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         // Window events.
         //---------------------------------------------------------------------
 
-        private void PackageInventoryWindow_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            //
             // NB. Hook KeyDown instead of KeyUp event to not interfere with 
             // child dialogs. With KeyUp, we'd get an event if a child dialog
             // is dismissed by pressing Enter.
-
-            if ((e.Control && e.KeyCode == Keys.F) ||
-                 e.KeyCode == Keys.F3)
+            //
+            if ((e.Control && e.KeyCode == Keys.F) || e.KeyCode == Keys.F3)
             {
                 this.keysList.SetFocusOnSearchBox();
             }
             else if (e.KeyCode == Keys.Delete)
             {
-                InvokeActionAsync(
-                        () => this.viewModel.DeleteSelectedItemAsync(CancellationToken.None),
-                        "Deleting key")
-                    .ConfigureAwait(true);
+                this.deleteToolStripButton.PerformClick();
             }
         }
-
-        private async void refreshToolStripButton_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.RefreshAsync(),
-                "Refreshing keys")
-            .ConfigureAwait(true);
-
-        private async void deleteToolStripButton_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.DeleteSelectedItemAsync(CancellationToken.None),
-                "Deleting key")
-            .ConfigureAwait(true);
     }
 }

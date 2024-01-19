@@ -106,7 +106,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.refreshToolStripButton.Name = "refreshToolStripButton";
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.refreshToolStripButton.Text = "Refresh";
-            this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
             // 
             // deleteToolStripButton
             // 
@@ -115,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.deleteToolStripButton.Name = "deleteToolStripButton";
             this.deleteToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.deleteToolStripButton.Text = "Delete key";
-            this.deleteToolStripButton.Click += new System.EventHandler(this.deleteToolStripButton_Click);
             // 
             // AuthorizedPublicKeysView
             // 
@@ -126,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.Controls.Add(this.toolStrip);
             this.Name = "AuthorizedPublicKeysView";
             this.Text = "Authorized Keys";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PackageInventoryWindow_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Window_KeyDown);
             this.panel.Panel1.ResumeLayout(false);
             this.panel.Panel1.PerformLayout();
             this.panel.Panel2.ResumeLayout(false);

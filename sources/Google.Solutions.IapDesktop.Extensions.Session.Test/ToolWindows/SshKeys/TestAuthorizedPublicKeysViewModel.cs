@@ -295,7 +295,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
 
-            await viewModel.DeleteSelectedItemAsync(CancellationToken.None)
+            await viewModel.DeleteSelectedItemCommand
+                .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
         }
     }
