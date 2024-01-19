@@ -106,6 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             registry.AddMock<IQuarantine>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
+            registry.AddMock<IInputDialog>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
             return registry;
         }
