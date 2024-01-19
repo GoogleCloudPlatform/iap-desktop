@@ -44,6 +44,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
+            NetworkCredential inputCredential,
+            out NetworkCredential credential);
+
+        /// <summary>
+        /// Prompt for Windows credential using the CredUI API.
+        /// </summary>
+        DialogResult PromptForWindowsCredentials(
+            IWin32Window owner,
+            string caption,
+            string message,
+            AuthenticationPackage package,
             out NetworkCredential credential);
 
         /// <summary>
@@ -72,12 +83,28 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         {
             this.themeService = themeService.ExpectNotNull(nameof(themeService));
         }
+        public DialogResult PromptForWindowsCredentials(
+            IWin32Window owner,
+            string caption,
+            string message,
+            AuthenticationPackage package,
+            out NetworkCredential credential)
+        {
+            return PromptForWindowsCredentials(
+                owner,
+                caption,
+                message,
+                package,
+                null,
+                out credential);
+        }
 
         public DialogResult PromptForWindowsCredentials(
             IWin32Window owner,
             string caption,
             string message,
             AuthenticationPackage package,
+            NetworkCredential inputCredential,
             out NetworkCredential credential)
         {
             var uiInfo = new NativeMethods.CREDUI_INFO()
@@ -88,63 +115,43 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 pszMessageText = message
             };
 
-            var packageId = LookupAuthenticationPackageId(package);
-
-            var save = false;
-
-            var error = NativeMethods.CredUIPromptForWindowsCredentials(
-                ref uiInfo,
-                0,
-                ref packageId,
-                IntPtr.Zero,
-                0,
-                out var authBuffer,
-                out var authBufferSize,
-                ref save,
-                NativeMethods.CREDUIWIN_FLAGS.AUTHPACKAGE_ONLY);
-
-            if (error == NativeMethods.ERROR_CANCELLED)
+            using (var packedInCredential = new PackedCredential(
+                inputCredential ?? new NetworkCredential()))
             {
-                credential = null;
-                return DialogResult.Cancel;
-            }
-            else if (error != NativeMethods.ERROR_NOERROR)
-            {
-                throw new Win32Exception(error);
-            }
+                var packageId = LookupAuthenticationPackageId(package);
+                var save = false;
 
-            using (authBuffer)
-            {
-                var usernameBuffer = new StringBuilder(256);
-                var passwordBuffer = new StringBuilder(256);
-                var domainBuffer = new StringBuilder(256);
+                var error = NativeMethods.CredUIPromptForWindowsCredentials(
+                    ref uiInfo,
+                    0,
+                    ref packageId,
+                    packedInCredential.Handle,
+                    packedInCredential.Size,
+                    out var outAuthBuffer,
+                    out var outAuthBufferSize,
+                    ref save,
+                    NativeMethods.CREDUIWIN_FLAGS.AUTHPACKAGE_ONLY);
 
-                var usernameLength = usernameBuffer.Capacity;
-                var passwordLength = passwordBuffer.Capacity;
-                var domainLength = domainBuffer.Capacity;
-
-                if (!NativeMethods.CredUnPackAuthenticationBuffer(
-                    NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,
-                    authBuffer,
-                    authBufferSize,
-                    usernameBuffer,
-                    ref usernameLength,
-                    domainBuffer,
-                    ref domainLength,
-                    passwordBuffer,
-                    ref passwordLength))
+                if (error == NativeMethods.ERROR_CANCELLED)
                 {
-                    throw new Win32Exception();
+                    credential = null;
+                    return DialogResult.Cancel;
+                }
+                else if (error != NativeMethods.ERROR_NOERROR)
+                {
+                    throw new Win32Exception(error);
                 }
 
-                credential = new NetworkCredential(
-                    usernameBuffer.ToString(),
-                    passwordBuffer.ToString(),
-                    domainBuffer.ToString());
-
-                return DialogResult.OK;
+                using (var packedOutCredential = new PackedCredential(
+                    outAuthBuffer, 
+                    outAuthBufferSize))
+                {
+                    credential = packedOutCredential.Unpack();
+                    return DialogResult.OK;
+                }
             }
         }
+
 
         internal static uint LookupAuthenticationPackageId(AuthenticationPackage package)
         {
@@ -203,9 +210,89 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             }
         }
 
+
         //---------------------------------------------------------------------
         // P/Invoke.
         //---------------------------------------------------------------------
+
+        internal class PackedCredential : IDisposable
+        {
+            private readonly CoTaskMemAllocSafeHandle buffer;
+
+            public IntPtr Handle => this.buffer.DangerousGetHandle();
+            public uint Size { get; }
+
+            public PackedCredential(
+                CoTaskMemAllocSafeHandle buffer,
+                uint bufferSize)
+            {
+                this.buffer = buffer;
+                this.Size = bufferSize;
+            }
+
+            public PackedCredential(NetworkCredential inputCredential)
+            {
+                uint bufferSize = 0;
+                if (!NativeMethods.CredPackAuthenticationBuffer(
+                    NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,
+                    inputCredential.UserName,
+                    inputCredential.Password,
+                    IntPtr.Zero,
+                    ref bufferSize) && bufferSize == 0)
+                {
+                    throw new Win32Exception();
+                }
+
+                this.Size = bufferSize;
+                this.buffer = CoTaskMemAllocSafeHandle.Alloc((int)Size);
+
+                if (!NativeMethods.CredPackAuthenticationBuffer(
+                    NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,
+                    inputCredential.UserName,
+                    inputCredential.Password,
+                    this.buffer.DangerousGetHandle(),
+                    ref bufferSize))
+                {
+                    this.buffer.Dispose();
+                    throw new Win32Exception();
+                }
+            }
+
+            public NetworkCredential Unpack()
+            {
+                var usernameBuffer = new StringBuilder(256);
+                var passwordBuffer = new StringBuilder(256);
+                var domainBuffer = new StringBuilder(256);
+
+                var usernameLength = usernameBuffer.Capacity;
+                var passwordLength = passwordBuffer.Capacity;
+                var domainLength = domainBuffer.Capacity;
+
+                if (!NativeMethods.CredUnPackAuthenticationBuffer(
+                    NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,
+                    this.buffer,
+                    this.Size,
+                    usernameBuffer,
+                    ref usernameLength,
+                    domainBuffer,
+                    ref domainLength,
+                    passwordBuffer,
+                    ref passwordLength))
+                {
+                    throw new Win32Exception();
+                }
+
+                return new NetworkCredential(
+                    usernameBuffer.ToString(),
+                    passwordBuffer.ToString(),
+                    domainBuffer.ToString());
+            }
+
+            public void Dispose()
+            {
+                this.buffer.Dispose();
+            }
+        }
 
         private static class NativeMethods
         {
@@ -248,6 +335,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 out uint outAuthBufferSize,
                 ref bool save,
                 CREDUIWIN_FLAGS flags);
+
+            [DllImport("credui.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            public static extern bool CredPackAuthenticationBuffer(
+                uint dwFlags,
+                [MarshalAs(UnmanagedType.LPWStr)] string pszUserName,
+                [MarshalAs(UnmanagedType.LPWStr)] string pszPassword,
+                IntPtr pPackedCredentials,
+                ref uint pcbPackedCredentials);
 
             [DllImport("credui.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             public static extern bool CredUnPackAuthenticationBuffer(

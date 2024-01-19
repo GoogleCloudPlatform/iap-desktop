@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -28,6 +29,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
+using System.Net;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
@@ -96,6 +98,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             }
         }
 
+        [RequiresInteraction]
+        [Test]
+        public void PromptForWindowsCredentialsWithPrefill()
+        {
+            var dialog = new CredentialDialog(
+                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+
+            if (dialog.PromptForWindowsCredentials(
+                null,
+                "Caption",
+                "Message",
+                AuthenticationPackage.Any,
+                new NetworkCredential("bob@example.com", "password"),
+                out var credentials) == DialogResult.OK)
+            {
+                Assert.NotNull(credentials);
+            }
+        }
+
         //---------------------------------------------------------------------
         // PromptForUsername.
         //---------------------------------------------------------------------
@@ -114,6 +135,44 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 out var username) == DialogResult.OK)
             {
                 Assert.NotNull(username);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // PackedCredential.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void PackCredential()
+        {
+            var empty = new NetworkCredential("user", "password");
+            using (var packed = new CredentialDialog.PackedCredential(empty))
+            {
+                Assert.IsNotNull(packed.Handle);
+                Assert.IsTrue(packed.Size > 0);
+
+                var unpacked = packed.Unpack();
+
+                Assert.AreEqual("user", unpacked.UserName);
+                Assert.AreEqual("", unpacked.Domain);
+                Assert.AreEqual("password", unpacked.Password);
+            }
+        }
+
+        [Test]
+        public void PackEmptyCredential()
+        {
+            var empty = new NetworkCredential();
+            using (var packed = new CredentialDialog.PackedCredential(empty))
+            {
+                Assert.IsNotNull(packed.Handle);
+                Assert.IsTrue(packed.Size > 0);
+
+                var unpacked = packed.Unpack();
+
+                Assert.AreEqual("", unpacked.UserName);
+                Assert.AreEqual("", unpacked.Domain);
+                Assert.AreEqual("", unpacked.Password);
             }
         }
     }
