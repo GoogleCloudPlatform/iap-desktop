@@ -660,7 +660,7 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs _)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs _) // TODO: delete
         {
             Close();
         }
@@ -768,7 +768,7 @@ namespace Google.Solutions.IapDesktop.Windows
             window.Show();
         }
 
-        private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
+        private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _) // TODO: delete
         {
             try
             {

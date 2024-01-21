@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
             this.Image = Icons.AddProject_16;
         }
 
-        public override Task ExecuteAsync(UserProfile context)
+        public override Task ExecuteAsync(IUserProfile context)
         {
             return this.projectExplorer.ShowAddProjectDialogAsync();
         }

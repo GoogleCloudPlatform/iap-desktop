@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile
     /// the class is loaded (as service) during startup.
     /// </summary>
     [Service(ServiceLifetime.Singleton, DelayCreation = false)]
-    public class ProfileMenu : Menu<UserProfile>
+    public class ProfileMenu : Menu<IUserProfile>
     {
         public ProfileMenu(IServiceCategoryProvider serviceProvider)
             : base(
@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile
                       .AddMenu(
                           "&Profile",
                           0,
-                          () => serviceProvider.GetService<UserProfile>()))
+                          () => serviceProvider.GetService<IUserProfile>()))
         {
             DiscoverCommands(serviceProvider);
         }

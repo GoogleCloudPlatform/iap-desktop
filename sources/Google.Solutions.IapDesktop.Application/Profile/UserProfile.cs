@@ -32,7 +32,20 @@ namespace Google.Solutions.IapDesktop.Application.Profile
     /// <summary>
     /// User profile containing settings.
     /// </summary>
-    public sealed class UserProfile : IDisposable
+    public interface IUserProfile
+    {
+        /// <summary>
+        /// Name of the profile.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Determines if this is the default profile.
+        /// </summary>
+        public bool IsDefault { get; }
+    }
+
+    public sealed class UserProfile : IUserProfile, IDisposable
     {
         public enum SchemaVersion : uint
         {
@@ -69,9 +82,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// </summary>
         public RegistryKey UserPolicyKey { get; private set; }
 
-        /// <summary>
-        /// Name of the profile.
-        /// </summary>
         public string Name { get; private set; }
 
         public bool IsDefault { get; private set; }

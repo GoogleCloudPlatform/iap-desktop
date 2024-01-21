@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
 {
-    [MenuCommand(typeof(ProfileMenu), Rank = 0x1000)]
+    [MenuCommand(typeof(ProfileMenu), Rank = 0x1009)]
     [Service]
     public class ExitCommand : ProfileMenuCommandBase
     {
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
             this.ShortcutKeys = Keys.Alt | Keys.F4;
         }
 
-        public override void Execute(UserProfile _)
+        public override void Execute(IUserProfile _)
         {
             this.mainWindow.Close();
         }

@@ -27,18 +27,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
     /// <summary>
     /// Base class for profile menu commands.
     /// </summary>
-    public abstract class ProfileMenuCommandBase : MenuCommandBase<UserProfile>
+    public abstract class ProfileMenuCommandBase : MenuCommandBase<IUserProfile>
     {
         protected ProfileMenuCommandBase(string text) : base(text)
         {
         }
 
-        protected override bool IsAvailable(UserProfile _)
+        protected override bool IsAvailable(IUserProfile _)
         {
             return true;
         }
 
-        protected override bool IsEnabled(UserProfile _)
+        protected override bool IsEnabled(IUserProfile _)
         {
             return true;
         }

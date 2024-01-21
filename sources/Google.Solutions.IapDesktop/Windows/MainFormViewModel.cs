@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Windows
         // Authorization actions.
         //---------------------------------------------------------------------
 
-        public Task SignOutAsync()
+        public Task SignOutAsync() // TODO: delete
         {
             Debug.Assert(this.authorization != null);
             Debug.Assert(this.authorization.DeviceEnrollment != null);
