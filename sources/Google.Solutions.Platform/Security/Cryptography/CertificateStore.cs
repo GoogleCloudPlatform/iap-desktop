@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.Platform.Cryptography
+namespace Google.Solutions.Platform.Security.Cryptography
 {
     /// <summary>
     /// Adapter for the Windows certificate store.

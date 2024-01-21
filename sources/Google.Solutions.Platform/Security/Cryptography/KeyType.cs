@@ -19,26 +19,34 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Cryptography;
-using NUnit.Framework;
-using System;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Platform.Test.Cryptography
+namespace Google.Solutions.Platform.Security.Cryptography
 {
-    [TestFixture]
-    public class TestKeyType
+    /// <summary>
+    /// A key type.
+    /// </summary>
+    public readonly struct KeyType
     {
-        //---------------------------------------------------------------------
-        // ToString.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void KeyTypeToString()
+        public KeyType(CngAlgorithm algorithm, ushort size)
         {
-            Assert.AreEqual(
-                "RSA (1024 bit)",
-                new KeyType(CngAlgorithm.Rsa, 1024).ToString());
+            this.Algorithm = algorithm;
+            this.Size = size;
+        }
+
+        /// <summary>
+        /// Algorithm to use.
+        /// </summary>
+        public CngAlgorithm Algorithm { get; }
+
+        /// <summary>
+        /// Key size to use.
+        /// </summary>
+        public ushort Size { get; }
+
+        public override string ToString()
+        {
+            return $"{this.Algorithm.Algorithm} ({this.Size} bit)";
         }
     }
 }

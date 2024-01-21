@@ -19,18 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Platform.Security.Cryptography;
 using NUnit.Framework;
 using System;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Platform.Test.Cryptography
+namespace Google.Solutions.Platform.Test.Security.Cryptography
 {
     [TestFixture]
     public class TestKeyStore
     {
         private static readonly string KeyName = "test-" + typeof(TestKeyStore).Name;
-        private readonly KeyStore Store = 
+        private readonly KeyStore Store =
             new KeyStore(CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
         public enum CommonKeyType

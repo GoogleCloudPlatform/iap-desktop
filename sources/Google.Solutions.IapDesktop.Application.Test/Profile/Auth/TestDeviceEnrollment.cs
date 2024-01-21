@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Testing.Apis.Cryptography;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;

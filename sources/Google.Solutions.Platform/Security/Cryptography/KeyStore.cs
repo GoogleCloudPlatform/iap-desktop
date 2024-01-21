@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Platform.Cryptography
+namespace Google.Solutions.Platform.Security.Cryptography
 {
     /// <summary>
     /// Adapter for the current user's Windows CNG key store.
@@ -176,8 +176,8 @@ namespace Google.Solutions.Platform.Cryptography
                     //
                     // Store in user profile, overwrite if necessary.
                     //
-                    KeyCreationOptions = forceCreate 
-                        ? CngKeyCreationOptions.OverwriteExistingKey 
+                    KeyCreationOptions = forceCreate
+                        ? CngKeyCreationOptions.OverwriteExistingKey
                         : CngKeyCreationOptions.None,
 
                     //
@@ -254,7 +254,7 @@ namespace Google.Solutions.Platform.Cryptography
                     //
                     throw new InvalidKeyContainerException(
                         "Failed to create or access cryptographic key. This might " +
-                        "be caused by corrupted file permissions on the CNG key container.", 
+                        "be caused by corrupted file permissions on the CNG key container.",
                         e);
                 }
             }
@@ -288,12 +288,12 @@ namespace Google.Solutions.Platform.Cryptography
     /// </summary>
     public class KeyConflictException : CryptographicException
     {
-        internal KeyConflictException(string message) 
+        internal KeyConflictException(string message)
             : base(message)
         {
         }
 
-        internal KeyConflictException(string message, Exception inner) 
+        internal KeyConflictException(string message, Exception inner)
             : base(message, inner)
         {
         }
