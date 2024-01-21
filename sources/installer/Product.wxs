@@ -254,10 +254,16 @@
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Management.dll"
                 Vital="yes"/>
               <File
-                Id="FileGoogleSolutionsRdpDll"
+                Id="FileGoogleSolutionsSessionDll"
                 Name="Google.Solutions.IapDesktop.Extensions.Session.dll"
                 DiskId="1"
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Session.dll"
+                Vital="yes"/>
+              <File
+                Id="FileGoogleSolutionsProfileDll"
+                Name="Google.Solutions.IapDesktop.Extensions.Profile.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Profile.dll"
                 Vital="yes"/>
 
               <!-- SDK and dependencies -->

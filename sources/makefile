@@ -53,7 +53,8 @@ NUNIT_ASSEMBLIES = \
 	Google.Solutions.IapDesktop.Core.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Core.Test.dll \
 	Google.Solutions.IapDesktop.Application.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Application.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Management.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Management.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Session.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Session.Test.dll
+	Google.Solutions.IapDesktop.Extensions.Session.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Session.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Profile.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Profile.Test.dll
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Apis]* \
@@ -65,7 +66,8 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Core]* \
 	+[Google.Solutions.IapDesktop.Application]* \
 	+[Google.Solutions.IapDesktop.Extensions.Management]* \
-	+[Google.Solutions.IapDesktop.Extensions.Session]*
+	+[Google.Solutions.IapDesktop.Extensions.Session]* \
+	+[Google.Solutions.IapDesktop.Extensions.Profile]*
 	
 SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /n Google /a /fd sha256 /td sha256
 NUGET_PACKAGEES = $(USERPROFILE)\.nuget\packages
