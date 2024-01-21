@@ -25,30 +25,20 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Profile
+namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
 {
     [MenuCommand(typeof(ProfileMenu), Rank = 0x1000)]
     [Service]
-    public class ExitCommand : MenuCommandBase<UserProfile>
+    public class ExitCommand : ProfileMenuCommandBase
     {
         private readonly IMainWindow mainWindow;
 
         public ExitCommand(IMainWindow mainWindow)
             : base("E&xit")
         {
-            this.ShortcutKeys = Keys.Alt | Keys.F4;
             this.mainWindow = mainWindow.ExpectNotNull(nameof(mainWindow));
-        }
 
-
-        protected override bool IsAvailable(UserProfile _)
-        {
-            return true;
-        }
-
-        protected override bool IsEnabled(UserProfile _)
-        {
-            return true;
+            this.ShortcutKeys = Keys.Alt | Keys.F4;
         }
 
         public override void Execute(UserProfile _)

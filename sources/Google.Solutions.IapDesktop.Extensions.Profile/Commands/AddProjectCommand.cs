@@ -26,11 +26,11 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Profile
+namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
 {
     [MenuCommand(typeof(ProfileMenu), Rank = 0x100)]
     [Service]
-    public class AddProjectCommand : MenuCommandBase<UserProfile>
+    public class AddProjectCommand : ProfileMenuCommandBase
     {
         private readonly IProjectExplorer projectExplorer;
 
@@ -38,17 +38,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile
             : base("&Add project...")
         {
             this.projectExplorer = projectExplorer.ExpectNotNull(nameof(projectExplorer));
-        }
 
-
-        protected override bool IsAvailable(UserProfile _)
-        {
-            return true;
-        }
-
-        protected override bool IsEnabled(UserProfile _)
-        {
-            return true;
+            this.Image = Icons.AddProject_16;
         }
 
         public override Task ExecuteAsync(UserProfile context)
