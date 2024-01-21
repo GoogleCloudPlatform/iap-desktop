@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
@@ -35,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         DialogResult Prompt(
             IWin32Window owner,
             InputDialogParameters parameters,
-            out string input);
+            out string? input);
     }
 
     public struct InputDialogParameters
@@ -99,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public DialogResult Prompt(
             IWin32Window owner,
             InputDialogParameters parameters,
-            out string input)
+            out string? input)
         {
             parameters.ExpectValid();
 

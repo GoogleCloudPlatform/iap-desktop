@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         ICommandContainer<TContext> AddMenu<TContext>(
             string caption,
             int? index,
-            Func<TContext> queryCurrentContextFunc)
+            Func<TContext?> queryCurrentContextFunc)
             where TContext : class;
 
         /// <summary>

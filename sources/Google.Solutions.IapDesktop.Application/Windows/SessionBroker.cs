@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public bool TryActivateSession(
             InstanceLocator vmInstance,
-            out ISession session)
+            out ISession? session)
         {
             var existingSession = this.mainForm.MainPanel
                 .Documents

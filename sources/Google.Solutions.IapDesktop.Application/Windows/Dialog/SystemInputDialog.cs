@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         private static void ValidateIsNullOrEmpty(
             string input,
             out bool valid,
-            out string warning)
+            out string? warning)
         {
             valid = !string.IsNullOrEmpty(input);
             warning = null;

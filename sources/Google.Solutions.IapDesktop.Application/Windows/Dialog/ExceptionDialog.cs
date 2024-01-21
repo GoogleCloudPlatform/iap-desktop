@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         }
 
         public void Show(
-            IWin32Window parent,
+            IWin32Window? parent,
             string caption,
             Exception e)
         {
