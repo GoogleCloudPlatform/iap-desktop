@@ -186,6 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 Assert.IsTrue(window.Client.CanEnterFullScreen);
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
                 Assert.IsTrue(window.Client.IsFullScreen);
+                Assert.IsFalse(window.Client.CanEnterFullScreen);
 
                 await window.Client
                     .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
