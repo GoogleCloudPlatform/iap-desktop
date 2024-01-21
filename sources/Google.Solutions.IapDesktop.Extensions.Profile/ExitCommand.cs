@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Windows.Forms;
@@ -7,7 +8,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile
 {
     [MenuCommand(typeof(ProfileMenu), Rank = 0x100)]
     [Service]
-    public class ExitCommand : MenuCommandBase<ProfileMenu.Context>
+    public class ExitCommand : MenuCommandBase<UserProfile>
     {
         private readonly IMainWindow mainWindow;
 
@@ -19,17 +20,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile
         }
 
 
-        protected override bool IsAvailable(ProfileMenu.Context context)
+        protected override bool IsAvailable(UserProfile _)
         {
             return true;
         }
 
-        protected override bool IsEnabled(ProfileMenu.Context context)
+        protected override bool IsEnabled(UserProfile _)
         {
             return true;
         }
 
-        public override void Execute(ProfileMenu.Context context)
+        public override void Execute(UserProfile _)
         {
             this.mainWindow.Close();
         }

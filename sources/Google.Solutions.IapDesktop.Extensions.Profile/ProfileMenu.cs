@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 
@@ -29,25 +30,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile
     /// the class is loaded (as service) during startup.
     /// </summary>
     [Service(ServiceLifetime.Singleton, DelayCreation = false)]
-    public class ProfileMenu : Menu<ProfileMenu.Context>
+    public class ProfileMenu : Menu<UserProfile>
     {
-        /// <summary>
-        /// Pseudo-context.
-        /// </summary>
-        public sealed class Context
-        {
-            public static Context None = new Context();
-        }
-
         public ProfileMenu(IServiceCategoryProvider serviceProvider)
             : base(
                   MenuCommandType.MenuCommand,
                   serviceProvider
                       .GetService<IMainWindow>()
-                      .AddMenu<Context>(
-                          "Profile",
+                      .AddMenu(
+                          "&Profile",
                           0,
-                          () => Context.None))
+                          () => serviceProvider.GetService<UserProfile>()))
         {
             DiscoverCommands(serviceProvider);
         }
