@@ -92,7 +92,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Diagn
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Profile", "IapDesktop.Extensions.Profile", "{1EAE896D-0C01-4AEC-A1FD-DD085A357A21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Profile", "Google.Solutions.IapDesktop.Extensions.Profile\Google.Solutions.IapDesktop.Extensions.Profile.csproj", "{FB77B355-799E-4EF6-A8FE-B68314FEDC43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Solutions.IapDesktop.Extensions.Profile", "Google.Solutions.IapDesktop.Extensions.Profile\Google.Solutions.IapDesktop.Extensions.Profile.csproj", "{FB77B355-799E-4EF6-A8FE-B68314FEDC43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Profile.Test", "Google.Solutions.IapDesktop.Extensions.Profile.Test\Google.Solutions.IapDesktop.Extensions.Profile.Test.csproj", "{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -404,6 +406,18 @@ Global
 		{FB77B355-799E-4EF6-A8FE-B68314FEDC43}.Release|x64.Build.0 = Release|x64
 		{FB77B355-799E-4EF6-A8FE-B68314FEDC43}.Release|x86.ActiveCfg = Release|x86
 		{FB77B355-799E-4EF6-A8FE-B68314FEDC43}.Release|x86.Build.0 = Release|x86
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Debug|x64.Build.0 = Debug|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Release|x64.ActiveCfg = Release|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Release|x64.Build.0 = Release|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -440,6 +454,7 @@ Global
 		{FF0BB781-E398-4E13-8182-83450082A818} = {5206FD39-47A5-4E69-AA4F-94275A1A4791}
 		{C34911A5-2B0D-44DB-98C4-97599B7C69F6} = {5206FD39-47A5-4E69-AA4F-94275A1A4791}
 		{FB77B355-799E-4EF6-A8FE-B68314FEDC43} = {1EAE896D-0C01-4AEC-A1FD-DD085A357A21}
+		{EFEB3D04-77D7-4902-B65A-675F03F4BBCA} = {1EAE896D-0C01-4AEC-A1FD-DD085A357A21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75502EC2-01DB-49D6-B896-7A5DDE267F6A}
