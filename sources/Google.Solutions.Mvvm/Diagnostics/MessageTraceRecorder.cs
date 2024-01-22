@@ -73,7 +73,7 @@ namespace Google.Solutions.Mvvm.Diagnostics
         {
             var orderedMessages = new Message[this.history.Length];
 
-            for (int i = 0; i < this.history.Length; i++)
+            for (var i = 0; i < this.history.Length; i++)
             {
                 orderedMessages[i] = this.history[(this.nextIndex + i) % this.history.Length];
             }

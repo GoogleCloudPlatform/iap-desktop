@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding

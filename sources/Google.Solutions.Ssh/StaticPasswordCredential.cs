@@ -41,7 +41,8 @@ namespace Google.Solutions.Ssh
         internal StaticPasswordCredential(
             string username,
             string password)
-            : this(username, SecureStringExtensions.FromClearText(password)) { 
+            : this(username, SecureStringExtensions.FromClearText(password))
+        {
         }
 
         public SecureString Password { get; }

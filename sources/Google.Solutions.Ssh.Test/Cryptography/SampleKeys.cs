@@ -26,15 +26,15 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //
         // ECC.
         //
-        public const string Nistp256 = 
+        public const string Nistp256 =
             "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOAATK5b5Y" +
             "ERo8r80PGSNgH+fabpTTr1tSt3CcAXd1gk3E+f1vvPL/1MxYeGolwehAyTL8mP" +
             "kxxmyn0tRb5TGvM=";
-        public const string Nistp384 = 
+        public const string Nistp384 =
             "AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBL6qZo4KDt" +
             "qqGrpk0+SuiYtDxABMWf330nc6xfXeIJ7Fbbpnvpjg0o8Y3Z12L/KtTVkyEYW+" +
             "gujUacFa6urOW8PdFwn5sJi0UN4pUIJypI1ish3roab0uG7dqbHNuNANYQ==";
-        public const string Nistp512 = 
+        public const string Nistp512 =
             "AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAESzAPsMa" +
             "tZVMT31EHOvTcWN694KYmIrx3OA2vKiSWHkX2+Wun3KNmSAFxU1AVmL5kEQJpL" +
             "stT2bhnTzUMUUr25bQD11KUPkP1roaCYxpUlcyem8rTYi6IC9nxo5nNmzOD4Rj" +

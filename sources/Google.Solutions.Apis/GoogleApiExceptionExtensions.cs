@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Compute.v1.Data;
 using Google.Apis.Json;
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Common.Util;

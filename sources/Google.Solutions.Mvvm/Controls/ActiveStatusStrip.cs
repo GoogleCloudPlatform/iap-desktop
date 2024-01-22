@@ -41,15 +41,15 @@ namespace Google.Solutions.Mvvm.Controls
 
         private void UpdateForeColor()
         {
-            this.ForeColor = this.active 
-                ? this.ActiveForeColor 
+            this.ForeColor = this.active
+                ? this.ActiveForeColor
                 : this.InactiveForeColor;
         }
 
         private void UpdateBackColor()
         {
-            this.BackColor = this.active 
-                ? this.ActiveBackColor 
+            this.BackColor = this.active
+                ? this.ActiveBackColor
                 : this.InactiveBackColor;
         }
 
@@ -109,7 +109,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
-        public bool Active 
+        public bool Active
         {
             get => this.active;
             set

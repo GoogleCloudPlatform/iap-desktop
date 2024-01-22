@@ -22,7 +22,6 @@
 using Google.Solutions.Platform.Net;
 using NUnit.Framework;
 using System.Net;
-using System.Security.Policy;
 
 namespace Google.Solutions.Platform.Test.Net
 {

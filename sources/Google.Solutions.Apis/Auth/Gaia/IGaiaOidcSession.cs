@@ -19,9 +19,6 @@
 // under the License.
 //
 
-using System.Threading.Tasks;
-using System.Threading;
-
 namespace Google.Solutions.Apis.Auth.Gaia
 {
     /// <summary>

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
 using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 using System;
@@ -117,11 +116,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             var yes = new TaskDialogCommandLinkButton("Yes", DialogResult.Yes);
             var no = new TaskDialogCommandLinkButton("No", DialogResult.No);
-            
+
             parameters.Buttons.Add(yes);
             parameters.Buttons.Add(no);
 
-            int clicks = 0;
+            var clicks = 0;
             no.Click += (s, e) => clicks++;
 
             void taskDialogIndirect(

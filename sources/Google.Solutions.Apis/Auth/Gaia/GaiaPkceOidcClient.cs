@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Solutions.Apis.Client;
 
@@ -32,7 +31,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
             IDeviceEnrollment deviceEnrollment,
             IOidcOfflineCredentialStore store,
             OidcClientRegistration registration,
-            UserAgent userAgent) 
+            UserAgent userAgent)
             : base(endpoint, deviceEnrollment, store, registration, userAgent)
         {
         }

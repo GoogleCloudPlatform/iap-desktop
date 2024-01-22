@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using System;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -89,7 +87,7 @@ namespace Google.Solutions.Common.Threading
         /// </summary>
         public static T Send<T>(
             this SynchronizationContext context,
-            Func<T> func) 
+            Func<T> func)
         {
             var value = default(T);
             context.Send(_ =>

@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Analytics
         public MeasurementClient(
             ServiceEndpoint<MeasurementClient> endpoint,
             UserAgent userAgent,
-            string apiSecret, 
+            string apiSecret,
             string measurementId)
         {
             this.Endpoint = endpoint;
@@ -104,17 +104,17 @@ namespace Google.Solutions.Apis.Analytics
                 await this.service
                     .CollectAsync(
                     new MeasurementService.MeasurementRequest()
-                        {
-                            DebugMode = session.DebugMode,
-                            ClientId = session.ClientId,
-                            UserId = session.UserId,
-                            UserProperties = session
+                    {
+                        DebugMode = session.DebugMode,
+                        ClientId = session.ClientId,
+                        UserId = session.UserId,
+                        UserProperties = session
                                 .UserProperties
                                 .EnsureNotNull()
                                 .ToDictionary(
-                                    kvp => kvp.Key, 
+                                    kvp => kvp.Key,
                                     kvp => new MeasurementService.PropertySection(kvp.Value)),
-                            Events = new[]
+                        Events = new[]
                             {
                                 new MeasurementService.EventSection()
                                 {
@@ -125,11 +125,12 @@ namespace Google.Solutions.Apis.Analytics
                                         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
                                 }
                             }
-                        },
+                    },
                         cancellationToken)
                     .ConfigureAwait(false);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 throw new MeasurementFailedException(
                     "The event collection failed", e);
             }
@@ -138,7 +139,7 @@ namespace Google.Solutions.Apis.Analytics
 
     public class MeasurementFailedException : GoogleApiException
     {
-        public MeasurementFailedException(string message) 
+        public MeasurementFailedException(string message)
             : base(typeof(MeasurementService).Name, message)
         {
         }

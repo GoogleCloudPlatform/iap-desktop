@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis.Cryptography;
 using Microsoft.Win32;

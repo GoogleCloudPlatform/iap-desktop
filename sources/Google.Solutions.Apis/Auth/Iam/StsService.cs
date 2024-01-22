@@ -20,9 +20,13 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Json;
 using Google.Apis.Requests.Parameters;
 using Google.Apis.Services;
+using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -31,10 +35,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common.Diagnostics;
-using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Common.Util;
-using Google.Apis.Util;
 
 namespace Google.Solutions.Apis.Auth.Iam
 {

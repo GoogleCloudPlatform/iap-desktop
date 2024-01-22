@@ -134,8 +134,8 @@ namespace Google.Solutions.Apis.Client
     public class InvalidServiceRouteException : ClientException
     {
         internal InvalidServiceRouteException(
-            string message, 
-            Exception inner) 
+            string message,
+            Exception inner)
             : base(message, inner)
         {
         }

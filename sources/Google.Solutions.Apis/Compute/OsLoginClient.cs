@@ -39,7 +39,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using static Google.Solutions.Apis.Compute.OsLoginClient;
@@ -141,9 +140,9 @@ namespace Google.Solutions.Apis.Compute
                 // Use the full principal idenfifier (yes, that's a URL)
                 // and encode it.
                 //
-                IWorkforcePoolSession wfSession 
+                IWorkforcePoolSession wfSession
                     => WebUtility.UrlEncode(wfSession.PrincipalIdentifier),
-                
+
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -334,7 +333,7 @@ namespace Google.Solutions.Apis.Compute
                         //
                         // Option (1) isn't viable currently, so we need to do (2).
                         //
-                        
+
                         request.UserProject = zone.ProjectId;
                     }
 
@@ -345,8 +344,8 @@ namespace Google.Solutions.Apis.Compute
                     return response.SignedSshPublicKey;
                 }
                 catch (GoogleApiException e) when (
-                    e.Error != null && 
-                    e.Error.Code == 400 && 
+                    e.Error != null &&
+                    e.Error.Code == 400 &&
                     e.Error.Message != null &&
                     e.Error.Message.Contains("google.posix_username"))
                 {
@@ -444,7 +443,7 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaSignSshPublicKeyRequest 
+        private class BetaSignSshPublicKeyRequest
             : CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
         {
             [RequestParameter("parent")]
@@ -458,8 +457,8 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? UserProject { get; set; }
 
             public BetaSignSshPublicKeyRequest(
-                IClientService service, 
-                BetaSignSshPublicKeyRequestData body, 
+                IClientService service,
+                BetaSignSshPublicKeyRequestData body,
                 string parent)
                 : base(service)
             {
@@ -626,7 +625,7 @@ namespace Google.Solutions.Apis.Compute
     internal class OsLoginNotSupportedForWorkloadIdentityException :
         NotSupportedForWorkloadIdentityException, IExceptionWithHelpTopic
     {
-        public OsLoginNotSupportedForWorkloadIdentityException() 
+        public OsLoginNotSupportedForWorkloadIdentityException()
             : base(
                 "This OS Login operation is not supported for " +
                 "workforce identity federation.")
@@ -640,7 +639,7 @@ namespace Google.Solutions.Apis.Compute
         public IHelpTopic? Help { get; }
 
         public ExternalIdpNotConfiguredForOsLoginException(
-            string message, 
+            string message,
             Exception inner)
             : base(message, inner)
         {

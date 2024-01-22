@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Auth
         private readonly string responseHtml;
 
         public LoopbackCodeReceiver(
-            string path, 
+            string path,
             string responseHtml)
         {
             this.path = path.ExpectNotEmpty(nameof(path));
@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Auth
         {
             get
             {
-                if (this.redirectUri == null || 
+                if (this.redirectUri == null ||
                     string.IsNullOrEmpty(this.redirectUri))
                 {
                     var port = GetRandomUnusedPort();
@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Auth
         }
 
         public async Task<AuthorizationCodeResponseUrl> ReceiveCodeAsync(
-            AuthorizationCodeRequestUrl url, 
+            AuthorizationCodeRequestUrl url,
             CancellationToken cancellationToken)
         {
             var authorizationUrl = url.Build().AbsoluteUri;
@@ -138,7 +138,7 @@ namespace Google.Solutions.Apis.Auth
                     catch (Exception) when (cancellationToken.IsCancellationRequested)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        
+
                         //
                         // Next line will never be reached because cancellation will
                         // always have been requested in this catch block.
@@ -163,7 +163,7 @@ namespace Google.Solutions.Apis.Auth
                 context.Response.ContentLength64 = bytes.Length;
                 context.Response.SendChunked = false;
                 context.Response.KeepAlive = false;
-                
+
                 var output = context.Response.OutputStream;
                 await output
                     .WriteAsync(bytes, 0, bytes.Length)

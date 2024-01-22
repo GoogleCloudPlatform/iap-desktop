@@ -183,7 +183,7 @@ namespace Google.Solutions.Apis.Test.Auth
             {
                 AuthorizeWithBrowser = () => CreateSession().Object
             };
-            
+
             var session = await client
                 .AuthorizeAsync(
                     new Mock<ICodeReceiver>().Object,

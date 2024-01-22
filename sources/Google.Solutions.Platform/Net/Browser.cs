@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 

@@ -27,7 +27,6 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Google.Solutions.Apis.Auth
 {
@@ -137,7 +136,7 @@ namespace Google.Solutions.Apis.Auth
                         this.Registration.Issuer.ToString(),
                         e.FullMessage());
                     ApiTraceSource.Log.TraceWarning(
-                        "Activating offline credential failed: {0}", 
+                        "Activating offline credential failed: {0}",
                         e.FullMessage());
 
                     return null;

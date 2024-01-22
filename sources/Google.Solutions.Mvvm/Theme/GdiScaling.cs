@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -45,8 +43,8 @@ namespace Google.Solutions.Mvvm.Theme
             get => active;
             set
             {
-                NativeMethods.SetProcessDpiAwarenessContext(value 
-                    ? NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED 
+                NativeMethods.SetProcessDpiAwarenessContext(value
+                    ? NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED
                     : NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE);
                 active = value;
             }

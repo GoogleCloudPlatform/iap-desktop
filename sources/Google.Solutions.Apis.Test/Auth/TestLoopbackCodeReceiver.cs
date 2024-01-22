@@ -19,12 +19,9 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Net.Http;
@@ -42,7 +39,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             public Action<string> OpenBrowserCallback = _ => { };
 
-            public Receiver(string path, string responseHtml) 
+            public Receiver(string path, string responseHtml)
                 : base(path, responseHtml)
             {
             }
@@ -83,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
-                
+
                 tokenSource.Cancel();
 
                 ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(

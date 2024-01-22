@@ -68,7 +68,7 @@ namespace Google.Solutions.Platform
         /// <see cref="https://learn.microsoft.com/en-us/windows/win32/shell/app-registration"/>
         public static bool TryResolveAppPath(string exeName, out string? path)
         {
-            Precondition.ExpectNotEmpty(exeName,nameof(exeName));
+            Precondition.ExpectNotEmpty(exeName, nameof(exeName));
 
             if (exeName.Contains('\\') || exeName.Contains('/'))
             {
@@ -88,7 +88,7 @@ namespace Google.Solutions.Platform
             }
 
             var hives = new[] { RegistryHive.CurrentUser, RegistryHive.LocalMachine };
-            foreach (var hive in hives )
+            foreach (var hive in hives)
             {
                 using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
                 using (var appKey = hiveKey.OpenSubKey($@"{AppPathRegistryKey}\{exeName}", false))

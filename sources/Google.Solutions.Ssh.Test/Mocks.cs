@@ -19,11 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Security;
 using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
-using System.Security;
 
 namespace Google.Solutions.Ssh.Test
 {

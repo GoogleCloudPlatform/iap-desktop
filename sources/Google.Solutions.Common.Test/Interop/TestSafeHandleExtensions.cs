@@ -89,7 +89,7 @@ namespace Google.Solutions.Common.Test.Interop
             {
                 var task = ev.WaitAsync(TimeSpan.FromSeconds(60), cts.Token);
                 cts.Cancel();
-                
+
                 ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                     () => task.Wait());
             }

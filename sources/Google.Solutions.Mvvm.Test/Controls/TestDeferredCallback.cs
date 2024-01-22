@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [WindowsFormsTest]
         public async Task MultipleInvocationsAreCoalesced()
         {
-            int invocations = 0;
+            var invocations = 0;
             DeferredCallback callback = null;
             using (callback = new DeferredCallback(
                 cb =>
@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [WindowsFormsTest]
         public async Task WhenCallbackDefersItself_ThenCallbackIsInvokedAgain()
         {
-            int invocations = 0;
+            var invocations = 0;
             using (var callback = new DeferredCallback(
                 cb =>
                 {
@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 TimeSpan.FromMilliseconds(10)))
             {
                 callback.Schedule();
-                
+
                 await callback
                     .WaitForCompletionAsync()
                     .ConfigureAwait(true);

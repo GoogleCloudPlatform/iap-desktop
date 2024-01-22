@@ -41,7 +41,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// </summary>
         void OnCommandFailed(
             IWin32Window? window,
-            ICommandBase command, 
+            ICommandBase command,
             Exception exception);
 
         /// <summary>

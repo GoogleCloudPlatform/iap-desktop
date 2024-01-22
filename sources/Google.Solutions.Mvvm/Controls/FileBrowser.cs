@@ -341,7 +341,7 @@ namespace Google.Solutions.Mvvm.Controls
         public async Task NavigateAsync(IEnumerable<string> path)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
-            
+
             if (this.root == null || this.navigationState == null)
             {
                 throw new InvalidOperationException("Control is not bound");

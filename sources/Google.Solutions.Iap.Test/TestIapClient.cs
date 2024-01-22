@@ -20,19 +20,19 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Testing.Apis.Integration;
-using NUnit.Framework;
-using Google.Solutions.Apis.Locator;
-using System;
-using Moq;
 using Google.Solutions.Apis.Auth;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
-using System.Net;
-using System.Linq;
-using Google.Solutions.Iap.Net;
-using System.Net.WebSockets;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Locator;
+using Google.Solutions.Iap.Net;
+using Google.Solutions.Testing.Apis.Integration;
+using Moq;
+using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.WebSockets;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Iap.Test
 {
@@ -139,7 +139,7 @@ namespace Google.Solutions.Iap.Test
                 SampleLocator,
                 22,
                 IapClient.DefaultNetworkInterface);
-            
+
             Assert.IsTrue(target.IsMutualTlsEnabled);
             Assert.IsNotNull(target.ClientCertificate);
         }

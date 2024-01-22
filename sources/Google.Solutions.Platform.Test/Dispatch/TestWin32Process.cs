@@ -90,7 +90,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var process = factory.CreateProcess(
                 CmdExe,
                 null);
-            
+
             Assert.IsTrue(process.IsRunning);
 
             process.Resume();
@@ -391,7 +391,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null))
             {
                 process.Resume();
-                
+
                 using (var openedProcess = Win32Process.FromProcessId(process.Id))
                 {
                     Assert.Throws<DispatchException>(() => openedProcess.Resume());

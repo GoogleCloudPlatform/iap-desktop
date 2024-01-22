@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             string text,
             Func<CancellationToken, Task> executeFunc,
             IObservableProperty<bool> canExecute)
-            : base(text) 
+            : base(text)
         {
             this.CanExecute = canExecute;
             this.executeFunc = executeFunc;
@@ -68,7 +68,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
         public new string ActivityText
         {
-            get => base.ActivityText; 
+            get => base.ActivityText;
             set => base.ActivityText = value;
         }
 

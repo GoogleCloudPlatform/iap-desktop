@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Client;
-using Google.Solutions.Apis.Crm;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;

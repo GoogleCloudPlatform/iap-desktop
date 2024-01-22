@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Compute
         public class ZonalName : InternalDnsName
         {
             internal ZonalName(
-                string name, 
+                string name,
                 InstanceLocator instance) : base(name)
             {
                 this.Instance = instance;

@@ -31,7 +31,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenUsingWorkforceSession_ThenImportSshPublicKeyThrowsException(
-            [Credential(Type = PrincipalType.WorkforceIdentity)] 
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
             var client = new OsLoginClient(
@@ -109,7 +108,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenImportSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
@@ -140,7 +139,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenUsingWorkforceSession_ThenGetLoginProfileThrowsException(
-            [Credential(Type = PrincipalType.WorkforceIdentity)] 
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
             var client = new OsLoginClient(
@@ -178,7 +177,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenEmailValid_ThenGetLoginProfileSucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
@@ -219,7 +218,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingKeyTwice_ThenDeleteSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
@@ -276,7 +275,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task WhenDeletingNonexistingKey_ThenDeleteSshPublicKeySucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] 
+            [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(

@@ -705,6 +705,8 @@ namespace Google.Solutions.IapDesktop
                             {
                                 ShowFatalErrorAndExit(e, recorder.Capture());
                             }
+#else
+                            _ = e;
 #endif
                         }
                     }

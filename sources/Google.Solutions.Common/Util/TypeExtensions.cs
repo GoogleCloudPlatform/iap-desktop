@@ -43,7 +43,7 @@ namespace Google.Solutions.Common.Util
             name.Append('<');
 
             name.Append(string.Join(
-                ",", 
+                ",",
                 type.GetGenericArguments().Select(t => t.FullName())));
 
             name.Append('>');

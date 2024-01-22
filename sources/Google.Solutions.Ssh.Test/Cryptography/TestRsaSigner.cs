@@ -58,8 +58,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(
-                        challengeBlob, 
-                        HashAlgorithmName.SHA512, 
+                        challengeBlob,
+                        HashAlgorithmName.SHA512,
                         RSASignaturePadding.Pkcs1),
                     signer.Sign(challenge));
             }
@@ -90,8 +90,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 CollectionAssert.AreEqual(
                     cngKey.SignData(
-                        challengeBlob, 
-                        HashAlgorithmName.SHA256, 
+                        challengeBlob,
+                        HashAlgorithmName.SHA256,
                         RSASignaturePadding.Pkcs1),
                     signer.Sign(challenge));
             }

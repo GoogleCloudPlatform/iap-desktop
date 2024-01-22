@@ -58,7 +58,7 @@ namespace Google.Solutions.Ssh.Cryptography
             using (var reader = new SshReader(new MemoryStream(encodedKey)))
             {
                 try
-                { 
+                {
                     var type = reader.ReadString();
                     if (type != RsaType)
                     {
@@ -147,7 +147,7 @@ namespace Google.Solutions.Ssh.Cryptography
             {
                 this.key.Dispose();
             }
-            
+
             base.Dispose(disposing);
         }
     }

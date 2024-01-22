@@ -26,7 +26,6 @@ using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -205,7 +204,7 @@ namespace Google.Solutions.Platform.Dispatch
         }
 
         public async Task<uint> WaitAsync(
-            TimeSpan timeout, 
+            TimeSpan timeout,
             CancellationToken cancellationToken)
         {
             using (var waitHandle = this.process.ToWaitHandle(false))
@@ -426,9 +425,9 @@ namespace Google.Solutions.Platform.Dispatch
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool QueryFullProcessImageName(
-                [In] SafeProcessHandle hProcess, 
-                [In] int dwFlags, 
-                [Out] StringBuilder lpExeName, 
+                [In] SafeProcessHandle hProcess,
+                [In] int dwFlags,
+                [Out] StringBuilder lpExeName,
                 ref int lpdwSize); [DllImport("user32.dll")]
 
             [return: MarshalAs(UnmanagedType.Bool)]

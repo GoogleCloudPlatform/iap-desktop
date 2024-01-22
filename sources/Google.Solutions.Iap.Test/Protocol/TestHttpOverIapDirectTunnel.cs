@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap.Net;
@@ -28,7 +27,6 @@ using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;

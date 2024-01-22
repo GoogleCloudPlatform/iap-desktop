@@ -24,11 +24,9 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Apis.Integration;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -321,7 +319,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenPasswordInvalid_ThenAuthenticateUsingPasswordThrowsException(
-            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)] 
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -341,7 +339,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenPasswordValid_ThenAuthenticateUsingPasswordSucceeds(
-            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)] 
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -375,7 +373,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenPasswordInvalid_ThenAuthenticateUsingKeyboardInteractiveThrowsException(
-            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)] 
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -396,7 +394,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenPasswordValid_ThenAuthenticateUsingKeyboardInteractiveSucceeds(
-            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)] 
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;

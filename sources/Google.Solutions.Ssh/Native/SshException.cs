@@ -120,7 +120,7 @@ namespace Google.Solutions.Ssh.Native
         KNOWN_HOSTS = -46,
         CHANNEL_WINDOW_FULL = -47,
         KEYFILE_AUTH_FAILED = -48,
-        ALGO_UNSUPPORTED =-51
+        ALGO_UNSUPPORTED = -51
     }
 
     public enum LIBSSH2_FX_ERROR

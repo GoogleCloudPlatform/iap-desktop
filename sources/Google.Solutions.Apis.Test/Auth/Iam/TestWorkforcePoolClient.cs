@@ -25,13 +25,11 @@ using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Iam;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -91,13 +89,13 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 IDeviceEnrollment deviceEnrollment,
                 IOidcOfflineCredentialStore store,
                 WorkforcePoolProviderLocator provider,
-                OidcClientRegistration registration) 
+                OidcClientRegistration registration)
                 : base(
-                      WorkforcePoolClient.CreateEndpoint(), 
-                      deviceEnrollment, 
-                      store, 
-                      provider, 
-                      registration, 
+                      WorkforcePoolClient.CreateEndpoint(),
+                      deviceEnrollment,
+                      store,
+                      provider,
+                      registration,
                       TestProject.UserAgent)
             {
             }

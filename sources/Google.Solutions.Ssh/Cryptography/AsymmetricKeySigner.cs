@@ -74,14 +74,14 @@ namespace Google.Solutions.Ssh.Cryptography
         /// Create a signer for an existing key and algorithm.
         /// </summary>
         public static IAsymmetricKeySigner Create(
-            AsymmetricAlgorithm algorithm, 
+            AsymmetricAlgorithm algorithm,
             bool ownsKey)
         {
             if (algorithm is RSA rsa)
             {
                 return new RsaSigner(rsa, ownsKey);
             }
-            else if (algorithm is ECDsaCng ecdsa) 
+            else if (algorithm is ECDsaCng ecdsa)
             {
                 return new EcdsaSigner(ecdsa, ownsKey);
             }

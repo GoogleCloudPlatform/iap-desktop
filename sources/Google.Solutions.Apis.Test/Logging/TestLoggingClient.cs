@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Logging;
 using Google.Solutions.Testing.Apis;
@@ -81,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Logging
                 await auth,
                 TestProject.UserAgent);
 
-            bool callbackInvoked = false;
+            var callbackInvoked = false;
             await adapter
                 .ReadLogsAsync(
                     new[] { $"projects/{TestProject.ProjectId}" },

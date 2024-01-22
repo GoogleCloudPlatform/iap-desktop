@@ -466,7 +466,7 @@ namespace Google.Solutions.Ssh
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class SynchronizationContextBoundKeyboardInteractiveHandler 
+        private class SynchronizationContextBoundKeyboardInteractiveHandler
             : IKeyboardInteractiveHandler
         {
             private readonly IKeyboardInteractiveHandler handler;

@@ -93,7 +93,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void WhenEnrolled_ThenCreateServiceInitializerUsesTlsUsesMtls()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
-                ServiceRoute.Public, 
+                ServiceRoute.Public,
                 SampleEndpoint);
 
             var client = new SampleClient(

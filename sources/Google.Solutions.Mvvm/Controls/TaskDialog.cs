@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// Show a dialog.
         /// </summary>
         DialogResult ShowDialog(
-            IWin32Window parent, 
+            IWin32Window parent,
             TaskDialogParameters parameters);
     }
 
@@ -152,7 +152,7 @@ namespace Google.Solutions.Mvvm.Controls
                     out var buttonIdPressed,
                     out var _,
                     out var verificationFlagPressed);
-                
+
                 if (parameters.VerificationCheckBox != null)
                 {
                     parameters.VerificationCheckBox.Checked = verificationFlagPressed;

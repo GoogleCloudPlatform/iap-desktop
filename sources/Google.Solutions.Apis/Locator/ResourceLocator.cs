@@ -42,7 +42,7 @@ namespace Google.Solutions.Apis.Locator
         /// Type of resource.
         /// </summary>
         public abstract string ResourceType { get; }
-        
+
         /// <summary>
         /// User-provided unique name or ID of resource.
         /// </summary>

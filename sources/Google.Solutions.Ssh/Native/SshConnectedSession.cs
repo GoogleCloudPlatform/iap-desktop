@@ -23,13 +23,11 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Cryptography;
-using Google.Solutions.Ssh.Format;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Google.Solutions.Ssh.Native
@@ -374,7 +372,7 @@ namespace Google.Solutions.Ssh.Native
                 //
                 var originalTimeout = this.session.Timeout;
                 this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
-                
+
                 try
                 {
                     //
@@ -556,7 +554,7 @@ namespace Google.Solutions.Ssh.Native
                     if (requiredMethods.FirstOrDefault() == AuthenticationMetods.KeyboardInteractive)
                     {
                         return AuthenticateWithKeyboard(
-                            credential, 
+                            credential,
                             keyboardHandler,
                             "2-step verification");
                     }
@@ -611,7 +609,7 @@ namespace Google.Solutions.Ssh.Native
                 else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
                 {
                     return AuthenticateWithKeyboard(
-                        credential, 
+                        credential,
                         keyboardHandler,
                         "Interactive authentication");
                 }

@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -31,35 +30,30 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// Track open safe handles. Only active in Debug builds, for diagnostics only.
     /// </summary>
-    [SkipCodeCoverageAttribute("For debug purposes only")]
+    [SkipCodeCoverage("For debug purposes only")]
     internal static class HandleTable
     {
-        private static readonly object handlesLock;
-        private static readonly IDictionary<SafeHandle, string> handles;
-
-        static HandleTable()
-        {
 #if DEBUG
-            handlesLock = new object();
-            handles = new Dictionary<SafeHandle, string>();
-#else
-            handlesLock = null;
-            handles = null;
+        private static readonly object handlesLock = new object();
+        private static readonly IDictionary<SafeHandle, string> handles = new Dictionary<SafeHandle, string>();
+
 #endif
-        }
 
         [Conditional("DEBUG")]
         public static void Clear()
         {
+#if DEBUG
             lock (handlesLock)
             {
                 handles.Clear();
             }
+#endif
         }
 
         [Conditional("DEBUG")]
         public static void OnHandleCreated(SafeHandle handle, string description)
         {
+#if DEBUG
             if (handle.IsInvalid)
             {
                 return;
@@ -70,29 +64,41 @@ namespace Google.Solutions.Ssh.Native
                 Debug.Assert(!handles.ContainsKey(handle));
                 handles.Add(handle, description);
             }
+#endif
         }
 
         [Conditional("DEBUG")]
         public static void OnHandleClosed(SafeHandle handle)
         {
+#if DEBUG
             lock (handlesLock)
             {
                 handles.Remove(handle);
             }
+#endif
         }
 
         [Conditional("DEBUG")]
         public static void DumpOpenHandles()
         {
+#if DEBUG
             Debug.Assert(handles.Count == 0);
             foreach (var entry in handles)
             {
                 Debug.WriteLine("Leaked handle {0}: {1}", entry.Key, entry.Value);
             }
+#endif
         }
 
-        public static int HandleCount => handles != null
-            ? handles.Count
-            : 0;
+        public static int HandleCount
+        {
+#if DEBUG
+            get => handles != null
+                ? handles.Count
+                : 0;
+#else
+            get => 0;
+#endif
+        }
     }
 }

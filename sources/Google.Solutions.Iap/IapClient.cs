@@ -23,16 +23,9 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Iap.Net;
 using System;
-using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
-using System.Net;
-using System.Net.WebSockets;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Policy;
 
 namespace Google.Solutions.Iap
 {
@@ -87,8 +80,8 @@ namespace Google.Solutions.Iap
         //---------------------------------------------------------------------
 
         public IapInstanceTarget GetTarget(
-            InstanceLocator instance, 
-            ushort port, 
+            InstanceLocator instance,
+            ushort port,
             string nic)
         {
             instance.ExpectNotNull(nameof(instance));

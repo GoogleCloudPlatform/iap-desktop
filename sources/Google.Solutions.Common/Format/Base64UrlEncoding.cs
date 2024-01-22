@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Format
     {
         public static string Encode(byte[] data)
         {
-            string base64 = Convert.ToBase64String(data);
+            var base64 = Convert.ToBase64String(data);
 
             //
             // Strip trailing '='.
@@ -44,7 +44,7 @@ namespace Google.Solutions.Common.Format
 
         public static byte[] Decode(string encoded)
         {
-            string base64 = encoded
+            var base64 = encoded
                 .Replace('-', '+')
                 .Replace('_', '/');
 

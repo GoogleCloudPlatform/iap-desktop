@@ -19,10 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using System;
 using System.Drawing;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

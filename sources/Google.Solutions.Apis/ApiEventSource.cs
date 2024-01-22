@@ -20,7 +20,6 @@
 //
 
 using System.Diagnostics.Tracing;
-using System.Security.Policy;
 
 namespace Google.Solutions.Apis
 {
