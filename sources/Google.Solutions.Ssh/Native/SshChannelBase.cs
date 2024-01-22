@@ -23,7 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 
 namespace Google.Solutions.Ssh.Native
 {

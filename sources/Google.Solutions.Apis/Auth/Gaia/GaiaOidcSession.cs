@@ -99,8 +99,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
             //
             await this.Credential.Flow
                 .RevokeTokenAsync(
-                    null, 
-                    this.Credential.Token.RefreshToken, 
+                    null,
+                    this.Credential.Token.RefreshToken,
                     cancellationToken)
                 .ConfigureAwait(false);
 

@@ -68,16 +68,16 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         public static void SetCueBanner(
-            this TextBox textBox, 
+            this TextBox textBox,
             string text,
             bool alsoShowOnFocus)
         {
             Debug.Assert(!textBox.Multiline);
 
             var result = NativeMethods.SendMessage(
-                textBox.Handle, 
+                textBox.Handle,
                 NativeMethods.EM_SETCUEBANNER,
-                alsoShowOnFocus ? 1 : 0, 
+                alsoShowOnFocus ? 1 : 0,
                 text);
             Debug.Assert(result != IntPtr.Zero);
         }
@@ -93,17 +93,17 @@ namespace Google.Solutions.Mvvm.Controls
 
             [DllImport("user32.dll")]
             internal static extern IntPtr SendMessage(
-                IntPtr 
-                hWnd, 
-                int msg, 
-                IntPtr wp, 
+                IntPtr
+                hWnd,
+                int msg,
+                IntPtr wp,
                 IntPtr lp);
 
             [DllImport("user32.dll", CharSet = CharSet.Unicode)]
             internal static extern IntPtr SendMessage(
-                IntPtr hWnd, 
-                int msg, 
-                int wParam, 
+                IntPtr hWnd,
+                int msg,
+                int wParam,
                 [MarshalAs(UnmanagedType.LPWStr)] string lParam);
         }
     }

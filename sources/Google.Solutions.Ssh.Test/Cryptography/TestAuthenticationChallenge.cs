@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
-using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
 using System;
 

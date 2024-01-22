@@ -93,7 +93,7 @@ namespace Google.Solutions.Apis.Client
                         .ExecuteAsStreamOrThrowAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) 
+                catch (GoogleApiException e)
                     when (e.Error != null && (e.Error.Code == 429 || e.Error.Code == 500))
                 {
                     //

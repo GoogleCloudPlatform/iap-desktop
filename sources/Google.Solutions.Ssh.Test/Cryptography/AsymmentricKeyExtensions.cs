@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using System.Security.Cryptography;
 using System;
+using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Test.Cryptography
 {

@@ -238,7 +238,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
             IBindingContext bindingContext)
             where TControl : class, IComponent
-            where TModel: class
+            where TModel : class
         {
             Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
             Precondition.ExpectNotNull(model, nameof(model));

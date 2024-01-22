@@ -19,11 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -106,7 +104,7 @@ namespace Google.Solutions.Mvvm.Theme
 
             controlTheme.AddRule<Form>(c => StyleForm(c));
             controlTheme.AddRule<Button>(c => StyleButton(c));
-            controlTheme.AddRule<TextBox>(c => StyleTextbox(c), 
+            controlTheme.AddRule<TextBox>(c => StyleTextbox(c),
                 ControlTheme.Options.ApplyWhenHandleCreated);
             controlTheme.AddRule<Label>(c => StyleLabel(c));
             controlTheme.AddRule<HeaderLabel>(c => StyleHeaderLabel(c));

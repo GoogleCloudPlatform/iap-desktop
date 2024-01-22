@@ -23,7 +23,6 @@ using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Format;
 using NUnit.Framework;
 using System;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -107,7 +106,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
         {
             using (var key = new RSACng())
-            { 
+            {
                 using (var publicKey = new RsaPublicKey(key, false))
                 {
                     Assert.IsFalse(key.IsDisposed());

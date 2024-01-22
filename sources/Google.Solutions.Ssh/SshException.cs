@@ -36,14 +36,14 @@ namespace Google.Solutions.Ssh
 
     public class UnsupportedAuthenticationMethodException : SshException
     {
-        internal UnsupportedAuthenticationMethodException(string message) 
+        internal UnsupportedAuthenticationMethodException(string message)
             : base(message)
         {
         }
 
         internal UnsupportedAuthenticationMethodException(
-            string message, 
-            Exception inner) 
+            string message,
+            Exception inner)
             : base(message, inner)
         {
         }

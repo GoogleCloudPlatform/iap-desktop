@@ -114,7 +114,7 @@ namespace Google.Solutions.Apis.Analytics
         //---------------------------------------------------------------------
         // Initializer.
         //---------------------------------------------------------------------
-        
+
         public new class Initializer : BaseClientService.Initializer
         {
             /// <summary>

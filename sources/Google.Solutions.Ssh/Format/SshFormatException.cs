@@ -25,12 +25,12 @@ namespace Google.Solutions.Ssh.Format
 {
     public class SshFormatException : SshException
     {
-        internal SshFormatException(string message) 
+        internal SshFormatException(string message)
             : base(message)
         {
         }
 
-        internal SshFormatException(string message, Exception inner) 
+        internal SshFormatException(string message, Exception inner)
             : base(message, inner)
         {
         }

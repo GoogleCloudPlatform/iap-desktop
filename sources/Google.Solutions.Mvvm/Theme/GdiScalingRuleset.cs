@@ -59,7 +59,7 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void DisableDoubleBufferingForLabel(Label label)
         {
-            if (label is LinkLabel) 
+            if (label is LinkLabel)
             {
                 //
                 // Disabling double-buffering causes the control to be

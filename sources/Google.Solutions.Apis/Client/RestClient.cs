@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -27,8 +26,6 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,7 +54,7 @@ namespace Google.Solutions.Apis.Client
             this.client.Timeout = DefaultTimeout;
         }
 
-        public RestClient(UserAgent userAgent) 
+        public RestClient(UserAgent userAgent)
             : this(
                   new HttpClient(),
                   userAgent)

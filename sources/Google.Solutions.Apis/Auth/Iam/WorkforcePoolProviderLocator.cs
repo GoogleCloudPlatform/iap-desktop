@@ -28,7 +28,7 @@ namespace Google.Solutions.Apis.Auth.Iam
     /// <summary>
     /// Locator for a Workforce pool provider.
     /// </summary>
-    public class WorkforcePoolProviderLocator 
+    public class WorkforcePoolProviderLocator
         : IEquatable<WorkforcePoolProviderLocator>, IPoolProviderLocator
     {
         /// <summary>
@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         }
 
         public static bool TryParse(
-            string? resourceReference, 
+            string? resourceReference,
             out WorkforcePoolProviderLocator? locator)
         {
             if (string.IsNullOrEmpty(resourceReference))

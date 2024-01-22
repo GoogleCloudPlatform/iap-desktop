@@ -31,7 +31,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
     /// </summary>
     internal class GaiaCodeFlow : GoogleAuthorizationCodeFlow
     {
-        public GaiaCodeFlow(Initializer initializer) 
+        public GaiaCodeFlow(Initializer initializer)
             : base(initializer)
         {
         }

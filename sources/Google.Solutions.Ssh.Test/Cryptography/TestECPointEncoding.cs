@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 Assert.Throws<SshFormatException>(
                     () => ECPointEncoding.Encode(
-                        key.ExportParameters(false).Q, 
+                        key.ExportParameters(false).Q,
                         128));
             }
         }

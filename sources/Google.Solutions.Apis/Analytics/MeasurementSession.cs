@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Analytics
                 nowMsec - Interlocked.Exchange(ref this.lastEventMsec, nowMsec);
 
             yield return new KeyValuePair<string, string>(
-                "engagement_time_msec", 
+                "engagement_time_msec",
                 timeSinceLastEventMsec.ToString());
 
             yield return new KeyValuePair<string, string>("session_id", this.Id.ToString());

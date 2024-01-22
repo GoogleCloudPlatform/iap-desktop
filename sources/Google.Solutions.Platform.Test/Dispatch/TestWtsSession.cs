@@ -22,7 +22,6 @@
 using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
-using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Google.Solutions.Platform.Test.Dispatch

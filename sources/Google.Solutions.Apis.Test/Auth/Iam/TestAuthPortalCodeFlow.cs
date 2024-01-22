@@ -21,14 +21,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Google.Solutions.Apis.Test.Auth.Iam

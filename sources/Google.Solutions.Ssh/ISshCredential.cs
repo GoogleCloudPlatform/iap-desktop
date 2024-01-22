@@ -50,8 +50,8 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Authenticator for "password" authentication.
     /// </summary>
-    public interface IPasswordCredential : ISshCredential 
-    { 
+    public interface IPasswordCredential : ISshCredential
+    {
         SecureString Password { get; }
     }
 

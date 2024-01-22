@@ -23,11 +23,8 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
-using Google.Solutions.Apis.Auth.Iam;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;
@@ -315,12 +312,12 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             public GaiaOidcClientWithMockFlow(
                 IDeviceEnrollment deviceEnrollment,
                 IOidcOfflineCredentialStore store,
-                OidcClientRegistration registration) 
+                OidcClientRegistration registration)
                 : base(
-                      GaiaOidcClient.CreateEndpoint(), 
-                      deviceEnrollment, 
-                      store, 
-                      registration, 
+                      GaiaOidcClient.CreateEndpoint(),
+                      deviceEnrollment,
+                      store,
+                      registration,
                       TestProject.UserAgent)
             {
             }

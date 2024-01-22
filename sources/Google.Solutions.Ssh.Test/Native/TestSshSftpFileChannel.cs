@@ -52,7 +52,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                credential, 
+                credential,
                 KeyboardInteractiveHandler.Silent))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(

@@ -27,7 +27,6 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Text;
-using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -20,7 +20,6 @@
 //
 
 using System.Diagnostics.Tracing;
-using System.Security.Policy;
 
 namespace Google.Solutions.Ssh
 {
@@ -105,7 +104,7 @@ namespace Google.Solutions.Ssh
 
         [Event(24, Level = EventLevel.Verbose)]
         internal void KeyboardInteractivePromptReceived(
-            string? name, 
+            string? name,
             string? instruction)
             => WriteEvent(24, name, instruction);
 

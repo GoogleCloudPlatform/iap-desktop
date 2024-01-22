@@ -37,7 +37,7 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenTypeNotGeneric_ThenFullNameReturnsName()
         {
             Assert.AreEqual(
-                typeof(TestTypeExtensions).Name, 
+                typeof(TestTypeExtensions).Name,
                 typeof(TestTypeExtensions).FullName());
         }
 

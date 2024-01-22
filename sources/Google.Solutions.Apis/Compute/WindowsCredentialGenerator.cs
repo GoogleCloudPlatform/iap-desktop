@@ -93,7 +93,7 @@ namespace Google.Solutions.Apis.Compute
         // Default settings for password encryption.
         //
         private const string DefaultHashFunction = "sha256";
-        private static readonly RSAEncryptionPadding DefaultEncryptionPadding 
+        private static readonly RSAEncryptionPadding DefaultEncryptionPadding
             = RSAEncryptionPadding.OaepSHA256;
 
         private readonly IComputeEngineClient computeClient;

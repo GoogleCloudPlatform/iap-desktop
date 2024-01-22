@@ -24,7 +24,6 @@ using Google.Apis.Http;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -37,7 +36,7 @@ namespace Google.Solutions.Apis.Client
     /// Client factory that enables client certificate and adds 
     /// PSC-style Host headers if needed.
     /// </summary>
-    internal class PscAndMtlsAwareHttpClientFactory 
+    internal class PscAndMtlsAwareHttpClientFactory
         : IHttpClientFactory, IHttpExecuteInterceptor, IHttpUnsuccessfulResponseHandler
     {
         private readonly ServiceEndpointDirections directions;
@@ -184,7 +183,7 @@ namespace Google.Solutions.Apis.Client
         private class NtlmResilientWebRequestHandler : WebRequestHandler
         {
             protected async override Task<HttpResponseMessage> SendAsync(
-                HttpRequestMessage request, 
+                HttpRequestMessage request,
                 CancellationToken cancellationToken)
             {
                 //
@@ -204,7 +203,7 @@ namespace Google.Solutions.Apis.Client
                 // If it's (a), there's a good chance that a retry helps. If it's
                 // (b), a retry at least won't hurt.
                 //
-                for (int attempt = 0; ; attempt++)
+                for (var attempt = 0; ; attempt++)
                 {
                     try
                     {
@@ -218,15 +217,15 @@ namespace Google.Solutions.Apis.Client
                         IsNtlmProxyAuthenticationRequiredResponse(webResponse))
                     {
                         if (this.UseProxy &&
-                            this.Proxy?.Credentials != null && 
+                            this.Proxy?.Credentials != null &&
                             attempt == 0)
                         {
                             var message = e.FullMessage();
                             ApiTraceSource.Log.TraceWarning(
-                                "NTLM proxy authentication failed, retrying", 
+                                "NTLM proxy authentication failed, retrying",
                                 message);
                             ApiEventSource.Log.HttpNtlmProxyRequestFailed(
-                                webResponse.ResponseUri.AbsoluteUri, 
+                                webResponse.ResponseUri.AbsoluteUri,
                                 message);
 
                             //

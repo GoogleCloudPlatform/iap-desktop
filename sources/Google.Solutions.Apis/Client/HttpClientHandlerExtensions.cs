@@ -83,8 +83,8 @@ namespace Google.Solutions.Apis.Client
             this ConfigurableHttpClient client)
         {
             var handler = client.MessageHandler.InnerHandler;
-            while (handler is DelegatingHandler delegatingHandler) 
-            { 
+            while (handler is DelegatingHandler delegatingHandler)
+            {
                 handler = delegatingHandler.InnerHandler;
             }
 

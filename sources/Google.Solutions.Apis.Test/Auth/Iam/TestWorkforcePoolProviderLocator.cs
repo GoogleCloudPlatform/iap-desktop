@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.Apis.Test.Auth.Iam
 {
     [TestFixture]
-    public class TestWorkforcePoolProviderLocator 
+    public class TestWorkforcePoolProviderLocator
         : EquatableFixtureBase<WorkforcePoolProviderLocator, WorkforcePoolProviderLocator>
     {
         protected override WorkforcePoolProviderLocator CreateInstance()

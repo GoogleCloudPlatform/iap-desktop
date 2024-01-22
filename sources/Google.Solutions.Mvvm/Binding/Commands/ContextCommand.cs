@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.Drawing;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -62,21 +61,21 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         {
         }
 
-        public new string Id 
+        public new string Id
         {
             get => this.id ?? base.Id;
             set => this.id = value;
         }
 
         public Image? Image { get; set; }
-        
+
         public Keys ShortcutKeys { get; set; }
 
         public bool IsDefault { get; set; }
 
         public Task ExecuteAsync(TContext context)
         {
-            if (this.QueryState(context) != CommandState.Enabled)
+            if (QueryState(context) != CommandState.Enabled)
             {
                 throw new InvalidOperationException(
                     "The command is unavailable or not enabled");

@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Client
 
         public ServiceEndpoint(
             ServiceRoute pscDirections,
-            Uri tlsUri, 
+            Uri tlsUri,
             Uri? mtlsUri)
         {
             this.pscDirections = pscDirections.ExpectNotNull(nameof(pscDirections));
@@ -94,7 +94,7 @@ namespace Google.Solutions.Apis.Client
 
         public ServiceEndpointDirections GetDirections(DeviceEnrollmentState enrollment)
         {
-            if (this.pscDirections.UsePrivateServiceConnect) 
+            if (this.pscDirections.UsePrivateServiceConnect)
             {
                 //
                 // Use an alternate PSC endpoint.
@@ -137,7 +137,7 @@ namespace Google.Solutions.Apis.Client
 
         public override string ToString()
         {
-            var psc = this.pscDirections.UsePrivateServiceConnect 
+            var psc = this.pscDirections.UsePrivateServiceConnect
                 ? this.pscDirections.Endpoint
                 : "off";
             return $"{this.CanonicalUri} (mTLS: {this.MtlsUri}, PSC: {psc})";

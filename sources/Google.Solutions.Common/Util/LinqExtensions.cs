@@ -42,7 +42,7 @@ namespace Google.Solutions.Common.Util
         }
 
         public static bool ContainsAll<T>(
-            this IEnumerable<T> sequence, 
+            this IEnumerable<T> sequence,
             IEnumerable<T> lookup)
         {
             return !lookup.Except(sequence).Any();

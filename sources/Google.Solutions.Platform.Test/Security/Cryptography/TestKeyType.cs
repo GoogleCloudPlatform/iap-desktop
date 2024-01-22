@@ -21,7 +21,6 @@
 
 using Google.Solutions.Platform.Security.Cryptography;
 using NUnit.Framework;
-using System;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Platform.Test.Security.Cryptography

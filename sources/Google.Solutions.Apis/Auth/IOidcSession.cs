@@ -21,8 +21,8 @@
 
 using Google.Apis.Auth.OAuth2;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth
 {
@@ -31,7 +31,7 @@ namespace Google.Solutions.Apis.Auth
     /// and it ends when the refresh token is invalidated or the app is 
     /// closed.
     /// </summary>
-    public interface IOidcSession 
+    public interface IOidcSession
     {
         event EventHandler? Terminated;
 

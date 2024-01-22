@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Auth
         public OidcOfflineCredential(
             OidcIssuer issuer,
             string scope,
-            string refreshToken, 
+            string refreshToken,
             string? idToken)
         {
             this.Issuer = issuer;

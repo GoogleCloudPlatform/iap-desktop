@@ -25,12 +25,11 @@ using Google.Apis.Util;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
 using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Logging
 {

@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.Apis.Auth.Iam
 {
-    internal class NotSupportedForWorkloadIdentityException 
+    internal class NotSupportedForWorkloadIdentityException
         : NotSupportedException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help => HelpTopics.WorkforceIdentityLimitations;

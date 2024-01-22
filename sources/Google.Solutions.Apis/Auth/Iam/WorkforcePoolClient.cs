@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
@@ -138,7 +137,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             Debug.Assert(tokenInfo.Iss == "https://sts.googleapis.com/");
             Debug.Assert(tokenInfo.Username.StartsWith("principal://"));
 
-            var session =  new WorkforcePoolSession(
+            var session = new WorkforcePoolSession(
                 apiCredential,
                 this.provider,
                 WorkforcePoolIdentity.FromPrincipalIdentifier(tokenInfo.Username));
@@ -152,8 +151,8 @@ namespace Google.Solutions.Apis.Auth.Iam
         //---------------------------------------------------------------------
 
         protected override async Task<IOidcSession> AuthorizeWithBrowserAsync(
-            OidcOfflineCredential? offlineCredential, 
-            ICodeReceiver codeReceiver, 
+            OidcOfflineCredential? offlineCredential,
+            ICodeReceiver codeReceiver,
             CancellationToken cancellationToken)
         {
             Precondition.Expect(offlineCredential == null ||
@@ -175,7 +174,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             // access token.
             //
             Debug.Assert(apiCredential.Token.IdToken == null);
-            
+
             try
             {
                 return await

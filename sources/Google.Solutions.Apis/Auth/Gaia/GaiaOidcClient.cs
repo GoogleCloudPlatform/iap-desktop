@@ -19,9 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;

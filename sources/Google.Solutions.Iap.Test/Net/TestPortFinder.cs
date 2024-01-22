@@ -65,7 +65,7 @@ namespace Google.Solutions.Iap.Test.Net
             var portFinder2 = new PortFinder();
             portFinder2.AddSeed(seed);
             var port2 = portFinder2.FindPort(out preferred);
-            
+
             Assert.IsTrue(preferred);
             Assert.AreEqual(port1, port2);
         }

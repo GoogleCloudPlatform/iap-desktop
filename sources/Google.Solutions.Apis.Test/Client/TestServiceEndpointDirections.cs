@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Test.Client
                 "sample.googleapis.com");
 
             StringAssert.Contains(
-                "https://sample.googleapis.com/", 
+                "https://sample.googleapis.com/",
                 directions.ToString());
         }
     }

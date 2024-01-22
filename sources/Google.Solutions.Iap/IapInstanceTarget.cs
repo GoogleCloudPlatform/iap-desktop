@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
@@ -170,7 +169,7 @@ namespace Google.Solutions.Iap
                 // unless un-restricted using UnrestrictUserAgentHeader.
                 //
                 websocket.Options.SetRequestHeader(
-                    "User-Agent", 
+                    "User-Agent",
                     this.UserAgent.ToString());
             }
             catch (ArgumentException)

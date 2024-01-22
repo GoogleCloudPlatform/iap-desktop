@@ -26,6 +26,6 @@ namespace Google.Solutions.Ssh.Format
         SSH_MSG_USERAUTH_REQUEST = 50,
         SSH_MSG_USERAUTH_FAILURE = 51,
         SSH_MSG_USERAUTH_SUCCESS = 52,
-        SSH_MSG_USERAUTH_BANNER  = 53,
+        SSH_MSG_USERAUTH_BANNER = 53,
     }
 }

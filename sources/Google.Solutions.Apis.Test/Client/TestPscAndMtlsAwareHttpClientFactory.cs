@@ -25,10 +25,8 @@ using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 

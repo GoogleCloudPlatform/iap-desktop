@@ -23,7 +23,6 @@ using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Moq;
@@ -148,7 +147,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
-            bool eventRaised = false;
+            var eventRaised = false;
             session.Terminated += (_, __) => eventRaised = true;
             session.Terminate();
 
@@ -182,7 +181,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                         Email = "x@example.com",
                     }));
 
-            bool eventRaised = false;
+            var eventRaised = false;
             session.Terminated += (_, __) => eventRaised = true;
 
             await session

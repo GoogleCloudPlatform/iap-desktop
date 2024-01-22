@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Auth
         public OidcClientRegistration(
             OidcIssuer issuer,
             string clientId,
-            string clientSecret, 
+            string clientSecret,
             string redirectPath)
         {
             this.Issuer = issuer;

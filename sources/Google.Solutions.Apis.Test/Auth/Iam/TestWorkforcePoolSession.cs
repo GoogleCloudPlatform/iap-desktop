@@ -19,13 +19,13 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Iam;
 using Moq;
 using NUnit.Framework;
-using Google.Solutions.Apis.Auth;
 using System;
 
 namespace Google.Solutions.Apis.Test.Auth.Iam
@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
             Assert.AreEqual(
                 "principal://iam.googleapis.com/locations/global/workforcePools/" +
-                "pool-1/subject/subject-1", 
+                "pool-1/subject/subject-1",
                 session.PrincipalIdentifier);
         }
 
@@ -132,7 +132,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
-            bool eventRaised = false;
+            var eventRaised = false;
             session.Terminated += (_, __) => eventRaised = true;
             session.Terminate();
 

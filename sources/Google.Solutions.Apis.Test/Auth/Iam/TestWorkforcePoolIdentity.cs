@@ -53,7 +53,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             [Values(
                 "principal://iam.googleapis.com/locations//workforcePools/POOL/subject/SUBJECT",
                 "principal://iam.googleapis.com/locations/LOCATION/workforcePools//subject/SUBJECT",
-                "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/")] 
+                "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/")]
             string id)
         {
             Assert.Throws<ArgumentNullException>(
