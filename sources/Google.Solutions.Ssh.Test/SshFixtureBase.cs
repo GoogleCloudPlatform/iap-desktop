@@ -208,7 +208,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL,
                 "vanilla",

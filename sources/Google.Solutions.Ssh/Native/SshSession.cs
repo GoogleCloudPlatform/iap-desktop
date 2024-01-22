@@ -283,6 +283,13 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        public IDisposable WithTimeout(TimeSpan timeout)
+        {
+            var originalTimeout = this.Timeout;
+            this.Timeout = timeout;
+            return Disposable.For(() => this.Timeout = originalTimeout);
+        }
+
         /// <summary>
         /// Time to wait for user to react to keyboard/interactive prompts.
         /// </summary>

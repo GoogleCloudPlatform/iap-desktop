@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 new InputDialogParameters()
                 {
                     Title = this.Instance.Name,
-                    Caption = e.Name,
+                    Caption = e.Caption,
                     IsPassword = e.IsPasswordPrompt,
                     Message = e.Prompt,
                     Validate = ValidationCallback

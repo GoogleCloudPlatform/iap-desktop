@@ -100,7 +100,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new RemoteConnection(
                 endpoint,
                 credential,
-                KeyboardInteractiveHandler.Silent,
+                new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
                 await connection.ConnectAsync().ConfigureAwait(false);
@@ -150,7 +150,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new RemoteConnection(
                 endpoint,
                 credential,
-                KeyboardInteractiveHandler.Silent,
+                new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
                 await connection
@@ -189,7 +189,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new RemoteConnection(
                 endpoint,
                 credential,
-                KeyboardInteractiveHandler.Silent,
+                new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
                 await connection
@@ -240,7 +240,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new RemoteConnection(
                 endpoint,
                 credential,
-                KeyboardInteractiveHandler.Silent,
+                new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
                 await connection
@@ -290,7 +290,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new RemoteConnection(
                 endpoint,
                 credential,
-                KeyboardInteractiveHandler.Silent,
+                new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
                 await connection

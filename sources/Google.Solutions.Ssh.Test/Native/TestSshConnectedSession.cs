@@ -302,7 +302,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_ERROR.SOCKET_SEND,
                     () => connection.Authenticate(
                         credential,
-                        KeyboardInteractiveHandler.Silent));
+                        new KeyboardInteractiveHandler()));
             }
         }
 
@@ -333,7 +333,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
                         new StaticPasswordCredential("invaliduser", "invalidpassword"),
-                        KeyboardInteractiveHandler.Silent));
+                        new KeyboardInteractiveHandler()));
             }
         }
 
@@ -354,9 +354,79 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             {
                 Assert.IsNotNull(authSession);
+            }
+        }
+
+        [Test]
+        public async Task WhenPasswordEmpty_ThenAuthenticateInvokesPrompt(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            var credential = await CreatePasswordCredentialAsync(
+                    instance,
+                    endpoint)
+                .ConfigureAwait(false);
+            var incompleteCredentials = new StaticPasswordCredential(
+                credential.Username,
+                string.Empty);
+
+            var handler = new KeyboardInteractiveHandler()
+            {
+                PromptForCredentialsCallback = username =>
+                {
+                    Assert.AreEqual(incompleteCredentials.Username, username);
+                    return credential;
+                }
+            };
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                incompleteCredentials,
+                handler))
+            {
+                Assert.AreEqual(1, handler.PromptCount);
+                Assert.IsNotNull(authSession);
+            }
+        }
+
+        [Test]
+        public async Task WhenPasswordEmptyAndPromptCanceled_ThenAuthenticateThrowsException(
+            [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            var credential = await CreatePasswordCredentialAsync(
+                    instance,
+                    endpoint)
+                .ConfigureAwait(false);
+            var incompleteCredentials = new StaticPasswordCredential(
+                string.Empty,
+                string.Empty);
+
+            var handler = new KeyboardInteractiveHandler()
+            {
+                PromptForCredentialsCallback = existing =>
+                {
+                    throw new OperationCanceledException("mock");
+                }
+            };
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                Assert.Throws<OperationCanceledException>(
+                    () => connection.Authenticate(
+                        incompleteCredentials,
+                        handler));
             }
         }
 
@@ -387,8 +457,10 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
                         new StaticPasswordCredential("ignored", "ignored"),
-                        new KeyboardInteractiveHandler(
-                            (name, instr, prompt, echo) => "wrong-password")));
+                        new KeyboardInteractiveHandler()
+                        {
+                            PromptCallback = (name, instr, prompt, echo) => "wrong-password"
+                        }));
             }
         }
 
@@ -409,15 +481,17 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 new StaticPasswordCredential(credential.Username, "ignored"),
-                new KeyboardInteractiveHandler(
-                    (name, instr, prompt, echo) =>
+                new KeyboardInteractiveHandler()
+                {
+                    PromptCallback = (name, instr, prompt, echo) =>
                     {
                         Assert.AreEqual("Interactive authentication", name);
                         Assert.AreEqual("Password: ", prompt);
                         Assert.IsFalse(echo);
 
                         return credential.Password.AsClearText();
-                    })))
+                    }
+                }))
             {
                 Assert.IsNotNull(authSession);
             }
@@ -444,7 +518,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
                         new StaticAsymmetricKeyCredential("invaliduser", signer),
-                        KeyboardInteractiveHandler.Silent));
+                        new KeyboardInteractiveHandler()));
             }
         }
 
@@ -468,7 +542,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             {
                 Assert.IsNotNull(authSession);
             }
@@ -499,7 +573,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.Throws<UnsupportedAuthenticationMethodException>(
                     () => connection.Authenticate(
                         credential,
-                        KeyboardInteractiveHandler.Silent));
+                        new KeyboardInteractiveHandler()));
             }
         }
 
@@ -533,15 +607,17 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var twoFaHandler = new KeyboardInteractiveHandler(
-                    (name, instruction, prompt, echo) =>
+                var twoFaHandler = new KeyboardInteractiveHandler()
+                {
+                    PromptCallback = (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("2-step verification", name);
                         Assert.AreEqual("Password: ", prompt);
                         Assert.IsFalse(echo);
 
                         return "wrong";
-                    });
+                    }
+                };
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -569,14 +645,16 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var twoFactorHandler = new KeyboardInteractiveHandler(
-                    (name, instruction, prompt, echo) =>
+                var twoFactorHandler = new KeyboardInteractiveHandler()
+                {
+                    PromptCallback = (name, instruction, prompt, echo) =>
                     {
                         Assert.AreEqual("Password: ", prompt);
                         Assert.IsFalse(echo);
 
                         return null;
-                    });
+                    }
+                };
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -602,11 +680,13 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var twoFactorHandler = new KeyboardInteractiveHandler(
-                    (name, instruction, prompt, echo) =>
+                var twoFactorHandler = new KeyboardInteractiveHandler()
+                {
+                    PromptCallback = (name, instruction, prompt, echo) =>
                     {
                         throw new OperationCanceledException();
-                    });
+                    }
+                };
 
                 Assert.Throws<OperationCanceledException>(
                     () => connection.Authenticate(credential, twoFactorHandler));

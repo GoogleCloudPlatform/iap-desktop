@@ -46,7 +46,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new RemoteConnection(
                 endpoint,
                 credential,
-                KeyboardInteractiveHandler.Silent,
+                new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
                 await connection

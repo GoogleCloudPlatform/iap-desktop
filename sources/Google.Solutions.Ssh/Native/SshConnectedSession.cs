@@ -26,6 +26,7 @@ using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -370,10 +371,7 @@ namespace Google.Solutions.Ssh.Native
                 // Temporarily change the timeout since we must give the
                 // user some time to react.
                 //
-                var originalTimeout = this.session.Timeout;
-                this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
-
-                try
+                using (this.session.WithTimeout(this.session.KeyboardInteractivePromptTimeout))
                 {
                     //
                     // Retry to account for wrong user input.
@@ -402,13 +400,6 @@ namespace Google.Solutions.Ssh.Native
                         }
                     }
                 }
-                finally
-                {
-                    //
-                    // Restore timeout.
-                    //
-                    this.session.Timeout = originalTimeout;
-                }
 
                 if (result == LIBSSH2_ERROR.NONE)
                 {
@@ -424,7 +415,8 @@ namespace Google.Solutions.Ssh.Native
         }
 
         private SshAuthenticatedSession AuthenticateWithPassword(
-            IPasswordCredential credential)
+            IPasswordCredential credential,
+            IKeyboardInteractiveHandler keyboardHandler)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(credential, nameof(credential));
@@ -449,6 +441,26 @@ namespace Google.Solutions.Ssh.Native
                 SshEventSource.Log.PasswordAuthenticationInitiated(credential.Username);
 
                 var password = credential.Password.AsClearText();
+
+                if (string.IsNullOrEmpty(password))
+                {
+                    //
+                    // Prompt user for password.
+                    //
+                    // NB. This callback might throw an exception when
+                    // canceled by the user.
+                    //
+
+                    var newCredentials = keyboardHandler.PromptForCredentials(credential.Username);
+
+                    //
+                    // NB. Changing the username isn't allowed anymore at this
+                    // point as we already used it to query allowed authentication
+                    // methods.
+                    //
+                    Debug.Assert(newCredentials.Username == credential.Username);
+                    password = newCredentials.Password.AsClearText();
+                }
 
                 var result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_password_ex(
                     this.session.Handle,
@@ -604,7 +616,7 @@ namespace Google.Solutions.Ssh.Native
                 else if (authenticationMethods.Contains(AuthenticationMetods.Password) &&
                     credential is IPasswordCredential passwordCredential)
                 {
-                    return AuthenticateWithPassword(passwordCredential);
+                    return AuthenticateWithPassword(passwordCredential, keyboardHandler);
                 }
                 else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
                 {

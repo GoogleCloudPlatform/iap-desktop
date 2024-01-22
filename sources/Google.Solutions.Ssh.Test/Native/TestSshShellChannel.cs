@@ -94,7 +94,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -133,7 +133,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -181,7 +181,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -214,7 +214,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,

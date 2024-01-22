@@ -21,6 +21,7 @@
 
 using Google.Solutions.Ssh.Cryptography;
 using System;
+using System.Net;
 using System.Security;
 
 namespace Google.Solutions.Ssh
@@ -62,12 +63,26 @@ namespace Google.Solutions.Ssh
     public interface IKeyboardInteractiveHandler
     {
         /// <summary>
-        /// Respond to interactive prompt.
+        /// Prompt for keyboard-interactive input.
         /// </summary>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown when users cancels the operation.
+        /// </exception>
         string? Prompt(
-            string name,
+            string caption,
             string instruction,
             string prompt,
             bool echo);
+
+        /// <summary>
+        /// Perform for password.
+        /// </summary>
+        /// <returns>
+        /// Credential for the same username.
+        /// </returns>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown when users cancels the operation.
+        /// </exception>
+        IPasswordCredential PromptForCredentials(string username);
     }
 }

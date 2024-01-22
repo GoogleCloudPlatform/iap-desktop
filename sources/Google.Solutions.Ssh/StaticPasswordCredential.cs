@@ -38,7 +38,7 @@ namespace Google.Solutions.Ssh
             this.Password = password.ExpectNotNull(nameof(password));
         }
 
-        internal StaticPasswordCredential(
+        public StaticPasswordCredential(
             string username,
             string password)
             : this(username, SecureStringExtensions.FromClearText(password))

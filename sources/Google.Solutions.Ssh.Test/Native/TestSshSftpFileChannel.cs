@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(
                 Guid.NewGuid().ToString(),
@@ -86,7 +86,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var sendData = new StringBuilder();
