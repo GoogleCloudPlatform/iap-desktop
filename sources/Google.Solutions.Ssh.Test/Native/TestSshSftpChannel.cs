@@ -55,7 +55,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 Assert.IsNotNull(channel);
@@ -105,7 +105,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -129,7 +129,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var files = channel.ListFiles("/etc");
@@ -159,7 +159,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var files = channel.ListFiles(".");
@@ -193,7 +193,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -221,7 +221,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -249,7 +249,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var directoryName = Guid.NewGuid().ToString();
@@ -284,7 +284,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -308,7 +308,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var directoryName = Guid.NewGuid().ToString();
@@ -344,7 +344,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -373,7 +373,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -404,7 +404,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(
                 fileName,
@@ -438,7 +438,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -462,7 +462,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithError(
@@ -486,7 +486,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var fileName = Guid.NewGuid().ToString();

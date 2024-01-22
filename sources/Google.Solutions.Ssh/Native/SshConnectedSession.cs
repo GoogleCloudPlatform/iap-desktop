@@ -26,6 +26,7 @@ using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -424,7 +425,8 @@ namespace Google.Solutions.Ssh.Native
         }
 
         private SshAuthenticatedSession AuthenticateWithPassword(
-            IPasswordCredential credential)
+            IPasswordCredential credential,
+            IKeyboardInteractiveHandler keyboardHandler)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotNull(credential, nameof(credential));
@@ -448,12 +450,27 @@ namespace Google.Solutions.Ssh.Native
             {
                 SshEventSource.Log.PasswordAuthenticationInitiated(credential.Username);
 
+                var username = credential.Username;
                 var password = credential.Password.AsClearText();
+
+                if (string.IsNullOrEmpty(password))
+                {
+                    //
+                    // Prompt user to edit or amend credentials.
+                    //
+                    // NB. This callback might throw an exception when
+                    // canceled by the user.
+                    //
+                    var newCredential = keyboardHandler.PromptForCredentials(credential);
+
+                    username = newCredential.Username;
+                    password = newCredential.Password.AsClearText();
+                }
 
                 var result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_password_ex(
                     this.session.Handle,
-                    credential.Username,
-                    credential.Username.Length,
+                    username,
+                    username.Length,
                     password,
                     password.Length,
                     PasswordChangeCallback);
@@ -604,7 +621,7 @@ namespace Google.Solutions.Ssh.Native
                 else if (authenticationMethods.Contains(AuthenticationMetods.Password) &&
                     credential is IPasswordCredential passwordCredential)
                 {
-                    return AuthenticateWithPassword(passwordCredential);
+                    return AuthenticateWithPassword(passwordCredential, keyboardHandler);
                 }
                 else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
                 {

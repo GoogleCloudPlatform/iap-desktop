@@ -52,7 +52,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent))
+                new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL,
                 "vanilla",
@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Test.Native
             var connection = session.Connect(endpoint);
             var authSession = connection.Authenticate(
                 credential,
-                KeyboardInteractiveHandler.Silent);
+                new KeyboardInteractiveHandler());
             var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL,
                 "vanilla",
@@ -116,7 +116,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
                     () => connection.Authenticate(
                         credential,
-                        KeyboardInteractiveHandler.Silent));
+                        new KeyboardInteractiveHandler()));
             }
         }
     }

@@ -23,6 +23,7 @@ using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
 using System.Net;
+using System.Xml.Linq;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -35,15 +36,21 @@ namespace Google.Solutions.Ssh.Test
             string prompt,
             bool echo);
 
-        private readonly PromptDelegate prompt;
+        public delegate IPasswordCredential PromptForCredentialsDelegate(
+            IPasswordCredential existingCredentials);
 
         public uint PromptCount { get; private set; } = 0;
 
-        public KeyboardInteractiveHandler(
-            PromptDelegate prompt)
+        public PromptDelegate PromptCallback { get; set; } = (n, i, p, e) =>
         {
-            this.prompt = prompt;
-        }
+            Assert.Fail("Unexpected prompt");
+            throw new InvalidOperationException("Unexpected prompt");
+        };
+
+        public PromptForCredentialsDelegate PromptForCredentialsCallback { get; set; } = c =>
+        {
+            throw new InvalidOperationException("Unexpected prompt");
+        };
 
         public string? Prompt(
             string name,
@@ -52,22 +59,14 @@ namespace Google.Solutions.Ssh.Test
             bool echo)
         {
             this.PromptCount++;
-            return this.prompt(name, instruction, prompt, echo);
+            return this.PromptCallback(name, instruction, prompt, echo);
         }
 
-        public static KeyboardInteractiveHandler Silent = new KeyboardInteractiveHandler(
-            (n, i, p, e) =>
-            {
-                Assert.Fail("Unexpected prompt");
-                throw new InvalidOperationException("Unexpected prompt");
-            });
-
-        public NetworkCredential PromptForCredentials(
-            string caption, 
-            string instruction, 
-            NetworkCredential existingCredentials)
+        public IPasswordCredential PromptForCredentials(
+            IPasswordCredential existingCredentials)
         {
-            throw new NotImplementedException();
+            this.PromptCount++;
+            return this.PromptForCredentialsCallback(existingCredentials);
         }
     }
 
