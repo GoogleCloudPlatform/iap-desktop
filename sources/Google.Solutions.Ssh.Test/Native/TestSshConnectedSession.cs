@@ -378,9 +378,9 @@ namespace Google.Solutions.Ssh.Test.Native
 
             var handler = new KeyboardInteractiveHandler()
             {
-                PromptForCredentialsCallback = existing =>
+                PromptForCredentialsCallback = username =>
                 {
-                    Assert.AreSame(incompleteCredentials, existing);
+                    Assert.AreEqual(incompleteCredentials.Username, username);
                     return credential;
                 }
             };

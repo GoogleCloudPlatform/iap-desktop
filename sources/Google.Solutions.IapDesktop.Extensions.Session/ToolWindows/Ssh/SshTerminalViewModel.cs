@@ -46,6 +46,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -143,9 +144,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         }
 
         IPasswordCredential IKeyboardInteractiveHandler.PromptForCredentials(
-            IPasswordCredential existingCredentials)
+            string username)
         {
-            throw new NotImplementedException();
+            Debug.Assert(this.View != null, "Not disposed yet");
+            Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
+
+            //
+            // NB. We don't allow the username to be changed,
+            // so using a CredUI prompt wouldn't add much value
+            // over using a generic prompt.
+            //
+
+            var args = new AuthenticationPromptEventArgs(
+                "Enter password for " + username, 
+                "These credentials will be used to connect to " + this.Instance.Name, 
+                false);
+            
+            this.AuthenticationPrompt?.Invoke(this, args);
+
+            return new StaticPasswordCredential(username, args.Response);
         }
 
         //---------------------------------------------------------------------

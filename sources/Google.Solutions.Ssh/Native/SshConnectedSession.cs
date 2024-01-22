@@ -447,18 +447,19 @@ namespace Google.Solutions.Ssh.Native
                     //
                     // Prompt user for password.
                     //
-                    // NB. Changing the username isn't allowed anymore at this
-                    // point as we reviously used it to query allowed authentication
-                    // methods.
-                    //
                     // NB. This callback might throw an exception when
                     // canceled by the user.
                     //
 
-                    password = keyboardHandler
-                        .PromptForCredentials(credential)
-                        .Password
-                        .AsClearText();
+                    var newCredentials = keyboardHandler.PromptForCredentials(credential.Username);
+
+                    //
+                    // NB. Changing the username isn't allowed anymore at this
+                    // point as we already used it to query allowed authentication
+                    // methods.
+                    //
+                    Debug.Assert(newCredentials.Username == credential.Username);
+                    password = newCredentials.Password.AsClearText();
                 }
 
                 var result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_password_ex(

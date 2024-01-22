@@ -25,7 +25,6 @@ using System;
 
 namespace Google.Solutions.Ssh.Test
 {
-
     internal class KeyboardInteractiveHandler : IKeyboardInteractiveHandler
     {
         public delegate string? PromptDelegate(
@@ -35,7 +34,7 @@ namespace Google.Solutions.Ssh.Test
             bool echo);
 
         public delegate IPasswordCredential PromptForCredentialsDelegate(
-            IPasswordCredential existingCredentials);
+            string username);
 
         public uint PromptCount { get; private set; } = 0;
 
@@ -60,11 +59,10 @@ namespace Google.Solutions.Ssh.Test
             return this.PromptCallback(name, instruction, prompt, echo);
         }
 
-        public IPasswordCredential PromptForCredentials(
-            IPasswordCredential existingCredentials)
+        public IPasswordCredential PromptForCredentials(string username)
         {
             this.PromptCount++;
-            return this.PromptForCredentialsCallback(existingCredentials);
+            return this.PromptForCredentialsCallback(username);
         }
     }
 

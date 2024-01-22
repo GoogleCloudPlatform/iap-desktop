@@ -75,12 +75,14 @@ namespace Google.Solutions.Ssh
             bool echo);
 
         /// <summary>
-        /// Perform for credentials.
+        /// Perform for password.
         /// </summary>
+        /// <returns>
+        /// Credential for the same username.
+        /// </returns>
         /// <exception cref="OperationCanceledException">
         /// Thrown when users cancels the operation.
         /// </exception>
-        IPasswordCredential PromptForCredentials( // TODO: change to username
-            IPasswordCredential existingCredentials);
+        IPasswordCredential PromptForCredentials(string username);
     }
 }

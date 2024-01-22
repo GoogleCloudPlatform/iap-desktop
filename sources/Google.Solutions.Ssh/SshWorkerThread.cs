@@ -495,11 +495,10 @@ namespace Google.Solutions.Ssh
                         echo));
             }
 
-            public IPasswordCredential PromptForCredentials(
-                IPasswordCredential existingCredentials)
+            public IPasswordCredential PromptForCredentials(string username)
             {
                 return this.context.Send(
-                    () => this.handler.PromptForCredentials(existingCredentials));
+                    () => this.handler.PromptForCredentials(username));
             }
         }
     }
