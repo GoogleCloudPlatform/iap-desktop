@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
         {
             this.projectExplorer = projectExplorer.ExpectNotNull(nameof(projectExplorer));
 
-            this.Image = Icons.AddProject_16;
+            this.Image = Resources.AddProject_16;
         }
 
         public override Task ExecuteAsync(IUserProfile context)
