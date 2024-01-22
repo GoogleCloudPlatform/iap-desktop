@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             var args = new AuthenticationPromptEventArgs(
                 "Enter password for " + username, 
                 "These credentials will be used to connect to " + this.Instance.Name, 
-                false);
+                true);
             
             this.AuthenticationPrompt?.Invoke(this, args);
 
