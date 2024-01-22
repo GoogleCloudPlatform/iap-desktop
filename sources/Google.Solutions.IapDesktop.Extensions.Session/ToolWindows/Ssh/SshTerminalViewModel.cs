@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         string IKeyboardInteractiveHandler.Prompt(
-            string name,
+            string caption,
             string instruction,
             string prompt,
             bool echo)
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             Debug.Assert(this.View != null, "Not disposed yet");
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
-            var args = new AuthenticationPromptEventArgs(name, prompt, !echo);
+            var args = new AuthenticationPromptEventArgs(caption, prompt, !echo);
             this.AuthenticationPrompt?.Invoke(this, args);
 
             if (args.Response != null)
@@ -619,16 +619,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
     public class AuthenticationPromptEventArgs
     {
         public bool IsPasswordPrompt { get; }
-        public string Name { get; }
+        public string Caption { get; }
         public string Prompt { get; }
         public string Response { get; set; }
 
         public AuthenticationPromptEventArgs(
-            string name,
+            string caption,
             string prompt,
             bool isPasswordPrompt)
         {
-            this.Name = name;
+            this.Caption = caption;
             this.IsPasswordPrompt = isPasswordPrompt;
             this.Prompt = prompt;
         }
