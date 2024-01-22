@@ -382,6 +382,7 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton<IInstall>(install);
                 preAuthLayer.AddSingleton<UserAgent>(Install.UserAgent);
                 preAuthLayer.AddSingleton(profile);
+                preAuthLayer.AddSingleton<IUserProfile>(profile);
 
                 preAuthLayer.AddSingleton<IClock>(SystemClock.Default);
                 preAuthLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();

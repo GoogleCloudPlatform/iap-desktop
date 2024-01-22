@@ -660,63 +660,6 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            Close();
-        }
-
-        private async void signoutToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                await this.viewModel.SignOutAsync().ConfigureAwait(true);
-
-                var profile = this.serviceProvider.GetService<UserProfile>();
-                if (!profile.IsDefault)
-                {
-                    if (this.serviceProvider
-                        .GetService<IConfirmationDialog>()
-                        .Confirm(
-                            this,
-                            $"Would you like to keep the current profile '{profile.Name}'?",
-                            "Keep profile",
-                            "Sign out") == DialogResult.No)
-                    {
-                        //
-                        // Delete current profile.
-                        //
-                        // Because of the single-instance behavior of this app, we know
-                        // (with reasonable certainty) that this is the only instance 
-                        // that's currently using this profile. Therefore, it's safe
-                        // to perform the deletion here.
-                        //
-                        // If we provided a "Delete profile" option in the profile
-                        // selection, we couldn't know for sure that the profile
-                        // isn't currently being used by another instance.
-                        //
-                        UserProfile.DeleteProfile(
-                            this.serviceProvider.GetService<IInstall>(),
-                            profile.Name);
-
-                        //
-                        // Perform a hard exit to avoid touching the
-                        // registry keys (which are now marked for deletion)
-                        // again.
-                        //
-                        Environment.Exit(0);
-                    }
-                }
-
-                Close();
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Sign out", e);
-            }
-        }
-
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
             this.serviceProvider
@@ -766,26 +709,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 .GetService<IToolWindowHost>()
                 .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>();
             window.Show();
-        }
-
-        private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                await this.serviceProvider.GetService<IProjectExplorer>()
-                    .ShowAddProjectDialogAsync()
-                    .ConfigureAwait(true);
-            }
-            catch (TaskCanceledException)
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Adding project failed", e);
-            }
         }
 
         private void enableloggingToolStripMenuItem_Click(object sender, EventArgs _)

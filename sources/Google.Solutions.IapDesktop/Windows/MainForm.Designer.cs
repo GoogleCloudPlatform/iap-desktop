@@ -53,11 +53,6 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.mainMenu = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fileSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.signoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,7 +88,6 @@ namespace Google.Solutions.IapDesktop.Windows
             // mainMenu
             // 
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.windowToolStripMenuItem,
@@ -103,45 +97,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.mainMenu.Size = new System.Drawing.Size(984, 24);
             this.mainMenu.TabIndex = 3;
             this.mainMenu.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addProjectToolStripMenuItem,
-            this.fileSeparatorToolStripMenuItem,
-            this.signoutToolStripMenuItem,
-            this.exitToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "&File";
-            // 
-            // addProjectToolStripMenuItem
-            // 
-            this.addProjectToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.AddProject_16;
-            this.addProjectToolStripMenuItem.Name = "addProjectToolStripMenuItem";
-            this.addProjectToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.addProjectToolStripMenuItem.Text = "&Add Google Cloud project...";
-            this.addProjectToolStripMenuItem.Click += new System.EventHandler(this.addProjectToolStripMenuItem_Click);
-            // 
-            // fileSeparatorToolStripMenuItem
-            // 
-            this.fileSeparatorToolStripMenuItem.Name = "fileSeparatorToolStripMenuItem";
-            this.fileSeparatorToolStripMenuItem.Size = new System.Drawing.Size(218, 6);
-            // 
-            // signoutToolStripMenuItem
-            // 
-            this.signoutToolStripMenuItem.Name = "signoutToolStripMenuItem";
-            this.signoutToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.signoutToolStripMenuItem.Text = "Sign &out and exit";
-            this.signoutToolStripMenuItem.Click += new System.EventHandler(this.signoutToolStripMenuItem_Click);
-            // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.exitToolStripMenuItem.Text = "E&xit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -334,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(804, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(835, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -414,16 +369,11 @@ namespace Google.Solutions.IapDesktop.Windows
         private ActiveStatusStrip statusStrip;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem projectExplorerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem signoutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openIapDocsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openIapAccessDocsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator aboutSeparatorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator fileSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;
