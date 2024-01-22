@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using System;
 using System.Linq;
@@ -69,125 +70,125 @@ namespace Google.Solutions.Mvvm.Controls
                 .OfType<TaskDialogCommandLinkButton>()
                 .ToList();
 
-            //
-            // Prepare native struct for command buttons.
-            //
-            var commandButtonTexts = commandButtons
-                .Select(b =>
-                {
-                    //
-                    // Text up to the first new line character is treated as the
-                    // command link's main text, the remainder is treated as the
-                    // command link's note. 
-                    //
-                    var text = b.Text.Replace('\n', ' ');
-
-                    if (b.Details != null)
-                    {
-                        text += $"\n{b.Details}";
-                    }
-
-                    return text;
-                })
-                .Select(text => Marshal.StringToHGlobalUni(text))
-                .ToArray();
-            var commandButtonsPtr = Marshal.AllocHGlobal(
-                Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>() * commandButtons.Count);
-
-            for (var i = 0; i < commandButtons.Count; i++)
+            using (var commandButtonsHandle = LocalAllocSafeHandle.LocalAlloc(
+                (uint)(Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>() * commandButtons.Count)))
             {
-                Marshal.StructureToPtr<TASKDIALOG_BUTTON_RAW>(
-                    new TASKDIALOG_BUTTON_RAW()
+                //
+                // Prepare native struct for command buttons.
+                //
+                var commandButtonTexts = commandButtons
+                    .Select(b =>
                     {
                         //
-                        // Add ID offset to avoid conflict with IDOK/IDCANCEL.
+                        // Text up to the first new line character is treated as the
+                        // command link's main text, the remainder is treated as the
+                        // command link's note. 
                         //
-                        nButtonID = CommandLinkIdOffset + i,
-                        pszButtonText = commandButtonTexts[i]
-                    },
-                    commandButtonsPtr + i * Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>(),
-                    false);
-            }
+                        var text = b.Text.Replace('\n', ' ');
 
-            try
-            {
-                var flags =
-                    TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
-                    TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
-                if (commandButtons.Any())
-                {
-                    flags |= TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS;
-                }
-
-                var config = new TASKDIALOGCONFIG()
-                {
-                    cbSize = (uint)Marshal.SizeOf<TASKDIALOGCONFIG>(),
-                    hwndParent = parent?.Handle ?? IntPtr.Zero,
-                    dwFlags = flags,
-                    dwCommonButtons = standardButtons
-                        .Select(b => b.Flag)
-                        .Aggregate((f1, f2) => f1 | f2),
-                    pszWindowTitle = parameters.Caption,
-                    MainIcon = parameters.Icon?.Handle ?? IntPtr.Zero,
-                    pszMainInstruction = parameters.Heading,
-                    pszContent = parameters.Text,
-                    pButtons = commandButtons.Any() ? commandButtonsPtr : IntPtr.Zero,
-                    cButtons = (uint)commandButtons.Count,
-                    pszExpandedInformation = parameters.Footnote,
-                    pszVerificationText = parameters.VerificationCheckBox?.Text,
-                    pfCallback = (hwnd, notification, wParam, lParam, refData) =>
-                    {
-                        if (notification == TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
+                        if (b.Details != null)
                         {
-                            parameters.PerformLinkClick();
+                            text += $"\n{b.Details}";
                         }
 
-                        return HRESULT.S_OK;
+                        return text;
+                    })
+                    .Select(text => Marshal.StringToHGlobalUni(text))
+                    .ToArray();
+
+                for (var i = 0; i < commandButtons.Count; i++)
+                {
+                    Marshal.StructureToPtr(
+                        new TASKDIALOG_BUTTON_RAW()
+                        {
+                            //
+                            // Add ID offset to avoid conflict with IDOK/IDCANCEL.
+                            //
+                            nButtonID = CommandLinkIdOffset + i,
+                            pszButtonText = commandButtonTexts[i]
+                        },
+                        commandButtonsHandle.DangerousGetHandle() + i * Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>(),
+                        false);
+                }
+
+                try
+                {
+                    var flags =
+                        TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
+                        TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
+                    if (commandButtons.Any())
+                    {
+                        flags |= TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS;
                     }
-                };
 
-                var function = this.TaskDialogIndirect ?? NativeMethods.TaskDialogIndirect;
-                function(
-                    ref config,
-                    out var buttonIdPressed,
-                    out var _,
-                    out var verificationFlagPressed);
+                    var config = new TASKDIALOGCONFIG()
+                    {
+                        cbSize = (uint)Marshal.SizeOf<TASKDIALOGCONFIG>(),
+                        hwndParent = parent?.Handle ?? IntPtr.Zero,
+                        dwFlags = flags,
+                        dwCommonButtons = standardButtons
+                            .Select(b => b.Flag)
+                            .Aggregate((f1, f2) => f1 | f2),
+                        pszWindowTitle = parameters.Caption,
+                        MainIcon = parameters.Icon?.Handle ?? IntPtr.Zero,
+                        pszMainInstruction = parameters.Heading,
+                        pszContent = parameters.Text,
+                        pButtons = commandButtons.Any() ? commandButtonsHandle.DangerousGetHandle() : IntPtr.Zero,
+                        cButtons = (uint)commandButtons.Count,
+                        pszExpandedInformation = parameters.Footnote,
+                        pszVerificationText = parameters.VerificationCheckBox?.Text,
+                        pfCallback = (hwnd, notification, wParam, lParam, refData) =>
+                        {
+                            if (notification == TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
+                            {
+                                parameters.PerformLinkClick();
+                            }
 
-                if (parameters.VerificationCheckBox != null)
-                {
-                    parameters.VerificationCheckBox.Checked = verificationFlagPressed;
-                }
+                            return HRESULT.S_OK;
+                        }
+                    };
 
-                //
-                // Map the result back to the right button.
-                //
-                if (buttonIdPressed >= CommandLinkIdOffset &&
-                    buttonIdPressed < CommandLinkIdOffset + commandButtons.Count)
-                {
-                    var pressedCommandButton = commandButtons[buttonIdPressed - CommandLinkIdOffset];
-                    pressedCommandButton.PerformClick();
-                    return pressedCommandButton.Result;
-                }
-                else if (standardButtons.FirstOrDefault(b => b.CommandId == buttonIdPressed)
-                    is var pressedStandardButton &&
-                    pressedStandardButton != null)
-                {
-                    return pressedStandardButton.Result;
-                }
-                else
-                {
-                    throw new InvalidOperationException(
-                        $"The TaskDialog returned an unexpected result: {buttonIdPressed}");
-                }
-            }
-            finally
-            {
-                foreach (var commandButtonText in commandButtonTexts)
-                {
-                    Marshal.FreeHGlobal(commandButtonText);
-                }
+                    var function = this.TaskDialogIndirect ?? NativeMethods.TaskDialogIndirect;
+                    function(
+                        ref config,
+                        out var buttonIdPressed,
+                        out var _,
+                        out var verificationFlagPressed);
 
-                Marshal.FreeHGlobal(commandButtonsPtr);
+                    if (parameters.VerificationCheckBox != null)
+                    {
+                        parameters.VerificationCheckBox.Checked = verificationFlagPressed;
+                    }
+
+                    //
+                    // Map the result back to the right button.
+                    //
+                    if (buttonIdPressed >= CommandLinkIdOffset &&
+                        buttonIdPressed < CommandLinkIdOffset + commandButtons.Count)
+                    {
+                        var pressedCommandButton = commandButtons[buttonIdPressed - CommandLinkIdOffset];
+                        pressedCommandButton.PerformClick();
+                        return pressedCommandButton.Result;
+                    }
+                    else if (standardButtons.FirstOrDefault(b => b.CommandId == buttonIdPressed)
+                        is var pressedStandardButton &&
+                        pressedStandardButton != null)
+                    {
+                        return pressedStandardButton.Result;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(
+                            $"The TaskDialog returned an unexpected result: {buttonIdPressed}");
+                    }
+                }
+                finally
+                {
+                    foreach (var commandButtonText in commandButtonTexts)
+                    {
+                        Marshal.FreeHGlobal(commandButtonText);
+                    }
+                }
             }
         }
 
