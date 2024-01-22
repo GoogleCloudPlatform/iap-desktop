@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Google.Solutions.Ssh
 {
@@ -480,10 +481,30 @@ namespace Google.Solutions.Ssh
                 this.context = context.ExpectNotNull(nameof(context));
             }
 
-            public string? Prompt(string name, string instruction, string prompt, bool echo)
+            public string? Prompt(
+                string name,
+                string instruction,
+                string prompt,
+                bool echo)
             {
                 return this.context.Send(
-                    () => this.handler.Prompt(name, instruction, prompt, echo));
+                    () => this.handler.Prompt(
+                        name, 
+                        instruction, 
+                        prompt, 
+                        echo));
+            }
+
+            public NetworkCredential PromptForCredentials(
+                string caption,
+                string instruction,
+                NetworkCredential existingCredentials)
+            {
+                return this.context.Send(
+                    () => this.handler.PromptForCredentials(
+                        caption,
+                        instruction,
+                        existingCredentials));
             }
         }
     }

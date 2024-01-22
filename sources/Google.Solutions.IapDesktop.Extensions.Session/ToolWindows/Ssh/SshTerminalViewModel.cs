@@ -142,6 +142,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             }
         }
 
+        NetworkCredential IKeyboardInteractiveHandler.PromptForCredentials(
+            string caption,
+            string instruction,
+            NetworkCredential existingCredentials)
+        {
+            throw new NotImplementedException();
+        }
+
         //---------------------------------------------------------------------
         // ITextTerminal.
         //---------------------------------------------------------------------

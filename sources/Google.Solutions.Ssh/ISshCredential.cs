@@ -73,5 +73,16 @@ namespace Google.Solutions.Ssh
             string instruction,
             string prompt,
             bool echo);
+
+        /// <summary>
+        /// Perform for credentials.
+        /// </summary>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown when users cancels the operation.
+        /// </exception>
+        NetworkCredential PromptForCredentials(
+            string caption,
+            string instruction,
+            NetworkCredential existingCredentials);
     }
 }

@@ -22,6 +22,7 @@
 using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
+using System.Net;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -60,6 +61,14 @@ namespace Google.Solutions.Ssh.Test
                 Assert.Fail("Unexpected prompt");
                 throw new InvalidOperationException("Unexpected prompt");
             });
+
+        public NetworkCredential PromptForCredentials(
+            string caption, 
+            string instruction, 
+            NetworkCredential existingCredentials)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
