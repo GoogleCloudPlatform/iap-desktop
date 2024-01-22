@@ -213,6 +213,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     "Failed to pass focus to main instance",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
+#else
+                _ = e;
 #endif
                 // Nevermind.
             }
