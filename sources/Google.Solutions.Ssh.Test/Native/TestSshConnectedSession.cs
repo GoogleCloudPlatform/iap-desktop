@@ -373,7 +373,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     endpoint)
                 .ConfigureAwait(false);
             var incompleteCredentials = new StaticPasswordCredential(
-                string.Empty,
+                credential.Username,
                 string.Empty);
 
             var handler = new KeyboardInteractiveHandler()

@@ -22,8 +22,6 @@
 using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
-using System.Net;
-using System.Xml.Linq;
 
 namespace Google.Solutions.Ssh.Test
 {

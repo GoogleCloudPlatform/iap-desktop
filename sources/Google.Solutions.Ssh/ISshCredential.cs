@@ -80,7 +80,7 @@ namespace Google.Solutions.Ssh
         /// <exception cref="OperationCanceledException">
         /// Thrown when users cancels the operation.
         /// </exception>
-        IPasswordCredential PromptForCredentials(
+        IPasswordCredential PromptForCredentials( // TODO: change to username
             IPasswordCredential existingCredentials);
     }
 }

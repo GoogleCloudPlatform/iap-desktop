@@ -371,10 +371,7 @@ namespace Google.Solutions.Ssh.Native
                 // Temporarily change the timeout since we must give the
                 // user some time to react.
                 //
-                var originalTimeout = this.session.Timeout;
-                this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
-
-                try
+                using (this.session.WithTimeout(this.session.KeyboardInteractivePromptTimeout))
                 {
                     //
                     // Retry to account for wrong user input.
@@ -402,13 +399,6 @@ namespace Google.Solutions.Ssh.Native
                             throw interactiveCallbackException;
                         }
                     }
-                }
-                finally
-                {
-                    //
-                    // Restore timeout.
-                    //
-                    this.session.Timeout = originalTimeout;
                 }
 
                 if (result == LIBSSH2_ERROR.NONE)
@@ -450,27 +440,31 @@ namespace Google.Solutions.Ssh.Native
             {
                 SshEventSource.Log.PasswordAuthenticationInitiated(credential.Username);
 
-                var username = credential.Username;
                 var password = credential.Password.AsClearText();
 
                 if (string.IsNullOrEmpty(password))
                 {
                     //
-                    // Prompt user to edit or amend credentials.
+                    // Prompt user for password.
+                    //
+                    // NB. Changing the username isn't allowed anymore at this
+                    // point as we reviously used it to query allowed authentication
+                    // methods.
                     //
                     // NB. This callback might throw an exception when
                     // canceled by the user.
                     //
-                    var newCredential = keyboardHandler.PromptForCredentials(credential);
 
-                    username = newCredential.Username;
-                    password = newCredential.Password.AsClearText();
+                    password = keyboardHandler
+                        .PromptForCredentials(credential)
+                        .Password
+                        .AsClearText();
                 }
 
                 var result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_password_ex(
                     this.session.Handle,
-                    username,
-                    username.Length,
+                    credential.Username,
+                    credential.Username.Length,
                     password,
                     password.Length,
                     PasswordChangeCallback);
