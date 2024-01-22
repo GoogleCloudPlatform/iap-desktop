@@ -34,7 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
-using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;

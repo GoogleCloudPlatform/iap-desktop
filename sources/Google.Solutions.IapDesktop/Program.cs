@@ -62,7 +62,6 @@ using Google.Solutions.Mvvm.Diagnostics;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform;
-using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Platform.Security;
@@ -79,6 +78,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Platform.Security.Cryptography;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 

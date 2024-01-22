@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Platform.Cryptography;
+using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;

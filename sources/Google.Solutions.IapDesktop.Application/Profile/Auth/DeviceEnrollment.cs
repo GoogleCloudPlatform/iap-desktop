@@ -22,8 +22,8 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Net;
+using Google.Solutions.Platform.Security.Cryptography;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
