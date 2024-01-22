@@ -46,7 +46,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
