@@ -223,6 +223,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.DisconnectReason == 263 ||  // Dismissed server auth warning.
             this.DisconnectReason == 7943;   // Dismissed login prompt.
 
+        public bool IsLogonAborted =>
+            this.DisconnectReason == 7943;
+
         private static string CreateMessage(int disconnectReason, string description)
         {
             var message = new StringBuilder();

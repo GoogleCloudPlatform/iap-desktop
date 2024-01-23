@@ -591,7 +591,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 else if (e.IsUserDisconnectedLocally)
                 {
                     //
-                    // User clicked X in the connection bar or aborted a reconnect
+                    // User clicked X in the connection bar or aborted a reconnect.
+                    //
+                    this.ConnectionClosed?.Invoke(
+                        this,
+                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                }
+                else if (e.IsLogonAborted)
+                {
+                    //
+                    // User canceled the logon prompt.
                     //
                     this.ConnectionClosed?.Invoke(
                         this,
