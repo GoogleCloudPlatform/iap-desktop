@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Theme
                 // Running on an OS version that supports dark mode, so
                 // it should be safe to make this API call.
                 //
-                return NativeMethods.ShouldAppsUseDarkMode();
+                return NativeMethods.ShouldAppsUseDarkMode() != 0;
             }
         }
 
@@ -100,8 +100,14 @@ namespace Google.Solutions.Mvvm.Theme
                 out uint pcrColorization,
                 [MarshalAs(UnmanagedType.Bool)] out bool pfOpaqueBlend);
 
+            /// <summary>
+            /// Check if apps should enable dark mode.
+            /// 
+            /// Note: This returns a 1-byte boolean, not a 4-byte boolean (BOOL)
+            /// as Win32 APIs typically do.
+            /// </summary>
             [DllImport("uxtheme.dll", SetLastError = true, EntryPoint = "#132")]
-            public static extern bool ShouldAppsUseDarkMode();
+            public static extern byte ShouldAppsUseDarkMode();
         }
     }
 }
