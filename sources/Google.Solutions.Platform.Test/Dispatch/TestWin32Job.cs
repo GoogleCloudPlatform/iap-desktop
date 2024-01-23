@@ -20,9 +20,12 @@
 //
 
 using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Test.Dispatch
 {
@@ -139,6 +142,58 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.AreEqual(2, ids.Count());
                 CollectionAssert.Contains(ids, process1.Id);
                 CollectionAssert.Contains(ids, process2.Id);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ProcessIds.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenJobEmpty_ThenWaitReturns()
+        {
+            using (var job = new Win32Job(true))
+            {
+                await job
+                    .WaitAsync(TimeSpan.MaxValue, CancellationToken.None)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        [Test]
+        public void WhenTimeoutElapses_ThenWaitThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(CmdExe, null))
+            using (var job = new Win32Job(true))
+            {
+                job.Add(process);
+
+                ExceptionAssert.ThrowsAggregateException<TimeoutException>(
+                    () => job
+                    .WaitAsync(TimeSpan.FromMilliseconds(1), CancellationToken.None)
+                    .Wait());
+            }
+        }
+
+        [Test]
+        public async Task WhenProcessTerminates_ThenWaitReturns()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(CmdExe, null))
+            using (var job = new Win32Job(true))
+            {
+                job.Add(process);
+
+                var waitTask = job.WaitAsync(TimeSpan.MaxValue, CancellationToken.None);
+                Assert.IsFalse(waitTask.IsCompleted);
+
+                process.Resume();
+                process.Terminate(0);
+
+                await waitTask.ConfigureAwait(false);
             }
         }
     }

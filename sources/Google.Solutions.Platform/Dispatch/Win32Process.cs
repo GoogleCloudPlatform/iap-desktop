@@ -75,9 +75,8 @@ namespace Google.Solutions.Platform.Dispatch
 
         /// <summary>
         /// Wait for process to terminate.
-        /// 
-        /// Returns the exit code.
         /// </summary>
+        /// <returns>the exit code.</returns>
         Task<uint> WaitAsync(
             TimeSpan timeout,
             CancellationToken cancellationToken);
