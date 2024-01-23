@@ -234,14 +234,43 @@ namespace Google.Solutions.Platform.Dispatch
             TimeSpan timeout,
             CancellationToken cancellationToken) // TODO: test
         {
+            if (!this.ProcessIds.Any())
+            {
+                return Task.CompletedTask;
+            }
+
             //
             // NB. Job objects aren't signaled when all processes
             // have exited. We have to listen for a completion port
             // notification instead.
             //
-            if (!this.ProcessIds.Any())
+
+            //
+            // Create and associate a completion port while we're still
+            // on the calling thread. That way, we ensure that by the time
+            // the method returns, we're ready to receive notifications.
+            //
+            var completionPort = NativeMethods.CreateIoCompletionPort(
+                NativeMethods.INVALID_HANDLE_VALUE,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                1);
+
+            var associationInfo = new NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT()
             {
-                return Task.CompletedTask;
+                CompletionKey = this.handle,
+                CompletionPort = completionPort
+            };
+
+            if (!NativeMethods.SetInformationJobObject(
+                this.handle,
+                NativeMethods.JOBOBJECTINFOCLASS.JobObjectAssociateCompletionPortInformation,
+                ref associationInfo,
+                (uint)Marshal.SizeOf<NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT>()))
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    $"Quering job completion status failed");
             }
 
             //
@@ -250,29 +279,8 @@ namespace Google.Solutions.Platform.Dispatch
             //
             return Task.Factory.StartNew(() =>
             {
-                using (var completionPort = NativeMethods.CreateIoCompletionPort(
-                    NativeMethods.INVALID_HANDLE_VALUE,
-                    IntPtr.Zero,
-                    IntPtr.Zero,
-                    1))
+                using (completionPort)
                 {
-                    var associationInfo = new NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT()
-                    {
-                        CompletionKey = this.handle,
-                        CompletionPort = completionPort
-                    };
-
-                    if (!NativeMethods.SetInformationJobObject(
-                        this.handle,
-                        NativeMethods.JOBOBJECTINFOCLASS.JobObjectAssociateCompletionPortInformation,
-                        ref associationInfo,
-                        (uint)Marshal.SizeOf<NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT>()))
-                    {
-                        throw new Win32Exception(
-                            Marshal.GetLastWin32Error(),
-                            $"Quering job completion status failed");
-                    }
-
                     while (NativeMethods.GetQueuedCompletionStatus(
                         completionPort,
                         out var completionCode,
