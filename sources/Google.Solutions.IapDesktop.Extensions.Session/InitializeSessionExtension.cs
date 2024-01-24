@@ -227,14 +227,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
 
             var appCommands = serviceProvider.GetService<AppCommands>();
 
-            var openWithCommands = projectExplorer.ContextMenuCommands.AddCommand(
+            var connectWithClientCommands = projectExplorer.ContextMenuCommands.AddCommand(
                 appCommands.ConnectWithContextCommand,
                 3);
             foreach (var appCommand in appCommands
                 .ConnectWithAppCommands
                 .OrderBy(c => c.Text))
             {
-                openWithCommands.AddCommand(appCommand);
+                connectWithClientCommands.AddCommand(appCommand);
             }
 
 

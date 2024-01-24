@@ -51,8 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             this.transportFactory = transportFactory.ExpectNotNull(nameof(transportFactory));
             this.processFactory = processFactory.ExpectNotNull(nameof(processFactory));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
-
-            protocol.Client.ExpectNotNull(nameof(protocol.Client));
         }
 
         //---------------------------------------------------------------------

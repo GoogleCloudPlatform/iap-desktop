@@ -86,7 +86,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 foreach (var protocol in this.protocolRegistry
                     .Protocols
                     .OfType<AppProtocol>()
-                    .Where(p => p.Client != null)
                     .OrderBy(p => p.Name))
                 {
                     var factory = new AppProtocolContextFactory(
@@ -95,26 +94,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.processFactory,
                         this.settingsService);
 
-                    yield return new OpenWithClientCommand(
-                        this.ownerWindow,
-                        this.jobService,
-                        factory,
-                        this.credentialDialog,
-                        this.notifyDialog,
-                        false);
-
-                    if (protocol.Client.IsNetworkLevelAuthenticationSupported)
+                    if (protocol.Client != null)
                     {
-                        //
-                        // Add anther "as user..." command.
-                        //
-                        yield return new OpenWithClientCommand(
+                        yield return new ConnectAppProtocolWithClientCommand(
                             this.ownerWindow,
                             this.jobService,
                             factory,
                             this.credentialDialog,
                             this.notifyDialog,
-                            true);
+                            false);
+
+                        if (protocol.Client.IsNetworkLevelAuthenticationSupported)
+                        {
+                            //
+                            // Add anther "as user..." command.
+                            //
+                            yield return new ConnectAppProtocolWithClientCommand(
+                                this.ownerWindow,
+                                this.jobService,
+                                factory,
+                                this.credentialDialog,
+                                this.notifyDialog,
+                                true);
+                        }
+                    }
+                    else
+                    {
+                        yield return new ConnectAppProtocolWithoutClientCommand(
+                           this.jobService,
+                           factory,
+                           this.notifyDialog);
                     }
                 }
 

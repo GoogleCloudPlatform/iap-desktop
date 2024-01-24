@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     {
     }
 
-    public interface IMenuCommand<TMenu> : ICommandBase //TODO: Remove?
+    public interface IMenuCommand<TMenu> : ICommandBase
         where TMenu : IMenu
     { }
 
