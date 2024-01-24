@@ -36,7 +36,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             public event EventHandler<IWin32Process>? ProcessCreated;
 
-            protected override void OnProcessCreated(IWin32Process process)
+            private protected override void OnProcessCreated(Win32Process process)
             {
                 this.ProcessCreated?.Invoke(this, process);
                 base.OnProcessCreated(process);
@@ -64,6 +64,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.IsNull(process.Job);
 
                 process.Terminate(1);
             }
@@ -104,6 +105,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.IsNull(process.Job);
 
                 process.Terminate(1);
             }

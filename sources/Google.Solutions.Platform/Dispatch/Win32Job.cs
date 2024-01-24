@@ -56,7 +56,7 @@ namespace Google.Solutions.Platform.Dispatch
         /// <summary>
         /// Wait for all processes to terminate.
         /// </summary>
-        Task WaitAsync(
+        Task WaitForProcessesAsync(
             TimeSpan timeout,
             CancellationToken cancellationToken);
     }
@@ -230,9 +230,9 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        public Task WaitAsync(
+        public Task WaitForProcessesAsync(
             TimeSpan timeout,
-            CancellationToken cancellationToken) // TODO: test
+            CancellationToken cancellationToken)
         {
             if (!this.ProcessIds.Any())
             {

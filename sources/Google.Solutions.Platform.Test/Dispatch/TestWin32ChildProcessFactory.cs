@@ -34,6 +34,22 @@ namespace Google.Solutions.Platform.Test.Dispatch
             = $"{Environment.GetFolderPath(Environment.SpecialFolder.System)}\\cmd.exe";
 
         //---------------------------------------------------------------------
+        // Job.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Job()
+        {
+            using (var factory = new Win32ChildProcessFactory(true))
+            using (var process = factory.CreateProcess(CmdExe, null))
+            {
+                Assert.IsNotNull(process.Job);
+                Assert.IsTrue(process.Job!.Contains(process));
+                Assert.IsTrue(process.Job!.Contains(process.Id));
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Contains.
         //---------------------------------------------------------------------
 

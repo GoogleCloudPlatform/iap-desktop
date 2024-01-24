@@ -155,7 +155,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var job = new Win32Job(true))
             {
                 await job
-                    .WaitAsync(TimeSpan.MaxValue, CancellationToken.None)
+                    .WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None)
                     .ConfigureAwait(false);
             }
         }
@@ -172,7 +172,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 ExceptionAssert.ThrowsAggregateException<TimeoutException>(
                     () => job
-                    .WaitAsync(TimeSpan.FromMilliseconds(1), CancellationToken.None)
+                    .WaitForProcessesAsync(TimeSpan.FromMilliseconds(1), CancellationToken.None)
                     .Wait());
             }
         }
@@ -187,7 +187,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 job.Add(process);
 
-                var waitTask = job.WaitAsync(TimeSpan.MaxValue, CancellationToken.None);
+                var waitTask = job.WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None);
                 Assert.IsFalse(waitTask.IsCompleted);
 
                 process.Resume();

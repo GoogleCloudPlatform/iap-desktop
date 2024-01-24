@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 // Client app launched successfully. Keep the transport
                 // open until the app is closed, but don't await.
                 //
-                _ = process
+                _ = process //TODO: Wait on job (if any)
                     .WaitAsync(TimeSpan.MaxValue, CancellationToken.None)
                     .ContinueWith(_ =>
                     {

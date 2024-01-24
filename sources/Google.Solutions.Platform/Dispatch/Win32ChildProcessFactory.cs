@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -102,12 +103,16 @@ namespace Google.Solutions.Platform.Dispatch
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void OnProcessCreated(IWin32Process process)
+        private protected override void OnProcessCreated(Win32Process process)
         {
+            Debug.Assert(process.Job == null);
+
             var job = new Win32Job(this.TerminateOnClose);
             try
             {
                 job.Add(process);
+                process.Job = job;
+
                 this.children.Add(new ChildProcess
                 {
                     Process = process,
