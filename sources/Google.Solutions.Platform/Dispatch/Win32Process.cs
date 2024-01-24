@@ -59,6 +59,11 @@ namespace Google.Solutions.Platform.Dispatch
         SafeProcessHandle Handle { get; }
 
         /// <summary>
+        /// Get job this process is associated with, if any.
+        /// </summary>
+        IWin32Job? Job { get; }
+
+        /// <summary>
         /// Resume the process.
         /// </summary>
         void Resume();
@@ -75,9 +80,8 @@ namespace Google.Solutions.Platform.Dispatch
 
         /// <summary>
         /// Wait for process to terminate.
-        /// 
-        /// Returns the exit code.
         /// </summary>
+        /// <returns>the exit code.</returns>
         Task<uint> WaitAsync(
             TimeSpan timeout,
             CancellationToken cancellationToken);
@@ -181,6 +185,8 @@ namespace Google.Solutions.Platform.Dispatch
         public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
 
         public uint Id => this.processId;
+
+        public IWin32Job? Job { get; internal set; }
 
         public IWtsSession Session => WtsSession.FromProcessId(this.processId);
 

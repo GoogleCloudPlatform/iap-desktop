@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +29,11 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
-    /// Factory for Win32 processes that uses jobs to track child processes
+    /// Factory for Win32 processes. For each process, the factory
+    /// creates a separate job and associates the job with the process.
+    /// 
+    /// This allows keeping track of the processes themselves, plus all
+    /// the child processes that they spawn.
     /// </summary>
     public class Win32ChildProcessFactory : Win32ProcessFactory, IWin32ProcessSet, IDisposable
     {
@@ -46,10 +51,13 @@ namespace Google.Solutions.Platform.Dispatch
         // using CreateProcessAsUser, and try to add it to the same job,
         // then AssignProcessToJob fails with an access-denied error.
         //
-        // To work around this limitations, we place each process in its
+        // To work around this limitation, we place each process in its
         // own job, and maintain a collection of jobs. This is more complex,
-        // but it ensures that we're compatible with theq quirky
+        // but it ensures that we're compatible with the quirky
         // CreateProcessAsUser behavior and also capture child processes.
+        //
+        // Additionally, this approach lets us track if each "process tree"
+        // separately.
         //
 
         private readonly ConcurrentBag<ChildProcess> children = new ConcurrentBag<ChildProcess>();
@@ -102,12 +110,16 @@ namespace Google.Solutions.Platform.Dispatch
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void OnProcessCreated(IWin32Process process)
+        private protected override void OnProcessCreated(Win32Process process)
         {
+            Debug.Assert(process.Job == null);
+
             var job = new Win32Job(this.TerminateOnClose);
             try
             {
                 job.Add(process);
+                process.Job = job;
+
                 this.children.Add(new ChildProcess
                 {
                     Process = process,

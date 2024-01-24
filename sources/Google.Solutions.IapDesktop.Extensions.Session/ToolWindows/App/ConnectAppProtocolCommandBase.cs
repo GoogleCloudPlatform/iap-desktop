@@ -84,10 +84,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
                 //
                 // Client app launched successfully. Keep the transport
-                // open until the app is closed, but don't await.
+                // open until the app terminates, but don't await.
                 //
-                _ = process
-                    .WaitAsync(TimeSpan.MaxValue, CancellationToken.None)
+                // NB. Some executables launch a child process and terminate
+                // immediately. To deal with such cases, we wait for all
+                // processes in the job to finish.
+                //
+                Task processTerminatedTask = process.Job != null
+                    ? process.Job.WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None)
+                    : process.WaitAsync(TimeSpan.MaxValue, CancellationToken.None);
+
+                _ = processTerminatedTask
                     .ContinueWith(_ =>
                     {
                         transport.Dispose();

@@ -27,6 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 namespace Google.Solutions.Platform.Dispatch
 {
@@ -49,6 +52,13 @@ namespace Google.Solutions.Platform.Dispatch
         /// Return the IDs of processes in this job.
         /// </summary>
         IEnumerable<uint> ProcessIds { get; }
+
+        /// <summary>
+        /// Wait for all processes to terminate.
+        /// </summary>
+        Task WaitForProcessesAsync(
+            TimeSpan timeout,
+            CancellationToken cancellationToken);
     }
 
     public class Win32Job : DisposableBase, IWin32Job
@@ -220,6 +230,100 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
+        public Task WaitForProcessesAsync(
+            TimeSpan timeout,
+            CancellationToken cancellationToken)
+        {
+            if (!this.ProcessIds.Any())
+            {
+                return Task.CompletedTask;
+            }
+
+            //
+            // NB. Job objects aren't signaled when all processes
+            // have exited. We have to listen for a completion port
+            // notification instead.
+            //
+
+            //
+            // Create and associate a completion port while we're still
+            // on the calling thread. That way, we ensure that by the time
+            // the method returns, we're ready to receive notifications.
+            //
+            var completionPort = NativeMethods.CreateIoCompletionPort(
+                NativeMethods.INVALID_HANDLE_VALUE,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                1);
+
+            var associationInfo = new NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT()
+            {
+                CompletionKey = this.handle,
+                CompletionPort = completionPort
+            };
+
+            if (!NativeMethods.SetInformationJobObject(
+                this.handle,
+                NativeMethods.JOBOBJECTINFOCLASS.JobObjectAssociateCompletionPortInformation,
+                ref associationInfo,
+                (uint)Marshal.SizeOf<NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT>()))
+            {
+                completionPort.Dispose();
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    $"Quering job completion status failed");
+            }
+
+            //
+            // There's no great way to await a completion port notification,
+            // so we have to sacrifice a thread for it.
+            //
+            return Task.Factory.StartNew(() =>
+            {
+                using (completionPort)
+                {
+                    while (NativeMethods.GetQueuedCompletionStatus(
+                        completionPort,
+                        out var completionCode,
+                        out var completionKey,
+                        out var overlapped,
+                        (uint)timeout.TotalSeconds))
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            throw new TaskCanceledException();
+                        }
+                        else if (completionCode == NativeMethods.JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO)
+                        {
+                            //
+                            // Active process count has dropped to 0.
+                            //
+                            return;
+                        }
+                        else
+                        {
+                            //
+                            // Keep going.
+                            //
+                        }
+                    }
+
+                    var lastError = Marshal.GetLastWin32Error();
+                    if (lastError == NativeMethods.WAIT_TIMEOUT)
+                    {
+                        throw new TimeoutException();
+                    }
+                    else
+                    {
+                        throw new Win32Exception(
+                            lastError,
+                            $"Quering job completion status failed");
+                    }
+                }
+            },
+            TaskCreationOptions.LongRunning);
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -233,10 +337,14 @@ namespace Google.Solutions.Platform.Dispatch
 
         private static class NativeMethods
         {
+            internal static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+
             internal const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
             internal const uint SYNCHRONIZE = 0x00100000;
 
             internal const int ERROR_NO_TOKEN = 1008;
+            internal const int WAIT_TIMEOUT = 0x102;
+            internal const uint JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO = 4;
 
             [StructLayout(LayoutKind.Sequential)]
             internal struct SECURITY_ATTRIBUTES
@@ -258,6 +366,13 @@ namespace Google.Solutions.Platform.Dispatch
                 ref JOBOBJECT_EXTENDED_LIMIT_INFORMATION lpJobObjectInfo,
                 uint cbJobObjectInfoLength);
 
+            [DllImport("kernel32.dll")]
+            internal static extern bool SetInformationJobObject(
+                SafeJobHandle hJob,
+                JOBOBJECTINFOCLASS infoClass,
+                ref JOBOBJECT_ASSOCIATE_COMPLETION_PORT lpJobObjectInfo,
+                uint cbJobObjectInfoLength);
+
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool AssignProcessToJobObject(
@@ -271,28 +386,44 @@ namespace Google.Solutions.Platform.Dispatch
                 SafeJobHandle job, out bool result);
 
             [DllImport("kernel32.dll", SetLastError = true)]
-            public static extern SafeProcessHandle OpenProcess(
+            internal static extern SafeProcessHandle OpenProcess(
                 uint processAccess,
                 bool bInheritHandle,
                 uint processId);
 
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            public static extern bool QueryInformationJobObject(
+            internal static extern bool QueryInformationJobObject(
                 SafeJobHandle hJob,
                 JOBOBJECTINFOCLASS infoClass,
                 IntPtr lpJobObjectInfo,
                 uint cbJobObjectInfoLength,
                 out uint lpReturnLength);
 
+            [DllImport("kernel32.dll", SetLastError = true)]
+            internal static extern SafeCompletionPortHandle CreateIoCompletionPort(
+                IntPtr fileHandle,
+                IntPtr existingCompletionPort, 
+                IntPtr completionKey, 
+                int numberOfConcurrentThreads);
+
+            [DllImport("Kernel32.dll", SetLastError = true)]
+            internal static extern bool GetQueuedCompletionStatus(
+                SafeCompletionPortHandle completionPort, 
+                out int lpNumberOfBytesTransferred, 
+                out IntPtr lpCompletionKey, 
+                out IntPtr lpOverlapped, 
+                uint dwMilliseconds);
+
             internal enum JOB_OBJECT_LIMIT
             {
                 KILL_ON_JOB_CLOSE = 0x00002000
             }
 
-            public enum JOBOBJECTINFOCLASS
+            internal enum JOBOBJECTINFOCLASS
             {
                 JobObjectBasicProcessIdList = 3,
+                JobObjectAssociateCompletionPortInformation = 7,
                 JobObjectExtendedLimitInformation = 9
             }
 
@@ -339,6 +470,13 @@ namespace Google.Solutions.Platform.Dispatch
                 public uint NumberOfProcessIdsInList;
                 public UIntPtr ProcessIdListStart;
             }
+
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct JOBOBJECT_ASSOCIATE_COMPLETION_PORT
+            {
+                public SafeJobHandle CompletionKey;
+                public SafeCompletionPortHandle CompletionPort;
+            }
         }
 
         private class SafeJobHandle : SafeWin32Handle
@@ -349,6 +487,19 @@ namespace Google.Solutions.Platform.Dispatch
             }
 
             public SafeJobHandle(IntPtr handle, bool ownsHandle)
+                : base(handle, ownsHandle)
+            {
+            }
+        }
+
+        private class SafeCompletionPortHandle : SafeWin32Handle
+        {
+            public SafeCompletionPortHandle()
+                : base(true)
+            {
+            }
+
+            public SafeCompletionPortHandle(IntPtr handle, bool ownsHandle)
                 : base(handle, ownsHandle)
             {
             }

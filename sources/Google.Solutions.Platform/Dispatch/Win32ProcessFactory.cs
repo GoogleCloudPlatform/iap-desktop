@@ -77,10 +77,10 @@ namespace Google.Solutions.Platform.Dispatch
         /// Allow deriving classes to do something with the process
         /// before the factory returns it.
         /// </summary>
-        protected virtual void OnProcessCreated(IWin32Process process)
+        private protected virtual void OnProcessCreated(Win32Process process)
         { }
 
-        private void InvokeOnProcessCreated(IWin32Process process)
+        private void InvokeOnProcessCreated(Win32Process process)
         {
             try
             {
