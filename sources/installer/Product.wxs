@@ -90,6 +90,7 @@
 			<ComponentRef Id="CompProgramFiles" />
       <ComponentRef Id="CompLogs" />
       <ComponentRef Id="CompConfig" />
+      <ComponentRef Id="CompConfigSamples" />
       <ComponentRef Id="CompStartMenu" />
 		</Feature>
 
@@ -396,6 +397,28 @@
 
                 <RemoveFolder Id="DirConfig" On="uninstall"/>
               </Component>
+
+              <Directory Id="DirConfigSamples" Name="Samples">
+                <Component Id="CompConfigSamples" Guid="807750dc-6b47-11ea-bc55-0242ac130003">
+                  <RegistryValue
+                    Id="RegConfigSamples"
+                    Root="HKCU"
+                    Key="Software\Google\IapDesktop\Installer"
+                    Name="ConfigSamples"
+                    Type="integer"
+                    KeyPath="yes"
+                    Value="1" />
+
+                  <File
+                    Id="FileMstscIapc"
+                    Name="mstsc.iapc"
+                    DiskId="1"
+                    Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Sample-mstsc.iapc"
+                    Vital="yes"/>
+
+                  <RemoveFolder Id="DirConfigSamples" On="uninstall"/>
+                </Component>
+              </Directory>
             </Directory>
           </Directory>
         </Directory>
@@ -406,7 +429,6 @@
   <!--
     Spare sequential GUIDs:
     
-    807750dc-6b47-11ea-bc55-0242ac130003
     807751a4-6b47-11ea-bc55-0242ac130003
     8077526c-6b47-11ea-bc55-0242ac130003
     80775334-6b47-11ea-bc55-0242ac130003

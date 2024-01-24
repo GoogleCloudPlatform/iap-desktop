@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "name": "Remote Desktop",
+  "condition": "isWindows()",
+  "remotePort": "3389",
+  "client": {
+    "executable": "%SystemRoot%\\system32\\mstsc.exe",
+    "arguments": "/v:localhost:{port} /prompt"
+  }
+}
