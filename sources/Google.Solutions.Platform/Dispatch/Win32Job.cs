@@ -268,6 +268,7 @@ namespace Google.Solutions.Platform.Dispatch
                 ref associationInfo,
                 (uint)Marshal.SizeOf<NativeMethods.JOBOBJECT_ASSOCIATE_COMPLETION_PORT>()))
             {
+                completionPort.Dispose();
                 throw new Win32Exception(
                     Marshal.GetLastWin32Error(),
                     $"Quering job completion status failed");
