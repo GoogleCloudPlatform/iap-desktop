@@ -29,7 +29,11 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
-    /// Factory for Win32 processes that uses jobs to track child processes
+    /// Factory for Win32 processes. For each process, the factory
+    /// creates a separate job and associates the job with the process.
+    /// 
+    /// This allows keeping track of the processes themselves, plus all
+    /// the child processes that they spawn.
     /// </summary>
     public class Win32ChildProcessFactory : Win32ProcessFactory, IWin32ProcessSet, IDisposable
     {
@@ -49,8 +53,11 @@ namespace Google.Solutions.Platform.Dispatch
         //
         // To work around this limitations, we place each process in its
         // own job, and maintain a collection of jobs. This is more complex,
-        // but it ensures that we're compatible with theq quirky
+        // but it ensures that we're compatible with the quirky
         // CreateProcessAsUser behavior and also capture child processes.
+        //
+        // Additionally, this approach lets us track if each "process tree"
+        // separately.
         //
 
         private readonly ConcurrentBag<ChildProcess> children = new ConcurrentBag<ChildProcess>();
