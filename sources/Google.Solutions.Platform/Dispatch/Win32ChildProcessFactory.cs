@@ -51,7 +51,7 @@ namespace Google.Solutions.Platform.Dispatch
         // using CreateProcessAsUser, and try to add it to the same job,
         // then AssignProcessToJob fails with an access-denied error.
         //
-        // To work around this limitations, we place each process in its
+        // To work around this limitation, we place each process in its
         // own job, and maintain a collection of jobs. This is more complex,
         // but it ensures that we're compatible with the quirky
         // CreateProcessAsUser behavior and also capture child processes.
