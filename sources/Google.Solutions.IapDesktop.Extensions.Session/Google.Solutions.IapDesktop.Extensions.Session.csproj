@@ -214,12 +214,18 @@
     <None Remove="Properties\DefaultAppProtocols\chrome-8080.iapc" />
     <None Remove="Properties\DefaultAppProtocols\mysql-8.0.iapc" />
     <None Remove="Properties\DefaultAppProtocols\mysql-8.1.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\mysql-tunnel.iapc" />
     <None Remove="Properties\DefaultAppProtocols\mysql.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\postgres-tunnel.iapc" />
+    <None Remove="Properties\DefaultAppProtocols\sqlserver-tunnel.iapc" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-80.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\chrome-8080.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-8.0.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-8.1.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-tunnel.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\postgres-tunnel.iapc" />
+    <EmbeddedResource Include="Properties\DefaultAppProtocols\sqlserver-tunnel.iapc" />
   </ItemGroup>
 </Project>

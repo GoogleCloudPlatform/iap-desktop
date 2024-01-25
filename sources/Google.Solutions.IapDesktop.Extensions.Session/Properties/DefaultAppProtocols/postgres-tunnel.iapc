@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "name": "PostgreSQL",
+  "condition": "isInstance()",
+  "remotePort": "5432"
+}
