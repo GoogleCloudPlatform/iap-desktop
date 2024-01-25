@@ -50,13 +50,40 @@ namespace Google.Solutions.Common.Util
             this string? value,
             string argumentName)
         {
-            if (value == null || string.IsNullOrEmpty(value))
+            if (value == null)
             {
                 throw new ArgumentNullException(
-                    $"The argument {argumentName} must not be null or empty");
+                    $"The argument {argumentName} must not be null");
+            }
+            else if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException(
+                    $"The argument {argumentName} must not be empty");
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Verify that the argument is not null and not
+        /// an empty array.
+        /// </summary>
+        public static T[] ExpectNotNullOrZeroSized<T>(
+            this T[]? array, 
+            string argumentName)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(
+                    $"The argument {argumentName} must not be null");
+            }
+            else if (array.Length == 0)
+            {
+                throw new ArgumentException(
+                    $"The argument {argumentName} must not be zero-sized");
+            }
+
+            return array!;
         }
 
         /// <summary>

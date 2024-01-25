@@ -53,7 +53,7 @@ namespace Google.Solutions.Platform
                 buffer.Capacity);
 
             buffer.EnsureCapacity(sizeRequired);
-            NativeMethods.ExpandEnvironmentStrings(
+            _ = NativeMethods.ExpandEnvironmentStrings(
                 source!,
                 buffer,
                 buffer.Capacity);

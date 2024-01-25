@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 e.Y <= NativeMethods.GetSystemMetrics(NativeMethods.SystemMetric.SM_CYCAPTION))
             {
                 NativeMethods.ReleaseCapture();
-                NativeMethods.SendMessage(
+                _ = NativeMethods.SendMessage(
                     this.Handle, 
                     NativeMethods.WM_NCLBUTTONDOWN, 
                     NativeMethods.HT_CAPTION, 0);
