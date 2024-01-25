@@ -70,22 +70,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.inputDialog = inputDialog.ExpectNotNull(nameof(inputDialog));
             this.notifyDialog = notifyDialog.ExpectNotNull(nameof(notifyDialog));
 
-            this.ConnectWithContextCommand = new ConnectWithAppCommand();
+            this.ContextMenuConnectWithClient = new ConnectAppProtocolCommand(
+                "Connect client a&pplication");
+            this.ContextMenuConnectTunnel = new ConnectAppProtocolCommand(
+                "Connect tunnel");
         }
 
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------
 
-        public IContextCommand<IProjectModelNode> ConnectWithContextCommand { get; }
+        public IContextCommand<IProjectModelNode> ContextMenuConnectWithClient { get; }
+        public IContextCommand<IProjectModelNode> ContextMenuConnectTunnel { get; }
 
-        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithAppCommands
+        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithClientCommands
         {
             get
             {
                 foreach (var protocol in this.protocolRegistry
                     .Protocols
                     .OfType<AppProtocol>()
+                    .Where(p => p.Client != null)
                     .OrderBy(p => p.Name))
                 {
                     var factory = new AppProtocolContextFactory(
@@ -94,42 +99,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.processFactory,
                         this.settingsService);
 
-                    if (protocol.Client != null)
+                    yield return new ConnectAppProtocolWithClientCommand(
+                        this.ownerWindow,
+                        this.jobService,
+                        factory,
+                        this.credentialDialog,
+                        this.notifyDialog,
+                        false);
+
+                    if (protocol.Client.IsNetworkLevelAuthenticationSupported)
                     {
+                        //
+                        // Add anther "as user..." command.
+                        //
                         yield return new ConnectAppProtocolWithClientCommand(
                             this.ownerWindow,
                             this.jobService,
                             factory,
                             this.credentialDialog,
                             this.notifyDialog,
-                            false);
-
-                        if (protocol.Client.IsNetworkLevelAuthenticationSupported)
-                        {
-                            //
-                            // Add anther "as user..." command.
-                            //
-                            yield return new ConnectAppProtocolWithClientCommand(
-                                this.ownerWindow,
-                                this.jobService,
-                                factory,
-                                this.credentialDialog,
-                                this.notifyDialog,
-                                true);
-                        }
+                            true);
                     }
-                    else
-                    {
+                }
+            }
+        }
+
+        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectTunnelCommands
+        {
+            get
+            {
+                foreach (var protocol in this.protocolRegistry
+                    .Protocols
+                    .OfType<AppProtocol>()
+                    .Where(p => p.Client == null)
+                    .OrderBy(p => p.Name))
+                {
+                    var factory = new AppProtocolContextFactory(
+                        protocol,
+                        this.transportFactory,
+                        this.processFactory,
+                        this.settingsService);
+                    { 
                         yield return new ConnectAppProtocolWithoutClientCommand(
-                           this.jobService,
-                           factory,
-                           this.notifyDialog);
+                            this.jobService,
+                            factory,
+                            this.notifyDialog);
                     }
                 }
 
                 yield return new ForwardLocalPortCommand(
                     this.ownerWindow,
-                    "Forward &local port...",
+                    "Other &port...",
                     this.transportFactory,
                     this.processFactory,
                     this.jobService,
@@ -142,10 +162,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         // Command classes.
         //---------------------------------------------------------------------
 
-        private class ConnectWithAppCommand : MenuCommandBase<IProjectModelNode>
+        private class ConnectAppProtocolCommand : MenuCommandBase<IProjectModelNode>
         {
-            public ConnectWithAppCommand()
-                : base("Connect client a&pplication")
+            public ConnectAppProtocolCommand(string text)
+                : base(text)
             {
             }
 

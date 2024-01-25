@@ -225,18 +225,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 connectCommands.ContextMenuConnectSshInNewTerminal,
                 2);
 
+            //
+            // App commands.
+            //
             var appCommands = serviceProvider.GetService<AppCommands>();
 
             var connectWithClientCommands = projectExplorer.ContextMenuCommands.AddCommand(
-                appCommands.ConnectWithContextCommand,
+                appCommands.ContextMenuConnectWithClient,
                 3);
             foreach (var appCommand in appCommands
-                .ConnectWithAppCommands
+                .ConnectWithClientCommands
                 .OrderBy(c => c.Text))
             {
                 connectWithClientCommands.AddCommand(appCommand);
             }
 
+            var connectTunnelCommands = projectExplorer.ContextMenuCommands.AddCommand(
+                appCommands.ContextMenuConnectTunnel,
+                4);
+            foreach (var appCommand in appCommands
+                .ConnectTunnelCommands
+                .OrderBy(c => c.Text))
+            {
+                connectTunnelCommands.AddCommand(appCommand);
+            }
 
             projectExplorer.ToolbarCommands.AddCommand(
                 connectCommands.ToolbarActivateOrConnectInstance);
@@ -251,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 credentialCommands.ContextMenuNewCredentials,
-                4);
+                5);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 credentialCommands.ToolbarNewCredentials);
@@ -262,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var connectionSettingsCommands = serviceProvider.GetService<ConnectionSettingsCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
                 connectionSettingsCommands.ContextMenuOpen,
-                5);
+                6);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 connectionSettingsCommands.ToolbarOpen,
