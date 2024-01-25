@@ -70,20 +70,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.inputDialog = inputDialog.ExpectNotNull(nameof(inputDialog));
             this.notifyDialog = notifyDialog.ExpectNotNull(nameof(notifyDialog));
 
-            this.ContextMenuConnectWithClient = new ConnectAppProtocolCommand(
-                "Connect client a&pplication");
-            this.ContextMenuConnectTunnel = new ConnectAppProtocolCommand(
-                "Connect &tunnel");
+            this.ContextMenuConnectWithClient = new CommandGroup(
+                "Connect client a&pplication",
+                this.ConnectWithClientSubCommands
+                    .OrderBy(c => c.Text)
+                    .ToList());
+            this.ContextMenuConnectTunnel = new CommandGroup(
+                "Connect &tunnel",
+                this.ConnectTunnelSubCommands
+                    .OrderBy(c => c.Text)
+                    .ToList());
         }
 
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------
 
-        public IContextCommand<IProjectModelNode> ContextMenuConnectWithClient { get; }
-        public IContextCommand<IProjectModelNode> ContextMenuConnectTunnel { get; }
+        public IContextCommandGroup<IProjectModelNode> ContextMenuConnectWithClient { get; }
+        public IContextCommandGroup<IProjectModelNode> ContextMenuConnectTunnel { get; }
 
-        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithClientCommands
+        private IEnumerable<IContextCommand<IProjectModelNode>> ConnectWithClientSubCommands
         {
             get
             {
@@ -124,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             }
         }
 
-        public IEnumerable<IContextCommand<IProjectModelNode>> ConnectTunnelCommands
+        private IEnumerable<IContextCommand<IProjectModelNode>> ConnectTunnelSubCommands
         {
             get
             {
@@ -162,12 +168,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         // Command classes.
         //---------------------------------------------------------------------
 
-        private class ConnectAppProtocolCommand : MenuCommandBase<IProjectModelNode>
+        private class CommandGroup : 
+            MenuCommandBase<IProjectModelNode>, IContextCommandGroup<IProjectModelNode>
         {
-            public ConnectAppProtocolCommand(string text)
+            public CommandGroup(
+                string text,
+                IReadOnlyCollection<IContextCommand<IProjectModelNode>> subCommands)
                 : base(text)
             {
+                this.SubCommands = subCommands;
             }
+
+            public IReadOnlyCollection<IContextCommand<IProjectModelNode>> SubCommands { get; }
 
             protected override bool IsAvailable(IProjectModelNode context)
             {
