@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     internal static class EphemeralKeySigners
     {
         private static readonly object signersLock = new object();
-        private static readonly IDictionary<SshKeyType, IAsymmetricKeySigner> signers 
+        private static readonly IDictionary<SshKeyType, IAsymmetricKeySigner> signers
             = new Dictionary<SshKeyType, IAsymmetricKeySigner>();
 
         public static IAsymmetricKeySigner Get(SshKeyType keyType)

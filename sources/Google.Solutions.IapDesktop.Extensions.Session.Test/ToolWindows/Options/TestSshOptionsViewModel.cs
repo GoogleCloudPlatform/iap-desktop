@@ -26,9 +26,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options;
 using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Options

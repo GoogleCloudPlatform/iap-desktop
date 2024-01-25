@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using System.Windows.Forms;
 
@@ -34,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.connectButton.Click += (_, __) => this.rdpClient.Connect();
             this.fullScreenButton.Click += (_, __) => this.rdpClient.TryEnterFullScreen(null);
 
-            this.rdpClient.StateChanged += (_, __) 
+            this.rdpClient.StateChanged += (_, __)
                 => this.Text = this.rdpClient.State.ToString();
         }
 

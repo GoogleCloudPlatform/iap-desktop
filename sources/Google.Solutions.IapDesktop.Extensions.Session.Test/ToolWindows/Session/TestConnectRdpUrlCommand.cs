@@ -22,15 +22,12 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
-using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;

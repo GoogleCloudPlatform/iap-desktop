@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             using (var window = new RdpDiagnosticsWindow())
             using (var tunnel = IapTransport.ForRdp(instance, auth))
             {
-                var rdpCredential = await 
+                var rdpCredential = await
                     GenerateRdpCredentialAsync(instance)
                     .ConfigureAwait(true);
 

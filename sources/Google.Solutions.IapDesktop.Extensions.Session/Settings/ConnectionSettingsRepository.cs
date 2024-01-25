@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -27,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
@@ -78,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             if (!(settings.Resource is ProjectLocator project))
             {
                 throw new ArgumentException(nameof(settings));
-            }    
+            }
 
             using (var key = this.projectRepository.OpenRegistryKey(project.ProjectId))
             {

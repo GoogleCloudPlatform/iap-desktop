@@ -20,9 +20,9 @@
 //
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             {
                 try
                 {
-                    return 
+                    return
                         (bool)this.clientExtendedSettings.get_Property("DisableCredentialsDelegation") &&
                         (bool)this.clientExtendedSettings.get_Property("RedirectedAuthentication");
                 }
@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             set
             {
                 ExpectState(ConnectionState.NotConnected);
-                this.clientExtendedSettings.set_Property("DisableCredentialsDelegation", value); 
+                this.clientExtendedSettings.set_Property("DisableCredentialsDelegation", value);
                 this.clientExtendedSettings.set_Property("RedirectedAuthentication", value);
             }
         }
@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Keys LeaveFullScreenHotKey
+        public Keys FullScreenHotKey
         {
             //
             // NB. The Ctrl+Alt modifiers are implied by the HotKeyFullScreen properties.

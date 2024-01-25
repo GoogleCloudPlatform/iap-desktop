@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.AppUsername.StringValue = "user";
-            settings.AppNetworkLevelAuthentication.EnumValue 
+            settings.AppNetworkLevelAuthentication.EnumValue
                 = AppNetworkLevelAuthenticationState.Disabled;
 
             var settingsService = CreateSettingsService(settings);

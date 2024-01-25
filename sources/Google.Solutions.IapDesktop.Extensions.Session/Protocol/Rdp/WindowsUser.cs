@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         //
 
         private static readonly char[] DiallowedLocalUsernameCharacters
-            = new[] { '"', '/', '\\', '[', ']', ':', ';', '|', '=', ',', '+', '*', '?', '<', '>' }; 
+            = new[] { '"', '/', '\\', '[', ']', ':', ';', '|', '=', ',', '+', '*', '?', '<', '>' };
 
         internal static bool IsUserPrincipalName(string username)
         {

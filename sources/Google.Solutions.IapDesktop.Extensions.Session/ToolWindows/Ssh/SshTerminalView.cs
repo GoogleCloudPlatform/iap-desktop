@@ -19,10 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;

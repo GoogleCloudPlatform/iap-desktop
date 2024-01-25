@@ -26,7 +26,6 @@ using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -34,7 +33,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
@@ -52,7 +50,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
-    public class SshTerminalViewModel 
+    public class SshTerminalViewModel
         : TerminalViewModelBase, IKeyboardInteractiveHandler, ITextTerminal
     {
         private RemoteShellChannel sshChannel = null;
@@ -155,10 +153,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             //
 
             var args = new AuthenticationPromptEventArgs(
-                "Enter password for " + username, 
-                "These credentials will be used to connect to " + this.Instance.Name, 
+                "Enter password for " + username,
+                "These credentials will be used to connect to " + this.Instance.Name,
                 true);
-            
+
             this.AuthenticationPrompt?.Invoke(this, args);
 
             return new StaticPasswordCredential(username, args.Response);

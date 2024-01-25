@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
@@ -32,8 +31,6 @@ using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes

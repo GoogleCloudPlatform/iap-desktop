@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void WhenCalledTwice_ThenGetReturnsSameObject(
             [Values(
-                SshKeyType.Rsa3072, 
+                SshKeyType.Rsa3072,
                 SshKeyType.EcdsaNistp256,
                 SshKeyType.EcdsaNistp384,
                 SshKeyType.EcdsaNistp521)] SshKeyType keyType)

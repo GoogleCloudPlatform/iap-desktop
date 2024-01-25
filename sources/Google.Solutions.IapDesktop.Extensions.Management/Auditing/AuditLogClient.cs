@@ -137,7 +137,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
                             processor.SupportedMethods,
                             processor.SupportedSeverities,
                             startTime),
-                        stream => {
+                        stream =>
+                        {
                             using (var reader = new JsonTextReader(new StreamReader(stream)))
                             {
                                 return ListLogEntriesParser.Read(reader, processor.Process);

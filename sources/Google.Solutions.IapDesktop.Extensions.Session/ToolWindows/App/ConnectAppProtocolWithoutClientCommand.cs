@@ -41,10 +41,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         public ConnectAppProtocolWithoutClientCommand(
             IJobService jobService,
             AppProtocolContextFactory contextFactory,
-            INotifyDialog notifyDialog) 
+            INotifyDialog notifyDialog)
             : base(
-                   $"&{contextFactory.Protocol.Name}", 
-                   jobService, 
+                   $"&{contextFactory.Protocol.Name}",
+                   jobService,
                    notifyDialog)
         {
             Debug.Assert(contextFactory.Protocol.Client == null);
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         }
 
         protected internal override async Task<AppProtocolContext> CreateContextAsync(
-            IProjectModelInstanceNode instance, 
+            IProjectModelInstanceNode instance,
             CancellationToken cancellationToken)
         {
             return (AppProtocolContext)await this.contextFactory

@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenPortProvided_ThenCreateContextReturnsContext()
         {
-            string input = "8080";
+            var input = "8080";
             var inputDialog = new Mock<IInputDialog>();
             inputDialog.Setup(d => d.Prompt(
                 It.IsAny<IWin32Window>(),
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public async Task WhenPortProvided_ThenExecuteShowsBalloon()
         {
-            string input = "8080";
+            var input = "8080";
             var inputDialog = new Mock<IInputDialog>();
             inputDialog.Setup(d => d.Prompt(
                 It.IsAny<IWin32Window>(),
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             notifyDialog.Verify(
-                d => d.ShowBalloon(It.IsAny<string>(), It.IsAny<string>()), 
+                d => d.ShowBalloon(It.IsAny<string>(), It.IsAny<string>()),
                 Times.Once);
         }
     }

@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             public NewCredentialsCommand(
                 IWin32Window window,
                 IConnectionSettingsService settingsService,
-                ICreateCredentialsWorkflow workflow) 
+                ICreateCredentialsWorkflow workflow)
                 : base("New logon &credentials...")
             {
                 this.window = window;

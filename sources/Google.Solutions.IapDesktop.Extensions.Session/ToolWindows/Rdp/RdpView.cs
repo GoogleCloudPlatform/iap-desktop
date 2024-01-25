@@ -42,21 +42,31 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
     [Service]
-    public partial class RdpView 
+    public partial class RdpView
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
+        /// <summary>
+        /// Hotkey to move focus to current document, or release focus
+        /// back to main window.
+        /// </summary>
+        public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
+
+        /// <summary>
+        /// Hotkey to toggle full-screen.
+        /// </summary>
+        public const Keys ToggleFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
+
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventQueue eventService;
         private readonly IControlTheme theme;
         private readonly IRepository<IApplicationSettings> settingsRepository;
 
         private RdpViewModel viewModel;
-        
+
         // For testing only.
         internal event EventHandler AuthenticationWarningDisplayed;
 
@@ -117,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     .ConfigureAwait(true);
 
                 this.exceptionDialog.Show(this, caption, e);
-                
+
                 Close();
             }
         }
@@ -216,9 +226,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     (this.viewModel.Parameters.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure);
                 this.rdpClient.EnableNetworkLevelAuthentication =
                     (this.viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
-                this.rdpClient.EnableRestrictedAdminMode = 
+                this.rdpClient.EnableRestrictedAdminMode =
                     (this.viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled);
-                
+
                 //
                 // Connection bar settings.
                 //
@@ -234,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 this.rdpClient.EnableClipboardRedirection =
                     this.viewModel.Parameters.RedirectClipboard == RdpRedirectClipboard.Enabled;
-                this.rdpClient.EnablePrinterRedirection  =
+                this.rdpClient.EnablePrinterRedirection =
                     this.viewModel.Parameters.RedirectPrinter == RdpRedirectPrinter.Enabled;
                 this.rdpClient.EnableSmartCardRedirection =
                     this.viewModel.Parameters.RedirectSmartCard == RdpRedirectSmartCard.Enabled;
@@ -287,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 // control.
                 //
                 this.rdpClient.FocusHotKey = ToggleFocusHotKey;
-                this.rdpClient.LeaveFullScreenHotKey = LeaveFullScreenHotKey;
+                this.rdpClient.FullScreenHotKey = ToggleFullScreenHotKey;
 
                 this.rdpClient.EnableWebAuthnRedirection =
                     (this.viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
@@ -308,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         public bool IsConnected
         {
-            get => 
+            get =>
                 this.rdpClient.State == RdpClient.ConnectionState.Connected ||
                 this.rdpClient.State == RdpClient.ConnectionState.LoggedOn;
         }

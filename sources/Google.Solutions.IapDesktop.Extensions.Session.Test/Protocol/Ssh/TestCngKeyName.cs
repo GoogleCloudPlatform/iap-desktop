@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh

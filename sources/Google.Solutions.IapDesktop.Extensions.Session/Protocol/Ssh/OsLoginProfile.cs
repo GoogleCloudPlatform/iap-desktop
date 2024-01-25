@@ -21,7 +21,6 @@
 
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Diagnostics;
@@ -29,9 +28,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;

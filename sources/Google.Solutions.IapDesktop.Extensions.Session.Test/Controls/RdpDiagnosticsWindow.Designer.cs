@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.rdpClient.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rdpClient.FocusHotKey = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.Left)));
-            this.rdpClient.LeaveFullScreenHotKey = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            this.rdpClient.FullScreenHotKey = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.Cancel)));
             this.rdpClient.Location = new System.Drawing.Point(0, 0);
             this.rdpClient.Name = "rdpClient";

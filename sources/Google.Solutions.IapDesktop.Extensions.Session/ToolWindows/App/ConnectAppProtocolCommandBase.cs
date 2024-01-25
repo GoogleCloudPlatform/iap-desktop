@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 // immediately. To deal with such cases, we wait for all
                 // processes in the job to finish.
                 //
-                Task processTerminatedTask = process.Job != null
+                var processTerminatedTask = process.Job != null
                     ? process.Job.WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None)
                     : process.WaitAsync(TimeSpan.MaxValue, CancellationToken.None);
 

@@ -20,23 +20,23 @@
 //
 
 using AxMSTSCLib;
-using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
-using System;
-using System.Diagnostics;
-using System.Windows.Forms;
-using MSTSCLib;
-using System.ComponentModel;
-using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
-using System.Runtime.InteropServices;
-using System.IO;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
+using Google.Solutions.Mvvm.Controls;
+using MSTSCLib;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls 
+namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     /// <summary>
     /// Wrapper control for the native RDP client. Implements
@@ -71,27 +71,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.deferResize = new DeferredCallback(PerformDeferredResize, TimeSpan.FromMilliseconds(200));
 
             ((System.ComponentModel.ISupportInitialize)(this.client)).BeginInit();
-            this.SuspendLayout();
+            SuspendLayout();
 
             //
             // Hook up events.
             //
-            this.client.OnConnecting += new System.EventHandler(this.OnConnecting);
-            this.client.OnConnected += new System.EventHandler(this.OnConnected);
-            this.client.OnLoginComplete += new System.EventHandler(this.OnLoginComplete);
-            this.client.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(this.OnDisconnected);
-            this.client.OnRequestGoFullScreen += new System.EventHandler(this.OnRequestGoFullScreen);
-            this.client.OnRequestLeaveFullScreen += new System.EventHandler(this.OnRequestLeaveFullScreen);
-            this.client.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(this.OnFatalError);
-            this.client.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(this.OnWarning);
-            this.client.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(this.OnRemoteDesktopSizeChange);
-            this.client.OnRequestContainerMinimize += new System.EventHandler(this.OnRequestContainerMinimize);
-            this.client.OnAuthenticationWarningDisplayed += new System.EventHandler(this.OnAuthenticationWarningDisplayed);
-            this.client.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(this.OnLogonError);
-            this.client.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(this.OnFocusReleased);
-            this.client.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(this.OnServiceMessageReceived);
-            this.client.OnAutoReconnected += new System.EventHandler(this.OnAutoReconnected);
-            this.client.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(this.OnAutoReconnecting2);
+            this.client.OnConnecting += new System.EventHandler(OnConnecting);
+            this.client.OnConnected += new System.EventHandler(OnConnected);
+            this.client.OnLoginComplete += new System.EventHandler(OnLoginComplete);
+            this.client.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnDisconnected);
+            this.client.OnRequestGoFullScreen += new System.EventHandler(OnRequestGoFullScreen);
+            this.client.OnRequestLeaveFullScreen += new System.EventHandler(OnRequestLeaveFullScreen);
+            this.client.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnFatalError);
+            this.client.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnWarning);
+            this.client.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRemoteDesktopSizeChange);
+            this.client.OnRequestContainerMinimize += new System.EventHandler(OnRequestContainerMinimize);
+            this.client.OnAuthenticationWarningDisplayed += new System.EventHandler(OnAuthenticationWarningDisplayed);
+            this.client.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnLogonError);
+            this.client.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnFocusReleased);
+            this.client.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnServiceMessageReceived);
+            this.client.OnAutoReconnected += new System.EventHandler(OnAutoReconnected);
+            this.client.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnAutoReconnecting2);
 
             this.Controls.Add(this.client);
             ((System.ComponentModel.ISupportInitialize)(this.client)).EndInit();
@@ -398,7 +398,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                 }
                 else if (
-                    fullScreenForm != null && 
+                    fullScreenForm != null &&
                     fullScreenForm.WindowState == FormWindowState.Minimized)
                 {
                     //
@@ -955,7 +955,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                     // Use current screen bounds if none specified.
                     //
-                    fullScreenForm.Bounds = 
+                    fullScreenForm.Bounds =
                         this.fullScreenContext.Bounds ?? Screen.FromControl(this).Bounds;
 
                     MoveControls(this, fullScreenForm);
@@ -1010,7 +1010,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         public bool IsFullScreen
         {
-            get 
+            get
             {
                 try
                 {

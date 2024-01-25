@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     "username");
 
                 Assert.AreEqual(
-                    "username (using ssh-rsa, authorized using InstanceMetadata)", 
+                    "username (using ssh-rsa, authorized using InstanceMetadata)",
                     credential.ToString());
             }
         }

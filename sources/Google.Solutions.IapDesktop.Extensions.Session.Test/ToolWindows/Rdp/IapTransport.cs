@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Runtime;
@@ -43,9 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
 
-        
+
         private IapTransport(
-            IapTunnel tunnel, 
+            IapTunnel tunnel,
             IProtocol protocol,
             InstanceLocator target)
         {

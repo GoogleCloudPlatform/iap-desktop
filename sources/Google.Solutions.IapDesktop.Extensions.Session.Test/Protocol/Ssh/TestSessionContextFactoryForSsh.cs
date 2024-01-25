@@ -20,11 +20,8 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -37,14 +34,12 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
@@ -223,10 +218,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
                 Assert.IsInstanceOf<StaticPasswordCredential>(credential);
                 Assert.AreEqual(
-                    string.IsNullOrEmpty(username) ? "bob" : username, 
+                    string.IsNullOrEmpty(username) ? "bob" : username,
                     credential.Username);
                 Assert.AreEqual(
-                    string.Empty, 
+                    string.Empty,
                     ((StaticPasswordCredential)credential).Password.AsClearText());
             }
         }

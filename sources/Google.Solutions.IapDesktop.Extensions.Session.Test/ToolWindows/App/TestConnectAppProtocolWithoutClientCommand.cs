@@ -20,9 +20,8 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
@@ -32,15 +31,14 @@ using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
-using System.Linq;
-using System.Threading.Tasks;
-using Google.Solutions.Testing.Application.Mocks;
-using static Google.Solutions.IapDesktop.Core.ClientModel.Transport.IapTransportFactory;
-using System.Threading;
 using System;
+using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 {

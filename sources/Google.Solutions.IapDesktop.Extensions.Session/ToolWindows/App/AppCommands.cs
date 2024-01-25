@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.transportFactory,
                         this.processFactory,
                         this.settingsService);
-                    { 
+                    {
                         yield return new ConnectAppProtocolWithoutClientCommand(
                             this.jobService,
                             factory,
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         // Command classes.
         //---------------------------------------------------------------------
 
-        private class CommandGroup : 
+        private class CommandGroup :
             MenuCommandBase<IProjectModelNode>, IContextCommandGroup<IProjectModelNode>
         {
             public CommandGroup(

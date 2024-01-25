@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void WhenProfileContainsNoAccount_ThenLookupUsernameThrowsException()
         {
             Assert.Throws<InvalidOsLoginProfileException>(
-                () =>  OsLoginProfile.LookupUsername(new LoginProfile()));
+                () => OsLoginProfile.LookupUsername(new LoginProfile()));
         }
 
         //---------------------------------------------------------------------
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
                 .ConfigureAwait(false))
-            { 
+            {
                 client.Verify(c => c.ImportSshPublicKeyAsync(
                     new ProjectLocator(SampleZone.ProjectId),
                     signer.PublicKey.ToString(PublicKey.Format.OpenSsh),
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
                 .ConfigureAwait(false))
-            { 
+            {
                 client.Verify(c => c.SignPublicKeyAsync(
                     SampleZone,
                     signer.PublicKey.ToString(PublicKey.Format.OpenSsh),

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
@@ -94,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             else if (!string.IsNullOrWhiteSpace(parameters.PreferredUsername))
             {
                 if (parameters.PreferredUsername.Contains("\"") ||
-                    parameters.PreferredUsername.Contains("'")) 
+                    parameters.PreferredUsername.Contains("'"))
                 {
                     throw new ArgumentException("The username contains invalid characters");
                 }
