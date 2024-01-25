@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
         public override string Id
         {
-            get => $"{GetType().Name}.{this.contextFactory.Protocol.Name}";
+            get => GetId(this.contextFactory.Protocol);
         }
 
         protected override bool IsEnabled(IProjectModelNode context)

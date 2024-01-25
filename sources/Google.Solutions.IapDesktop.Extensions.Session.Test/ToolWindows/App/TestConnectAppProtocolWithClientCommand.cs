@@ -81,6 +81,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 settingsService.Object);
         }
 
+
+        //---------------------------------------------------------------------
+        // Id.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Id()
+        {
+            var command = new ConnectAppProtocolWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(new Mock<IAppProtocolClient>().Object, null),
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
+
+            Assert.AreEqual(
+                $"{command.GetType().Name}.app-1",
+                command.Id);
+        }
+
         //---------------------------------------------------------------------
         // IsAvailable.
         //---------------------------------------------------------------------
