@@ -88,10 +88,11 @@ nav:
     - 'Get started':
       - 'Install IAP Desktop': 'install.md'
       - 'Set up IAP in your project': 'setup-iap.md'
-      - 'Connect to a Windows VM': 'connect-windows.md'
-      - 'Connect to a Linux VM': 'connect-linux.md'
-      - 'Connect to SQL Server': 'connect-sqlserver.md'
-      - 'Connect to VMs from within a web browser': 'connect-by-url.md'
+    - 'Administer VMs':
+      - 'Use Remote Desktop': 'connect-windows.md'
+      - 'Use SSH': 'connect-linux.md'
+    - 'Access server applications':
+      - 'Access SQL Server': 'connect-sqlserver.md'
     - 'Use IAP Desktop':
       - 'Tool windows':
         - 'Connection settings': 'toolwindow-connection-settings.md'
@@ -104,9 +105,11 @@ nav:
       - 'Control access to VMs': control-access-to-vms.md
 #     - 'Set up context-aware access': _.md
 #     - 'Set up certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
-    - 'Deploy IAP Desktop across endpoints':
-      - 'Use group policies': 'group-policies.md'
-    
+    - 'Manage IAP Desktop across workstations':
+      - 'Deploy automatically': 'group-policies-deployment.md'
+      - 'Customize IAP Desktop': 'group-policies.md'
+    - 'Integrate IAP Desktop':
+      - 'Launch from a web browser': 'connect-by-url.md'
   - 'Reference':
     - User interface:
         - 'Keyboard shortcuts': 'keyboard-shortcuts.md'
