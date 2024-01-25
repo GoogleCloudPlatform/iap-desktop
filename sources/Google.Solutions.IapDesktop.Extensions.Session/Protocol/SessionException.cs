@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         public SessionException(
             string message,
             IHelpTopic helpTopic,
-            Exception innerException) 
+            Exception innerException)
             : base(message, innerException)
         {
             this.Help = helpTopic;

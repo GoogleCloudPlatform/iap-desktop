@@ -19,16 +19,11 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2.Data;
-using Google.Apis.Util;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Apis.Logging;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -36,9 +31,7 @@ using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             IKeyboardInteractiveHandler handler)
         {
             var ipAddress = await GetPublicAddressFromLocatorAsync(instance)
-                .ConfigureAwait (false);
+                .ConfigureAwait(false);
 
             using (var connection = new RemoteConnection(
                 new IPEndPoint(ipAddress, 22),
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             {
                 await connection.ConnectAsync()
                     .ConfigureAwait(false);
-             
+
                 using (var fs = await connection
                     .OpenFileSystemAsync()
                     .ConfigureAwait(false))
@@ -218,8 +218,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instance,
             [Credential(
-                Type = PrincipalType.WorkforceIdentity, 
-                Role = PredefinedRole.ComputeInstanceAdminV1)] 
+                Type = PrincipalType.WorkforceIdentity,
+                Role = PredefinedRole.ComputeInstanceAdminV1)]
                 ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     KeyAuthorizationMethods.All & ~KeyAuthorizationMethods.ProjectMetadata,
                     CancellationToken.None)
                 .ConfigureAwait(false))
-            { 
+            {
                 Assert.AreEqual("preferred", credential.Username);
                 Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, credential.AuthorizationMethod);
 
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Roles = new [] {
                     PredefinedRole.ComputeViewer,
                     PredefinedRole.OsLogin,
-                    PredefinedRole.ServiceUsageConsumer})] 
+                    PredefinedRole.ServiceUsageConsumer})]
                 ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     KeyAuthorizationMethods.All,
                     CancellationToken.None)
                 .ConfigureAwait(false))
-            { 
+            {
                 Assert.AreEqual(
                     (await authorization).Session.Username,
                     credential.Username);

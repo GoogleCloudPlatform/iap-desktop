@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
@@ -96,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             //
             // Try to activate existing session, if any.
             //
-            if (!this.ForceNewConnection && 
+            if (!this.ForceNewConnection &&
                 this.sessionBroker.TryActivateSession(instanceNode.Instance, out session))
             {
                 //

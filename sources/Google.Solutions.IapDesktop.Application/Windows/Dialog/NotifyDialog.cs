@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             // elapses, the baloon shows an ugly header. 
             //
             baloon.BalloonTipClosed += (_, __) => baloon.Dispose();
-            baloon.ShowBalloonTip(3000);
+            baloon.ShowBalloonTip(10 * 1000);
         }
     }
 }

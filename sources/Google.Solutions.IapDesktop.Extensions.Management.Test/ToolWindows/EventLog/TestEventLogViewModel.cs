@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;

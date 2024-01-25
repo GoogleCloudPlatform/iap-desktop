@@ -19,14 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -39,16 +36,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// back to main window.
         /// </summary>
         public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
-
-        /// <summary>
-        /// Hotkey to enter full-screen.
-        /// </summary>
-        public const Keys EnterFullScreenHotKey = Keys.F11;
-
-        /// <summary>
-        /// Hotkey to leave full-screen.
-        /// </summary>
-        public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
 
         protected IMainWindow MainWindow { get; }
 

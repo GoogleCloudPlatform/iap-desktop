@@ -20,7 +20,6 @@
 //
 
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 {

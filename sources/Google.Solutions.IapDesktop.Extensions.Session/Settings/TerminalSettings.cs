@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(typeof(ITerminalSettingsRepository), ServiceLifetime.Singleton)]
-    public class TerminalSettingsRepository 
+    public class TerminalSettingsRepository
         : RegistryRepositoryBase<ITerminalSettings>, ITerminalSettingsRepository
     {
         //

@@ -33,7 +33,6 @@ using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

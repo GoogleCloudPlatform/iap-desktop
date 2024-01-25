@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             INotifyDialog notifyDialog,
             bool forceCredentialPrompt = false)
             : base(
-                  $"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}", 
+                  $"&{CreateName(contextFactory.Protocol, forceCredentialPrompt)}",
                   jobService,
                   notifyDialog)
         {

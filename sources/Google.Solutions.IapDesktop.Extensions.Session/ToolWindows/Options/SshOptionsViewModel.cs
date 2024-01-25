@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             settings.UsePersistentKey.BoolValue = this.UsePersistentKey.Value;
             settings.PublicKeyValidity.IntValue =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;
-            
+
             settings.IsPropagateLocaleEnabled.BoolValue = this.IsPropagateLocaleEnabled.Value;
         }
 

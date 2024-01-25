@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             public const string Scheduling = "Scheduling";
             public const string Os = "Operating system";
             public const string GuestAgentConfiguration = "Guest agent configuration";
-            public const string InstanceConfiguration= "Instance configuration";
+            public const string InstanceConfiguration = "Instance configuration";
             public const string SshConfiguration = "SSH configuration";
         }
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                 ? string.Join(", ", serviceAccount.Scopes)
                 : null;
             this.VtpmEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableVtpm == true
-                ? FeatureFlag.Enabled 
+                ? FeatureFlag.Enabled
                 : FeatureFlag.Disabled;
             this.SecureBootEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableSecureBoot == true
                 ? FeatureFlag.Enabled
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Category(Categories.Instance)]
         [DisplayName("ID")]
         [Description("The unique ID of the VM instance")]
-        public ulong InstanceId { get; } 
+        public ulong InstanceId { get; }
 
         [Browsable(true)]
         [Category(Categories.Instance)]
@@ -281,31 +281,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         //---------------------------------------------------------------------
 
         [Browsable(false)]
-        public bool IsOsInventoryInformationPopulated { get; } 
+        public bool IsOsInventoryInformationPopulated { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Architecture")]
         [Description("The VM's CPU architecture")]
-        public string Architecture { get; } 
+        public string Architecture { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Kernel")]
         [Description("The guest operating system's kernel version")]
-        public string KernelVersion { get; } 
+        public string KernelVersion { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Name")]
         [Description("The name of the guest operating system")]
-        public string OperatingSystemFullName { get; } 
+        public string OperatingSystemFullName { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Version")]
         [Description("The version of the guest operating system")]
-        public string OperatingSystemVersion { get; } 
+        public string OperatingSystemVersion { get; }
 
         //---------------------------------------------------------------------
         // Guest agent configuration.
@@ -350,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Description("Indicates whether the instance requires a security key for SSH, " +
                      "see https://cloud.google.com/compute/docs/oslogin/security-keys.")]
         [DisplayName("OS Login Security Key")]
-        public FeatureFlag OsLoginWithSecurityKey { get; } 
+        public FeatureFlag OsLoginWithSecurityKey { get; }
 
         [Browsable(true)]
         [Category(Categories.SshConfiguration)]

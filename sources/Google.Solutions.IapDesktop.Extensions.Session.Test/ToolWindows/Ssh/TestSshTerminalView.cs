@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
@@ -122,11 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var keyAdapter = new PlatformCredentialFactory(
                 authorization,
                 new ComputeEngineClient(
-                    ComputeEngineClient.CreateEndpoint(), 
+                    ComputeEngineClient.CreateEndpoint(),
                     authorization,
                     TestProject.UserAgent),
                 new ResourceManagerClient(
-                    ResourceManagerClient.CreateEndpoint(), 
+                    ResourceManagerClient.CreateEndpoint(),
                     authorization,
                     TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);

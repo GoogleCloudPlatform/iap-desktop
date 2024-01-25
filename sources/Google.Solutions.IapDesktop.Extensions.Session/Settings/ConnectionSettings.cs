@@ -34,7 +34,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.IO.Pipes;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -467,7 +466,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpTransport,
             this.RdpConnectionTimeout,
             this.RdpPort,
-            
+
             this.RdpUsername,
             this.RdpPassword,
             this.RdpDomain,

@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         //---------------------------------------------------------------------
 
         public void WhenNameIsValid_ThenIsUserPrincipalNameReturnsTrue(
-            [Values("user@domain.com", "a@b.c")]string upn)
+            [Values("user@domain.com", "a@b.c")] string upn)
         {
             Assert.IsTrue(WindowsUser.IsUserPrincipalName(upn));
         }

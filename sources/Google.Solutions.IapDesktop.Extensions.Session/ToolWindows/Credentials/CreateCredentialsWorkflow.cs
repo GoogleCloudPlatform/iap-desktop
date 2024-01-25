@@ -25,7 +25,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;

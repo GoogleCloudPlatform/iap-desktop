@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
@@ -117,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     authorization,
                     TestProject.UserAgent),
                 new ResourceManagerClient(
-                    ResourceManagerClient.CreateEndpoint(), 
+                    ResourceManagerClient.CreateEndpoint(),
                     authorization,
                     TestProject.UserAgent),
                 new Mock<IOsLoginProfile>().Object);
@@ -138,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             SshKeyType keyType,
             CultureInfo language = null)
         {
-            var authorizedKey = await 
+            var authorizedKey = await
                 CreateAuthorizedKeyAsync(
                     instance,
                     authorization,

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
@@ -126,8 +125,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             var model = new InstancePropertiesInspectorModel(
                 SampleLocator,
-                project, 
-                instance, 
+                project,
+                instance,
                 null);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsInventory);
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
@@ -224,9 +223,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             };
 
             var model = new InstancePropertiesInspectorModel(
-                SampleLocator, 
-                project, 
-                instance, 
+                SampleLocator,
+                project,
+                instance,
                 null);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin2FA);
@@ -264,9 +263,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             };
 
             var model = new InstancePropertiesInspectorModel(
-                SampleLocator, 
-                project, 
-                instance, 
+                SampleLocator,
+                project,
+                instance,
                 null);
             Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
             Assert.AreEqual(FeatureFlag.Enabled, model.OsLoginWithSecurityKey);

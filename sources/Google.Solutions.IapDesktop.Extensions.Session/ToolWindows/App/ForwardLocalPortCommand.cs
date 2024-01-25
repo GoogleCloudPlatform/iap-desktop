@@ -40,15 +40,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         private readonly IInputDialog inputDialog;
         private readonly IIapTransportFactory transportFactory;
         private readonly IWin32ProcessFactory processFactory;
-        
+
         public ForwardLocalPortCommand(
             IWin32Window ownerWindow,
             string text,
             IIapTransportFactory transportFactory,
-            IWin32ProcessFactory processFactory, 
+            IWin32ProcessFactory processFactory,
             IJobService jobService,
             IInputDialog inputDialog,
-            INotifyDialog notifyDialog) 
+            INotifyDialog notifyDialog)
             : base(text, jobService, notifyDialog)
         {
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         }
 
         protected internal override Task<AppProtocolContext> CreateContextAsync(
-            IProjectModelInstanceNode instance, 
+            IProjectModelInstanceNode instance,
             CancellationToken cancellationToken)
         {
             //

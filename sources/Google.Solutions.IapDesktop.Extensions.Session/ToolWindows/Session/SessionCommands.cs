@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class DownloadFilesCommand : SessionCommandBase
         {
-            public DownloadFilesCommand() 
+            public DownloadFilesCommand()
                 : base("Do&wnload files...")
             {
                 this.Image = Resources.DownloadFile_16;
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class UploadFilesCommand : SessionCommandBase
         {
-            public UploadFilesCommand() 
+            public UploadFilesCommand()
                 : base("U&pload files...")
             {
                 this.Image = Resources.UploadFile_16;
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             private readonly ISessionBroker broker;
 
-            public CloseAllCommand(ISessionBroker broker) 
+            public CloseAllCommand(ISessionBroker broker)
                 : base("Close &all")
             {
                 this.broker = broker.ExpectNotNull(nameof(broker));
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             private readonly ISessionBroker broker;
 
-            public CloseAllButThisCommand(ISessionBroker broker) 
+            public CloseAllButThisCommand(ISessionBroker broker)
                 : base("Close &others")
             {
                 this.broker = broker.ExpectNotNull(nameof(broker));
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class ShowSecurityScreenCommand : SessionCommandBase
         {
-            public ShowSecurityScreenCommand() 
+            public ShowSecurityScreenCommand()
                 : base("Show &security screen (send Ctrl+Alt+Esc)")
             {
             }
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class ShowTaskManagerCommand : SessionCommandBase
         {
-            public ShowTaskManagerCommand() 
+            public ShowTaskManagerCommand()
                 : base("Open &task manager (send Ctrl+Shift+Esc)")
             {
             }
