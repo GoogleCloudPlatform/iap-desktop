@@ -50,12 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         : SessionViewBase, IRdpSession, IView<RdpViewModel>
     {
         /// <summary>
-        /// Hotkey to move focus to current document, or release focus
-        /// back to main window.
-        /// </summary>
-        public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
-
-        /// <summary>
         /// Hotkey to toggle full-screen.
         /// </summary>
         public const Keys ToggleFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;

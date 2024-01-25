@@ -31,6 +31,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 {
     public class DocumentWindow : ToolWindowViewBase
     {
+        /// <summary>
+        /// Hotkey to move focus to current document, or release focus
+        /// back to main window.
+        /// </summary>
+        public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
+
         protected IMainWindow MainWindow { get; }
 
         /// <summary>
