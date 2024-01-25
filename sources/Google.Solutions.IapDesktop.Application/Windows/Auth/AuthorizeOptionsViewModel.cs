@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             // Load current settings from repository.
             //
-            WorkforcePoolProviderLocator.TryParse(
+            _ = WorkforcePoolProviderLocator.TryParse(
                 repository.GetSettings().WorkforcePoolProvider.StringValue,
                 out var workforcePoolProvider);
 
