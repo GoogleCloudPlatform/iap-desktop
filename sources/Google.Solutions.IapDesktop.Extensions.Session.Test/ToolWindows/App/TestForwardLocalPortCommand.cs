@@ -47,6 +47,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         //---------------------------------------------------------------------
+        // Id.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Id()
+        {
+            var command = new ForwardLocalPortCommand(
+                new Mock<IWin32Window>().Object,
+                "&test",
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IWin32ProcessFactory>().Object,
+                new Mock<IJobService>().Object,
+                 new Mock<IInputDialog>().Object,
+                new Mock<INotifyDialog>().Object);
+
+            Assert.AreEqual(command.GetType().Name, command.Id);
+        }
+
+        //---------------------------------------------------------------------
         // CreateContext.
         //---------------------------------------------------------------------
 

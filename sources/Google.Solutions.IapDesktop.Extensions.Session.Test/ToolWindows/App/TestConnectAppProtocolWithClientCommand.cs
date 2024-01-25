@@ -45,7 +45,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 {
     [TestFixture]
-    public class TestOpenWithClientCommand
+    public class TestConnectAppProtocolWithClientCommand
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenContextOfWrongType_ThenQueryStateReturnsUnavailable()
         {
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(new Mock<IAppProtocolClient>().Object, null),
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.Executable).Returns("doesnotexist.exe");
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.Executable).Returns(CmdExe);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, null),
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
             client.SetupGet(c => c.IsUsernameRequired).Returns(false);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppUsername.StringValue = "user";
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out username))
                 .Returns(DialogResult.OK);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out username))
                 .Returns(DialogResult.OK);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out username))
                 .Returns(DialogResult.Cancel);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -343,7 +343,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             settings.RdpPassword.ClearTextValue = "password";
             settings.RdpDomain.StringValue = "domain";
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -382,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out userCredential))
                 .Returns(DialogResult.OK);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -423,7 +423,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out userCredential))
                 .Returns(DialogResult.OK);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -462,7 +462,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     out userCredential))
                 .Returns(DialogResult.Cancel);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 CreateFactory(client.Object, settings),
@@ -508,7 +508,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 processFactory.Object,
                 settingsService.Object);
 
-            var command = new OpenWithClientCommand(
+            var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
                 new SynchronousJobService(),
                 factory,

@@ -29,7 +29,6 @@ using Google.Solutions.Mvvm.Shell;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -39,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
     /// <summary>
     /// Connect an AppProtocol and open the client.
     /// </summary>
-    internal class OpenWithClientCommand : ConnectAppProtocolCommandBase
+    internal class ConnectAppProtocolWithClientCommand : ConnectAppProtocolCommandBase
     {
         private readonly IWin32Window ownerWindow;
         private readonly ICredentialDialog credentialDialog;
@@ -81,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             return null;
         }
 
-        public OpenWithClientCommand(
+        public ConnectAppProtocolWithClientCommand(
             IWin32Window ownerWindow,
             IJobService jobService,
             AppProtocolContextFactory contextFactory,
@@ -93,7 +92,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                   jobService,
                   notifyDialog)
         {
-
             Debug.Assert(contextFactory.Protocol.Client != null);
 
             this.ownerWindow = ownerWindow.ExpectNotNull(nameof(ownerWindow));
@@ -187,9 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
         public override string Id
         {
-            get => 
-                "ConnectAppProtocolAndOpenClientCommand." +
-                $"{this.contextFactory.Protocol.Name.Split(' ').FirstOrDefault()}";
+            get => $"{GetType().Name}.{this.contextFactory.Protocol.Name}";
         }
 
         protected override bool IsEnabled(IProjectModelNode context)

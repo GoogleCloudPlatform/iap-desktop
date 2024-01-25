@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         {
             if (command.Id != null)
             {
-                ApplicationEventSource.Log.CommandExecuted(command.Id);
+                ApplicationEventSource.Log.CommandExecuted(command.Id); // TODO: urlencode/strip spaces
             }
         }
 
