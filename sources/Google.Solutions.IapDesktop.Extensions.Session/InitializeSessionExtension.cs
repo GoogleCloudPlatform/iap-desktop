@@ -229,26 +229,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             // App commands.
             //
             var appCommands = serviceProvider.GetService<AppCommands>();
-
-            var connectWithClientCommands = projectExplorer.ContextMenuCommands.AddCommand(
+            var connectWithClientCommands = projectExplorer.ContextMenuCommands.AddCommandGroup(
                 appCommands.ContextMenuConnectWithClient,
                 3);
-            foreach (var appCommand in appCommands
-                .ConnectWithClientCommands
-                .OrderBy(c => c.Text))
-            {
-                connectWithClientCommands.AddCommand(appCommand);
-            }
-
-            var connectTunnelCommands = projectExplorer.ContextMenuCommands.AddCommand(
+            var connectTunnelCommands = projectExplorer.ContextMenuCommands.AddCommandGroup(
                 appCommands.ContextMenuConnectTunnel,
                 4);
-            foreach (var appCommand in appCommands
-                .ConnectTunnelCommands
-                .OrderBy(c => c.Text))
-            {
-                connectTunnelCommands.AddCommand(appCommand);
-            }
 
             projectExplorer.ToolbarCommands.AddCommand(
                 connectCommands.ToolbarActivateOrConnectInstance);
