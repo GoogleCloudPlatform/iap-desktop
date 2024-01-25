@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Profile
+namespace Google.Solutions.IapDesktop.Extensions.Explorer
 {
     /// <summary>
     /// Profile menu in main menu. The menu is registered when

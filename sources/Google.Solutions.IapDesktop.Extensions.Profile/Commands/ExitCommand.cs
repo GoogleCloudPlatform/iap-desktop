@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Profile.Commands
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.Commands
 {
     [MenuCommand(typeof(ProfileMenu), Rank = 0x1009)]
     [Service]

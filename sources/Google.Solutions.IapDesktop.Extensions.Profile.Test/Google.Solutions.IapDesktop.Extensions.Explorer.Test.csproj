@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Profile\Google.Solutions.IapDesktop.Extensions.Profile.csproj" />
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Profile\Google.Solutions.IapDesktop.Extensions.Explorer.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj" />
   </ItemGroup>

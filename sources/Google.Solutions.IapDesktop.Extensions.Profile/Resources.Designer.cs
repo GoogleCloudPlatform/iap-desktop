@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Google.Solutions.IapDesktop.Extensions.Profile {
+namespace Google.Solutions.IapDesktop.Extensions.Explorer {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Profile {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Google.Solutions.IapDesktop.Extensions.Profile.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Google.Solutions.IapDesktop.Extensions.Explorer.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
