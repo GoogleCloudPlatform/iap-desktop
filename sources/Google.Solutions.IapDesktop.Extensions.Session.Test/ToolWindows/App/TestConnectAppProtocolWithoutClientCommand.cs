@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
             return new AppProtocolContextFactory(
                 new AppProtocol(
-                    "app-1",
+                    "app 1",
                     Enumerable.Empty<ITrait>(),
                     8080,
                     null,

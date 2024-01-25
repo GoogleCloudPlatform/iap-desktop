@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,6 +45,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
         {
             this.jobService = jobService.ExpectNotNull(nameof(jobService));
             this.notifyDialog = notifyDialog.ExpectNotNull(nameof(notifyDialog));
+        }
+
+        protected string GetId(AppProtocol protocol)
+        {
+            var sanitizedName = new string(protocol.Name
+                .Select(c => char.IsLetterOrDigit(c) ? c : '-')
+                .ToArray());
+
+            return $"{GetType().Name}.{sanitizedName}";
         }
 
         protected internal abstract Task<AppProtocolContext> CreateContextAsync(

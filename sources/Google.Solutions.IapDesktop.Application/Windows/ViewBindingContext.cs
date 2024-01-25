@@ -84,7 +84,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         {
             if (command.Id != null)
             {
-                ApplicationEventSource.Log.CommandExecuted(command.Id); // TODO: urlencode/strip spaces
+                Debug.Assert(
+                    !command.Id.Contains(" "),
+                    "Command IDs must not contain spaces");
+                ApplicationEventSource.Log.CommandExecuted(command.Id);
             }
         }
 

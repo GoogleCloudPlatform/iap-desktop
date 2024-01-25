@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             this.ContextMenuConnectWithClient = new ConnectAppProtocolCommand(
                 "Connect client a&pplication");
             this.ContextMenuConnectTunnel = new ConnectAppProtocolCommand(
-                "Connect tunnel");
+                "Connect &tunnel");
         }
 
         //---------------------------------------------------------------------
