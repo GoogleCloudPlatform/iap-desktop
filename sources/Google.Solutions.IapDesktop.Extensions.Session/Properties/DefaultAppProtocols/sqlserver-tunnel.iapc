@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "name": "SQL Server",
+  "condition": "isInstance()",
+  "remotePort": "1433"
+}
