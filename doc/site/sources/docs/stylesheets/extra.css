@@ -66,14 +66,18 @@ body {
 #__nav_1_2_label, 
 #__nav_1_3_label, 
 #__nav_1_4_label, 
-#__nav_1_5_label, 
+#__nav_1_5_label,
 #__nav_1_6_label,
+#__nav_1_7_label,
+#__nav_1_8_label,
 #__nav_2_1_label, 
 #__nav_2_2_label, 
 #__nav_2_3_label, 
 #__nav_2_4_label, 
 #__nav_2_5_label, 
-#__nav_2_6_label {
+#__nav_2_6_label, 
+#__nav_2_7_label, 
+#__nav_2_8_label {
     border-top: 1px dashed lightgray;
     padding-top: 5px;
     padding-bottom: 5px;

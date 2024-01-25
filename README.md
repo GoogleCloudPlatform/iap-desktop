@@ -92,7 +92,7 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
-## Connect to SQL Server and other services
+## Connect to SQL Server and other server applications
 
 
 <a href='doc/images/Client_700.png?raw=true'>

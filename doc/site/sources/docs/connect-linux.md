@@ -1,3 +1,5 @@
+# Connect to a Linux VM using SSH
+
 ???+ info "Required roles"
 
     To follow the steps in this guide, you need the following roles:
@@ -59,7 +61,7 @@ The key is created automatically on first use, is managed using the
 [Microsoft Software Key Storage Provider :octicons-link-external-16:](https://docs.microsoft.com/en-us/windows/win32/seccertenroll/cng-key-storage-providers#microsoft-software-key-storage-provider),
 and is not exportable.
 
-For more details, see [Security & privacy](security.md).
+For more details, see [SSH algorithms and keys](ssh-algorithms.md).
 
 ### Can I use an existing private key instead?
 
@@ -68,6 +70,6 @@ SSH keys, so you can continue to use your existing private key for other SSH cli
 
 ## What's next
 
-*   [Troubleshoot](troubleshooting.md) common issues
+*   [Troubleshoot](troubleshooting-ssh.md) common SSH issues
 *   See how you can [connect to Windows VMs by using Remote Desktop](connect-windows.md)
 *   Learn how you can [connect to SQL Server](connect-sqlserver.md)

@@ -85,7 +85,7 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 
 <br><br><br>
 
-## Connect to SQL Server and other services
+## Connect to SQL Server and other server applications
 
 [![Connect to SQL Server](images/screenshots/Client_350.png){ align=right }](images/screenshots/Client_700.png?raw=true)
 

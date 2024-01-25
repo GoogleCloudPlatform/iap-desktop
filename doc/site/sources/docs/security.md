@@ -60,20 +60,7 @@ all passwords are encrypted by using the DPAPI before storage.
 
 ### SSH keys
 
-By default, IAP Desktop uses a ECDSA NISTP-256 key pair for SSH public key authentication.
-The key is managed using the
-[Microsoft Software Key Storage Provider :octicons-link-external-16: ](https://docs.microsoft.com/en-us/windows/win32/seccertenroll/cng-key-storage-providers#microsoft-software-key-storage-provider)
-and is not exportable.
-
-Alternatively, you can configure IAP Desktop to use one of the following key types:
-
-*   RSA (3072 bit)
-*   ECDSA NISTP-384
-*   ECDSA NISTP-521 
-
-You can list existing keys by running the following command:
-
-    certutil -csp "Microsoft Software Key Storage Provider" -key -user | findstr IAPDESKTOP_
+For details on how IAP Desktop stores SSH key material, see [SSH algorithms and keys](ssh-algorithms.md).
 
 ### Proxy credentials
 

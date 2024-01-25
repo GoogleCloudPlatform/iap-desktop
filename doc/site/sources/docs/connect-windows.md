@@ -1,3 +1,5 @@
+# Connect to a Windows VM using Remote Desktop
+
 ???+ info "Required roles"
 
     To follow the steps in this guide, you need the following roles:
@@ -99,6 +101,6 @@ No, IAP Desktop currently doesn't support RDS.
 
 ## What's next
 
-*   [Troubleshoot](troubleshooting.md) common issues
+*   [Troubleshoot](troubleshooting-rdp.md) common RDP issues
 *   See how you can [connect to Linux VMs by using SSH](connect-linux.md)
 *   Learn how you can [connect to SQL Server](connect-sqlserver.md)
