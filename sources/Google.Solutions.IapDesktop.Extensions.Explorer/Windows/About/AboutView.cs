@@ -25,6 +25,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
@@ -40,6 +41,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
         {
             InitializeComponent();
 
+            this.SuspendLayout();
+            this.licenseText.TextPadding = 5;
+            this.licenseText.Fonts.Text = new FontFamily("Segoe UI");
             this.licenseText.Fonts.FontSize = 7;
             this.licenseText.Fonts.FontSizeHeading1 = 11;
             this.licenseText.Fonts.FontSizeHeading2 = 8;
@@ -47,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
             this.licenseText.Fonts.FontSizeHeading4 = 8;
             this.licenseText.Fonts.FontSizeHeading5 = 8;
             this.licenseText.Fonts.FontSizeHeading6 = 8;
+            this.ResumeLayout();
         }
 
         public void Bind(AboutViewModel viewModel, IBindingContext bindingContext)

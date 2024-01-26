@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
@@ -72,6 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
                       HelpTopics.General, 
                       helpClient)
             {
+                this.ShortcutKeys = Keys.F1;
             }
         }
 
