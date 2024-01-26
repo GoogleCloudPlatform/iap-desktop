@@ -30,6 +30,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace Google.Solutions.Mvvm.Theme
 {
     /// <summary>
@@ -52,7 +54,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 // Force Win32 controls to use dark mode.
                 //
-                NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
+                _ = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
             }
         }
 
@@ -109,7 +111,7 @@ namespace Google.Solutions.Mvvm.Theme
             // NB. When called after AllowDarkModeForWindow, this also applies
             // dark mode-style scrollbars, etc.
             //
-            NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
+            _ = NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
         }
 
         private void StyleListView(ListView listView)
@@ -120,7 +122,7 @@ namespace Google.Solutions.Mvvm.Theme
             // NB. When called after AllowDarkModeForWindow, this also applies
             // dark mode-style scrollbars, etc.
             //
-            NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
+            _ = NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
 
             var designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
             if (this.IsDarkModeEnabled && !designMode)
@@ -134,7 +136,7 @@ namespace Google.Solutions.Mvvm.Theme
                 Debug.Assert(headerHandle != IntPtr.Zero);
 
                 NativeMethods.AllowDarkModeForWindow(headerHandle, true);
-                NativeMethods.SetWindowTheme(headerHandle, "ItemsView", null);
+                _ = NativeMethods.SetWindowTheme(headerHandle, "ItemsView", null);
 
                 //
                 // Subclass the list view (not the header) to adjust the text color
@@ -158,7 +160,7 @@ namespace Google.Solutions.Mvvm.Theme
                                         break;
 
                                     case NativeMethods.CDDS_ITEMPREPAINT:
-                                        NativeMethods.SetTextColor(
+                                        _ = NativeMethods.SetTextColor(
                                             custDraw.hdc,
                                             listView.ForeColor.ToCOLORREF());
                                         m.Result = new IntPtr(NativeMethods.CDRF_DODEFAULT);
@@ -188,14 +190,14 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleTextBox(TextBox text)
         {
-            NativeMethods.SetWindowTheme(text.Handle, "Explorer", null);
+            _ = NativeMethods.SetWindowTheme(text.Handle, "Explorer", null);
         }
 
         private void StyleComboBox(ComboBox combo)
         {
             if (this.IsDarkModeEnabled)
             {
-                NativeMethods.SetWindowTheme(combo.Handle, "CFD", null);
+                _ = NativeMethods.SetWindowTheme(combo.Handle, "CFD", null);
             }
         }
 
@@ -203,13 +205,13 @@ namespace Google.Solutions.Mvvm.Theme
         {
             if (this.IsDarkModeEnabled)
             {
-                NativeMethods.SetWindowTheme(bar.Handle, "Explorer", null);
+                _ = NativeMethods.SetWindowTheme(bar.Handle, "Explorer", null);
             }
         }
 
         private static void ResetWindowTheme(Control control)
         {
-            NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
+            _ = NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
         }
 
         //---------------------------------------------------------------------

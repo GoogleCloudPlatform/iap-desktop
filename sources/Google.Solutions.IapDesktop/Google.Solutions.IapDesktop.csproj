@@ -25,12 +25,6 @@
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.66.0.3216" />
     <PackageReference Include="Google.Apis.Compute.v1" Version="1.66.0.3286" />
     <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NetFramework.Analyzers" Version="3.3.2">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
     <!-- 

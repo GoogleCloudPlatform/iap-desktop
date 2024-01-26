@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Util
         {
             Assert.Throws<ArgumentNullException>(
                 () => ((string?)null).ExpectNotEmpty("test"));
-            Assert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentException>(
                 () => string.Empty.ExpectNotEmpty("test"));
         }
 
@@ -65,6 +65,26 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenNotEmpty_ThenExpectNotNullReturnsValue()
         {
             Assert.AreEqual("value", "value".ExpectNotEmpty("test"));
+        }
+
+        //---------------------------------------------------------------------
+        // ExpectNotNullOrZeroSized.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNullOrEmpty_ThenExpectNotNullOrZeroSizedThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Precondition.ExpectNotNullOrZeroSized((string[]?)null, "test"));
+            Assert.Throws<ArgumentException>(
+                () => Precondition.ExpectNotNullOrZeroSized(new string[0], "test"));
+        }
+
+        [Test]
+        public void WhenNotEmpty_ThenExpectNotNullOrZeroSizedReturnsValue()
+        {
+            var array = new[] { 1, 2, 3 };
+            Assert.AreSame(array, array.ExpectNotNullOrZeroSized("test"));
         }
 
         //---------------------------------------------------------------------

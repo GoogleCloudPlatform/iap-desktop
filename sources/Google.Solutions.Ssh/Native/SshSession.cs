@@ -176,7 +176,7 @@ namespace Google.Solutions.Ssh.Native
                         .Select(ptr => Marshal.PtrToStringAnsi(ptr))
                         .ToArray();
 
-                    NativeMethods.libssh2_free(
+                    _ = NativeMethods.libssh2_free(
                         this.sessionHandle,
                         algorithmsPtrPtr);
 
@@ -199,16 +199,7 @@ namespace Google.Solutions.Ssh.Native
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
-            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
-            {
-                throw new ArgumentException(nameof(methodType));
-            }
-
-            if (methods == null || methods.Length == 0)
-            {
-                throw new ArgumentException(nameof(methods));
-            }
-
+            Precondition.ExpectNotNullOrZeroSized(methods, nameof(methods));
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(
                 methodType,
@@ -244,7 +235,7 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(banner))
             {
-                NativeMethods.libssh2_session_banner_set(
+                _ = NativeMethods.libssh2_session_banner_set(
                     this.sessionHandle,
                     banner);
             }
