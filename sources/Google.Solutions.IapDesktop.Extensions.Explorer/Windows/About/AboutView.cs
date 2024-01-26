@@ -39,12 +39,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
         public AboutView()
         {
             InitializeComponent();
-
-            //
-            // NB. When the RTF box is resized or moved, it tends to loose its padding.
-            //
-            this.licenseText.Layout += (_, __) => this.licenseText.SetPadding(5);
-            this.licenseText.SetPadding(5);
         }
 
         public void Bind(AboutViewModel viewModel, IBindingContext bindingContext)
@@ -65,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
                 m => m.AuthorText,
                 bindingContext);
             this.licenseText.BindReadonlyProperty(
-                c => c.Rtf,
+                c => c.Markdown,
                 viewModel,
                 m => m.LicenseText,
                 bindingContext);

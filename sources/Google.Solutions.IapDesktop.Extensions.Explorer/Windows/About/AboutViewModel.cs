@@ -43,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
                 $".NET {ClrVersion.Version}";
             this.Copyright = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
 
+            this.LicenseText = "*TODO*: License";
             //TODO: Load License MD
             //var assembly = GetType().Assembly;
             //var resourceName = assembly.GetManifestResourceNames().First(s => s.EndsWith("About.rtf"));

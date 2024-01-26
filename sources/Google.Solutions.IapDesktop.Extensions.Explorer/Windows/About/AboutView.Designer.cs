@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
 {
     partial class AboutView
@@ -52,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
             this.authorLabel = new System.Windows.Forms.Label();
-            this.licenseText = new System.Windows.Forms.RichTextBox();
+            this.licenseText = new MarkdownViewer();
             this.authorLink = new System.Windows.Forms.LinkLabel();
             this.copyrightLabel = new System.Windows.Forms.Label();
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
@@ -94,7 +96,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
             this.licenseText.BackColor = System.Drawing.Color.White;
             this.licenseText.Location = new System.Drawing.Point(16, 130);
             this.licenseText.Name = "licenseText";
-            this.licenseText.ReadOnly = true;
             this.licenseText.Size = new System.Drawing.Size(400, 151);
             this.licenseText.TabIndex = 2;
             this.licenseText.Text = "";
@@ -176,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.Label authorLabel;
-        private System.Windows.Forms.RichTextBox licenseText;
+        private MarkdownViewer licenseText;
         private System.Windows.Forms.LinkLabel authorLink;
         private System.Windows.Forms.Label copyrightLabel;
         private Mvvm.Controls.HeaderLabel headerLabel;
