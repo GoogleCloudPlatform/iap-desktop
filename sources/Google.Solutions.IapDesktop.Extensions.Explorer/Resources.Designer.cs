@@ -63,6 +63,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AccentGradient_450 {
+            get {
+                object obj = ResourceManager.GetObject("AccentGradient_450", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AddProject_16 {
             get {
                 object obj = ResourceManager.GetObject("AddProject_16", resourceCulture);
