@@ -48,5 +48,22 @@ namespace Google.Solutions.Ssh.Test.Native
         internal const string AllowEcdsaOnlyForPubkey =
             "echo PubkeyAcceptedKeyTypes ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521 >> /etc/ssh/sshd_config\n" +
             "service sshd restart";
+
+        internal const string EcdsaNistp256HostKey =
+            "rm -f /etc/ssh/ssh_host_ecdsa_key*\n" +
+            "ssh-keygen -q -N \"\" -t ecdsa -b 256 -f /etc/ssh/ssh_host_ecdsa_key\n" +
+            "systemctl restart sshd";
+
+
+        internal const string EcdsaNistp384HostKey =
+            "rm -f /etc/ssh/ssh_host_ecdsa_key*\n" +
+            "ssh-keygen -q -N \"\" -t ecdsa -b 384 -f /etc/ssh/ssh_host_ecdsa_key\n" +
+            "systemctl restart sshd";
+
+
+        internal const string EcdsaNistp521HostKey =
+            "rm -f /etc/ssh/ssh_host_ecdsa_key*\n" +
+            "ssh-keygen -q -N \"\" -t ecdsa -b 521 -f /etc/ssh/ssh_host_ecdsa_key\n" +
+            "systemctl restart sshd";
     }
 }

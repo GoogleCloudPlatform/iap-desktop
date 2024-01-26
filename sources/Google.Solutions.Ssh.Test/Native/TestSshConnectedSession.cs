@@ -27,6 +27,7 @@ using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -57,11 +58,11 @@ namespace Google.Solutions.Ssh.Test.Native
 
 
         //---------------------------------------------------------------------
-        // Algorithms.
+        // GetActiveAlgorithms.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenActiveAlgorithmsAreSet(
+        public async Task WhenConnected_ThenGetActiveAlgorithmsSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -84,7 +85,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenRequestedAlgorithmInvalid_ThenActiveAlgorithmsThrowsArgumentException(
+        public async Task WhenRequestedAlgorithmInvalid_ThenGetActiveAlgorithmsThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -95,105 +96,6 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 Assert.Throws<ArgumentException>(
                     () => connection.GetActiveAlgorithms((LIBSSH2_METHOD)9999999));
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Host Key.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenConnected_ThenGetRemoteHostKeyReturnsKey(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            using (var connection = session.Connect(endpoint))
-            {
-                var key = connection.GetRemoteHostKey();
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
-                Assert.IsNotNull(key);
-            }
-        }
-
-        [Test]
-        public async Task WhenConnected_ThenGetRemoteHostKeyTypeReturnsEcdsa256(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            using (var connection = session.Connect(endpoint))
-            {
-                var keyType = connection.GetRemoteHostKeyType();
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
-                Assert.IsTrue(
-                    keyType == LIBSSH2_HOSTKEY_TYPE.ECDSA_256 ||
-                    keyType == LIBSSH2_HOSTKEY_TYPE.RSA);
-            }
-        }
-
-        [Test]
-        public async Task WhenConnected_ThenGetRemoteHostKeyHashReturnsKeyHash(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            using (var connection = session.Connect(endpoint))
-            {
-                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5), "MD5");
-                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1), "SHA1");
-
-                // SHA256 is not always available.
-                // Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256), "SHA256");
-            }
-        }
-
-        [Test]
-        public async Task WhenRequestedAlgorithmInvalid_ThennGetRemoteHostKeyHashThrowsArgumentException(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            using (var connection = session.Connect(endpoint))
-            {
-                Assert.Throws<ArgumentException>(
-                    () => connection.GetRemoteHostKeyHash((LIBSSH2_HOSTKEY_HASH)9999999));
-            }
-        }
-
-        [Test]
-        public async Task WhenNeitherEcdsaNorRsaHostKeyAlgorithmAllowed_ThenConnectThrowsException(
-            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)]
-            ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            {
-                //
-                // NB. Connect should throw an exception, but libssh doesn't
-                // set the last error. So we have to check the exception
-                // message.
-                //
-
-                try
-                {
-                    session.Connect(endpoint);
-                    Assert.Fail("Expected exception");
-                }
-                catch (SshNativeException e)
-                {
-                    Assert.AreEqual("Unable to exchange encryption keys", e.Message);
-                }
             }
         }
 
@@ -246,11 +148,88 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
-        // Authentication.
+        // Connect - host key algorithms.
+        //---------------------------------------------------------------------
+
+        private void ConnectWithHostKey(
+            IPEndPoint endpoint,
+            LIBSSH2_HOSTKEY_TYPE hostKeyType)
+        {
+            using (var session = CreateSession())
+            {
+                session.SetPreferredMethods(
+                    LIBSSH2_METHOD.HOSTKEY,
+                    new[] { new HostKeyType(hostKeyType).Name });
+
+                using (var connection = session.Connect(endpoint))
+                {
+                    Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                    Assert.AreEqual(hostKeyType, connection.GetRemoteHostKeyType());
+
+                    Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256), "SHA256");
+                    Assert.IsNotNull(connection.GetRemoteHostKey());
+
+                    CollectionAssert.AreEqual(
+                        new HostKeyType(hostKeyType).Name,
+                        connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY)[0]);
+                }
+            }
+        }
+
+        [Test]
+        public async Task ConnectWithRsaHostKey(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            ConnectWithHostKey(
+                endpoint,
+                LIBSSH2_HOSTKEY_TYPE.RSA);
+        }
+
+        [Test]
+        public async Task ConnectWithEcdsaNistp256HostKey(
+            [LinuxInstance(InitializeScript = InitializeScripts.EcdsaNistp256HostKey)] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            ConnectWithHostKey(
+                endpoint,
+                LIBSSH2_HOSTKEY_TYPE.ECDSA_256);
+        }
+
+        [Test]
+        public async Task ConnectWithEcdsaNistp384HostKey(
+            [LinuxInstance(InitializeScript = InitializeScripts.EcdsaNistp384HostKey)] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            ConnectWithHostKey(
+                endpoint,
+                LIBSSH2_HOSTKEY_TYPE.ECDSA_384);
+        }
+
+        [Test]
+        public async Task ConnectWithEcdsaNistp521HostKey(
+            [LinuxInstance(InitializeScript = InitializeScripts.EcdsaNistp521HostKey)] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            ConnectWithHostKey(
+                endpoint,
+                LIBSSH2_HOSTKEY_TYPE.ECDSA_521);
+        }
+
+        //---------------------------------------------------------------------
+        // GetRemoteHostKeyHash.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
+        public async Task WhenRequestedAlgorithmInvalid_ThennGetRemoteHostKeyHashThrowsArgumentException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -259,9 +238,42 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.IsFalse(connection.IsAuthenticated);
+                Assert.Throws<ArgumentException>(
+                    () => connection.GetRemoteHostKeyHash((LIBSSH2_HOSTKEY_HASH)9999999));
             }
         }
+
+        [Test]
+        public async Task WhenNeitherEcdsaNorRsaHostKeyAlgorithmAllowed_ThenConnectThrowsException(
+            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)]
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            {
+                //
+                // NB. Connect should throw an exception, but libssh doesn't
+                // set the last error. So we have to check the exception
+                // message.
+                //
+
+                try
+                {
+                    session.Connect(endpoint);
+                    Assert.Fail("Expected exception");
+                }
+                catch (SshNativeException e)
+                {
+                    Assert.AreEqual("Unable to exchange encryption keys", e.Message);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // GetAuthenticationMethods.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenConnected_ThenGetAuthenticationMethodsReturnsPublicKey(
@@ -277,6 +289,24 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.IsNotNull(methods);
                 Assert.AreEqual(1, methods.Length);
                 Assert.AreEqual("publickey", methods.First());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Authentication.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                Assert.IsFalse(connection.IsAuthenticated);
             }
         }
 
