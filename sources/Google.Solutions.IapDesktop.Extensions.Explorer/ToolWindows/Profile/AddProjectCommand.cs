@@ -21,29 +21,30 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.Commands
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
 {
-    [MenuCommand(typeof(ProfileMenu), Rank = 0x1009)]
+    [MenuCommand(typeof(ProfileMenu), Rank = 0x100)]
     [Service]
-    public class ExitCommand : ProfileMenuCommandBase
+    public class AddProjectCommand : ProfileMenuCommandBase
     {
-        private readonly IMainWindow mainWindow;
+        private readonly IProjectExplorer projectExplorer;
 
-        public ExitCommand(IMainWindow mainWindow)
-            : base("E&xit")
+        public AddProjectCommand(IProjectExplorer projectExplorer)
+            : base("&Add project...")
         {
-            this.mainWindow = mainWindow.ExpectNotNull(nameof(mainWindow));
+            this.projectExplorer = projectExplorer.ExpectNotNull(nameof(projectExplorer));
 
-            this.ShortcutKeys = Keys.Alt | Keys.F4;
+            this.Image = Resources.AddProject_16;
         }
 
-        public override void Execute(IUserProfile _)
+        public override Task ExecuteAsync(IUserProfile context)
         {
-            this.mainWindow.Close();
+            return this.projectExplorer.ShowAddProjectDialogAsync();
         }
     }
 }

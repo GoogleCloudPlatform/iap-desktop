@@ -25,12 +25,12 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Explorer.Commands;
+using Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile;
 using Moq;
 using NUnit.Framework;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.Commands
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Profile
 {
     [TestFixture]
     public class TestSignOutCommand
