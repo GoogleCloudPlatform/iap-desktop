@@ -675,7 +675,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void openSecureConnectDocsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
+            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.CertificateBasedAccessOverview);
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)

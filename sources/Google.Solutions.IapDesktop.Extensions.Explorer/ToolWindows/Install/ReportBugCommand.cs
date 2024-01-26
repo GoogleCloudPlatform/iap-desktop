@@ -19,28 +19,39 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
-    /// <summary>
-    /// Base class for profile menu commands.
-    /// </summary>
-    public abstract class ProfileMenuCommandBase : MenuCommandBase<IUserProfile>
+    [MenuCommand(typeof(HelpMenu), Rank = 0x1001)]
+    [Service]
+    public class ReportBugCommand : MenuCommandBase<IInstall>
     {
-        protected ProfileMenuCommandBase(string text) : base(text)
+        private readonly BugReportClient client;
+
+        public ReportBugCommand(BugReportClient client)
+            : base("&Report issue...")
         {
+            this.client = client;
         }
 
-        protected override bool IsAvailable(IUserProfile _)
+        protected override bool IsAvailable(IInstall _)
         {
             return true;
         }
 
-        protected override bool IsEnabled(IUserProfile _)
+        protected override bool IsEnabled(IInstall _)
         {
             return true;
+        }
+
+        public override void Execute(IInstall _)
+        {
+            this.client.ReportBug(new BugReport());
         }
     }
 }

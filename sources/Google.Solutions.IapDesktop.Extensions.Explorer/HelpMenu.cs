@@ -19,32 +19,31 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
+namespace Google.Solutions.IapDesktop.Extensions.Explorer
 {
-    [MenuCommand(typeof(ProfileMenu), Rank = 0x100)]
-    [Service]
-    public class AddProjectCommand : ProfileCommandBase
+    /// <summary>
+    /// Profile menu in main menu. The menu is registered when
+    /// the class is loaded (as service) during startup.
+    /// </summary>
+    [Service(ServiceLifetime.Singleton, DelayCreation = false)]
+    public class HelpMenu : Menu<IInstall>
     {
-        private readonly IProjectExplorer projectExplorer;
-
-        public AddProjectCommand(IProjectExplorer projectExplorer)
-            : base("&Add project...")
+        public HelpMenu(IServiceCategoryProvider serviceProvider)
+            : base(
+                  MenuCommandType.MenuCommand,
+                  serviceProvider
+                      .GetService<IMainWindow>()
+                      .AddMenu(
+                          "&Help",
+                          4,
+                          () => serviceProvider.GetService<IInstall>()))
         {
-            this.projectExplorer = projectExplorer.ExpectNotNull(nameof(projectExplorer));
-
-            this.Image = Resources.AddProject_16;
-        }
-
-        public override Task ExecuteAsync(IUserProfile context)
-        {
-            return this.projectExplorer.ShowAddProjectDialogAsync();
+            DiscoverCommands(serviceProvider);
         }
     }
 }

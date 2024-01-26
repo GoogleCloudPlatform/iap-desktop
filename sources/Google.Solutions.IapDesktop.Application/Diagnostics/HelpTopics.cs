@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             "Create a firewall rule for IAP",
             $"https://googlecloudplatform.github.io/iap-desktop/setup-iap/?{GaParameters}#create-a-firewall-rule");
 
-        public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
+        public static readonly IHelpTopic CertificateBasedAccessOverview = new HelpTopic(
             "Device certificate authentication",
             $"https://googlecloudplatform.github.io/iap-desktop/setup-caa-with-a-beyondcorp-certificate-access-policy/?{GaParameters}");
 
