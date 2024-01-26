@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
     [Service]
     public class AboutViewModel : ViewModelBase

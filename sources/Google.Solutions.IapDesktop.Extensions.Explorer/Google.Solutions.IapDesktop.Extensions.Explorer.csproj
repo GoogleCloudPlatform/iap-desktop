@@ -8,10 +8,7 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Windows\About\About.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Windows\About\About.md" />
+    <EmbeddedResource Include="ToolWindows\Install\About.md" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
@@ -38,7 +35,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Windows\About\AboutView.cs">
+    <Compile Update="ToolWindows\Install\AboutView.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

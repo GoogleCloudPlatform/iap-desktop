@@ -1,5 +1,4 @@
-IAP Desktop is an open-source project developed and maintained by the Google Cloud Solutions Architects team.
-The project is not an officially supported Google product.
+IAP Desktop is an open-source project and is not an officially supported Google product.
 
 This software is licensed under the Apache License, version 2.0.
 
