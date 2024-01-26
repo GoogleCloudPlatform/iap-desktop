@@ -95,8 +95,8 @@
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj" />
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Core\Google.Solutions.IapDesktop.Core.csproj" />
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Diagnostics\Google.Solutions.IapDesktop.Extensions.Diagnostics.csproj" />
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Explorer\Google.Solutions.IapDesktop.Extensions.Explorer.csproj" />
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Management\Google.Solutions.IapDesktop.Extensions.Management.csproj" />
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Profile\Google.Solutions.IapDesktop.Extensions.Profile.csproj" />
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Session\Google.Solutions.IapDesktop.Extensions.Session.csproj" />
     <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj" />
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
