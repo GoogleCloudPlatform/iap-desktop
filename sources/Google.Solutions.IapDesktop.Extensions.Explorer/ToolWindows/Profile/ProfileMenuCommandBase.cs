@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.Commands
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
 {
     /// <summary>
     /// Base class for profile menu commands.
