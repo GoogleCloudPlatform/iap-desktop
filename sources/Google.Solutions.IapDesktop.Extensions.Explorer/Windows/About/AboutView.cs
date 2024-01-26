@@ -39,6 +39,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
         public AboutView()
         {
             InitializeComponent();
+
+            this.licenseText.Fonts.FontSize = 7;
+            this.licenseText.Fonts.FontSizeHeading1 = 11;
+            this.licenseText.Fonts.FontSizeHeading2 = 8;
+            this.licenseText.Fonts.FontSizeHeading3 = 8;
+            this.licenseText.Fonts.FontSizeHeading4 = 8;
+            this.licenseText.Fonts.FontSizeHeading5 = 8;
+            this.licenseText.Fonts.FontSizeHeading6 = 8;
         }
 
         public void Bind(AboutViewModel viewModel, IBindingContext bindingContext)

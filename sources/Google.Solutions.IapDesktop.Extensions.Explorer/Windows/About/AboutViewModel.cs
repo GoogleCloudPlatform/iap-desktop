@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Theme;
@@ -34,44 +33,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
     [Service]
     public class AboutViewModel : ViewModelBase
     {
-        public AboutViewModel(
-            IInstall install,
-            IThemeService themeService)
+        public AboutViewModel(IInstall install)
         {
             this.Information = $"IAP Desktop\n" +
                 $"Version {install.CurrentVersion}\n" +
                 $".NET {ClrVersion.Version}";
             this.Copyright = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
 
-            this.LicenseText = "*TODO*: License";
-            //TODO: Load License MD
-            //var assembly = GetType().Assembly;
-            //var resourceName = assembly.GetManifestResourceNames().First(s => s.EndsWith("About.rtf"));
-            //using (var stream = assembly.GetManifestResourceStream(resourceName))
-            //using (var reader = new StreamReader(stream))
-            //{
-            //    var rtf = reader.ReadToEnd();
-            //
-            //    if (themeService.DockPanelTheme is VSTheme theme && theme.IsDark)
-            //    {
-            //        //
-            //        // Replace the RTF text's color table.
-            //        //
-            //        // NB. \cf0 is the default color and refers to the first
-            //        // item in the color table. This item is typically missing.
-            //        //
-            //        var textColor = theme.Palette.TextBox.Text;
-            //        var linkColor = theme.Palette.LinkLabel.Text;
-            //        rtf = rtf.Replace(
-            //            @"{\colortbl ;\red0\green0\blue255;}",
-            //            "{\\colortbl" +
-            //                $"\\red{textColor.R}\\green{textColor.G}\\blue{textColor.B};" +
-            //                $"\\red{linkColor.R}\\green{linkColor.G}\\blue{linkColor.B};" +
-            //                "}\\cf0");
-            //    }
-            //
-            //    this.LicenseText = rtf;
-            //}
+            var assembly = GetType().Assembly;
+            var resourceName = assembly.GetManifestResourceNames().First(s => s.EndsWith("About.md"));
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            using (var reader = new StreamReader(stream))
+            {
+                this.LicenseText = reader.ReadToEnd();
+            }
         }
 
         public string AuthorText => "Johannes Passing";

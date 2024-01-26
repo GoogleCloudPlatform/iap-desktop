@@ -8,6 +8,12 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Windows\About\About.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Windows\About\About.md" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
     <PackageReference Include="Google.Apis" Version="1.66.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
