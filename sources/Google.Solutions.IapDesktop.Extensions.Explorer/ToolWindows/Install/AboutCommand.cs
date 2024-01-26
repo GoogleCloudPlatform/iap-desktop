@@ -33,7 +33,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
     [Service]
     public class AboutCommand : MenuCommandBase<IInstall>
     {
-        private readonly IThemeService themeService;
         private readonly IServiceProvider serviceProvider;
 
         public AboutCommand(IServiceProvider serviceProvider)

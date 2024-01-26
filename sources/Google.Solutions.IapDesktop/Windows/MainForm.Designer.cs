@@ -59,19 +59,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.enableloggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewShortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.overviewSeparatorStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openSecureConnectDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.howtoSeparatorStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.openIapFirewallDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openIapAccessDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.releaseNotesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reportIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new Google.Solutions.Mvvm.Controls.ActiveStatusStrip();
             this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -90,8 +77,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.viewToolStripMenuItem,
             this.toolsToolStripMenuItem,
-            this.windowToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.windowToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
             this.mainMenu.Size = new System.Drawing.Size(984, 24);
@@ -144,110 +130,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
             this.windowToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
             this.windowToolStripMenuItem.Text = "&Window";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewHelpToolStripMenuItem,
-            this.viewShortcutsToolStripMenuItem,
-            this.overviewSeparatorStripMenuItem,
-            this.openIapDocsToolStripMenuItem,
-            this.openSecureConnectDocsToolStripMenuItem,
-            this.howtoSeparatorStripMenuItem,
-            this.openIapFirewallDocsToolStripMenuItem,
-            this.openIapAccessDocsToolStripMenuItem,
-            this.aboutSeparatorToolStripMenuItem,
-            this.releaseNotesToolStripMenuItem,
-            this.reportIssueToolStripMenuItem,
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "&Help";
-            // 
-            // viewHelpToolStripMenuItem
-            // 
-            this.viewHelpToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
-            this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
-            this.viewHelpToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.viewHelpToolStripMenuItem.Text = "&Documentation";
-            this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
-            // 
-            // viewShortcutsToolStripMenuItem
-            // 
-            this.viewShortcutsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
-            this.viewShortcutsToolStripMenuItem.Name = "viewShortcutsToolStripMenuItem";
-            this.viewShortcutsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.viewShortcutsToolStripMenuItem.Text = "Keyboard &shortcuts";
-            this.viewShortcutsToolStripMenuItem.Click += new System.EventHandler(this.viewShortcutsToolStripMenuItem_Click);
-            // 
-            // overviewSeparatorStripMenuItem
-            // 
-            this.overviewSeparatorStripMenuItem.Name = "overviewSeparatorStripMenuItem";
-            this.overviewSeparatorStripMenuItem.Size = new System.Drawing.Size(263, 6);
-            // 
-            // openIapDocsToolStripMenuItem
-            // 
-            this.openIapDocsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
-            this.openIapDocsToolStripMenuItem.Name = "openIapDocsToolStripMenuItem";
-            this.openIapDocsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.openIapDocsToolStripMenuItem.Text = "&IAP TCP forwarding overview";
-            this.openIapDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapDocsToolStripMenuItem_Click);
-            // 
-            // openSecureConnectDocsToolStripMenuItem
-            // 
-            this.openSecureConnectDocsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
-            this.openSecureConnectDocsToolStripMenuItem.Name = "openSecureConnectDocsToolStripMenuItem";
-            this.openSecureConnectDocsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.openSecureConnectDocsToolStripMenuItem.Text = "Using &certificate-based access";
-            this.openSecureConnectDocsToolStripMenuItem.Click += new System.EventHandler(this.openSecureConnectDocsToolStripMenuItem_Click);
-            // 
-            // howtoSeparatorStripMenuItem
-            // 
-            this.howtoSeparatorStripMenuItem.Name = "howtoSeparatorStripMenuItem";
-            this.howtoSeparatorStripMenuItem.Size = new System.Drawing.Size(263, 6);
-            // 
-            // openIapFirewallDocsToolStripMenuItem
-            // 
-            this.openIapFirewallDocsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
-            this.openIapFirewallDocsToolStripMenuItem.Name = "openIapFirewallDocsToolStripMenuItem";
-            this.openIapFirewallDocsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.openIapFirewallDocsToolStripMenuItem.Text = "How to create a &firewall rule for IAP";
-            this.openIapFirewallDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapFirewallDocsToolStripMenuItem_Click);
-            // 
-            // openIapAccessDocsToolStripMenuItem
-            // 
-            this.openIapAccessDocsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
-            this.openIapAccessDocsToolStripMenuItem.Name = "openIapAccessDocsToolStripMenuItem";
-            this.openIapAccessDocsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.openIapAccessDocsToolStripMenuItem.Text = "How to &grant permissions to use IAP";
-            this.openIapAccessDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapAccessDocsToolStripMenuItem_Click);
-            // 
-            // aboutSeparatorToolStripMenuItem
-            // 
-            this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
-            this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(263, 6);
-            // 
-            // releaseNotesToolStripMenuItem
-            // 
-            this.releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
-            this.releaseNotesToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.releaseNotesToolStripMenuItem.Text = "Release &notes";
-            this.releaseNotesToolStripMenuItem.Click += new System.EventHandler(this.releaseNotesToolStripMenuItem_Click);
-            // 
-            // reportIssueToolStripMenuItem
-            // 
-            this.reportIssueToolStripMenuItem.Name = "reportIssueToolStripMenuItem";
-            this.reportIssueToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.reportIssueToolStripMenuItem.Text = "&Report issue...";
-            this.reportIssueToolStripMenuItem.Click += new System.EventHandler(this.reportGithubIssueToolStripMenuItem_Click);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            
             // 
             // statusStrip
             // 
@@ -365,31 +248,18 @@ namespace Google.Solutions.IapDesktop.Windows
 
         #endregion
         private System.Windows.Forms.MenuStrip mainMenu;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private ActiveStatusStrip statusStrip;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem projectExplorerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openIapDocsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openIapAccessDocsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator aboutSeparatorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reportIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
         private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
-        private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton accessStateButton;
-        private System.Windows.Forms.ToolStripSeparator howtoSeparatorStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openIapFirewallDocsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator overviewSeparatorStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openSecureConnectDocsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewShortcutsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem releaseNotesToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton profileStateButton;
         private System.Windows.Forms.ToolStripMenuItem addProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
