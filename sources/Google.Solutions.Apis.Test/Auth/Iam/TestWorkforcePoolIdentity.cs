@@ -33,11 +33,10 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPrincipalIdentifierIsNullOrEmpty_ThenFromPrincipalIdentifierThrowsException(
-            [Values(null, "")] string id)
+        public void WhenPrincipalIdentifierIsNullOrEmpty_ThenFromPrincipalIdentifierThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(
-                () => WorkforcePoolIdentity.FromPrincipalIdentifier(id));
+            Assert.Throws<ArgumentNullException>(() => WorkforcePoolIdentity.FromPrincipalIdentifier(null!));
+            Assert.Throws<ArgumentException>(() => WorkforcePoolIdentity.FromPrincipalIdentifier(string.Empty));
         }
 
         [Test]
@@ -49,14 +48,14 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenPrincipalIdentifierComponentIsNullOrEmpty_ThenFromPrincipalIdentifierThrowsException(
+        public void WhenPrincipalIdentifierComponentIsEmpty_ThenFromPrincipalIdentifierThrowsException(
             [Values(
                 "principal://iam.googleapis.com/locations//workforcePools/POOL/subject/SUBJECT",
                 "principal://iam.googleapis.com/locations/LOCATION/workforcePools//subject/SUBJECT",
                 "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/")]
             string id)
         {
-            Assert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentException>(
                 () => WorkforcePoolIdentity.FromPrincipalIdentifier(id));
         }
 
