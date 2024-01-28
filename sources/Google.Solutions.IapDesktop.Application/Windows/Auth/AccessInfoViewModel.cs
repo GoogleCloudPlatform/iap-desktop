@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                     break;
 
                 default:
-                    this.helpAdapter.OpenTopic(HelpTopics.SecureConnectDcaOverview);
+                    this.helpAdapter.OpenTopic(HelpTopics.CertificateBasedAccessOverview);
                     break;
             }
         }

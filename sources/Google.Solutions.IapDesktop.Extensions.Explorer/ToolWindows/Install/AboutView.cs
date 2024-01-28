@@ -21,13 +21,15 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Windows.About
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
 {
     [SkipCodeCoverage("UI code")]
     [Service]
@@ -40,11 +42,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
         {
             InitializeComponent();
 
-            //
-            // NB. When the RTF box is resized or moved, it tends to loose its padding.
-            //
-            this.licenseText.Layout += (_, __) => this.licenseText.SetPadding(5);
-            this.licenseText.SetPadding(5);
+            this.SuspendLayout();
+            this.licenseText.TextPadding = 5;
+            this.licenseText.Fonts.Text = new FontFamily("Segoe UI");
+            this.licenseText.Fonts.FontSize = 7;
+            this.licenseText.Fonts.FontSizeHeading1 = 11;
+            this.licenseText.Fonts.FontSizeHeading2 = 8;
+            this.licenseText.Fonts.FontSizeHeading3 = 8;
+            this.licenseText.Fonts.FontSizeHeading4 = 8;
+            this.licenseText.Fonts.FontSizeHeading5 = 8;
+            this.licenseText.Fonts.FontSizeHeading6 = 8;
+            this.ResumeLayout();
         }
 
         public void Bind(AboutViewModel viewModel, IBindingContext bindingContext)
@@ -65,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
                 m => m.AuthorText,
                 bindingContext);
             this.licenseText.BindReadonlyProperty(
-                c => c.Rtf,
+                c => c.Markdown,
                 viewModel,
                 m => m.LicenseText,
                 bindingContext);

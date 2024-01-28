@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
 {
     [MenuCommand(typeof(ProfileMenu), Rank = 0x1000)]
     [Service]
-    public class SignOutCommand : ProfileMenuCommandBase
+    public class SignOutCommand : ProfileCommandBase
     {
         private readonly IInstall install;
         private readonly IAuthorization authorization;

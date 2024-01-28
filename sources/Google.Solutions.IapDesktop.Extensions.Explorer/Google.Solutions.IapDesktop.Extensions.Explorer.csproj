@@ -8,6 +8,9 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ToolWindows\Install\About.md" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
     <PackageReference Include="Google.Apis" Version="1.66.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
@@ -31,6 +34,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ToolWindows\Install\AboutView.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

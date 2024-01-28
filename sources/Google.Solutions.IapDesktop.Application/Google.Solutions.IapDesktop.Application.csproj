@@ -137,7 +137,6 @@
     <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\About.rtf" />
     <EmbeddedResource Include="Theme\Resources\Dark.vstheme.gz" />
     <EmbeddedResource Include="Theme\Resources\Light.vstheme.gz" />
     <None Include="Theme\Resources\Dark.vstheme" />

@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             this.OpenCertificateAuthenticationHelp = ObservableCommand.Build(
                 string.Empty,
-                () => helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
+                () => helpService.OpenTopic(HelpTopics.CertificateBasedAccessOverview));
             this.OpenPrivateServiceConnectHelp = ObservableCommand.Build(
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.PrivateServiceConnectOverview));
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 throw new InvalidOptionsException(
                     "To use certificate-based access, you must disable " +
                     "Private Service Connect",
-                    HelpTopics.SecureConnectDcaOverview);
+                    HelpTopics.CertificateBasedAccessOverview);
             }
         }
 

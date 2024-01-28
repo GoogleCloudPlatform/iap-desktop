@@ -19,32 +19,28 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
 {
-    [MenuCommand(typeof(ProfileMenu), Rank = 0x100)]
-    [Service]
-    public class AddProjectCommand : ProfileCommandBase
+    /// <summary>
+    /// Base class for Profile menu commands.
+    /// </summary>
+    public abstract class ProfileCommandBase : MenuCommandBase<IUserProfile>
     {
-        private readonly IProjectExplorer projectExplorer;
-
-        public AddProjectCommand(IProjectExplorer projectExplorer)
-            : base("&Add project...")
+        protected ProfileCommandBase(string text) : base(text)
         {
-            this.projectExplorer = projectExplorer.ExpectNotNull(nameof(projectExplorer));
-
-            this.Image = Resources.AddProject_16;
         }
 
-        public override Task ExecuteAsync(IUserProfile context)
+        protected override bool IsAvailable(IUserProfile _)
         {
-            return this.projectExplorer.ShowAddProjectDialogAsync();
+            return true;
+        }
+
+        protected override bool IsEnabled(IUserProfile _)
+        {
+            return true;
         }
     }
 }

@@ -19,7 +19,9 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Windows.About
+using Google.Solutions.Mvvm.Controls;
+
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About
 {
     partial class AboutView
     {
@@ -52,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
             this.authorLabel = new System.Windows.Forms.Label();
-            this.licenseText = new System.Windows.Forms.RichTextBox();
+            this.licenseText = new MarkdownViewer();
             this.authorLink = new System.Windows.Forms.LinkLabel();
             this.copyrightLabel = new System.Windows.Forms.Label();
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
@@ -94,7 +96,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
             this.licenseText.BackColor = System.Drawing.Color.White;
             this.licenseText.Location = new System.Drawing.Point(16, 130);
             this.licenseText.Name = "licenseText";
-            this.licenseText.ReadOnly = true;
             this.licenseText.Size = new System.Drawing.Size(400, 151);
             this.licenseText.TabIndex = 2;
             this.licenseText.Text = "";
@@ -133,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
             // 
             // gradientPictureBox
             // 
-            this.gradientPictureBox.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.AccentGradient_450;
+            this.gradientPictureBox.Image = Resources.AccentGradient_450;
             this.gradientPictureBox.Location = new System.Drawing.Point(0, 332);
             this.gradientPictureBox.Name = "gradientPictureBox";
             this.gradientPictureBox.Size = new System.Drawing.Size(450, 10);
@@ -176,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.About
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.Label authorLabel;
-        private System.Windows.Forms.RichTextBox licenseText;
+        private MarkdownViewer licenseText;
         private System.Windows.Forms.LinkLabel authorLink;
         private System.Windows.Forms.Label copyrightLabel;
         private Mvvm.Controls.HeaderLabel headerLabel;

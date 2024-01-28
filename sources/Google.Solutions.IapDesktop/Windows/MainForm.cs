@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
@@ -32,7 +31,6 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.About;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
@@ -651,64 +649,12 @@ namespace Google.Solutions.IapDesktop.Windows
         // Main menu events.
         //---------------------------------------------------------------------
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel>())
-            {
-                view.Theme = this.themeService.DialogTheme;
-                view.ShowDialog(this);
-            }
-        }
-
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
             this.serviceProvider
                 .GetService<IToolWindowHost>()
                 .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
                 .Show();
-        }
-
-        private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.IapOverview);
-        }
-
-        private void openSecureConnectDocsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
-        }
-
-        private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.IapAccess);
-        }
-
-        private void openIapFirewallDocsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.CreateIapFirewallRule);
-        }
-
-        private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<BugReportClient>().ReportBug(new BugReport());
-        }
-
-        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.General);
-        }
-
-        private void viewShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<HelpClient>().OpenTopic(HelpTopics.Shortcuts);
-        }
-
-        private void releaseNotesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var window = this.serviceProvider
-                .GetService<IToolWindowHost>()
-                .GetToolWindow<ReleaseNotesView, ReleaseNotesViewModel>();
-            window.Show();
         }
 
         private void enableloggingToolStripMenuItem_Click(object sender, EventArgs _)

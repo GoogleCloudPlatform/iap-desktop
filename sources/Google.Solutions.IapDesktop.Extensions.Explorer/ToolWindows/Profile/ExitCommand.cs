@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
 {
     [MenuCommand(typeof(ProfileMenu), Rank = 0x1009)]
     [Service]
-    public class ExitCommand : ProfileMenuCommandBase
+    public class ExitCommand : ProfileCommandBase
     {
         private readonly IMainWindow mainWindow;
 

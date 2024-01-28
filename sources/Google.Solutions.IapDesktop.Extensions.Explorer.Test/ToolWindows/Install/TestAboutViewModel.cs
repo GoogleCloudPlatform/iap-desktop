@@ -20,14 +20,13 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Windows.About;
+using Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows.About
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Install
 {
     [TestFixture]
     public class TestAboutViewModel : ApplicationFixtureBase
@@ -39,9 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.About
             install
                 .SetupGet(s => s.CurrentVersion)
                 .Returns(new Version(1, 2, 3, 4));
-            var viewModel = new AboutViewModel(
-                install.Object,
-                new Mock<IThemeService>().Object);
+            var viewModel = new AboutViewModel(install.Object);
 
             StringAssert.Contains("Version 1.2.3.4", viewModel.Information);
         }
@@ -49,12 +46,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.About
         [Test]
         public void LicenseText()
         {
-            var viewModel = new AboutViewModel(
-                new Mock<IInstall>().Object,
-                new Mock<IThemeService>().Object);
+            var viewModel = new AboutViewModel(new Mock<IInstall>().Object);
 
             Assert.IsNotNull(viewModel.LicenseText);
-            StringAssert.Contains("rtf", viewModel.LicenseText);
+            StringAssert.Contains("Apache", viewModel.LicenseText);
         }
     }
 }

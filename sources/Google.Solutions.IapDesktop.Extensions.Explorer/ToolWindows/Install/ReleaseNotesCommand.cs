@@ -19,32 +19,26 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
-    [MenuCommand(typeof(ProfileMenu), Rank = 0x100)]
+    [MenuCommand(typeof(HelpMenu), Rank = 0x1000)]
     [Service]
-    public class AddProjectCommand : ProfileCommandBase
+    public class ReleaseNotesCommand
+        : OpenToolWindowCommand<IInstall, ReleaseNotesView, ReleaseNotesViewModel>
     {
-        private readonly IProjectExplorer projectExplorer;
-
-        public AddProjectCommand(IProjectExplorer projectExplorer)
-            : base("&Add project...")
+        public ReleaseNotesCommand(
+            IToolWindowHost toolWindowHost) 
+            : base(
+                  toolWindowHost, 
+                  "Release &notes", 
+                  _ => true,
+                  _ => true)
         {
-            this.projectExplorer = projectExplorer.ExpectNotNull(nameof(projectExplorer));
-
-            this.Image = Resources.AddProject_16;
-        }
-
-        public override Task ExecuteAsync(IUserProfile context)
-        {
-            return this.projectExplorer.ShowAddProjectDialogAsync();
         }
     }
 }
