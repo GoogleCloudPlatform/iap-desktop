@@ -1,4 +1,4 @@
-#  SSH troubleshooting
+#  Troubleshooting SSH issues
 
 ## :material-message-alert: Windows CNG key container or key store is inaccessible
 

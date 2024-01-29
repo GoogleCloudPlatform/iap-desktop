@@ -121,6 +121,7 @@ nav:
         - 'SSH algorithms': 'ssh-algorithms.md'
     - 'Troubleshooting':
       - 'Installation issues': 'troubleshooting.md'
+      - 'Sign-in issues': 'troubleshooting-signin.md'
       - 'RDP issues': 'troubleshooting-rdp.md'
       - 'SSH issues': 'troubleshooting-ssh.md'
     - 'Privacy & security': 'security.md'

@@ -47,7 +47,7 @@ When you first launch IAP Desktop, you see the Sign-in dialog:
         
     1.  Click **Continue** to complete the sign-in.
     1.  Close the browser tab or window.
-    
+        
 === "Workforce identity federation"    
 
     If your organization uses [workforce identity federation :octicons-link-external-16:](https://cloud.google.com/iam/docs/workforce-identity-federation), do
@@ -67,6 +67,8 @@ When you first launch IAP Desktop, you see the Sign-in dialog:
     1.  On the **Continue to Google Cloud SDK** page, click **Next** to complete the sign-in.
     1.  Close the browser tab or window.
     
+For more information on troubleshooting common sign-in issues, see [Troubleshooting sign-in issues](troubleshooting-signin.md).
+
 ## Access your projects
 
 ???+ info "Required roles"

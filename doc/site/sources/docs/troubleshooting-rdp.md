@@ -1,4 +1,4 @@
-#  Remote Desktop troubleshooting
+# Troubleshooting Remote Desktop issues
 
 ## :material-message-alert: "Your credentials did not work" dialogs are shown, despite saved credentials
 
