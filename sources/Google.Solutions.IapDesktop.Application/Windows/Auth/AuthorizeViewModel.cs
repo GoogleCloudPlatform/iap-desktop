@@ -25,6 +25,8 @@ using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -58,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             IInstall install,
             IOidcOfflineCredentialStore offlineStore,
             IRepository<IAccessSettings> accessSettings,
+            HelpClient helpClient,
             UserAgent userAgent)
         {
             this.gaiaEndpoint = gaiaEndpoint.ExpectNotNull(nameof(gaiaEndpoint));
@@ -82,6 +85,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(ChromeBrowser.IsAvailable);
             this.IsAuthorizationComplete = ObservableProperty.Build(false, this);
 
+            this.HelpCommand = ObservableCommand.Build(
+                string.Empty,
+                () => helpClient.OpenTopic(HelpTopics.SignInTroubleshooting));
             this.CancelSignInCommand = ObservableCommand.Build(
                 string.Empty,
                 CancelSignIn);
@@ -257,6 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         // Observable commands.
         //---------------------------------------------------------------------
 
+        public ObservableCommand HelpCommand { get; }
         public ObservableCommand CancelSignInCommand { get; }
         public ObservableCommand TryLoadExistingAuthorizationCommand { get; }
         public ObservableCommand SignInWithDefaultBrowserCommand { get; }

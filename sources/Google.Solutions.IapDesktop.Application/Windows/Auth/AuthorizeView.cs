@@ -32,7 +32,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("UI")]
-    public partial class AuthorizeView : CompositeForm, IView<AuthorizeViewModel>
+    public partial class AuthorizeView : /*Composite*/ Form, IView<AuthorizeViewModel>
     {
         public AuthorizeView()
         {
@@ -96,6 +96,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 viewModel,
                 m => m.IsCancelButtonVisible,
                 bindingContext);
+            this.helpLink.BindReadonlyObservableProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsCancelButtonVisible,
+                bindingContext);
             this.versionLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
@@ -108,6 +113,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.cancelSignInLink.BindObservableCommand(
                 viewModel,
                 m => m.CancelSignInCommand,
+                bindingContext);
+            this.helpLink.BindObservableCommand(
+                viewModel,
+                m => m.HelpCommand,
                 bindingContext);
             this.signInButton.BindObservableCommand(
                 viewModel,
