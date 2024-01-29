@@ -32,7 +32,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     [SkipCodeCoverage("UI")]
-    public partial class AuthorizeView : /*Composite*/ Form, IView<AuthorizeViewModel>
+    public partial class AuthorizeView : CompositeForm, IView<AuthorizeViewModel>
     {
         public AuthorizeView()
         {
