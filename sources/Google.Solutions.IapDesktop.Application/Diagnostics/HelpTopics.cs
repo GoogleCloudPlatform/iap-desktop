@@ -63,5 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             "Privacy",
             $"https://googlecloudplatform.github.io/iap-desktop/security/?{GaParameters}");
 
+        public static readonly IHelpTopic SignInTroubleshooting = new HelpTopic(
+            "Troubleshooting sign-in issues",
+            $"https://googlecloudplatform.github.io/iap-desktop/troubleshooting-signin/?{GaParameters}");
+
     }
 }

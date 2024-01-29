@@ -26,6 +26,7 @@ using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -60,6 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     install,
                     offlineStore,
                     new Mock<IRepository<IAccessSettings>>().Object,
+                    new HelpClient(),
                     TestProject.UserAgent)
             {
                 this.Client
