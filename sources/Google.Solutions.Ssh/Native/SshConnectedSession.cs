@@ -50,20 +50,13 @@ namespace Google.Solutions.Ssh.Native
 
         private static int HostKeyHashLength(LIBSSH2_HOSTKEY_HASH hashType)
         {
-            switch (hashType)
+            return hashType switch
             {
-                case LIBSSH2_HOSTKEY_HASH.MD5:
-                    return 16;
-
-                case LIBSSH2_HOSTKEY_HASH.SHA1:
-                    return 16;
-
-                case LIBSSH2_HOSTKEY_HASH.SHA256:
-                    return 32;
-
-                default:
-                    throw new ArgumentException(nameof(hashType));
-            }
+                LIBSSH2_HOSTKEY_HASH.MD5 => 16,
+                LIBSSH2_HOSTKEY_HASH.SHA1 => 16,
+                LIBSSH2_HOSTKEY_HASH.SHA256 => 32,
+                _ => throw new ArgumentException(nameof(hashType)),
+            };
         }
 
         //---------------------------------------------------------------------

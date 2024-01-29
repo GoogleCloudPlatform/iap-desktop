@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop
             }
         }
 
-        private IEnumerable<Assembly> LoadExtensionAssemblies()
+        private static IEnumerable<Assembly> LoadExtensionAssemblies()
         {
             var deprecatedExtensions = new[]
             {
@@ -154,6 +154,7 @@ namespace Google.Solutions.IapDesktop
                 "google.solutions.iapdesktop.extensions.os.dll",
                 "google.solutions.iapdesktop.extensions.shell.dll"
             };
+
             return Directory.GetFiles(
                 Path.GetDirectoryName(
                     Assembly.GetExecutingAssembly().Location),
@@ -244,7 +245,7 @@ namespace Google.Solutions.IapDesktop
                                 retryArgs.Exception.FullMessage(),
                                 new[]
                                 {
-                            "Change network settings"
+                                    "Change network settings"
                                 },
                                 null,
                                 out var _) == 0)
