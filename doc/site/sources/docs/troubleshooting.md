@@ -1,4 +1,4 @@
-# Installation troubleshooting
+# Troubleshooting installation issues
 
 ## :material-message-alert: "You need administrative privileges to install IAP Desktop on Windows Server"
 
