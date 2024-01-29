@@ -51,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         {
             Initial = 1,
             Version229 = 2,
-            Current = Version229
+            Version240 = 3,
+            Current = Version240
         }
 
         public const string DefaultProfileName = "Default";

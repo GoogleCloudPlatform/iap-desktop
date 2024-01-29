@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
@@ -69,12 +70,25 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         : PolicyEnabledRegistryRepository<IApplicationSettings>
     {
         public const char FullScreenDevicesSeparator = ',';
+        private readonly UserProfile.SchemaVersion schemaVersion;
 
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) 
+            RegistryKey userPolicyKey,
+            UserProfile.SchemaVersion schemaVersion) 
             : base(settingsKey, machinePolicyKey, userPolicyKey)
+        {
+            Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));
+            this.schemaVersion = schemaVersion;
+        }
+
+        public ApplicationSettingsRepository(UserProfile profile)
+            :this(
+                profile.SettingsKey.CreateSubKey("Application"),
+                profile.MachinePolicyKey?.OpenSubKey("Application"),
+                profile.UserPolicyKey?.OpenSubKey("Application"),
+                profile.Version)
         {
         }
 
@@ -82,11 +96,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey)
-            => ApplicationSettings.FromKey(
+        {
+            return ApplicationSettings.FromKey(
                 settingsKey,
                 machinePolicyKey,
-                userPolicyKey);
-
+                userPolicyKey,
+                this.schemaVersion);
+        }
 
         //---------------------------------------------------------------------
         // Inner class.
@@ -152,7 +168,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             public static ApplicationSettings FromKey(
                 RegistryKey settingsKey,
                 RegistryKey machinePolicyKey,
-                RegistryKey userPolicyKey)
+                RegistryKey userPolicyKey,
+                UserProfile.SchemaVersion schemaVersion)
             {
                 return new ApplicationSettings()
                 {
@@ -187,7 +204,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             "IsTelemetryEnabled",
                             null,
                             null,
-                            false,
+                            schemaVersion >= UserProfile.SchemaVersion.Version240
+                                ? true      // Auto opt-in new profiles
+                                : false,    // Opt-out existing profiles
                             settingsKey)
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),

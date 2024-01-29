@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
@@ -51,7 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
 
@@ -68,7 +73,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.IsMainWindowMaximized.BoolValue = true;
@@ -97,7 +106,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.ProxyUrl.Value = null;
@@ -117,7 +130,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("ProxyUrl", "http://setting");
                 userPolicyKey.SetValue("ProxyUrl", "http://userpolicy");
@@ -138,7 +152,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("ProxyUrl", "http://setting");
                 machinePolicyKey.SetValue("ProxyUrl", "http://machinepolicy");
@@ -159,7 +174,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("ProxyUrl", "http://setting");
                 userPolicyKey.SetValue("ProxyUrl", "http://userpolicy");
@@ -180,7 +196,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.ProxyPacUrl.Value = null;
@@ -200,7 +220,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("ProxyPacUrl", "http://setting");
                 userPolicyKey.SetValue("ProxyPacUrl", "http://userpolicy");
@@ -221,7 +242,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("ProxyPacUrl", "http://setting");
                 machinePolicyKey.SetValue("ProxyPacUrl", "http://machinepolicy");
@@ -242,7 +264,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("ProxyPacUrl", "http://setting");
                 userPolicyKey.SetValue("ProxyPacUrl", "http://userpolicy");
@@ -266,7 +289,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     null,
-                    null);
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("IsUpdateCheckEnabled", 0);
 
@@ -286,7 +310,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("IsUpdateCheckEnabled", 1);
                 userPolicyKey.SetValue("IsUpdateCheckEnabled", 0);
@@ -307,7 +332,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("IsUpdateCheckEnabled", 1);
                 machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
@@ -328,7 +354,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 settingsKey.SetValue("IsUpdateCheckEnabled", 1);
                 userPolicyKey.SetValue("IsUpdateCheckEnabled", 1);
@@ -349,7 +376,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 Assert.IsFalse(repository.IsPolicyPresent);
             }
@@ -361,7 +392,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, policyKey, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    policyKey, 
+                    null,
+                    UserProfile.SchemaVersion.Current);
 
                 Assert.IsTrue(repository.IsPolicyPresent);
             }
@@ -373,9 +408,51 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(settingsKey, null, policyKey);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    policyKey,
+                    UserProfile.SchemaVersion.Current);
 
                 Assert.IsTrue(repository.IsPolicyPresent);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IsTelemetryEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSchemaVersion240_ThenIsTelemetryEnabledDefaultsToTrue()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    null,
+                    policyKey,
+                    UserProfile.SchemaVersion.Version240);
+
+                Assert.IsTrue(repository.GetSettings().IsTelemetryEnabled.BoolValue);
+            }
+        }
+
+        [Test]
+        public void WhenSchemaVersion229OrBelow_ThenIsTelemetryEnabledDefaultsToTrue(
+            [Values(UserProfile.SchemaVersion.Initial, UserProfile.SchemaVersion.Version229)]
+            UserProfile.SchemaVersion schemaVersion)
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    null,
+                    policyKey,
+                    schemaVersion);
+
+                Assert.IsFalse(repository.GetSettings().IsTelemetryEnabled.BoolValue);
             }
         }
     }

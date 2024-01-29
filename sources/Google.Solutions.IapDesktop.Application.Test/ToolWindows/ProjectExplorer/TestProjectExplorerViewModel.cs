@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -106,7 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             this.settingsRepository = new ApplicationSettingsRepository(
                 this.hkcu.CreateSubKey(TestKeyPath),
                 null,
-                null);
+                null,
+                UserProfile.SchemaVersion.Current);
             this.projectRepository = new ProjectRepository(
                 this.hkcu.CreateSubKey(TestKeyPath));
             this.projectExplorerSettings = new ProjectExplorerSettings(

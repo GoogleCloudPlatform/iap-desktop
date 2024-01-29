@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Testing.Application.Test;
@@ -49,7 +50,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             this.settingsRepository = new ApplicationSettingsRepository(
                 baseKey,
                 null,
-                null);
+                null,
+                UserProfile.SchemaVersion.Current);
         }
 
         //---------------------------------------------------------------------

@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Profile;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -66,7 +67,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 policyKey.SetValue(policy.Key, policy.Value);
             }
 
-            return new ApplicationSettingsRepository(baseKey, policyKey, null);
+            return new ApplicationSettingsRepository(
+                baseKey, 
+                policyKey, 
+                null,
+                UserProfile.SchemaVersion.Current);
         }
 
         //---------------------------------------------------------------------
