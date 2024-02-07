@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     .OrderBy(c => c.Text)
                     .ToList());
             this.ContextMenuConnectTunnel = new CommandGroup(
-                "Connect &tunnel",
+                "&Tunnel to",
                 this.ConnectTunnelSubCommands
                     .OrderBy(c => c.Text)
                     .ToList());
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
                 yield return new ForwardLocalPortCommand(
                     this.ownerWindow,
-                    "Other &port...",
+                    "Other server &port...",
                     this.transportFactory,
                     this.processFactory,
                     this.jobService,
