@@ -75,6 +75,12 @@ namespace Google.Solutions.IapDesktop.Application.Host
         string UniqueId { get; }
     }
 
+    public enum Architecture
+    {
+        X86,
+        X64
+    }
+
     public class Install : IInstall
     {
         private const string VersionHistoryValueName = "InstalledVersionHistory";
@@ -102,6 +108,28 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// User agent to use in all HTTP requests.
         /// </summary>
         public static UserAgent UserAgent { get; }
+
+        /// <summary>
+        /// Architecture of the CPU.
+        /// </summary>
+        public static Architecture CpuArchitecture
+        {
+            get => Environment.Is64BitOperatingSystem ? Architecture.X64 : Architecture.X86;
+        }
+
+        /// <summary>
+        /// Architecture of the process (which might run emulated).
+        /// </summary>
+        public static Architecture ProcessArchitecture
+        {
+#if X86
+            get => Architecture.X86;
+#elif X64
+            get => Architecture.X64;
+#else
+#error Unknown architecture
+#endif
+        }
 
         public static bool IsExecutingTests { get; }
 
