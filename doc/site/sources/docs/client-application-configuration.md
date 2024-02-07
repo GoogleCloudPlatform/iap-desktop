@@ -4,8 +4,8 @@ You can register custom client applications by creating an _IAP Application Prot
 IAPC file defines the following:
 
 * The name of the client application
-* The executable to launch
 * The VM instances that the client application applies to
+* The executable to launch (optional)
 
 IAPC are JSON files that use the `.iapc` file extension. During startup, IAP Desktop loads all
 IAPC files in the `%appdata%\Google\IAP Desktop\Config` folder. 
@@ -65,7 +65,7 @@ The following code snippet shows an example file for the MySQL shell:
             </ul>
             Note: Backslashes must be escaped with another backslash (<code>\\</code>).
         </td>
-        <td>Required</td>
+        <td>Optional</td>
     <tr>
     <tr>
         <td><code>arguments</code></td>

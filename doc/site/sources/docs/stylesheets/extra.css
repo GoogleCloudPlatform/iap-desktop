@@ -97,7 +97,7 @@ article li {
 
 .tabbed-content {
     background-color: var(--md-admonition-bg-color);
-    border: 0.05rem solid 0x66666;
+    border: 0.075rem solid lightgray;
     border-radius: 0.2rem;
     box-shadow: var(--md-shadow-z1);
     padding: 0.2rem;
