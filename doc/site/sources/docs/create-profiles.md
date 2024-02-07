@@ -34,7 +34,7 @@ To delete a profile, do the following:
 
 1.  Switch to the profile you want to delete.
 
-1.  In the main menu, select **File > Sign out and exit**.
+1.  In the main menu, select **Profile > Sign out and exit**.
 
 1.  When prompted whether you want to keep the profile, select **No**.
 
@@ -49,7 +49,7 @@ signing in again:
 
 1.  Switch to the profile you want to modify.
 
-1.  In the main menu, select **File > Sign out and exit**.
+1.  In the main menu, select **Profile > Sign out and exit**.
 
 1.  When prompted whether you want to keep the profile, select **Yes**.
 

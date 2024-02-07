@@ -90,7 +90,7 @@ Now that you're signed in, you can access your Google Cloud projects:
     
     ![Project Explorer](images/05-explorer.png)
     
-1.   Optionally, click **File > Add project** in the menu to add additional projects.
+1.   Optionally, click **Profile > Add project** in the menu to add additional projects.
 
 You're now ready to [connect to a Windows VM](connect-windows.md) or a [Linux VM](connect-linux.md). 
 
