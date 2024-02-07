@@ -409,10 +409,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Load settings.
                 //
-                var appSettingsRepository = new ApplicationSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Application"),
-                    profile.MachinePolicyKey?.OpenSubKey("Application"),
-                    profile.UserPolicyKey?.OpenSubKey("Application"));
+                var appSettingsRepository = new ApplicationSettingsRepository(profile);
                 preAuthLayer.AddSingleton<IRepository<IApplicationSettings>>(appSettingsRepository);
 
                 if (appSettingsRepository.IsPolicyPresent)

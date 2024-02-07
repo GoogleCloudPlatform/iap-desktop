@@ -71,11 +71,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     {
         private readonly UserProfile.SchemaVersion schemaVersion;
 
-        public SshSettingsRepository(
+        internal SshSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey,
-            UserProfile.SchemaVersion schemaVersion) : base(settingsKey, machinePolicyKey, userPolicyKey)
+            UserProfile.SchemaVersion schemaVersion) 
+            : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
             Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));
             this.schemaVersion = schemaVersion;
@@ -95,11 +96,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey)
-            => SshSettings.FromKey(
+        {
+            return SshSettings.FromKey(
                 settingsKey,
                 machinePolicyKey,
                 userPolicyKey,
                 this.schemaVersion);
+        }
 
 
         //---------------------------------------------------------------------

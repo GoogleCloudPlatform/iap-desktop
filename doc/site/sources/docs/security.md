@@ -26,7 +26,7 @@ ones listed on this page.
 
 ## Usage data
 
-By default, IAP Desktop _does not_ collect or share usage data. You can help Google improve and prioritize 
+You can help Google improve and prioritize 
 features and improvements by enabling data sharing under **Tools > Options > Data sharing**.
 You can enable or disable data sharing at any time.
 
