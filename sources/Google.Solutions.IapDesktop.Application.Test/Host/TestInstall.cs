@@ -183,5 +183,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             Assert.AreEqual(new Version(0, 0, 3, 0), install.PreviousVersion);
         }
+
+        //---------------------------------------------------------------------
+        // UserAgent.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void UserAgentIncludesPlatform()
+        {
+            StringAssert.Contains(
+                Environment.OSVersion.VersionString,
+                Install.UserAgent.Platform);
+            StringAssert.Contains(
+                $"{Install.ProcessArchitecture.ToString().ToLower()}/", 
+                Install.UserAgent.Platform);
+            StringAssert.Contains(
+                $"/{Install.CpuArchitecture.ToString().ToLower()}",
+                Install.UserAgent.Platform);
+        }
     }
 }

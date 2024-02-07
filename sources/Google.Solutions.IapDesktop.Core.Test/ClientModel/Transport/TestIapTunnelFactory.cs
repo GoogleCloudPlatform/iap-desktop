@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap;
@@ -43,8 +41,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private static readonly UserAgent SampleUserAgent
-            = new UserAgent("Test", new System.Version(1, 0));
+        private static readonly UserAgent SampleUserAgent = new UserAgent(
+            "Test", 
+            new System.Version(1, 0),
+            Environment.OSVersion.VersionString);
 
         //---------------------------------------------------------------------
         // CreateTunnel.

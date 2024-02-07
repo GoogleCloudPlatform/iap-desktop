@@ -75,7 +75,8 @@ namespace Google.Solutions.Testing.Apis.Integration
         {
             UserAgent = new UserAgent(
                 "IAP-Desktop-TestSuite",
-                Assembly.GetExecutingAssembly().GetName().Version);
+                Assembly.GetExecutingAssembly().GetName().Version,
+                Environment.OSVersion.VersionString);
 
             //
             // Enable TLS 1.2.

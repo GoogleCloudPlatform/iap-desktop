@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 
@@ -27,36 +28,31 @@ namespace Google.Solutions.Apis.Client
 {
     public class UserAgent
     {
+        /// <summary>
+        /// Product name.
+        /// </summary>
         public string Product { get; }
+
+        /// <summary>
+        /// Product version.
+        /// </summary>
         public Version Version { get; }
-        public string OsVersion { get; }
+
+        /// <summary>
+        /// Operating system and other information about the platform.
+        /// </summary>
+        public string Platform { get; }
 
         /// <summary>
         /// Application-specific features/extensions to be added to header.
         /// </summary>
         public string? Extensions { get; set; }
 
-        private static string GetOsVersion()
+        public UserAgent(string product, Version version, string platform)
         {
-            var version = Environment.OSVersion.VersionString;
-            if (!Environment.Is64BitOperatingSystem)
-            {
-                version += " 32-bit";
-            }
-
-            return version;
-        }
-
-        internal UserAgent(string product, Version version, string platform)
-        {
-            this.Product = product;
+            this.Product = product.ExpectNotEmpty(nameof(product));
             this.Version = version;
-            this.OsVersion = platform;
-        }
-
-        public UserAgent(string product, Version version)
-            : this(product, version, GetOsVersion())
-        {
+            this.Platform = platform.ExpectNotEmpty(nameof(platform));
         }
 
         /// <summary>
@@ -75,7 +71,7 @@ namespace Google.Solutions.Apis.Client
         /// </summary>
         public override string ToString()
         {
-            var platform = this.OsVersion;
+            var platform = this.Platform;
 
             if (!string.IsNullOrEmpty(this.Extensions))
             {

@@ -53,7 +53,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void OsVersion()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
-            Assert.AreEqual("Windows 95", ua.OsVersion);
+            Assert.AreEqual("Windows 95", ua.Platform);
         }
 
         //---------------------------------------------------------------------
