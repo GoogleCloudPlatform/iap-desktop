@@ -204,12 +204,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 if (this.ConnectionStatus == Status.Connected &&
                     errorType == TerminalErrorType.ConnectionLost)
                 {
-                    OnConnectionLost(new ConnectionErrorEventArgs(exception))
+                    _ = OnConnectionLost(new ConnectionErrorEventArgs(exception))
                         .ContinueWith(_ => { });
                 }
                 else
                 {
-                    OnConnectionFailed(new ConnectionErrorEventArgs(exception))
+                    _ = OnConnectionFailed(new ConnectionErrorEventArgs(exception))
                         .ContinueWith(_ => { });
                 }
             }
