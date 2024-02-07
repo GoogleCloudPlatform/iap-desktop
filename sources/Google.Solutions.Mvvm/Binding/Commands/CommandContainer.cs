@@ -324,7 +324,13 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 var context = this.container.ContextSource.Context;
                 if (context == null)
                 {
-                    this.IsVisible = false;
+                    //
+                    // Assume all commands are unavailable. Hiding
+                    // all menu items looks awkward though, so disable
+                    // them.
+                    //
+                    this.IsVisible = true;
+                    this.IsEnabled = false;
                     return;
                 }
 
