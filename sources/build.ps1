@@ -108,6 +108,17 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
         $LocalFeed = (Resolve-Path "${PSScriptRoot}\..\dependencies\NuGetPackages").Path
     }
  
+    $NuGetConfig = @"
+<?xml version='1.0' encoding='utf-8'?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key='nuget.org' value='https://api.nuget.org/v3/index.json' protocolVersion='3' />
+    <add key='dependencies' value='{0}' />
+  </packageSources>
+</configuration>
+"@ | Out-File -Encoding ASCII ${PSScriptRoot}\NuGet.config
+
     #
     # Restore packages for solution.
     #
