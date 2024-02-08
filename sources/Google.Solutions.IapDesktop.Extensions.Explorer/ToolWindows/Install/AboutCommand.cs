@@ -29,7 +29,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
-    [MenuCommand(typeof(HelpMenu), Rank = 0x1002)]
+    [MenuCommand(typeof(HelpMenu), Rank = 0x1102)]
     [Service]
     public class AboutCommand : MenuCommandBase<IInstall>
     {

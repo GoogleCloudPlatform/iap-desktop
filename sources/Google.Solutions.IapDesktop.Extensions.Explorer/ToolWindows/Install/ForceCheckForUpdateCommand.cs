@@ -30,11 +30,11 @@ using Google.Solutions.Platform.Net;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Dialog
+namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
-    [MenuCommand(typeof(DebugMenu), Rank = 0x500)]
+    [MenuCommand(typeof(HelpMenu), Rank = 0x1001)]
     [Service]
-    public class ForceCheckForUpdateCommand : CheckForUpdateCommand<DebugMenu.Context>
+    public class ForceCheckForUpdateCommand : CheckForUpdateCommand<IInstall>
     {
         public ForceCheckForUpdateCommand(
             IWin32Window parentWindow,

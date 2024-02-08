@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
-    [MenuCommand(typeof(HelpMenu), Rank = 0x1000)]
+    [MenuCommand(typeof(HelpMenu), Rank = 0x1001)]
     [Service]
     public class ReleaseNotesCommand
         : OpenToolWindowCommand<IInstall, ReleaseNotesView, ReleaseNotesViewModel>

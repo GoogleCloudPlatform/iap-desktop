@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
-    [MenuCommand(typeof(HelpMenu), Rank = 0x1001)]
+    [MenuCommand(typeof(HelpMenu), Rank = 0x1101)]
     [Service]
     public class ReportBugCommand : MenuCommandBase<IInstall>
     {
