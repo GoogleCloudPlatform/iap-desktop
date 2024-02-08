@@ -117,7 +117,7 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
     <add key='dependencies' value='{0}' />
   </packageSources>
 </configuration>
-"@ | Out-File -Encoding ASCII ${PSScriptRoot}\NuGet.config
+"@ -f $LocalFeed | Out-File -Encoding ASCII ${PSScriptRoot}\NuGet.config
 
     #
     # Restore packages for solution.
