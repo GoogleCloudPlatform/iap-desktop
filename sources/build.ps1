@@ -108,7 +108,6 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
         $LocalFeed = (Resolve-Path "${PSScriptRoot}\..\dependencies\NuGetPackages").Path
     }
  
-    $LocalFeedPrefixes = (Get-ChildItem $LocalFeed | ForEach-Object { "<package pattern='$($_.Name)*' />" }) -join "`n"
     $NuGetConfig = @"
 <?xml version='1.0' encoding='utf-8'?>
 <configuration>
@@ -117,16 +116,8 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
     <add key='nuget.org' value='https://api.nuget.org/v3/index.json' protocolVersion='3' />
     <add key='dependencies' value='{0}' />
   </packageSources>
-  <packageSourceMapping>
-    <packageSource key="nuget.org">
-      <package pattern="*" />
-    </packageSource>
-    <packageSource key="dependencies">
-    {1}
-    </packageSource>
-  </packageSourceMapping>
 </configuration>
-"@ -f $LocalFeed,$LocalFeedPrefixes | Out-File -Encoding ASCII ${PSScriptRoot}\NuGet.config
+"@ -f $LocalFeed | Out-File -Encoding ASCII ${PSScriptRoot}\NuGet.config
 
     #
     # Restore packages for solution.
