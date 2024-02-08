@@ -23,19 +23,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugType>full</DebugType>
-    <DefineConstants>X86</DefineConstants>
+    <DefineConstants>X86;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugType>pdbonly</DebugType>
-    <DefineConstants>X86</DefineConstants>
+    <DefineConstants>X86;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugType>full</DebugType>
-    <DefineConstants>X64</DefineConstants>
+    <DefineConstants>X64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugType>pdbonly</DebugType>
-    <DefineConstants>X64</DefineConstants>
+    <DefineConstants>X64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition="!$(ProjectName.EndsWith('.Test'))">
