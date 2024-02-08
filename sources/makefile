@@ -293,7 +293,7 @@ policies: $(POLICIES_PACKAGE)
 # Kokoro specific targets
 #------------------------------------------------------------------------------
 
-# NB. Run integration tests for single platform ony to save time
+# NB. Run integration tests for single platform only to save time
 kokoro-continuous-integration:
     $(MAKE) $(MAKEFLAGS) PLATFORM=x64 SKIP_INTEGRATION_TESTS=1 \
         installer \
