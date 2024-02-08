@@ -1,7 +1,7 @@
 @echo off
 
 rem
-rem Copyright 2019 Google LLC
+rem Copyright 2024 Google LLC
 rem
 rem Licensed to the Apache Software Foundation (ASF) under one
 rem or more contributor license agreements.  See the NOTICE file
@@ -21,12 +21,19 @@ rem specific language governing permissions and limitations
 rem under the License.
 rem
 
-rem Change to the directory where this script is located in
-cd %~dp0
+rem Change to parent directory.
+cd %~dp0\..
 
 rem Invoke build.
-powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1 %*
+powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1 kokoro-continuous-integration
 
 set RETURNVALUE=%ERRORLEVEL%
 echo "Build exited with exit code %ERRORLEVEL%"
+
+rem Remove BOM to make file compatible with Sponge.
+if exist sponge_log.xml (
+    echo "Removing BOM from sponge_log.xml"
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\strip-bom.ps1 sponge_log.xml
+)
+
 exit /b %RETURNVALUE%
