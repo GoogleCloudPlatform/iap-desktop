@@ -22,8 +22,6 @@
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
-using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
