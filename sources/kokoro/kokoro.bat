@@ -25,7 +25,7 @@ rem Change to parent directory.
 cd %~dp0\..
 
 rem Invoke build.
-powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1 %*
+powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1 kokoro-continuous-integration
 
 set RETURNVALUE=%ERRORLEVEL%
 echo "Build exited with exit code %ERRORLEVEL%"

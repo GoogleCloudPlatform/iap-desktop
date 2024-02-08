@@ -86,7 +86,7 @@ POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 # Output targets
 #------------------------------------------------------------------------------
 
-default: kokoro-continuous-integration
+default: installer
 
 themes: Google.Solutions.IapDesktop.Application\Theme\Resources\Dark.vstheme \
         Google.Solutions.IapDesktop.Application\Theme\Resources\Light.vstheme
@@ -299,5 +299,3 @@ kokoro-continuous-integration: \
 	symbols \
     policies \
 	test
-
-kokoro-sign: installer
