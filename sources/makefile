@@ -279,7 +279,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 
-installer: $(INSTALLER_PACKAGE)
+installer: check-copyright-headers $(INSTALLER_PACKAGE)
 installer-snapshot: $(INSTALLER_SNAPSHOT) 
 symbols: $(SYMBOLS_PACKAGE)
 policies: $(POLICIES_PACKAGE)
@@ -288,10 +288,14 @@ policies: $(POLICIES_PACKAGE)
 # Kokoro specific targets
 #------------------------------------------------------------------------------
 
-kokoro-continuous-integration: \
-	check-copyright-headers \
-	installer \
-	installer-snapshot \
-	symbols \
-    policies \
-	test
+kokoro-continuous-integration:
+    $(MAKE) $(MAKEFLAGS) PLATFORM=x64 installer \
+        installer-snapshot \
+        symbols \
+        policies
+
+    $(MAKE) $(MAKEFLAGS) PLATFORM=x86 installer \
+        installer-snapshot \
+        symbols \
+        policies \
+        test
