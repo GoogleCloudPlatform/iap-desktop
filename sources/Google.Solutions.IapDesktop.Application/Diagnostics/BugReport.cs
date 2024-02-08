@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.Mvvm.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -90,7 +91,9 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
 
             if (this.SourceWindow == null)
             {
-                text.Append("Window: unknown\n");
+                //
+                // Ignore.
+                //
             }
             else if (this.SourceWindow is Control control &&
                 control.FindForm() is var form &&
@@ -104,14 +107,10 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
                 text.Append("Window: main\n");
             }
 
-            var cpuArchitecture = Assembly.GetEntryAssembly()?.GetName().ProcessorArchitecture.ToString() ?? "unknown";
-            var processBitness = Environment.Is64BitProcess ? 64 : 32;
-
             text.Append($"Source: {this.source?.Name ?? string.Empty}\n");
-            text.Append($"Installed version: {GetType().Assembly.GetName().Version}\n");
-            text.Append($"Runtime Version: {ClrVersion.Version}\n");
-            text.Append($"OS Version: {Environment.OSVersion}\n");
-            text.Append($"Architecture: {cpuArchitecture} ({processBitness} bit)");
+            text.Append($"Version: {GetType().Assembly.GetName().Version}\n");
+            text.Append($"Runtime: {ClrVersion.Version} ({Install.ProcessArchitecture})\n");
+            text.Append($"OS: {Environment.OSVersion} ({Install.CpuArchitecture})\n");
 
             return text.ToString();
         }
