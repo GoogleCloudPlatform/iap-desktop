@@ -38,10 +38,10 @@ BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\IapDesktop.exe
 
-INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
-INSTALLER_PACKAGE  = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
-SYMBOLS_PACKAGE    = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
-POLICIES_PACKAGE   = installer\bin\$(CONFIGURATION)\PolicyTemplates-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+INSTALLER_SNAPSHOT = dist\$(PLATFORM)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+INSTALLER_PACKAGE  = dist\$(PLATFORM)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
+SYMBOLS_PACKAGE    = dist\$(PLATFORM)\Symbols-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+POLICIES_PACKAGE   = dist\$(PLATFORM)\PolicyTemplates-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Apis.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Apis.Test.dll	\
@@ -186,8 +186,6 @@ $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 	@echo "=== Packaging installer snapshot                     ==="
 	@echo "========================================================"
 	
-    -1 robocopy $(MAKEDIR)\installer\bin $(MAKEDIR)\installer\bin.original /E /MOVE
-    
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
 		-ZipFile $(INSTALLER_SNAPSHOT) \
 		-Path $(MAKEDIR)\makefile, \
@@ -195,8 +193,6 @@ $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 			  $(MAKEDIR)\installer, \
 			  $(NUGET_PACKAGEES)\Wix\$(WIX)\tools
 
-    - robocopy $(MAKEDIR)\installer\bin.original $(MAKEDIR)\installer\bin /E /MOVE
-    
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Packaging symbols                                ==="
