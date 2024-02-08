@@ -68,7 +68,12 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Management]* \
 	+[Google.Solutions.IapDesktop.Extensions.Session]* \
 	+[Google.Solutions.IapDesktop.Extensions.Explorer]*
-	
+    
+NUNIT_FILTER = cat!=InteractiveTest and cat!=RdpTest and cat!=ProxyAutoconfigTest
+!if ( "$(SKIP_INTEGRATION_TESTS)" != "" )
+NUNIT_FILTER = $(NUNIT_FILTER) and cat!=CloudIntegrationTest
+!endif
+
 SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /n Google /a /fd sha256 /td sha256
 NUGET_PACKAGEES = $(USERPROFILE)\.nuget\packages
 
@@ -269,7 +274,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-register:user \
 		-returntargetcode \
 		-target:nunit3-console.exe \
-		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=1 --where ""cat!=InteractiveTest and cat!=RdpTest and cat!=ProxyAutoconfigTest""" \
+		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=1 --where ""$(NUNIT_FILTER)""" \
 		-filter:"$(NUNIT_COVERAGE_FILTER)" \
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml
@@ -288,13 +293,17 @@ policies: $(POLICIES_PACKAGE)
 # Kokoro specific targets
 #------------------------------------------------------------------------------
 
+# NB. Run integration tests for single platform ony to save time
 kokoro-continuous-integration:
-    $(MAKE) $(MAKEFLAGS) PLATFORM=x64 installer \
+    $(MAKE) $(MAKEFLAGS) PLATFORM=x64 SKIP_INTEGRATION_TESTS=1 \
+        installer \
         installer-snapshot \
         symbols \
-        policies
+        policies \
+        test
 
-    $(MAKE) $(MAKEFLAGS) PLATFORM=x86 installer \
+    $(MAKE) $(MAKEFLAGS) PLATFORM=x86 \
+        installer \
         installer-snapshot \
         symbols \
         policies \
