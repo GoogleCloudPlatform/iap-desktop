@@ -104,7 +104,10 @@ Google.Solutions.IapDesktop\OAuthClient.cs:
 
 	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
 
-$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): themes Google.Solutions.IapDesktop\OAuthClient.cs
+$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): \
+			check-copyright-headers \
+			themes \
+			Google.Solutions.IapDesktop\OAuthClient.cs
 	@echo "========================================================"
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
@@ -292,7 +295,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 
-installer: check-copyright-headers $(INSTALLER_PACKAGE)
+installer: $(INSTALLER_PACKAGE)
 installer-snapshot: $(INSTALLER_SNAPSHOT) 
 symbols: $(SYMBOLS_PACKAGE)
 policies: $(POLICIES_PACKAGE)
