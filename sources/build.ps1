@@ -38,41 +38,47 @@ $env:Path = ($env:Path -split ";" `
 # Find MSBuild and add to PATH
 #------------------------------------------------------------------------------
 
-$MsBuildCandidates = `
-    "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
-    "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
-    "c:\VS\MSBuild\Current\Bin\"
+if ((Get-Command "msbuild.exe" -ErrorAction SilentlyContinue) -eq $null)
+{
+    $MsBuildCandidates = `
+        "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
+        "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
+        "c:\VS\MSBuild\Current\Bin\"
 
-$Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
-if ($Msbuild)
-{
-	$MsbuildDir = (Split-Path $Msbuild -Parent)
-	$env:Path += ";$MsbuildDir"
-}
-else
-{
-	Write-Host "Could not find msbuild" -ForegroundColor Red
-	exit 1
+    $Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
+    if ($Msbuild)
+    {
+        $MsbuildDir = (Split-Path $Msbuild -Parent)
+        $env:Path += ";$MsbuildDir"
+    }
+    else
+    {
+        Write-Host "Could not find msbuild" -ForegroundColor Red
+        exit 1
+    }
 }
 
 #------------------------------------------------------------------------------
 # Find nmake and add to PATH
 #------------------------------------------------------------------------------
 
-$NmakeCandidates = `
-    "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
-    "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
-    "c:\VS\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe"
-$Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
-if ($Nmake)
+if ((Get-Command "nmake.exe" -ErrorAction SilentlyContinue) -eq $null)
 {
-	$NMakeDir = (Split-Path $NMake -Parent)
-	$env:Path += ";$NMakeDir"
-}
-else
-{
-	Write-Host "Could not find nmake" -ForegroundColor Red
-	exit 1
+    $NmakeCandidates = `
+        "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
+        "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
+        "c:\VS\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe"
+    $Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
+    if ($Nmake)
+    {
+        $NMakeDir = (Split-Path $NMake -Parent)
+        $env:Path += ";$NMakeDir"
+    }
+    else
+    {
+        Write-Host "Could not find nmake" -ForegroundColor Red
+        exit 1
+    }
 }
 
 #------------------------------------------------------------------------------
@@ -80,7 +86,7 @@ else
 #------------------------------------------------------------------------------
 
 $env:NUGET = (Get-Command "nuget.exe" -ErrorAction SilentlyContinue).Source
-if ($env:NUGET  -eq $null) 
+if ($env:NUGET -eq $null) 
 {
 	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 
