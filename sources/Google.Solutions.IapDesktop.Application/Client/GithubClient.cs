@@ -23,6 +23,7 @@ using Google.Apis.Json;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Host;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -254,20 +255,42 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 }
             }
 
-            public string DownloadUrl
-            {
-                get => this
-                    .Assets
-                    .EnsureNotNull()
-                    .FirstOrDefault(u => u.DownloadUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))?
-                    .DownloadUrl;
-            }
-
             public IReleaseSurvey Survey { get; internal set; }
 
             public string DetailsUrl => this.HtmlUrl;
 
             public string Description => this.Body;
+
+            public bool TryGetDownloadUrl(Architecture architecture, out string downloadUrl)
+            {
+                var msiFiles = this
+                    .Assets
+                    .EnsureNotNull()
+                    .Where(u => u.DownloadUrl.EndsWith(
+                        ".msi", 
+                        StringComparison.OrdinalIgnoreCase))
+                    .EnsureNotNull();
+
+                var platformSpecificMsiFiles = msiFiles
+                    .Where(u => u.DownloadUrl.IndexOf(
+                        architecture.ToString(),
+                        StringComparison.OrdinalIgnoreCase) > 0);
+
+                if (platformSpecificMsiFiles.Any())
+                {
+                    downloadUrl = platformSpecificMsiFiles.First().DownloadUrl;
+                }
+                else if (msiFiles.Any())
+                {
+                    downloadUrl = msiFiles.First().DownloadUrl;
+                }
+                else
+                {
+                    downloadUrl = null;
+                }
+
+                return downloadUrl != null;
+            }
         }
 
         public class ReleaseAsset
