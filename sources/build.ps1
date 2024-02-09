@@ -79,7 +79,8 @@ else
 # Find nuget and add to PATH
 #------------------------------------------------------------------------------
 
-if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null) 
+$env:NUGET = (Get-Command "nuget.exe" -ErrorAction SilentlyContinue).Source
+if ($env:NUGET  -eq $null) 
 {
 	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 

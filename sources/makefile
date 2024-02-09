@@ -186,16 +186,24 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
 !endif
 
+# NB. The installer snapshot must contain all tools necessary to build the installer.
 $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Packaging installer snapshot                     ==="
 	@echo "========================================================"
 	
+    if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\tools \
+        md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\tools
+
+    copy $(MAKE) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\tools
+    copy $(NUGET) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\tools
+
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
 		-ZipFile $(INSTALLER_SNAPSHOT) \
 		-Path $(MAKEDIR)\makefile, \
 			  $(MAKEDIR)\build.ps1, \
 			  $(MAKEDIR)\installer, \
+              $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\tools, \
 			  $(NUGET_PACKAGEES)\Wix\$(WIX)\tools
 
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
@@ -204,7 +212,7 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 
 	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols \
-		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\\symbols
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
 	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\*.pdb \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
