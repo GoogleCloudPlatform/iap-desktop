@@ -58,6 +58,8 @@ if ((Get-Command "msbuild.exe" -ErrorAction SilentlyContinue) -eq $null)
     }
 }
 
+$env:MSBUILD = $Msbuild
+
 #------------------------------------------------------------------------------
 # Find nmake and add to PATH
 #------------------------------------------------------------------------------
@@ -86,8 +88,8 @@ if ($Nmake -eq $null)
 # Find nuget and add to PATH
 #------------------------------------------------------------------------------
 
-$env:NUGET = (Get-Command "nuget.exe" -ErrorAction SilentlyContinue).Source
-if ($env:NUGET -eq $null) 
+$Nuget = (Get-Command "nuget.exe" -ErrorAction SilentlyContinue).Source
+if ($Nuget -eq $null) 
 {
 	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 
@@ -97,6 +99,8 @@ if ($env:NUGET -eq $null)
 	
 	$env:Path += ";${PSScriptRoot}\.tools"
 }
+
+$env:NUGET = $Nuget
 
 #------------------------------------------------------------------------------
 # Restore packages and make them available in the environment
