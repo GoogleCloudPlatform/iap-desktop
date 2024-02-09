@@ -189,10 +189,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         public void WhenUserSelectsDownload_ThenPromptForActionOpensDownload()
         {
             var browser = new Mock<IBrowser>();
+            var release = new Mock<IRelease>();
 
             var downloadUrl = "http://example.com/download";
-            var release = new Mock<IRelease>();
-            release.SetupGet(r => r.DownloadUrl).Returns(downloadUrl);
+            release
+                .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
+                .Returns(true);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
@@ -216,6 +218,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.DetailsUrl).Returns(detailsUrl);
 
+            string downloadUrl = null;
+            release
+                .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
+                .Returns(false);
+
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
@@ -236,9 +243,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             var downloadUrl = "http://example.com/download";
             var detailsUrl = "http://example.com/details";
+
             var release = new Mock<IRelease>();
-            release.SetupGet(r => r.DownloadUrl).Returns(downloadUrl);
             release.SetupGet(r => r.DetailsUrl).Returns(detailsUrl);
+            release
+                .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
+                .Returns(true);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,

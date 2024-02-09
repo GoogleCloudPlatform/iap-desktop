@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using Google.Solutions.IapDesktop.Application.Host;
 
 namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {
@@ -35,11 +36,6 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// Version number, if available.
         /// </summary>
         Version TagVersion { get; }
-
-        /// <summary>
-        /// URL to installer package.
-        /// </summary>
-        string DownloadUrl { get; }
 
         /// <summary>
         /// URL to website for this release.
@@ -60,6 +56,11 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// Survey associated with this release.
         /// </summary>
         IReleaseSurvey Survey { get; }
+
+        /// <summary>
+        /// Get download URL of installer package.
+        /// </summary>
+        bool TryGetDownloadUrl(Architecture architecture, out string downloadUrl);
     }
 
     /// <summary>

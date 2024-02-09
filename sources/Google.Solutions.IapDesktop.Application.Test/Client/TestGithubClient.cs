@@ -456,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenReleaseHasNoMsiDownload_ThenDownloadUrlIsNull()
+        public async Task WhenReleaseHasNoMsiDownload_ThenTryGetDownloadUrlReturnsFalse()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -481,11 +481,55 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsNull(release.DownloadUrl);
+            Assert.IsFalse(release.TryGetDownloadUrl(
+                Application.Host.Architecture.X86,
+                out var downloadUrl));
+            Assert.IsNull(downloadUrl);
         }
 
         [Test]
-        public async Task WhenReleaseHasMsiDownload_ThenDownloadUrlIsNull()
+        public async Task WhenReleaseHasPlatformSpecificMsiDownload_ThenDownloadUrlIsNull()
+        {
+            var restAdapter = new Mock<IExternalRestClient>();
+            restAdapter
+                .Setup(a => a.GetAsync<GithubClient.Release>(
+                    It.IsNotNull<Uri>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GithubClient.Release(
+                    "1.2.3.4",
+                    null,
+                    null,
+                    null,
+                    new List<GithubClient.ReleaseAsset>()
+                    {
+                        new GithubClient.ReleaseAsset("http://example.com/x86.x64.txt"),
+                        new GithubClient.ReleaseAsset("http://example.com/download.x64.msi"),
+                        new GithubClient.ReleaseAsset("http://example.com/download.x86.MSI"),
+                        new GithubClient.ReleaseAsset("http://example.com/download.MSI")
+                    }));
+
+            var adapter = new GithubClient(
+                restAdapter.Object,
+                SampleRepository);
+            var release = await adapter
+                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(release);
+
+            Assert.IsTrue(release.TryGetDownloadUrl(
+                Application.Host.Architecture.X86,
+                out var downloadUrlX86));
+            Assert.AreEqual("http://example.com/download.x86.MSI", downloadUrlX86);
+
+            Assert.IsTrue(release.TryGetDownloadUrl(
+                Application.Host.Architecture.X64,
+                out var downloadUrlX64));
+            Assert.AreEqual("http://example.com/download.x64.msi", downloadUrlX64);
+        }
+
+        [Test]
+        public async Task WhenReleaseHasGenericMsiDownload_ThenDownloadUrlIsNull()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -511,7 +555,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.AreEqual("http://example.com/download.msi", release.DownloadUrl);
+            Assert.IsTrue(release.TryGetDownloadUrl(
+                Application.Host.Architecture.X86, 
+                out var downloadUrl));
+            Assert.AreEqual("http://example.com/download.msi", downloadUrl);
         }
 
         //---------------------------------------------------------------------
@@ -531,9 +578,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsNotNull(release);
             Assert.IsTrue(release.TagVersion.Major >= 1);
 
-            Assert.IsNotNull(release.DownloadUrl);
-            Assert.IsTrue(Uri.IsWellFormedUriString(release.DownloadUrl, UriKind.Absolute));
-            StringAssert.EndsWith(".msi", release.DownloadUrl);
+            Assert.IsTrue(release.TryGetDownloadUrl(
+                Application.Host.Architecture.X86,
+                out var downloadUrl));
+
+            Assert.IsNotNull(downloadUrl);
+            Assert.IsTrue(Uri.IsWellFormedUriString(downloadUrl, UriKind.Absolute));
+            StringAssert.EndsWith(".msi", downloadUrl);
 
             Assert.IsNotNull(release.DetailsUrl);
             Assert.IsTrue(Uri.IsWellFormedUriString(release.DetailsUrl, UriKind.Absolute));

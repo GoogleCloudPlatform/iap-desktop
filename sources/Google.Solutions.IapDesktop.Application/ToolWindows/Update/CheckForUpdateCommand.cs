@@ -127,14 +127,23 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
                 //
-                // Download release.
+                // Get download URL. 
+                //
+                // In case there are multple download URLs, prefer the
+                // one that matches the current platform.
                 //
                 var downloadButton = new TaskDialogCommandLinkButton(
                     "Yes, download now",
                     DialogResult.OK);
-                downloadButton.Click += (_, __) => this.browser.Navigate(
-                    latestRelease.DownloadUrl ??
-                    latestRelease.DetailsUrl);
+
+                if (!latestRelease.TryGetDownloadUrl(
+                    Install.ProcessArchitecture, 
+                    out var downloadUrl))
+                {
+                    downloadUrl = latestRelease.DetailsUrl;
+                }
+
+                downloadButton.Click += (_, __) => this.browser.Navigate(downloadUrl);
                 dialogParameters.Buttons.Add(downloadButton);
 
                 //
