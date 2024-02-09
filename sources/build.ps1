@@ -62,7 +62,8 @@ if ((Get-Command "msbuild.exe" -ErrorAction SilentlyContinue) -eq $null)
 # Find nmake and add to PATH
 #------------------------------------------------------------------------------
 
-if ((Get-Command "nmake.exe" -ErrorAction SilentlyContinue) -eq $null)
+$Nmake = (Get-Command "nmake.exe" -ErrorAction SilentlyContinue).Source
+if ($Nmake -eq $null)
 {
     $NmakeCandidates = `
         "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
