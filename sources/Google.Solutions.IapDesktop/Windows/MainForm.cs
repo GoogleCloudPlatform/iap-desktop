@@ -373,7 +373,7 @@ namespace Google.Solutions.IapDesktop.Windows
             var checkForUpdates = new CheckForUpdateCommand<IMainWindow>(
                 this,
                 this.serviceProvider.GetService<IInstall>(),
-                this.serviceProvider.GetService<IUpdatePolicyFactory>(),
+                this.serviceProvider.GetService<IUpdatePolicy>(),
                 this.serviceProvider.GetService<IReleaseFeed>(),
                 this.serviceProvider.GetService<ITaskDialog>(),
                 this.serviceProvider.GetService<IBrowser>());

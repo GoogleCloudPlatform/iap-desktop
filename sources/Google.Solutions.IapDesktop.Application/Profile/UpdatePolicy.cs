@@ -20,14 +20,22 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Profile
 {
+    /// <summary>
+    /// Policy that determines how often to check for updates,
+    /// and which updates to apply based on the user's identity 
+    /// and settings.
+    /// </summary>
     public interface IUpdatePolicy
     {
         /// <summary>
@@ -52,52 +60,48 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         ReleaseTrack GetReleaseTrack(IRelease release);
     }
 
-    /// <summary>
-    /// Policy that determines how often to check for updates,
-    /// and which updates to apply.
-    /// </summary>
-    internal class UpdatePolicy : IUpdatePolicy
+    public class UpdatePolicy : IUpdatePolicy
     {
+        private readonly IRepository<IApplicationSettings> settingsRepository;
+        private readonly IAuthorization authorization;
         private readonly IClock clock;
         private readonly IInstall install;
+        
+        public UpdatePolicy(
+            IRepository<IApplicationSettings> settingsRepository,
+            IAuthorization authorization,
+            IInstall install,
+            IClock clock)
+        {
+            this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.install = install.ExpectNotNull(nameof(install));
+            this.clock = clock.ExpectNotNull(nameof(clock));
+        }
 
         /// <summary>
         /// Days to wait between two consecutive update checks.
         /// </summary>
-        public ushort DaysBetweenUpdateChecks { get; }
-
-        internal UpdatePolicy(
-            IInstall install,
-            IClock clock,
-            ReleaseTrack followedTrack)
+        internal ushort DaysBetweenUpdateChecks
         {
-            this.install = install.ExpectNotNull(nameof(install));
-            this.clock = clock.ExpectNotNull(nameof(clock));
-
-            //
-            // Determine how often update checks are performed. 
-            // A higher number implies a slower pace of updates.
-            //
-            if (followedTrack.HasFlag(ReleaseTrack.Canary))
+            get
             {
-                this.DaysBetweenUpdateChecks = 1;
+                //
+                // Determine how often update checks are performed. 
+                // A higher number implies a slower pace of updates.
+                //
+                if (this.FollowedTrack.HasFlag(ReleaseTrack.Canary))
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 10;
+                }
             }
-            else
-            {
-                this.DaysBetweenUpdateChecks = 10;
-            }
-
-            this.FollowedTrack = followedTrack;
         }
 
-
-        //---------------------------------------------------------------------
-        // IUpdatePolicy.
-        //---------------------------------------------------------------------
-
-        public ReleaseTrack FollowedTrack { get; }
-
-        public ReleaseTrack GetReleaseTrack(IRelease release)
+        internal static ReleaseTrack GetReleaseTrackForRelease(IRelease release)
         {
             //
             // GitHub doesn't let us "tag" releases in a good way,
@@ -117,6 +121,46 @@ namespace Google.Solutions.IapDesktop.Application.Profile
             {
                 return ReleaseTrack.Normal;
             }
+        }
+
+        //---------------------------------------------------------------------
+        // IUpdatePolicy.
+        //---------------------------------------------------------------------
+
+        public ReleaseTrack FollowedTrack
+        {
+            get
+            {
+                //
+                // Determine user's release track.
+                //
+                if (!this.settingsRepository.GetSettings().IsUpdateCheckEnabled.BoolValue)
+                {
+                    //
+                    // Updates are off, but still check for critical ones.
+                    //
+                    return ReleaseTrack.Critical;
+                }
+                else if (
+                    this.authorization.Session is IGaiaOidcSession session && (
+                    session.Email.EndsWith("@google.com", StringComparison.OrdinalIgnoreCase) ||
+                    session.Email.EndsWith(".altostrat.com", StringComparison.OrdinalIgnoreCase)))
+                {
+                    //
+                    // Force-opt in internal domains to the canary track.
+                    //
+                    return ReleaseTrack.Canary;
+                }
+                else
+                {
+                    return ReleaseTrack.Normal;
+                }
+            }
+        }
+
+        public ReleaseTrack GetReleaseTrack(IRelease release)
+        {
+            return GetReleaseTrackForRelease(release);
         }
 
         public bool IsUpdateAdvised(IRelease release)

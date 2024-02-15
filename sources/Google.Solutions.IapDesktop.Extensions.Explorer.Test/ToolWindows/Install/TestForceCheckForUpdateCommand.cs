@@ -36,19 +36,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
     [TestFixture]
     public class TestForceCheckForUpdateCommand
     {
-        private static IUpdatePolicyFactory CreatePolicyFactory(
-            ReleaseTrack follwedTrack)
+        private static IUpdatePolicy CreatePolicy(ReleaseTrack follwedTrack)
         {
             var policy = new Mock<IUpdatePolicy>();
             policy
                 .SetupGet(p => p.FollowedTrack)
                 .Returns(follwedTrack);
-            var policyFactory = new Mock<IUpdatePolicyFactory>();
-            policyFactory
-                .Setup(f => f.GetPolicy())
-                .Returns(policy.Object);
-
-            return policyFactory.Object;
+            return policy.Object;
         }
 
         private static IRelease CreateRelease(Version version)
@@ -83,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
             var command = new ForceCheckForUpdateCommand(
                 new Mock<IWin32Window>().Object,
                 install.Object,
-                CreatePolicyFactory(followedTrack),
+                CreatePolicy(followedTrack),
                 feed.Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object);
@@ -120,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
             var command = new ForceCheckForUpdateCommand(
                 new Mock<IWin32Window>().Object,
                 install.Object,
-                CreatePolicyFactory(followedTrack),
+                CreatePolicy(followedTrack),
                 feed.Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object);
@@ -152,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
             var command = new ForceCheckForUpdateCommand(
                 new Mock<IWin32Window>().Object,
                 install.Object,
-                CreatePolicyFactory(ReleaseTrack.Canary),
+                CreatePolicy(ReleaseTrack.Canary),
                 feed.Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object);

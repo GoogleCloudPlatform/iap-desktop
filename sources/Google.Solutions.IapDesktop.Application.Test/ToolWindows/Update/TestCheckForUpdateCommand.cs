@@ -35,15 +35,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 {
     [TestFixture]
     public class TestCheckForUpdateCommand
     {
-        private static IUpdatePolicyFactory CreateUpdatePolicyFactory(
+        private static IUpdatePolicy CreatePolicy(
             bool adviseAllUpdates,
             ReleaseTrack followedTrack)
         {
@@ -53,12 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 .Setup(p => p.IsUpdateAdvised(It.IsAny<IRelease>()))
                 .Returns(adviseAllUpdates);
 
-            var policyFactory = new Mock<IUpdatePolicyFactory>();
-            policyFactory
-                .Setup(f => f.GetPolicy())
-                .Returns(policy.Object);
-
-            return policyFactory.Object;
+            return policy.Object;
         }
 
         private static ITaskDialog CreateDialog(string commandLinkToClick)
@@ -104,15 +97,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 .Setup(p => p.IsUpdateCheckDue(It.IsAny<DateTime>()))
                 .Returns(true);
 
-            var policyFactory = new Mock<IUpdatePolicyFactory>();
-            policyFactory
-                .Setup(f => f.GetPolicy())
-                .Returns(policy.Object);
-
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                policyFactory.Object,
+                policy.Object,
                 new Mock<IReleaseFeed>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
@@ -124,6 +112,42 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         //---------------------------------------------------------------------
+        // FeedOptions.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUserFollowsCanaryTrack_ThenFeedOptionsIncludeCanaryReleases()
+        {
+            var policyFactory = CreatePolicy(true, ReleaseTrack.Canary);
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                policyFactory,
+                new Mock<IReleaseFeed>().Object,
+                new Mock<ITaskDialog>().Object,
+                new Mock<IBrowser>().Object);
+
+            Assert.AreEqual(ReleaseFeedOptions.IncludeCanaryReleases, command.FeedOptions);
+        }
+
+        [Test]
+        public void WhenUserFollowsNormalTrack_ThenFeedOptionsAreClear()
+        {
+            var policyFactory = CreatePolicy(true, ReleaseTrack.Normal);
+
+            var command = new CheckForUpdateCommand<IMainWindow>(
+                new Mock<IWin32Window>().Object,
+                new Mock<IInstall>().Object,
+                policyFactory,
+                new Mock<IReleaseFeed>().Object,
+                new Mock<ITaskDialog>().Object,
+                new Mock<IBrowser>().Object);
+
+            Assert.AreEqual(ReleaseFeedOptions.None, command.FeedOptions);
+        }
+
+        //---------------------------------------------------------------------
         // PromptForAction - download.
         //---------------------------------------------------------------------
 
@@ -131,15 +155,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         public void WhenReleaseIsNull_ThenPromptForActionReturns()
         {
             var policy = new Mock<IUpdatePolicy>();
-            var policyFactory = new Mock<IUpdatePolicyFactory>();
-            policyFactory
-                .Setup(f => f.GetPolicy())
-                .Returns(policy.Object);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                policyFactory.Object,
+                policy.Object,
                 new Mock<IReleaseFeed>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
@@ -153,15 +173,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         public void WhenPolicyDoesNotAdviseUpdate_ThenPromptForActionReturns()
         {
             var policy = new Mock<IUpdatePolicy>();
-            var policyFactory = new Mock<IUpdatePolicyFactory>();
-            policyFactory
-                .Setup(f => f.GetPolicy())
-                .Returns(policy.Object);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                policyFactory.Object,
+                policy.Object,
                 new Mock<IReleaseFeed>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
@@ -177,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(true, ReleaseTrack.Normal),
+                CreatePolicy(true, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
@@ -199,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(true, ReleaseTrack.Normal),
+                CreatePolicy(true, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 CreateDialog("Yes, download now"),
                 browser.Object);
@@ -226,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(true, ReleaseTrack.Normal),
+                CreatePolicy(true, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 CreateDialog("Yes, download now"),
                 browser.Object);
@@ -253,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(true, ReleaseTrack.Normal),
+                CreatePolicy(true, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 CreateDialog("Show release notes"),
                 browser.Object);
@@ -271,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(true, ReleaseTrack.Normal),
+                CreatePolicy(true, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 CreateDialog("No, download later"),
                 browser.Object);
@@ -296,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                CreatePolicy(false, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object)
@@ -324,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                CreatePolicy(false, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object)
@@ -355,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                CreatePolicy(false, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object)
@@ -385,7 +401,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                CreatePolicy(false, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 dialog.Object,
                 new Mock<IBrowser>().Object)
@@ -413,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, ReleaseTrack.Normal),
+                CreatePolicy(false, ReleaseTrack.Normal),
                 new Mock<IReleaseFeed>().Object,
                 CreateDialog("Start survey"),
                 new Mock<IBrowser>().Object)
@@ -439,7 +455,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, track),
+                CreatePolicy(false, track),
                 feed.Object,
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
@@ -459,7 +475,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
                 new Mock<IInstall>().Object,
-                CreateUpdatePolicyFactory(false, ReleaseTrack.Canary),
+                CreatePolicy(false, ReleaseTrack.Canary),
                 feed.Object,
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);

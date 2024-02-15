@@ -586,7 +586,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectSettingsRepository>(projectRepository);
                 mainLayer.AddSingleton<IProjectWorkspace, ProjectWorkspace>();
                 mainLayer.AddTransient<ICloudConsoleClient, CloudConsoleClient>();
-                mainLayer.AddTransient<IUpdatePolicyFactory, UpdatePolicyFactory>();
+                mainLayer.AddTransient<IUpdatePolicy, UpdatePolicy>();
                 mainLayer.AddSingleton<IIapTransportFactory, IapTransportFactory>();
                 mainLayer.AddSingleton<IDirectTransportFactory, DirectTransportFactory>();
 

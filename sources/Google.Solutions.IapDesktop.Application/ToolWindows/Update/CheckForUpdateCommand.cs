@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         /// </summary>
         public Version LastSurveyVersion { get; set; }
 
-        protected ReleaseFeedOptions FeedOptions
+        protected internal ReleaseFeedOptions FeedOptions
         {
             get => this.updatePolicy.FollowedTrack == ReleaseTrack.Canary
                 ? ReleaseFeedOptions.IncludeCanaryReleases
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         public CheckForUpdateCommand(
             IWin32Window parentWindow,
             IInstall install,
-            IUpdatePolicyFactory updatePolicyFactory,
+            IUpdatePolicy updatePolicy,
             IReleaseFeed feed,
             ITaskDialog taskDialog,
             IBrowser browser)
@@ -83,13 +83,10 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         {
             this.parentWindow = parentWindow.ExpectNotNull(nameof(parentWindow));
             this.install = install.ExpectNotNull(nameof(install));
+            this.updatePolicy = updatePolicy.ExpectNotNull(nameof(updatePolicy));
             this.feed = feed.ExpectNotNull(nameof(feed));
             this.taskDialog = taskDialog.ExpectNotNull(nameof(taskDialog));
             this.browser = browser.ExpectNotNull(nameof(browser));
-
-            this.updatePolicy = updatePolicyFactory
-                .ExpectNotNull(nameof(updatePolicyFactory))
-                .GetPolicy();
         }
 
         public bool IsAutomatedCheckDue(DateTime lastCheck)
