@@ -24,9 +24,12 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;
 using NUnit.Framework;
+using System.Diagnostics;
+using System.Net.Http;
 
 namespace Google.Solutions.Apis.Test.Client
 {
@@ -44,6 +47,35 @@ namespace Google.Solutions.Apis.Test.Client
                 : base(endpoint, authorization, userAgent)
             {
                 this.Service = new ComputeService(this.Initializer);
+            }
+        }
+
+        /// <summary>
+        /// Check if device certificate authentication is enabled.
+        /// </summary>
+        private static bool IsDeviceCertificateAuthenticationEnabled(IClientService service)
+        {
+            Precondition.ExpectNotNull(service, nameof(service));
+
+            var dcaEnabled = IsDcaEnabledForHandler(service.HttpClient.MessageHandler);
+            Debug.Assert(dcaEnabled == service.BaseUri.Contains(".mtls."));
+
+            return dcaEnabled;
+
+            bool IsDcaEnabledForHandler(HttpMessageHandler handler)
+            {
+                if (handler is DelegatingHandler delegatingHandler)
+                {
+                    return IsDcaEnabledForHandler(delegatingHandler.InnerHandler);
+                }
+                else if (handler is WebRequestHandler httpHandler)
+                {
+                    return httpHandler.ClientCertificates.Count > 0;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -86,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Client
                 TestProject.UserAgent);
 
             Assert.AreEqual(SampleEndpoint, client.Initializer.BaseUri);
-            Assert.IsFalse(client.Service.IsDeviceCertificateAuthenticationEnabled());
+            Assert.IsFalse(IsDeviceCertificateAuthenticationEnabled(client.Service));
         }
 
         [Test]
@@ -102,7 +134,7 @@ namespace Google.Solutions.Apis.Test.Client
                 TestProject.UserAgent);
 
             Assert.AreEqual("https://sample.mtls.googleapis.com/", client.Initializer.BaseUri);
-            Assert.IsTrue(client.Service.IsDeviceCertificateAuthenticationEnabled());
+            Assert.IsTrue(IsDeviceCertificateAuthenticationEnabled(client.Service));
         }
 
         [Test]
@@ -120,7 +152,7 @@ namespace Google.Solutions.Apis.Test.Client
                 TestProject.UserAgent);
 
             Assert.AreEqual("https://crm.googleapis.com/", client.Initializer.BaseUri);
-            Assert.IsFalse(client.Service.IsDeviceCertificateAuthenticationEnabled());
+            Assert.IsFalse(IsDeviceCertificateAuthenticationEnabled(client.Service));
         }
     }
 }

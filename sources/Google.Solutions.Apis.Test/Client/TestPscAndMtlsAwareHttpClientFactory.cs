@@ -128,11 +128,11 @@ namespace Google.Solutions.Apis.Test.Client
                 CreateAuthorization(DeviceEnrollmentState.Enrolled).Object,
                 TestProject.UserAgent);
 
-            var handler = (HttpClientHandler)factory
+            var handler = (WebRequestHandler)factory
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            CollectionAssert.IsEmpty(handler.GetClientCertificates());
+            Assert.AreEqual(0, handler.ClientCertificates.Count);
         }
 
         [Test]
@@ -148,11 +148,11 @@ namespace Google.Solutions.Apis.Test.Client
                 CreateAuthorization(DeviceEnrollmentState.Enrolled).Object,
                 TestProject.UserAgent);
 
-            var handler = (HttpClientHandler)factory
+            var handler = (WebRequestHandler)factory
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            CollectionAssert.IsNotEmpty(handler.GetClientCertificates());
+            Assert.AreEqual(1, handler.ClientCertificates.Count);
         }
     }
 }

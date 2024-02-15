@@ -161,13 +161,11 @@ namespace Google.Solutions.Apis.Client
                 }
 
                 if (this.directions.UseClientCertificate &&
-                    HttpClientHandlerExtensions.CanUseClientCertificates &&
                     this.deviceEnrollment.Certificate != null)
                 {
                     Debug.Assert(this.deviceEnrollment.State == DeviceEnrollmentState.Enrolled);
 
-                    var added = handler.TryAddClientCertificate(this.deviceEnrollment.Certificate);
-                    Debug.Assert(added);
+                    handler.ClientCertificates.Add(this.deviceEnrollment.Certificate);
 
                     ApiTraceSource.Log.TraceVerbose(
                         "Using client certificate {0} for endpoint {1} (Host:{2})",
@@ -182,7 +180,7 @@ namespace Google.Solutions.Apis.Client
 
         private class NtlmResilientWebRequestHandler : WebRequestHandler
         {
-            protected async override Task<HttpResponseMessage> SendAsync(
+            protected override async Task<HttpResponseMessage> SendAsync(
                 HttpRequestMessage request,
                 CancellationToken cancellationToken)
             {
