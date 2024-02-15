@@ -39,11 +39,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         public ForceCheckForUpdateCommand(
             IWin32Window parentWindow,
             IInstall install,
-            IUpdatePolicyFactory updatePolicyFactory,
+            IUpdatePolicy updatePolicy,
             IReleaseFeed feed,
             ITaskDialog taskDialog,
             IBrowser browser)
-            : base(parentWindow, install, updatePolicyFactory, feed, taskDialog, browser)
+            : base(parentWindow, install, updatePolicy, feed, taskDialog, browser)
         {
         }
 
