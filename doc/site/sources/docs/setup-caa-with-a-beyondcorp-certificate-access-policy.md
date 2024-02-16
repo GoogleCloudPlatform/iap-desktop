@@ -1,4 +1,8 @@
-# Set up a BeyondCorp certificate-based access policy
+# Use BeyondCorp certificate-based access
+
+IAP Desktop supports 
+[BeyondCorp certificate-based access :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access)
+and can use mutual TLS to connect to Google Cloud resources.
 
 !!!note
 
@@ -6,137 +10,27 @@
     features available to Google Cloud customers and what is available with BeyondCorp Enterprise,
     see [BeyondCorp Enterprise pricing :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/pricing).
 
-## Deploy a certificate to client workstations
+## Enable certificate-based access
 
-The steps to deploy a certificate to client workstations depends on the type
-of public key infrastructure you use.
+To enable certificate-based access in IAP Desktop, do the following:
 
-=== "Active Directory Certificate Services"
+1.  In the application, select **Tools > Options**.
+1.  Select **Secure connections to Google Cloud by using certificate-based access**.    
+1.  Click **OK**.
+1.  Close IAP Desktop and launch it again.
 
-    You can configure Active Directory Certificate Services (AD CS) to automatically
-    issue and distribute certificates to users by doing the following:
-    
-    *   Create a certificate template for a user certificate that permits
-        client authentication.
-    *   Set up auto-enrollment so that AD CS automatically issues certificates
-        to users.
+If you're using Active Directory, you can also [configure a group policy](group-policies.md)
+to automatically enable certificate-based access for your users.
 
-    To create a certificate template, do the following:
+## Certificate selection
 
-    ![Certificate template](images/caa-adcs-template.png){ width="250", align=right }
+IAP Desktop automatically determines the right certificate to use based on 
+the [Chrome `AutoSelectCertificateForUrls`](https://cloud.google.com/beyondcorp-enterprise/docs/enable-cba-enterprise-certificates#configure_users_browser_to_use_your_enterprise_certificate)
+policy. You can manage this policy using the [Chrome group policy templates :octicons-link-external-16:](https://support.google.com/chrome/a/answer/187202).
 
-    1.  Open the **Certificate Templates** MMC snap-in.
-    1.  Right-click the **User** template and select **All tasks > Duplicate template**.
-        
-    1.  On the **Compatibility** tab, configure the following settings:
+If you're using the [Endpoint Verification client helper :octicons-link-external-16:](https://cloud.google.com/endpoint-verification/docs/deploying-with-third-party-tools)
+instead of enterprise certificates, IAP Desktop uses the certificate issued by the client helper.
 
-        *   **Certificate authority**: **Windows Server 2012** or a later version
-        *   **Certificate recipient**: **Windows 8/Windows Server 2012** or a later version
-        
-    1.  On the **General** tab, configure the following settings:
-
-        *   **Template display name**: Enter a name such as `BeyondCorp User`
-        
-    1.  On the **Request handling** tab, configure the following settings:
-    
-        *   **Allow private key to be exported**: **disabled**
-        
-    1.  On the **Cryptography** tab, configure the following settings:
-
-        *   **Provider category**: **Key Storage Provider**
-
-    1.  On the **Subject name** tab, select **Build from Active Directory information** and 
-        configure the following settings:
-
-        *   **Subject name format**: **Common name**
-        *   **Include e-mail name in subject name**: **disabled**
-        *   **E-mail name**: **disabled**
-        *   **DNS name**: **disabled**
-        *   **User principal name**: **disabled**
-        *   **Service principal name**: **disabled**
-    
-        These settings help limit the risk of bad actors abusing the certificate for other purposes
-        such as smart card authentication. 
-        
-        For further details on how Windows determines whether
-        a certificate can be used for smart card authentication, see 
-        [Client certificate mappings :octicons-link-external-16:](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/ff404289(v=ws.10)#client-certificate-mappings).
-        For additional ways to mitigate risks, see [How to disable the Subject Alternative Name for UPN mapping :octicons-link-external-16:](https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/disable-subject-alternative-name-upn-mapping).
-    
-    1.  On the **Extensions** tab, select **Application Policies** and click **Edit**.
-        Then configure the following settings:
-
-        *   **Application policies**: **Client authentication**
-        
-            Remove all other policies.
-            
-    1.  On the **Security** tab, select one or more groups that you want to
-        distribute the certificate to. Grant each group the following permissions:
-        
-        *   Read
-        *   Enroll
-        *   Autoenroll
-
-    1.  Optionally, adjust other settings such as certificate validity.
-    1.  Click **OK**.
-    1.  Open the **Certificate Authority** MMC snap-in.
-    1.  Right-click the **Certificate Template** folder and select **New > Certificate template to issue**.
-    1.  Select the certificate template that you created in the previous step and click **OK**.
-    
-    To set up auto-enrollment, create a new group policy object (GPO):
-
-    1.  Open the **Group Policy Management Console** MMC snap-in.
-    1.  Select the organizational unit that contains the user accounts for which you want to
-        enable auto-enrollment.
-    1.  Right-click the organizational unit and select **Create GPO in this domain and link it here**.
-    1.  In the **New GPO** dialog, enter a name such as `BeyondCorp certificate enrollment`  and click **OK**.
-    1.  Right-click the GPO and select **Edit**.
-
-
-    To set up auto-enrollment, configure the GPO as follows:
-
-    ![Policy](images/caa-adcs-autoenrollment.png){ width="250", align=right }
-
-    1.  Navigate to **User Configuration > Policies > Windows Settings > Security settings > Public key policies**
-    1.  Open the **Certificate Services Client - Auto-Enrollment** policy.
-    1.  Configure the following settings:
-
-        *   **Configuration model**: **Enabled**.
-        *   **Renew expired certificates, update pending certificates, and remove revoked certificates**: **enabled**
-        *   **Update certificates that use certificate templates**: **enabled**
-        
-    1.  Click **OK**.
-
-    It might take some time before the group policy takes effect on user's workstations. To force
-    a group policy refresh, run `gpupdate /force`.
-
-
-=== "Endpoint verification"
-
-    TODO
-
-## Configure certificate selection
-
-TODO: GPO with AutoSelect
-
-!!! note
-
-    If you use EV, you can skip this step.
-
-=== "Google Chrome ADMX"
-=== "Registry setting"
-
-
-## Create an access level
-
-## Apply the access level
-
-=== "IAM conditions"
-
-=== "Groups"
-
-=== "VPC-SC ingress"
-
-!!! note
-
-    Remove Owner role
+!!!note
+    IAP Desktop does not support Chrome Browser Cloud Management. You must configure the
+    `AutoSelectCertificateForUrls` policy using a group policy.
