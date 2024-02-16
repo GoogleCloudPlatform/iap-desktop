@@ -29,34 +29,6 @@ namespace Google.Solutions.Apis.Client
 {
     internal static class ClientServiceMtlsExtensions
     {
-        /// <summary>
-        /// Check if device certificate authentication is enabled.
-        /// </summary>
-        public static bool IsDeviceCertificateAuthenticationEnabled(
-            this IClientService service)
-        {
-            Precondition.ExpectNotNull(service, nameof(service));
-
-            var dcaEnabled = IsDcaEnabledForHandler(service.HttpClient.MessageHandler);
-            Debug.Assert(dcaEnabled == service.BaseUri.Contains(".mtls."));
-
-            return dcaEnabled;
-
-            bool IsDcaEnabledForHandler(HttpMessageHandler handler)
-            {
-                if (handler is DelegatingHandler delegatingHandler)
-                {
-                    return IsDcaEnabledForHandler(delegatingHandler.InnerHandler);
-                }
-                else if (handler is HttpClientHandler httpHandler)
-                {
-                    return httpHandler.GetClientCertificates().Any();
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+        
     }
 }
