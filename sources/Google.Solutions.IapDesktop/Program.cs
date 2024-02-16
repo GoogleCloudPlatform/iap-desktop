@@ -466,14 +466,15 @@ namespace Google.Solutions.IapDesktop
                 //
                 ServicePointManager.SecurityProtocol = appSettings.TlsVersions.EnumValue;
 
-                //TODO: Set NtlmResilientWebRequestHandler.ProxyAuthenticationRetries
-
                 try
                 {
                     //
                     // Activate proxy settings based on app settings.
                     //
                     preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
+
+                    PscAndMtlsAwareHttpClientFactory.NtlmProxyAuthenticationRetries = 
+                        (ushort)appSettings.ProxyAuthenticationRetries.IntValue;
                 }
                 catch (Exception)
                 {
