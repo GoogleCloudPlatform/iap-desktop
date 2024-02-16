@@ -180,6 +180,12 @@ namespace Google.Solutions.Apis.Client
 
         private class NtlmResilientWebRequestHandler : WebRequestHandler
         {
+            /// <summary>
+            /// Number of retries to perform if NTLM proxy authentication
+            /// fails.
+            /// </summary>
+            public static ushort ProxyAuthenticationRetries { get; set; } = 1;
+
             protected override async Task<HttpResponseMessage> SendAsync(
                 HttpRequestMessage request,
                 CancellationToken cancellationToken)
@@ -212,20 +218,23 @@ namespace Google.Solutions.Apis.Client
                     catch (HttpRequestException e) when (
                         e.InnerException is WebException webException &&
                         webException.Response is HttpWebResponse webResponse &&
+                        this.UseProxy &&
+                        this.Proxy?.Credentials != null &&
                         IsNtlmProxyAuthenticationRequiredResponse(webResponse))
                     {
-                        if (this.UseProxy &&
-                            this.Proxy?.Credentials != null &&
-                            attempt == 0)
-                        {
-                            var message = e.FullMessage();
-                            ApiTraceSource.Log.TraceWarning(
-                                "NTLM proxy authentication failed, retrying",
-                                message);
-                            ApiEventSource.Log.HttpNtlmProxyRequestFailed(
-                                webResponse.ResponseUri.AbsoluteUri,
-                                message);
+                        var message = e.FullMessage();
+                        ApiTraceSource.Log.TraceWarning(
+                            "NTLM proxy authentication failed (attempt {0}/{1})): {2}",
+                            attempt,
+                            ProxyAuthenticationRetries,
+                            message);
+                        ApiEventSource.Log.HttpNtlmProxyRequestFailed(
+                            webResponse.ResponseUri.AbsoluteUri,
+                            attempt,
+                            message);
 
+                        if (attempt < ProxyAuthenticationRetries)
+                        {
                             //
                             // Retry request.
                             //

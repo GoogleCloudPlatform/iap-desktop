@@ -56,6 +56,7 @@ namespace Google.Solutions.Apis
         [Event(3, Level = EventLevel.Warning)]
         internal void HttpNtlmProxyRequestFailed(
             string requestUri,
+            int attempt,
             string errorMessage)
             => WriteEvent(3, requestUri, errorMessage);
 
