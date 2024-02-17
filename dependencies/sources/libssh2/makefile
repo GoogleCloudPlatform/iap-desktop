@@ -32,6 +32,7 @@ LIBSSH2_OPTIONS = \
 	-DBUILD_TESTING=OFF \
 	-DENABLE_ZLIB_COMPRESSION=OFF \
 	-DCMAKE_C_FLAGS_RELEASE=/MT \
+	-DCMAKE_C_FLAGS_DEBUG=/MTd \
 	-DENABLE_DEBUG_LOGGING=ON
 
 !if ("$(PLATFORM)" == "x86")
@@ -47,7 +48,11 @@ CMAKE_BUILDDIR = build\$(PLATFORM)
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 100
 
-default: package
+#------------------------------------------------------------------------------
+# Compile targets
+#------------------------------------------------------------------------------
+
+default: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(PLATFORM)\libssh2.dll
 
 $(MAKEDIR)\obj\src:
 	@echo "========================================================"
@@ -55,13 +60,14 @@ $(MAKEDIR)\obj\src:
 	@echo "========================================================"
 
 	git clone $(LIBSSH2_URL) $(MAKEDIR)\obj
-
 	cd $(MAKEDIR)\obj
-
 	git checkout $(LIBSSH2_REF)
 
-
 $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(PLATFORM)\libssh2.dll: $(MAKEDIR)\obj\src
+	@echo "========================================================"
+	@echo "=== Building libssh2                                 ==="
+	@echo "========================================================"
+	
 	cd $(MAKEDIR)\obj
 	cmake \
 		$(CMAKE_OPTS) \
@@ -71,9 +77,18 @@ $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(PLATFORM)\libssh2.dll: $(MAKEDIR)\obj\src
 	
 	cmake --build $(CMAKE_BUILDDIR) --config $(CONFIGURATION)
 
+
+#------------------------------------------------------------------------------
+# Package targets
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Clean targets
+#------------------------------------------------------------------------------
+
 clean:
 	cd $(MAKEDIR)\obj
-	cmake --build $(CMAKE_BUILDDIR)  --target clean
+	cmake --build $(CMAKE_BUILDDIR) --target clean
 
 distclean:
     -rd /S /Q $(MAKEDIR)\obj
@@ -82,6 +97,6 @@ distclean:
 	
 	
 	
-	
+# TODO: Patch version
+# TODO: Create nupkg	
 
-temp: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(PLATFORM)\libssh2.dll
