@@ -69,6 +69,14 @@ $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(PLATFORM)\libssh2.dll: $(MAKEDIR)\obj\src
 	@echo "========================================================"
 	
 	cd $(MAKEDIR)\obj
+	
+	powershell -Command "(Get-Content src\libssh2.rc) \
+		-replace 'The libssh2 library\\0','libssh2, built for IAP Desktop' | \
+		Out-File src\libssh2.rc -Encoding ascii"
+	powershell -Command "(Get-Content src\libssh2.rc) \
+		-replace 'LIBSSH2_VERSION_PATCH','$(TAG)' | \
+		Out-File src\libssh2.rc -Encoding ascii"
+	
 	cmake \
 		$(CMAKE_OPTS) \
 		-G $(CMAKE_GENERATOR) \
@@ -96,7 +104,5 @@ distclean:
 	
 	
 	
-	
-# TODO: Patch version
 # TODO: Create nupkg	
 
