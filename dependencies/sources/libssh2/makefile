@@ -1,5 +1,5 @@
 #
-# Copyright 2022 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -47,6 +47,12 @@ CMAKE_PLATFORM = Win32
 CMAKE_PLATFORM = $(PLATFORM)
 !endif
 
+!if ("$(CONFIGURATION)" == "Debug")
+CMAKE_CONFIGURATION = Debug
+!else
+CMAKE_CONFIGURATION = RelWithDebInfo
+!endif
+
 CMAKE_GENERATOR = "Visual Studio 17 2022"
 CMAKE_OPTS = -Wno-dev -DCMAKE_BUILD_TYPE=$(CONFIGURATION) -A $(CMAKE_PLATFORM)
 CMAKE_BUILDDIR = build\$(PLATFORM)
@@ -66,7 +72,7 @@ $(MAKEDIR)\obj\src:
 	cd $(MAKEDIR)\obj
 	git checkout $(LIBSSH2_REF)
 
-$(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CONFIGURATION)\libssh2.dll: $(MAKEDIR)\obj\src
+$(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CMAKE_CONFIGURATION)\libssh2.dll: $(MAKEDIR)\obj\src
 	@echo "========================================================"
 	@echo "=== Building libssh2 ($(PLATFORM))                           ==="
 	@echo "========================================================"
@@ -86,9 +92,9 @@ $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CONFIGURATION)\libssh2.dll: $(MAKEDIR)\ob
 		$(LIBSSH2_OPTIONS) \
 		-B $(CMAKE_BUILDDIR)
 	
-	cmake --build $(CMAKE_BUILDDIR) --config $(CONFIGURATION)
+	cmake --build $(CMAKE_BUILDDIR) --config $(CMAKE_CONFIGURATION)
 
-compile: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CONFIGURATION)\libssh2.dll
+compile: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CMAKE_CONFIGURATION)\libssh2.dll
 
 #------------------------------------------------------------------------------
 # Package targets
@@ -96,7 +102,7 @@ compile: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CONFIGURATION)\libssh2.dll
 
 $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg:
 	$(MAKE) PLATFORM=x86 CONFIGURATION=$(CONFIGURATION) compile
-	$(MAKE) PLATFORM=x64 CONFIGURATION=$(CONFIGURATION)  compile
+	$(MAKE) PLATFORM=x64 CONFIGURATION=$(CONFIGURATION) compile
 
 	@echo "========================================================"
 	@echo "=== Building libssh2 nuget package                   ==="
@@ -115,10 +121,10 @@ $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg:
   </metadata>
   <files>
 	<!-- pretend the library is platform-neutral -->
-    <file src="obj\build\x86\src\$(CONFIGURATION)\libssh2.dll" target="runtimes\win10-x86\native" />
-    <file src="obj\build\x86\src\$(CONFIGURATION)\libssh2.pdb" target="runtimes\win10-x86\native" />
-    <file src="obj\build\x64\src\$(CONFIGURATION)\libssh2.dll" target="runtimes\win10-x64\native" />
-    <file src="obj\build\x64\src\$(CONFIGURATION)\libssh2.pdb" target="runtimes\win10-x64\native" />
+    <file src="obj\build\x86\src\$(CMAKE_CONFIGURATION)\libssh2.dll" target="runtimes\win10-x86\native" />
+    <file src="obj\build\x86\src\$(CMAKE_CONFIGURATION)\libssh2.pdb" target="runtimes\win10-x86\native" />
+    <file src="obj\build\x64\src\$(CMAKE_CONFIGURATION)\libssh2.dll" target="runtimes\win10-x64\native" />
+    <file src="obj\build\x64\src\$(CMAKE_CONFIGURATION)\libssh2.pdb" target="runtimes\win10-x64\native" />
     <file src="Google.Solutions.ThirdParty.Libssh2.targets" target="build" />
   </files>
 </package>
