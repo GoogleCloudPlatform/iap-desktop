@@ -472,6 +472,9 @@ namespace Google.Solutions.IapDesktop
                     // Activate proxy settings based on app settings.
                     //
                     preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
+
+                    PscAndMtlsAwareHttpClientFactory.NtlmProxyAuthenticationRetries = 
+                        (ushort)appSettings.ProxyAuthenticationRetries.IntValue;
                 }
                 catch (Exception)
                 {

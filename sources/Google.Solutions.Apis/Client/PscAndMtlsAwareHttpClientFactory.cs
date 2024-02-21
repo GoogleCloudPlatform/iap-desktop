@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Client
     /// Client factory that enables client certificate and adds 
     /// PSC-style Host headers if needed.
     /// </summary>
-    internal class PscAndMtlsAwareHttpClientFactory
+    public class PscAndMtlsAwareHttpClientFactory
         : IHttpClientFactory, IHttpExecuteInterceptor, IHttpUnsuccessfulResponseHandler
     {
         private readonly ServiceEndpointDirections directions;
@@ -44,7 +44,12 @@ namespace Google.Solutions.Apis.Client
         private readonly ICredential? credential;
         private readonly UserAgent userAgent;
 
-        public PscAndMtlsAwareHttpClientFactory(
+        /// <summary>
+        /// Number of retries to perform if NTLM proxy authentication fails.
+        /// </summary>
+        public static ushort NtlmProxyAuthenticationRetries { get; set; } = 1;
+
+        internal PscAndMtlsAwareHttpClientFactory(
             ServiceEndpointDirections directions,
             IAuthorization authorization,
             UserAgent userAgent)
@@ -55,7 +60,7 @@ namespace Google.Solutions.Apis.Client
             this.userAgent = userAgent.ExpectNotNull(nameof(userAgent));
         }
 
-        public PscAndMtlsAwareHttpClientFactory(
+        internal PscAndMtlsAwareHttpClientFactory(
             ServiceEndpointDirections directions,
             IDeviceEnrollment deviceEnrollment,
             UserAgent userAgent)
@@ -142,7 +147,7 @@ namespace Google.Solutions.Apis.Client
 
             protected override HttpClientHandler CreateClientHandler()
             {
-                var handler = new NtlmResilientWebRequestHandler()
+                var handler = new NtlmResilientWebRequestHandler(NtlmProxyAuthenticationRetries)
                 {
                     Proxy = WebRequest.DefaultWebProxy,
                 };
@@ -180,6 +185,13 @@ namespace Google.Solutions.Apis.Client
 
         private class NtlmResilientWebRequestHandler : WebRequestHandler
         {
+            private readonly ushort maxRetries;
+
+            public NtlmResilientWebRequestHandler(ushort maxRetries)
+            {
+                this.maxRetries = maxRetries;
+            }
+
             protected override async Task<HttpResponseMessage> SendAsync(
                 HttpRequestMessage request,
                 CancellationToken cancellationToken)
@@ -201,7 +213,7 @@ namespace Google.Solutions.Apis.Client
                 // If it's (a), there's a good chance that a retry helps. If it's
                 // (b), a retry at least won't hurt.
                 //
-                for (var attempt = 0; ; attempt++)
+                for (var retry = 0; ; retry++)
                 {
                     try
                     {
@@ -212,20 +224,23 @@ namespace Google.Solutions.Apis.Client
                     catch (HttpRequestException e) when (
                         e.InnerException is WebException webException &&
                         webException.Response is HttpWebResponse webResponse &&
+                        this.UseProxy &&
+                        this.Proxy?.Credentials != null &&
                         IsNtlmProxyAuthenticationRequiredResponse(webResponse))
                     {
-                        if (this.UseProxy &&
-                            this.Proxy?.Credentials != null &&
-                            attempt == 0)
-                        {
-                            var message = e.FullMessage();
-                            ApiTraceSource.Log.TraceWarning(
-                                "NTLM proxy authentication failed, retrying",
-                                message);
-                            ApiEventSource.Log.HttpNtlmProxyRequestFailed(
-                                webResponse.ResponseUri.AbsoluteUri,
-                                message);
+                        var message = e.FullMessage();
+                        ApiTraceSource.Log.TraceWarning(
+                            "NTLM proxy authentication failed (attempt {0}/{1})): {2}",
+                            retry,
+                            this.maxRetries,
+                            message);
+                        ApiEventSource.Log.HttpNtlmProxyRequestFailed(
+                            webResponse.ResponseUri.AbsoluteUri,
+                            retry,
+                            message);
 
+                        if (retry < this.maxRetries)
+                        {
                             //
                             // Retry request.
                             //

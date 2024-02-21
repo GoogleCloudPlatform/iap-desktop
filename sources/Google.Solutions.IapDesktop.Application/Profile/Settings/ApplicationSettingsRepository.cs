@@ -21,9 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
-using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -48,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         IStringSetting ProxyPacUrl { get; }
         IStringSetting ProxyUsername { get; }
         ISecureStringSetting ProxyPassword { get; }
+        IIntSetting ProxyAuthenticationRetries { get; }
         IEnumSetting<SecurityProtocolType> TlsVersions { get; }
         IStringSetting FullScreenDevices { get; }
         IStringSetting CollapsedProjects { get; }
@@ -134,6 +133,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             public IStringSetting ProxyUsername { get; private set; }
 
             public ISecureStringSetting ProxyPassword { get; private set; }
+            
+            public IIntSetting ProxyAuthenticationRetries { get; private set; }
 
             public IEnumSetting<SecurityProtocolType> TlsVersions { get; private set; }
 
@@ -158,6 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.ProxyPacUrl,
                 this.ProxyUsername,
                 this.ProxyPassword,
+                this.ProxyAuthenticationRetries,
                 this.TlsVersions,
                 this.FullScreenDevices,
                 this.CollapsedProjects,
@@ -228,6 +230,17 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                             null,
                             settingsKey,
                             url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
+                        .ApplyPolicy(userPolicyKey)
+                        .ApplyPolicy(machinePolicyKey),
+                    ProxyAuthenticationRetries = RegistryDwordSetting.FromKey(
+                            "ProxyAuthenticationRetries",
+                            "ProxyAuthenticationRetries",
+                            null,
+                            null,
+                            2,              // A single retry might not be sufficient (b/323465182).
+                            settingsKey,
+                            0,
+                            8)
                         .ApplyPolicy(userPolicyKey)
                         .ApplyPolicy(machinePolicyKey),
                     TlsVersions = RegistryEnumSetting<SecurityProtocolType>.FromKey(
