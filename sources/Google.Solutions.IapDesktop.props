@@ -4,7 +4,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Company>Google LLC</Company>
     <Product>IAP Desktop</Product>
-    <Copyright>Copyright 2019-2023 Google LLC</Copyright>
+    <Copyright>Copyright 2019-2024 Google LLC</Copyright>
     <LangVersion>7.3</LangVersion>
     <Platforms>x64;x86</Platforms>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
