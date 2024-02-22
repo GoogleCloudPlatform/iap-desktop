@@ -3859,7 +3859,7 @@
         <Background Type="CT_RAW" Source="FF3C3F41" />
       </Color>
       <Color Name="TitleBarActiveBorder">
-        <Background Type="CT_RAW" Source="FF007ACC" />
+        <Background Type="CT_RAW" Source="FF096590" />
       </Color>
       <Color Name="TitleBarActiveGradientBegin">
         <Background Type="CT_RAW" Source="FF007ACC" />
