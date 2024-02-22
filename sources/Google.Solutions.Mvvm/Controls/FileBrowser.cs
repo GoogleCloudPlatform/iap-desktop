@@ -288,7 +288,8 @@ namespace Google.Solutions.Mvvm.Controls
                 throw new InvalidOperationException("Control is not bound");
             }
 
-            if (this.fileList.SelectedModelItem.Type.IsFile)
+            if (this.fileList.SelectedModelItem == null ||
+                this.fileList.SelectedModelItem.Type.IsFile)
             {
                 return;
             }
