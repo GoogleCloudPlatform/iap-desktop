@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 if (this.serviceProvider.GetService<IConfirmationDialog>()
                     .Confirm(
                         mainWindow,
-                        "Are you you sure you want to " +
+                        "Are you sure you want to " +
                             $"{this.controlCommand.ToString().ToLower()} {instance.Name}?",
                         $"{this.controlCommand} {instance.Name}?",
                         $"{this.controlCommand} VM instance") != DialogResult.Yes)
