@@ -93,6 +93,7 @@ nav:
       - 'Use SSH': 'connect-linux.md'
     - 'Access server applications':
       - 'Access SQL Server': 'connect-sqlserver.md'
+      - 'Other applications': 'connect-other-applications.md'
     - 'Use IAP Desktop':
       - 'Tool windows':
         - 'Connection settings': 'toolwindow-connection-settings.md'
