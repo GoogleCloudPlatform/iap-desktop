@@ -246,7 +246,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        [Ignore("b/325544415")]
         public async Task WhenUsingWorkforceSessionAndInRole_ThenAuthenticationWithOsLoginSucceeds(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,

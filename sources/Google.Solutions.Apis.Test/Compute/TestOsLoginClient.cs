@@ -295,7 +295,6 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        [Ignore("b/325544415")]
         public async Task WhenUsingGaiaSession_ThenSignPublicKeyThrowsException(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
@@ -334,7 +333,6 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        [Ignore("b/325544415")]
         public async Task WhenUsingWorkforceSessionAndUserInRole_ThenSignPublicKeySucceeds(
             [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ServiceUsageConsumer)]
             ResourceTask<IAuthorization> authorizationTask)
