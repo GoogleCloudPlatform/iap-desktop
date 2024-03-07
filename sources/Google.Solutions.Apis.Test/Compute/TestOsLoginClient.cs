@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
@@ -295,24 +296,6 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingGaiaSession_ThenSignPublicKeyThrowsException(
-            [Credential(Role = PredefinedRole.ComputeViewer)]
-            ResourceTask<IAuthorization> authorizationTask)
-        {
-            var client = new OsLoginClient(
-                OsLoginClient.CreateEndpoint(),
-                await authorizationTask,
-                TestProject.ApiKey,
-                TestProject.UserAgent);
-
-            ExceptionAssert.ThrowsAggregateException<ExternalIdpNotConfiguredForOsLoginException>(
-                () => client.SignPublicKeyAsync(
-                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
-                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
-                    CancellationToken.None).Wait());
-        }
-
-        [Test]
         public async Task WhenUsingWorkforceSessionAndUserInNotRole_ThenSignPublicKeyThrowsException(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorizationTask)
@@ -341,6 +324,29 @@ namespace Google.Solutions.Apis.Test.Compute
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
                 TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            var certifiedKey = await client
+                .SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            StringAssert.StartsWith(
+                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+                certifiedKey);
+        }
+
+        [Test]
+        public async Task WhenUsingGaiaSession_ThenSignPublicKeySucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                new ApiKey("unused"),
                 TestProject.UserAgent);
 
             var certifiedKey = await client
