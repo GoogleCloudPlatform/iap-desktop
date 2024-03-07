@@ -65,7 +65,7 @@ download_url: https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest
 copyright: |
     IAP Desktop is an open-source project developed and maintained by the Google Cloud Solutions Architects team.<br>
     The project is not an officially supported Google product.<br>
-    Copyright &copy; 2019-2023 Google LLC<br>
+    Copyright &copy; 2019-2024 Google LLC<br>
     <a href='https://cloud.google.com/'><img src='https://googlecloudplatform.github.io/iap-desktop/images/cloud.svg' width='240' height='160'/></a>
 
 markdown_extensions:
