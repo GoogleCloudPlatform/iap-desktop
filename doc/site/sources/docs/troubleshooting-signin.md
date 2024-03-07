@@ -60,3 +60,36 @@ As a Cloud Identity or Workspace administrator, you can fix this error by allow-
         IAP Desktop doesn't use any [restricted API scopes :octicons-link-external-16:](https://support.google.com/cloud/answer/13464325).
     
 1.  On the **Review** page, confiirm your choice of settings and click **Finish**.
+
+
+
+## :material-message-alert:  "This site can't provide a secure connection" 
+
+**Symptom**: After completing the Google sign-in process, Chrome shows an error page:
+
+<blockquote>
+    This site can't provide a secure connection
+    <br>
+    localhost sent an invalid response
+    <br><br>
+    Try running Windows Network diagnostics.
+    <br><br>
+    SSL_PROTOCOL_ERROR
+</blockquote>
+
+This error indicates an [HTTP Strict Transport Security (HSTS) :octicons-link-external-16:](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) issue.
+
+You might have previously ran a web server on your local computer that instructed Chrome 
+to only accept HTTPS connections from `localhost` by setting an `Strict-Transport-Security` 
+header. This setting now prevents Chrome from passing the sign-in result back to IAP Desktop
+over HTTP.
+
+You can fix this error by doing the following:
+
+1.   In Chrome, navigate to `chrome://net-internals/#hsts`
+1.   Under **Delete domain security policies**, enter `localhost` and click **Delete**.
+
+Now try signing in again:
+
+1.   On the IAP Desktop sign-in screen, click **Cancel sign-in**.
+1.   Click **Sign-in** to start a new sign-in attempt.
