@@ -29,9 +29,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     internal class LinuxUser
     {
         //
-        // NB. This is the pattern used by Debian's shadow-utils.
+        // NB. This is based on the IEEE Std 1003.1-2017 for "3.437 User Name"
+        //     which permits any character in the Portable Filename Character Set
+        //     as long as the hyphen-minus character is not the first character.
         //
-        private static readonly Regex posixUsernamePattern = new Regex("^[a-z_][a-z0-9_-]*$");
+        private static readonly Regex posixUsernamePattern = new Regex("^[a-zA-Z0-9_.][a-zA-Z0-9_.-]*$");
         private const int MaxUsernameLength = 32;
 
 
