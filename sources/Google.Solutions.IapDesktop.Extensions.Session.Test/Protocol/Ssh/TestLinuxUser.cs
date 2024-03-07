@@ -85,5 +85,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual("abc", username);
             Assert.IsTrue(LinuxUser.IsValidUsername(username));
         }
+
+        [Test]
+        [TestCase("SomeUser", true)]
+        [TestCase("some.user", true)]
+        [TestCase("some_user", true)]
+        [TestCase("some-user", true)]
+        [TestCase("1user", true)]
+        [TestCase("-someuser", false)]
+        [TestCase("some+user", false)]
+        [TestCase("some@user", false)]
+        [TestCase("", false)]
+        [TestCase("thisusernameexceedsthemaximumsize", false)]
+        public void WhenLinuxUserIsValidated_ThenReturnCorrectValidationResult(string userName, bool expectedValid)
+        {
+            Assert.AreEqual(LinuxUser.IsValidUsername(userName), expectedValid);
+        }
     }
 }
