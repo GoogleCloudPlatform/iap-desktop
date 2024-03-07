@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Google.Solutions.IapDesktop.props" />
+  <PropertyGroup>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
+    <Description>Library for settings management</Description>
+
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
+  </ItemGroup>
+</Project>

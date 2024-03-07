@@ -135,6 +135,7 @@
     <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj" />
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
     <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Settings\Google.Solutions.Settings.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Theme\Resources\Dark.vstheme.gz" />
