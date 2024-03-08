@@ -181,7 +181,7 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenSettingIsNull_ThenSaveResetsRegistry()
+        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -196,7 +196,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     _ => true);
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -204,30 +204,9 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         //---------------------------------------------------------------------
-        // Get/set value.
+        // Value.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryStringSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    "blue",
-                    key,
-                    _ => true);
-
-                setting.Value = "blue";
-                setting.Value = null;
-
-                Assert.AreEqual("blue", setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
@@ -292,8 +271,12 @@ namespace Google.Solutions.Settings.Test.Registry
             }
         }
 
+        //---------------------------------------------------------------------
+        // AnyValue.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueIsOfWrongType_ThenSetValueRaisesInvalidCastException()
+        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -306,7 +289,29 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     _ => true);
 
-                Assert.Throws<InvalidCastException>(() => setting.Value = 1);
+                setting.Value = "red";
+                setting.AnyValue = null;
+
+                Assert.AreEqual("blue", setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    "blue",
+                    key,
+                    _ => true);
+
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = 1);
             }
         }
 

@@ -50,11 +50,6 @@ namespace Google.Solutions.Settings
         string Category { get; }
 
         /// <summary>
-        /// Return current value of setting.
-        /// </summary>
-        object Value { get; set; }
-
-        /// <summary>
         /// Determines whether the current value is equivalent to
         /// the default value.
         /// </summary>
@@ -86,6 +81,14 @@ namespace Google.Solutions.Settings
         /// Overlay the setting with defaults from the ancestry,
         /// </summary>
         ISetting OverlayBy(ISetting setting);
+    }
+
+    public interface IAnySetting : ISetting // TODO: make internal
+    {
+        /// <summary>
+        /// Assign value, converting data types if necessary.
+        /// </summary>
+        object AnyValue { get;set; }
 
         /// <summary>
         /// Returns the type of setting.
@@ -93,8 +96,13 @@ namespace Google.Solutions.Settings
         Type ValueType { get; }
     }
 
-    public interface ISetting<T> : ISetting
+    public interface ISetting<T> : ISetting, IAnySetting
     {
+        /// <summary>
+        /// Return current value of setting.
+        /// </summary>
+        T Value { get; set; }
+
         /// <summary>
         /// Returns the typed default value.
         /// </summary>

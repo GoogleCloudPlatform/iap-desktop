@@ -174,7 +174,7 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenSettingIsNull_ThenSaveResetsRegistry()
+        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -188,7 +188,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     false,
                     key);
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -212,7 +212,7 @@ namespace Google.Solutions.Settings.Test.Registry
 
                 key.DeleteValue("test");
 
-                setting.Value = null;
+                setting.AnyValue = null;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -220,29 +220,9 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         //---------------------------------------------------------------------
-        // Get/set value.
+        // Value.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryBoolSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    false,
-                    key);
-
-                setting.Value = true;
-                setting.Value = null;
-
-                Assert.AreEqual(false, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
@@ -284,8 +264,12 @@ namespace Google.Solutions.Settings.Test.Registry
             }
         }
 
+        //---------------------------------------------------------------------
+        // AnyValue.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueIsString_ThenSetValueParsesValue()
+        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -297,14 +281,35 @@ namespace Google.Solutions.Settings.Test.Registry
                     false,
                     key);
 
-                setting.Value = "TRUE";
+                setting.Value = true;
+                setting.AnyValue = null;
+
+                Assert.AreEqual(false, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsString_ThenSetAnyValueParsesValue()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryBoolSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    false,
+                    key);
+
+                setting.AnyValue = "TRUE";
 
                 Assert.AreEqual(true, setting.Value);
             }
         }
 
         [Test]
-        public void WhenValueIsOfWrongType_ThenSetValueRaisesInvalidCastException()
+        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -316,12 +321,12 @@ namespace Google.Solutions.Settings.Test.Registry
                     false,
                     key);
 
-                Assert.Throws<InvalidCastException>(() => setting.Value = -1);
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = -1);
             }
         }
 
         [Test]
-        public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
+        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -333,7 +338,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     false,
                     key);
 
-                Assert.Throws<FormatException>(() => setting.Value = "maybe");
+                Assert.Throws<FormatException>(() => setting.AnyValue = "maybe");
             }
         }
 

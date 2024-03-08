@@ -27,7 +27,7 @@ namespace Google.Solutions.Settings
     /// <summary>
     /// Base class for a setting.
     /// </summary>
-    public abstract class SettingBase<T> : ISetting<T>
+    public abstract class SettingBase<T> : ISetting<T>, IAnySetting
     {
         private T currentValue;
 
@@ -59,9 +59,26 @@ namespace Google.Solutions.Settings
 
         public bool IsSpecified { get; private set; }
 
-        public object Value
+        public T Value
         {
             get => this.currentValue;
+            set
+            {
+                if (!IsValid(value))
+                {
+                    throw new ArgumentOutOfRangeException(
+                        $"Value {value} is not within the permitted range");
+                }
+
+                this.IsDirty = !Equals(value, this.currentValue);
+                this.IsSpecified = true;
+                this.currentValue = value;
+            }
+        }
+
+        public object AnyValue
+        {
+            get => this.Value;
             set
             {
                 T typedValue;
@@ -83,21 +100,13 @@ namespace Google.Solutions.Settings
                         "Value must be of type " + typeof(T).Name);
                 }
 
-                if (!IsValid(typedValue))
-                {
-                    throw new ArgumentOutOfRangeException(
-                        $"Value {value} is not within the permitted range");
-                }
-
-                this.IsDirty = !Equals(typedValue, this.currentValue);
-                this.IsSpecified = true;
-                this.currentValue = typedValue;
+                this.Value = typedValue;
             }
         }
 
         public void Reset()
         {
-            this.Value = null;
+            this.Value = this.DefaultValue;
         }
 
         //---------------------------------------------------------------------
