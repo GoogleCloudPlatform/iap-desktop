@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Settings;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

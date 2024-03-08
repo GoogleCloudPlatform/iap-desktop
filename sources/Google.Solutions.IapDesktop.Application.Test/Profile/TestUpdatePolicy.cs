@@ -30,6 +30,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Settings;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile
 {

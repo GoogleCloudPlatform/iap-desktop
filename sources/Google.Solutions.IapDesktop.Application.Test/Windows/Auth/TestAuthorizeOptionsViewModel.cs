@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
+using Google.Solutions.Settings;
 using Moq;
 using NUnit.Framework;
 

@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

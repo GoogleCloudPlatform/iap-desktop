@@ -21,8 +21,9 @@
 
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
-using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.Platform.Net;
+using Google.Solutions.Settings;
+using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System.Collections.Generic;
 

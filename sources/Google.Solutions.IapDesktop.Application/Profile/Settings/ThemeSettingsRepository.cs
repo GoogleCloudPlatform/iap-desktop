@@ -20,7 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
+using Google.Solutions.Settings;
+using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Settings;
 using System;
 using System.Diagnostics;
 

@@ -29,6 +29,8 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.Settings;
+using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

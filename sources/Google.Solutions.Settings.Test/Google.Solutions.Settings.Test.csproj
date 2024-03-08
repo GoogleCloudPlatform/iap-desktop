@@ -19,7 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
-    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Settings.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Settings\Google.Solutions.Settings.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj" />
   </ItemGroup>
 </Project>

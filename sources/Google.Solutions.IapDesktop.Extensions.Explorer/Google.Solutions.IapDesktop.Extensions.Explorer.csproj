@@ -35,9 +35,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\Install\AboutView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolWindows\Install\AboutView.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources.resx">

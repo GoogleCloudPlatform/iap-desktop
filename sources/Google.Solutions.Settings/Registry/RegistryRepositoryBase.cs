@@ -22,7 +22,7 @@
 using Microsoft.Win32;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
+namespace Google.Solutions.Settings.Registry
 {
     /// <summary>
     /// Base class for all settings repositories.
