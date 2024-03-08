@@ -22,7 +22,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Base class for a setting.

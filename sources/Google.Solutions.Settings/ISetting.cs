@@ -22,7 +22,7 @@
 using System;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Base interface for a setting.

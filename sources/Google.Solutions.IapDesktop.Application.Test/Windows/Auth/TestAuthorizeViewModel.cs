@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Platform.Net;
+using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;

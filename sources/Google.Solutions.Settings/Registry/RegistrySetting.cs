@@ -31,7 +31,7 @@ using System.Text;
 #pragma warning disable CA1000 // Do not declare static members on generic types
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings.Registry
+namespace Google.Solutions.Settings.Registry
 {
     public interface IRegistrySetting : ISetting
     {

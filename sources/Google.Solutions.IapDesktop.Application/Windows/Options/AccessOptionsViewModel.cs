@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Settings;
 using System;
 using System.Diagnostics.CodeAnalysis;
 

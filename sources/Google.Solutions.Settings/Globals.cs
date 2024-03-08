@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,6 @@
 // under the License.
 //
 
-using System;
+using System.Runtime.CompilerServices;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
-{
-    /// <summary>
-    /// Persistent respository for settings.
-    /// </summary>
-    /// <typeparam name="TSettings"></typeparam>
-    public interface IRepository<TSettings> : IDisposable
-        where TSettings : ISettingsCollection
-    {
-        /// <summary>
-        /// Read a snapshot of settings.
-        /// </summary>
-        TSettings GetSettings();
-
-        /// <summary>
-        /// Save a modified set of settings.
-        /// </summary>
-        void SetSettings(TSettings settings);
-    }
-}
+[assembly: InternalsVisibleTo("Google.Solutions.Settings.Test")]

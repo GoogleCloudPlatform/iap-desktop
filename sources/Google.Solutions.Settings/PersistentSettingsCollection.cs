@@ -23,8 +23,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.Settings
 {
+    public interface IPersistentSettingsCollection : ISettingsCollection
+    {
+        void Save();
+    }
+
+    public interface IPersistentSettingsCollection<out TCollection> : IPersistentSettingsCollection
+        where TCollection : ISettingsCollection
+    {
+        TCollection TypedCollection { get; }
+    }
+
     public static class PersistentSettingsCollection
     {
         private class PersistentCollection<TCollection> : IPersistentSettingsCollection<TCollection>

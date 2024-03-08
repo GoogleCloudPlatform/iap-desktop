@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionS
     [Service]
     public class ConnectionSettingsViewModel : ViewModelBase, IPropertiesInspectorViewModel
     {
-        internal const string RequiresReconnectWarning = "Changes only take effect after reconnecting";
+        internal const string RequiresReconnectWarning = "Changes take effect after reconnecting";
         internal const string DefaultWindowTitle = "Connection settings";
 
         private readonly IConnectionSettingsService settingsService;

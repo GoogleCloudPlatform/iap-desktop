@@ -20,13 +20,14 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.IapDesktop.Application.Profile.Settings.Registry;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
+using Google.Solutions.Settings;
+using Google.Solutions.Settings.Registry;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Moq;

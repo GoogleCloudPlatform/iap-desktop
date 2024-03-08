@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Settings;
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Collections.Generic;

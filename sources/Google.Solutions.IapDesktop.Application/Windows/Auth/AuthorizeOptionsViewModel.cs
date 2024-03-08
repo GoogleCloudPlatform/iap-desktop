@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Settings;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
