@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             //
             var settings = this.settingsRepository.GetSettings();
 
-            this.CollapsedProjects = (settings.CollapsedProjects.StringValue ?? string.Empty)
+            this.CollapsedProjects = (settings.CollapsedProjects.Value ?? string.Empty)
                 .Split(',')
                 .Where(projectId => !string.IsNullOrWhiteSpace(projectId))
                 .Select(projectId => new ProjectLocator(projectId.Trim()))
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             var settings = this.settingsRepository.GetSettings();
 
-            settings.CollapsedProjects.StringValue = string.Join(
+            settings.CollapsedProjects.Value = string.Join(
                 ",",
                 this.CollapsedProjects.Select(locator => locator.ProjectId));
 

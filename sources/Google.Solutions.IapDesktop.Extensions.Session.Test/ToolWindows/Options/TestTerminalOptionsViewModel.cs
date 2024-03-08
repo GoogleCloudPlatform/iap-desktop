@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var font = new Font(FontFamily.GenericMonospace, 24.0f);
             var settings = this.settingsRepository.GetSettings();
-            settings.FontFamily.StringValue = font.Name;
+            settings.FontFamily.Value = font.Name;
             settings.FontSizeAsDword.IntValue =
                 TerminalSettingsRepository.DwordFromFontSize(font.Size);
             this.settingsRepository.SetSettings(settings);
@@ -472,7 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             Assert.IsFalse(viewModel.IsDirty.Value);
 
             var settings = this.settingsRepository.GetSettings();
-            Assert.AreEqual(font.Name, settings.FontFamily.StringValue);
+            Assert.AreEqual(font.Name, settings.FontFamily.Value);
             Assert.AreEqual(
                 TerminalSettingsRepository.DwordFromFontSize(font.Size),
                 settings.FontSizeAsDword.IntValue);

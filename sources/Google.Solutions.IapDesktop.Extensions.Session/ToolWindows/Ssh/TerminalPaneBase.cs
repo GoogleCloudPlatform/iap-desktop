@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             this.terminal.EnableCtrlHomeEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
 
             this.terminal.TerminalFont = new TerminalFont(
-                settings.FontFamily.StringValue,
+                settings.FontFamily.Value,
                 TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
 
             this.terminal.TerminalBackgroundColor = Color.FromArgb(settings.BackgroundColorArgb.IntValue);

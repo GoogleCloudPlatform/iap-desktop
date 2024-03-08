@@ -104,7 +104,7 @@ namespace Google.Solutions.Settings
         T Value { get; set; }
 
         /// <summary>
-        /// Returns the typed default value.
+        /// Returns the default value, which might be inherited.
         /// </summary>
         T DefaultValue { get; }
 
@@ -116,13 +116,6 @@ namespace Google.Solutions.Settings
 
     // TODO: remove IXxxSetting
 
-    /// <summary>
-    /// String-valued setting.
-    /// </summary>
-    public interface IStringSetting : ISetting<string>
-    {
-        string StringValue { get; set; }
-    }
 
     /// <summary>
     /// SecureString-valued setting.

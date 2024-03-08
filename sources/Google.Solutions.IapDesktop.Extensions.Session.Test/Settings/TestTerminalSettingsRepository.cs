@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.BoolValue);
             Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue);
             Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue);
-            Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.StringValue);
+            Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.Value);
             Assert.AreEqual(
                 TerminalFont.DefaultSize,
                 TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));

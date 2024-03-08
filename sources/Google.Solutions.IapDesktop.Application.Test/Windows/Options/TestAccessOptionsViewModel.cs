@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = "psc";
+            settings.PrivateServiceConnectEndpoint.Value = "psc";
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = null;
+            settings.PrivateServiceConnectEndpoint.Value = null;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = null;
+            settings.PrivateServiceConnectEndpoint.Value = null;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.StringValue);
+            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.Value);
         }
 
         [Test]
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = "psc";
+            settings.PrivateServiceConnectEndpoint.Value = "psc";
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsNull(settings.PrivateServiceConnectEndpoint.StringValue);
+            Assert.IsNull(settings.PrivateServiceConnectEndpoint.Value);
         }
 
         [Test]

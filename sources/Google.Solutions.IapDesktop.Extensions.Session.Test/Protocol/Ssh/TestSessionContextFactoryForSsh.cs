@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.SshPort.IntValue = 2222;
-            settings.SshUsername.StringValue = "user";
+            settings.SshUsername.Value = "user";
             settings.SshConnectionTimeout.Value = (int)TimeSpan.FromSeconds(123).TotalSeconds;
 
             var settingsService = new Mock<IConnectionSettingsService>();
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.SshPublicKeyAuthentication.EnumValue = SshPublicKeyAuthentication.Disabled;
-            settings.SshUsername.StringValue = username;
+            settings.SshUsername.Value = username;
 
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))

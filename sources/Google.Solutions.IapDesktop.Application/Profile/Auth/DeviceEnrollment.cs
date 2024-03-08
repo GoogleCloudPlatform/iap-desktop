@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             //
             X509Certificate2 deviceCertificate = null;
             if (ChromeCertificateSelector.TryParse(
-                settings.DeviceCertificateSelector.StringValue,
+                settings.DeviceCertificateSelector.Value,
                 out var selector))
             {
                 deviceCertificate = FirstCertificateMatchingPolicy(

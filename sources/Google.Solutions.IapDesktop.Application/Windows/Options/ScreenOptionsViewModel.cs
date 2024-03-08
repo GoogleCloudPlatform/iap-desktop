@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         protected override void Load(IApplicationSettings settings)
         {
             var fullScreenDevices =
-                (settings.FullScreenDevices.StringValue ?? string.Empty)
+                (settings.FullScreenDevices.Value ?? string.Empty)
                     .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
                     .ToHashSet();
 
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 .Where(d => d.IsSelected)
                 .Select(d => d.DeviceName);
 
-            settings.FullScreenDevices.StringValue = selectedDevices.Any()
+            settings.FullScreenDevices.Value = selectedDevices.Any()
                 ? string.Join(
                     ApplicationSettingsRepository.FullScreenDevicesSeparator.ToString(),
                     selectedDevices)

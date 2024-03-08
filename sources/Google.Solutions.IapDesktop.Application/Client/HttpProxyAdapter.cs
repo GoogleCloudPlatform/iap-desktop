@@ -160,10 +160,10 @@ namespace Google.Solutions.IapDesktop.Application.Client
         {
             NetworkCredential GetProxyCredential()
             {
-                if (!string.IsNullOrEmpty(settings.ProxyUsername.StringValue))
+                if (!string.IsNullOrEmpty(settings.ProxyUsername.Value))
                 {
                     return new NetworkCredential(
-                        settings.ProxyUsername.StringValue,
+                        settings.ProxyUsername.Value,
                         (SecureString)settings.ProxyPassword.Value);
                 }
                 else
@@ -172,17 +172,17 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 }
             }
 
-            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
+            if (!string.IsNullOrEmpty(settings.ProxyUrl.Value))
             {
                 ActivateCustomProxySettings(
-                    new Uri(settings.ProxyUrl.StringValue),
+                    new Uri(settings.ProxyUrl.Value),
                     null,
                     GetProxyCredential());
             }
-            else if (!string.IsNullOrEmpty(settings.ProxyPacUrl.StringValue))
+            else if (!string.IsNullOrEmpty(settings.ProxyPacUrl.Value))
             {
                 ActivateProxyAutoConfigSettings(
-                    new Uri(settings.ProxyPacUrl.StringValue),
+                    new Uri(settings.ProxyPacUrl.Value),
                     GetProxyCredential());
             }
             else

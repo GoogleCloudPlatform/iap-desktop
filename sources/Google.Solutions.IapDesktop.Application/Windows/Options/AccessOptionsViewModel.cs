@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
 
             this.PrivateServiceConnectEndpoint.Value =
-                settings.PrivateServiceConnectEndpoint.StringValue;
+                settings.PrivateServiceConnectEndpoint.Value;
             this.IsPrivateServiceConnectEnabled.Value =
                 !settings.PrivateServiceConnectEndpoint.IsDefault; 
             this.IsPrivateServiceConnectEditable.Value =
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
                 this.IsDeviceCertificateAuthenticationEnabled.Value;
 
-            settings.PrivateServiceConnectEndpoint.StringValue =
+            settings.PrivateServiceConnectEndpoint.Value =
                 this.IsPrivateServiceConnectEnabled.Value
                     ? this.PrivateServiceConnectEndpoint.Value
                     : null;
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 (int)this.ConnectionPoolLimit.Value;
 
             if (this.ProbePrivateServiceConnectEndpoint &&
-                settings.PrivateServiceConnectEndpoint.StringValue 
+                settings.PrivateServiceConnectEndpoint.Value 
                 is var pscEndpoint &&
                 pscEndpoint != null)
             {

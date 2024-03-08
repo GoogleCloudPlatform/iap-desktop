@@ -490,7 +490,7 @@ namespace Google.Solutions.IapDesktop
                 var serviceRoute = ServiceRoute.Public;
                 {
                     var accessSettings = accessSettingsRepository.GetSettings();
-                    if (accessSettings.PrivateServiceConnectEndpoint.StringValue is var pscEndpoint &&
+                    if (accessSettings.PrivateServiceConnectEndpoint.Value is var pscEndpoint &&
                         !string.IsNullOrEmpty(pscEndpoint))
                     {
                         //

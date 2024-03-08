@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            settings.DeviceCertificateSelector.StringValue =
+            settings.DeviceCertificateSelector.Value =
                 @"{
                     'filter':{
                         'SUBJECT': {
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            settings.DeviceCertificateSelector.StringValue =
+            settings.DeviceCertificateSelector.Value =
                 @"{
                     'filter':{
                         'SUBJECT': {
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            settings.DeviceCertificateSelector.StringValue =
+            settings.DeviceCertificateSelector.Value =
                 @"{
                     'filter':{
                         'SUBJECT': {

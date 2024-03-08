@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
             this.TerminalFont.Value = new Font(
-                settings.FontFamily.StringValue,
+                settings.FontFamily.Value,
                 TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
             this.TerminalForegroundColor.Value = Color.FromArgb(
                 settings.ForegroundColorArgb.IntValue);
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 this.IsScrollingUsingCtrlUpDownEnabled.Value;
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue =
                 this.IsScrollingUsingCtrlHomeEndEnabled.Value;
-            settings.FontFamily.StringValue =
+            settings.FontFamily.Value =
                 this.TerminalFont.Value.FontFamily.Name;
             settings.FontSizeAsDword.IntValue =
                 TerminalSettingsRepository.DwordFromFontSize(this.TerminalFont.Value.Size);

@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 false,
                 taskDialog);
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
-            settings.RdpUsername.StringValue = "alice";
+            settings.RdpUsername.Value = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
             await credentialPrompt
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 taskDialog);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
-            settings.RdpUsername.StringValue = "alice";
+            settings.RdpUsername.Value = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
             await credentialPrompt
@@ -423,7 +423,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             var credentialPrompt = CreateCredentialsWorkflow(true, false, taskDialog);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
-            settings.RdpUsername.StringValue = "alice";
+            settings.RdpUsername.Value = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
             await credentialPrompt
@@ -473,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                     true)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual("bob", settings.RdpUsername.StringValue);
+            Assert.AreEqual("bob", settings.RdpUsername.Value);
             Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
             Assert.IsNull(settings.RdpDomain.Value);
 

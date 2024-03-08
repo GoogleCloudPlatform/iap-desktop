@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// IP or hostname to use for Private Service Connect (PSC). 
         /// If null, PSC is diabled.
         /// </summary>
-        IStringSetting PrivateServiceConnectEndpoint { get; }
+        ISetting<string> PrivateServiceConnectEndpoint { get; }
 
         /// <summary>
         /// Enable BeyondCorp certificate-based access.
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// AutoSelectCertificateForUrl-formatted selector for certificate.
         /// </summary>
-        IStringSetting DeviceCertificateSelector { get; }
+        ISetting<string> DeviceCertificateSelector { get; }
 
         /// <summary>
         /// Maximum number of connections per API endpoint.
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// When set, authentication is performed using workforce
         /// identity instead of Gaia.
         /// </summary>
-        IStringSetting WorkforcePoolProvider { get; }
+        ISetting<string> WorkforcePoolProvider { get; }
     }
 
     /// <summary>
@@ -97,13 +97,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             {
             }
 
-            public IStringSetting WorkforcePoolProvider { get; private set; }
+            public ISetting<string> WorkforcePoolProvider { get; private set; }
 
-            public IStringSetting PrivateServiceConnectEndpoint { get; private set; }
+            public ISetting<string> PrivateServiceConnectEndpoint { get; private set; }
 
             public IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
 
-            public IStringSetting DeviceCertificateSelector { get; private set; }
+            public ISetting<string> DeviceCertificateSelector { get; private set; }
 
             public IIntSetting ConnectionLimit { get; private set; }
 

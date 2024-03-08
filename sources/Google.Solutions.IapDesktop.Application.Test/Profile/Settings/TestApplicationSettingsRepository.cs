@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://userpolicy", settings.ProxyUrl.StringValue);
+                Assert.AreEqual("http://userpolicy", settings.ProxyUrl.Value);
             }
         }
 
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.Value);
             }
         }
 
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.Value);
             }
         }
 
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://userpolicy", settings.ProxyPacUrl.StringValue);
+                Assert.AreEqual("http://userpolicy", settings.ProxyPacUrl.Value);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.Value);
             }
         }
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.Value);
             }
         }
 

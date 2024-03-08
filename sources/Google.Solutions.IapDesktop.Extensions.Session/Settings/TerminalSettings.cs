@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         IBoolSetting IsNavigationUsingControlArrrowEnabled { get; }
         IBoolSetting IsScrollingUsingCtrlUpDownEnabled { get; }
         IBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; }
-        IStringSetting FontFamily { get; }
+        ISetting<string> FontFamily { get; }
         IIntSetting FontSizeAsDword { get; }
         IIntSetting ForegroundColorArgb { get; }
         IIntSetting BackgroundColorArgb { get; }
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             public IBoolSetting IsNavigationUsingControlArrrowEnabled { get; private set; }
             public IBoolSetting IsScrollingUsingCtrlUpDownEnabled { get; private set; }
             public IBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
-            public IStringSetting FontFamily { get; private set; }
+            public ISetting<string> FontFamily { get; private set; }
             public IIntSetting FontSizeAsDword { get; private set; }
             public IIntSetting ForegroundColorArgb { get; private set; }
             public IIntSetting BackgroundColorArgb { get; private set; }

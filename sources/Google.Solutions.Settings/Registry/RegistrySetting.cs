@@ -41,7 +41,7 @@ namespace Google.Solutions.Settings.Registry
 
 
     public class RegistryStringSetting
-        : SettingBase<string>, IRegistrySetting, IStringSetting
+        : SettingBase<string>, IRegistrySetting
     {
         private readonly Func<string, bool> validate;
 

@@ -186,9 +186,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public async Task WhenTryUseRdpNetworkCredentials_ThenCreateContextUsesRdpNetworkCredentials()
         {
             var settings = new ConnectionSettings(SampleLocator);
-            settings.RdpUsername.StringValue = "user";
+            settings.RdpUsername.Value = "user";
             settings.RdpPassword.ClearTextValue = "password";
-            settings.RdpDomain.StringValue = "domain";
+            settings.RdpDomain.Value = "domain";
 
             var settingsService = CreateSettingsService(settings);
 
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public async Task CreateContextAppliesSettings()
         {
             var settings = new ConnectionSettings(SampleLocator);
-            settings.AppUsername.StringValue = "user";
+            settings.AppUsername.Value = "user";
             settings.AppNetworkLevelAuthentication.EnumValue
                 = AppNetworkLevelAuthenticationState.Disabled;
 

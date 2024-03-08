@@ -398,7 +398,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         //
                         checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.BoolValue;
                         if (Version.TryParse(
-                            settings.LastSurveyVersion.StringValue, 
+                            settings.LastSurveyVersion.Value, 
                             out var lastSurveyVersion))
                         {
                             checkForUpdates.LastSurveyVersion = lastSurveyVersion;
@@ -408,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
                         settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
                         settings.IsSurveyEnabled.BoolValue = checkForUpdates.EnableSurveys;
-                        settings.LastSurveyVersion.StringValue = checkForUpdates.LastSurveyVersion?.ToString();
+                        settings.LastSurveyVersion.Value = checkForUpdates.LastSurveyVersion?.ToString();
                     }
                 }
                 catch (Exception e)

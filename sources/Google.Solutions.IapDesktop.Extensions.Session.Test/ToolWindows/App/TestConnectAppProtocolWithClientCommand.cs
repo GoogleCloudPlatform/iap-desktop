@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppUsername.StringValue = "user";
+            settings.AppUsername.Value = "user";
 
             var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
@@ -284,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
-            settings.AppUsername.StringValue = "ignore";
+            settings.AppUsername.Value = "ignore";
 
             var username = "user";
             var dialog = new Mock<ICredentialDialog>();
@@ -359,9 +359,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
-            settings.RdpUsername.StringValue = "user";
+            settings.RdpUsername.Value = "user";
             settings.RdpPassword.ClearTextValue = "password";
-            settings.RdpDomain.StringValue = "domain";
+            settings.RdpDomain.Value = "domain";
 
             var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
@@ -428,9 +428,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
-            settings.RdpUsername.StringValue = "ignore";
+            settings.RdpUsername.Value = "ignore";
             settings.RdpPassword.ClearTextValue = "ignore";
-            settings.RdpDomain.StringValue = "ignore";
+            settings.RdpDomain.Value = "ignore";
 
             var userCredential = new NetworkCredential("user", "password", "domain");
             var dialog = new Mock<ICredentialDialog>();

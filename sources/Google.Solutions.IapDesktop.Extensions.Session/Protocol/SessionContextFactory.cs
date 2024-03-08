@@ -134,8 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             ConnectionSettings settings)
         {
             return new RdpCredential(
-                settings.RdpUsername.StringValue,
-                settings.RdpDomain.StringValue,
+                settings.RdpUsername.Value,
+                settings.RdpDomain.Value,
                 (SecureString)settings.RdpPassword.Value);
         }
 
@@ -382,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     node.Instance);
 
                 context.Parameters.PublicKeyValidity = validity;
-                context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
+                context.Parameters.PreferredUsername = settings.SshUsername.Value;
             }
             else
             {
@@ -390,9 +390,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 // Use password for authentication.
                 //
 
-                var username = string.IsNullOrEmpty(settings.SshUsername.StringValue)
+                var username = string.IsNullOrEmpty(settings.SshUsername.Value)
                     ? LinuxUser.SuggestUsername(this.authorization)
-                    : settings.SshUsername.StringValue;
+                    : settings.SshUsername.Value;
 
                 context = new SshContext(
                     this.iapTransportFactory,

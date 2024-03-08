@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // Load current settings from repository.
             //
             _ = WorkforcePoolProviderLocator.TryParse(
-                repository.GetSettings().WorkforcePoolProvider.StringValue,
+                repository.GetSettings().WorkforcePoolProvider.Value,
                 out var workforcePoolProvider);
 
             this.IsGaiaOptionChecked = ObservableProperty.Build(workforcePoolProvider == null);

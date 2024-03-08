@@ -59,22 +59,22 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 !settings.ProxyUrl.IsReadOnly &&
                 !settings.ProxyPacUrl.IsReadOnly;
 
-            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue) &&
-                Uri.TryCreate(settings.ProxyUrl.StringValue, UriKind.Absolute, out var proxyUrl))
+            if (!string.IsNullOrEmpty(settings.ProxyUrl.Value) &&
+                Uri.TryCreate(settings.ProxyUrl.Value, UriKind.Absolute, out var proxyUrl))
             {
                 this.proxyServer = proxyUrl.Host;
                 this.proxyPort = proxyUrl.Port.ToString();
             }
 
-            if (!string.IsNullOrEmpty(settings.ProxyPacUrl.StringValue) &&
-                IsValidProxyAutoConfigurationAddress(settings.ProxyPacUrl.StringValue))
+            if (!string.IsNullOrEmpty(settings.ProxyPacUrl.Value) &&
+                IsValidProxyAutoConfigurationAddress(settings.ProxyPacUrl.Value))
             {
-                this.proxyPacAddress = settings.ProxyPacUrl.StringValue;
+                this.proxyPacAddress = settings.ProxyPacUrl.Value;
             }
 
             if (this.proxyServer != null || this.proxyPacAddress != null)
             {
-                this.proxyUsername = settings.ProxyUsername.StringValue;
+                this.proxyUsername = settings.ProxyUsername.Value;
                 this.proxyPassword = settings.ProxyPassword.ClearTextValue;
             }
         }
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                             $"'{this.proxyPort}' is not a valid port number");
                     }
 
-                    settings.ProxyUrl.StringValue = $"http://{this.proxyServer?.Trim()}:{this.proxyPort?.Trim()}";
+                    settings.ProxyUrl.Value = $"http://{this.proxyServer?.Trim()}:{this.proxyPort?.Trim()}";
                     settings.ProxyPacUrl.Reset();
                     break;
 
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                     }
 
                     settings.ProxyUrl.Reset();
-                    settings.ProxyPacUrl.StringValue = this.proxyPacAddress?.Trim();
+                    settings.ProxyPacUrl.Value = this.proxyPacAddress?.Trim();
                     break;
 
                 case ProxyType.System:
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 throw new ArgumentException("Proxy credentials are incomplete");
             }
 
-            settings.ProxyUsername.StringValue = this.proxyUsername;
+            settings.ProxyUsername.Value = this.proxyUsername;
 
             if (this.proxyPassword != null)
             {
