@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.ConnectionLimit.IntValue = 5;
+            settings.ConnectionLimit.Value = 5;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.IntValue);
+            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.Value);
         }
 
         //---------------------------------------------------------------------

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             settings.RdpUsername.Value = "bob";
             settings.RdpPassword.ClearTextValue = "secret";
             settings.RdpRedirectClipboard.EnumValue = RdpRedirectClipboard.Disabled;
-            settings.RdpConnectionTimeout.IntValue = 123;
+            settings.RdpConnectionTimeout.Value = 123;
 
             var query = settings.ToUrlQuery();
 

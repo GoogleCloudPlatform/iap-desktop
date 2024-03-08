@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 StringAssert.Contains(
                     "Google Endpoint Verification",
                     settings.DeviceCertificateSelector.Value);
-                Assert.AreEqual(16, settings.ConnectionLimit.IntValue);
+                Assert.AreEqual(16, settings.ConnectionLimit.Value);
             }
         }
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 settingsKey.SetValue("ConnectionLimit", 8);
 
                 var settings = repository.GetSettings();
-                Assert.AreEqual(8, settings.ConnectionLimit.IntValue);
+                Assert.AreEqual(8, settings.ConnectionLimit.Value);
                 Assert.IsFalse(settings.ConnectionLimit.IsDefault);
             }
         }

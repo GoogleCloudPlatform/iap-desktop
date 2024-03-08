@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var font = new Font(FontFamily.GenericMonospace, 24.0f);
             var settings = this.settingsRepository.GetSettings();
             settings.FontFamily.Value = font.Name;
-            settings.FontSizeAsDword.IntValue =
+            settings.FontSizeAsDword.Value =
                 TerminalSettingsRepository.DwordFromFontSize(font.Size);
             this.settingsRepository.SetSettings(settings);
 
@@ -475,7 +475,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             Assert.AreEqual(font.Name, settings.FontFamily.Value);
             Assert.AreEqual(
                 TerminalSettingsRepository.DwordFromFontSize(font.Size),
-                settings.FontSizeAsDword.IntValue);
+                settings.FontSizeAsDword.Value);
         }
 
         //---------------------------------------------------------------------
@@ -488,7 +488,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var color = Color.Red;
 
             var settings = this.settingsRepository.GetSettings();
-            settings.ForegroundColorArgb.IntValue = color.ToArgb();
+            settings.ForegroundColorArgb.Value = color.ToArgb();
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
@@ -510,7 +510,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             Assert.IsFalse(viewModel.IsDirty.Value);
 
             var settings = this.settingsRepository.GetSettings();
-            Assert.AreEqual(color.ToArgb(), settings.ForegroundColorArgb.IntValue);
+            Assert.AreEqual(color.ToArgb(), settings.ForegroundColorArgb.Value);
         }
 
         //---------------------------------------------------------------------
@@ -523,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var color = Color.Red;
 
             var settings = this.settingsRepository.GetSettings();
-            settings.BackgroundColorArgb.IntValue = color.ToArgb();
+            settings.BackgroundColorArgb.Value = color.ToArgb();
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
@@ -545,7 +545,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             Assert.IsFalse(viewModel.IsDirty.Value);
 
             var settings = this.settingsRepository.GetSettings();
-            Assert.AreEqual(color.ToArgb(), settings.BackgroundColorArgb.IntValue);
+            Assert.AreEqual(color.ToArgb(), settings.BackgroundColorArgb.Value);
         }
     }
 }

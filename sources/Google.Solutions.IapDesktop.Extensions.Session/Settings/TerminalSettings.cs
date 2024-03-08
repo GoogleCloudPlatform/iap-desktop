@@ -48,9 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
         ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
         ISetting<string> FontFamily { get; }
-        IIntSetting FontSizeAsDword { get; }
-        IIntSetting ForegroundColorArgb { get; }
-        IIntSetting BackgroundColorArgb { get; }
+        ISetting<int> FontSizeAsDword { get; }
+        ISetting<int> ForegroundColorArgb { get; }
+        ISetting<int> BackgroundColorArgb { get; }
     }
 
     public interface ITerminalSettingsRepository : IRepository<ITerminalSettings>
@@ -122,9 +122,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; private set; }
             public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
             public ISetting<string> FontFamily { get; private set; }
-            public IIntSetting FontSizeAsDword { get; private set; }
-            public IIntSetting ForegroundColorArgb { get; private set; }
-            public IIntSetting BackgroundColorArgb { get; private set; }
+            public ISetting<int> FontSizeAsDword { get; private set; }
+            public ISetting<int> ForegroundColorArgb { get; private set; }
+            public ISetting<int> BackgroundColorArgb { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

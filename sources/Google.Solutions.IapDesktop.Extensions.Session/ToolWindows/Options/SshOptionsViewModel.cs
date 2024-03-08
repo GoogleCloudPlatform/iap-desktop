@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 usePersistent => !settings.UsePersistentKey.IsReadOnly);
 
             this.PublicKeyValidityInDays = ObservableProperty.Build(
-                (decimal)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays);
+                (decimal)TimeSpan.FromSeconds(settings.PublicKeyValidity.Value).TotalDays);
             this.IsPublicKeyValidityInDaysEditable = ObservableProperty.Build(
                 this.UsePersistentKey,
                 usePersistent => usePersistent && !settings.PublicKeyValidity.IsReadOnly);
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         {
             settings.PublicKeyType.EnumValue = this.PublicKeyType.Value;
             settings.UsePersistentKey.Value = this.UsePersistentKey.Value;
-            settings.PublicKeyValidity.IntValue =
+            settings.PublicKeyValidity.Value =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;
 
             settings.IsPropagateLocaleEnabled.Value = this.IsPropagateLocaleEnabled.Value;

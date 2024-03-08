@@ -219,10 +219,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             this.terminal.TerminalFont = new TerminalFont(
                 settings.FontFamily.Value,
-                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
 
-            this.terminal.TerminalBackgroundColor = Color.FromArgb(settings.BackgroundColorArgb.IntValue);
-            this.terminal.TerminalForegroundColor = Color.FromArgb(settings.ForegroundColorArgb.IntValue);
+            this.terminal.TerminalBackgroundColor = Color.FromArgb(settings.BackgroundColorArgb.Value);
+            this.terminal.TerminalForegroundColor = Color.FromArgb(settings.ForegroundColorArgb.Value);
         }
 
         //---------------------------------------------------------------------

@@ -126,14 +126,6 @@ namespace Google.Solutions.Settings
     }
 
     /// <summary>
-    /// Int-valued setting.
-    /// </summary>
-    public interface IIntSetting : ISetting<int>
-    {
-        int IntValue { get; set; }
-    }
-
-    /// <summary>
     /// Long-valued setting.
     /// </summary>
     public interface ILongSetting : ISetting<long>

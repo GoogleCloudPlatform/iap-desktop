@@ -37,8 +37,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     public interface IApplicationSettings : ISettingsCollection
     {
         ISetting<bool> IsMainWindowMaximized { get; }
-        IIntSetting MainWindowHeight { get; }
-        IIntSetting MainWindowWidth { get; }
+        ISetting<int> MainWindowHeight { get; }
+        ISetting<int> MainWindowWidth { get; }
         ISetting<bool> IsUpdateCheckEnabled { get; }
         ISetting<bool> IsTelemetryEnabled { get; }
         ILongSetting LastUpdateCheck { get; }
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<string> ProxyPacUrl { get; }
         ISetting<string> ProxyUsername { get; }
         ISecureStringSetting ProxyPassword { get; }
-        IIntSetting ProxyAuthenticationRetries { get; }
+        ISetting<int> ProxyAuthenticationRetries { get; }
         IEnumSetting<SecurityProtocolType> TlsVersions { get; }
         ISetting<string> FullScreenDevices { get; }
         ISetting<string> CollapsedProjects { get; }
@@ -115,9 +115,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<bool> IsMainWindowMaximized { get; private set; }
 
-            public IIntSetting MainWindowHeight { get; private set; }
+            public ISetting<int> MainWindowHeight { get; private set; }
 
-            public IIntSetting MainWindowWidth { get; private set; }
+            public ISetting<int> MainWindowWidth { get; private set; }
 
             public ISetting<bool> IsUpdateCheckEnabled { get; private set; }
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISecureStringSetting ProxyPassword { get; private set; }
             
-            public IIntSetting ProxyAuthenticationRetries { get; private set; }
+            public ISetting<int> ProxyAuthenticationRetries { get; private set; }
 
             public IEnumSetting<SecurityProtocolType> TlsVersions { get; private set; }
 

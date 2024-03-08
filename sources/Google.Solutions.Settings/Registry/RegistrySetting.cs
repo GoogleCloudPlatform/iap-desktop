@@ -342,8 +342,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryDwordSetting
-        : SettingBase<int>, IRegistrySetting, IIntSetting
+    public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
     {
         private readonly int minInclusive;
         private readonly int maxInclusive;

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Maximum number of connections per API endpoint.
         /// </summary>
-        IIntSetting ConnectionLimit { get; }
+        ISetting<int> ConnectionLimit { get; }
 
         /// <summary>
         /// Workforce pool provider locator. 
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<string> DeviceCertificateSelector { get; private set; }
 
-            public IIntSetting ConnectionLimit { get; private set; }
+            public ISetting<int> ConnectionLimit { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

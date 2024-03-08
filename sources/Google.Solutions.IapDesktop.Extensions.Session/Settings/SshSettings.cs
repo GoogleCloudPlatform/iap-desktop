@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// Gets or sets the validity of public keys uploaded
         /// to OS Login or metadata.
         /// </summary>
-        IIntSetting PublicKeyValidity { get; }
+        ISetting<int> PublicKeyValidity { get; }
 
         /// <summary>
         /// Type of public key to use. This determines the
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         private class SshSettings : ISshSettings
         {
             public ISetting<bool> IsPropagateLocaleEnabled { get; private set; }
-            public IIntSetting PublicKeyValidity { get; private set; }
+            public ISetting<int> PublicKeyValidity { get; private set; }
             public IEnumSetting<SshKeyType> PublicKeyType { get; private set; }
             public ISetting<bool> UsePersistentKey { get; private set; }
 

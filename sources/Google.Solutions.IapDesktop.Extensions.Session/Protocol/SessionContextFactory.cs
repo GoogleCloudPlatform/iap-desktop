@@ -152,9 +152,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 credential,
                 sources);
 
-            context.Parameters.Port = (ushort)settings.RdpPort.IntValue;
+            context.Parameters.Port = (ushort)settings.RdpPort.Value;
             context.Parameters.TransportType = settings.RdpTransport.EnumValue;
-            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.Value);
             context.Parameters.ConnectionBar = settings.RdpConnectionBar.EnumValue;
             context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue;
             context.Parameters.ColorDepth = settings.RdpColorDepth.EnumValue;
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                                 CngKeyUsages.Signing,
                                 false),
                             true);
-                        validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+                        validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.Value);
                     }
                     catch (CryptographicException e) when (
                         e is KeyStoreUnavailableException ||
@@ -403,9 +403,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     node.Instance);
             }
 
-            context.Parameters.Port = (ushort)settings.SshPort.IntValue;
+            context.Parameters.Port = (ushort)settings.SshPort.Value;
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
-            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.Value);
             context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.Value
                 ? CultureInfo.CurrentUICulture
                 : null;

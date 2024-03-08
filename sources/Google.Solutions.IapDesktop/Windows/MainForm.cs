@@ -105,13 +105,13 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.WindowState = FormWindowState.Maximized;
                 InitializeComponent();
             }
-            else if (windowSettings.MainWindowHeight.IntValue != 0 &&
-                     windowSettings.MainWindowWidth.IntValue != 0)
+            else if (windowSettings.MainWindowHeight.Value != 0 &&
+                     windowSettings.MainWindowWidth.Value != 0)
             {
                 InitializeComponent();
                 this.Size = new Size(
-                    windowSettings.MainWindowWidth.IntValue,
-                    windowSettings.MainWindowHeight.IntValue);
+                    windowSettings.MainWindowWidth.Value,
+                    windowSettings.MainWindowHeight.Value);
             }
             else
             {
@@ -422,8 +422,8 @@ namespace Google.Solutions.IapDesktop.Windows
             // Save window state.
             //
             settings.IsMainWindowMaximized.Value = this.WindowState == FormWindowState.Maximized;
-            settings.MainWindowHeight.IntValue = this.Size.Height;
-            settings.MainWindowWidth.IntValue = this.Size.Width;
+            settings.MainWindowHeight.Value = this.Size.Height;
+            settings.MainWindowWidth.Value = this.Size.Width;
 
             this.applicationSettings.SetSettings(settings);
         }

@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(RdpRedirectPort.Enabled, settings.RdpRedirectPort.Value);
             Assert.AreEqual(RdpRedirectDrive.Enabled, settings.RdpRedirectDrive.Value);
             Assert.AreEqual(RdpRedirectDevice.Enabled, settings.RdpRedirectDevice.Value);
-            Assert.AreEqual(13389, settings.RdpPort.IntValue);
+            Assert.AreEqual(13389, settings.RdpPort.Value);
             Assert.AreEqual(SessionTransportType.Vpc, settings.RdpTransport.EnumValue);
         }
 

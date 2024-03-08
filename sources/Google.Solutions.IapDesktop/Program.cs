@@ -475,7 +475,7 @@ namespace Google.Solutions.IapDesktop
                     preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
 
                     PscAndMtlsAwareHttpClientFactory.NtlmProxyAuthenticationRetries = 
-                        (ushort)appSettings.ProxyAuthenticationRetries.IntValue;
+                        (ushort)appSettings.ProxyAuthenticationRetries.Value;
                 }
                 catch (Exception)
                 {
@@ -503,7 +503,7 @@ namespace Google.Solutions.IapDesktop
                     // Set connection pool limit. This limit applies per endpoint.
                     //
                     ServicePointManager.DefaultConnectionLimit
-                        = accessSettings.ConnectionLimit.IntValue;
+                        = accessSettings.ConnectionLimit.Value;
                 }
 
                 preAuthLayer.AddSingleton(OAuthClient.ApiKey);

@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 !settings.PrivateServiceConnectEndpoint.IsReadOnly;
 
             this.ConnectionPoolLimit.Value = (decimal)
-                settings.ConnectionLimit.IntValue;
+                settings.ConnectionLimit.Value;
         }
 
         [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                     ? this.PrivateServiceConnectEndpoint.Value
                     : null;
 
-            settings.ConnectionLimit.IntValue =
+            settings.ConnectionLimit.Value =
                 (int)this.ConnectionPoolLimit.Value;
 
             if (this.ProbePrivateServiceConnectEndpoint &&

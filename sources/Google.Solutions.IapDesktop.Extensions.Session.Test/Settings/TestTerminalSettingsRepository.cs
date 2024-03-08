@@ -61,13 +61,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.Value);
             Assert.AreEqual(
                 TerminalFont.DefaultSize,
-                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
             Assert.AreEqual(
                 TerminalSettingsRepository.DefaultBackgroundColor.ToArgb(),
-                settings.BackgroundColorArgb.IntValue);
+                settings.BackgroundColorArgb.Value);
             Assert.AreEqual(
                 Color.White.ToArgb(),
-                settings.ForegroundColorArgb.IntValue);
+                settings.ForegroundColorArgb.Value);
         }
 
         [Test]

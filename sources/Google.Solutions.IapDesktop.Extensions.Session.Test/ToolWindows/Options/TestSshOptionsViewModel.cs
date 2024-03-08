@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            settings.PublicKeyValidity.Value = 60 * 60 * 26; // 1.5 days
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            settings.PublicKeyValidity.Value = 60 * 60 * 26; // 1.5 days
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            settings.PublicKeyValidity.Value = 60 * 60 * 26; // 1.5 days
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            settings.PublicKeyValidity.Value = 60 * 60 * 26; // 1.5 days
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(365 * 2 * 24 * 60 * 60, settings.PublicKeyValidity.IntValue);
+            Assert.AreEqual(365 * 2 * 24 * 60 * 60, settings.PublicKeyValidity.Value);
         }
 
         [Test]

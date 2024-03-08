@@ -67,8 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var keyTypeSetting = new Mock<IEnumSetting<SshKeyType>>();
             keyTypeSetting.SetupGet(s => s.EnumValue).Returns(SshKeyType.Rsa3072);
 
-            var validitySetting = new Mock<IIntSetting>();
-            validitySetting.SetupGet(s => s.IntValue).Returns((int)keyValidity.TotalSeconds);
+            var validitySetting = new Mock<ISetting<int>>();
+            validitySetting.SetupGet(s => s.Value).Returns((int)keyValidity.TotalSeconds);
 
             var usePersistentKeySetting = new Mock<ISetting<bool>>();
             usePersistentKeySetting.SetupGet(s => s.Value).Returns(usePersistentKey);
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
         {
             var settings = new ConnectionSettings(SampleLocator);
-            settings.SshPort.IntValue = 2222;
+            settings.SshPort.Value = 2222;
             settings.SshUsername.Value = "user";
             settings.SshConnectionTimeout.Value = (int)TimeSpan.FromSeconds(123).TotalSeconds;
 
