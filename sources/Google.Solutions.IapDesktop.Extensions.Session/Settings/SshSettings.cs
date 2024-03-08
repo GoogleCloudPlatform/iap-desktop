@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Enable propagation of current locate.
         /// </summary>
-        IBoolSetting IsPropagateLocaleEnabled { get; }
+        ISetting<bool> IsPropagateLocaleEnabled { get; }
 
         /// <summary>
         /// Gets or sets the validity of public keys uploaded
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// Controls whether the SSH signing key is stored in the
         /// local key store.
         /// </summary>
-        IBoolSetting UsePersistentKey { get; }
+        ISetting<bool> UsePersistentKey { get; }
     }
 
     /// <summary>
@@ -111,10 +111,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         private class SshSettings : ISshSettings
         {
-            public IBoolSetting IsPropagateLocaleEnabled { get; private set; }
+            public ISetting<bool> IsPropagateLocaleEnabled { get; private set; }
             public IIntSetting PublicKeyValidity { get; private set; }
             public IEnumSetting<SshKeyType> PublicKeyType { get; private set; }
-            public IBoolSetting UsePersistentKey { get; private set; }
+            public ISetting<bool> UsePersistentKey { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

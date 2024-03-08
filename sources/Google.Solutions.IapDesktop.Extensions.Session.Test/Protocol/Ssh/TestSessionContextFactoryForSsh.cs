@@ -70,10 +70,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var validitySetting = new Mock<IIntSetting>();
             validitySetting.SetupGet(s => s.IntValue).Returns((int)keyValidity.TotalSeconds);
 
-            var usePersistentKeySetting = new Mock<IBoolSetting>();
-            usePersistentKeySetting.SetupGet(s => s.BoolValue).Returns(usePersistentKey);
+            var usePersistentKeySetting = new Mock<ISetting<bool>>();
+            usePersistentKeySetting.SetupGet(s => s.Value).Returns(usePersistentKey);
 
-            var localeSetting = new Mock<IBoolSetting>();
+            var localeSetting = new Mock<ISetting<bool>>();
 
             var settings = new Mock<ISshSettings>();
             settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);

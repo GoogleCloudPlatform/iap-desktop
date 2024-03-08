@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             applicationSettingsRepository.ExpectNotNull(nameof(applicationSettingsRepository));
 
             var settings = applicationSettingsRepository.GetSettings();
-            if (!settings.IsDeviceCertificateAuthenticationEnabled.BoolValue)
+            if (!settings.IsDeviceCertificateAuthenticationEnabled.Value)
             {
                 return new DeviceEnrollment(DeviceEnrollmentState.Disabled, null);
             }

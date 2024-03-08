@@ -60,12 +60,12 @@ namespace Google.Solutions.Settings.Test.Registry
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.BoolValue = true;
+            setting.Value = true;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.BoolValue = setting.DefaultValue;
+            setting.Value = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);

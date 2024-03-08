@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.EnumValue);
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
 
-            this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.BoolValue);
+            this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.Value);
             this.IsUsePersistentKeyEditable = ObservableProperty.Build(
                 this.UsePersistentKey,
                 usePersistent => !settings.UsePersistentKey.IsReadOnly);
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 usePersistent => usePersistent && !settings.PublicKeyValidity.IsReadOnly);
 
             this.IsPropagateLocaleEnabled = ObservableProperty.Build(
-                settings.IsPropagateLocaleEnabled.BoolValue);
+                settings.IsPropagateLocaleEnabled.Value);
 
             MarkDirtyWhenPropertyChanges(this.PublicKeyType);
             MarkDirtyWhenPropertyChanges(this.UsePersistentKey);
@@ -78,11 +78,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         protected override void Save(ISshSettings settings)
         {
             settings.PublicKeyType.EnumValue = this.PublicKeyType.Value;
-            settings.UsePersistentKey.BoolValue = this.UsePersistentKey.Value;
+            settings.UsePersistentKey.Value = this.UsePersistentKey.Value;
             settings.PublicKeyValidity.IntValue =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;
 
-            settings.IsPropagateLocaleEnabled.BoolValue = this.IsPropagateLocaleEnabled.Value;
+            settings.IsPropagateLocaleEnabled.Value = this.IsPropagateLocaleEnabled.Value;
         }
 
         //---------------------------------------------------------------------

@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Disable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = false;
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settings.DeviceCertificateSelector.Value =
                 @"{
                     'filter':{
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settings.DeviceCertificateSelector.Value =
                 @"{
                     'filter':{
@@ -311,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settings.DeviceCertificateSelector.Value =
                 @"{
                     'filter':{

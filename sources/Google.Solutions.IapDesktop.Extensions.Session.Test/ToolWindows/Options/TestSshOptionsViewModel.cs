@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsPropagateLocaleEnabled.BoolValue = true;
+            settings.IsPropagateLocaleEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsPropagateLocaleEnabled.BoolValue = false;
+            settings.IsPropagateLocaleEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsPropagateLocaleEnabled.BoolValue = true;
+            settings.IsPropagateLocaleEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsPropagateLocaleEnabled.BoolValue);
+            Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.UsePersistentKey.BoolValue = true;
+            settings.UsePersistentKey.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.UsePersistentKey.BoolValue = false;
+            settings.UsePersistentKey.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.UsePersistentKey.BoolValue = true;
+            settings.UsePersistentKey.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.UsePersistentKey.BoolValue);
+            Assert.IsFalse(settings.UsePersistentKey.Value);
         }
 
         [Test]

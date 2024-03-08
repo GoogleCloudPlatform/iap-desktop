@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.Value);
         }
 
         [Test]

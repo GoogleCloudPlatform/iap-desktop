@@ -36,13 +36,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface IApplicationSettings : ISettingsCollection
     {
-        IBoolSetting IsMainWindowMaximized { get; }
+        ISetting<bool> IsMainWindowMaximized { get; }
         IIntSetting MainWindowHeight { get; }
         IIntSetting MainWindowWidth { get; }
-        IBoolSetting IsUpdateCheckEnabled { get; }
-        IBoolSetting IsTelemetryEnabled { get; }
+        ISetting<bool> IsUpdateCheckEnabled { get; }
+        ISetting<bool> IsTelemetryEnabled { get; }
         ILongSetting LastUpdateCheck { get; }
-        IBoolSetting IsPreviewFeatureSetEnabled { get; }
+        ISetting<bool> IsPreviewFeatureSetEnabled { get; }
         ISetting<string> ProxyUrl { get; }
         ISetting<string> ProxyPacUrl { get; }
         ISetting<string> ProxyUsername { get; }
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Participate in surveys.
         /// </summary>
-        IBoolSetting IsSurveyEnabled { get; }
+        ISetting<bool> IsSurveyEnabled { get; }
 
         /// <summary>
         /// Last release version for which the user has taken a survey.
@@ -113,19 +113,19 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             private ApplicationSettings()
             { }
 
-            public IBoolSetting IsMainWindowMaximized { get; private set; }
+            public ISetting<bool> IsMainWindowMaximized { get; private set; }
 
             public IIntSetting MainWindowHeight { get; private set; }
 
             public IIntSetting MainWindowWidth { get; private set; }
 
-            public IBoolSetting IsUpdateCheckEnabled { get; private set; }
+            public ISetting<bool> IsUpdateCheckEnabled { get; private set; }
 
-            public IBoolSetting IsTelemetryEnabled { get; private set; }
+            public ISetting<bool> IsTelemetryEnabled { get; private set; }
 
             public ILongSetting LastUpdateCheck { get; private set; }
 
-            public IBoolSetting IsPreviewFeatureSetEnabled { get; private set; }
+            public ISetting<bool> IsPreviewFeatureSetEnabled { get; private set; }
 
             public ISetting<string> ProxyUrl { get; private set; }
 
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<string> CollapsedProjects { get; private set; }
 
-            public IBoolSetting IsSurveyEnabled { get; private set; }
+            public ISetting<bool> IsSurveyEnabled { get; private set; }
 
             public ISetting<string> LastSurveyVersion { get; private set; }
 

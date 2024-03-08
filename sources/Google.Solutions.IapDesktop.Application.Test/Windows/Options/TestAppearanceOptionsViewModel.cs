@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var settings = this.settingsRepository.GetSettings();
             Assert.AreEqual(ApplicationTheme.Dark, settings.Theme.Value);
-            Assert.IsFalse(settings.IsGdiScalingEnabled.BoolValue);
+            Assert.IsFalse(settings.IsGdiScalingEnabled.Value);
         }
     }
 }

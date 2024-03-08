@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // Restore window settings.
             //
             var windowSettings = this.applicationSettings.GetSettings();
-            if (windowSettings.IsMainWindowMaximized.BoolValue)
+            if (windowSettings.IsMainWindowMaximized.Value)
             {
                 this.WindowState = FormWindowState.Maximized;
                 InitializeComponent();
@@ -396,7 +396,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         //
                         // Prompt for survey unless the user has opted out.
                         //
-                        checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.BoolValue;
+                        checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.Value;
                         if (Version.TryParse(
                             settings.LastSurveyVersion.Value, 
                             out var lastSurveyVersion))
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         checkForUpdates.Execute(this, cts.Token);
 
                         settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
-                        settings.IsSurveyEnabled.BoolValue = checkForUpdates.EnableSurveys;
+                        settings.IsSurveyEnabled.Value = checkForUpdates.EnableSurveys;
                         settings.LastSurveyVersion.Value = checkForUpdates.LastSurveyVersion?.ToString();
                     }
                 }
@@ -421,7 +421,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Save window state.
             //
-            settings.IsMainWindowMaximized.BoolValue = this.WindowState == FormWindowState.Maximized;
+            settings.IsMainWindowMaximized.Value = this.WindowState == FormWindowState.Maximized;
             settings.MainWindowHeight.IntValue = this.Size.Height;
             settings.MainWindowWidth.IntValue = this.Size.Width;
 

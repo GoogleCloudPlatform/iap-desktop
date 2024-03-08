@@ -200,22 +200,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         private void ApplyTerminalSettings(ITerminalSettings settings)
         {
-            this.terminal.EnableCtrlC = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
-            this.terminal.EnableCtrlV = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
+            this.terminal.EnableCtrlC = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
+            this.terminal.EnableCtrlV = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
 
-            this.terminal.EnableCtrlInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue;
-            this.terminal.EnableShiftInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue;
+            this.terminal.EnableCtrlInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
+            this.terminal.EnableShiftInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
 
-            this.terminal.EnableTypographicQuoteConversionOnPaste = settings.IsQuoteConvertionOnPasteEnabled.BoolValue;
+            this.terminal.EnableTypographicQuoteConversionOnPaste = settings.IsQuoteConvertionOnPasteEnabled.Value;
 
-            this.terminal.EnableCtrlA = settings.IsSelectAllUsingCtrlAEnabled.BoolValue;
-            this.terminal.EnableShiftLeftRight = settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
-            this.terminal.EnableShiftUpDown = settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
+            this.terminal.EnableCtrlA = settings.IsSelectAllUsingCtrlAEnabled.Value;
+            this.terminal.EnableShiftLeftRight = settings.IsSelectUsingShiftArrrowEnabled.Value;
+            this.terminal.EnableShiftUpDown = settings.IsSelectUsingShiftArrrowEnabled.Value;
 
-            this.terminal.EnableCtrlLeftRight = settings.IsNavigationUsingControlArrrowEnabled.BoolValue;
+            this.terminal.EnableCtrlLeftRight = settings.IsNavigationUsingControlArrrowEnabled.Value;
 
-            this.terminal.EnableCtrlUpDown = settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
-            this.terminal.EnableCtrlHomeEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
+            this.terminal.EnableCtrlUpDown = settings.IsScrollingUsingCtrlUpDownEnabled.Value;
+            this.terminal.EnableCtrlHomeEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
 
             this.terminal.TerminalFont = new TerminalFont(
                 settings.FontFamily.Value,

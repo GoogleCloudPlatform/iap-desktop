@@ -126,14 +126,6 @@ namespace Google.Solutions.Settings
     }
 
     /// <summary>
-    /// Bool-valued setting.
-    /// </summary>
-    public interface IBoolSetting : ISetting<bool>
-    {
-        bool BoolValue { get; set; }
-    }
-
-    /// <summary>
     /// Int-valued setting.
     /// </summary>
     public interface IIntSetting : ISetting<int>

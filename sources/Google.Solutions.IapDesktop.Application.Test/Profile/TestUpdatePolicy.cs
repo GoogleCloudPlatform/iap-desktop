@@ -65,8 +65,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         private static Mock<IRepository<IApplicationSettings>> CreateSettingsRepository(
             bool updatesEnabled)
         {
-            var updateSetting = new Mock<IBoolSetting>();
-            updateSetting.SetupGet(s => s.BoolValue).Returns(updatesEnabled);
+            var updateSetting = new Mock<ISetting<bool>>();
+            updateSetting.SetupGet(s => s.Value).Returns(updatesEnabled);
 
             var settings = new Mock<IApplicationSettings>();
             settings.SetupGet(s => s.IsUpdateCheckEnabled).Returns(updateSetting.Object);

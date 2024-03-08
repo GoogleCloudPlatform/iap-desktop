@@ -74,10 +74,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         protected override void Load(IApplicationSettings settings)
         {
-            this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.BoolValue;
+            this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.Value;
             this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
 
-            this.IsTelemetryEnabled.Value = settings.IsTelemetryEnabled.BoolValue;
+            this.IsTelemetryEnabled.Value = settings.IsTelemetryEnabled.Value;
             this.IsTelemetryEditable.Value = !settings.IsTelemetryEnabled.IsReadOnly;
 
             this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
@@ -94,8 +94,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         protected override void Save(IApplicationSettings settings)
         {
-            settings.IsUpdateCheckEnabled.BoolValue = this.IsUpdateCheckEnabled.Value;
-            settings.IsTelemetryEnabled.BoolValue = this.IsTelemetryEnabled.Value;
+            settings.IsUpdateCheckEnabled.Value = this.IsUpdateCheckEnabled.Value;
+            settings.IsTelemetryEnabled.Value = this.IsTelemetryEnabled.Value;
 
             //
             // Update protocol registration.

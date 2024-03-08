@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         protected override void Load(IAccessSettings settings)
         {
             this.IsDeviceCertificateAuthenticationEnabled.Value =
-                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
+                settings.IsDeviceCertificateAuthenticationEnabled.Value;
             this.IsDeviceCertificateAuthenticationEditable.Value =
                 !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
 
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
         protected override void Save(IAccessSettings settings)
         {
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
+            settings.IsDeviceCertificateAuthenticationEnabled.Value =
                 this.IsDeviceCertificateAuthenticationEnabled.Value;
 
             settings.PrivateServiceConnectEndpoint.Value =
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
 
             if (settings.PrivateServiceConnectEndpoint.Value != null &&
-                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue)
+                settings.IsDeviceCertificateAuthenticationEnabled.Value)
             {
                 throw new InvalidOptionsException(
                     "To use certificate-based access, you must disable " +

@@ -260,8 +260,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryBoolSetting
-        : SettingBase<bool>, IRegistrySetting, IBoolSetting
+    public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
         public object RegistryValue => this.Value;

@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 
                 IAsymmetricKeySigner signer;
                 TimeSpan validity;
-                if (sshSettings.UsePersistentKey.BoolValue)
+                if (sshSettings.UsePersistentKey.Value)
                 {
                     //
                     // Load persistent CNG key. This might pop up dialogs.
@@ -406,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.Port = (ushort)settings.SshPort.IntValue;
             context.Parameters.TransportType = settings.SshTransport.EnumValue;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
-            context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.BoolValue
+            context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.Value
                 ? CultureInfo.CurrentUICulture
                 : null;
 

@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.SelectedTheme = ObservableProperty.Build(settings.Theme.EnumValue);
 
             this.IsGdiScalingEnabled = ObservableProperty.Build(
-                settings.IsGdiScalingEnabled.BoolValue);
+                settings.IsGdiScalingEnabled.Value);
 
             MarkDirtyWhenPropertyChanges(this.SelectedTheme);
             MarkDirtyWhenPropertyChanges(this.IsGdiScalingEnabled);
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         protected override void Save(IThemeSettings settings)
         {
             settings.Theme.EnumValue = this.SelectedTheme.Value;
-            settings.IsGdiScalingEnabled.BoolValue = this.IsGdiScalingEnabled.Value;
+            settings.IsGdiScalingEnabled.Value = this.IsGdiScalingEnabled.Value;
         }
 
         //---------------------------------------------------------------------

@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsUpdateCheckEnabled.BoolValue = true;
+            settings.IsUpdateCheckEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsUpdateCheckEnabled.BoolValue = false;
+            settings.IsUpdateCheckEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.IsUpdateCheckEnabled.BoolValue = false;
+            settings.IsUpdateCheckEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsUpdateCheckEnabled.BoolValue = true;
+            settings.IsUpdateCheckEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+            Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsTelemetryEnabled.BoolValue = true;
+            settings.IsTelemetryEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -294,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsTelemetryEnabled.BoolValue = false;
+            settings.IsTelemetryEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.IsTelemetryEnabled.BoolValue = false;
+            settings.IsTelemetryEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsTelemetryEnabled.BoolValue = false;
+            settings.IsTelemetryEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsTrue(settings.IsTelemetryEnabled.BoolValue);
+            Assert.IsTrue(settings.IsTelemetryEnabled.Value);
 
             this.telemetryCollectorMock.VerifySet(t => t.Enabled = true, Times.Once);
         }
@@ -358,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsTelemetryEnabled.BoolValue = true;
+            settings.IsTelemetryEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsTelemetryEnabled.BoolValue);
+            Assert.IsFalse(settings.IsTelemetryEnabled.Value);
 
             this.telemetryCollectorMock.VerifySet(t => t.Enabled = false, Times.Once);
         }

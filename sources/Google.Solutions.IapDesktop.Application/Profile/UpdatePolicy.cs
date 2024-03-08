@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                 //
                 // Determine user's release track.
                 //
-                if (!this.settingsRepository.GetSettings().IsUpdateCheckEnabled.BoolValue)
+                if (!this.settingsRepository.GetSettings().IsUpdateCheckEnabled.Value)
                 {
                     //
                     // Updates are off, but still check for critical ones.

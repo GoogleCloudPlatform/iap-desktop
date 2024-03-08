@@ -433,7 +433,7 @@ namespace Google.Solutions.IapDesktop
                     GdiScaling.IsEnabled = themeSettingsRepository
                         .GetSettings()
                         .IsGdiScalingEnabled
-                        .BoolValue;
+                        .Value;
                 }
 
                 var authSettingsRepository = new AuthSettingsRepository(
@@ -528,7 +528,7 @@ namespace Google.Solutions.IapDesktop
                         AnalyticsStream.MeasurementId),
                     install)
                 {
-                    Enabled = appSettings.IsTelemetryEnabled.BoolValue
+                    Enabled = appSettings.IsTelemetryEnabled.Value
                 });
 
                 preAuthLayer.AddTransient<AuthorizeView>();

@@ -50,14 +50,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var settings = repository.GetSettings();
 
-            Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue);
-            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.BoolValue);
-            Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue);
-            Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.BoolValue);
-            Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.BoolValue);
-            Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.BoolValue);
-            Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue);
-            Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue);
+            Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
+            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
+            Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
+            Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.Value);
+            Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
+            Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.Value);
+            Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.Value);
+            Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
             Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.Value);
             Assert.AreEqual(
                 TerminalFont.DefaultSize,
@@ -80,13 +80,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             repository.SettingsChanged += (sender, args) =>
             {
                 Assert.AreSame(repository, sender);
-                Assert.IsTrue(args.Data.IsSelectAllUsingCtrlAEnabled.BoolValue);
+                Assert.IsTrue(args.Data.IsSelectAllUsingCtrlAEnabled.Value);
                 eventFired = true;
             };
 
             var settings = repository.GetSettings();
-            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.BoolValue);
-            settings.IsSelectAllUsingCtrlAEnabled.BoolValue = true;
+            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
+            settings.IsSelectAllUsingCtrlAEnabled.Value = true;
 
             repository.SetSettings(settings);
 

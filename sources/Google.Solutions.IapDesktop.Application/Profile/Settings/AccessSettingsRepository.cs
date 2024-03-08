@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Enable BeyondCorp certificate-based access.
         /// </summary>
-        IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; }
+        ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
         /// <summary>
         /// AutoSelectCertificateForUrl-formatted selector for certificate.
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<string> PrivateServiceConnectEndpoint { get; private set; }
 
-            public IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
+            public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; private set; }
 
             public ISetting<string> DeviceCertificateSelector { get; private set; }
 
