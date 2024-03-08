@@ -207,7 +207,6 @@ namespace Google.Solutions.Settings.Test.Registry
         // Value.
         //---------------------------------------------------------------------
 
-
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
@@ -222,8 +221,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     _ => true);
 
-                setting.Value = "blue";
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual("blue", setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }

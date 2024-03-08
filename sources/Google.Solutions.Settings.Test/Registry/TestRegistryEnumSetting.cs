@@ -207,27 +207,6 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsDefaultValue_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    ConsoleColor.Blue,
-                    key);
-
-                setting.Value = ConsoleColor.Blue;
-                setting.Value = setting.DefaultValue;
-
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
-
-        [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
@@ -240,8 +219,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     ConsoleColor.Blue,
                     key);
 
-                setting.Value = ConsoleColor.Blue;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }

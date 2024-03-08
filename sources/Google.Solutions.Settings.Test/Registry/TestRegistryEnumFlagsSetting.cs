@@ -213,27 +213,6 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsDefaultValue_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    Toppings.None,
-                    key);
-
-                setting.Value = Toppings.None;
-                setting.Value = setting.DefaultValue;
-
-                Assert.AreEqual(Toppings.None, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
-
-        [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
@@ -246,8 +225,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     Toppings.None,
                     key);
 
-                setting.Value = Toppings.None;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(Toppings.None, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }

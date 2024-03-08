@@ -237,8 +237,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     false,
                     key);
 
-                setting.Value = false;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(false, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }

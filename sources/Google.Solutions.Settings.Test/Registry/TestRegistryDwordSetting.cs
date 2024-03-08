@@ -207,28 +207,6 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsDefaultValue_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryDwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                setting.Value = 1;
-                setting.Value = setting.DefaultValue;
-
-                Assert.AreEqual(17, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
-
-        [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
@@ -242,8 +220,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     0, 100);
 
-                setting.Value = 17;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(17, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }

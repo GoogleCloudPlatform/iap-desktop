@@ -114,6 +114,8 @@ namespace Google.Solutions.Settings
         ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
+    // TODO: remove IXxxSetting
+
     /// <summary>
     /// String-valued setting.
     /// </summary>

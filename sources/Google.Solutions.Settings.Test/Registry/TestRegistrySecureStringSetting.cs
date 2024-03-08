@@ -254,27 +254,6 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistrySecureStringSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
-
-                setting.Value = SecureStringExtensions.FromClearText("blue");
-                setting.Value = null;
-
-                Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
-
-        [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
