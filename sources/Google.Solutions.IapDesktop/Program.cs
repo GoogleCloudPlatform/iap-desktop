@@ -465,7 +465,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Override default set of TLS versions.
                 //
-                ServicePointManager.SecurityProtocol = appSettings.TlsVersions.EnumValue;
+                ServicePointManager.SecurityProtocol = appSettings.TlsVersions.Value;
 
                 try
                 {

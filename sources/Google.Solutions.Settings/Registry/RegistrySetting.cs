@@ -532,8 +532,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryEnumSetting<TEnum>
-        : SettingBase<TEnum>, IRegistrySetting, IEnumSetting<TEnum>
+    public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
         where TEnum : struct
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;

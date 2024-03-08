@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
+            settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
+            settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
+            settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.EnumValue);
+            Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
         }
 
         [Test]

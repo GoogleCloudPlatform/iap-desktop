@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 "Sample1",
                 DockState.Unknown);
 
-            Assert.AreEqual(DockState.Unknown, settings.DockState.EnumValue);
+            Assert.AreEqual(DockState.Unknown, settings.DockState.Value);
             Assert.AreEqual(DockState.Unknown, settings.DockState.DefaultValue);
         }
 
@@ -65,14 +65,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 "Sample1",
                 DockState.Unknown);
 
-            settings.DockState.EnumValue = DockState.Float;
+            settings.DockState.Value = DockState.Float;
             repository.SetSetting(settings);
 
             settings = repository.GetSetting(
                 "Sample1",
                 DockState.Unknown);
 
-            Assert.AreEqual(DockState.Float, settings.DockState.EnumValue);
+            Assert.AreEqual(DockState.Float, settings.DockState.Value);
         }
     }
 }

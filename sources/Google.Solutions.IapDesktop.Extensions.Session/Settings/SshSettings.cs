@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// Type of public key to use. This determines the
         /// algorithm for public key use authentication.
         /// </summary>
-        IEnumSetting<SshKeyType> PublicKeyType { get; }
+        ISetting<SshKeyType> PublicKeyType { get; }
 
         /// <summary>
         /// Controls whether the SSH signing key is stored in the
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             public ISetting<bool> IsPropagateLocaleEnabled { get; private set; }
             public ISetting<int> PublicKeyValidity { get; private set; }
-            public IEnumSetting<SshKeyType> PublicKeyType { get; private set; }
+            public ISetting<SshKeyType> PublicKeyType { get; private set; }
             public ISetting<bool> UsePersistentKey { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]

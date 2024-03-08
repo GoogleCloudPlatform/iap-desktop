@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
 
             var username = "user";
             var dialog = new Mock<ICredentialDialog>();
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
             settings.AppUsername.Value = "ignore";
 
             var username = "user";
@@ -321,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Disabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
 
             string username = null;
             var dialog = new Mock<ICredentialDialog>();
@@ -358,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
             settings.RdpUsername.Value = "user";
             settings.RdpPassword.ClearTextValue = "password";
             settings.RdpDomain.Value = "domain";
@@ -389,7 +389,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
             var userCredential = new NetworkCredential("user", "password", "domain");
             var dialog = new Mock<ICredentialDialog>();
@@ -427,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
             settings.RdpUsername.Value = "ignore";
             settings.RdpPassword.ClearTextValue = "ignore";
             settings.RdpDomain.Value = "ignore";
@@ -469,7 +469,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
-            settings.AppNetworkLevelAuthentication.EnumValue = AppNetworkLevelAuthenticationState.Enabled;
+            settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
             NetworkCredential userCredential = null;
             var dialog = new Mock<ICredentialDialog>();

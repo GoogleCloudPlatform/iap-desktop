@@ -124,14 +124,4 @@ namespace Google.Solutions.Settings
     {
         string ClearTextValue { get; set; }
     }
-
-
-    /// <summary>
-    /// Enum-valued setting.
-    /// </summary>
-    public interface IEnumSetting<TEnum> : ISetting<TEnum>
-        where TEnum : struct
-    {
-        TEnum EnumValue { get; set; }
-    }
 }

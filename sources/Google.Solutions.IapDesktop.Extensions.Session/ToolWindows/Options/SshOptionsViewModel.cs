@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         protected override void Load(ISshSettings settings)
         {
-            this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.EnumValue);
+            this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.Value);
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
 
             this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.Value);
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         protected override void Save(ISshSettings settings)
         {
-            settings.PublicKeyType.EnumValue = this.PublicKeyType.Value;
+            settings.PublicKeyType.Value = this.PublicKeyType.Value;
             settings.UsePersistentKey.Value = this.UsePersistentKey.Value;
             settings.PublicKeyValidity.Value =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;

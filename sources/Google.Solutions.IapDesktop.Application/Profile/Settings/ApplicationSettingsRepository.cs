@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<string> ProxyUsername { get; }
         ISecureStringSetting ProxyPassword { get; }
         ISetting<int> ProxyAuthenticationRetries { get; }
-        IEnumSetting<SecurityProtocolType> TlsVersions { get; }
+        ISetting<SecurityProtocolType> TlsVersions { get; }
         ISetting<string> FullScreenDevices { get; }
         ISetting<string> CollapsedProjects { get; }
 
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             
             public ISetting<int> ProxyAuthenticationRetries { get; private set; }
 
-            public IEnumSetting<SecurityProtocolType> TlsVersions { get; private set; }
+            public ISetting<SecurityProtocolType> TlsVersions { get; private set; }
 
             public ISetting<string> FullScreenDevices { get; private set; }
 

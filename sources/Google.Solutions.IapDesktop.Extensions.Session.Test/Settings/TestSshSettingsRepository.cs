@@ -62,13 +62,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 var settings = repository.GetSettings();
                 settings.IsPropagateLocaleEnabled.Value = false;
                 settings.PublicKeyValidity.Value = 3600;
-                settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
+                settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
                 Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
                 Assert.AreEqual(3600, settings.PublicKeyValidity.Value);
-                Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.Value);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 settings.PublicKeyType.Reset();
 
                 Assert.Throws<ArgumentOutOfRangeException>(
-                    () => settings.PublicKeyType.EnumValue = (SshKeyType)0xFF);
+                    () => settings.PublicKeyType.Value = (SshKeyType)0xFF);
             }
         }
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
             }
         }
 
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.Value);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.Value);
             }
         }
 

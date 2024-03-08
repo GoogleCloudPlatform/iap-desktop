@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             WindowsRuleSet windowsTheme;
 
-            switch (settings.Theme.EnumValue)
+            switch (settings.Theme.Value)
             {
                 case ApplicationTheme.System:
                     //

@@ -64,8 +64,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             bool usePersistentKey,
             TimeSpan keyValidity)
         {
-            var keyTypeSetting = new Mock<IEnumSetting<SshKeyType>>();
-            keyTypeSetting.SetupGet(s => s.EnumValue).Returns(SshKeyType.Rsa3072);
+            var keyTypeSetting = new Mock<ISetting<SshKeyType>>();
+            keyTypeSetting.SetupGet(s => s.Value).Returns(SshKeyType.Rsa3072);
 
             var validitySetting = new Mock<ISetting<int>>();
             validitySetting.SetupGet(s => s.Value).Returns((int)keyValidity.TotalSeconds);
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             [Values("user", "", null)] string username)
         {
             var settings = new ConnectionSettings(SampleLocator);
-            settings.SshPublicKeyAuthentication.EnumValue = SshPublicKeyAuthentication.Disabled;
+            settings.SshPublicKeyAuthentication.Value = SshPublicKeyAuthentication.Disabled;
             settings.SshUsername.Value = username;
 
             var settingsService = new Mock<IConnectionSettingsService>();

@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             var settings = repository.GetSettings();
 
-            Assert.AreEqual(ApplicationTheme._Default, settings.Theme.EnumValue);
+            Assert.AreEqual(ApplicationTheme._Default, settings.Theme.Value);
             Assert.IsTrue(settings.IsGdiScalingEnabled.Value);
         }
     }
