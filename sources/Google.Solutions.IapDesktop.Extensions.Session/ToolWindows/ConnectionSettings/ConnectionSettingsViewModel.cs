@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Settings;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

@@ -24,10 +24,10 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
+namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestRegistryDwordSetting
+    public class TestRegistryBoolSetting
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
@@ -50,24 +50,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         [Test]
         public void WhenValueChanged_ThenIsSpecifiedIsTrue()
         {
-            var setting = RegistryDwordSetting.FromKey(
+            var setting = RegistryBoolSetting.FromKey(
                 "test",
                 "title",
                 "description",
                 "category",
-                17,
-                null,
-                0, 100);
-
+                false,
+                null);
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.IntValue = 1;
+            setting.BoolValue = true;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.IntValue = setting.DefaultValue;
+            setting.BoolValue = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
@@ -82,20 +80,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    null,
-                    0, 100);
+                    true,
+                    null);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17, setting.Value);
+                Assert.IsTrue((bool)setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -107,20 +104,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    true,
+                    key);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17, setting.Value);
+                Assert.IsTrue((bool)setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -132,22 +128,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 42);
+                key.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(42, setting.Value);
+                Assert.IsTrue((bool)setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -163,16 +158,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                setting.Value = 1;
+                setting.Value = true;
                 setting.Save(key);
 
                 Assert.AreEqual(1, key.GetValue("test"));
@@ -184,16 +178,39 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 42);
+                key.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
+
+                setting.Value = null;
+                setting.Save(key);
+
+                Assert.IsNull(key.GetValue("test"));
+            }
+        }
+
+        [Test]
+        public void WhenSettingIsNullAndValueDeleted_ThenSaveDoesNothing()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                key.SetValue("test", 1, RegistryValueKind.DWord);
+
+                var setting = RegistryBoolSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    false,
+                    key);
+
+                key.DeleteValue("test");
 
                 setting.Value = null;
                 setting.Save(key);
@@ -211,19 +228,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                setting.Value = 1;
+                setting.Value = true;
                 setting.Value = null;
 
-                Assert.AreEqual(17, setting.Value);
+                Assert.AreEqual(false, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
             }
         }
@@ -233,37 +249,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                setting.Value = 17;
-
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-            }
-        }
-
-        [Test]
-        public void WhenValueAndDefaultAreNull_ThenSetValueSucceedsAndSettingIsNotDirty()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryDwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    0,
-                    key,
-                    0, 100);
-
-                setting.Value = 0;
+                setting.Value = false;
 
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
@@ -275,16 +269,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                setting.Value = 0;
+                setting.Value = true;
 
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsTrue(setting.IsDirty);
@@ -296,18 +289,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                setting.Value = "12";
+                setting.Value = "TRUE";
 
-                Assert.AreEqual(12, setting.Value);
+                Assert.AreEqual(true, setting.Value);
             }
         }
 
@@ -316,34 +308,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                Assert.Throws<InvalidCastException>(() => setting.Value = false);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryDwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = -1);
+                Assert.Throws<InvalidCastException>(() => setting.Value = -1);
             }
         }
 
@@ -352,16 +325,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
-                Assert.Throws<FormatException>(() => setting.Value = "test");
+                Assert.Throws<FormatException>(() => setting.Value = "maybe");
             }
         }
 
@@ -374,31 +346,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryDwordSetting.FromKey(
+                var parent = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistryDwordSetting.FromKey(
+                var child = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(10, effective.DefaultValue);
-                Assert.AreEqual(10, effective.Value);
+                Assert.AreEqual(false, effective.DefaultValue);
+                Assert.AreEqual(false, effective.Value);
                 Assert.IsTrue(effective.IsDefault);
             }
 
@@ -409,25 +379,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryDwordSetting.FromKey(
+                var parent = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
-                parent.Value = 42;
+                    false,
+                    key);
+                parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryDwordSetting.FromKey(
+                var child = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -435,8 +403,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, child);
 
 
-                Assert.AreEqual(42, effective.Value);
-                Assert.AreEqual(42, effective.DefaultValue);
+                Assert.IsTrue((bool)effective.Value);
+                Assert.IsTrue(effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
         }
@@ -446,26 +414,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryDwordSetting.FromKey(
+                var parent = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
                 key.SetValue("test", 1);
-                var child = RegistryDwordSetting.FromKey(
+                var child = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -473,8 +439,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(1, effective.Value);
-                Assert.AreEqual(10, effective.DefaultValue);
+                Assert.IsTrue((bool)effective.Value);
+                Assert.IsFalse(effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -484,37 +450,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 42);
-                var parent = RegistryDwordSetting.FromKey(
+                var parent = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
+                parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
-                Assert.IsTrue(parent.IsSpecified);
 
-                key.SetValue("test", 1);
-                var child = RegistryDwordSetting.FromKey(
+                var child = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
+                child.Value = true;
                 Assert.IsFalse(child.IsDefault);
-                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(1, effective.Value);
-                Assert.AreEqual(42, effective.DefaultValue);
-                Assert.IsFalse(effective.IsDefault);
+                Assert.IsTrue((bool)effective.Value);
+                Assert.IsTrue(effective.DefaultValue);
+                Assert.IsTrue(effective.IsDefault);
             }
         }
 
@@ -523,35 +485,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryDwordSetting.FromKey(
+                var parent = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
-                parent.Value = 42;
+                    false,
+                    key);
+                parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = RegistryDwordSetting.FromKey(
+                var intermediate = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = RegistryDwordSetting.FromKey(
+                var child = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -560,10 +519,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.Value = 10;
+                effective.Value = false;
 
-                Assert.AreEqual(10, effective.Value);
-                Assert.AreEqual(42, effective.DefaultValue);
+                Assert.IsFalse((bool)effective.Value);
+                Assert.IsTrue(effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -577,16 +536,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 42);
+                key.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
+                    false,
+                    key);
 
                 var settingWithPolicy = setting.ApplyPolicy(null);
 
@@ -600,41 +558,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
             {
-                key.SetValue("test", 42);
+                key.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17,
-                    key,
-                    0, 100);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
-            {
-                key.SetValue("test", 42);
-                policyKey.SetValue("test", 101, RegistryValueKind.DWord);
-
-                var setting = RegistryDwordSetting.FromKey(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        17,
-                        key,
-                        0, 100)
-                    .ApplyPolicy(policyKey);
+                    false,
+                    key);
 
                 var settingWithPolicy = setting.ApplyPolicy(policyKey);
 
@@ -648,25 +580,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
             {
-                key.SetValue("test", 42);
-                policyKey.SetValue("test", 88, RegistryValueKind.DWord);
+                key.SetValue("test", 1, RegistryValueKind.DWord);
+                policyKey.SetValue("test", 0, RegistryValueKind.DWord);
 
-                var setting = RegistryDwordSetting.FromKey(
+                var setting = RegistryBoolSetting.FromKey(
                         "test",
                         "title",
                         "description",
                         "category",
-                        17,
-                        key,
-                        0, 100)
+                        false,
+                        key)
                     .ApplyPolicy(policyKey);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(88, setting.IntValue);
-                Assert.IsFalse(setting.IsDefault);
+                Assert.IsFalse((bool)setting.Value);
+                Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);
             }

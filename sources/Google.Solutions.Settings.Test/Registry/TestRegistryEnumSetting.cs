@@ -24,14 +24,21 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
+namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestRegistryQwordSetting
+    public class TestRegistryEnumSetting
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+        [Flags]
+        public enum Toppings
+        {
+            None = 0,
+            Cheese = 1,
+            Chocolate = 2,
+            Cream = 4
+        }
 
+        private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
@@ -40,7 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         public void SetUp()
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
         }
 
         //---------------------------------------------------------------------
@@ -50,24 +56,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         [Test]
         public void WhenValueChanged_ThenIsSpecifiedIsTrue()
         {
-            var setting = RegistryQwordSetting.FromKey(
+            var setting = RegistryEnumSetting<Toppings>.FromKey(
                 "test",
                 "title",
                 "description",
                 "category",
-                17,
-                null,
-                0, 100);
+                Toppings.None,
+                null);
 
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.LongValue = 1;
+            setting.EnumValue = Toppings.Cheese;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.LongValue = setting.DefaultValue;
+            setting.EnumValue = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
@@ -78,24 +83,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
+        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    null);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17L, setting.Value);
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -103,24 +107,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         }
 
         [Test]
-        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    null,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17L, setting.Value);
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -132,22 +135,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                key.SetValue("test", (int)ConsoleColor.Red, RegistryValueKind.DWord);
 
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, long.MaxValue);
+                    ConsoleColor.Blue,
+                    key);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(420000000000001, setting.Value);
+                Assert.AreEqual(ConsoleColor.Red, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -163,19 +165,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = 1L;
+                setting.Value = ConsoleColor.Green;
                 setting.Save(key);
 
-                Assert.AreEqual(1, key.GetValue("test"));
+                Assert.AreEqual((int)ConsoleColor.Green, key.GetValue("test"));
             }
         }
 
@@ -184,16 +185,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 42L, RegistryValueKind.QWord);
+                key.SetValue("test", (int)ConsoleColor.Red, RegistryValueKind.DWord);
 
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
                 setting.Value = null;
                 setting.Save(key);
@@ -211,19 +211,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = 1L;
+                setting.Value = ConsoleColor.Blue;
                 setting.Value = null;
 
-                Assert.AreEqual(17L, setting.Value);
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
             }
         }
@@ -233,37 +232,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = 17L;
-
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-            }
-        }
-
-        [Test]
-        public void WhenValueAndDefaultAreNull_ThenSetValueSucceedsAndSettingIsNotDirty()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryQwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    0,
-                    key,
-                    0L, 100L);
-
-                setting.Value = 0L;
+                setting.Value = ConsoleColor.Blue;
 
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
@@ -275,16 +252,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = 0L;
+                setting.Value = ConsoleColor.Yellow;
 
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsTrue(setting.IsDirty);
@@ -292,22 +268,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         }
 
         [Test]
-        public void WhenValueIsString_ThenSetValueParsesValue()
+        public void WhenValueIsNumericString_ThenSetValueSucceeds()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, long.MaxValue);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = "120000000000000001";
+                setting.Value = ((int)ConsoleColor.Yellow).ToString();
 
-                Assert.AreEqual(120000000000000001L, setting.Value);
+                Assert.AreEqual(ConsoleColor.Yellow, setting.Value);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsDirty);
             }
         }
 
@@ -316,14 +293,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
                 Assert.Throws<InvalidCastException>(() => setting.Value = false);
             }
@@ -334,16 +310,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
-                Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = -1L);
+                Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = (ConsoleColor)100);
             }
         }
 
@@ -352,16 +327,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    17L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Blue,
+                    key);
 
-                Assert.Throws<FormatException>(() => setting.Value = "test");
+                Assert.Throws<FormatException>(() => setting.Value = "");
             }
         }
 
@@ -374,31 +348,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistryQwordSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(10, effective.DefaultValue);
-                Assert.AreEqual(10, effective.Value);
+                Assert.AreEqual(ConsoleColor.Black, effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Black, effective.Value);
                 Assert.IsTrue(effective.IsDefault);
             }
 
@@ -409,25 +381,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
-                parent.Value = 42L;
+                    ConsoleColor.Black,
+                    key);
+                parent.Value = ConsoleColor.Red;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryQwordSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -435,8 +405,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, child);
 
 
-                Assert.AreEqual(42, effective.Value);
-                Assert.AreEqual(42, effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Red, effective.Value);
+                Assert.AreEqual(ConsoleColor.Red, effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
         }
@@ -446,26 +416,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.SetValue("test", 1L, RegistryValueKind.QWord);
-                var child = RegistryQwordSetting.FromKey(
+                key.SetValue("test", (int)ConsoleColor.Yellow);
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -473,8 +441,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(1, effective.Value);
-                Assert.AreEqual(10, effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Yellow, effective.Value);
+                Assert.AreEqual(ConsoleColor.Black, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -484,27 +452,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", 42L, RegistryValueKind.QWord);
-                var parent = RegistryQwordSetting.FromKey(
+                key.SetValue("test", (int)ConsoleColor.Red);
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
-                key.SetValue("test", 1L, RegistryValueKind.QWord);
-                var child = RegistryQwordSetting.FromKey(
+                key.SetValue("test", (int)ConsoleColor.Green);
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -512,8 +478,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(1, effective.Value);
-                Assert.AreEqual(42, effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Green, effective.Value);
+                Assert.AreEqual(ConsoleColor.Red, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -523,35 +489,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
-                parent.Value = 42L;
+                    ConsoleColor.Black,
+                    key);
+                parent.Value = ConsoleColor.Red;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = RegistryQwordSetting.FromKey(
+                var intermediate = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = RegistryQwordSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    10L,
-                    key,
-                    0L, 100L);
+                    ConsoleColor.Black,
+                    key);
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -560,115 +523,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings.Registry
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.Value = 10L;
+                effective.Value = ConsoleColor.Black;
 
-                Assert.AreEqual(10, effective.Value);
-                Assert.AreEqual(42, effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Black, effective.Value);
+                Assert.AreEqual(ConsoleColor.Red, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Policy.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-
-                var setting = RegistryQwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                var settingWithPolicy = setting.ApplyPolicy(null);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
-            {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-
-                var setting = RegistryQwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
-            {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-                policyKey.SetValue("test", 101, RegistryValueKind.QWord);
-
-                var setting = RegistryQwordSetting.FromKey(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        17,
-                        key,
-                        0, 100)
-                    .ApplyPolicy(policyKey);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
-            {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-                policyKey.SetValue("test", 880000000000001L, RegistryValueKind.QWord);
-
-                var setting = RegistryQwordSetting.FromKey(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        17,
-                        key,
-                        0L, long.MaxValue)
-                    .ApplyPolicy(policyKey);
-
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(880000000000001L, setting.LongValue);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsTrue(setting.IsReadOnly);
             }
         }
     }
