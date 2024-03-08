@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.Settings
@@ -30,16 +29,5 @@ namespace Google.Solutions.Settings
     public interface ISettingsCollection
     {
         IEnumerable<ISetting> Settings { get; }
-    }
-
-    public interface IPersistentSettingsCollection : ISettingsCollection
-    {
-        void Save();
-    }
-
-    public interface IPersistentSettingsCollection<out TCollection> : IPersistentSettingsCollection
-        where TCollection : ISettingsCollection
-    {
-        TCollection TypedCollection { get; }
     }
 }
