@@ -78,6 +78,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Security.Cryptography;
+using Google.Solutions.Settings;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 

@@ -19,14 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Settings;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Settings.Registry;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
