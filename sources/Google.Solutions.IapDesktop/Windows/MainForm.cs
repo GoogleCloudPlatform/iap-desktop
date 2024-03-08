@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider.GetService<ITaskDialog>(),
                 this.serviceProvider.GetService<IBrowser>());
             if (checkForUpdates.IsAutomatedCheckDue(
-                DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
+                DateTime.FromBinary(settings.LastUpdateCheck.Value)))
             {
                 try
                 {
@@ -406,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
                         checkForUpdates.Execute(this, cts.Token);
 
-                        settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
+                        settings.LastUpdateCheck.Value = DateTime.UtcNow.ToBinary();
                         settings.IsSurveyEnabled.Value = checkForUpdates.EnableSurveys;
                         settings.LastSurveyVersion.Value = checkForUpdates.LastSurveyVersion?.ToString();
                     }

@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.LastUpdateCheck.LongValue = 1234567L;
+            settings.LastUpdateCheck.Value = 1234567L;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(

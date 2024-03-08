@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 settings.MainWindowHeight.Value = 480;
                 settings.MainWindowWidth.Value = 640;
                 settings.IsUpdateCheckEnabled.Value = false;
-                settings.LastUpdateCheck.LongValue = 123L;
+                settings.LastUpdateCheck.Value = 123L;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 Assert.AreEqual(480, settings.MainWindowHeight.Value);
                 Assert.AreEqual(640, settings.MainWindowWidth.Value);
                 Assert.AreEqual(false, settings.IsUpdateCheckEnabled.Value);
-                Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
+                Assert.AreEqual(123, settings.LastUpdateCheck.Value);
             }
         }
 

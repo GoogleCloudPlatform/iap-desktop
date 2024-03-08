@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<int> MainWindowWidth { get; }
         ISetting<bool> IsUpdateCheckEnabled { get; }
         ISetting<bool> IsTelemetryEnabled { get; }
-        ILongSetting LastUpdateCheck { get; }
+        ISetting<long> LastUpdateCheck { get; }
         ISetting<bool> IsPreviewFeatureSetEnabled { get; }
         ISetting<string> ProxyUrl { get; }
         ISetting<string> ProxyPacUrl { get; }
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<bool> IsTelemetryEnabled { get; private set; }
 
-            public ILongSetting LastUpdateCheck { get; private set; }
+            public ISetting<long> LastUpdateCheck { get; private set; }
 
             public ISetting<bool> IsPreviewFeatureSetEnabled { get; private set; }
 

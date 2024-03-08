@@ -437,8 +437,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryQwordSetting
-        : SettingBase<long>, IRegistrySetting, ILongSetting
+    public class RegistryQwordSetting : SettingBase<long>, IRegistrySetting
     {
         private readonly long minInclusive;
         private readonly long maxInclusive;

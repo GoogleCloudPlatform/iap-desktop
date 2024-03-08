@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
                 : DateTime
-                    .FromBinary(settings.LastUpdateCheck.LongValue)
+                    .FromBinary(settings.LastUpdateCheck.Value)
                     .ToLocalTime()
                     .ToString();
 

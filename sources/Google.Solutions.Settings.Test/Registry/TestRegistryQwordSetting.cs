@@ -62,12 +62,12 @@ namespace Google.Solutions.Settings.Test.Registry
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.LongValue = 1;
+            setting.Value = 1;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.LongValue = setting.DefaultValue;
+            setting.Value = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
@@ -670,7 +670,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(880000000000001L, setting.LongValue);
+                Assert.AreEqual(880000000000001L, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

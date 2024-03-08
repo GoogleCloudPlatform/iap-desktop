@@ -125,13 +125,6 @@ namespace Google.Solutions.Settings
         string ClearTextValue { get; set; }
     }
 
-    /// <summary>
-    /// Long-valued setting.
-    /// </summary>
-    public interface ILongSetting : ISetting<long>
-    {
-        long LongValue { get; set; }
-    }
 
     /// <summary>
     /// Enum-valued setting.
