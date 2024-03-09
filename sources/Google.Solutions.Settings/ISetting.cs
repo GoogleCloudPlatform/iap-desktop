@@ -32,12 +32,12 @@ namespace Google.Solutions.Settings
         /// <summary>
         /// Unique, stable key.
         /// </summary>
-        string Key { get; }
+        string Key { get; } // TODO: rename to name
 
         /// <summary>
         /// Name of setting, suitable for displaying.
         /// </summary>
-        string Title { get; }
+        string Title { get; } // TODO: rename to displayname
 
         /// <summary>
         /// Description of setting, suitable for displaying.
