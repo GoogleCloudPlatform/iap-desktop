@@ -50,11 +50,6 @@ namespace Google.Solutions.Settings
         string Category { get; }
 
         /// <summary>
-        /// Return current value of setting.
-        /// </summary>
-        object Value { get; set; }
-
-        /// <summary>
         /// Determines whether the current value is equivalent to
         /// the default value.
         /// </summary>
@@ -86,6 +81,14 @@ namespace Google.Solutions.Settings
         /// Overlay the setting with defaults from the ancestry,
         /// </summary>
         ISetting OverlayBy(ISetting setting);
+    }
+
+    public interface IAnySetting : ISetting // TODO: make internal
+    {
+        /// <summary>
+        /// Assign value, converting data types if necessary.
+        /// </summary>
+        object AnyValue { get;set; }
 
         /// <summary>
         /// Returns the type of setting.
@@ -93,10 +96,15 @@ namespace Google.Solutions.Settings
         Type ValueType { get; }
     }
 
-    public interface ISetting<T> : ISetting
+    public interface ISetting<T> : ISetting, IAnySetting
     {
         /// <summary>
-        /// Returns the typed default value.
+        /// Return current value of setting.
+        /// </summary>
+        T Value { get; set; }
+
+        /// <summary>
+        /// Returns the default value, which might be inherited.
         /// </summary>
         T DefaultValue { get; }
 
@@ -106,13 +114,8 @@ namespace Google.Solutions.Settings
         ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
-    /// <summary>
-    /// String-valued setting.
-    /// </summary>
-    public interface IStringSetting : ISetting<string>
-    {
-        string StringValue { get; set; }
-    }
+    // TODO: remove IXxxSetting
+
 
     /// <summary>
     /// SecureString-valued setting.
@@ -120,38 +123,5 @@ namespace Google.Solutions.Settings
     public interface ISecureStringSetting : ISetting<SecureString>
     {
         string ClearTextValue { get; set; }
-    }
-
-    /// <summary>
-    /// Bool-valued setting.
-    /// </summary>
-    public interface IBoolSetting : ISetting<bool>
-    {
-        bool BoolValue { get; set; }
-    }
-
-    /// <summary>
-    /// Int-valued setting.
-    /// </summary>
-    public interface IIntSetting : ISetting<int>
-    {
-        int IntValue { get; set; }
-    }
-
-    /// <summary>
-    /// Long-valued setting.
-    /// </summary>
-    public interface ILongSetting : ISetting<long>
-    {
-        long LongValue { get; set; }
-    }
-
-    /// <summary>
-    /// Enum-valued setting.
-    /// </summary>
-    public interface IEnumSetting<TEnum> : ISetting<TEnum>
-        where TEnum : struct
-    {
-        TEnum EnumValue { get; set; }
     }
 }

@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
                         }
                         else
                         {
-                            return new SettingDescriptor(s);
+                            return new SettingDescriptor((IAnySetting)s);
                         }
                     })
                     .ToArray());
@@ -70,9 +70,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 
         private class SettingDescriptor : PropertyDescriptor
         {
-            private readonly ISetting setting;
+            private readonly IAnySetting setting;
 
-            public SettingDescriptor(ISetting setting)
+            public SettingDescriptor(IAnySetting setting)
                 : base(setting.Key, null)
             {
                 this.setting = setting;
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 
             public override object GetValue(object component)
             {
-                return this.setting.Value;
+                return this.setting.AnyValue;
             }
 
             public override void ResetValue(object component)
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 
             public override void SetValue(object component, object value)
             {
-                this.setting.Value = value;
+                this.setting.AnyValue = value;
             }
 
             public override bool ShouldSerializeValue(object component)

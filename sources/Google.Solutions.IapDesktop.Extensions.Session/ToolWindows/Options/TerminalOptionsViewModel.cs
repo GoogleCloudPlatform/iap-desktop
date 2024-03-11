@@ -69,57 +69,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         protected override void Load(ITerminalSettings settings)
         {
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
-                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
+                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
-                settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue;
+                settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             this.IsSelectAllUsingCtrlAEnabled.Value =
-                settings.IsSelectAllUsingCtrlAEnabled.BoolValue;
+                settings.IsSelectAllUsingCtrlAEnabled.Value;
             this.IsSelectUsingShiftArrrowEnabled.Value =
-                settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
+                settings.IsSelectUsingShiftArrrowEnabled.Value;
             this.IsQuoteConvertionOnPasteEnabled.Value =
-                settings.IsQuoteConvertionOnPasteEnabled.BoolValue;
+                settings.IsQuoteConvertionOnPasteEnabled.Value;
             this.IsNavigationUsingControlArrrowEnabled.Value =
-                settings.IsNavigationUsingControlArrrowEnabled.BoolValue;
+                settings.IsNavigationUsingControlArrrowEnabled.Value;
             this.IsScrollingUsingCtrlUpDownEnabled.Value =
-                settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
+                settings.IsScrollingUsingCtrlUpDownEnabled.Value;
             this.IsScrollingUsingCtrlHomeEndEnabled.Value =
-                settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
+                settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
             this.TerminalFont.Value = new Font(
-                settings.FontFamily.StringValue,
-                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+                settings.FontFamily.Value,
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
             this.TerminalForegroundColor.Value = Color.FromArgb(
-                settings.ForegroundColorArgb.IntValue);
+                settings.ForegroundColorArgb.Value);
             this.TerminalBackgroundColor.Value = Color.FromArgb(
-                settings.BackgroundColorArgb.IntValue);
+                settings.BackgroundColorArgb.Value);
         }
 
         protected override void Save(ITerminalSettings settings)
         {
             Debug.Assert(this.IsDirty.Value);
 
-            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue =
+            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
                 this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
-            settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue =
+            settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
                 this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
-            settings.IsSelectAllUsingCtrlAEnabled.BoolValue =
+            settings.IsSelectAllUsingCtrlAEnabled.Value =
                 this.IsSelectAllUsingCtrlAEnabled.Value;
-            settings.IsSelectUsingShiftArrrowEnabled.BoolValue =
+            settings.IsSelectUsingShiftArrrowEnabled.Value =
                 this.IsSelectUsingShiftArrrowEnabled.Value;
-            settings.IsQuoteConvertionOnPasteEnabled.BoolValue =
+            settings.IsQuoteConvertionOnPasteEnabled.Value =
                 this.IsQuoteConvertionOnPasteEnabled.Value;
-            settings.IsNavigationUsingControlArrrowEnabled.BoolValue =
+            settings.IsNavigationUsingControlArrrowEnabled.Value =
                 this.IsNavigationUsingControlArrrowEnabled.Value;
-            settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue =
+            settings.IsScrollingUsingCtrlUpDownEnabled.Value =
                 this.IsScrollingUsingCtrlUpDownEnabled.Value;
-            settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue =
+            settings.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 this.IsScrollingUsingCtrlHomeEndEnabled.Value;
-            settings.FontFamily.StringValue =
+            settings.FontFamily.Value =
                 this.TerminalFont.Value.FontFamily.Name;
-            settings.FontSizeAsDword.IntValue =
+            settings.FontSizeAsDword.Value =
                 TerminalSettingsRepository.DwordFromFontSize(this.TerminalFont.Value.Size);
-            settings.ForegroundColorArgb.IntValue =
+            settings.ForegroundColorArgb.Value =
                 this.TerminalForegroundColor.Value.ToArgb();
-            settings.BackgroundColorArgb.IntValue =
+            settings.BackgroundColorArgb.Value =
                 this.TerminalBackgroundColor.Value.ToArgb();
         }
 

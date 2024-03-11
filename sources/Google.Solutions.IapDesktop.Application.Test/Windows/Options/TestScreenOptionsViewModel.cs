@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public void WhenKeyIsEmpty_ThenNoDevicesAreSelected()
         {
             var settings = this.settingsRepository.GetSettings();
-            settings.FullScreenDevices.StringValue = "";
+            settings.FullScreenDevices.Value = "";
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public void WhenKeyContainsUnknownDevice_ThenNoDevicesAreSelected()
         {
             var settings = this.settingsRepository.GetSettings();
-            settings.FullScreenDevices.StringValue = "unknown\\device,and junk";
+            settings.FullScreenDevices.Value = "unknown\\device,and junk";
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public void WhenKeyContainsDevices_ThenDevicesAreSelected()
         {
             var settings = this.settingsRepository.GetSettings();
-            settings.FullScreenDevices.StringValue = "unknown," + Screen.PrimaryScreen.DeviceName;
+            settings.FullScreenDevices.Value = "unknown," + Screen.PrimaryScreen.DeviceName;
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public async Task WhenAllDevicesDeselected_ThenKeyIsRemoved()
         {
             var settings = this.settingsRepository.GetSettings();
-            settings.FullScreenDevices.StringValue = "unknown\\device,and junk";
+            settings.FullScreenDevices.Value = "unknown\\device,and junk";
             this.settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             await viewModel.ApplyChangesAsync();
 
-            Assert.IsNull(this.settingsRepository.GetSettings().FullScreenDevices.StringValue);
+            Assert.IsNull(this.settingsRepository.GetSettings().FullScreenDevices.Value);
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             Assert.AreEqual(
                 Screen.PrimaryScreen.DeviceName,
-                this.settingsRepository.GetSettings().FullScreenDevices.StringValue);
+                this.settingsRepository.GetSettings().FullScreenDevices.Value);
         }
     }
 }

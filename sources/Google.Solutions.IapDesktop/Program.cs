@@ -433,7 +433,7 @@ namespace Google.Solutions.IapDesktop
                     GdiScaling.IsEnabled = themeSettingsRepository
                         .GetSettings()
                         .IsGdiScalingEnabled
-                        .BoolValue;
+                        .Value;
                 }
 
                 var authSettingsRepository = new AuthSettingsRepository(
@@ -465,7 +465,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Override default set of TLS versions.
                 //
-                ServicePointManager.SecurityProtocol = appSettings.TlsVersions.EnumValue;
+                ServicePointManager.SecurityProtocol = appSettings.TlsVersions.Value;
 
                 try
                 {
@@ -475,7 +475,7 @@ namespace Google.Solutions.IapDesktop
                     preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
 
                     PscAndMtlsAwareHttpClientFactory.NtlmProxyAuthenticationRetries = 
-                        (ushort)appSettings.ProxyAuthenticationRetries.IntValue;
+                        (ushort)appSettings.ProxyAuthenticationRetries.Value;
                 }
                 catch (Exception)
                 {
@@ -490,7 +490,7 @@ namespace Google.Solutions.IapDesktop
                 var serviceRoute = ServiceRoute.Public;
                 {
                     var accessSettings = accessSettingsRepository.GetSettings();
-                    if (accessSettings.PrivateServiceConnectEndpoint.StringValue is var pscEndpoint &&
+                    if (accessSettings.PrivateServiceConnectEndpoint.Value is var pscEndpoint &&
                         !string.IsNullOrEmpty(pscEndpoint))
                     {
                         //
@@ -503,7 +503,7 @@ namespace Google.Solutions.IapDesktop
                     // Set connection pool limit. This limit applies per endpoint.
                     //
                     ServicePointManager.DefaultConnectionLimit
-                        = accessSettings.ConnectionLimit.IntValue;
+                        = accessSettings.ConnectionLimit.Value;
                 }
 
                 preAuthLayer.AddSingleton(OAuthClient.ApiKey);
@@ -528,7 +528,7 @@ namespace Google.Solutions.IapDesktop
                         AnalyticsStream.MeasurementId),
                     install)
                 {
-                    Enabled = appSettings.IsTelemetryEnabled.BoolValue
+                    Enabled = appSettings.IsTelemetryEnabled.Value
                 });
 
                 preAuthLayer.AddTransient<AuthorizeView>();

@@ -215,7 +215,7 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenSettingIsNull_ThenSaveResetsRegistry()
+        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -242,7 +242,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     DataProtectionScope.CurrentUser);
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -250,29 +250,8 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         //---------------------------------------------------------------------
-        // Get/set value.
+        // Value.
         //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistrySecureStringSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
-
-                setting.Value = SecureStringExtensions.FromClearText("blue");
-                setting.Value = null;
-
-                Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
@@ -334,8 +313,12 @@ namespace Google.Solutions.Settings.Test.Registry
             }
         }
 
+        //---------------------------------------------------------------------
+        // AnyValue.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueIsString_ThenSetValueParsesValue()
+        public void WhenValueIsString_ThenSetAnyValueParsesValue()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -347,14 +330,14 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     DataProtectionScope.CurrentUser);
 
-                setting.Value = "secret";
+                setting.AnyValue = "secret";
 
                 Assert.AreEqual("secret", setting.ClearTextValue);
             }
         }
 
         [Test]
-        public void WhenValueIsOfWrongType_ThenSetValueRaisesInvalidCastException()
+        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -366,7 +349,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     DataProtectionScope.CurrentUser);
 
-                Assert.Throws<InvalidCastException>(() => setting.Value = 1);
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = 1);
             }
         }
 
@@ -419,7 +402,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     "category",
                     key,
                     DataProtectionScope.CurrentUser);
-                parent.Value = "red";
+                parent.ClearTextValue = "red";
                 Assert.IsFalse(parent.IsDefault);
 
                 var child = RegistrySecureStringSetting.FromKey(
@@ -542,7 +525,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     "category",
                     key,
                     DataProtectionScope.CurrentUser);
-                parent.Value = "red";
+                parent.ClearTextValue = "red";
                 Assert.IsFalse(parent.IsDefault);
 
                 var intermediate = RegistrySecureStringSetting.FromKey(
@@ -562,14 +545,14 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     DataProtectionScope.CurrentUser);
 
-                var effective = parent
+                var effective = (RegistrySecureStringSetting)parent
                     .OverlayBy(intermediate)
                     .OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.Value = "black";
+                effective.ClearTextValue = "black";
 
                 Assert.AreEqual("black", ((SecureString)effective.Value).AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());

@@ -60,15 +60,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
-                settings.IsPropagateLocaleEnabled.BoolValue = false;
-                settings.PublicKeyValidity.IntValue = 3600;
-                settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
+                settings.IsPropagateLocaleEnabled.Value = false;
+                settings.PublicKeyValidity.Value = 3600;
+                settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsPropagateLocaleEnabled.BoolValue);
-                Assert.AreEqual(3600, settings.PublicKeyValidity.IntValue);
-                Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.EnumValue);
+                Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
+                Assert.AreEqual(3600, settings.PublicKeyValidity.Value);
+                Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.Value);
             }
         }
 
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
+                Assert.IsTrue(settings.IsPropagateLocaleEnabled.Value);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 settings.PublicKeyType.Reset();
 
                 Assert.Throws<ArgumentOutOfRangeException>(
-                    () => settings.PublicKeyType.EnumValue = (SshKeyType)0xFF);
+                    () => settings.PublicKeyType.Value = (SshKeyType)0xFF);
             }
         }
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
             }
         }
 
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.Value);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.EnumValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.Value);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
+                Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.Value);
             }
         }
 
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 settings.PublicKeyValidity.Reset();
 
                 Assert.Throws<ArgumentOutOfRangeException>(
-                    () => settings.PublicKeyValidity.IntValue = 5);
+                    () => settings.PublicKeyValidity.Value = 5);
             }
         }
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(2 * 60, settings.PublicKeyValidity.IntValue);
+                Assert.AreEqual(2 * 60, settings.PublicKeyValidity.Value);
             }
         }
 
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.IntValue);
+                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.Value);
             }
         }
 
@@ -318,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.IntValue);
+                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.Value);
             }
         }
 
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.UsePersistentKey.BoolValue);
+                Assert.IsTrue(settings.UsePersistentKey.Value);
             }
         }
     }

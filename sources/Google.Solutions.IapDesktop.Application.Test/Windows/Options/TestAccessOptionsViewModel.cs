@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.Value);
         }
 
         [Test]
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = "psc";
+            settings.PrivateServiceConnectEndpoint.Value = "psc";
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = null;
+            settings.PrivateServiceConnectEndpoint.Value = null;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 });
 
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = null;
+            settings.PrivateServiceConnectEndpoint.Value = null;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.StringValue);
+            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.Value);
         }
 
         [Test]
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.ConnectionLimit.IntValue = 5;
+            settings.ConnectionLimit.Value = 5;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.IntValue);
+            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.Value);
         }
 
         //---------------------------------------------------------------------
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.PrivateServiceConnectEndpoint.StringValue = "psc";
+            settings.PrivateServiceConnectEndpoint.Value = "psc";
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AccessOptionsViewModel(
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsNull(settings.PrivateServiceConnectEndpoint.StringValue);
+            Assert.IsNull(settings.PrivateServiceConnectEndpoint.Value);
         }
 
         [Test]

@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             var state = stateRepository.GetSetting(
                 GetType().Name, // Unique name of tool window
                 defaultDockState);
-            this.restoreState = state.DockState.EnumValue;
+            this.restoreState = state.DockState.Value;
 
             // Save persisted window state.
             this.Disposed += (sender, args) =>
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     // Persist the restore state. This may or may not
                     // be the same we read during startup.
                     //
-                    state.DockState.EnumValue = this.restoreState;
+                    state.DockState.Value = this.restoreState;
                     stateRepository.SetSetting(state);
                 }
                 catch (Exception e)

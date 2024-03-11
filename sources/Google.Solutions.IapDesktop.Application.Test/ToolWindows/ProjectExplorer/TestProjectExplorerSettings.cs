@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public void WhenValueSaved_ThenCollapsedProjectsReturnsSavedValue()
         {
             var settings = this.settingsRepository.GetSettings();
-            settings.CollapsedProjects.StringValue = "  project-1,, project-2,";
+            settings.CollapsedProjects.Value = "  project-1,, project-2,";
             this.settingsRepository.SetSettings(settings);
 
             using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, true))
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             }
 
             var settings = this.settingsRepository.GetSettings();
-            Assert.AreEqual("project-1,project-2", settings.CollapsedProjects.StringValue);
+            Assert.AreEqual("project-1,project-2", settings.CollapsedProjects.Value);
         }
     }
 }

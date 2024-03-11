@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenPortSetInProject_ProjectValueIsInheritedDownToVm()
         {
             var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
-            projectSettings.TypedCollection.RdpPort.IntValue = 13389;
+            projectSettings.TypedCollection.RdpPort.Value = 13389;
             projectSettings.Save();
 
             // Inherited value is shown...
@@ -240,12 +240,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenPortSetInZoneAndResetInVm_ZoneVmValueApplies()
         {
             var zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
-            zoneSettings.TypedCollection.RdpPort.IntValue = 13389;
+            zoneSettings.TypedCollection.RdpPort.Value = 13389;
             zoneSettings.Save();
 
             // Reset to default...
             var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
-            instanceSettings.TypedCollection.RdpPort.IntValue = 3389;
+            instanceSettings.TypedCollection.RdpPort.Value = 3389;
             instanceSettings.Save();
 
             // Own value is shown...
@@ -258,12 +258,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenPortSetInProjectAndResetInVm_ZoneVmValueApplies()
         {
             var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
-            projectSettings.TypedCollection.RdpPort.IntValue = 13389;
+            projectSettings.TypedCollection.RdpPort.Value = 13389;
             projectSettings.Save();
 
             // Reset to default...
             var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
-            instanceSettings.TypedCollection.RdpPort.IntValue = 3389;
+            instanceSettings.TypedCollection.RdpPort.Value = 3389;
             instanceSettings.Save();
 
             // Own value is shown...

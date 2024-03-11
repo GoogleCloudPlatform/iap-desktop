@@ -52,22 +52,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         protected override void Load(ISshSettings settings)
         {
-            this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.EnumValue);
+            this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.Value);
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
 
-            this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.BoolValue);
+            this.UsePersistentKey = ObservableProperty.Build(settings.UsePersistentKey.Value);
             this.IsUsePersistentKeyEditable = ObservableProperty.Build(
                 this.UsePersistentKey,
                 usePersistent => !settings.UsePersistentKey.IsReadOnly);
 
             this.PublicKeyValidityInDays = ObservableProperty.Build(
-                (decimal)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays);
+                (decimal)TimeSpan.FromSeconds(settings.PublicKeyValidity.Value).TotalDays);
             this.IsPublicKeyValidityInDaysEditable = ObservableProperty.Build(
                 this.UsePersistentKey,
                 usePersistent => usePersistent && !settings.PublicKeyValidity.IsReadOnly);
 
             this.IsPropagateLocaleEnabled = ObservableProperty.Build(
-                settings.IsPropagateLocaleEnabled.BoolValue);
+                settings.IsPropagateLocaleEnabled.Value);
 
             MarkDirtyWhenPropertyChanges(this.PublicKeyType);
             MarkDirtyWhenPropertyChanges(this.UsePersistentKey);
@@ -77,12 +77,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         protected override void Save(ISshSettings settings)
         {
-            settings.PublicKeyType.EnumValue = this.PublicKeyType.Value;
-            settings.UsePersistentKey.BoolValue = this.UsePersistentKey.Value;
-            settings.PublicKeyValidity.IntValue =
+            settings.PublicKeyType.Value = this.PublicKeyType.Value;
+            settings.UsePersistentKey.Value = this.UsePersistentKey.Value;
+            settings.PublicKeyValidity.Value =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;
 
-            settings.IsPropagateLocaleEnabled.BoolValue = this.IsPropagateLocaleEnabled.Value;
+            settings.IsPropagateLocaleEnabled.Value = this.IsPropagateLocaleEnabled.Value;
         }
 
         //---------------------------------------------------------------------

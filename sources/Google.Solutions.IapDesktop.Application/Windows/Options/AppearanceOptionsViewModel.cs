@@ -48,10 +48,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.ThemeInfoText = this.IsThemeEditable
                 ? "Changes take effect after relaunch"
                 : "Themes are not supported on this version\nof Windows";
-            this.SelectedTheme = ObservableProperty.Build(settings.Theme.EnumValue);
+            this.SelectedTheme = ObservableProperty.Build(settings.Theme.Value);
 
             this.IsGdiScalingEnabled = ObservableProperty.Build(
-                settings.IsGdiScalingEnabled.BoolValue);
+                settings.IsGdiScalingEnabled.Value);
 
             MarkDirtyWhenPropertyChanges(this.SelectedTheme);
             MarkDirtyWhenPropertyChanges(this.IsGdiScalingEnabled);
@@ -59,8 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         protected override void Save(IThemeSettings settings)
         {
-            settings.Theme.EnumValue = this.SelectedTheme.Value;
-            settings.IsGdiScalingEnabled.BoolValue = this.IsGdiScalingEnabled.Value;
+            settings.Theme.Value = this.SelectedTheme.Value;
+            settings.IsGdiScalingEnabled.Value = this.IsGdiScalingEnabled.Value;
         }
 
         //---------------------------------------------------------------------

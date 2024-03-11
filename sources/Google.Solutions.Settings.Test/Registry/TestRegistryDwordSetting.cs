@@ -62,12 +62,12 @@ namespace Google.Solutions.Settings.Test.Registry
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.IntValue = 1;
+            setting.Value = 1;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.IntValue = setting.DefaultValue;
+            setting.Value = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
@@ -180,7 +180,7 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenSettingIsNull_ThenSaveResetsRegistry()
+        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -195,7 +195,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     0, 100);
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -203,30 +203,8 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         //---------------------------------------------------------------------
-        // Get/set value.
+        // Value.
         //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryDwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                setting.Value = 1;
-                setting.Value = null;
-
-                Assert.AreEqual(17, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
@@ -242,8 +220,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     0, 100);
 
-                setting.Value = 17;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(17, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -292,44 +271,6 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenValueIsString_ThenSetValueParsesValue()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryDwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                setting.Value = "12";
-
-                Assert.AreEqual(12, setting.Value);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsOfWrongType_ThenSetValueRaisesInvalidCastException()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryDwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    key,
-                    0, 100);
-
-                Assert.Throws<InvalidCastException>(() => setting.Value = false);
-            }
-        }
-
-        [Test]
         public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
@@ -347,8 +288,12 @@ namespace Google.Solutions.Settings.Test.Registry
             }
         }
 
+        //---------------------------------------------------------------------
+        // AnyValue.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
+        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -361,7 +306,67 @@ namespace Google.Solutions.Settings.Test.Registry
                     key,
                     0, 100);
 
-                Assert.Throws<FormatException>(() => setting.Value = "test");
+                setting.Value = 1;
+                setting.AnyValue = null;
+
+                Assert.AreEqual(17, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsString_ThenSetAnyValueParsesValue()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryDwordSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    key,
+                    0, 100);
+
+                setting.AnyValue = "12";
+
+                Assert.AreEqual(12, setting.Value);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryDwordSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    key,
+                    0, 100);
+
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryDwordSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    key,
+                    0, 100);
+
+                Assert.Throws<FormatException>(() => setting.AnyValue = "test");
             }
         }
 
@@ -665,7 +670,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(88, setting.IntValue);
+                Assert.AreEqual(88, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

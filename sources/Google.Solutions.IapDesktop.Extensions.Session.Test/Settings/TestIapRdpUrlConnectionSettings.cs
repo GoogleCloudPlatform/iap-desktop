@@ -52,8 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "bob";
             settings.RdpPassword.ClearTextValue = "secret";
-            settings.RdpRedirectClipboard.EnumValue = RdpRedirectClipboard.Disabled;
-            settings.RdpConnectionTimeout.IntValue = 123;
+            settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Disabled;
+            settings.RdpConnectionTimeout.Value = 123;
 
             var query = settings.ToUrlQuery();
 
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
 
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.EnumValue);
+            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
 
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.EnumValue);
+            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
 
-            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.EnumValue);
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
             OidcIssuer issuer;
             WorkforcePoolProviderLocator providerLocator = null;
-            if (this.accessSettings.GetSettings().WorkforcePoolProvider.StringValue
+            if (this.accessSettings.GetSettings().WorkforcePoolProvider.Value
                 is var provider &&
                 !string.IsNullOrEmpty(provider) &&
                 WorkforcePoolProviderLocator.TryParse(provider, out providerLocator))

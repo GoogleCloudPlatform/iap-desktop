@@ -134,8 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             ConnectionSettings settings)
         {
             return new RdpCredential(
-                settings.RdpUsername.StringValue,
-                settings.RdpDomain.StringValue,
+                settings.RdpUsername.Value,
+                settings.RdpDomain.Value,
                 (SecureString)settings.RdpPassword.Value);
         }
 
@@ -152,24 +152,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 credential,
                 sources);
 
-            context.Parameters.Port = (ushort)settings.RdpPort.IntValue;
-            context.Parameters.TransportType = settings.RdpTransport.EnumValue;
-            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
-            context.Parameters.ConnectionBar = settings.RdpConnectionBar.EnumValue;
-            context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue;
-            context.Parameters.ColorDepth = settings.RdpColorDepth.EnumValue;
-            context.Parameters.AudioMode = settings.RdpAudioMode.EnumValue;
-            context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue;
-            context.Parameters.UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue;
-            context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.EnumValue;
-            context.Parameters.RedirectPrinter = settings.RdpRedirectPrinter.EnumValue;
-            context.Parameters.RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue;
-            context.Parameters.RedirectPort = settings.RdpRedirectPort.EnumValue;
-            context.Parameters.RedirectDrive = settings.RdpRedirectDrive.EnumValue;
-            context.Parameters.RedirectDevice = settings.RdpRedirectDevice.EnumValue;
-            context.Parameters.RedirectWebAuthn = settings.RdpRedirectWebAuthn.EnumValue;
-            context.Parameters.HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue;
-            context.Parameters.RestrictedAdminMode = settings.RdpRestrictedAdminMode.EnumValue;
+            context.Parameters.Port = (ushort)settings.RdpPort.Value;
+            context.Parameters.TransportType = settings.RdpTransport.Value;
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.Value);
+            context.Parameters.ConnectionBar = settings.RdpConnectionBar.Value;
+            context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.Value;
+            context.Parameters.ColorDepth = settings.RdpColorDepth.Value;
+            context.Parameters.AudioMode = settings.RdpAudioMode.Value;
+            context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.Value;
+            context.Parameters.UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.Value;
+            context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.Value;
+            context.Parameters.RedirectPrinter = settings.RdpRedirectPrinter.Value;
+            context.Parameters.RedirectSmartCard = settings.RdpRedirectSmartCard.Value;
+            context.Parameters.RedirectPort = settings.RdpRedirectPort.Value;
+            context.Parameters.RedirectDrive = settings.RdpRedirectDrive.Value;
+            context.Parameters.RedirectDevice = settings.RdpRedirectDevice.Value;
+            context.Parameters.RedirectWebAuthn = settings.RdpRedirectWebAuthn.Value;
+            context.Parameters.HookWindowsKeys = settings.RdpHookWindowsKeys.Value;
+            context.Parameters.RestrictedAdminMode = settings.RdpRestrictedAdminMode.Value;
 
             return context;
         }
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 .TypedCollection;
 
             SshContext context;
-            if (settings.SshPublicKeyAuthentication.EnumValue == SshPublicKeyAuthentication.Enabled)
+            if (settings.SshPublicKeyAuthentication.Value == SshPublicKeyAuthentication.Enabled)
             {
                 //
                 // Use an asymmetric key pair for authentication, and
@@ -325,14 +325,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 
                 IAsymmetricKeySigner signer;
                 TimeSpan validity;
-                if (sshSettings.UsePersistentKey.BoolValue)
+                if (sshSettings.UsePersistentKey.Value)
                 {
                     //
                     // Load persistent CNG key. This might pop up dialogs.
                     //
                     var keyName = new CngKeyName(
                         this.authorization.Session,
-                        sshSettings.PublicKeyType.EnumValue,
+                        sshSettings.PublicKeyType.Value,
                         this.keyStore.Provider);
 
                     try
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                                 CngKeyUsages.Signing,
                                 false),
                             true);
-                        validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue);
+                        validity = TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.Value);
                     }
                     catch (CryptographicException e) when (
                         e is KeyStoreUnavailableException ||
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     //
                     // Use an ephemeral key and cap its validity.
                     //
-                    signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.EnumValue);
+                    signer = EphemeralKeySigners.Get(sshSettings.PublicKeyType.Value);
                     validity = EphemeralKeyValidity;
                 }
 
@@ -382,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     node.Instance);
 
                 context.Parameters.PublicKeyValidity = validity;
-                context.Parameters.PreferredUsername = settings.SshUsername.StringValue;
+                context.Parameters.PreferredUsername = settings.SshUsername.Value;
             }
             else
             {
@@ -390,9 +390,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 // Use password for authentication.
                 //
 
-                var username = string.IsNullOrEmpty(settings.SshUsername.StringValue)
+                var username = string.IsNullOrEmpty(settings.SshUsername.Value)
                     ? LinuxUser.SuggestUsername(this.authorization)
-                    : settings.SshUsername.StringValue;
+                    : settings.SshUsername.Value;
 
                 context = new SshContext(
                     this.iapTransportFactory,
@@ -403,10 +403,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     node.Instance);
             }
 
-            context.Parameters.Port = (ushort)settings.SshPort.IntValue;
-            context.Parameters.TransportType = settings.SshTransport.EnumValue;
-            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
-            context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.BoolValue
+            context.Parameters.Port = (ushort)settings.SshPort.Value;
+            context.Parameters.TransportType = settings.SshTransport.Value;
+            context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.Value);
+            context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.Value
                 ? CultureInfo.CurrentUICulture
                 : null;
 

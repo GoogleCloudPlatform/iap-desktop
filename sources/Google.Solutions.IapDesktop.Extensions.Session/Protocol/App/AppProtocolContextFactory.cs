@@ -90,8 +90,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 //
                 // Populate parameters from settings.
                 //
-                context.Parameters.PreferredUsername = settings.AppUsername.StringValue;
-                context.Parameters.NetworkLevelAuthentication = settings.AppNetworkLevelAuthentication.EnumValue;
+                context.Parameters.PreferredUsername = settings.AppUsername.Value;
+                context.Parameters.NetworkLevelAuthentication = settings.AppNetworkLevelAuthentication.Value;
 
                 var contextFlags = (AppProtocolContextFlags)flags;
                 if (contextFlags.HasFlag(AppProtocolContextFlags.TryUseRdpNetworkCredentials))
@@ -99,12 +99,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                     //
                     // See if we have RDP credentials.
                     //
-                    if (!string.IsNullOrEmpty(settings.RdpUsername.StringValue))
+                    if (!string.IsNullOrEmpty(settings.RdpUsername.Value))
                     {
                         context.NetworkCredential = new NetworkCredential(
-                            settings.RdpUsername.StringValue,
+                            settings.RdpUsername.Value,
                             (SecureString)settings.RdpPassword.Value,
-                            settings.RdpDomain.StringValue);
+                            settings.RdpDomain.Value);
                     }
                 }
                 else if (contextFlags != AppProtocolContextFlags.None)

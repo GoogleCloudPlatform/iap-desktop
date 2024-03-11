@@ -316,14 +316,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             // NB. Ignore passwords in URLs.
             //
             foreach (var setting in this.Settings
-                .Where(s => !(s is RegistrySecureStringSetting)))
+                .Where(s => !(s is RegistrySecureStringSetting))
+                .Cast<IAnySetting>())
             {
                 var value = url.Parameters.Get(setting.Key);
                 if (!string.IsNullOrEmpty(value))
                 {
                     try
                     {
-                        setting.Value = value;
+                        setting.AnyValue = value;
                     }
                     catch (Exception)
                     {
@@ -339,17 +340,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             var collection = new NameValueCollection();
             foreach (var setting in this.Settings
                 .Where(s => !(s is RegistrySecureStringSetting))
+                .Cast<IAnySetting>()
                 .Where(s => !s.IsDefault))
             {
-                if (setting.Value is Enum enumValue)
+                if (setting.AnyValue is Enum enumValue)
                 {
                     // Use numeric value instead of symbol because
                     // the numeric value is stable.
-                    collection.Add(setting.Key, ((int)setting.Value).ToString());
+                    collection.Add(setting.Key, ((int)setting.AnyValue).ToString());
                 }
                 else
                 {
-                    collection.Add(setting.Key, setting.Value.ToString());
+                    collection.Add(setting.Key, setting.AnyValue.ToString());
                 }
             }
 

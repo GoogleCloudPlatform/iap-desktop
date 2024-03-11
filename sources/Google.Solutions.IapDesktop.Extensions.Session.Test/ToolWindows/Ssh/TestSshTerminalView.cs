@@ -657,7 +657,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var serviceProvider = CreateServiceProvider();
             var settingsRepository = serviceProvider.GetService<ITerminalSettingsRepository>();
             var settings = settingsRepository.GetSettings();
-            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = false;
+            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
             using (var pane = await ConnectSshTerminalPane(
@@ -670,7 +670,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 Assert.IsFalse(pane.Terminal.EnableCtrlV);
 
                 // Re-enable Ctrl+C/V.
-                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = true;
+                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value = true;
                 settingsRepository.SetSettings(settings);
 
                 Assert.IsTrue(pane.Terminal.EnableCtrlC);

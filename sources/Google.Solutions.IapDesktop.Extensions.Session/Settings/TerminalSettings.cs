@@ -39,18 +39,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// </summary>
     public interface ITerminalSettings : ISettingsCollection
     {
-        IBoolSetting IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
-        IBoolSetting IsSelectAllUsingCtrlAEnabled { get; }
-        IBoolSetting IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
-        IBoolSetting IsSelectUsingShiftArrrowEnabled { get; }
-        IBoolSetting IsQuoteConvertionOnPasteEnabled { get; }
-        IBoolSetting IsNavigationUsingControlArrrowEnabled { get; }
-        IBoolSetting IsScrollingUsingCtrlUpDownEnabled { get; }
-        IBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; }
-        IStringSetting FontFamily { get; }
-        IIntSetting FontSizeAsDword { get; }
-        IIntSetting ForegroundColorArgb { get; }
-        IIntSetting BackgroundColorArgb { get; }
+        ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
+        ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; }
+        ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
+        ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; }
+        ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
+        ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; }
+        ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
+        ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+        ISetting<string> FontFamily { get; }
+        ISetting<int> FontSizeAsDword { get; }
+        ISetting<int> ForegroundColorArgb { get; }
+        ISetting<int> BackgroundColorArgb { get; }
     }
 
     public interface ITerminalSettingsRepository : IRepository<ITerminalSettings>
@@ -113,18 +113,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public class TerminalSettings : ITerminalSettings
         {
-            public IBoolSetting IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; private set; }
-            public IBoolSetting IsSelectAllUsingCtrlAEnabled { get; private set; }
-            public IBoolSetting IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; private set; }
-            public IBoolSetting IsSelectUsingShiftArrrowEnabled { get; private set; }
-            public IBoolSetting IsQuoteConvertionOnPasteEnabled { get; private set; }
-            public IBoolSetting IsNavigationUsingControlArrrowEnabled { get; private set; }
-            public IBoolSetting IsScrollingUsingCtrlUpDownEnabled { get; private set; }
-            public IBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
-            public IStringSetting FontFamily { get; private set; }
-            public IIntSetting FontSizeAsDword { get; private set; }
-            public IIntSetting ForegroundColorArgb { get; private set; }
-            public IIntSetting BackgroundColorArgb { get; private set; }
+            public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; private set; }
+            public ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; private set; }
+            public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; private set; }
+            public ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; private set; }
+            public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; private set; }
+            public ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; private set; }
+            public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; private set; }
+            public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
+            public ISetting<string> FontFamily { get; private set; }
+            public ISetting<int> FontSizeAsDword { get; private set; }
+            public ISetting<int> ForegroundColorArgb { get; private set; }
+            public ISetting<int> BackgroundColorArgb { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

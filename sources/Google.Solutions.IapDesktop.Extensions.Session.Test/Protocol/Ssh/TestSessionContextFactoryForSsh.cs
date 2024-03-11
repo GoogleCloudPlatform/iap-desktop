@@ -64,16 +64,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             bool usePersistentKey,
             TimeSpan keyValidity)
         {
-            var keyTypeSetting = new Mock<IEnumSetting<SshKeyType>>();
-            keyTypeSetting.SetupGet(s => s.EnumValue).Returns(SshKeyType.Rsa3072);
+            var keyTypeSetting = new Mock<ISetting<SshKeyType>>();
+            keyTypeSetting.SetupGet(s => s.Value).Returns(SshKeyType.Rsa3072);
 
-            var validitySetting = new Mock<IIntSetting>();
-            validitySetting.SetupGet(s => s.IntValue).Returns((int)keyValidity.TotalSeconds);
+            var validitySetting = new Mock<ISetting<int>>();
+            validitySetting.SetupGet(s => s.Value).Returns((int)keyValidity.TotalSeconds);
 
-            var usePersistentKeySetting = new Mock<IBoolSetting>();
-            usePersistentKeySetting.SetupGet(s => s.BoolValue).Returns(usePersistentKey);
+            var usePersistentKeySetting = new Mock<ISetting<bool>>();
+            usePersistentKeySetting.SetupGet(s => s.Value).Returns(usePersistentKey);
 
-            var localeSetting = new Mock<IBoolSetting>();
+            var localeSetting = new Mock<ISetting<bool>>();
 
             var settings = new Mock<ISshSettings>();
             settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);
@@ -142,8 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
         {
             var settings = new ConnectionSettings(SampleLocator);
-            settings.SshPort.IntValue = 2222;
-            settings.SshUsername.StringValue = "user";
+            settings.SshPort.Value = 2222;
+            settings.SshUsername.Value = "user";
             settings.SshConnectionTimeout.Value = (int)TimeSpan.FromSeconds(123).TotalSeconds;
 
             var settingsService = new Mock<IConnectionSettingsService>();
@@ -183,8 +183,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             [Values("user", "", null)] string username)
         {
             var settings = new ConnectionSettings(SampleLocator);
-            settings.SshPublicKeyAuthentication.EnumValue = SshPublicKeyAuthentication.Disabled;
-            settings.SshUsername.StringValue = username;
+            settings.SshPublicKeyAuthentication.Value = SshPublicKeyAuthentication.Disabled;
+            settings.SshUsername.Value = username;
 
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))

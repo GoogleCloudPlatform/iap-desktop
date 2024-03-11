@@ -100,18 +100,18 @@ namespace Google.Solutions.IapDesktop.Windows
             // Restore window settings.
             //
             var windowSettings = this.applicationSettings.GetSettings();
-            if (windowSettings.IsMainWindowMaximized.BoolValue)
+            if (windowSettings.IsMainWindowMaximized.Value)
             {
                 this.WindowState = FormWindowState.Maximized;
                 InitializeComponent();
             }
-            else if (windowSettings.MainWindowHeight.IntValue != 0 &&
-                     windowSettings.MainWindowWidth.IntValue != 0)
+            else if (windowSettings.MainWindowHeight.Value != 0 &&
+                     windowSettings.MainWindowWidth.Value != 0)
             {
                 InitializeComponent();
                 this.Size = new Size(
-                    windowSettings.MainWindowWidth.IntValue,
-                    windowSettings.MainWindowHeight.IntValue);
+                    windowSettings.MainWindowWidth.Value,
+                    windowSettings.MainWindowHeight.Value);
             }
             else
             {
@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider.GetService<ITaskDialog>(),
                 this.serviceProvider.GetService<IBrowser>());
             if (checkForUpdates.IsAutomatedCheckDue(
-                DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
+                DateTime.FromBinary(settings.LastUpdateCheck.Value)))
             {
                 try
                 {
@@ -396,9 +396,9 @@ namespace Google.Solutions.IapDesktop.Windows
                         //
                         // Prompt for survey unless the user has opted out.
                         //
-                        checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.BoolValue;
+                        checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.Value;
                         if (Version.TryParse(
-                            settings.LastSurveyVersion.StringValue, 
+                            settings.LastSurveyVersion.Value, 
                             out var lastSurveyVersion))
                         {
                             checkForUpdates.LastSurveyVersion = lastSurveyVersion;
@@ -406,9 +406,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
                         checkForUpdates.Execute(this, cts.Token);
 
-                        settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
-                        settings.IsSurveyEnabled.BoolValue = checkForUpdates.EnableSurveys;
-                        settings.LastSurveyVersion.StringValue = checkForUpdates.LastSurveyVersion?.ToString();
+                        settings.LastUpdateCheck.Value = DateTime.UtcNow.ToBinary();
+                        settings.IsSurveyEnabled.Value = checkForUpdates.EnableSurveys;
+                        settings.LastSurveyVersion.Value = checkForUpdates.LastSurveyVersion?.ToString();
                     }
                 }
                 catch (Exception e)
@@ -421,9 +421,9 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Save window state.
             //
-            settings.IsMainWindowMaximized.BoolValue = this.WindowState == FormWindowState.Maximized;
-            settings.MainWindowHeight.IntValue = this.Size.Height;
-            settings.MainWindowWidth.IntValue = this.Size.Width;
+            settings.IsMainWindowMaximized.Value = this.WindowState == FormWindowState.Maximized;
+            settings.MainWindowHeight.Value = this.Size.Height;
+            settings.MainWindowWidth.Value = this.Size.Width;
 
             this.applicationSettings.SetSettings(settings);
         }

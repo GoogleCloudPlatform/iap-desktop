@@ -462,7 +462,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 // do not exist anymore. 
                 //
                 var selectedDevices = (this.settingsRepository.GetSettings()
-                    .FullScreenDevices.StringValue ?? string.Empty)
+                    .FullScreenDevices.Value ?? string.Empty)
                         .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
                         .ToHashSet();
 

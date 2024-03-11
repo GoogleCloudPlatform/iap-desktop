@@ -36,31 +36,31 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface IApplicationSettings : ISettingsCollection
     {
-        IBoolSetting IsMainWindowMaximized { get; }
-        IIntSetting MainWindowHeight { get; }
-        IIntSetting MainWindowWidth { get; }
-        IBoolSetting IsUpdateCheckEnabled { get; }
-        IBoolSetting IsTelemetryEnabled { get; }
-        ILongSetting LastUpdateCheck { get; }
-        IBoolSetting IsPreviewFeatureSetEnabled { get; }
-        IStringSetting ProxyUrl { get; }
-        IStringSetting ProxyPacUrl { get; }
-        IStringSetting ProxyUsername { get; }
+        ISetting<bool> IsMainWindowMaximized { get; }
+        ISetting<int> MainWindowHeight { get; }
+        ISetting<int> MainWindowWidth { get; }
+        ISetting<bool> IsUpdateCheckEnabled { get; }
+        ISetting<bool> IsTelemetryEnabled { get; }
+        ISetting<long> LastUpdateCheck { get; }
+        ISetting<bool> IsPreviewFeatureSetEnabled { get; }
+        ISetting<string> ProxyUrl { get; }
+        ISetting<string> ProxyPacUrl { get; }
+        ISetting<string> ProxyUsername { get; }
         ISecureStringSetting ProxyPassword { get; }
-        IIntSetting ProxyAuthenticationRetries { get; }
-        IEnumSetting<SecurityProtocolType> TlsVersions { get; }
-        IStringSetting FullScreenDevices { get; }
-        IStringSetting CollapsedProjects { get; }
+        ISetting<int> ProxyAuthenticationRetries { get; }
+        ISetting<SecurityProtocolType> TlsVersions { get; }
+        ISetting<string> FullScreenDevices { get; }
+        ISetting<string> CollapsedProjects { get; }
 
         /// <summary>
         /// Participate in surveys.
         /// </summary>
-        IBoolSetting IsSurveyEnabled { get; }
+        ISetting<bool> IsSurveyEnabled { get; }
 
         /// <summary>
         /// Last release version for which the user has taken a survey.
         /// </summary>
-        IStringSetting LastSurveyVersion { get; }
+        ISetting<string> LastSurveyVersion { get; }
     }
 
     /// <summary>
@@ -113,39 +113,39 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             private ApplicationSettings()
             { }
 
-            public IBoolSetting IsMainWindowMaximized { get; private set; }
+            public ISetting<bool> IsMainWindowMaximized { get; private set; }
 
-            public IIntSetting MainWindowHeight { get; private set; }
+            public ISetting<int> MainWindowHeight { get; private set; }
 
-            public IIntSetting MainWindowWidth { get; private set; }
+            public ISetting<int> MainWindowWidth { get; private set; }
 
-            public IBoolSetting IsUpdateCheckEnabled { get; private set; }
+            public ISetting<bool> IsUpdateCheckEnabled { get; private set; }
 
-            public IBoolSetting IsTelemetryEnabled { get; private set; }
+            public ISetting<bool> IsTelemetryEnabled { get; private set; }
 
-            public ILongSetting LastUpdateCheck { get; private set; }
+            public ISetting<long> LastUpdateCheck { get; private set; }
 
-            public IBoolSetting IsPreviewFeatureSetEnabled { get; private set; }
+            public ISetting<bool> IsPreviewFeatureSetEnabled { get; private set; }
 
-            public IStringSetting ProxyUrl { get; private set; }
+            public ISetting<string> ProxyUrl { get; private set; }
 
-            public IStringSetting ProxyPacUrl { get; private set; }
+            public ISetting<string> ProxyPacUrl { get; private set; }
 
-            public IStringSetting ProxyUsername { get; private set; }
+            public ISetting<string> ProxyUsername { get; private set; }
 
             public ISecureStringSetting ProxyPassword { get; private set; }
             
-            public IIntSetting ProxyAuthenticationRetries { get; private set; }
+            public ISetting<int> ProxyAuthenticationRetries { get; private set; }
 
-            public IEnumSetting<SecurityProtocolType> TlsVersions { get; private set; }
+            public ISetting<SecurityProtocolType> TlsVersions { get; private set; }
 
-            public IStringSetting FullScreenDevices { get; private set; }
+            public ISetting<string> FullScreenDevices { get; private set; }
 
-            public IStringSetting CollapsedProjects { get; private set; }
+            public ISetting<string> CollapsedProjects { get; private set; }
 
-            public IBoolSetting IsSurveyEnabled { get; private set; }
+            public ISetting<bool> IsSurveyEnabled { get; private set; }
 
-            public IStringSetting LastSurveyVersion { get; private set; }
+            public ISetting<string> LastSurveyVersion { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

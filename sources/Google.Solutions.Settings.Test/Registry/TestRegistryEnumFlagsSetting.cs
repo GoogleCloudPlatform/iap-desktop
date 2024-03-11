@@ -70,12 +70,12 @@ namespace Google.Solutions.Settings.Test.Registry
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.EnumValue = Toppings.Cheese;
+            setting.Value = Toppings.Cheese;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.EnumValue = setting.DefaultValue;
+            setting.Value = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
@@ -187,7 +187,7 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenSettingIsNull_ThenSaveResetsRegistry()
+        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -201,7 +201,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     Toppings.None,
                     key);
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -209,29 +209,8 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         //---------------------------------------------------------------------
-        // Get/set value.
+        // Value.
         //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    Toppings.None,
-                    key);
-
-                setting.Value = Toppings.None;
-                setting.Value = null;
-
-                Assert.AreEqual(Toppings.None, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
@@ -246,8 +225,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     Toppings.None,
                     key);
 
-                setting.Value = Toppings.None;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(Toppings.None, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -274,44 +254,6 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenValueIsNumericString_ThenSetValueSucceeds()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    Toppings.None,
-                    key);
-
-                setting.Value = ((int)Toppings.Cream).ToString();
-
-                Assert.AreEqual(Toppings.Cream, setting.Value);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsDirty);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsOfWrongType_ThenSetValueRaisesInvalidCastException()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    Toppings.None,
-                    key);
-
-                Assert.Throws<InvalidCastException>(() => setting.Value = false);
-            }
-        }
-
-        [Test]
         public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
@@ -328,6 +270,69 @@ namespace Google.Solutions.Settings.Test.Registry
             }
         }
 
+        //---------------------------------------------------------------------
+        // AnyValue.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    Toppings.None,
+                    key);
+
+                setting.Value = Toppings.None;
+                setting.AnyValue = null;
+
+                Assert.AreEqual(Toppings.None, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsNumericString_ThenSetAnyValueSucceeds()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    Toppings.None,
+                    key);
+
+                setting.AnyValue = ((int)Toppings.Cream).ToString();
+
+                Assert.AreEqual(Toppings.Cream, setting.Value);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsDirty);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    Toppings.None,
+                    key);
+
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
+            }
+        }
+
         [Test]
         public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
         {
@@ -341,7 +346,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     Toppings.None,
                     key);
 
-                Assert.Throws<FormatException>(() => setting.Value = "");
+                Assert.Throws<FormatException>(() => setting.AnyValue = "");
             }
         }
 
@@ -458,7 +463,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(Toppings.Cream, setting.EnumValue);
+                Assert.AreEqual(Toppings.Cream, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

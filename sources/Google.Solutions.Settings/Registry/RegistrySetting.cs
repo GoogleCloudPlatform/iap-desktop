@@ -41,7 +41,7 @@ namespace Google.Solutions.Settings.Registry
 
 
     public class RegistryStringSetting
-        : SettingBase<string>, IRegistrySetting, IStringSetting
+        : SettingBase<string>, IRegistrySetting
     {
         private readonly Func<string, bool> validate;
 
@@ -260,8 +260,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryBoolSetting
-        : SettingBase<bool>, IRegistrySetting, IBoolSetting
+    public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
         public object RegistryValue => this.Value;
@@ -343,8 +342,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryDwordSetting
-        : SettingBase<int>, IRegistrySetting, IIntSetting
+    public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
     {
         private readonly int minInclusive;
         private readonly int maxInclusive;
@@ -439,8 +437,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryQwordSetting
-        : SettingBase<long>, IRegistrySetting, ILongSetting
+    public class RegistryQwordSetting : SettingBase<long>, IRegistrySetting
     {
         private readonly long minInclusive;
         private readonly long maxInclusive;
@@ -535,8 +532,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public class RegistryEnumSetting<TEnum>
-        : SettingBase<TEnum>, IRegistrySetting, IEnumSetting<TEnum>
+    public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
         where TEnum : struct
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;

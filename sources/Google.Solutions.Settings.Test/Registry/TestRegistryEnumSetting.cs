@@ -67,12 +67,12 @@ namespace Google.Solutions.Settings.Test.Registry
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
 
-            setting.EnumValue = Toppings.Cheese;
+            setting.Value = Toppings.Cheese;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsDefault);
 
-            setting.EnumValue = setting.DefaultValue;
+            setting.Value = setting.DefaultValue;
 
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsDefault);
@@ -181,7 +181,7 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenSettingIsNull_ThenSaveResetsRegistry()
+        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -195,7 +195,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     ConsoleColor.Blue,
                     key);
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
                 setting.Save(key);
 
                 Assert.IsNull(key.GetValue("test"));
@@ -203,29 +203,8 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         //---------------------------------------------------------------------
-        // Get/set value.
+        // Value.
         //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueIsNull_ThenSetValueResetsToDefault()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    ConsoleColor.Blue,
-                    key);
-
-                setting.Value = ConsoleColor.Blue;
-                setting.Value = null;
-
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-            }
-        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
@@ -240,8 +219,9 @@ namespace Google.Solutions.Settings.Test.Registry
                     ConsoleColor.Blue,
                     key);
 
-                setting.Value = ConsoleColor.Blue;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -268,44 +248,6 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenValueIsNumericString_ThenSetValueSucceeds()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    ConsoleColor.Blue,
-                    key);
-
-                setting.Value = ((int)ConsoleColor.Yellow).ToString();
-
-                Assert.AreEqual(ConsoleColor.Yellow, setting.Value);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsDirty);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsOfWrongType_ThenSetValueRaisesInvalidCastException()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    ConsoleColor.Blue,
-                    key);
-
-                Assert.Throws<InvalidCastException>(() => setting.Value = false);
-            }
-        }
-
-        [Test]
         public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
@@ -322,8 +264,12 @@ namespace Google.Solutions.Settings.Test.Registry
             }
         }
 
+        //---------------------------------------------------------------------
+        // AnyValue.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
+        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -335,7 +281,66 @@ namespace Google.Solutions.Settings.Test.Registry
                     ConsoleColor.Blue,
                     key);
 
-                Assert.Throws<FormatException>(() => setting.Value = "");
+                setting.Value = ConsoleColor.Blue;
+                setting.AnyValue = null;
+
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsNumericString_ThenSetAnyValueSucceeds()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue,
+                    key);
+
+                setting.AnyValue = ((int)ConsoleColor.Yellow).ToString();
+
+                Assert.AreEqual(ConsoleColor.Yellow, setting.Value);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsDirty);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue,
+                    key);
+
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue,
+                    key);
+
+                Assert.Throws<FormatException>(() => setting.AnyValue = "");
             }
         }
 

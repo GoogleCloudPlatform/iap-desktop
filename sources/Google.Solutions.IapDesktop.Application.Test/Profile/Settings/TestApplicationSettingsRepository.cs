@@ -80,20 +80,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
-                settings.IsMainWindowMaximized.BoolValue = true;
-                settings.MainWindowHeight.IntValue = 480;
-                settings.MainWindowWidth.IntValue = 640;
-                settings.IsUpdateCheckEnabled.BoolValue = false;
-                settings.LastUpdateCheck.LongValue = 123L;
+                settings.IsMainWindowMaximized.Value = true;
+                settings.MainWindowHeight.Value = 480;
+                settings.MainWindowWidth.Value = 640;
+                settings.IsUpdateCheckEnabled.Value = false;
+                settings.LastUpdateCheck.Value = 123L;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
 
-                Assert.AreEqual(true, settings.IsMainWindowMaximized.BoolValue);
-                Assert.AreEqual(480, settings.MainWindowHeight.IntValue);
-                Assert.AreEqual(640, settings.MainWindowWidth.IntValue);
-                Assert.AreEqual(false, settings.IsUpdateCheckEnabled.BoolValue);
-                Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
+                Assert.AreEqual(true, settings.IsMainWindowMaximized.Value);
+                Assert.AreEqual(480, settings.MainWindowHeight.Value);
+                Assert.AreEqual(640, settings.MainWindowWidth.Value);
+                Assert.AreEqual(false, settings.IsUpdateCheckEnabled.Value);
+                Assert.AreEqual(123, settings.LastUpdateCheck.Value);
             }
         }
 
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://userpolicy", settings.ProxyUrl.StringValue);
+                Assert.AreEqual("http://userpolicy", settings.ProxyUrl.Value);
             }
         }
 
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.Value);
             }
         }
 
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.Value);
             }
         }
 
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://userpolicy", settings.ProxyPacUrl.StringValue);
+                Assert.AreEqual("http://userpolicy", settings.ProxyPacUrl.Value);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.Value);
             }
         }
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.StringValue);
+                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.Value);
             }
         }
 
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 settingsKey.SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
             }
         }
@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 userPolicyKey.SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
             }
         }
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
             }
         }
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
             }
         }
@@ -434,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     policyKey,
                     UserProfile.SchemaVersion.Version240);
 
-                Assert.IsTrue(repository.GetSettings().IsTelemetryEnabled.BoolValue);
+                Assert.IsTrue(repository.GetSettings().IsTelemetryEnabled.Value);
             }
         }
 
@@ -452,7 +452,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     policyKey,
                     schemaVersion);
 
-                Assert.IsFalse(repository.GetSettings().IsTelemetryEnabled.BoolValue);
+                Assert.IsFalse(repository.GetSettings().IsTelemetryEnabled.Value);
             }
         }
     }

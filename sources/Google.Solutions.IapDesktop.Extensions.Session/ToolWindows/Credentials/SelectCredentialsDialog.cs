@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             // Determine which options to show in prompt.
             //
             var credentialsExist =
-                !string.IsNullOrEmpty(settings.RdpUsername.StringValue) &&
+                !string.IsNullOrEmpty(settings.RdpUsername.Value) &&
                 !string.IsNullOrEmpty(settings.RdpPassword.ClearTextValue);
 
             if (allowedBehavior == RdpCredentialGenerationBehavior.Force

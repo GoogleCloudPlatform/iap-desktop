@@ -72,37 +72,37 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         protected override void Load(IAccessSettings settings)
         {
             this.IsDeviceCertificateAuthenticationEnabled.Value =
-                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
+                settings.IsDeviceCertificateAuthenticationEnabled.Value;
             this.IsDeviceCertificateAuthenticationEditable.Value =
                 !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
 
             this.PrivateServiceConnectEndpoint.Value =
-                settings.PrivateServiceConnectEndpoint.StringValue;
+                settings.PrivateServiceConnectEndpoint.Value;
             this.IsPrivateServiceConnectEnabled.Value =
                 !settings.PrivateServiceConnectEndpoint.IsDefault; 
             this.IsPrivateServiceConnectEditable.Value =
                 !settings.PrivateServiceConnectEndpoint.IsReadOnly;
 
             this.ConnectionPoolLimit.Value = (decimal)
-                settings.ConnectionLimit.IntValue;
+                settings.ConnectionLimit.Value;
         }
 
         [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
         protected override void Save(IAccessSettings settings)
         {
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
+            settings.IsDeviceCertificateAuthenticationEnabled.Value =
                 this.IsDeviceCertificateAuthenticationEnabled.Value;
 
-            settings.PrivateServiceConnectEndpoint.StringValue =
+            settings.PrivateServiceConnectEndpoint.Value =
                 this.IsPrivateServiceConnectEnabled.Value
                     ? this.PrivateServiceConnectEndpoint.Value
                     : null;
 
-            settings.ConnectionLimit.IntValue =
+            settings.ConnectionLimit.Value =
                 (int)this.ConnectionPoolLimit.Value;
 
             if (this.ProbePrivateServiceConnectEndpoint &&
-                settings.PrivateServiceConnectEndpoint.StringValue 
+                settings.PrivateServiceConnectEndpoint.Value 
                 is var pscEndpoint &&
                 pscEndpoint != null)
             {
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
 
             if (settings.PrivateServiceConnectEndpoint.Value != null &&
-                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue)
+                settings.IsDeviceCertificateAuthenticationEnabled.Value)
             {
                 throw new InvalidOptionsException(
                     "To use certificate-based access, you must disable " +

@@ -59,8 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             Settings.ConnectionSettings settings,
             bool silent)
         {
-            var username = WindowsUser.IsLocalUsername(settings.RdpUsername.StringValue)
-                ? settings.RdpUsername.StringValue
+            var username = WindowsUser.IsLocalUsername(settings.RdpUsername.Value)
+                ? settings.RdpUsername.Value
                 : WindowsUser.SuggestUsername(this.serviceProvider.GetService<IAuthorization>().Session);
 
             if (!silent)
@@ -103,11 +103,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             }
 
             // Save credentials.
-            settings.RdpUsername.StringValue = credentials.UserName;
+            settings.RdpUsername.Value = credentials.UserName;
             settings.RdpPassword.ClearTextValue = credentials.Password;
 
             // NB. The computer might be joined to a domain, therefore force a local logon.
-            settings.RdpDomain.StringValue = ".";
+            settings.RdpDomain.Value = ".";
         }
 
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)

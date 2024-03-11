@@ -38,22 +38,22 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// IP or hostname to use for Private Service Connect (PSC). 
         /// If null, PSC is diabled.
         /// </summary>
-        IStringSetting PrivateServiceConnectEndpoint { get; }
+        ISetting<string> PrivateServiceConnectEndpoint { get; }
 
         /// <summary>
         /// Enable BeyondCorp certificate-based access.
         /// </summary>
-        IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; }
+        ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
         /// <summary>
         /// AutoSelectCertificateForUrl-formatted selector for certificate.
         /// </summary>
-        IStringSetting DeviceCertificateSelector { get; }
+        ISetting<string> DeviceCertificateSelector { get; }
 
         /// <summary>
         /// Maximum number of connections per API endpoint.
         /// </summary>
-        IIntSetting ConnectionLimit { get; }
+        ISetting<int> ConnectionLimit { get; }
 
         /// <summary>
         /// Workforce pool provider locator. 
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// When set, authentication is performed using workforce
         /// identity instead of Gaia.
         /// </summary>
-        IStringSetting WorkforcePoolProvider { get; }
+        ISetting<string> WorkforcePoolProvider { get; }
     }
 
     /// <summary>
@@ -97,15 +97,15 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             {
             }
 
-            public IStringSetting WorkforcePoolProvider { get; private set; }
+            public ISetting<string> WorkforcePoolProvider { get; private set; }
 
-            public IStringSetting PrivateServiceConnectEndpoint { get; private set; }
+            public ISetting<string> PrivateServiceConnectEndpoint { get; private set; }
 
-            public IBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
+            public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; private set; }
 
-            public IStringSetting DeviceCertificateSelector { get; private set; }
+            public ISetting<string> DeviceCertificateSelector { get; private set; }
 
-            public IIntSetting ConnectionLimit { get; private set; }
+            public ISetting<int> ConnectionLimit { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
