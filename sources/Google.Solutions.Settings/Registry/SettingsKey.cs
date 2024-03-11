@@ -69,14 +69,14 @@ namespace Google.Solutions.Settings.Registry
 
             bool isSpecified = mapping
                 .Accessor
-                .TryRead(this.key, out var initialValue);
+                .TryRead(this.key, out var readValue);
 
             return new MappedSetting<T>(
                 name,
                 displayName,
                 description,
                 category,
-                isSpecified ? initialValue : defaultValue,
+                isSpecified ? readValue : defaultValue,
                 defaultValue,
                 isSpecified,
                 false,
