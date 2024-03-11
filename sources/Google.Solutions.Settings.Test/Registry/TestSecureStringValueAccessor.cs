@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Solutions.Common.Security;
 using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
