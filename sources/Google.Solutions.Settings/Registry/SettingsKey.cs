@@ -296,7 +296,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public static class DummyExtensions // TODO: remove
+    public static class DummyExtensions // TODO: fix policy handling
     {
         public static ISetting<T> ApplyPolicy<T>(this ISetting<T> s, SettingsKey k)
         {

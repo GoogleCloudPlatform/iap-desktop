@@ -77,11 +77,6 @@ namespace Google.Solutions.Settings
         /// (or whether it's mandated by a policy).
         /// </summary>
         bool IsReadOnly { get; }
-
-        /// <summary>
-        /// Overlay the setting with defaults from the ancestry,
-        /// </summary>
-        ISetting OverlayBy(ISetting setting);
     }
 
     public interface IAnySetting : ISetting // TODO: make internal
