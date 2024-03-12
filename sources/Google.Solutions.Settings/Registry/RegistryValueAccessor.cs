@@ -98,6 +98,8 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
+    //TODO: nest classes or make em private?
+
     internal class StringRegistryValueAccessor : RegistryValueAccessor<string>
     {
         public StringRegistryValueAccessor(string name) : base(name)
