@@ -97,7 +97,7 @@ namespace Google.Solutions.Settings.Registry
             void Write(TSource key);
         }
 
-        protected class MappedSetting<T> : SettingBase<T>, IMappedSetting // TODO: Merge into SettingBase, rename to RegistrySetting
+        protected class MappedSetting<T> : SettingBase<T>, IMappedSetting // TODO: Merge into SettingBase
         {
             private readonly IValueAccessor<TSource, T> accessor;
             private readonly ValidateDelegate<T> validate;

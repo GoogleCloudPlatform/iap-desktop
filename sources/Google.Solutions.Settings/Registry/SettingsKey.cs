@@ -19,21 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Security;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.Settings.Registry
 {
     /// <summary>
     /// Exposes a registry key's values as settings.
     /// </summary>
-    public class SettingsKey : SettingsStoreBase<RegistryKey>, IDisposable // TODO: Extract interface, also implement by IapUrl (and then remove Parse)
+    public class SettingsKey : SettingsStoreBase<RegistryKey>, IDisposable // TODO: renme to RegistrySettingsStore
     {
         private protected override RegistryKey ValueSource => this.BackingKey;
 
