@@ -19,20 +19,22 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Security;
 using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Security;
-using System.Security.Cryptography;
-using System.Text;
+using static Google.Solutions.Settings.Registry.SettingsKey;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestRegistrySecureStringSetting : TestSettingBase
+    public class TestSettingsKeyOfInt : TestSettingBase
     {
+        private static ValidateDelegate<int> InRange(int minInclusive, int maxInclusive)
+        {
+            return v => v >= minInclusive && v <= maxInclusive;
+        }
+
         //---------------------------------------------------------------------
         // IsSpecified.
         //---------------------------------------------------------------------
@@ -42,17 +44,18 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
                 Assert.IsFalse(setting.IsSpecified);
                 Assert.IsTrue(setting.IsDefault);
 
-                setting.SetClearTextValue("value");
+                setting.Value = 1;
 
                 Assert.IsTrue(setting.IsSpecified);
                 Assert.IsFalse(setting.IsDefault);
@@ -69,45 +72,23 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read<SecureString>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    null);
-
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
-        }
-
-        [Test]
         public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsNull(setting.Value);
+                Assert.AreEqual(17, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -115,25 +96,23 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenRegistryValueContainsGibberish_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
-                key.BackingKey.SetValue("test", Encoding.ASCII.GetBytes("gibberish"), RegistryValueKind.Binary);
-
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsNull(setting.Value);
-                Assert.IsNull(setting.GetClearTextValue());
+                Assert.AreEqual(17, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -145,34 +124,24 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                key.BackingKey.SetValue("test", 42);
+
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
-
-                setting.Value = SecureStringExtensions.FromClearText("red");
-                key.Write(setting);
-
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
-
-                // Now read again.
-
-                setting = key.Read<SecureString>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("red", setting.GetClearTextValue());
+                Assert.AreEqual(42, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
@@ -185,17 +154,18 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
-                setting.Value = SecureStringExtensions.FromClearText("green");
+                setting.Value = 1;
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.AreEqual(1, key.BackingKey.GetValue("test"));
             }
         }
 
@@ -204,26 +174,15 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                key.BackingKey.SetValue("test", 42);
+
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
-
-                setting.Value = SecureStringExtensions.FromClearText("red");
-                key.Write(setting);
-
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
-
-                // Now write again.
-
-                setting = key.Read<SecureString>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
                 setting.Value = setting.DefaultValue;
                 key.Write(setting);
@@ -241,15 +200,17 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
-                setting.Value = null;
+                setting.Value = setting.DefaultValue;
 
+                Assert.AreEqual(17, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -260,14 +221,15 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    0,
+                    InRange(0, 100));
 
-                setting.Value = null;
+                setting.Value = 0;
 
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
@@ -279,17 +241,35 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
-                setting.Value = SecureStringExtensions.FromClearText("yellow");
+                setting.Value = 0;
 
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsTrue(setting.IsDirty);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<int>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    InRange(0, 100));
+
+                Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = -1);
             }
         }
 
@@ -298,20 +278,42 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
+        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
-                setting.AnyValue = "secret";
+                setting.Value = 1;
+                setting.AnyValue = null;
 
-                Assert.AreEqual("secret", setting.GetClearTextValue());
+                Assert.AreEqual(17, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsString_ThenSetAnyValueParsesValue()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<int>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    InRange(0, 100));
+
+                setting.AnyValue = "12";
+
+                Assert.AreEqual(12, setting.Value);
             }
         }
 
@@ -320,14 +322,32 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    17,
+                    InRange(0, 100));
 
-                Assert.Throws<InvalidCastException>(() => setting.AnyValue = 1);
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<int>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    InRange(0, 100));
+
+                Assert.Throws<FormatException>(() => setting.AnyValue = "test");
             }
         }
 
@@ -340,27 +360,29 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<SecureString>(
+                var parent = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = key.Read<SecureString>(
+                var child = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.IsNull(effective.DefaultValue);
-                Assert.IsNull(effective.Value);
+                Assert.AreEqual(10, effective.DefaultValue);
+                Assert.AreEqual(10, effective.Value);
                 Assert.IsTrue(effective.IsDefault);
             }
 
@@ -371,29 +393,32 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<SecureString>(
+                var parent = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
-                parent.SetClearTextValue("red");
+                    10,
+                    InRange(0, 100));
+                parent.Value = 42;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = key.Read<SecureString>(
+                var child = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("red", ((SecureString)effective.Value).AsClearText());
-                Assert.AreEqual("red", effective.DefaultValue.AsClearText());
+
+                Assert.AreEqual(42, effective.Value);
+                Assert.AreEqual(42, effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
         }
@@ -403,27 +428,24 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<SecureString>(
+                var parent = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.BackingKey.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("yellow")));
-                var child = key.Read<SecureString>(
+                key.BackingKey.SetValue("test", 1);
+                var child = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -431,8 +453,8 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("yellow", ((SecureString)effective.Value).AsClearText());
-                Assert.IsNull(effective.DefaultValue);
+                Assert.AreEqual(1, effective.Value);
+                Assert.AreEqual(10, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -442,33 +464,25 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                key.BackingKey.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("red")));
-                var parent = key.Read<SecureString>(
+                key.BackingKey.SetValue("test", 42);
+                var parent = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
-                key.BackingKey.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("green")));
-                var child = key.Read<SecureString>(
+                key.BackingKey.SetValue("test", 1);
+                var child = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -476,8 +490,8 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("green", ((SecureString)effective.Value).AsClearText());
-                Assert.AreEqual("red", effective.DefaultValue.AsClearText());
+                Assert.AreEqual(1, effective.Value);
+                Assert.AreEqual(42, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -487,29 +501,32 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<SecureString>(
+                var parent = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
-                parent.SetClearTextValue("red");
+                    10,
+                    InRange(0, 100));
+                parent.Value = 42;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = key.Read<SecureString>(
+                var intermediate = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = key.Read<SecureString>(
+                var child = key.Read<int>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null);
+                    10,
+                    InRange(0, 100));
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -518,11 +535,113 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.SetClearTextValue("black");
+                effective.Value = 10;
 
-                Assert.AreEqual("black", ((SecureString)effective.Value).AsClearText());
-                Assert.AreEqual("red", effective.DefaultValue.AsClearText());
+                Assert.AreEqual(10, effective.Value);
+                Assert.AreEqual(42, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Policy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                key.BackingKey.SetValue("test", 42);
+
+                var setting = key.Read<int>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    InRange(0, 100));
+
+                var settingWithPolicy = setting.ApplyPolicy(null);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
+            {
+                key.BackingKey.SetValue("test", 42);
+
+                var setting = key.Read<int>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    InRange(0, 100));
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
+            {
+                key.BackingKey.SetValue("test", 42);
+                policyKey.BackingKey.SetValue("test", 101, RegistryValueKind.DWord);
+
+                var setting = key
+                    .Read<int>(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        17,
+                        InRange(0, 100))
+                    .ApplyPolicy(policyKey);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
+        {
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
+            {
+                key.BackingKey.SetValue("test", 42);
+                policyKey.BackingKey.SetValue("test", 88, RegistryValueKind.DWord);
+
+                var setting = key
+                    .Read<int>(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        17,
+                        InRange(0, 100))
+                    .ApplyPolicy(policyKey);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.AreEqual(88, setting.Value);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+                Assert.IsTrue(setting.IsReadOnly);
             }
         }
     }

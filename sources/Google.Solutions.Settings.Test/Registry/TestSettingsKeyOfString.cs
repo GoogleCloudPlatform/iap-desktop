@@ -20,14 +20,13 @@
 //
 
 using Google.Solutions.Settings.Registry;
-using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestRegistryBoolSetting : TestSettingBase
+    public class TestSettingsKeyOfString : TestSettingBase
     {
         //---------------------------------------------------------------------
         // IsSpecified.
@@ -38,16 +37,18 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
+
                 Assert.IsFalse(setting.IsSpecified);
                 Assert.IsTrue(setting.IsDefault);
 
-                setting.Value = true;
+                setting.Value = "red";
 
                 Assert.IsTrue(setting.IsSpecified);
                 Assert.IsFalse(setting.IsDefault);
@@ -64,45 +65,23 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read<bool>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    true);
-
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.IsTrue((bool)setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
-        }
-
-        [Test]
         public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    true);
+                    "blue",
+                    _ => true);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsTrue((bool)setting.Value);
+                Assert.AreEqual("blue", setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -114,20 +93,21 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsTrue((bool)setting.Value);
+                Assert.AreEqual("red", setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -143,17 +123,18 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
-                setting.Value = true;
+                setting.Value = "green";
                 key.Write(setting);
 
-                Assert.AreEqual(1, key.BackingKey.GetValue("test"));
+                Assert.AreEqual("green", key.BackingKey.GetValue("test"));
             }
         }
 
@@ -162,39 +143,17 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
                 setting.Value = setting.DefaultValue;
-                key.Write(setting);
-
-                Assert.IsNull(key.BackingKey.GetValue("test"));
-            }
-        }
-
-        [Test]
-        public void WhenSettingIsNullAndValueDeleted_ThenSaveDoesNothing()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
-
-                var setting = key.Read<bool>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    false);
-
-                key.BackingKey.DeleteValue("test");
-
-                setting.AnyValue = null;
                 key.Write(setting);
 
                 Assert.IsNull(key.BackingKey.GetValue("test"));
@@ -205,22 +164,42 @@ namespace Google.Solutions.Settings.Test.Registry
         // Value.
         //---------------------------------------------------------------------
 
-
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.AreEqual(false, setting.Value);
+                Assert.AreEqual("blue", setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+            }
+        }
+
+        [Test]
+        public void WhenValueAndDefaultAreNull_ThenSetValueSucceedsAndSettingIsNotDirty()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<string>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    null,
+                    _ => true);
+
+                setting.Value = null;
+
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -231,14 +210,15 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
-                setting.Value = true;
+                setting.Value = "yellow";
 
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsTrue(setting.IsDirty);
@@ -254,36 +234,19 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
-                setting.Value = true;
+                setting.Value = "red";
                 setting.AnyValue = null;
 
-                Assert.AreEqual(false, setting.Value);
+                Assert.AreEqual("blue", setting.Value);
                 Assert.IsTrue(setting.IsDefault);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read<bool>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    false);
-
-                setting.AnyValue = "TRUE";
-
-                Assert.AreEqual(true, setting.Value);
             }
         }
 
@@ -292,30 +255,15 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
-                Assert.Throws<InvalidCastException>(() => setting.AnyValue = -1);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read<bool>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    false);
-
-                Assert.Throws<FormatException>(() => setting.AnyValue = "maybe");
+                Assert.Throws<InvalidCastException>(() => setting.AnyValue = 1);
             }
         }
 
@@ -328,27 +276,29 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual(false, effective.DefaultValue);
-                Assert.AreEqual(false, effective.Value);
+                Assert.AreEqual("black", effective.DefaultValue);
+                Assert.AreEqual("black", effective.Value);
                 Assert.IsTrue(effective.IsDefault);
             }
 
@@ -359,21 +309,23 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
-                parent.Value = true;
+                    "black",
+                    _ => true);
+                parent.Value = "red";
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -381,8 +333,8 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, child);
 
 
-                Assert.IsTrue((bool)effective.Value);
-                Assert.IsTrue(effective.DefaultValue);
+                Assert.AreEqual("red", effective.Value);
+                Assert.AreEqual("red", effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
         }
@@ -392,22 +344,24 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.BackingKey.SetValue("test", 1);
-                var child = key.Read<bool>(
+                key.BackingKey.SetValue("test", "yellow");
+                var child = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -415,8 +369,8 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.IsTrue((bool)effective.Value);
-                Assert.IsFalse(effective.DefaultValue);
+                Assert.AreEqual("yellow", effective.Value);
+                Assert.AreEqual("black", effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -426,31 +380,35 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                key.BackingKey.SetValue("test", "red");
+                var parent = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
-                parent.Value = true;
+                    "black",
+                    _ => true);
                 Assert.IsFalse(parent.IsDefault);
+                Assert.IsTrue(parent.IsSpecified);
 
-                var child = key.Read<bool>(
+                key.BackingKey.SetValue("test", "green");
+                var child = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
-                child.Value = true;
+                    "black",
+                    _ => true);
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.IsTrue((bool)effective.Value);
-                Assert.IsTrue(effective.DefaultValue);
-                Assert.IsTrue(effective.IsDefault);
+                Assert.AreEqual("green", effective.Value);
+                Assert.AreEqual("red", effective.DefaultValue);
+                Assert.IsFalse(effective.IsDefault);
             }
         }
 
@@ -459,29 +417,32 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
-                parent.Value = true;
+                    "black",
+                    _ => true);
+                parent.Value = "red";
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = key.Read<bool>(
+                var intermediate = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "black",
+                    _ => true);
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -490,10 +451,10 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.Value = false;
+                effective.Value = "black";
 
-                Assert.IsFalse((bool)effective.Value);
-                Assert.IsTrue(effective.DefaultValue);
+                Assert.AreEqual("black", effective.Value);
+                Assert.AreEqual("red", effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -507,14 +468,15 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
 
                 var settingWithPolicy = setting.ApplyPolicy(null);
 
@@ -528,14 +490,39 @@ namespace Google.Solutions.Settings.Test.Registry
             using (var key = CreateSettingsKey())
             using (var policyKey = CreatePolicyKey())
             {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false);
+                    "blue",
+                    _ => true);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
+            {
+                key.BackingKey.SetValue("test", "red");
+                policyKey.BackingKey.SetValue("test", "BLUE");
+
+                var setting = key.Read<string>(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        "black",
+                        v => v.ToLower() == v)
+                    .ApplyPolicy(policyKey);
 
                 var settingWithPolicy = setting.ApplyPolicy(policyKey);
 
@@ -549,23 +536,24 @@ namespace Google.Solutions.Settings.Test.Registry
             using (var key = CreateSettingsKey())
             using (var policyKey = CreatePolicyKey())
             {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
-                policyKey.BackingKey.SetValue("test", 0, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", "red");
+                policyKey.BackingKey.SetValue("test", "BLUE");
 
-                var setting = key.Read<bool>(
+                var setting = key.Read<string>(
                         "test",
                         "title",
                         "description",
                         "category",
-                        false)
+                        "black",
+                        _ => true)
                     .ApplyPolicy(policyKey);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsFalse((bool)setting.Value);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.AreEqual("BLUE", setting.Value);
+                Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);
             }
