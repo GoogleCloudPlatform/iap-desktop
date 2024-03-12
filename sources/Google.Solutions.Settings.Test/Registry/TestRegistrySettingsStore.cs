@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestSettingsKey
+    public class TestRegistrySettingsStore
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
@@ -53,7 +53,7 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenTypeUnsupported_ThenReadThrowsException()
         {
-            using (var key = new SettingsKey(CreateKey()))
+            using (var key = new RegistrySettingsStore(CreateKey()))
             {
                 Assert.Throws<ArgumentException>(
                     () => key.Read<uint>("test", "test", null, null, 0));
@@ -63,7 +63,7 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueExists_ThenIsSpecifiedIsTrue()
         {
-            using (var key = new SettingsKey(CreateKey()))
+            using (var key = new RegistrySettingsStore(CreateKey()))
             {
                 //
                 // Read non-existing value.
@@ -85,7 +85,7 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueExists_ThenValueIsNotDefault()
         {
-            using (var key = new SettingsKey(CreateKey()))
+            using (var key = new RegistrySettingsStore(CreateKey()))
             {
                 //
                 // Read non-existing value.
@@ -110,7 +110,7 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenCustomValidationFails_ThenSetValueThrowsException()
         {
-            using (var key = new SettingsKey(CreateKey()))
+            using (var key = new RegistrySettingsStore(CreateKey()))
             {
                 //
                 // Read non-existing value.
@@ -142,7 +142,7 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsDefault_ThenWriteDeletesValue()
         {
-            using (var key = new SettingsKey(CreateKey()))
+            using (var key = new RegistrySettingsStore(CreateKey()))
             {
                 var setting = key.Read<int>("test", "test", null, null, 0);
 

@@ -25,7 +25,7 @@ using NUnit.Framework;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
-    public abstract class TestSettingsKeyBase
+    public abstract class RegistrySettingsStoreBase
     {
         private const string KeyPath = @"Software\Google\__Test";
         private const string PolicyKeyPath = @"Software\Google\__TestPolicy";
@@ -41,12 +41,12 @@ namespace Google.Solutions.Settings.Test.Registry
             this.hkcu.DeleteSubKeyTree(PolicyKeyPath, false);
         }
 
-        protected SettingsKey CreateSettingsKey()
+        protected RegistrySettingsStore CreateSettingsKey()
         {
-            return new SettingsKey(this.hkcu.CreateSubKey(KeyPath));
+            return new RegistrySettingsStore(this.hkcu.CreateSubKey(KeyPath));
         }
 
-        protected SettingsKey CreatePolicyKey(SettingsKey lesserKey)
+        protected RegistrySettingsStore CreatePolicyKey(RegistrySettingsStore lesserKey)
         {
             return new MergedSettingsKey(
                 this.hkcu.CreateSubKey(PolicyKeyPath),

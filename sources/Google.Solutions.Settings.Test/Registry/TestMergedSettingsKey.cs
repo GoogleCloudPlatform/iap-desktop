@@ -42,13 +42,13 @@ namespace Google.Solutions.Settings.Test.Registry
             this.hkcu.DeleteSubKeyTree(OverlayKeyPath, false);
         }
 
-        protected SettingsKey CreateLesserSettingsKey()
+        protected RegistrySettingsStore CreateLesserSettingsKey()
         {
-            return new SettingsKey(this.hkcu.CreateSubKey(KeyPath));
+            return new RegistrySettingsStore(this.hkcu.CreateSubKey(KeyPath));
         }
 
-        protected SettingsKey CreateMergedSettingsKey(
-            SettingsKey lesserKey,
+        protected RegistrySettingsStore CreateMergedSettingsKey(
+            RegistrySettingsStore lesserKey,
             MergedSettingsKey.MergeBehavior mergeBehavior)
         {
             return new MergedSettingsKey(

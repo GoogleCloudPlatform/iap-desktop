@@ -28,12 +28,12 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Merges settings from two registry keys.
     /// </summary>
-    public class MergedSettingsKey : SettingsKey
+    public class MergedSettingsKey : RegistrySettingsStore
     {
         /// <summary>
         /// Key whose settings are being "overlaid" by this key.
         /// </summary>
-        private readonly SettingsKey lesserKey;
+        private readonly RegistrySettingsStore lesserKey;
         private readonly MergeBehavior mergeBehavior;
 
         public enum MergeBehavior
@@ -54,7 +54,7 @@ namespace Google.Solutions.Settings.Registry
 
         public MergedSettingsKey(
             RegistryKey key,
-            SettingsKey lesserKey,
+            RegistrySettingsStore lesserKey,
             MergeBehavior mergeBehavior)
             : base(key)
         {

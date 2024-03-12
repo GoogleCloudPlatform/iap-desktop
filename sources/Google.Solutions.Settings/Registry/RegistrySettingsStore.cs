@@ -28,7 +28,7 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Exposes a registry key's values as settings.
     /// </summary>
-    public class SettingsKey : SettingsStoreBase<RegistryKey>, IDisposable // TODO: renme to RegistrySettingsStore
+    public class RegistrySettingsStore : SettingsStoreBase<RegistryKey>, IDisposable // TODO: renme to RegistrySettingsStore
     {
         private protected override RegistryKey ValueSource => this.BackingKey;
 
@@ -40,7 +40,7 @@ namespace Google.Solutions.Settings.Registry
             return RegistryValueAccessor.Create<T>(valueName);
         }
 
-        public SettingsKey(RegistryKey key)
+        public RegistrySettingsStore(RegistryKey key)
         {
             this.BackingKey = key.ExpectNotNull(nameof(key));
         }
