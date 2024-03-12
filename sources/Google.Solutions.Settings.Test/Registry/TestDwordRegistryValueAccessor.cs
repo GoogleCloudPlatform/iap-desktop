@@ -19,42 +19,26 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Security;
+
 using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System.Security;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestSecureStringValueAccessor : TestValueAccessorBase<SecureString>
+    public class TestDwordRegistryValueAccessor : TestRegistryValueAccessorBase<int>
     {
-        protected override SecureString SampleData 
-            => SecureStringExtensions.FromClearText("some text");
+        protected override int SampleData => int.MinValue;
 
         protected override void WriteIncompatibleValue(RegistryKey key, string name)
         {
-            key.SetValue(name, 1, RegistryValueKind.DWord);
+            key.SetValue(name, "some data", RegistryValueKind.String);
         }
 
-        private protected override ValueAccessor<SecureString> CreateAccessor(string valueName)
+        private protected override RegistryValueAccessor<int> CreateAccessor(string valueName)
         {
-            return new SecureStringValueAccessor(valueName, DataProtectionScope.CurrentUser);
-        }
-
-        [Test]
-        public override void WhenValueSet_ThenTryReadReturnsTrue()
-        {
-            using (var key = CreateKey())
-            {
-                var accessor = CreateAccessor("test");
-                accessor.Write(key, this.SampleData);
-
-                Assert.IsTrue(accessor.TryRead(key, out var read));
-                Assert.AreEqual(this.SampleData.AsClearText(), read.AsClearText());
-            }
+            return new DwordRegistryValueAccessor(valueName);
         }
     }
 }

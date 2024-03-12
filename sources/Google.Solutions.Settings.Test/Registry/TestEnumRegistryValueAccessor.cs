@@ -23,12 +23,12 @@
 using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
-using static Google.Solutions.Settings.Test.Registry.TestEnumValueAccessor;
+using static Google.Solutions.Settings.Test.Registry.TestEnumRegistryValueAccessor;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestEnumValueAccessor : TestValueAccessorBase<Drink>
+    public class TestEnumRegistryValueAccessor : TestRegistryValueAccessorBase<Drink>
     {
         public enum Drink
         {
@@ -44,9 +44,9 @@ namespace Google.Solutions.Settings.Test.Registry
             key.SetValue(name, "some data", RegistryValueKind.String);
         }
 
-        private protected override ValueAccessor<Drink> CreateAccessor(string valueName)
+        private protected override RegistryValueAccessor<Drink> CreateAccessor(string valueName)
         {
-            return new EnumValueAccessor<Drink>(valueName);
+            return new EnumRegistryValueAccessor<Drink>(valueName);
         }
     }
 }

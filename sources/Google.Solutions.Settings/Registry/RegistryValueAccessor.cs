@@ -34,11 +34,11 @@ namespace Google.Solutions.Settings.Registry
     /// Accessor for a registry value that automatically performs
     /// the necessary type conversions.
     /// </summary>
-    internal abstract class ValueAccessor<T>
+    internal abstract class RegistryValueAccessor<T>
     {
         internal string Name { get; }
 
-        protected ValueAccessor(string name)
+        protected RegistryValueAccessor(string name)
         {
             this.Name = name.ExpectNotNull(nameof(name));
         }
@@ -105,9 +105,9 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    internal class StringValueAccessor : ValueAccessor<string>
+    internal class StringRegistryValueAccessor : RegistryValueAccessor<string>
     {
-        public StringValueAccessor(string name) : base(name)
+        public StringRegistryValueAccessor(string name) : base(name)
         {
         }
 
@@ -125,11 +125,11 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    internal class SecureStringValueAccessor : ValueAccessor<SecureString>
+    internal class SecureStringRegistryValueAccessor : RegistryValueAccessor<SecureString>
     {
         private readonly DataProtectionScope protectionScope;
 
-        public SecureStringValueAccessor(
+        public SecureStringRegistryValueAccessor(
             string name,
             DataProtectionScope protectionScope) : base(name)
         {
@@ -185,9 +185,9 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    internal class BoolValueAccessor : ValueAccessor<bool>
+    internal class BoolRegistryValueAccessor : RegistryValueAccessor<bool>
     {
-        public BoolValueAccessor(string name) : base(name)
+        public BoolRegistryValueAccessor(string name) : base(name)
         {
         }
 
@@ -214,9 +214,9 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    internal class DwordValueAccessor : ValueAccessor<int>
+    internal class DwordRegistryValueAccessor : RegistryValueAccessor<int>
     {
-        public DwordValueAccessor(string name) : base(name)
+        public DwordRegistryValueAccessor(string name) : base(name)
         {
         }
 
@@ -234,9 +234,9 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    internal class QwordValueAccessor : ValueAccessor<long>
+    internal class QwordRegistryValueAccessor : RegistryValueAccessor<long>
     {
-        public QwordValueAccessor(string name) : base(name)
+        public QwordRegistryValueAccessor(string name) : base(name)
         {
         }
 
@@ -254,9 +254,9 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    internal class EnumValueAccessor<TEnum> : ValueAccessor<TEnum>
+    internal class EnumRegistryValueAccessor<TEnum> : RegistryValueAccessor<TEnum>
     {
-        public EnumValueAccessor(string name) : base(name)
+        public EnumRegistryValueAccessor(string name) : base(name)
         {
             Debug.Assert(typeof(TEnum).IsEnum);
         }

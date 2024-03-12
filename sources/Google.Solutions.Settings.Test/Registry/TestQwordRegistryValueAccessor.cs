@@ -27,18 +27,18 @@ using NUnit.Framework;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestDwordValueAccessor : TestValueAccessorBase<int>
+    public class TestQwordRegistryValueAccessor : TestRegistryValueAccessorBase<long>
     {
-        protected override int SampleData => int.MinValue;
+        protected override long SampleData => long.MinValue;
 
         protected override void WriteIncompatibleValue(RegistryKey key, string name)
         {
             key.SetValue(name, "some data", RegistryValueKind.String);
         }
 
-        private protected override ValueAccessor<int> CreateAccessor(string valueName)
+        private protected override RegistryValueAccessor<long> CreateAccessor(string valueName)
         {
-            return new DwordValueAccessor(valueName);
+            return new QwordRegistryValueAccessor(valueName);
         }
     }
 }

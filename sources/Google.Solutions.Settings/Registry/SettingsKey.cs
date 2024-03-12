@@ -31,9 +31,9 @@ using System.Security.Cryptography;
 namespace Google.Solutions.Settings.Registry
 {
     /// <summary>
-    /// Registry key that stores settings.
+    /// Exposes a registry key's values as settings.
     /// </summary>
-    public class SettingsKey : IDisposable
+    public class SettingsKey : IDisposable // TODO: Extract interface, also implement by IapUrl (and then remove Parse)
     {
         /// <summary>
         /// Delegate for validating if a given value falls
@@ -162,42 +162,42 @@ namespace Google.Solutions.Settings.Registry
             if (typeof(T) == typeof(bool))
             {
                 return (TypeMapping<T>)(object) new TypeMapping<bool>(
-                    new BoolValueAccessor(valueName),
+                    new BoolRegistryValueAccessor(valueName),
                     v => true,
                     bool.TryParse);
             }
             else if (typeof(T) == typeof(int))
             {
                 return (TypeMapping<T>)(object)new TypeMapping<int>(
-                    new DwordValueAccessor(valueName),
+                    new DwordRegistryValueAccessor(valueName),
                     v => true,
                     int.TryParse);
             }
             else if (typeof(T) == typeof(long))
             {
                 return (TypeMapping<T>)(object)new TypeMapping<long>(
-                    new QwordValueAccessor(valueName),
+                    new QwordRegistryValueAccessor(valueName),
                     v => true,
                     long.TryParse);
             }
             else if (typeof(T) == typeof(string))
             {
                 return (TypeMapping<T>)(object)new TypeMapping<string>(
-                    new StringValueAccessor(valueName),
+                    new StringRegistryValueAccessor(valueName),
                     v => true,
                     TryParseString);
             }
             else if (typeof(T) == typeof(SecureString))
             {
                 return (TypeMapping<T>)(object)new TypeMapping<SecureString>(
-                    new SecureStringValueAccessor(valueName, DataProtectionScope.CurrentUser),
+                    new SecureStringRegistryValueAccessor(valueName, DataProtectionScope.CurrentUser),
                     v => true,
                     TryParseSecureString);
             }
             else if (typeof(T).IsEnum)
             {
                 return (TypeMapping<T>)(object)new TypeMapping<T>(
-                    new EnumValueAccessor<T>(valueName),
+                    new EnumRegistryValueAccessor<T>(valueName),
                     ValidateEnum,
                     TryParseEnum);
             }
@@ -211,12 +211,12 @@ namespace Google.Solutions.Settings.Registry
 
         protected class TypeMapping<T>
         {
-            internal ValueAccessor<T> Accessor { get; }
+            internal RegistryValueAccessor<T> Accessor { get; }
             internal ValidateDelegate<T> Validate { get; }
             internal ParseDelegate<T> Parse { get; }
 
             internal TypeMapping(
-                ValueAccessor<T> accessor, 
+                RegistryValueAccessor<T> accessor, 
                 ValidateDelegate<T> defaultValidate, 
                 ParseDelegate<T> defaultParse)
             {
@@ -325,14 +325,6 @@ namespace Google.Solutions.Settings.Registry
             {
                 get => IsValid(this.Value);
             }
-        }
-    }
-
-    public static class DummyExtensions // TODO: fix policy handling
-    {
-        public static ISetting<T> ApplyPolicy<T>(this ISetting<T> s, SettingsKey k)
-        {
-            throw new NotImplementedException();
         }
     }
 }

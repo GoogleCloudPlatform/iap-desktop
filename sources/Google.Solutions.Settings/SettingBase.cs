@@ -180,7 +180,7 @@ namespace Google.Solutions.Settings
 
         protected abstract T Parse(string value);
 
-        protected abstract SettingBase<T> CreateNew(
+        protected abstract SettingBase<T> CreateNew( // TODO: remove
             T value,
             T defaultValue,
             bool readOnly);

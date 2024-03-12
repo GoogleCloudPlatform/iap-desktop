@@ -27,7 +27,7 @@ using System;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
-    public abstract class TestValueAccessorBase<T>
+    public abstract class TestRegistryValueAccessorBase<T>
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
@@ -41,7 +41,7 @@ namespace Google.Solutions.Settings.Test.Registry
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
-        private protected abstract ValueAccessor<T> CreateAccessor(string valueName);
+        private protected abstract RegistryValueAccessor<T> CreateAccessor(string valueName);
 
         protected abstract T SampleData { get; }
 
