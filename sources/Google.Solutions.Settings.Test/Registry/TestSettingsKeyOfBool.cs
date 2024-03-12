@@ -503,68 +503,46 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey(key))
             {
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = key.Read<bool>(
+                var setting = policyKey.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
                     false);
 
-                var settingWithPolicy = setting.ApplyPolicy(null);
-
-                Assert.AreSame(setting, settingWithPolicy);
+                Assert.AreEqual(true, setting.Value);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
         [Test]
-        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        public void WhenPolicySet_ThenSettingHasPolicyApplied()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey())
-            {
-                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
-
-                var setting = key.Read<bool>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    false);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
-        {
-            using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey())
+            using (var policyKey = CreatePolicyKey(key))
             {
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
                 policyKey.BackingKey.SetValue("test", 0, RegistryValueKind.DWord);
 
-                var setting = key.Read<bool>(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        false)
-                    .ApplyPolicy(policyKey);
+                var setting = policyKey.Read<bool>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    false);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsFalse((bool)setting.Value);
+                Assert.IsFalse(setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

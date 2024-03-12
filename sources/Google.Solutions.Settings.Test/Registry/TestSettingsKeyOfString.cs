@@ -464,13 +464,14 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey(key))
             {
                 key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<string>(
+                var setting = policyKey.Read<string>(
                     "test",
                     "title",
                     "description",
@@ -478,75 +479,49 @@ namespace Google.Solutions.Settings.Test.Registry
                     "blue",
                     _ => true);
 
-                var settingWithPolicy = setting.ApplyPolicy(null);
-
-                Assert.AreSame(setting, settingWithPolicy);
+                Assert.AreEqual("red", setting.Value);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
         [Test]
-        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        public void WhenPolicyInvalid_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey())
+            using (var policyKey = CreatePolicyKey(key))
             {
                 key.BackingKey.SetValue("test", "red");
+                policyKey.BackingKey.SetValue("test", "BLUE");
 
-                var setting = key.Read<string>(
+                var setting = policyKey.Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
+                    "black",
+                    v => v.ToLower() == v);
+
+                Assert.AreEqual("red", setting.Value);
+                Assert.IsFalse(setting.IsReadOnly);
+            }
+        }
+
+        [Test]
+        public void WhenPolicySet_ThenSettingHasPolicyApplied()
+        {
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey(key))
+            {
+                key.BackingKey.SetValue("test", "red");
+                policyKey.BackingKey.SetValue("test", "BLUE");
+
+                var setting = policyKey.Read<string>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    "black",
                     _ => true);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
-        {
-            using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey())
-            {
-                key.BackingKey.SetValue("test", "red");
-                policyKey.BackingKey.SetValue("test", "BLUE");
-
-                var setting = key.Read<string>(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        "black",
-                        v => v.ToLower() == v)
-                    .ApplyPolicy(policyKey);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
-        {
-            using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey())
-            {
-                key.BackingKey.SetValue("test", "red");
-                policyKey.BackingKey.SetValue("test", "BLUE");
-
-                var setting = key.Read<string>(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        "black",
-                        _ => true)
-                    .ApplyPolicy(policyKey);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
