@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestSettingsKeyOfEnum : TestSettingBase
+    public class TestSettingsKeyOfEnum : TestSettingsKeyBase
     {
         [Flags]
         public enum Toppings

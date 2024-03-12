@@ -28,7 +28,7 @@ using static Google.Solutions.Settings.Registry.SettingsKey;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestSettingsKeyOfInt : TestSettingBase
+    public class TestSettingsKeyOfInt : TestSettingsKeyBase
     {
         private static ValidateDelegate<int> InRange(int minInclusive, int maxInclusive)
         {

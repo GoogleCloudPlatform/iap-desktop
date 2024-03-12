@@ -31,7 +31,7 @@ using System.Text;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestSettingsKeyOfSecureString : TestSettingBase
+    public class TestSettingsKeyOfSecureString : TestSettingsKeyBase
     {
         //---------------------------------------------------------------------
         // IsSpecified.

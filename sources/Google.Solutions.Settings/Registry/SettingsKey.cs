@@ -31,7 +31,7 @@ using System.Security.Cryptography;
 namespace Google.Solutions.Settings.Registry
 {
     /// <summary>
-    /// Registry key that is used for storing settings.
+    /// Registry key that stores settings.
     /// </summary>
     public class SettingsKey : IDisposable
     {
@@ -45,7 +45,7 @@ namespace Google.Solutions.Settings.Registry
         /// Delegate for parsing a string and converting it
         /// into the setting type.
         /// </summary>
-        private delegate bool ParseDelegate<T>(string value, out T result);
+        protected delegate bool ParseDelegate<T>(string value, out T result);
 
         internal RegistryKey BackingKey { get; }
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Settings.Registry
         /// <summary>
         /// Read key value and map it to a settings object.
         /// </summary>
-        public ISetting<T> Read<T>(
+        public virtual ISetting<T> Read<T>(
             string name,
             string displayName,
             string description,
@@ -90,6 +90,7 @@ namespace Google.Solutions.Settings.Registry
         public void Write<T>(ISetting<T> setting)
         {
             Debug.Assert(setting.IsDirty);
+            Debug.Assert(!setting.IsReadOnly);
 
             var accessor = GetTypeMapping<T>(setting.Key).Accessor;
             if (setting.IsDefault)
@@ -230,7 +231,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        private class MappedSetting<T> : SettingBase<T> // TODO: Merge into SettingBase
+        protected class MappedSetting<T> : SettingBase<T> // TODO: Merge into SettingBase
         {
             private readonly ValidateDelegate<T> isValid;
             private readonly ParseDelegate<T> parse;
@@ -262,7 +263,7 @@ namespace Google.Solutions.Settings.Registry
             protected override SettingBase<T> CreateNew(
                 T value, 
                 T defaultValue, 
-                bool readOnly) // TODO: remove parameter?
+                bool readOnly) // TODO: remove 
             {
                 return new MappedSetting<T>(
                     this.Key,
@@ -272,6 +273,25 @@ namespace Google.Solutions.Settings.Registry
                     value,
                     defaultValue,
                     Equals(value, defaultValue),
+                    readOnly,
+                    this.isValid,
+                    this.parse);
+            }
+
+            internal SettingBase<T> CreateSimilar(
+                T value,
+                T defaultValue,
+                bool isSpecified,
+                bool readOnly)
+            {
+                return new MappedSetting<T>(
+                    this.Key,
+                    this.Title,
+                    this.Description,
+                    this.Category,
+                    value,
+                    defaultValue,
+                    isSpecified,
                     readOnly,
                     this.isValid,
                     this.parse);

@@ -25,10 +25,10 @@ using NUnit.Framework;
 
 namespace Google.Solutions.Settings.Test.Registry
 {
-    public abstract class TestSettingBase
+    public abstract class TestSettingsKeyBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+        private const string KeyPath = @"Software\Google\__Test";
+        private const string PolicyKeyPath = @"Software\Google\__TestPolicy";
 
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
@@ -37,18 +37,18 @@ namespace Google.Solutions.Settings.Test.Registry
         [SetUp]
         public void SetUp()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(KeyPath, false);
+            this.hkcu.DeleteSubKeyTree(PolicyKeyPath, false);
         }
 
         protected SettingsKey CreateSettingsKey()
         {
-            return new SettingsKey(this.hkcu.CreateSubKey(TestKeyPath));
+            return new SettingsKey(this.hkcu.CreateSubKey(KeyPath));
         }
 
         protected SettingsKey CreatePolicyKey()
         {
-            return new SettingsKey(this.hkcu.CreateSubKey(TestPolicyKeyPath));
+            return new SettingsKey(this.hkcu.CreateSubKey(PolicyKeyPath));
         }
     }
 }

@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestSettingsKeyOfBool : TestSettingBase
+    public class TestSettingsKeyOfBool : TestSettingsKeyBase
     {
         //---------------------------------------------------------------------
         // IsSpecified.

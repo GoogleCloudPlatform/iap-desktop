@@ -113,7 +113,7 @@ namespace Google.Solutions.Settings
         // Overlay.
         //---------------------------------------------------------------------
 
-        public ISetting<T> OverlayBy(ISetting<T> overlaySetting)
+        public ISetting<T> OverlayBy(ISetting<T> overlaySetting) // TODO: remove
         {
             //
             // NB. The idea of overlaying is that you use a base setting
