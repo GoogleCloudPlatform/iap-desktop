@@ -65,17 +65,12 @@ namespace Google.Solutions.Settings.Registry
             T defaultValue,
             ValidateDelegate<T> validate = null)
         {
-            var defaultTypeMapping = GetDefaultTypeMapping<T>(name);
-            var typeMapping = new TypeMapping<T>(
-                defaultTypeMapping.Accessor,
-                validate ?? defaultTypeMapping.Validate,
-                defaultTypeMapping.Parse);
+            var accessor = RegistryValueAccessor.Create<T>(name);
 
-            bool isSpecified = defaultTypeMapping
-                .Accessor
+            bool isSpecified = accessor
                 .TryRead(this.BackingKey, out var readValue);
 
-            return new MappedSetting<T>(
+            return new MappedSetting<RegistryKey, T>(
                 name,
                 displayName,
                 description,
@@ -84,7 +79,8 @@ namespace Google.Solutions.Settings.Registry
                 defaultValue,
                 isSpecified,
                 false,
-                typeMapping);
+                accessor,
+                validate ?? accessor.IsValid);
         }
 
         /// <summary>
@@ -95,7 +91,7 @@ namespace Google.Solutions.Settings.Registry
             Debug.Assert(setting.IsDirty);
             Debug.Assert(!setting.IsReadOnly);
 
-            ((IMappedSetting)setting).Write(this.BackingKey);
+            ((IMappedSetting<RegistryKey>)setting).Write(this.BackingKey);
         }
 
         //---------------------------------------------------------------------
@@ -113,115 +109,17 @@ namespace Google.Solutions.Settings.Registry
             GC.SuppressFinalize(this);
         }
 
-        //---------------------------------------------------------------------
-        // Type mapping.
-        //---------------------------------------------------------------------
-
-        private static TypeMapping<T> GetDefaultTypeMapping<T>(string valueName)
+        protected interface IMappedSetting<TSource>
         {
-            bool TryParseString(string input, out string output)
-            {
-                output = input;
-                return true;
-            }
-
-            bool TryParseSecureString(string input, out SecureString output)
-            {
-                output = SecureStringExtensions.FromClearText(input);
-                return true;
-            }
-
-            bool TryParseEnum<TEnum>(string input, out TEnum output)
-            { 
-                if (int.TryParse(input, out var intValue))
-                {
-                    output = (TEnum)(object)intValue;
-                    return true;
-                }
-                else
-                {
-                    output = default(TEnum);
-                    return false;
-                }
-            }
-
-            if (typeof(T) == typeof(bool))
-            {
-                return (TypeMapping<T>)(object) new TypeMapping<bool>(
-                    new BoolRegistryValueAccessor(valueName),
-                    v => true,
-                    bool.TryParse);
-            }
-            else if (typeof(T) == typeof(int))
-            {
-                return (TypeMapping<T>)(object)new TypeMapping<int>(
-                    new DwordRegistryValueAccessor(valueName),
-                    v => true,
-                    int.TryParse);
-            }
-            else if (typeof(T) == typeof(long))
-            {
-                return (TypeMapping<T>)(object)new TypeMapping<long>(
-                    new QwordRegistryValueAccessor(valueName),
-                    v => true,
-                    long.TryParse);
-            }
-            else if (typeof(T) == typeof(string))
-            {
-                return (TypeMapping<T>)(object)new TypeMapping<string>(
-                    new StringRegistryValueAccessor(valueName),
-                    v => true,
-                    TryParseString);
-            }
-            else if (typeof(T) == typeof(SecureString))
-            {
-                return (TypeMapping<T>)(object)new TypeMapping<SecureString>(
-                    new SecureStringRegistryValueAccessor(valueName, DataProtectionScope.CurrentUser),
-                    v => true,
-                    TryParseSecureString);
-            }
-            else if (typeof(T).IsEnum)
-            {
-                return (TypeMapping<T>)(object)new TypeMapping<T>(
-                    new EnumRegistryValueAccessor<T>(valueName),
-                    v => v.IsDefinedFlagCombination(),
-                    TryParseEnum);
-            }
-            else
-            {
-                throw new ArgumentException(
-                    $"Registry value cannot be mapped to a setting " +
-                    $"of type {typeof(T).Name}");
-            }
+            void Write(TSource key);
         }
 
-        protected class TypeMapping<T>
+        protected class MappedSetting<TSource, T> : SettingBase<T>, IMappedSetting<TSource> // TODO: Merge into SettingBase, rename to RegistrySetting
         {
-            internal RegistryValueAccessor<T> Accessor { get; }
-            internal ValidateDelegate<T> Validate { get; }
-            internal ParseDelegate<T> Parse { get; }
+            private readonly IValueAccessor<TSource, T> accessor;
+            private readonly ValidateDelegate<T> validate;
 
-            internal TypeMapping(
-                RegistryValueAccessor<T> accessor, 
-                ValidateDelegate<T> defaultValidate, 
-                ParseDelegate<T> defaultParse)
-            {
-                this.Accessor = accessor;
-                this.Validate = defaultValidate;
-                this.Parse = defaultParse;
-            }
-        }
-
-        protected interface IMappedSetting
-        {
-            void Write(RegistryKey key);
-        }
-
-        protected class MappedSetting<T> : SettingBase<T>, IMappedSetting // TODO: Merge into SettingBase
-        {
-            private readonly TypeMapping<T> typeMapping;
-
-            public MappedSetting(
+            internal MappedSetting(
                 string key,
                 string title,
                 string description,
@@ -230,7 +128,8 @@ namespace Google.Solutions.Settings.Registry
                 T defaultValue,
                 bool isSpecified,
                 bool readOnly,
-                TypeMapping<T> typeMapping) 
+                IValueAccessor<TSource, T> accessor,
+                ValidateDelegate<T> validate) 
                 : base(key, 
                       title, 
                       description, 
@@ -240,7 +139,8 @@ namespace Google.Solutions.Settings.Registry
                       isSpecified, 
                       readOnly)
             {
-                this.typeMapping = typeMapping.ExpectNotNull(nameof(typeMapping));
+                this.accessor = accessor.ExpectNotNull(nameof(accessor));
+                this.validate= validate.ExpectNotNull(nameof(validate));    
             }
 
             protected override SettingBase<T> CreateNew(
@@ -248,7 +148,7 @@ namespace Google.Solutions.Settings.Registry
                 T defaultValue, 
                 bool readOnly) // TODO: remove 
             {
-                return new MappedSetting<T>(
+                return new MappedSetting<TSource, T>(
                     this.Key,
                     this.Title,
                     this.Description,
@@ -257,7 +157,8 @@ namespace Google.Solutions.Settings.Registry
                     defaultValue,
                     Equals(value, defaultValue),
                     readOnly,
-                    this.typeMapping);
+                    this.accessor,
+                    this.validate);
             }
 
             internal SettingBase<T> CreateSimilar(
@@ -266,7 +167,7 @@ namespace Google.Solutions.Settings.Registry
                 bool isSpecified,
                 bool readOnly)
             {
-                return new MappedSetting<T>(
+                return new MappedSetting<TSource, T>(
                     this.Key,
                     this.Title,
                     this.Description,
@@ -275,35 +176,29 @@ namespace Google.Solutions.Settings.Registry
                     defaultValue,
                     isSpecified,
                     readOnly,
-                    this.typeMapping);
+                    this.accessor,
+                    this.validate);
             }
 
             protected override bool IsValid(T value)
             {
-                return this.typeMapping.Validate(value);
+                return this.validate(value);
             }
 
-            protected override T Parse(string value)
+            protected override T Parse(string value)// TODO: remove
             {
-                if (this.typeMapping.Parse(value, out var result))
-                {
-                    return result;
-                }
-                else
-                {
-                    throw new FormatException("The input format is invalid");
-                }
+                throw new NotImplementedException();
             }
 
-            public void Write(RegistryKey key)
+            public void Write(TSource key)
             {
                 if (this.IsDefault)
                 {
-                    this.typeMapping.Accessor.Delete(key);
+                    this.accessor.Delete(key);
                 }
                 else
                 {
-                    this.typeMapping.Accessor.Write(key, this.Value);
+                    this.accessor.Write(key, this.Value);
                 }
             }
 

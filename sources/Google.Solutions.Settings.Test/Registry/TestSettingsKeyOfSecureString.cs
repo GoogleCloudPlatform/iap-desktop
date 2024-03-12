@@ -412,7 +412,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                new SecureStringRegistryValueAccessor("test", DataProtectionScope.CurrentUser)
+                RegistryValueAccessor.Create<SecureString>("test")
                     .Write(
                         key.BackingKey, 
                         SecureStringExtensions.FromClearText("yellow"));
@@ -440,7 +440,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                new SecureStringRegistryValueAccessor("test", DataProtectionScope.CurrentUser)
+                RegistryValueAccessor.Create<SecureString>("test")
                     .Write(
                         key.BackingKey,
                         SecureStringExtensions.FromClearText("red"));
@@ -453,7 +453,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
-                new SecureStringRegistryValueAccessor("test", DataProtectionScope.CurrentUser)
+                RegistryValueAccessor.Create<SecureString>("test")
                     .Write(
                         key.BackingKey,
                         SecureStringExtensions.FromClearText("green"));

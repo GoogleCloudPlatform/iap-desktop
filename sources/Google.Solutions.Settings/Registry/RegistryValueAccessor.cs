@@ -112,11 +112,11 @@ namespace Google.Solutions.Settings.Registry
             }
             else if (typeof(T) == typeof(int))
             {
-                return (RegistryValueAccessor<T>)(object)new IntValueAccessor(name);
+                return (RegistryValueAccessor<T>)(object)new DwordValueAccessor(name);
             }
             else if (typeof(T) == typeof(long))
             {
-                return (RegistryValueAccessor<T>)(object)new LongValueAccessor(name);
+                return (RegistryValueAccessor<T>)(object)new QwordValueAccessor(name);
             }
             else if (typeof(T) == typeof(string))
             {
