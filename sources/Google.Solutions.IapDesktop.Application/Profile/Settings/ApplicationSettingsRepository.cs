@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
@@ -46,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<string> ProxyUrl { get; }
         ISetting<string> ProxyPacUrl { get; }
         ISetting<string> ProxyUsername { get; }
-        ISecureStringSetting ProxyPassword { get; }
+        ISetting<SecureString> ProxyPassword { get; }
         ISetting<int> ProxyAuthenticationRetries { get; }
         ISetting<SecurityProtocolType> TlsVersions { get; }
         ISetting<string> FullScreenDevices { get; }
@@ -133,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<string> ProxyUsername { get; private set; }
 
-            public ISecureStringSetting ProxyPassword { get; private set; }
+            public ISetting<SecureString> ProxyPassword { get; private set; }
             
             public ISetting<int> ProxyAuthenticationRetries { get; private set; }
 

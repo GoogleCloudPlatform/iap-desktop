@@ -27,6 +27,7 @@ using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Security;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
@@ -36,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface IAuthSettings : ISettingsCollection
     {
-        ISecureStringSetting Credentials { get; }
+        ISetting<SecureString> Credentials { get; }
     }
 
     /// <summary>
@@ -65,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
             credential = null;
 
-            var clearTextJson = GetSettings().Credentials.ClearTextValue;
+            var clearTextJson = GetSettings().Credentials.GetClearTextValue();
             if (!string.IsNullOrEmpty(clearTextJson))
             {
                 try
@@ -87,9 +88,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             credential.ExpectNotNull(nameof(credential));
 
             var settings = GetSettings();
-            settings.Credentials.ClearTextValue = NewtonsoftJsonSerializer
+            settings.Credentials.SetClearTextValue(NewtonsoftJsonSerializer
                 .Instance
-                .Serialize(CredentialBlob.FromOidcOfflineCredential(credential));
+                .Serialize(CredentialBlob.FromOidcOfflineCredential(credential)));
             SetSettings(settings);
         }
 
@@ -165,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class AuthSettings : IAuthSettings
         {
-            public ISecureStringSetting Credentials { get; private set; }
+            public ISetting<SecureString> Credentials { get; private set; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

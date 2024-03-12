@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Common.Security;
 using System;
 using System.Security;
 
@@ -115,11 +115,19 @@ namespace Google.Solutions.Settings
         ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
-    /// <summary>
-    /// SecureString-valued setting.
-    /// </summary>
-    public interface ISecureStringSetting : ISetting<SecureString>
+    public static class SecureStringSettingExtensions
     {
-        string ClearTextValue { get; set; }
+        public static string GetClearTextValue(
+            this ISetting<SecureString> setting)
+        {
+            return setting.Value?.AsClearText();
+        }
+
+        public static void SetClearTextValue(
+            this ISetting<SecureString> setting, 
+            string value)
+        {
+            setting.Value = SecureStringExtensions.FromClearText(value);
+        }
     }
 }

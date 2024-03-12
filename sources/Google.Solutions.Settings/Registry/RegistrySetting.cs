@@ -128,7 +128,7 @@ namespace Google.Solutions.Settings.Registry
     }
 
     public class RegistrySecureStringSetting
-        : SettingBase<SecureString>, IRegistrySetting, ISecureStringSetting
+        : SettingBase<SecureString>, IRegistrySetting
     {
         private readonly DataProtectionScope protectionScope;
 

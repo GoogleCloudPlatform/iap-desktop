@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             if (this.proxyServer != null || this.proxyPacAddress != null)
             {
                 this.proxyUsername = settings.ProxyUsername.Value;
-                this.proxyPassword = settings.ProxyPassword.ClearTextValue;
+                this.proxyPassword = settings.ProxyPassword.GetClearTextValue();
             }
         }
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             if (this.proxyPassword != null)
             {
-                settings.ProxyPassword.ClearTextValue = this.proxyPassword;
+                settings.ProxyPassword.SetClearTextValue(this.proxyPassword);
             }
             else
             {

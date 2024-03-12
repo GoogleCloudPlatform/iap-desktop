@@ -296,20 +296,6 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public static class SecureStringSettingExtensions // TODO: move
-    {
-        public static string GetClearTextValue(this ISetting<SecureString> setting)
-        {
-            return setting.Value?.AsClearText();
-        }
-
-        public static void SetClearTextValue(this ISetting<SecureString> setting, string value)
-        { 
-            setting.Value = SecureStringExtensions.FromClearText(value);
-        }
-
-    }
-
     public static class DummyExtensions // TODO: remove
     {
         public static ISetting<T> ApplyPolicy<T>(this ISetting<T> s, SettingsKey k)
