@@ -205,7 +205,7 @@ namespace Google.Solutions.Settings.Registry
         protected override SecureString Parse(string value)
             => SecureStringExtensions.FromClearText(value);
 
-        internal static byte[] Encrypt(
+        private static byte[] Encrypt(
             string key,
             DataProtectionScope scope,
             SecureString secureString)

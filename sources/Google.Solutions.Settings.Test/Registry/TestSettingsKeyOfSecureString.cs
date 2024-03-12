@@ -412,12 +412,10 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.BackingKey.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("yellow")));
+                new SecureStringValueAccessor("test", DataProtectionScope.CurrentUser)
+                    .Write(
+                        key.BackingKey, 
+                        SecureStringExtensions.FromClearText("yellow"));
                 var child = key.Read<SecureString>(
                     "test",
                     "title",
@@ -442,12 +440,10 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                key.BackingKey.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("red")));
+                new SecureStringValueAccessor("test", DataProtectionScope.CurrentUser)
+                    .Write(
+                        key.BackingKey,
+                        SecureStringExtensions.FromClearText("red"));
                 var parent = key.Read<SecureString>(
                     "test",
                     "title",
@@ -457,12 +453,10 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
-                key.BackingKey.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("green")));
+                new SecureStringValueAccessor("test", DataProtectionScope.CurrentUser)
+                    .Write(
+                        key.BackingKey,
+                        SecureStringExtensions.FromClearText("green"));
                 var child = key.Read<SecureString>(
                     "test",
                     "title",
