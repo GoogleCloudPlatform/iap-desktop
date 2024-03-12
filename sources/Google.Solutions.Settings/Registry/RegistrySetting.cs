@@ -625,7 +625,7 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public static class RegistrySettingsExtensions
+    public static class RegistrySettingsExtensions // TODO: remove
     {
         public static void Save(
             this IRegistrySetting setting,

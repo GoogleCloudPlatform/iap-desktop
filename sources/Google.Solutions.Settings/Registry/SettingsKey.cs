@@ -65,9 +65,13 @@ namespace Google.Solutions.Settings.Registry
             T defaultValue,
             ValidateDelegate<T> validate = null)
         {
-            var mapping = GetTypeMapping<T>(name);
+            var defaultTypeMapping = GetDefaultTypeMapping<T>(name);
+            var typeMapping = new TypeMapping<T>(
+                defaultTypeMapping.Accessor,
+                validate ?? defaultTypeMapping.Validate,
+                defaultTypeMapping.Parse);
 
-            bool isSpecified = mapping
+            bool isSpecified = defaultTypeMapping
                 .Accessor
                 .TryRead(this.BackingKey, out var readValue);
 
@@ -80,27 +84,18 @@ namespace Google.Solutions.Settings.Registry
                 defaultValue,
                 isSpecified,
                 false,
-                validate ?? mapping.DefaultValidate,
-                mapping.DefaultParse);
+                typeMapping);
         }
 
         /// <summary>
         /// Write value back to registry.
         /// </summary>
-        public void Write<T>(ISetting<T> setting)
+        public void Write(ISetting setting)
         {
             Debug.Assert(setting.IsDirty);
             Debug.Assert(!setting.IsReadOnly);
 
-            var accessor = GetTypeMapping<T>(setting.Key).Accessor;
-            if (setting.IsDefault)
-            {
-                accessor.Delete(this.BackingKey);
-            }
-            else
-            {
-                accessor.Write(this.BackingKey, setting.Value);
-            }
+            ((IMappedSetting)setting).Write(this.BackingKey);
         }
 
         //---------------------------------------------------------------------
@@ -122,7 +117,7 @@ namespace Google.Solutions.Settings.Registry
         // Type mapping.
         //---------------------------------------------------------------------
 
-        private static TypeMapping<T> GetTypeMapping<T>(string valueName)
+        private static TypeMapping<T> GetDefaultTypeMapping<T>(string valueName)
         {
             bool TryParseString(string input, out string output)
             {
@@ -214,27 +209,31 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        private class TypeMapping<T>
+        protected class TypeMapping<T>
         {
-            public ValueAccessor<T> Accessor { get; }
-            public ValidateDelegate<T> DefaultValidate { get; }
-            public ParseDelegate<T> DefaultParse { get; }
+            internal ValueAccessor<T> Accessor { get; }
+            internal ValidateDelegate<T> Validate { get; }
+            internal ParseDelegate<T> Parse { get; }
 
-            public TypeMapping(
+            internal TypeMapping(
                 ValueAccessor<T> accessor, 
                 ValidateDelegate<T> defaultValidate, 
                 ParseDelegate<T> defaultParse)
             {
                 this.Accessor = accessor;
-                this.DefaultValidate = defaultValidate;
-                this.DefaultParse = defaultParse;
+                this.Validate = defaultValidate;
+                this.Parse = defaultParse;
             }
         }
 
-        protected class MappedSetting<T> : SettingBase<T> // TODO: Merge into SettingBase
+        protected interface IMappedSetting
         {
-            private readonly ValidateDelegate<T> isValid;
-            private readonly ParseDelegate<T> parse;
+            void Write(RegistryKey key);
+        }
+
+        protected class MappedSetting<T> : SettingBase<T>, IMappedSetting // TODO: Merge into SettingBase
+        {
+            private readonly TypeMapping<T> typeMapping;
 
             public MappedSetting(
                 string key,
@@ -245,8 +244,7 @@ namespace Google.Solutions.Settings.Registry
                 T defaultValue,
                 bool isSpecified,
                 bool readOnly,
-                ValidateDelegate<T> isValid,
-                ParseDelegate<T> parse) 
+                TypeMapping<T> typeMapping) 
                 : base(key, 
                       title, 
                       description, 
@@ -256,8 +254,7 @@ namespace Google.Solutions.Settings.Registry
                       isSpecified, 
                       readOnly)
             {
-                this.isValid = isValid.ExpectNotNull(nameof(isValid));
-                this.parse = parse.ExpectNotNull(nameof(parse));
+                this.typeMapping = typeMapping.ExpectNotNull(nameof(typeMapping));
             }
 
             protected override SettingBase<T> CreateNew(
@@ -274,8 +271,7 @@ namespace Google.Solutions.Settings.Registry
                     defaultValue,
                     Equals(value, defaultValue),
                     readOnly,
-                    this.isValid,
-                    this.parse);
+                    this.typeMapping);
             }
 
             internal SettingBase<T> CreateSimilar(
@@ -293,24 +289,35 @@ namespace Google.Solutions.Settings.Registry
                     defaultValue,
                     isSpecified,
                     readOnly,
-                    this.isValid,
-                    this.parse);
+                    this.typeMapping);
             }
 
             protected override bool IsValid(T value)
             {
-                return this.isValid(value);
+                return this.typeMapping.Validate(value);
             }
 
             protected override T Parse(string value)
             {
-                if (this.parse(value, out var result))
+                if (this.typeMapping.Parse(value, out var result))
                 {
                     return result;
                 }
                 else
                 {
                     throw new FormatException("The input format is invalid");
+                }
+            }
+
+            public void Write(RegistryKey key)
+            {
+                if (this.IsDefault)
+                {
+                    this.typeMapping.Accessor.Delete(key);
+                }
+                else
+                {
+                    this.typeMapping.Accessor.Write(key, this.Value);
                 }
             }
         }

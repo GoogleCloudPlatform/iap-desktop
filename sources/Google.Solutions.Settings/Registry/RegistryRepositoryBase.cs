@@ -27,7 +27,7 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Base class for all settings repositories.
     /// </summary>
-    public abstract class RegistryRepositoryBase<TSettings> 
+    public abstract class RegistryRepositoryBase<TSettings>  // TODO: Rename, drop prefix
         : IRepository<TSettings>
         where TSettings : ISettingsCollection
     {
