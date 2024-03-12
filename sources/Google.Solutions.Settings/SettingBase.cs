@@ -151,7 +151,7 @@ namespace Google.Solutions.Settings
             }
         }
 
-        public ISetting OverlayBy(ISetting setting)
+        public ISetting OverlayBy(ISetting setting) // TODO: remove?
             => OverlayBy((ISetting<T>)setting);
 
         //---------------------------------------------------------------------

@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestRegistryEnumFlagsSetting
+    public class TestRegistryEnumFlagsSetting : TestSettingBase
     {
         [Flags]
         public enum Toppings
@@ -38,20 +38,6 @@ namespace Google.Solutions.Settings.Test.Registry
             Cream = 4
         }
 
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
-        }
-
         //---------------------------------------------------------------------
         // IsSpecified.
         //---------------------------------------------------------------------
@@ -59,26 +45,28 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueChanged_ThenIsSpecifiedIsTrue()
         {
-            var setting = RegistryEnumSetting<Toppings>.FromKey(
-                "test",
-                "title",
-                "description",
-                "category",
-                Toppings.None,
-                null);
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<Toppings>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    Toppings.None);
 
-            Assert.IsFalse(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
 
-            setting.Value = Toppings.Cheese;
+                setting.Value = Toppings.Cheese;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsFalse(setting.IsDefault);
 
-            setting.Value = setting.DefaultValue;
+                setting.Value = setting.DefaultValue;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -88,15 +76,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    null);
+                    Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -112,15 +99,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -136,20 +122,19 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenRegistryValueExists_ThenFromKeyUsesValue()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue(
+                key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -169,42 +154,42 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenSettingIsNonNull_ThenSaveUpdatesRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 setting.Value = Toppings.Cream | Toppings.Chocolate;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.AreEqual((int)(Toppings.Cream | Toppings.Chocolate), key.GetValue("test"));
+                Assert.AreEqual(
+                    (int)(Toppings.Cream | Toppings.Chocolate), 
+                    key.BackingKey.GetValue("test"));
             }
         }
 
         [Test]
         public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", (int)Toppings.Cream, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", (int)Toppings.Cream, RegistryValueKind.DWord);
 
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 setting.Value = setting.DefaultValue;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNull(key.GetValue("test"));
+                Assert.IsNull(key.BackingKey.GetValue("test"));
             }
         }
 
@@ -215,15 +200,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 setting.Value = setting.DefaultValue;
 
@@ -236,15 +220,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueDiffersFromDefault_ThenSetValueSucceedsAndSettingIsDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 setting.Value = Toppings.Cream;
 
@@ -256,15 +239,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = (Toppings)100);
             }
@@ -277,15 +259,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 setting.Value = Toppings.None;
                 setting.AnyValue = null;
@@ -298,15 +279,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsNumericString_ThenSetAnyValueSucceeds()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 setting.AnyValue = ((int)Toppings.Cream).ToString();
 
@@ -319,15 +299,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
             }
@@ -336,15 +315,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    key);
+                    Toppings.None);
 
                 Assert.Throws<FormatException>(() => setting.AnyValue = "");
             }
@@ -357,20 +335,19 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue(
+                key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    null);
+                    Toppings.None);
 
                 var settingWithPolicy = setting.ApplyPolicy(null);
 
@@ -381,21 +358,20 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
             {
-                key.SetValue(
+                key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key.Read<Toppings>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    Toppings.None,
-                    null);
+                    Toppings.None);
 
                 var settingWithPolicy = setting.ApplyPolicy(policyKey);
 
@@ -406,26 +382,26 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
             {
-                key.SetValue(
+                key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                policyKey.SetValue(
+                policyKey.BackingKey.SetValue(
                     "test",
                     -123,
                     RegistryValueKind.DWord);
 
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key
+                    .Read<Toppings>(
                         "test",
                         "title",
                         "description",
                         "category",
-                        Toppings.None,
-                        null)
+                        Toppings.None)
                     .ApplyPolicy(policyKey);
 
                 var settingWithPolicy = setting.ApplyPolicy(policyKey);
@@ -437,26 +413,26 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
             {
-                key.SetValue(
+                key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                policyKey.SetValue(
+                policyKey.BackingKey.SetValue(
                     "test",
                     (int)Toppings.Cream,
                     RegistryValueKind.DWord);
 
-                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                var setting = key
+                    .Read<Toppings>(
                         "test",
                         "title",
                         "description",
                         "category",
-                        Toppings.None,
-                        null)
+                        Toppings.None)
                     .ApplyPolicy(policyKey);
 
                 Assert.AreEqual("test", setting.Key);

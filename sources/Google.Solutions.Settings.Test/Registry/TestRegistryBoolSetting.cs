@@ -27,22 +27,8 @@ using System;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestRegistryBoolSetting
+    public class TestRegistryBoolSetting : TestSettingBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
-        }
-
         //---------------------------------------------------------------------
         // IsSpecified.
         //---------------------------------------------------------------------
@@ -50,25 +36,27 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueChanged_ThenIsSpecifiedIsTrue()
         {
-            var setting = RegistryBoolSetting.FromKey(
-                "test",
-                "title",
-                "description",
-                "category",
-                false,
-                null);
-            Assert.IsFalse(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<bool>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    false);
+                Assert.IsFalse(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
 
-            setting.Value = true;
+                setting.Value = true;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsFalse(setting.IsDefault);
 
-            setting.Value = setting.DefaultValue;
+                setting.Value = setting.DefaultValue;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -78,15 +66,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    true,
-                    null);
+                    true);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -102,15 +89,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    true,
-                    key);
+                    true);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -126,17 +112,16 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenRegistryValueExists_ThenFromKeyUsesValue()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -156,66 +141,63 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenSettingIsNonNull_ThenSaveUpdatesRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 setting.Value = true;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.AreEqual(1, key.GetValue("test"));
+                Assert.AreEqual(1, key.BackingKey.GetValue("test"));
             }
         }
 
         [Test]
         public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 setting.Value = setting.DefaultValue;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNull(key.GetValue("test"));
+                Assert.IsNull(key.BackingKey.GetValue("test"));
             }
         }
 
         [Test]
         public void WhenSettingIsNullAndValueDeleted_ThenSaveDoesNothing()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
-                key.DeleteValue("test");
+                key.BackingKey.DeleteValue("test");
 
                 setting.AnyValue = null;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNull(key.GetValue("test"));
+                Assert.IsNull(key.BackingKey.GetValue("test"));
             }
         }
 
@@ -227,15 +209,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 setting.Value = setting.DefaultValue;
 
@@ -248,15 +229,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueDiffersFromDefault_ThenSetValueSucceedsAndSettingIsDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 setting.Value = true;
 
@@ -272,15 +252,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 setting.Value = true;
                 setting.AnyValue = null;
@@ -293,15 +272,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsString_ThenSetAnyValueParsesValue()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 setting.AnyValue = "TRUE";
 
@@ -312,15 +290,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = -1);
             }
@@ -329,15 +306,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 Assert.Throws<FormatException>(() => setting.AnyValue = "maybe");
             }
@@ -350,24 +326,22 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentAndChildDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryBoolSetting.FromKey(
+                var parent = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistryBoolSetting.FromKey(
+                var child = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -383,25 +357,23 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryBoolSetting.FromKey(
+                var parent = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryBoolSetting.FromKey(
+                var child = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -418,26 +390,24 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenChildIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryBoolSetting.FromKey(
+                var parent = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.SetValue("test", 1);
-                var child = RegistryBoolSetting.FromKey(
+                key.BackingKey.SetValue("test", 1);
+                var child = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -454,25 +424,23 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentAndChildNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryBoolSetting.FromKey(
+                var parent = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryBoolSetting.FromKey(
+                var child = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 child.Value = true;
                 Assert.IsFalse(child.IsDefault);
 
@@ -489,34 +457,31 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentIsNonDefaultAndChildSetToOriginalDefault_ThenIsDefaultReturnsFalse()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryBoolSetting.FromKey(
+                var parent = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = RegistryBoolSetting.FromKey(
+                var intermediate = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = RegistryBoolSetting.FromKey(
+                var child = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -540,17 +505,16 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 var settingWithPolicy = setting.ApplyPolicy(null);
 
@@ -561,18 +525,17 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
             {
-                key.SetValue("test", 1, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    false,
-                    key);
+                    false);
 
                 var settingWithPolicy = setting.ApplyPolicy(policyKey);
 
@@ -583,19 +546,18 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicyKey())
             {
-                key.SetValue("test", 1, RegistryValueKind.DWord);
-                policyKey.SetValue("test", 0, RegistryValueKind.DWord);
+                key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
+                policyKey.BackingKey.SetValue("test", 0, RegistryValueKind.DWord);
 
-                var setting = RegistryBoolSetting.FromKey(
+                var setting = key.Read<bool>(
                         "test",
                         "title",
                         "description",
                         "category",
-                        false,
-                        key)
+                        false)
                     .ApplyPolicy(policyKey);
 
                 Assert.AreEqual("test", setting.Key);

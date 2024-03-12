@@ -47,11 +47,11 @@ namespace Google.Solutions.Settings.Registry
         /// </summary>
         private delegate bool ParseDelegate<T>(string value, out T result);
 
-        private readonly RegistryKey key;
+        internal RegistryKey BackingKey { get; }
 
         public SettingsKey(RegistryKey key)
         {
-            this.key = key.ExpectNotNull(nameof(key));
+            this.BackingKey = key.ExpectNotNull(nameof(key));
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Google.Solutions.Settings.Registry
 
             bool isSpecified = mapping
                 .Accessor
-                .TryRead(this.key, out var readValue);
+                .TryRead(this.BackingKey, out var readValue);
 
             return new MappedSetting<T>(
                 name,
@@ -94,11 +94,11 @@ namespace Google.Solutions.Settings.Registry
             var accessor = GetTypeMapping<T>(setting.Key).Accessor;
             if (setting.IsDefault)
             {
-                accessor.Delete(this.key);
+                accessor.Delete(this.BackingKey);
             }
             else
             {
-                accessor.Write(this.key, setting.Value);
+                accessor.Write(this.BackingKey, setting.Value);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Google.Solutions.Settings.Registry
 
         protected virtual void Dispose(bool disposing)
         {
-            this.key.Dispose();
+            this.BackingKey.Dispose();
         }
 
         public void Dispose()
@@ -230,7 +230,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        private class MappedSetting<T> : SettingBase<T>
+        private class MappedSetting<T> : SettingBase<T> // TODO: Merge into SettingBase
         {
             private readonly ValidateDelegate<T> isValid;
             private readonly ParseDelegate<T> parse;
@@ -269,8 +269,8 @@ namespace Google.Solutions.Settings.Registry
                     this.Title,
                     this.Description,
                     this.Category,
-                    defaultValue,
                     value,
+                    defaultValue,
                     Equals(value, defaultValue),
                     readOnly,
                     this.isValid,
@@ -293,6 +293,28 @@ namespace Google.Solutions.Settings.Registry
                     throw new FormatException("The input format is invalid");
                 }
             }
+        }
+    }
+
+    public static class SecureStringSettingExtensions // TODO: move
+    {
+        public static string GetClearTextValue(this ISetting<SecureString> setting)
+        {
+            return setting.Value?.AsClearText();
+        }
+
+        public static void SetClearTextValue(this ISetting<SecureString> setting, string value)
+        { 
+            setting.Value = SecureStringExtensions.FromClearText(value);
+        }
+
+    }
+
+    public static class DummyExtensions // TODO: remove
+    {
+        public static ISetting<T> ApplyPolicy<T>(this ISetting<T> s, SettingsKey k)
+        {
+            throw new NotImplementedException();
         }
     }
 }

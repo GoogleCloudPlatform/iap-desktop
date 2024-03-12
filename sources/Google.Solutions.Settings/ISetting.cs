@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Settings.Registry;
 using System;
 using System.Security;
 
@@ -113,9 +114,6 @@ namespace Google.Solutions.Settings
         /// </summary>
         ISetting<T> OverlayBy(ISetting<T> setting);
     }
-
-    // TODO: remove IXxxSetting
-
 
     /// <summary>
     /// SecureString-valued setting.
