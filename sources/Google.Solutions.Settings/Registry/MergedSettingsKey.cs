@@ -88,10 +88,10 @@ namespace Google.Solutions.Settings.Registry
 
             if (this.mergeBehavior == MergeBehavior.Policy)
             {
-                if (!overlaySetting.IsSpecified)
+                if (!overlaySetting.IsSpecified || !overlaySetting.IsCurrentValueValid)
                 {
                     //
-                    // Policy value not defined, ignore.
+                    // Policy value not defined or invalid, ignore.
                     //
                     return lesserSetting;
                 }

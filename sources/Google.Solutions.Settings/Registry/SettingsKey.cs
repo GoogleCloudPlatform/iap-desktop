@@ -320,6 +320,11 @@ namespace Google.Solutions.Settings.Registry
                     this.typeMapping.Accessor.Write(key, this.Value);
                 }
             }
+
+            public bool IsCurrentValueValid
+            {
+                get => IsValid(this.Value);
+            }
         }
     }
 
