@@ -70,7 +70,7 @@ namespace Google.Solutions.Settings.Registry
             T defaultValue,
             ValidateDelegate<T> validate = null)
         {
-            var lesserSetting = (MappedSetting<RegistryKey, T>)this.lesserKey.Read(
+            var lesserSetting = (MappedSetting<T>)this.lesserKey.Read(
                 name,
                 displayName,
                 description,
@@ -78,7 +78,7 @@ namespace Google.Solutions.Settings.Registry
                 defaultValue,
                 validate);
 
-            var overlaySetting = (MappedSetting<RegistryKey, T>)base.Read(
+            var overlaySetting = (MappedSetting<T>)base.Read(
                 name,
                 displayName,
                 description,

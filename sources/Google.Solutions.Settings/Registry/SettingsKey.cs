@@ -33,65 +33,21 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Exposes a registry key's values as settings.
     /// </summary>
-    public class SettingsKey : IDisposable // TODO: Extract interface, also implement by IapUrl (and then remove Parse)
+    public class SettingsKey : SettingsStoreBase<RegistryKey>, IDisposable // TODO: Extract interface, also implement by IapUrl (and then remove Parse)
     {
-        /// <summary>
-        /// Delegate for validating if a given value falls
-        /// within the permitted range of a setting.
-        /// </summary>
-        public delegate bool ValidateDelegate<T>(T value);
-
-        /// <summary>
-        /// Delegate for parsing a string and converting it
-        /// into the setting type.
-        /// </summary>
-        protected delegate bool ParseDelegate<T>(string value, out T result);
+        private protected override RegistryKey ValueSource => this.BackingKey;
 
         internal RegistryKey BackingKey { get; }
+
+        private protected override IValueAccessor<RegistryKey, T> CreateValueAccessor<T>(
+            string valueName)
+        {
+            return RegistryValueAccessor.Create<T>(valueName);
+        }
 
         public SettingsKey(RegistryKey key)
         {
             this.BackingKey = key.ExpectNotNull(nameof(key));
-        }
-
-        /// <summary>
-        /// Read key value and map it to a settings object.
-        /// </summary>
-        public virtual ISetting<T> Read<T>(
-            string name,
-            string displayName,
-            string description,
-            string category,
-            T defaultValue,
-            ValidateDelegate<T> validate = null)
-        {
-            var accessor = RegistryValueAccessor.Create<T>(name);
-
-            bool isSpecified = accessor
-                .TryRead(this.BackingKey, out var readValue);
-
-            return new MappedSetting<RegistryKey, T>(
-                name,
-                displayName,
-                description,
-                category,
-                isSpecified ? readValue : defaultValue,
-                defaultValue,
-                isSpecified,
-                false,
-                accessor,
-                validate ?? accessor.IsValid);
-        }
-
-        /// <summary>
-        /// Write value back to registry.
-        /// </summary>
-        public void Write(ISetting setting)
-        {
-            Debug.Assert(setting.IsDirty);
-            Debug.Assert(!setting.IsReadOnly);
-
-            ((IMappedSetting<RegistryKey>)setting).Write(this.BackingKey);
         }
 
         //---------------------------------------------------------------------
@@ -107,105 +63,6 @@ namespace Google.Solutions.Settings.Registry
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        protected interface IMappedSetting<TSource>
-        {
-            void Write(TSource key);
-        }
-
-        protected class MappedSetting<TSource, T> : SettingBase<T>, IMappedSetting<TSource> // TODO: Merge into SettingBase, rename to RegistrySetting
-        {
-            private readonly IValueAccessor<TSource, T> accessor;
-            private readonly ValidateDelegate<T> validate;
-
-            internal MappedSetting(
-                string key,
-                string title,
-                string description,
-                string category,
-                T initialValue,
-                T defaultValue,
-                bool isSpecified,
-                bool readOnly,
-                IValueAccessor<TSource, T> accessor,
-                ValidateDelegate<T> validate) 
-                : base(key, 
-                      title, 
-                      description, 
-                      category, 
-                      initialValue,
-                      defaultValue,
-                      isSpecified, 
-                      readOnly)
-            {
-                this.accessor = accessor.ExpectNotNull(nameof(accessor));
-                this.validate= validate.ExpectNotNull(nameof(validate));    
-            }
-
-            protected override SettingBase<T> CreateNew(
-                T value, 
-                T defaultValue, 
-                bool readOnly) // TODO: remove 
-            {
-                return new MappedSetting<TSource, T>(
-                    this.Key,
-                    this.Title,
-                    this.Description,
-                    this.Category,
-                    value,
-                    defaultValue,
-                    Equals(value, defaultValue),
-                    readOnly,
-                    this.accessor,
-                    this.validate);
-            }
-
-            internal SettingBase<T> CreateSimilar(
-                T value,
-                T defaultValue,
-                bool isSpecified,
-                bool readOnly)
-            {
-                return new MappedSetting<TSource, T>(
-                    this.Key,
-                    this.Title,
-                    this.Description,
-                    this.Category,
-                    value,
-                    defaultValue,
-                    isSpecified,
-                    readOnly,
-                    this.accessor,
-                    this.validate);
-            }
-
-            protected override bool IsValid(T value)
-            {
-                return this.validate(value);
-            }
-
-            protected override T Parse(string value)// TODO: remove
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Write(TSource key)
-            {
-                if (this.IsDefault)
-                {
-                    this.accessor.Delete(key);
-                }
-                else
-                {
-                    this.accessor.Write(key, this.Value);
-                }
-            }
-
-            public bool IsCurrentValueValid
-            {
-                get => IsValid(this.Value);
-            }
         }
     }
 }
