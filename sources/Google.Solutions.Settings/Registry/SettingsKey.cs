@@ -145,20 +145,6 @@ namespace Google.Solutions.Settings.Registry
                 }
             }
 
-            bool ValidateEnum<TEnum>(TEnum value)
-            {
-                var numericValue = Convert.ToInt64(value);
-
-                //
-                // Create a bit field with all flags on.
-                //
-                var max = Enum.GetValues(typeof(TEnum)).Cast<TEnum>()
-                    .Select(v => Convert.ToInt64(v))
-                    .Aggregate((e1, e2) => e1 | e2);
-
-                return (max & numericValue) == numericValue;
-            }
-
             if (typeof(T) == typeof(bool))
             {
                 return (TypeMapping<T>)(object) new TypeMapping<bool>(
@@ -198,7 +184,7 @@ namespace Google.Solutions.Settings.Registry
             {
                 return (TypeMapping<T>)(object)new TypeMapping<T>(
                     new EnumRegistryValueAccessor<T>(valueName),
-                    ValidateEnum,
+                    v => v.IsDefinedFlagCombination(),
                     TryParseEnum);
             }
             else

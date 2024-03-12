@@ -34,7 +34,7 @@ namespace Google.Solutions.Settings.Registry
     /// Accessor for a registry value that automatically performs
     /// the necessary type conversions.
     /// </summary>
-    internal abstract class RegistryValueAccessor<T>
+    internal abstract class RegistryValueAccessor<T> : IValueAccessor<RegistryKey, T>
     {
         internal string Name { get; }
 
@@ -43,22 +43,10 @@ namespace Google.Solutions.Settings.Registry
             this.Name = name.ExpectNotNull(nameof(name));
         }
 
-        /// <summary>
-        /// Read stored value.
-        /// </summary>
-        /// <param name="value">result</param>
-        /// <returns>true if found, false if value not set</returns>
         public abstract bool TryRead(RegistryKey key, out T value);
 
-        /// <summary>
-        /// Store value.
-        /// </summary>
-        /// <param name="value"></param>
         public abstract void Write(RegistryKey key, T value);
 
-        /// <summary>
-        /// Delete stored value.
-        /// </summary>
         public void Delete(RegistryKey key)
         {
             key
@@ -102,6 +90,11 @@ namespace Google.Solutions.Settings.Registry
                     this.Name,
                     value,
                     kind);
+        }
+
+        public virtual bool IsValid(T value)
+        {
+            return true;
         }
     }
 
@@ -281,6 +274,11 @@ namespace Google.Solutions.Settings.Registry
                 key,
                 value,
                 RegistryValueKind.DWord);
+        }
+
+        public override bool IsValid(TEnum value)
+        {
+            return value.IsDefinedFlagCombination();
         }
     }
 }
