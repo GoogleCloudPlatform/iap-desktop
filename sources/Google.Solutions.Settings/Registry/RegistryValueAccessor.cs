@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using static Google.Solutions.Settings.Registry.DictionaryValueAccessor;
 
 namespace Google.Solutions.Settings.Registry
 {
@@ -55,7 +56,7 @@ namespace Google.Solutions.Settings.Registry
         }
 
         protected bool TryReadRaw<TRawValue>(
-            RegistryKey key, 
+            RegistryKey key,
             out TRawValue value)
         {
             var data = key
@@ -98,189 +99,228 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    //TODO: nest classes or make em private?
-
-    internal class StringRegistryValueAccessor : RegistryValueAccessor<string>
+    internal static class RegistryValueAccessor
     {
-        public StringRegistryValueAccessor(string name) : base(name)
+        /// <summary>
+        /// Create an accessor that's specialized for the given type.
+        /// </summary>
+        public static RegistryValueAccessor<T> Create<T>(string name)
         {
-        }
-
-        public override bool TryRead(RegistryKey key, out string value)
-        {
-            return TryReadRaw<string>(key, out value);
-        }
-
-        public override void Write(RegistryKey key, string value)
-        {
-            WriteRaw(
-                key,
-                value,
-                RegistryValueKind.String);
-        }
-    }
-
-    internal class SecureStringRegistryValueAccessor : RegistryValueAccessor<SecureString>
-    {
-        private readonly DataProtectionScope protectionScope;
-
-        public SecureStringRegistryValueAccessor(
-            string name,
-            DataProtectionScope protectionScope) : base(name)
-        {
-            this.protectionScope = protectionScope;
-        }
-
-        public override bool TryRead(RegistryKey key, out SecureString value)
-        {
-            if (TryReadRaw<byte[]>(key, out var blob))
+            if (typeof(T) == typeof(bool))
             {
-                try
-                {
-                    var plaintextString = Encoding.UTF8.GetString(
-                        ProtectedData.Unprotect(
-                            blob,
-                            Encoding.UTF8.GetBytes(this.Name), // Entropy
-                            this.protectionScope));
+                return (RegistryValueAccessor<T>)(object)new BoolValueAccessor(name);
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                return (RegistryValueAccessor<T>)(object)new IntValueAccessor(name);
+            }
+            else if (typeof(T) == typeof(long))
+            {
+                return (RegistryValueAccessor<T>)(object)new LongValueAccessor(name);
+            }
+            else if (typeof(T) == typeof(string))
+            {
+                return (RegistryValueAccessor<T>)(object)new StringValueAccessor(name);
+            }
+            else if (typeof(T) == typeof(SecureString))
+            {
+                return (RegistryValueAccessor<T>)(object)new SecureStringValueAccessor(
+                    name, 
+                    DataProtectionScope.CurrentUser);
+            }
+            else if (typeof(T).IsEnum)
+            {
+                return (RegistryValueAccessor<T>)(object)new EnumValueAccessor<T>(name);
+            }
+            else
+            {
+                throw new ArgumentException(
+                    $"Registry value cannot be mapped to {typeof(T).Name}");
+            }
+        }
 
-                    value = SecureStringExtensions.FromClearText(plaintextString);
-                    return true;
-                }
-                catch (CryptographicException)
+        private class StringValueAccessor : RegistryValueAccessor<string>
+        {
+            public StringValueAccessor(string name) : base(name)
+            {
+            }
+
+            public override bool TryRead(RegistryKey key, out string value)
+            {
+                return TryReadRaw<string>(key, out value);
+            }
+
+            public override void Write(RegistryKey key, string value)
+            {
+                WriteRaw(
+                    key,
+                    value,
+                    RegistryValueKind.String);
+            }
+        }
+
+        private class SecureStringValueAccessor : RegistryValueAccessor<SecureString>
+        {
+            private readonly DataProtectionScope protectionScope;
+
+            public SecureStringValueAccessor(
+                string name,
+                DataProtectionScope protectionScope) : base(name)
+            {
+                this.protectionScope = protectionScope;
+            }
+
+            public override bool TryRead(RegistryKey key, out SecureString value)
+            {
+                if (TryReadRaw<byte[]>(key, out var blob))
                 {
-                    //
-                    // Value cannot be decrypted. This can happen if it was
-                    // written by a different user or if the current user's
-                    // key has changed (for example, because its credentials
-                    // been reset on GCE).
-                    //
+                    try
+                    {
+                        var plaintextString = Encoding.UTF8.GetString(
+                            ProtectedData.Unprotect(
+                                blob,
+                                Encoding.UTF8.GetBytes(this.Name), // Entropy
+                                this.protectionScope));
+
+                        value = SecureStringExtensions.FromClearText(plaintextString);
+                        return true;
+                    }
+                    catch (CryptographicException)
+                    {
+                        //
+                        // Value cannot be decrypted. This can happen if it was
+                        // written by a different user or if the current user's
+                        // key has changed (for example, because its credentials
+                        // been reset on GCE).
+                        //
+                        value = null;
+                        return false;
+                    }
+                }
+                else
+                {
                     value = null;
                     return false;
                 }
             }
-            else
+
+            public override void Write(RegistryKey key, SecureString value)
             {
-                value = null;
-                return false;
+                byte[] blob = null;
+                if (value != null)
+                {
+                    blob = ProtectedData.Protect(
+                        Encoding.UTF8.GetBytes(value.AsClearText()),
+                        Encoding.UTF8.GetBytes(this.Name), // Entropy
+                        this.protectionScope);
+                }
+
+                WriteRaw(key, blob, RegistryValueKind.Binary);
             }
         }
 
-        public override void Write(RegistryKey key, SecureString value)
+        private class BoolValueAccessor : RegistryValueAccessor<bool>
         {
-            byte[] blob = null;
-            if (value != null)
+            public BoolValueAccessor(string name) : base(name)
             {
-                blob =  ProtectedData.Protect(
-                    Encoding.UTF8.GetBytes(value.AsClearText()),
-                    Encoding.UTF8.GetBytes(this.Name), // Entropy
-                    this.protectionScope);
             }
 
-            WriteRaw(key, blob, RegistryValueKind.Binary);
-        }
-    }
-
-    internal class BoolRegistryValueAccessor : RegistryValueAccessor<bool>
-    {
-        public BoolRegistryValueAccessor(string name) : base(name)
-        {
-        }
-
-        public override bool TryRead(RegistryKey key, out bool value)
-        {
-            if (TryReadRaw<int>(key, out var intValue))
+            public override bool TryRead(RegistryKey key, out bool value)
             {
-                value = intValue != 0; 
-                return true;
+                if (TryReadRaw<int>(key, out var intValue))
+                {
+                    value = intValue != 0;
+                    return true;
+                }
+                else
+                {
+                    value = default;
+                    return false;
+                }
             }
-            else
+
+            public override void Write(RegistryKey key, bool value)
             {
-                value = default;
-                return false;
+                WriteRaw(
+                    key,
+                    value ? 1 : 0,
+                    RegistryValueKind.DWord);
             }
         }
 
-        public override void Write(RegistryKey key, bool value)
+        private class DwordValueAccessor : RegistryValueAccessor<int>
         {
-            WriteRaw(
-                key, 
-                value ? 1 : 0,
-                RegistryValueKind.DWord);
-        }
-    }
-
-    internal class DwordRegistryValueAccessor : RegistryValueAccessor<int>
-    {
-        public DwordRegistryValueAccessor(string name) : base(name)
-        {
-        }
-
-        public override bool TryRead(RegistryKey key, out int value)
-        {
-            return TryReadRaw<int>(key, out value);
-        }
-
-        public override void Write(RegistryKey key, int value)
-        {
-            WriteRaw(
-                key,
-                value,
-                RegistryValueKind.DWord);
-        }
-    }
-
-    internal class QwordRegistryValueAccessor : RegistryValueAccessor<long>
-    {
-        public QwordRegistryValueAccessor(string name) : base(name)
-        {
-        }
-
-        public override bool TryRead(RegistryKey key, out long value)
-        {
-            return TryReadRaw<long>(key, out value);
-        }
-
-        public override void Write(RegistryKey key, long value)
-        {
-            WriteRaw(
-                key,
-                value,
-                RegistryValueKind.QWord);
-        }
-    }
-
-    internal class EnumRegistryValueAccessor<TEnum> : RegistryValueAccessor<TEnum>
-    {
-        public EnumRegistryValueAccessor(string name) : base(name)
-        {
-            Debug.Assert(typeof(TEnum).IsEnum);
-        }
-
-        public override bool TryRead(RegistryKey key, out TEnum value)
-        {
-            if (TryReadRaw<int>(key, out var intValue))
+            public DwordValueAccessor(string name) : base(name)
             {
-                value = (TEnum)(object)intValue;
-                return true;
             }
-            else
+
+            public override bool TryRead(RegistryKey key, out int value)
             {
-                value = default;
-                return false;
+                return TryReadRaw<int>(key, out value);
+            }
+
+            public override void Write(RegistryKey key, int value)
+            {
+                WriteRaw(
+                    key,
+                    value,
+                    RegistryValueKind.DWord);
             }
         }
 
-        public override void Write(RegistryKey key, TEnum value)
+        private class QwordValueAccessor : RegistryValueAccessor<long>
         {
-            WriteRaw(
-                key,
-                value,
-                RegistryValueKind.DWord);
+            public QwordValueAccessor(string name) : base(name)
+            {
+            }
+
+            public override bool TryRead(RegistryKey key, out long value)
+            {
+                return TryReadRaw<long>(key, out value);
+            }
+
+            public override void Write(RegistryKey key, long value)
+            {
+                WriteRaw(
+                    key,
+                    value,
+                    RegistryValueKind.QWord);
+            }
         }
 
-        public override bool IsValid(TEnum value)
+        private class EnumValueAccessor<TEnum> : RegistryValueAccessor<TEnum>
         {
-            return value.IsDefinedFlagCombination();
+            public EnumValueAccessor(string name) : base(name)
+            {
+                Debug.Assert(typeof(TEnum).IsEnum);
+            }
+
+            public override bool TryRead(RegistryKey key, out TEnum value)
+            {
+                if (TryReadRaw<int>(key, out var intValue))
+                {
+                    value = (TEnum)(object)intValue;
+                    return true;
+                }
+                else
+                {
+                    value = default;
+                    return false;
+                }
+            }
+
+            public override void Write(RegistryKey key, TEnum value)
+            {
+                WriteRaw(
+                    key,
+                    value,
+                    RegistryValueKind.DWord);
+            }
+
+            public override bool IsValid(TEnum value)
+            {
+                return value.IsDefinedFlagCombination();
+            }
         }
     }
 }

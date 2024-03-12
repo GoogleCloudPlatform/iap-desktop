@@ -1,4 +1,25 @@
-﻿using Google.Solutions.Common.Util;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Security;
@@ -40,7 +61,10 @@ namespace Google.Solutions.Settings.Registry
     }
 
     internal static class DictionaryValueAccessor
-    { 
+    {
+        /// <summary>
+        /// Create an accessor that's specialized for the given type.
+        /// </summary>
         public static DictionaryValueAccessor<T> Create<T>(string name)
         {
             if (typeof(T) == typeof(bool))
@@ -74,7 +98,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        internal class StringValueAccessor : DictionaryValueAccessor<string>
+        private class StringValueAccessor : DictionaryValueAccessor<string>
         {
             public StringValueAccessor(string name) : base(name)
             {
@@ -88,7 +112,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        internal class SecureStringValueAccessor : DictionaryValueAccessor<SecureString>
+        private class SecureStringValueAccessor : DictionaryValueAccessor<SecureString>
         {
             public SecureStringValueAccessor(string name) : base(name)
             {
@@ -111,7 +135,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        internal class BoolValueAccessor : DictionaryValueAccessor<bool>
+        private class BoolValueAccessor : DictionaryValueAccessor<bool>
         {
             public BoolValueAccessor(string name) : base(name)
             {
@@ -127,7 +151,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        internal class IntValueAccessor : DictionaryValueAccessor<int>
+        private class IntValueAccessor : DictionaryValueAccessor<int>
         {
             public IntValueAccessor(string name) : base(name)
             {
@@ -143,7 +167,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        internal class LongValueAccessor : DictionaryValueAccessor<long>
+        private class LongValueAccessor : DictionaryValueAccessor<long>
         {
             public LongValueAccessor(string name) : base(name)
             {
@@ -159,7 +183,7 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        internal class EnumValueAccessor<TEnum> : DictionaryValueAccessor<TEnum>
+        private class EnumValueAccessor<TEnum> : DictionaryValueAccessor<TEnum>
         {
             public EnumValueAccessor(string name) : base(name)
             {

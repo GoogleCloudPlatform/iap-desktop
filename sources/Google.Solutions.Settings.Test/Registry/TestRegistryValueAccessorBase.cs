@@ -41,7 +41,10 @@ namespace Google.Solutions.Settings.Test.Registry
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
-        private protected abstract RegistryValueAccessor<T> CreateAccessor(string valueName);
+        private protected RegistryValueAccessor<T> CreateAccessor(string valueName)
+        {
+            return RegistryValueAccessor.Create<T>(valueName);
+        }
 
         protected abstract T SampleData { get; }
 

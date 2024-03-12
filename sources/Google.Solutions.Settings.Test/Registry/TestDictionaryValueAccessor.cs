@@ -43,7 +43,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 var accessor = CreateAccessor("test");
                 accessor.Write(dictionary, this.SampleData);
 
-                Assert.IsFalse(accessor.TryRead(dictionary, out var read));
+                Assert.IsFalse(accessor.TryRead(dictionary, out var _));
             }
         }
 
