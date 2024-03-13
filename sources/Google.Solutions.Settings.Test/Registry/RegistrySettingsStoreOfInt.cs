@@ -551,11 +551,16 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue("test", 42);
 
-                var setting = policyKey.Read<int>(
+                var setting = mergedKey.Read<int>(
                     "test",
                     "title",
                     "description",
@@ -572,12 +577,17 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicyInvalid_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue("test", 42);
                 policyKey.BackingKey.SetValue("test", 101, RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<int>(
+                var setting = mergedKey.Read<int>(
                     "test",
                     "title",
                     "description",
@@ -594,12 +604,17 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicySet_ThenSettingHasPolicyApplied()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue("test", 42);
                 policyKey.BackingKey.SetValue("test", 88, RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<int>(
+                var setting = mergedKey.Read<int>(
                     "test",
                     "title",
                     "description",

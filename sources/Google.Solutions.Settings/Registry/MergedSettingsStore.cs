@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Microsoft.Win32;
 using System.Diagnostics;
 
 namespace Google.Solutions.Settings.Registry
@@ -28,12 +27,21 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Merges settings from two registry keys.
     /// </summary>
-    public class MergedSettingsKey : RegistrySettingsStore
+    public class MergedSettingsStore : ISettingsStore
     {
         /// <summary>
-        /// Key whose settings are being "overlaid" by this key.
+        /// Store whose settings are being "overlaid".
         /// </summary>
-        private readonly RegistrySettingsStore lesserKey;
+        private readonly ISettingsStore lesserStore;
+
+        /// <summary>
+        /// Store containing the overlay settings.
+        /// </summary>
+        private readonly ISettingsStore overlayStore;
+
+        /// <summary>
+        /// Overlay behavior to apply.
+        /// </summary>
         private readonly MergeBehavior mergeBehavior;
 
         public enum MergeBehavior
@@ -52,17 +60,17 @@ namespace Google.Solutions.Settings.Registry
             Policy
         }
 
-        public MergedSettingsKey(
-            RegistryKey key,
-            RegistrySettingsStore lesserKey,
+        public MergedSettingsStore(
+            ISettingsStore overlayStore,
+            ISettingsStore lesserStore,
             MergeBehavior mergeBehavior)
-            : base(key)
         {
-            this.lesserKey = lesserKey.ExpectNotNull(nameof(lesserKey));
+            this.overlayStore = overlayStore.ExpectNotNull(nameof(overlayStore));
+            this.lesserStore = lesserStore.ExpectNotNull(nameof(lesserStore));
             this.mergeBehavior = mergeBehavior;
         }
 
-        public override ISetting<T> Read<T>(
+        public ISetting<T> Read<T>(
             string name,
             string displayName,
             string description,
@@ -70,7 +78,7 @@ namespace Google.Solutions.Settings.Registry
             T defaultValue,
             ValidateDelegate<T> validate = null)
         {
-            var lesserSetting = (MappedSetting<T>)this.lesserKey.Read(
+            var lesserSetting = (SettingBase<T>)this.lesserStore.Read(
                 name,
                 displayName,
                 description,
@@ -78,7 +86,7 @@ namespace Google.Solutions.Settings.Registry
                 defaultValue,
                 validate);
 
-            var overlaySetting = (MappedSetting<T>)base.Read(
+            var overlaySetting = (SettingBase<T>)this.overlayStore.Read(
                 name,
                 displayName,
                 description,
@@ -135,6 +143,11 @@ namespace Google.Solutions.Settings.Registry
                         lesserSetting.IsReadOnly);
                 }
             }
+        }
+
+        public void Write(ISetting setting)
+        {
+            this.overlayStore.Write(setting);
         }
     }
 }

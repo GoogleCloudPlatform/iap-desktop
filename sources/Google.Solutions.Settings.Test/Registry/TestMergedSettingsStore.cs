@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Settings.Test.Registry
 {
     [TestFixture]
-    public class TestMergedSettingsKey
+    public class TestMergedSettingsStore
     {
         private const string KeyPath = @"Software\Google\__Test";
         private const string OverlayKeyPath = @"Software\Google\__TestOverlay";
@@ -47,13 +47,19 @@ namespace Google.Solutions.Settings.Test.Registry
             return new RegistrySettingsStore(this.hkcu.CreateSubKey(KeyPath));
         }
 
-        protected RegistrySettingsStore CreateMergedSettingsKey(
-            RegistrySettingsStore lesserKey,
-            MergedSettingsKey.MergeBehavior mergeBehavior)
+        protected RegistrySettingsStore CreateOverlaySettingsKey()
         {
-            return new MergedSettingsKey(
-                this.hkcu.CreateSubKey(OverlayKeyPath),
-                lesserKey,
+            return new RegistrySettingsStore(this.hkcu.CreateSubKey(OverlayKeyPath));
+        }
+
+        protected MergedSettingsStore CreateMergedSettingsKey(
+            RegistrySettingsStore overlayStore,
+            RegistrySettingsStore lesserStore,
+            MergedSettingsStore.MergeBehavior mergeBehavior)
+        {
+            return new MergedSettingsStore(
+                overlayStore,
+                lesserStore,
                 mergeBehavior);
         }
 
@@ -65,10 +71,13 @@ namespace Google.Solutions.Settings.Test.Registry
         public void PolicyKeyValueEmpty_LesserKeyValueEmpty()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, 
-                MergedSettingsKey.MergeBehavior.Policy))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 var defaultValue = 1;
                 var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
 
@@ -84,10 +93,13 @@ namespace Google.Solutions.Settings.Test.Registry
         public void PolicyKeyValueEmpty_LesserKeyValueSet()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, 
-                MergedSettingsKey.MergeBehavior.Policy))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 lesserKey.BackingKey.SetValue("test", 2);
 
                 var defaultValue = 1;
@@ -105,11 +117,14 @@ namespace Google.Solutions.Settings.Test.Registry
         public void PolicyKeyValueSet_LesserKeyValueEmpty()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, 
-                MergedSettingsKey.MergeBehavior.Policy))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
-                mergedKey.BackingKey.SetValue("test", 3);
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
+                overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
                 var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
@@ -126,12 +141,15 @@ namespace Google.Solutions.Settings.Test.Registry
         public void PolicyKeyValueSet_LesserKeyValueSet()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, 
-                MergedSettingsKey.MergeBehavior.Policy))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 lesserKey.BackingKey.SetValue("test", 2);
-                mergedKey.BackingKey.SetValue("test", 3);
+                overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
                 var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
@@ -152,10 +170,13 @@ namespace Google.Solutions.Settings.Test.Registry
         public void OverrideKeyValueEmpty_LesserKeyValueEmpty()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, 
-                MergedSettingsKey.MergeBehavior.Override))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Override);
+
                 var defaultValue = 1;
                 var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
 
@@ -171,10 +192,13 @@ namespace Google.Solutions.Settings.Test.Registry
         public void OverrideKeyValueEmpty_LesserKeyValueSet()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, MergedSettingsKey.
-                MergeBehavior.Override))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Override);
+
                 lesserKey.BackingKey.SetValue("test", 2);
 
                 var defaultValue = 1;
@@ -192,11 +216,14 @@ namespace Google.Solutions.Settings.Test.Registry
         public void OverrideKeyValueSet_LesserKeyValueEmpty()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey, 
-                MergedSettingsKey.MergeBehavior.Override))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
-                mergedKey.BackingKey.SetValue("test", 3);
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Override);
+
+                overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
                 var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
@@ -213,12 +240,15 @@ namespace Google.Solutions.Settings.Test.Registry
         public void OverrideKeyValueSet_LesserKeyValueSet()
         {
             using (var lesserKey = CreateLesserSettingsKey())
-            using (var mergedKey = CreateMergedSettingsKey(
-                lesserKey,
-                MergedSettingsKey.MergeBehavior.Override))
+            using (var overlayKey = CreateOverlaySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    overlayKey,
+                    lesserKey,
+                    MergedSettingsStore.MergeBehavior.Override);
+
                 lesserKey.BackingKey.SetValue("test", 2);
-                mergedKey.BackingKey.SetValue("test", 3);
+                overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
                 var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);

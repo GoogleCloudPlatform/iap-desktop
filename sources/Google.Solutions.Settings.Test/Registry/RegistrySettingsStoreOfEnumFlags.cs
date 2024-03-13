@@ -336,14 +336,19 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<Toppings>(
+                var setting = mergedKey.Read<Toppings>(
                     "test",
                     "title",
                     "description",
@@ -359,8 +364,13 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicyIsInvalid_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
@@ -371,7 +381,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     -123,
                     RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<Toppings>(
+                var setting = mergedKey.Read<Toppings>(
                     "test",
                     "title",
                     "description",
@@ -387,8 +397,13 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicySet_ThenSettingHasPolicyApplied()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue(
                     "test",
                     (int)(Toppings.Cheese | Toppings.Chocolate),
@@ -399,7 +414,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     (int)Toppings.Cream,
                     RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<Toppings>(
+                var setting = mergedKey.Read<Toppings>(
                     "test",
                     "title",
                     "description",

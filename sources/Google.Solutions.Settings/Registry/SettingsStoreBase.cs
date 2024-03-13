@@ -168,7 +168,7 @@ namespace Google.Solutions.Settings.Registry
                 }
             }
 
-            public bool IsCurrentValueValid
+            public override bool IsCurrentValueValid
             {
                 get => IsValid(this.Value);
             }

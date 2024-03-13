@@ -506,11 +506,16 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<bool>(
+                var setting = mergedKey.Read<bool>(
                     "test",
                     "title",
                     "description",
@@ -526,12 +531,17 @@ namespace Google.Solutions.Settings.Test.Registry
         public void WhenPolicySet_ThenSettingHasPolicyApplied()
         {
             using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicyKey(key))
+            using (var policyKey = CreatePolicySettingsKey())
             {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
+
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
                 policyKey.BackingKey.SetValue("test", 0, RegistryValueKind.DWord);
 
-                var setting = policyKey.Read<bool>(
+                var setting = mergedKey.Read<bool>(
                     "test",
                     "title",
                     "description",

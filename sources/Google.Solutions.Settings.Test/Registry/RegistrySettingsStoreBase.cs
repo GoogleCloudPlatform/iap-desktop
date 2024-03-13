@@ -46,12 +46,9 @@ namespace Google.Solutions.Settings.Test.Registry
             return new RegistrySettingsStore(this.hkcu.CreateSubKey(KeyPath));
         }
 
-        protected RegistrySettingsStore CreatePolicyKey(RegistrySettingsStore lesserKey)
+        protected RegistrySettingsStore CreatePolicySettingsKey()
         {
-            return new MergedSettingsKey(
-                this.hkcu.CreateSubKey(PolicyKeyPath),
-                lesserKey,
-                MergedSettingsKey.MergeBehavior.Policy);
+            return new RegistrySettingsStore(this.hkcu.CreateSubKey(PolicyKeyPath));
         }
     }
 }
