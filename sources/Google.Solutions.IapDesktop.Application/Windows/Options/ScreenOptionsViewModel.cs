@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;

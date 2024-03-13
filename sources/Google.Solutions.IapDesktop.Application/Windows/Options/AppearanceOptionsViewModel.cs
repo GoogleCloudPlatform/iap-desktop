@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {

@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

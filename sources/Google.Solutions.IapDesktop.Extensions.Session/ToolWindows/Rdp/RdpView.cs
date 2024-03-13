@@ -35,7 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.Data;
 using System.Diagnostics;

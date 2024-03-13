@@ -19,10 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings.Collection
 {
     /// <summary>
     /// Base class for all settings repositories.

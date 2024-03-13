@@ -21,8 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Moq;
 using NUnit.Framework;
 using System;

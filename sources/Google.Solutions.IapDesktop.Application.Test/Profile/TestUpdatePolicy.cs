@@ -31,6 +31,7 @@ using NUnit.Framework;
 using System;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile
 {

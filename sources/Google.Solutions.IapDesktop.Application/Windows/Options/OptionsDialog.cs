@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System.Linq;
 using System.Windows.Forms;
 

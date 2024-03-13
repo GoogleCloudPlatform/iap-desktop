@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.ComponentModel;
 using System.Linq;

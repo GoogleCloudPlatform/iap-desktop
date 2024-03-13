@@ -24,7 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Platform.Security.Cryptography;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.Linq;
 using System.Security.Cryptography;

@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.Settings
+namespace Google.Solutions.Settings.Collection
 {
     /// <summary>
     /// Persistent respository for settings.

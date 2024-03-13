@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {

@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings.Collection
 {
     /// <summary>
     /// Base class for settings repositories that support group policies.

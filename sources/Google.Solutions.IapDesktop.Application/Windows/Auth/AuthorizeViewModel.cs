@@ -34,7 +34,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.Collections;
 using System.Collections.Generic;

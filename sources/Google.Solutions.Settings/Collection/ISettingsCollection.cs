@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 
-namespace Google.Solutions.Settings
+namespace Google.Solutions.Settings.Collection
 {
     /// <summary>
     /// Base interface for a a collection of settings.
