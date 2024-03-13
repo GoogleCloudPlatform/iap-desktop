@@ -26,18 +26,18 @@ namespace Google.Solutions.Settings.Collection
     /// <summary>
     /// Persistent respository for settings.
     /// </summary>
-    /// <typeparam name="TSettings"></typeparam>
-    public interface IRepository<TSettings> : IDisposable
-        where TSettings : ISettingsCollection
+    /// <typeparam name="TCollection"></typeparam>
+    public interface IRepository<TCollection> : IDisposable
+        where TCollection : ISettingsCollection
     {
         /// <summary>
         /// Read a snapshot of settings.
         /// </summary>
-        TSettings GetSettings();
+        TCollection GetSettings();
 
         /// <summary>
         /// Save a modified set of settings.
         /// </summary>
-        void SetSettings(TSettings settings);
+        void SetSettings(TCollection settings);
     }
 }

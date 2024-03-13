@@ -27,9 +27,9 @@ namespace Google.Solutions.Settings.Collection
     /// <summary>
     /// Base class for settings repositories that support group policies.
     /// </summary>
-    public abstract class PolicyEnabledRegistryRepository<TSettings>
-        : RegistryRepositoryBase<TSettings>
-        where TSettings : ISettingsCollection
+    public abstract class PolicyEnabledRegistryRepository<TCollection>
+        : RegistryRepositoryBase<TCollection>
+        where TCollection : ISettingsCollection
     {
         private readonly RegistryKey machinePolicyKey;
         private readonly RegistryKey userPolicyKey;
@@ -44,10 +44,10 @@ namespace Google.Solutions.Settings.Collection
             this.machinePolicyKey = machinePolicyKey;
             this.userPolicyKey = userPolicyKey;
         }
-        protected override TSettings LoadSettings(RegistryKey key)
+        protected override TCollection LoadSettings(RegistryKey key)
             => LoadSettings(key, this.machinePolicyKey, this.userPolicyKey);
 
-        protected abstract TSettings LoadSettings(
+        protected abstract TCollection LoadSettings(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey);
