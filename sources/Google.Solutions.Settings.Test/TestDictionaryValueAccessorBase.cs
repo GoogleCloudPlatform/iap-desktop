@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -28,7 +28,7 @@ namespace Google.Solutions.Settings.Test
     [TestFixture]
     public abstract class TestDictionaryValueAccessorBase<T>
     {
-        private protected DictionaryValueAccessor<T> CreateAccessor(string valueName)
+        private protected static DictionaryValueAccessor<T> CreateAccessor(string valueName)
         {
             return DictionaryValueAccessor.Create<T>(valueName);
         }

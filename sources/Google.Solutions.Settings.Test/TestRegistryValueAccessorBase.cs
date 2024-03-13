@@ -20,7 +20,7 @@
 //
 
 
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -41,7 +41,7 @@ namespace Google.Solutions.Settings.Test
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
         }
 
-        private protected RegistryValueAccessor<T> CreateAccessor(string valueName)
+        private protected static RegistryValueAccessor<T> CreateAccessor(string valueName)
         {
             return RegistryValueAccessor.Create<T>(valueName);
         }

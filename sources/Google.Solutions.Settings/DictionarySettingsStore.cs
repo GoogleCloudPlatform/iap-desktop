@@ -37,6 +37,18 @@ namespace Google.Solutions.Settings
             this.ValueSource = source.ExpectNotNull(nameof(source));
         }
 
+        /// <summary>
+        /// Create an empty store.
+        /// </summary>
+        public static DictionarySettingsStore Empty()
+        {
+            return new DictionarySettingsStore(new Dictionary<string, string>());
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
         private protected override IValueAccessor<IDictionary<string, string>, T> 
             CreateValueAccessor<T>(string valueName)
         {
@@ -46,11 +58,6 @@ namespace Google.Solutions.Settings
         public override void Clear()
         {
             this.ValueSource.Clear();
-        }
-
-        public static DictionarySettingsStore Empty()
-        {
-            return new DictionarySettingsStore(new Dictionary<string, string>());
         }
     }
 }

@@ -23,7 +23,6 @@ using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
 using System.ComponentModel.DataAnnotations;
-using static Google.Solutions.Common.Test.Util.TestEnumExtensions;
 
 namespace Google.Solutions.Common.Test.Util
 {

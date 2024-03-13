@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
-using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -330,65 +329,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             // Apply this.
             //
-            merged.RdpUsername = (ISetting<string>)
-                this.RdpUsername.OverlayBy(overlay.RdpUsername);
-            merged.RdpPassword = (ISetting<SecureString>)
-                this.RdpPassword.OverlayBy(overlay.RdpPassword);
-            merged.RdpDomain = (ISetting<string>)
-                this.RdpDomain.OverlayBy(overlay.RdpDomain);
-            merged.RdpConnectionBar = (ISetting<RdpConnectionBarState>)
+            merged.RdpUsername = this.RdpUsername.OverlayBy(overlay.RdpUsername);
+            merged.RdpPassword = this.RdpPassword.OverlayBy(overlay.RdpPassword);
+            merged.RdpDomain = this.RdpDomain.OverlayBy(overlay.RdpDomain);
+            merged.RdpConnectionBar = 
                 this.RdpConnectionBar.OverlayBy(overlay.RdpConnectionBar);
-            merged.RdpAuthenticationLevel = (ISetting<RdpAuthenticationLevel>)
+            merged.RdpAuthenticationLevel =
                 this.RdpAuthenticationLevel.OverlayBy(overlay.RdpAuthenticationLevel);
-            merged.RdpColorDepth = (ISetting<RdpColorDepth>)
+            merged.RdpColorDepth =
                 this.RdpColorDepth.OverlayBy(overlay.RdpColorDepth);
-            merged.RdpAudioMode = (ISetting<RdpAudioMode>)
+            merged.RdpAudioMode = 
                 this.RdpAudioMode.OverlayBy(overlay.RdpAudioMode);
-            merged.RdpUserAuthenticationBehavior = (ISetting<RdpUserAuthenticationBehavior>)
+            merged.RdpUserAuthenticationBehavior = 
                 this.RdpUserAuthenticationBehavior.OverlayBy(overlay.RdpUserAuthenticationBehavior);
-            merged.RdpNetworkLevelAuthentication = (ISetting<RdpNetworkLevelAuthentication>)
+            merged.RdpNetworkLevelAuthentication = 
                 this.RdpNetworkLevelAuthentication.OverlayBy(overlay.RdpNetworkLevelAuthentication);
-            merged.RdpConnectionTimeout = (ISetting<int>)
+            merged.RdpConnectionTimeout =
                 this.RdpConnectionTimeout.OverlayBy(overlay.RdpConnectionTimeout);
-            merged.RdpPort = (ISetting<int>)
+            merged.RdpPort = 
                 this.RdpPort.OverlayBy(overlay.RdpPort);
-            merged.RdpTransport = (ISetting<SessionTransportType>)
+            merged.RdpTransport = 
                 this.RdpTransport.OverlayBy(overlay.RdpTransport);
-            merged.RdpRedirectClipboard = (ISetting<RdpRedirectClipboard>)
+            merged.RdpRedirectClipboard = 
                 this.RdpRedirectClipboard.OverlayBy(overlay.RdpRedirectClipboard);
-            merged.RdpRedirectPrinter = (ISetting<RdpRedirectPrinter>)
+            merged.RdpRedirectPrinter = 
                 this.RdpRedirectPrinter.OverlayBy(overlay.RdpRedirectPrinter);
-            merged.RdpRedirectSmartCard = (ISetting<RdpRedirectSmartCard>)
+            merged.RdpRedirectSmartCard =
                 this.RdpRedirectSmartCard.OverlayBy(overlay.RdpRedirectSmartCard);
-            merged.RdpRedirectPort = (ISetting<RdpRedirectPort>)
+            merged.RdpRedirectPort =
                 this.RdpRedirectPort.OverlayBy(overlay.RdpRedirectPort);
-            merged.RdpRedirectDrive = (ISetting<RdpRedirectDrive>)
+            merged.RdpRedirectDrive = 
                 this.RdpRedirectDrive.OverlayBy(overlay.RdpRedirectDrive);
-            merged.RdpRedirectDevice = (ISetting<RdpRedirectDevice>)
+            merged.RdpRedirectDevice = 
                 this.RdpRedirectDevice.OverlayBy(overlay.RdpRedirectDevice);
-            merged.RdpRedirectWebAuthn = (ISetting<RdpRedirectWebAuthn>)
+            merged.RdpRedirectWebAuthn =
                 this.RdpRedirectWebAuthn.OverlayBy(overlay.RdpRedirectWebAuthn);
-            merged.RdpHookWindowsKeys = (ISetting<RdpHookWindowsKeys>)
+            merged.RdpHookWindowsKeys =
                 this.RdpHookWindowsKeys.OverlayBy(overlay.RdpHookWindowsKeys);
-            merged.RdpRestrictedAdminMode = (ISetting<RdpRestrictedAdminMode>)
+            merged.RdpRestrictedAdminMode =
                 this.RdpRestrictedAdminMode.OverlayBy(overlay.RdpRestrictedAdminMode);
 
-            merged.SshPort = (ISetting<int>)
+            merged.SshPort = 
                 this.SshPort.OverlayBy(overlay.SshPort);
-            merged.SshTransport = (ISetting<SessionTransportType>)
+            merged.SshTransport =
                 this.SshTransport.OverlayBy(overlay.SshTransport);
-            merged.SshPublicKeyAuthentication = (ISetting<SshPublicKeyAuthentication>)
+            merged.SshPublicKeyAuthentication =
                 this.SshPublicKeyAuthentication.OverlayBy(overlay.SshPublicKeyAuthentication);
-            merged.SshUsername = (ISetting<string>)
+            merged.SshUsername = 
                 this.SshUsername.OverlayBy(overlay.SshUsername);
-            merged.SshPassword = (ISetting<SecureString>)
+            merged.SshPassword =
                 this.SshPassword.OverlayBy(overlay.SshPassword);
-            merged.SshConnectionTimeout = (ISetting<int>)
+            merged.SshConnectionTimeout =
                 this.SshConnectionTimeout.OverlayBy(overlay.SshConnectionTimeout);
 
-            merged.AppUsername = (ISetting<string>)
+            merged.AppUsername =
                 this.AppUsername.OverlayBy(overlay.AppUsername);
-            merged.AppNetworkLevelAuthentication = (ISetting<AppNetworkLevelAuthenticationState>)
+            merged.AppNetworkLevelAuthentication = 
                 this.AppNetworkLevelAuthentication.OverlayBy(overlay.AppNetworkLevelAuthentication);
 
             Debug.Assert(merged.Settings.All(s => s != null));

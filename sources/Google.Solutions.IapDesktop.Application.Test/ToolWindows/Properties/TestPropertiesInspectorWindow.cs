@@ -28,7 +28,6 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
-using Google.Solutions.Settings.Registry;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Moq;

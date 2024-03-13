@@ -21,7 +21,6 @@
 
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
-using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public class ToolWindowStateRepository : IDisposable
     {
-        private readonly ISettingsStore store;
+        private readonly RegistrySettingsStore store;
 
         public ToolWindowStateRepository(RegistryKey baseKey)
         {

@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Exposes a registry key's values as settings.

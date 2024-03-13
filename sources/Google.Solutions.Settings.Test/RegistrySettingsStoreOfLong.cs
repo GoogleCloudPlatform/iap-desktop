@@ -20,11 +20,10 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using static Google.Solutions.Settings.Registry.RegistrySettingsStore;
 
 namespace Google.Solutions.Settings.Test
 {

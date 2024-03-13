@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void OutsideInRange([Values(-1, 101)] int value)
+        public void OutsideRange([Values(-1, 101)] int value)
         {
             Assert.IsFalse(Predicate.InRange(0, 100)(value));
         }

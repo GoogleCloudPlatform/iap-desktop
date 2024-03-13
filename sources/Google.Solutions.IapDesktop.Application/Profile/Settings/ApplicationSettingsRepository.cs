@@ -23,7 +23,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
-using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

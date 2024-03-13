@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings;
 using Microsoft.Win32;
 
 namespace Google.Solutions.Settings.Collection
@@ -41,8 +41,9 @@ namespace Google.Solutions.Settings.Collection
 
             //
             // NB. Machine policies override user policies, and
-            //     user policies override settings. But the policy
-            //     keys might be missing (null).
+            //     user policies override settings.
+            //
+            // NB. Policy keys might be null.
             //
 
             if (machinePolicyKey != null && userPolicyKey != null)

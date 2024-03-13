@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Client
         /// Use default endpoints, either via the public internet
         /// of Private Google Access.
         /// </summary>
-        public static ServiceRoute Public = new ServiceRoute(null);
+        public static readonly ServiceRoute Public = new ServiceRoute(null);
 
         public ServiceRoute(string? endpoint)
         {
