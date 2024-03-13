@@ -184,5 +184,11 @@ namespace Google.Solutions.Settings
             T value,
             T defaultValue,
             bool readOnly);
+
+        public virtual SettingBase<T> CreateSimilar( // TODO: make abstract
+            T value,
+            T defaultValue,
+            bool isSpecified,
+            bool readOnly) => throw new NotImplementedException();
     }
 }
