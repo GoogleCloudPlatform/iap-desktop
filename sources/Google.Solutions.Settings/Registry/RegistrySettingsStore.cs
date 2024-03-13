@@ -28,7 +28,7 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Exposes a registry key's values as settings.
     /// </summary>
-    public class RegistrySettingsStore : SettingsStoreBase<RegistryKey>, IDisposable // TODO: renme to RegistrySettingsStore
+    public class RegistrySettingsStore : SettingsStoreBase<RegistryKey>, IDisposable
     {
         private protected override RegistryKey ValueSource => this.BackingKey;
 

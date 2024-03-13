@@ -19,14 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
-using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Security;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.Settings.Registry
 {
