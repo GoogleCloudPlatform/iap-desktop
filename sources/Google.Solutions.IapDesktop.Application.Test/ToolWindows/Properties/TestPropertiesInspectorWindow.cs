@@ -61,12 +61,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
         {
             IEnumerable<ISetting> ISettingsCollection.Settings => new ISetting[]
             {
-                RegistryStringSetting.FromKey(
+                new DictionarySettingsStore(new Dictionary<string, string>()).Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null,
                     null,
                     _ => true)
             };
