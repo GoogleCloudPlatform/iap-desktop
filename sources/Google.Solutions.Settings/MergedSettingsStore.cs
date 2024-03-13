@@ -52,7 +52,7 @@ namespace Google.Solutions.Settings
             /// key's value. The lesser key's value becomes the new
             /// default.
             /// </summary>
-            Override,
+            Overlay,
 
             /// <summary>
             /// Values in this key (when present) override the lesser
@@ -70,6 +70,10 @@ namespace Google.Solutions.Settings
             this.lesserStore = lesserStore.ExpectNotNull(nameof(lesserStore));
             this.mergeBehavior = mergeBehavior;
         }
+
+        //---------------------------------------------------------------------
+        // ISettingsStore.
+        //---------------------------------------------------------------------
 
         public ISetting<T> Read<T>(
             string name,
@@ -161,16 +165,27 @@ namespace Google.Solutions.Settings
             }
         }
 
-        public void Clear() // TODO: test
+        public void Clear()
         {
             throw new InvalidOperationException(
                 "A merged store cannot be cleared");
         }
 
-        public void Dispose()
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        protected virtual void Dispose(bool disposing)
         {
             this.lesserStore.Dispose();
             this.overlayStore.Dispose();
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

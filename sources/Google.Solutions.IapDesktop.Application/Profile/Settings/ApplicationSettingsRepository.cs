@@ -186,9 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     "IsTelemetryEnabled",
                     null,
                     null,
-                    schemaVersion >= UserProfile.SchemaVersion.Version240
-                        ? true      // Auto opt-in new profiles
-                        : false);    // Opt-out existing profiles
+                    schemaVersion >= UserProfile.SchemaVersion.Version240); // Auto opt-in new profiles
                 this.ProxyUrl = store.Read<string>(
                     "ProxyUrl",
                     "ProxyUrl",

@@ -168,5 +168,24 @@ namespace Google.Solutions.Settings.Test
                 Assert.IsTrue(setting.IsDefault);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Clear.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ClearRemovesAllRegistryValues()
+        {
+            using (var key = CreateKey())
+            {
+                key.SetValue("foo", 1);
+                key.SetValue("bar", 1);
+
+                new RegistrySettingsStore(key).Clear();
+
+                Assert.IsNull(key.GetValue("foo"));
+                Assert.IsNull(key.GetValue("bar"));
+            }
+        }
     }
 }

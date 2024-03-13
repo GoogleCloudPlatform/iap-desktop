@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
-using System;
 
 namespace Google.Solutions.Settings
 {
@@ -50,7 +49,7 @@ namespace Google.Solutions.Settings
             return RegistryValueAccessor.Create<T>(valueName);
         }
 
-        public override void Clear() // TODO: test
+        public override void Clear()
         {
             //
             // Delete values, but keep any subkeys.

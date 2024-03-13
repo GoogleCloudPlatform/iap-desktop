@@ -32,6 +32,11 @@ namespace Google.Solutions.Settings
     {
         private protected override IDictionary<string, string> ValueSource { get; }
 
+        /// <summary>
+        /// For testing only.
+        /// </summary>
+        internal IDictionary<string, string> Values => this.ValueSource;
+
         public DictionarySettingsStore(IDictionary<string, string> source)
         {
             this.ValueSource = source.ExpectNotNull(nameof(source));

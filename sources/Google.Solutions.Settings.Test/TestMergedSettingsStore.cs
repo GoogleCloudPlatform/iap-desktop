@@ -19,40 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Settings;
-using Microsoft.Win32;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class TestMergedSettingsStore
     {
-        private const string KeyPath = @"Software\Google\__Test";
-        private const string OverlayKeyPath = @"Software\Google\__TestOverlay";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(KeyPath, false);
-            this.hkcu.DeleteSubKeyTree(OverlayKeyPath, false);
-        }
-
-        protected RegistrySettingsStore CreateLesserSettingsKey()
-        {
-            return new RegistrySettingsStore(this.hkcu.CreateSubKey(KeyPath));
-        }
-
-        protected RegistrySettingsStore CreateOverlaySettingsKey()
-        {
-            return new RegistrySettingsStore(this.hkcu.CreateSubKey(OverlayKeyPath));
-        }
-
-        protected MergedSettingsStore CreateMergedSettingsKey(
+        protected static MergedSettingsStore CreateMergedSettingsKey(
             RegistrySettingsStore overlayStore,
             RegistrySettingsStore lesserStore,
             MergedSettingsStore.MergeBehavior mergeBehavior)
@@ -64,201 +40,255 @@ namespace Google.Solutions.Settings.Test
         }
 
         //---------------------------------------------------------------------
-        // Policy.
+        // Read - Policy.
         //---------------------------------------------------------------------
 
         [Test]
         public void PolicyKeyValueEmpty_LesserKeyValueEmpty()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
-            {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Policy);
+            var mergedKey = new MergedSettingsStore(
+                DictionarySettingsStore.Empty(),
+                DictionarySettingsStore.Empty(),
+                MergedSettingsStore.MergeBehavior.Policy);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(defaultValue, setting.Value);
-                Assert.AreEqual(defaultValue, setting.DefaultValue);
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsSpecified);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
+            Assert.AreEqual(defaultValue, setting.Value);
+            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.IsTrue(setting.IsDefault);
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsFalse(setting.IsReadOnly);
         }
 
         [Test]
         public void PolicyKeyValueEmpty_LesserKeyValueSet()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
+            var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Policy);
+                { "test", "2" }
+            });
+            var policyStore = DictionarySettingsStore.Empty();
+            
+            var mergedKey = new MergedSettingsStore(
+                policyStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Policy);
 
-                lesserKey.BackingKey.SetValue("test", 2);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
-
-                Assert.AreEqual(2, setting.Value);
-                Assert.AreEqual(defaultValue, setting.DefaultValue);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
+            Assert.AreEqual(2, setting.Value);
+            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.IsFalse(setting.IsDefault);
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsReadOnly);
         }
 
         [Test]
         public void PolicyKeyValueSet_LesserKeyValueEmpty()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
+            var lesserStore = DictionarySettingsStore.Empty();
+            var policyStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Policy);
+                { "test", "3" }
+            });
 
-                overlayKey.BackingKey.SetValue("test", 3);
+            var mergedKey = new MergedSettingsStore(
+                policyStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Policy);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(3, setting.Value);
-                Assert.AreEqual(defaultValue, setting.DefaultValue);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsTrue(setting.IsReadOnly);
-            }
+            Assert.AreEqual(3, setting.Value);
+            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.IsFalse(setting.IsDefault);
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsReadOnly);
         }
 
         [Test]
         public void PolicyKeyValueSet_LesserKeyValueSet()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
+            var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Policy);
+                { "test", "2" }
+            }); ;
+            var policyStore = new DictionarySettingsStore(new Dictionary<string, string>
+            {
+                { "test", "3" }
+            });
 
-                lesserKey.BackingKey.SetValue("test", 2);
-                overlayKey.BackingKey.SetValue("test", 3);
+            var mergedKey = new MergedSettingsStore(
+                policyStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Policy);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(3, setting.Value);
-                Assert.AreEqual(defaultValue, setting.DefaultValue);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsTrue(setting.IsReadOnly);
-            }
+            Assert.AreEqual(3, setting.Value);
+            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.IsFalse(setting.IsDefault);
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsTrue(setting.IsReadOnly);
         }
 
         //---------------------------------------------------------------------
-        // Override.
+        // Read - Overlay.
         //---------------------------------------------------------------------
 
         [Test]
-        public void OverrideKeyValueEmpty_LesserKeyValueEmpty()
+        public void OverlayKeyValueEmpty_LesserKeyValueEmpty()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
-            {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Override);
+            var mergedKey = new MergedSettingsStore(
+                DictionarySettingsStore.Empty(),
+                DictionarySettingsStore.Empty(),
+                MergedSettingsStore.MergeBehavior.Overlay);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(defaultValue, setting.Value);
-                Assert.AreEqual(defaultValue, setting.DefaultValue);
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsSpecified);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
+            Assert.AreEqual(defaultValue, setting.Value);
+            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.IsTrue(setting.IsDefault);
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsFalse(setting.IsReadOnly);
         }
 
         [Test]
-        public void OverrideKeyValueEmpty_LesserKeyValueSet()
+        public void OverlayKeyValueEmpty_LesserKeyValueSet()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
+            var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Override);
+                { "test", "2" }
+            });
+            var overlayStore = DictionarySettingsStore.Empty();
 
-                lesserKey.BackingKey.SetValue("test", 2);
+            var mergedKey = new MergedSettingsStore(
+                overlayStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Overlay);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(2, setting.Value);
-                Assert.AreEqual(2, setting.DefaultValue);   // New default
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsSpecified);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
+            Assert.AreEqual(2, setting.Value);
+            Assert.AreEqual(2, setting.DefaultValue);   // New default
+            Assert.IsTrue(setting.IsDefault);
+            Assert.IsFalse(setting.IsSpecified);
+            Assert.IsFalse(setting.IsReadOnly);
         }
 
         [Test]
-        public void OverrideKeyValueSet_LesserKeyValueEmpty()
+        public void OverlayKeyValueSet_LesserKeyValueEmpty()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
+            var lesserStore = DictionarySettingsStore.Empty();
+            var overlayStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Override);
+                { "test", "3" }
+            });
 
-                overlayKey.BackingKey.SetValue("test", 3);
+            var mergedKey = new MergedSettingsStore(
+                overlayStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Overlay);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(3, setting.Value);
-                Assert.AreEqual(defaultValue, setting.DefaultValue);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
+            Assert.AreEqual(3, setting.Value);
+            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.IsFalse(setting.IsDefault);
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsReadOnly);
         }
 
         [Test]
-        public void OverrideKeyValueSet_LesserKeyValueSet()
+        public void OverlayKeyValueSet_LesserKeyValueSet()
         {
-            using (var lesserKey = CreateLesserSettingsKey())
-            using (var overlayKey = CreateOverlaySettingsKey())
+            var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
-                var mergedKey = new MergedSettingsStore(
-                    overlayKey,
-                    lesserKey,
-                    MergedSettingsStore.MergeBehavior.Override);
+                { "test", "2" }
+            }); ;
+            var overlayStore = new DictionarySettingsStore(new Dictionary<string, string>
+            {
+                { "test", "3" }
+            });
 
-                lesserKey.BackingKey.SetValue("test", 2);
-                overlayKey.BackingKey.SetValue("test", 3);
+            var mergedKey = new MergedSettingsStore(
+                overlayStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Overlay);
 
-                var defaultValue = 1;
-                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
+            var defaultValue = 1;
+            var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-                Assert.AreEqual(3, setting.Value);
-                Assert.AreEqual(2, setting.DefaultValue);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsFalse(setting.IsReadOnly);
-            }
+            Assert.AreEqual(3, setting.Value);
+            Assert.AreEqual(2, setting.DefaultValue);
+            Assert.IsFalse(setting.IsDefault);
+            Assert.IsTrue(setting.IsSpecified);
+            Assert.IsFalse(setting.IsReadOnly);
+        }
+
+        //---------------------------------------------------------------------
+        // Write.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenBehaviorIsPolicy_ThenWriteGoesToLesserStore()
+        {
+            var policyStore = DictionarySettingsStore.Empty();
+            var lesserStore = DictionarySettingsStore.Empty();
+
+            var mergedKey = new MergedSettingsStore(
+                policyStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Policy);
+
+            var setting = mergedKey.Read("test", "test", null, null, 0);
+            setting.Value = 1;
+            mergedKey.Write(setting);
+
+            Assert.IsFalse(policyStore.Values.ContainsKey("test"));
+            Assert.IsTrue(lesserStore.Values.ContainsKey("test"));
+        }
+
+        [Test]
+        public void WhenBehaviorIsOverlay_ThenWriteGoesToOverlayStore()
+        {
+            var overlayStore = DictionarySettingsStore.Empty();
+            var lesserStore = DictionarySettingsStore.Empty();
+
+            var mergedKey = new MergedSettingsStore(
+                overlayStore,
+                lesserStore,
+                MergedSettingsStore.MergeBehavior.Overlay);
+
+            var setting = mergedKey.Read("test", "test", null, null, 0);
+            setting.Value = 1;
+            mergedKey.Write(setting);
+
+            Assert.IsTrue(overlayStore.Values.ContainsKey("test"));
+            Assert.IsFalse(lesserStore.Values.ContainsKey("test"));
+        }
+
+        //---------------------------------------------------------------------
+        // Clear.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ClearThrowsException()
+        {
+            var mergedKey = new MergedSettingsStore(
+                DictionarySettingsStore.Empty(),
+                DictionarySettingsStore.Empty(),
+                MergedSettingsStore.MergeBehavior.Policy);
+
+            Assert.Throws<InvalidOperationException>(
+                () => mergedKey.Clear());
         }
     }
 }
