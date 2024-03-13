@@ -37,7 +37,7 @@ namespace Google.Solutions.Settings
             string description,
             string category,
             T defaultValue,
-            ValidateDelegate<T> validate = null);
+            Predicate<T> validate = null);
 
         /// <summary>
         /// Write value back to the store.
@@ -49,10 +49,4 @@ namespace Google.Solutions.Settings
         /// </summary>
         void Clear();
     }
-
-    /// <summary>
-    /// Delegate for validating if a given value falls
-    /// within the permitted range of a setting.
-    /// </summary>
-    public delegate bool ValidateDelegate<T>(T value);
 }

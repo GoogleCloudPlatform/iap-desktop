@@ -37,7 +37,7 @@ namespace Google.Solutions.Settings
 
         public string Key { get; }
 
-        public string Title { get; }
+        public string DisplayName { get; }
 
         public string Description { get; }
 
@@ -119,7 +119,7 @@ namespace Google.Solutions.Settings
             //
 
             Debug.Assert(overlaySetting.Key == this.Key);
-            Debug.Assert(overlaySetting.Title == this.Title);
+            Debug.Assert(overlaySetting.DisplayName == this.DisplayName);
             Debug.Assert(overlaySetting.Description == this.Description);
             Debug.Assert(overlaySetting.Category == this.Category);
 
@@ -162,7 +162,7 @@ namespace Google.Solutions.Settings
             bool readOnly)
         {
             this.Key = key;
-            this.Title = title;
+            this.DisplayName = title;
             this.Description = description;
             this.Category = category;
             this.currentValue = initialValue;

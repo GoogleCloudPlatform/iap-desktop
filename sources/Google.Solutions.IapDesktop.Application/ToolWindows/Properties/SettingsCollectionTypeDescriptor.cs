@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
         {
             return new PropertyDescriptorCollection(
                 this.Target.Settings
-                    .Where(s => s.Title != null)
+                    .Where(s => s.DisplayName != null)
                     .Select(s =>
                     {
                         if (s is ISetting<SecureString> secureStringSetting)
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             }
 
             public override string Name => this.setting.Key;
-            public override string DisplayName => this.setting.Title;
+            public override string DisplayName => this.setting.DisplayName;
             public override string Description => this.setting.Description;
             public override string Category => this.setting.Category;
             public override bool IsBrowsable => true;

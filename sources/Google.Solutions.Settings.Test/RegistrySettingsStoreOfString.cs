@@ -78,7 +78,7 @@ namespace Google.Solutions.Settings.Test
                     _ => true);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual("blue", setting.Value);
@@ -104,7 +104,7 @@ namespace Google.Solutions.Settings.Test
                     _ => true);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual("red", setting.Value);
@@ -539,7 +539,7 @@ namespace Google.Solutions.Settings.Test
                     _ => true);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual("BLUE", setting.Value);

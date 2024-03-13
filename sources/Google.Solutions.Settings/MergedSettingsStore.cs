@@ -77,7 +77,7 @@ namespace Google.Solutions.Settings
             string description,
             string category,
             T defaultValue,
-            ValidateDelegate<T> validate = null)
+            Predicate<T> validate = null)
         {
             var lesserSetting = (SettingBase<T>)this.lesserStore.Read(
                 name,

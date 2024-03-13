@@ -47,7 +47,7 @@ namespace Google.Solutions.Settings
             string description,
             string category,
             T defaultValue,
-            ValidateDelegate<T> validate = null)
+            Predicate<T> validate = null)
         {
             var accessor = CreateValueAccessor<T>(name);
 
@@ -99,7 +99,7 @@ namespace Google.Solutions.Settings
         protected class MappedSetting<T> : SettingBase<T>, IMappedSetting // TODO: Merge into SettingBase
         {
             private readonly IValueAccessor<TSource, T> accessor;
-            private readonly ValidateDelegate<T> validate;
+            private readonly Predicate<T> validate;
 
             internal MappedSetting(
                 string key,
@@ -111,7 +111,7 @@ namespace Google.Solutions.Settings
                 bool isSpecified,
                 bool readOnly,
                 IValueAccessor<TSource, T> accessor,
-                ValidateDelegate<T> validate)
+                Predicate<T> validate)
                 : base(key,
                       title,
                       description,
@@ -132,7 +132,7 @@ namespace Google.Solutions.Settings
             {
                 return new MappedSetting<T>(
                     this.Key,
-                    this.Title,
+                    this.DisplayName,
                     this.Description,
                     this.Category,
                     value,
@@ -151,7 +151,7 @@ namespace Google.Solutions.Settings
             {
                 return new MappedSetting<T>(
                     this.Key,
-                    this.Title,
+                    this.DisplayName,
                     this.Description,
                     this.Category,
                     value,

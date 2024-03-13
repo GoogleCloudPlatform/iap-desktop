@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -81,7 +82,7 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0L, 100L));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(17L, setting.Value);
@@ -105,7 +106,7 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0L, 100L));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(17L, setting.Value);
@@ -131,7 +132,7 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0L, long.MaxValue));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(420000000000001, setting.Value);
@@ -618,7 +619,7 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0L, long.MaxValue));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(880000000000001L, setting.Value);

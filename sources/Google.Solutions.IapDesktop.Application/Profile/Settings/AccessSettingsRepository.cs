@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth.Iam;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings;

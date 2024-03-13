@@ -86,7 +86,7 @@ namespace Google.Solutions.Settings.Test
                     Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(Toppings.None, setting.Value);
@@ -109,7 +109,7 @@ namespace Google.Solutions.Settings.Test
                     Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(Toppings.None, setting.Value);
@@ -137,7 +137,7 @@ namespace Google.Solutions.Settings.Test
                     Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(Toppings.Cheese | Toppings.Chocolate, setting.Value);
@@ -422,7 +422,7 @@ namespace Google.Solutions.Settings.Test
                     Toppings.None);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(Toppings.Cream, setting.Value);
