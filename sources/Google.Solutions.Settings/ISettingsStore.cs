@@ -41,6 +41,11 @@ namespace Google.Solutions.Settings
         /// Write value back to the store.
         /// </summary>
         void Write(ISetting setting);
+
+        /// <summary>
+        /// Delete all values.
+        /// </summary>
+        void Clear();
     }
 
     /// <summary>

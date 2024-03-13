@@ -30,9 +30,19 @@ namespace Google.Solutions.Settings.Registry
     /// </summary>
     public class RegistrySettingsStore : SettingsStoreBase<RegistryKey>, IDisposable
     {
-        private protected override RegistryKey ValueSource => this.BackingKey;
-
         internal RegistryKey BackingKey { get; }
+
+
+        public RegistrySettingsStore(RegistryKey key)
+        {
+            this.BackingKey = key.ExpectNotNull(nameof(key));
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        private protected override RegistryKey ValueSource => this.BackingKey;
 
         private protected override IValueAccessor<RegistryKey, T> CreateValueAccessor<T>(
             string valueName)
@@ -40,9 +50,15 @@ namespace Google.Solutions.Settings.Registry
             return RegistryValueAccessor.Create<T>(valueName);
         }
 
-        public RegistrySettingsStore(RegistryKey key)
+        public override void Clear() // TODO: test
         {
-            this.BackingKey = key.ExpectNotNull(nameof(key));
+            //
+            // Delete values, but keep any subkeys.
+            //
+            foreach (var valueName in this.BackingKey.GetValueNames())
+            {
+                this.BackingKey.DeleteValue(valueName);
+            }
         }
 
         //---------------------------------------------------------------------

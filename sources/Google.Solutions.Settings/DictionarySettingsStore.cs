@@ -42,5 +42,10 @@ namespace Google.Solutions.Settings
         {
             return DictionaryValueAccessor.Create<T>(valueName);
         }
+
+        public override void Clear()
+        {
+            this.ValueSource.Clear();
+        }
     }
 }

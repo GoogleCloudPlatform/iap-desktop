@@ -75,6 +75,12 @@ namespace Google.Solutions.Settings
             ((IMappedSetting)setting).Write(this.ValueSource);
         }
 
+        public abstract void Clear();
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
         protected interface IMappedSetting
         {
             void Write(TSource key);

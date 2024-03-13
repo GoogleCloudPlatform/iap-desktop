@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.Settings
@@ -148,6 +149,12 @@ namespace Google.Solutions.Settings
         public void Write(ISetting setting)
         {
             this.overlayStore.Write(setting);
+        }
+
+        public void Clear() // TODO: test
+        {
+            throw new InvalidOperationException(
+                "A merged store cannot be cleared");
         }
     }
 }
