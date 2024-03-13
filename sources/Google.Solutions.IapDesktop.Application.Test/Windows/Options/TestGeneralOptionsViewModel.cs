@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {

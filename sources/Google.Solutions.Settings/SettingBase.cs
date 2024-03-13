@@ -37,7 +37,7 @@ namespace Google.Solutions.Settings
 
         public string Key { get; }
 
-        public string Title { get; }
+        public string DisplayName { get; }
 
         public string Description { get; }
 
@@ -82,11 +82,7 @@ namespace Google.Solutions.Settings
             set
             {
                 T typedValue;
-                if (value is string stringValue)
-                {
-                    typedValue = Parse(stringValue);
-                }
-                else if (value is null)
+                if (value is null)
                 {
                     typedValue = this.DefaultValue;
                 }
@@ -113,7 +109,7 @@ namespace Google.Solutions.Settings
         // Overlay.
         //---------------------------------------------------------------------
 
-        public ISetting<T> OverlayBy(ISetting<T> overlaySetting)
+        public ISetting<T> OverlayBy(ISetting<T> overlaySetting) // TODO: remove overlay logic
         {
             //
             // NB. The idea of overlaying is that you use a base setting
@@ -123,7 +119,7 @@ namespace Google.Solutions.Settings
             //
 
             Debug.Assert(overlaySetting.Key == this.Key);
-            Debug.Assert(overlaySetting.Title == this.Title);
+            Debug.Assert(overlaySetting.DisplayName == this.DisplayName);
             Debug.Assert(overlaySetting.Description == this.Description);
             Debug.Assert(overlaySetting.Category == this.Category);
 
@@ -151,9 +147,6 @@ namespace Google.Solutions.Settings
             }
         }
 
-        public ISetting OverlayBy(ISetting setting)
-            => OverlayBy((ISetting<T>)setting);
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -169,7 +162,7 @@ namespace Google.Solutions.Settings
             bool readOnly)
         {
             this.Key = key;
-            this.Title = title;
+            this.DisplayName = title;
             this.Description = description;
             this.Category = category;
             this.currentValue = initialValue;
@@ -181,11 +174,17 @@ namespace Google.Solutions.Settings
 
         protected abstract bool IsValid(T value);
 
-        protected abstract T Parse(string value);
-
-        protected abstract SettingBase<T> CreateNew(
+        protected abstract SettingBase<T> CreateNew( // TODO: remove overlay logic
             T value,
             T defaultValue,
             bool readOnly);
+
+        public abstract SettingBase<T> CreateSimilar(
+            T value,
+            T defaultValue,
+            bool isSpecified,
+            bool readOnly);
+
+        public abstract bool IsCurrentValueValid { get; }
     }
 }

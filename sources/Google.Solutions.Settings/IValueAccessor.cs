@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,36 @@
 // under the License.
 //
 
-using System;
-
 namespace Google.Solutions.Settings
 {
     /// <summary>
-    /// Persistent respository for settings.
+    /// Accessor that automatically performs necessary 
+    /// type conversions.
     /// </summary>
-    /// <typeparam name="TSettings"></typeparam>
-    public interface IRepository<TSettings> : IDisposable
-        where TSettings : ISettingsCollection
+    internal interface IValueAccessor<TSource, TValue>
     {
         /// <summary>
-        /// Read a snapshot of settings.
+        /// Read stored value.
         /// </summary>
-        TSettings GetSettings();
+        /// <param name="value">result</param>
+        /// <returns>true if found, false if value not set</returns>
+        bool TryRead(TSource key, out TValue value);
 
         /// <summary>
-        /// Save a modified set of settings.
+        /// Store value.
         /// </summary>
-        void SetSettings(TSettings settings);
+        /// <param name="value"></param>
+        void Write(TSource key, TValue value);
+
+        /// <summary>
+        /// Delete stored value.
+        /// </summary>
+        void Delete(TSource key);
+
+        /// <summary>
+        /// Check if a value is acceptable to be written.
+        /// </summary>
+        /// <returns></returns>
+        bool IsValid(TValue value);
     }
 }

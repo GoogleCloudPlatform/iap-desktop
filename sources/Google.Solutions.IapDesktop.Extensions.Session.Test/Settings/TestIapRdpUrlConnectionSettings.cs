@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.Settings;
 using NUnit.Framework;
 using System.Collections.Specialized;
 
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "bob";
-            settings.RdpPassword.ClearTextValue = "secret";
+            settings.RdpPassword.SetClearTextValue("secret");
             settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Disabled;
             settings.RdpConnectionTimeout.Value = 123;
 
@@ -198,8 +199,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenUrlParameterIsNullOrEmpty_ThenSettingIsLeftUnchanged(
             [Values(null, "", " ")] string emptyValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", emptyValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", emptyValue }
+            };
 
             var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
@@ -211,8 +214,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         public void WhenUrlParameterOutOfRange_ThenSettingIsLeftUnchanged(
             [Values("-1", "invalid", "999999999")] string invalidValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", invalidValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", invalidValue }
+            };
 
             var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));
@@ -223,8 +228,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenUrlParameterValid_ThenSettingIsUpdated()
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", "2");
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", "2" }
+            };
 
             var settings = new ConnectionSettings(
                 new IapRdpUrl(SampleLocator, queryParameters));

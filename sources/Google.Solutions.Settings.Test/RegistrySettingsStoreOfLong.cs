@@ -19,29 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Common.Util;
+using Google.Solutions.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
-    public class TestRegistryQwordSetting
+    public class RegistrySettingsStoreOfLong : RegistrySettingsStoreBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
-        }
 
         //---------------------------------------------------------------------
         // IsSpecified.
@@ -50,27 +38,29 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueChanged_ThenIsSpecifiedIsTrue()
         {
-            var setting = RegistryQwordSetting.FromKey(
-                "test",
-                "title",
-                "description",
-                "category",
-                17,
-                null,
-                0, 100);
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    Predicate.InRange(0, 100));
 
-            Assert.IsFalse(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
 
-            setting.Value = 1;
+                setting.Value = 1;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsFalse(setting.IsDefault);
 
-            setting.Value = setting.DefaultValue;
+                setting.Value = setting.DefaultValue;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -78,21 +68,20 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueDoesNotExist_ThenReadUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(17L, setting.Value);
@@ -103,21 +92,20 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
+        public void WhenRegistryKeyIsNull_ThenReadUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    null,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(17L, setting.Value);
@@ -128,23 +116,22 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenRegistryValueExists_ThenFromKeyUsesValue()
+        public void WhenRegistryValueExists_ThenReadUsesValue()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
 
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, long.MaxValue);
+                    Predicate.InRange(0L, long.MaxValue));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(420000000000001, setting.Value);
@@ -161,44 +148,42 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenSettingIsNonNull_ThenSaveUpdatesRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 setting.Value = 1L;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.AreEqual(1, key.GetValue("test"));
+                Assert.AreEqual(1, key.BackingKey.GetValue("test"));
             }
         }
 
         [Test]
         public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 42L, RegistryValueKind.QWord);
+                key.BackingKey.SetValue("test", 42L, RegistryValueKind.QWord);
 
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 setting.Value = setting.DefaultValue;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNull(key.GetValue("test"));
+                Assert.IsNull(key.BackingKey.GetValue("test"));
             }
         }
 
@@ -209,16 +194,15 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 setting.Value = setting.DefaultValue;
 
@@ -231,16 +215,15 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueAndDefaultAreNull_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     0,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 setting.Value = 0L;
 
@@ -252,16 +235,15 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueDiffersFromDefault_ThenSetValueSucceedsAndSettingIsDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 setting.Value = 0L;
 
@@ -273,16 +255,15 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = -1L);
             }
@@ -295,16 +276,15 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 setting.Value = 1L;
                 setting.AnyValue = null;
@@ -315,58 +295,19 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryQwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17L,
-                    key,
-                    0L, long.MaxValue);
-
-                setting.AnyValue = "120000000000000001";
-
-                Assert.AreEqual(120000000000000001L, setting.Value);
-            }
-        }
-
-        [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistryQwordSetting.FromKey(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     17L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryQwordSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17L,
-                    key,
-                    0L, 100L);
-
-                Assert.Throws<FormatException>(() => setting.AnyValue = "test");
             }
         }
 
@@ -377,26 +318,24 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentAndChildDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistryQwordSetting.FromKey(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -406,33 +345,30 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual(10, effective.Value);
                 Assert.IsTrue(effective.IsDefault);
             }
-
         }
 
         [Test]
         public void WhenParentIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 parent.Value = 42L;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryQwordSetting.FromKey(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -449,28 +385,26 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenChildIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.SetValue("test", 1L, RegistryValueKind.QWord);
-                var child = RegistryQwordSetting.FromKey(
+                key.BackingKey.SetValue("test", 1L, RegistryValueKind.QWord);
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -487,29 +421,27 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentAndChildNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", 42L, RegistryValueKind.QWord);
-                var parent = RegistryQwordSetting.FromKey(
+                key.BackingKey.SetValue("test", 42L, RegistryValueKind.QWord);
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
-                key.SetValue("test", 1L, RegistryValueKind.QWord);
-                var child = RegistryQwordSetting.FromKey(
+                key.BackingKey.SetValue("test", 1L, RegistryValueKind.QWord);
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -526,37 +458,34 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentIsNonDefaultAndChildSetToOriginalDefault_ThenIsDefaultReturnsFalse()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistryQwordSetting.FromKey(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 parent.Value = 42L;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = RegistryQwordSetting.FromKey(
+                var intermediate = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = RegistryQwordSetting.FromKey(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
                     "category",
                     10L,
-                    key,
-                    0L, 100L);
+                    Predicate.InRange(0L, 100L));
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -578,96 +507,82 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicySettingsKey())
             {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
 
-                var setting = RegistryQwordSetting.FromKey(
+                key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+
+                var setting = mergedKey.Read<long>(
                     "test",
                     "title",
                     "description",
                     "category",
                     17,
-                    key,
-                    0, 100);
+                    Predicate.InRange(0L, long.MaxValue));
 
-                var settingWithPolicy = setting.ApplyPolicy(null);
-
-                Assert.AreSame(setting, settingWithPolicy);
+                Assert.AreEqual(420000000000001L, setting.Value);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
         [Test]
-        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        public void WhenPolicyInvalid_ThenPolicyIsIgnored()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicySettingsKey())
             {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
+                    key,
+                    MergedSettingsStore.MergeBehavior.Policy);
 
-                var setting = RegistryQwordSetting.FromKey(
+                key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                policyKey.BackingKey.SetValue("test", -101, RegistryValueKind.QWord);
+
+                var setting = mergedKey.Read<long>(
                     "test",
                     "title",
                     "description",
                     "category",
                     17,
+                    Predicate.InRange(0, long.MaxValue));
+
+                Assert.AreEqual(420000000000001L, setting.Value);
+                Assert.IsFalse(setting.IsReadOnly);
+            }
+        }
+
+        [Test]
+        public void WhenPolicySet_ThenSettingHasPolicyApplied()
+        {
+            using (var key = CreateSettingsKey())
+            using (var policyKey = CreatePolicySettingsKey())
+            {
+                var mergedKey = new MergedSettingsStore(
+                    policyKey,
                     key,
-                    0, 100);
+                    MergedSettingsStore.MergeBehavior.Policy);
 
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+                key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                policyKey.BackingKey.SetValue("test", 880000000000001L, RegistryValueKind.QWord);
 
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
-            {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-                policyKey.SetValue("test", 101, RegistryValueKind.QWord);
-
-                var setting = RegistryQwordSetting.FromKey(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        17,
-                        key,
-                        0, 100)
-                    .ApplyPolicy(policyKey);
-
-                var settingWithPolicy = setting.ApplyPolicy(policyKey);
-
-                Assert.AreSame(setting, settingWithPolicy);
-            }
-        }
-
-        [Test]
-        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
-            {
-                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-                policyKey.SetValue("test", 880000000000001L, RegistryValueKind.QWord);
-
-                var setting = RegistryQwordSetting.FromKey(
-                        "test",
-                        "title",
-                        "description",
-                        "category",
-                        17,
-                        key,
-                        0L, long.MaxValue)
-                    .ApplyPolicy(policyKey);
+                var setting = mergedKey.Read<long>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    Predicate.InRange(0L, long.MaxValue));
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(880000000000001L, setting.Value);

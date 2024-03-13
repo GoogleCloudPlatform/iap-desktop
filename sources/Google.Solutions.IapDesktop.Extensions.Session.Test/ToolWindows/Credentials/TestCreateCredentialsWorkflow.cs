@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.ObjectModel;
@@ -233,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(false);
 
             Assert.AreEqual("alice", settings.RdpUsername.Value);
-            Assert.AreEqual("password", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("password", settings.RdpPassword.GetClearTextValue());
             credDialog.Verify(d => d.ShowDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>()), Times.Never);
@@ -267,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(false);
 
             Assert.AreEqual("bobsemail", settings.RdpUsername.Value);
-            Assert.AreEqual("password", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("password", settings.RdpPassword.GetClearTextValue());
             credDialog.Verify(d => d.ShowDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>()), Times.Never);

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
+using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
@@ -68,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
             Assert.AreEqual(
                 "secure",
-                settings.Credentials.ClearTextValue);
+                settings.Credentials.GetClearTextValue());
         }
 
         //---------------------------------------------------------------------

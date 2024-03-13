@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Net;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.Reflection;
 

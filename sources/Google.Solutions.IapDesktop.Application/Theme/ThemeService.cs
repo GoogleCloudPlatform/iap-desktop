@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Theme;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Security;
 using System;
 using System.Security;
 
@@ -37,7 +38,7 @@ namespace Google.Solutions.Settings
         /// <summary>
         /// Name of setting, suitable for displaying.
         /// </summary>
-        string Title { get; }
+        string DisplayName { get; }
 
         /// <summary>
         /// Description of setting, suitable for displaying.
@@ -76,11 +77,6 @@ namespace Google.Solutions.Settings
         /// (or whether it's mandated by a policy).
         /// </summary>
         bool IsReadOnly { get; }
-
-        /// <summary>
-        /// Overlay the setting with defaults from the ancestry,
-        /// </summary>
-        ISetting OverlayBy(ISetting setting);
     }
 
     public interface IAnySetting : ISetting // TODO: make internal
@@ -114,14 +110,19 @@ namespace Google.Solutions.Settings
         ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
-    // TODO: remove IXxxSetting
-
-
-    /// <summary>
-    /// SecureString-valued setting.
-    /// </summary>
-    public interface ISecureStringSetting : ISetting<SecureString>
+    public static class SecureStringSettingExtensions
     {
-        string ClearTextValue { get; set; }
+        public static string GetClearTextValue(
+            this ISetting<SecureString> setting)
+        {
+            return setting.Value?.AsClearText();
+        }
+
+        public static void SetClearTextValue(
+            this ISetting<SecureString> setting, 
+            string value)
+        {
+            setting.Value = SecureStringExtensions.FromClearText(value);
+        }
     }
 }

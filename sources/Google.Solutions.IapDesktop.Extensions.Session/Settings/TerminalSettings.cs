@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// </summary>
     [Service(typeof(ITerminalSettingsRepository), ServiceLifetime.Singleton)]
     public class TerminalSettingsRepository
-        : RegistryRepositoryBase<ITerminalSettings>, ITerminalSettingsRepository
+        : RepositoryBase<ITerminalSettings>, ITerminalSettingsRepository
     {
         //
         // Use a dark gray as default (xterm 236).
@@ -78,26 +78,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public event EventHandler<EventArgs<ITerminalSettings>> SettingsChanged;
 
-        public TerminalSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public TerminalSettingsRepository(RegistryKey key)
+            : this(new RegistrySettingsStore(key))
         {
-            Precondition.ExpectNotNull(baseKey, nameof(baseKey));
+        }
+
+        public TerminalSettingsRepository(ISettingsStore store) : base(store)
+        {
         }
 
         public TerminalSettingsRepository(UserProfile profile)
-            : this(profile.SettingsKey.CreateSubKey("Terminal"))
+            : this(new RegistrySettingsStore(profile
+                .ExpectNotNull(nameof(profile))
+                .SettingsKey
+                .CreateSubKey("Terminal")))
         {
-            profile.ExpectNotNull(nameof(profile));
         }
 
-        protected override ITerminalSettings LoadSettings(RegistryKey key)
-            => TerminalSettings.FromKey(key);
+        protected override ITerminalSettings LoadSettings(ISettingsStore store)
+            => new TerminalSettings(store);
 
         public override void SetSettings(ITerminalSettings settings)
         {
             base.SetSettings(settings);
             this.SettingsChanged?.Invoke(this, new EventArgs<ITerminalSettings>(settings));
         }
-
 
         //
         // Font sizes are floats. To avoid loss of precision,
@@ -113,18 +118,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public class TerminalSettings : ITerminalSettings
         {
-            public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; private set; }
-            public ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; private set; }
-            public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; private set; }
-            public ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; private set; }
-            public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; private set; }
-            public ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; private set; }
-            public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; private set; }
-            public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
-            public ISetting<string> FontFamily { get; private set; }
-            public ISetting<int> FontSizeAsDword { get; private set; }
-            public ISetting<int> ForegroundColorArgb { get; private set; }
-            public ISetting<int> BackgroundColorArgb { get; private set; }
+            public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
+            public ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; }
+            public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
+            public ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; }
+            public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
+            public ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; }
+            public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
+            public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+            public ISetting<string> FontFamily { get; }
+            public ISetting<int> FontSizeAsDword { get; }
+            public ISetting<int> ForegroundColorArgb { get; }
+            public ISetting<int> BackgroundColorArgb { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
@@ -142,106 +147,90 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.BackgroundColorArgb
             };
 
-            private TerminalSettings()
+            internal TerminalSettings(ISettingsStore store)
             {
-            }
-
-            public static TerminalSettings FromKey(RegistryKey registryKey)
-            {
-                return new TerminalSettings()
-                {
-                    IsCopyPasteUsingCtrlCAndCtrlVEnabled = RegistryBoolSetting.FromKey(
-                        "IsCopyPasteUsingCtrlCAndCtrlVEnabled",
-                        "IsCopyPasteUsingCtrlCAndCtrlVEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    IsSelectAllUsingCtrlAEnabled = RegistryBoolSetting.FromKey(
-                        "IsSelectAllUsingCtrlAEnabled",
-                        "IsSelectAllUsingCtrlAEnabled",
-                        null,
-                        null,
-                        false,
-                        registryKey),
-                    IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = RegistryBoolSetting.FromKey(
-                        "IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled",
-                        "IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    IsSelectUsingShiftArrrowEnabled = RegistryBoolSetting.FromKey(
-                        "IsSelectUsingShiftArrrowEnabled",
-                        "IsSelectUsingShiftArrrowEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    IsQuoteConvertionOnPasteEnabled = RegistryBoolSetting.FromKey(
-                        "IsQuoteConvertionOnPasteEnabled",
-                        "IsQuoteConvertionOnPasteEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    IsNavigationUsingControlArrrowEnabled = RegistryBoolSetting.FromKey(
-                        "IsNavigationUsingControlArrrowEnabled",
-                        "IsNavigationUsingControlArrrowEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    IsScrollingUsingCtrlUpDownEnabled = RegistryBoolSetting.FromKey(
-                        "IsScrollingUsingCtrlUpDownEnabled",
-                        "IsScrollingUsingCtrlUpDownEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    IsScrollingUsingCtrlHomeEndEnabled = RegistryBoolSetting.FromKey(
-                        "IsScrollingUsingCtrlHomeEndEnabled",
-                        "IsScrollingUsingCtrlHomeEndEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey),
-                    FontFamily = RegistryStringSetting.FromKey(
-                        "FontFamily",
-                        "FontFamily",
-                        null,
-                        null,
-                        TerminalFont.DefaultFontFamily,
-                        registryKey,
-                        f => f == null || TerminalFont.IsValidFont(f)),
-                    FontSizeAsDword = RegistryDwordSetting.FromKey(
-                        "FontSize",
-                        "FontSize",
-                        null,
-                        null,
-                        DwordFromFontSize(TerminalFont.DefaultSize),
-                        registryKey,
+                this.IsCopyPasteUsingCtrlCAndCtrlVEnabled = store.Read<bool>(
+                    "IsCopyPasteUsingCtrlCAndCtrlVEnabled",
+                    "IsCopyPasteUsingCtrlCAndCtrlVEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsSelectAllUsingCtrlAEnabled = store.Read<bool>(
+                    "IsSelectAllUsingCtrlAEnabled",
+                    "IsSelectAllUsingCtrlAEnabled",
+                    null,
+                    null,
+                    false);
+                this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = store.Read<bool>(
+                    "IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled",
+                    "IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsSelectUsingShiftArrrowEnabled = store.Read<bool>(
+                    "IsSelectUsingShiftArrrowEnabled",
+                    "IsSelectUsingShiftArrrowEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsQuoteConvertionOnPasteEnabled = store.Read<bool>(
+                    "IsQuoteConvertionOnPasteEnabled",
+                    "IsQuoteConvertionOnPasteEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsNavigationUsingControlArrrowEnabled = store.Read<bool>(
+                    "IsNavigationUsingControlArrrowEnabled",
+                    "IsNavigationUsingControlArrrowEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsScrollingUsingCtrlUpDownEnabled = store.Read<bool>(
+                    "IsScrollingUsingCtrlUpDownEnabled",
+                    "IsScrollingUsingCtrlUpDownEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsScrollingUsingCtrlHomeEndEnabled = store.Read<bool>(
+                    "IsScrollingUsingCtrlHomeEndEnabled",
+                    "IsScrollingUsingCtrlHomeEndEnabled",
+                    null,
+                    null,
+                    true);
+                this.FontFamily = store.Read<string>(
+                    "FontFamily",
+                    "FontFamily",
+                    null,
+                    null,
+                    TerminalFont.DefaultFontFamily,
+                    f => f == null || TerminalFont.IsValidFont(f));
+                this.FontSizeAsDword = store.Read<int>(
+                    "FontSize",
+                    "FontSize",
+                    null,
+                    null,
+                    DwordFromFontSize(TerminalFont.DefaultSize),
+                    Predicate.InRange(
                         DwordFromFontSize(TerminalFont.MinimumSize),
-                        DwordFromFontSize(TerminalFont.MaximumSize)),
-                    ForegroundColorArgb = RegistryDwordSetting.FromKey(
-                        "ForegroundColor",
-                        "ForegroundColor",
-                        null,
-                        null,
-                        Color.White.ToArgb(),
-                        registryKey,
+                        DwordFromFontSize(TerminalFont.MaximumSize)));
+                this.ForegroundColorArgb = store.Read<int>(
+                    "ForegroundColor",
+                    "ForegroundColor",
+                    null,
+                    null,
+                    Color.White.ToArgb(),
+                    Predicate.InRange(
                         Color.Black.ToArgb(),
-                        Color.White.ToArgb()),
-                    BackgroundColorArgb = RegistryDwordSetting.FromKey(
-                        "BackgroundColor",
-                        "BackgroundColor",
-                        null,
-                        null,
-                        DefaultBackgroundColor.ToArgb(),
-                        registryKey,
+                        Color.White.ToArgb()));
+                this.BackgroundColorArgb = store.Read<int>(
+                    "BackgroundColor",
+                    "BackgroundColor",
+                    null,
+                    null,
+                    DefaultBackgroundColor.ToArgb(),
+                    Predicate.InRange(
                         Color.Black.ToArgb(),
-                        Color.White.ToArgb())
-                };
+                        Color.White.ToArgb()));
             }
         }
     }

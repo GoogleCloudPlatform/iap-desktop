@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Properties;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -28,6 +27,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings
 {

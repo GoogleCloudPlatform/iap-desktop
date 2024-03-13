@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,15 +19,24 @@
 // under the License.
 //
 
-using System.Collections.Generic;
+using Google.Solutions.Common.Util;
+using NUnit.Framework;
 
-namespace Google.Solutions.Settings
+namespace Google.Solutions.Common.Test.Util
 {
-    /// <summary>
-    /// Base interface for a a collection of settings.
-    /// </summary>
-    public interface ISettingsCollection
+    [TestFixture]
+    public class TestPredicate
     {
-        IEnumerable<ISetting> Settings { get; }
+        [Test]
+        public void InsideRange([Values(0, 1, 100)] int value)
+        {
+            Assert.IsTrue(Predicate.InRange(0, 100)(value));
+        }
+
+        [Test]
+        public void OutsideRange([Values(-1, 101)] int value)
+        {
+            Assert.IsFalse(Predicate.InRange(0, 100)(value));
+        }
     }
 }

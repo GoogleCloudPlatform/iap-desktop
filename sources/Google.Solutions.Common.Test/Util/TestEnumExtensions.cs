@@ -67,6 +67,34 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         //---------------------------------------------------------------------
+        // IsValidFlagCombination
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenAllFlagsClear_ThenIsValidFlagCombinationReturnsTrue()
+        {
+            Assert.IsTrue(SampleFlags.Zero.IsValidFlagCombination());
+        }
+
+        [Test]
+        public void WhenOneFlagSet_ThenIsValidFlagCombinationReturnsTrue()
+        {
+            Assert.IsTrue(SampleFlags.One.IsValidFlagCombination());
+        }
+
+        [Test]
+        public void WhenMultipleFlagsSet_ThenIsValidFlagCombinationReturnsTrue()
+        {
+            Assert.IsTrue((SampleFlags.One | SampleFlags.Four).IsValidFlagCombination());
+        }
+
+        [Test]
+        public void WhenNonexistingFlagSet_ThenIsValidFlagCombinationReturnsFalse()
+        {
+            Assert.IsFalse((SampleFlags.One | (SampleFlags)16).IsValidFlagCombination());
+        }
+
+        //---------------------------------------------------------------------
         // GetAttribute
         //---------------------------------------------------------------------
 

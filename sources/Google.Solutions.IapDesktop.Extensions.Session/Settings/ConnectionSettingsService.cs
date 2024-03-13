@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings

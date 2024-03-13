@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Moq;
@@ -60,12 +60,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
         {
             IEnumerable<ISetting> ISettingsCollection.Settings => new ISetting[]
             {
-                RegistryStringSetting.FromKey(
+                new DictionarySettingsStore(new Dictionary<string, string>()).Read<string>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null,
                     null,
                     _ => true)
             };

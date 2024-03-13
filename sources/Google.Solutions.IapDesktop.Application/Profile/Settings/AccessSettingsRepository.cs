@@ -20,10 +20,11 @@
 //
 
 using Google.Solutions.Apis.Auth.Iam;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using System.Collections.Generic;
 
@@ -68,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// Registry-backed repository for access-related settings.
     /// </summary>
     public class AccessSettingsRepository
-        : PolicyEnabledRegistryRepository<IAccessSettings>
+        : GroupPolicyAwareRepository<IAccessSettings>
     {
         public AccessSettingsRepository(
             RegistryKey settingsKey,
@@ -78,14 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
         }
 
-        protected override IAccessSettings LoadSettings(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey)
-            => AccessSettings.FromKey(
-                settingsKey,
-                machinePolicyKey,
-                userPolicyKey);
+        protected override IAccessSettings LoadSettings(ISettingsStore store)
+            => new AccessSettings(store);
 
         //---------------------------------------------------------------------
         // Inner class.
@@ -93,19 +88,16 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class AccessSettings : IAccessSettings
         {
-            private AccessSettings()
-            {
-            }
 
-            public ISetting<string> WorkforcePoolProvider { get; private set; }
+            public ISetting<string> WorkforcePoolProvider { get; }
 
-            public ISetting<string> PrivateServiceConnectEndpoint { get; private set; }
+            public ISetting<string> PrivateServiceConnectEndpoint { get; }
 
-            public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; private set; }
+            public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
-            public ISetting<string> DeviceCertificateSelector { get; private set; }
+            public ISetting<string> DeviceCertificateSelector { get; }
 
-            public ISetting<int> ConnectionLimit { get; private set; }
+            public ISetting<int> ConnectionLimit { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
@@ -116,72 +108,53 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.ConnectionLimit
             };
 
-            public static AccessSettings FromKey(
-                RegistryKey settingsKey,
-                RegistryKey machinePolicyKey,
-                RegistryKey userPolicyKey)
-            {
-                return new AccessSettings()
-                {
-                    //
-                    // Settings that can be overridden by policy.
-                    //
-                    // NB. Default values must be kept consistent with the
-                    //     ADMX policy templates!
-                    // NB. Machine policies override user policies, and
-                    //     user policies override settings.
-                    //
-                    WorkforcePoolProvider = RegistryStringSetting.FromKey(
-                            "WorkforcePoolProvider",
-                            "Workforce pool provider locator",
-                            null,
-                            null,
-                            null, // No locator => workforce identity is disabled.
-                            settingsKey,
-                            s => s == null || WorkforcePoolProviderLocator.TryParse(s, out var _))
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    PrivateServiceConnectEndpoint = RegistryStringSetting.FromKey(
-                            "PrivateServiceConnectEndpoint",
-                            "Private Service Connect endpoint",
-                            null,
-                            null,
-                            null, // No endpoint => PSC disabled.
-                            settingsKey,
-                            _ => true)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
-                            "IsDeviceCertificateAuthenticationEnabled",
-                            "IsDeviceCertificateAuthenticationEnabled",
-                            null,
-                            null,
-                            false,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
 
-                    //
-                    // User preferences. These cannot be overridden by policy.
-                    //
-                    DeviceCertificateSelector = RegistryStringSetting.FromKey(
-                        "DeviceCertificateSelector",
-                        "DeviceCertificateSelector",
-                        null,
-                        null,
-                        DeviceEnrollment.DefaultDeviceCertificateSelector,
-                        settingsKey,
-                        selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _)),
-                    ConnectionLimit = RegistryDwordSetting.FromKey(
-                        "ConnectionLimit",
-                        "ConnectionLimit",
-                        null,
-                        null,
-                        16,
-                        settingsKey,
-                        1,
-                        32)
-                };
+            internal AccessSettings(ISettingsStore store)
+            {
+                //
+                // Settings that can be overridden by policy.
+                //
+                // NB. Default values must be kept consistent with the
+                //     ADMX policy templates!
+                //
+                this.WorkforcePoolProvider = store.Read<string>(
+                    "WorkforcePoolProvider",
+                    "Workforce pool provider locator",
+                    null,
+                    null,
+                    null, // No locator => workforce identity is disabled.
+                    s => s == null || WorkforcePoolProviderLocator.TryParse(s, out var _));
+                this.PrivateServiceConnectEndpoint = store.Read<string>(
+                    "PrivateServiceConnectEndpoint",
+                    "Private Service Connect endpoint",
+                    null,
+                    null,
+                    null, // No endpoint => PSC disabled.
+                    _ => true);
+                this.IsDeviceCertificateAuthenticationEnabled = store.Read<bool>(
+                    "IsDeviceCertificateAuthenticationEnabled",
+                    "IsDeviceCertificateAuthenticationEnabled",
+                    null,
+                    null,
+                    false);
+
+                //
+                // User preferences. These cannot be overridden by policy.
+                //
+                this.DeviceCertificateSelector = store.Read<string>(
+                    "DeviceCertificateSelector",
+                    "DeviceCertificateSelector",
+                    null,
+                    null,
+                    DeviceEnrollment.DefaultDeviceCertificateSelector,
+                    selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _));
+                this.ConnectionLimit = store.Read<int>(
+                    "ConnectionLimit",
+                    "ConnectionLimit",
+                    null,
+                    null,
+                    16,
+                    Predicate.InRange(1, 32));
             }
         }
     }

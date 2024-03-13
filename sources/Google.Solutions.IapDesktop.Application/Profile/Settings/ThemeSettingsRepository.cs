@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -60,15 +60,19 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<bool> IsGdiScalingEnabled { get; }
     }
 
-    public class ThemeSettingsRepository : RegistryRepositoryBase<IThemeSettings>
+    public class ThemeSettingsRepository : RepositoryBase<IThemeSettings>
     {
-        public ThemeSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public ThemeSettingsRepository(RegistryKey key) 
+            : this(new RegistrySettingsStore(key))
         {
-            baseKey.ExpectNotNull(nameof(baseKey));
         }
 
-        protected override IThemeSettings LoadSettings(RegistryKey key)
-            => ThemeSettings.FromKey(key);
+        public ThemeSettingsRepository(ISettingsStore store) : base(store)
+        {
+        }
+
+        protected override IThemeSettings LoadSettings(ISettingsStore store)
+            => new ThemeSettings(store);
 
         //---------------------------------------------------------------------
         // Inner class.
@@ -76,8 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class ThemeSettings : IThemeSettings
         {
-            public ISetting<ApplicationTheme> Theme { get; private set; }
-            public ISetting<bool> IsGdiScalingEnabled { get; private set; }
+            public ISetting<ApplicationTheme> Theme { get; }
+            public ISetting<bool> IsGdiScalingEnabled { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
@@ -85,29 +89,20 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.IsGdiScalingEnabled
             };
 
-            private ThemeSettings()
+            internal ThemeSettings(ISettingsStore store)
             {
-            }
-
-            public static ThemeSettings FromKey(RegistryKey registryKey)
-            {
-                return new ThemeSettings()
-                {
-                    Theme = RegistryEnumSetting<ApplicationTheme>.FromKey(
-                        "Theme",
-                        "Theme",
-                        null,
-                        null,
-                        ApplicationTheme._Default,
-                        registryKey),
-                    IsGdiScalingEnabled = RegistryBoolSetting.FromKey(
-                        "IsGdiScalingEnabled",
-                        "IsGdiScalingEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey)
-                };
+                this.Theme = store.Read<ApplicationTheme>(
+                    "Theme",
+                    "Theme",
+                    null,
+                    null,
+                    ApplicationTheme._Default);
+                this.IsGdiScalingEnabled = store.Read<bool>(
+                    "IsGdiScalingEnabled",
+                    "IsGdiScalingEnabled",
+                    null,
+                    null,
+                    true);
             }
         }
     }

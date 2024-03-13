@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Settings
+namespace Google.Solutions.Settings.Collection
 {
     public interface IPersistentSettingsCollection : ISettingsCollection
     {

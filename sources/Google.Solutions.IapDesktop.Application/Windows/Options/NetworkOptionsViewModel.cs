@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.Diagnostics;
 
@@ -75,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             if (this.proxyServer != null || this.proxyPacAddress != null)
             {
                 this.proxyUsername = settings.ProxyUsername.Value;
-                this.proxyPassword = settings.ProxyPassword.ClearTextValue;
+                this.proxyPassword = settings.ProxyPassword.GetClearTextValue();
             }
         }
 
@@ -129,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             if (this.proxyPassword != null)
             {
-                settings.ProxyPassword.ClearTextValue = this.proxyPassword;
+                settings.ProxyPassword.SetClearTextValue(this.proxyPassword);
             }
             else
             {

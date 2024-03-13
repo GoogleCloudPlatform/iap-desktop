@@ -23,10 +23,11 @@ using Google.Apis.Json;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Security;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
@@ -36,16 +37,17 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface IAuthSettings : ISettingsCollection
     {
-        ISecureStringSetting Credentials { get; }
+        ISetting<SecureString> Credentials { get; }
     }
 
     /// <summary>
     /// Registry-backed repository for authentication-related settings.
     /// </summary>
     public class AuthSettingsRepository :
-        RegistryRepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
+        RepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {
-        public AuthSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public AuthSettingsRepository(RegistryKey baseKey) 
+            : base(new RegistrySettingsStore(baseKey))
         {
             baseKey.ExpectNotNull(nameof(baseKey));
         }
@@ -54,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         // SettingsRepositoryBase.
         //---------------------------------------------------------------------
 
-        protected override IAuthSettings LoadSettings(RegistryKey key)
-            => AuthSettings.FromKey(key);
+        protected override IAuthSettings LoadSettings(ISettingsStore store)
+            => new AuthSettings(store);
 
         //---------------------------------------------------------------------
         // IOidcOfflineCredentialStore
@@ -65,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
             credential = null;
 
-            var clearTextJson = GetSettings().Credentials.ClearTextValue;
+            var clearTextJson = GetSettings().Credentials.GetClearTextValue();
             if (!string.IsNullOrEmpty(clearTextJson))
             {
                 try
@@ -87,9 +89,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             credential.ExpectNotNull(nameof(credential));
 
             var settings = GetSettings();
-            settings.Credentials.ClearTextValue = NewtonsoftJsonSerializer
+            settings.Credentials.SetClearTextValue(NewtonsoftJsonSerializer
                 .Instance
-                .Serialize(CredentialBlob.FromOidcOfflineCredential(credential));
+                .Serialize(CredentialBlob.FromOidcOfflineCredential(credential)));
             SetSettings(settings);
         }
 
@@ -165,28 +167,21 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class AuthSettings : IAuthSettings
         {
-            public ISecureStringSetting Credentials { get; private set; }
+            public ISetting<SecureString> Credentials { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.Credentials
             };
 
-            private AuthSettings()
-            { }
-
-            public static AuthSettings FromKey(RegistryKey registryKey)
+            internal AuthSettings(ISettingsStore store)
             {
-                return new AuthSettings()
-                {
-                    Credentials = RegistrySecureStringSetting.FromKey(
-                        "Credentials",
-                        "JSON-formatted credentials",
-                        null,
-                        null,
-                        registryKey,
-                        DataProtectionScope.CurrentUser)
-                };
+                this.Credentials = store.Read<SecureString>(
+                    "Credentials",
+                    "JSON-formatted credentials",
+                    null,
+                    null,
+                    null);
             }
         }
     }

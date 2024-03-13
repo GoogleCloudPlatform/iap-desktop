@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
@@ -72,6 +73,7 @@ namespace Google.Solutions.Common.Util
         public static IEnumerable<T> ConcatItem<T>(this IEnumerable<T> target, T item)
         {
             Precondition.ExpectNotNull(target, nameof(target));
+
             foreach (var t in target)
             {
                 yield return t;
@@ -83,19 +85,33 @@ namespace Google.Solutions.Common.Util
         public static IEnumerable<KeyValuePair<string, string>> ToKeyValuePairs(
             this NameValueCollection collection)
         {
-            if (collection == null)
-            {
-                throw new ArgumentNullException(nameof(collection));
-            }
-
-            return collection.Cast<string>()
+            return collection
+                .ExpectNotNull(nameof(collection))
+                .Cast<string>()
                 .Select(key => new KeyValuePair<string, string>(key, collection[key]));
         }
 
         public static IDictionary<K, V> ToDictionary<K, V>(
             this IEnumerable<KeyValuePair<K, V>> entries)
         {
-            return entries.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            return entries
+                .ExpectNotNull(nameof(entries))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+
+        public static NameValueCollection ToNameValueCollection(
+            this IDictionary<string, string> dictionary)
+        {
+            dictionary.ExpectNotNull(nameof(dictionary));
+
+            var collection = new NameValueCollection();
+
+            foreach (var pair in dictionary)
+            {
+                collection.Add(pair.Key, pair.Value);
+            }
+
+            return collection;
         }
     }
 }

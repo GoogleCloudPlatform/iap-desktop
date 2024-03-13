@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
@@ -41,6 +40,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Settings.Collection;
+using Google.Solutions.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 {
@@ -360,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
             settings.RdpUsername.Value = "user";
-            settings.RdpPassword.ClearTextValue = "password";
+            settings.RdpPassword.SetClearTextValue("password");
             settings.RdpDomain.Value = "domain";
 
             var command = new ConnectAppProtocolWithClientCommand(
@@ -429,7 +430,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
             settings.RdpUsername.Value = "ignore";
-            settings.RdpPassword.ClearTextValue = "ignore";
+            settings.RdpPassword.SetClearTextValue("ignore");
             settings.RdpDomain.Value = "ignore";
 
             var userCredential = new NetworkCredential("user", "password", "domain");

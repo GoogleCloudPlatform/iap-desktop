@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             //
             var credentialsExist =
                 !string.IsNullOrEmpty(settings.RdpUsername.Value) &&
-                !string.IsNullOrEmpty(settings.RdpPassword.ClearTextValue);
+                !string.IsNullOrEmpty(settings.RdpPassword.GetClearTextValue());
 
             if (allowedBehavior == RdpCredentialGenerationBehavior.Force
                 && await IsGrantedPermissionToGenerateCredentials(

@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options

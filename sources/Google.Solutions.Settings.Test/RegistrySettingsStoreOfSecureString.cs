@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -28,22 +28,11 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
-    public class TestRegistrySecureStringSetting
+    public class RegistrySettingsStoreOfSecureString : RegistrySettingsStoreBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
         //---------------------------------------------------------------------
         // IsSpecified.
         //---------------------------------------------------------------------
@@ -51,26 +40,28 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueChanged_ThenIsSpecifiedIsTrue()
         {
-            var setting = RegistrySecureStringSetting.FromKey(
-                "test",
-                "title",
-                "description",
-                "category",
-                null,
-                DataProtectionScope.CurrentUser);
+            using (var key = CreateSettingsKey())
+            {
+                var setting = key.Read<SecureString>(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    null);
 
-            Assert.IsFalse(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
 
-            setting.ClearTextValue = "value";
+                setting.SetClearTextValue("value");
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsFalse(setting.IsDefault);
 
-            setting.Value = setting.DefaultValue;
+                setting.Value = setting.DefaultValue;
 
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsTrue(setting.IsDefault);
+                Assert.IsTrue(setting.IsSpecified);
+                Assert.IsTrue(setting.IsDefault);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -78,20 +69,19 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueDoesNotExist_ThenReadUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.IsNull(setting.Value);
@@ -102,20 +92,19 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
+        public void WhenRegistryKeyIsNull_ThenReadUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    null,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.IsNull(setting.Value);
@@ -126,26 +115,25 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenRegistryValueContainsGibberish_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueContainsGibberish_ThenReadUsesDefaults()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue("test", Encoding.ASCII.GetBytes("gibberish"), RegistryValueKind.Binary);
+                key.BackingKey.SetValue("test", Encoding.ASCII.GetBytes("gibberish"), RegistryValueKind.Binary);
 
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.IsNull(setting.Value);
-                Assert.IsNull(setting.ClearTextValue);
+                Assert.IsNull(setting.GetClearTextValue());
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -153,38 +141,36 @@ namespace Google.Solutions.Settings.Test.Registry
         }
 
         [Test]
-        public void WhenRegistryValueExists_ThenFromKeyUsesValue()
+        public void WhenRegistryValueExists_ThenReadUsesValue()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = SecureStringExtensions.FromClearText("red");
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNotNull(key.GetValue("test"));
+                Assert.IsNotNull(key.BackingKey.GetValue("test"));
 
                 // Now read again.
 
-                setting = RegistrySecureStringSetting.FromKey(
+                setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("title", setting.DisplayName);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("red", setting.ClearTextValue);
+                Assert.AreEqual("red", setting.GetClearTextValue());
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -197,55 +183,52 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenSettingIsNonNull_ThenSaveUpdatesRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = SecureStringExtensions.FromClearText("green");
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNotNull(key.GetValue("test"));
+                Assert.IsNotNull(key.BackingKey.GetValue("test"));
             }
         }
 
         [Test]
         public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = SecureStringExtensions.FromClearText("red");
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNotNull(key.GetValue("test"));
+                Assert.IsNotNull(key.BackingKey.GetValue("test"));
 
                 // Now write again.
 
-                setting = RegistrySecureStringSetting.FromKey(
+                setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = setting.DefaultValue;
-                setting.Save(key);
+                key.Write(setting);
 
-                Assert.IsNull(key.GetValue("test"));
+                Assert.IsNull(key.BackingKey.GetValue("test"));
             }
         }
 
@@ -256,15 +239,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = null;
 
@@ -276,15 +258,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueAndDefaultAreNull_ThenSetValueSucceedsAndSettingIsNotDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = null;
 
@@ -296,15 +277,14 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenValueDiffersFromDefault_ThenSetValueSucceedsAndSettingIsDirty()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 setting.Value = SecureStringExtensions.FromClearText("yellow");
 
@@ -318,36 +298,16 @@ namespace Google.Solutions.Settings.Test.Registry
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistrySecureStringSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
-
-                setting.AnyValue = "secret";
-
-                Assert.AreEqual("secret", setting.ClearTextValue);
-            }
-        }
-
-        [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var setting = RegistrySecureStringSetting.FromKey(
+                var setting = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = 1);
             }
@@ -360,24 +320,22 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentAndChildDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistrySecureStringSetting.FromKey(
+                var parent = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistrySecureStringSetting.FromKey(
+                var child = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -393,33 +351,30 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistrySecureStringSetting.FromKey(
+                var parent = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
-                parent.ClearTextValue = "red";
+                    null);
+                parent.SetClearTextValue("red");
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistrySecureStringSetting.FromKey(
+                var child = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-
-                Assert.AreEqual("red", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("red", effective.Value.AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());
                 Assert.IsTrue(effective.IsDefault);
             }
@@ -428,31 +383,27 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenChildIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistrySecureStringSetting.FromKey(
+                var parent = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
-                key.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("yellow")));
-                var child = RegistrySecureStringSetting.FromKey(
+                RegistryValueAccessor.Create<SecureString>("test")
+                    .Write(
+                        key.BackingKey,
+                        SecureStringExtensions.FromClearText("yellow"));
+                var child = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -460,7 +411,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("yellow", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("yellow", effective.Value.AsClearText());
                 Assert.IsNull(effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
@@ -469,37 +420,31 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentAndChildNonDefault_ThenOverlayByReturnsCorrectValues()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                key.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("red")));
-                var parent = RegistrySecureStringSetting.FromKey(
+                RegistryValueAccessor.Create<SecureString>("test")
+                    .Write(
+                        key.BackingKey,
+                        SecureStringExtensions.FromClearText("red"));
+                var parent = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
-                key.SetValue(
-                    "test",
-                    RegistrySecureStringSetting.Encrypt(
-                        "test",
-                        DataProtectionScope.CurrentUser,
-                        SecureStringExtensions.FromClearText("green")));
-                var child = RegistrySecureStringSetting.FromKey(
+                RegistryValueAccessor.Create<SecureString>("test")
+                    .Write(
+                        key.BackingKey,
+                        SecureStringExtensions.FromClearText("green"));
+                var child = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -507,7 +452,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("green", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("green", effective.Value.AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());
                 Assert.IsFalse(effective.IsDefault);
             }
@@ -516,45 +461,42 @@ namespace Google.Solutions.Settings.Test.Registry
         [Test]
         public void WhenParentIsNonDefaultAndChildSetToOriginalDefault_ThenIsDefaultReturnsFalse()
         {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var key = CreateSettingsKey())
             {
-                var parent = RegistrySecureStringSetting.FromKey(
+                var parent = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
-                parent.ClearTextValue = "red";
+                    null);
+                parent.SetClearTextValue("red");
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = RegistrySecureStringSetting.FromKey(
+                var intermediate = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = RegistrySecureStringSetting.FromKey(
+                var child = key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
                     "category",
-                    key,
-                    DataProtectionScope.CurrentUser);
+                    null);
 
-                var effective = (RegistrySecureStringSetting)parent
+                var effective = parent
                     .OverlayBy(intermediate)
                     .OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.ClearTextValue = "black";
+                effective.SetClearTextValue("black");
 
-                Assert.AreEqual("black", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("black", effective.Value.AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());
                 Assert.IsFalse(effective.IsDefault);
             }

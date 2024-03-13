@@ -24,11 +24,12 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Settings;
-using Google.Solutions.Settings.Registry;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using static Google.Solutions.IapDesktop.Extensions.Session.Settings.TerminalSettingsRepository;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
@@ -67,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(typeof(IRepository<ISshSettings>), ServiceLifetime.Singleton)]
-    public class SshSettingsRepository : PolicyEnabledRegistryRepository<ISshSettings>
+    public class SshSettingsRepository : GroupPolicyAwareRepository<ISshSettings>
     {
         private readonly UserProfile.SchemaVersion schemaVersion;
 
@@ -92,18 +93,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             profile.ExpectNotNull(nameof(profile));
         }
 
-        protected override ISshSettings LoadSettings(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey)
-        {
-            return SshSettings.FromKey(
-                settingsKey,
-                machinePolicyKey,
-                userPolicyKey,
-                this.schemaVersion);
-        }
 
+        protected override ISshSettings LoadSettings(ISettingsStore store)
+            => new SshSettings(store, this.schemaVersion);
 
         //---------------------------------------------------------------------
         // Inner class.
@@ -124,76 +116,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.UsePersistentKey
             };
 
-            private SshSettings()
-            {
-            }
-
-            public static SshSettings FromKey(
-                RegistryKey settingsKey,
-                RegistryKey machinePolicyKey,
-                RegistryKey userPolicyKey,
+            internal SshSettings(
+                ISettingsStore store,
                 UserProfile.SchemaVersion schemaVersion)
             {
-                return new SshSettings()
-                {
-                    //
-                    // Settings that can be overridden by policy.
-                    //
-                    // NB. Default values must be kept consistent with the
-                    //     ADMX policy templates!
-                    // NB. Machine policies override user policies, and
-                    //     user policies override settings.
-                    //
+                //
+                // Settings that can be overridden by policy.
+                //
+                // NB. Default values must be kept consistent with the
+                //     ADMX policy templates!
+                //
 
-                    // 
-                    // NB. Initially, the default key type was Rsa3072,
-                    // but rsa-ssh is deprecated and many users's machines
-                    // aren't allowed to use RSA. Therefore, use ECDSA as
-                    // default for newly created profiles.
-                    //
-                    PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
-                            "PublicKeyType",
-                            "PublicKeyType",
-                            "Key type for public key authentication",
-                            null,
-                            schemaVersion >= UserProfile.SchemaVersion.Version229
-                                ? SshKeyType.EcdsaNistp384
-                                : SshKeyType.Rsa3072,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    PublicKeyValidity = RegistryDwordSetting.FromKey(
-                            "PublicKeyValidity",
-                            "PublicKeyValidity",
-                            "Validity of (OS Login/Metadata) keys in seconds",
-                            null,
-                            (int)SshParameters.DefaultPublicKeyValidity.TotalSeconds,
-                            settingsKey,
-                            (int)TimeSpan.FromMinutes(1).TotalSeconds,
-                            int.MaxValue)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    UsePersistentKey = RegistryBoolSetting.FromKey(
-                            "UsePersistentKey",
-                            "UsePersistentKey",
-                            "Persist SSH signing key",
-                            null,
-                            true,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
+                // 
+                // NB. Initially, the default key type was Rsa3072,
+                // but rsa-ssh is deprecated and many users's machines
+                // aren't allowed to use RSA. Therefore, use ECDSA as
+                // default for newly created profiles.
+                //
+                this.PublicKeyType = store.Read<SshKeyType>(
+                    "PublicKeyType",
+                    "PublicKeyType",
+                    "Key type for public key authentication",
+                    null,
+                    schemaVersion >= UserProfile.SchemaVersion.Version229
+                        ? SshKeyType.EcdsaNistp384
+                        : SshKeyType.Rsa3072);
+                this.PublicKeyValidity = store.Read<int>(
+                    "PublicKeyValidity",
+                    "PublicKeyValidity",
+                    "Validity of (OS Login/Metadata) keys in seconds",
+                    null,
+                    (int)SshParameters.DefaultPublicKeyValidity.TotalSeconds,
+                    Predicate.InRange(
+                        (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                        int.MaxValue));
+                this.UsePersistentKey = store.Read<bool>(
+                    "UsePersistentKey",
+                    "UsePersistentKey",
+                    "Persist SSH signing key",
+                    null,
+                    true);
 
-                    //
-                    // User preferences. These cannot be overridden by policy.
-                    //
-                    IsPropagateLocaleEnabled = RegistryBoolSetting.FromKey(
-                        "IsPropagateLocaleEnabled",
-                        "IsPropagateLocaleEnabled",
-                        null,
-                        null,
-                        true,
-                        settingsKey)
-                };
+                //
+                // User preferences. These cannot be overridden by policy.
+                //
+                this.IsPropagateLocaleEnabled = store.Read<bool>(
+                    "IsPropagateLocaleEnabled",
+                    "IsPropagateLocaleEnabled",
+                    null,
+                    null,
+                    true);
             }
         }
     }

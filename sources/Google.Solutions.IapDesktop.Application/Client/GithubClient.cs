@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     var page = await this.restAdapter
                         .GetAsync<List<Release>>(
                             new Uri(
-                                $"https://api.github.com/repos/{Repository}/releases?" +
+                                $"https://api.github.com/repos/{this.Repository}/releases?" +
                                 $"per_page={PageSize}&page={pageNumber}"),
                             cancellationToken)
                         .ConfigureAwait(false);
@@ -186,7 +186,10 @@ namespace Google.Solutions.IapDesktop.Application.Client
                         catch (Exception e)
                         {
                             // Ignore in Release builds.
-                            Debug.Fail(e.FullMessage());
+                            if (!Install.IsExecutingTests)
+                            {
+                                Debug.Fail(e.FullMessage());
+                            }
                         }
                     }
 

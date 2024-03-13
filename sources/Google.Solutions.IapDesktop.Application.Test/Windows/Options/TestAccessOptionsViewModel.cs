@@ -27,9 +27,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
-using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -45,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //
         private const string SamplePscEndpoint = "www.googleapis.com";
 
-        private IRepository<IAccessSettings> CreateSettingsRepository(
+        private IRepository<IAccessSettings> CreateSettingsRepository( 
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
