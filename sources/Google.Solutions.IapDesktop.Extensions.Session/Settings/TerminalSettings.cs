@@ -119,18 +119,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public class TerminalSettings : ITerminalSettings
         {
-            public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; private set; }
-            public ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; private set; }
-            public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; private set; }
-            public ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; private set; }
-            public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; private set; }
-            public ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; private set; }
-            public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; private set; }
-            public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
-            public ISetting<string> FontFamily { get; private set; }
-            public ISetting<int> FontSizeAsDword { get; private set; }
-            public ISetting<int> ForegroundColorArgb { get; private set; }
-            public ISetting<int> BackgroundColorArgb { get; private set; }
+            public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
+            public ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; }
+            public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
+            public ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; }
+            public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
+            public ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; }
+            public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
+            public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+            public ISetting<string> FontFamily { get; }
+            public ISetting<int> FontSizeAsDword { get; }
+            public ISetting<int> ForegroundColorArgb { get; }
+            public ISetting<int> BackgroundColorArgb { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

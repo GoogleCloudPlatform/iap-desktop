@@ -178,19 +178,19 @@ namespace Google.Solutions.Settings
 
         protected abstract bool IsValid(T value);
 
-        protected abstract T Parse(string value);// TODO: remove
+        protected abstract T Parse(string value);
 
         protected abstract SettingBase<T> CreateNew( // TODO: remove
             T value,
             T defaultValue,
             bool readOnly);
 
-        public virtual SettingBase<T> CreateSimilar( // TODO: make abstract
+        public abstract SettingBase<T> CreateSimilar(
             T value,
             T defaultValue,
             bool isSpecified,
-            bool readOnly) => throw new NotImplementedException();
+            bool readOnly);
 
-        public virtual bool IsCurrentValueValid => throw new NotImplementedException();// TODO: make abstract
+        public abstract bool IsCurrentValueValid { get; }
     }
 }

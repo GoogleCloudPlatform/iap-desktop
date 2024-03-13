@@ -81,8 +81,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class ThemeSettings : IThemeSettings
         {
-            public ISetting<ApplicationTheme> Theme { get; private set; }
-            public ISetting<bool> IsGdiScalingEnabled { get; private set; }
+            public ISetting<ApplicationTheme> Theme { get; }
+            public ISetting<bool> IsGdiScalingEnabled { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

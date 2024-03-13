@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class AuthSettings : IAuthSettings
         {
-            public ISetting<SecureString> Credentials { get; private set; }
+            public ISetting<SecureString> Credentials { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

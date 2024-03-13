@@ -105,39 +105,39 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class ApplicationSettings : IApplicationSettings
         {
-            public ISetting<bool> IsMainWindowMaximized { get; private set; }
+            public ISetting<bool> IsMainWindowMaximized { get; }
 
-            public ISetting<int> MainWindowHeight { get; private set; }
+            public ISetting<int> MainWindowHeight { get; }
 
-            public ISetting<int> MainWindowWidth { get; private set; }
+            public ISetting<int> MainWindowWidth { get; }
 
-            public ISetting<bool> IsUpdateCheckEnabled { get; private set; }
+            public ISetting<bool> IsUpdateCheckEnabled { get; }
 
-            public ISetting<bool> IsTelemetryEnabled { get; private set; }
+            public ISetting<bool> IsTelemetryEnabled { get; }
 
-            public ISetting<long> LastUpdateCheck { get; private set; }
+            public ISetting<long> LastUpdateCheck { get; }
 
-            public ISetting<bool> IsPreviewFeatureSetEnabled { get; private set; }
+            public ISetting<bool> IsPreviewFeatureSetEnabled { get; }
 
-            public ISetting<string> ProxyUrl { get; private set; }
+            public ISetting<string> ProxyUrl { get; }
 
-            public ISetting<string> ProxyPacUrl { get; private set; }
+            public ISetting<string> ProxyPacUrl { get; }
 
-            public ISetting<string> ProxyUsername { get; private set; }
+            public ISetting<string> ProxyUsername { get; }
 
-            public ISetting<SecureString> ProxyPassword { get; private set; }
+            public ISetting<SecureString> ProxyPassword { get; }
             
-            public ISetting<int> ProxyAuthenticationRetries { get; private set; }
+            public ISetting<int> ProxyAuthenticationRetries { get; }
 
-            public ISetting<SecurityProtocolType> TlsVersions { get; private set; }
+            public ISetting<SecurityProtocolType> TlsVersions { get; }
 
-            public ISetting<string> FullScreenDevices { get; private set; }
+            public ISetting<string> FullScreenDevices { get; }
 
-            public ISetting<string> CollapsedProjects { get; private set; }
+            public ISetting<string> CollapsedProjects { get; }
 
-            public ISetting<bool> IsSurveyEnabled { get; private set; }
+            public ISetting<bool> IsSurveyEnabled { get; }
 
-            public ISetting<string> LastSurveyVersion { get; private set; }
+            public ISetting<string> LastSurveyVersion { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {

@@ -89,15 +89,15 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         private class AccessSettings : IAccessSettings
         {
 
-            public ISetting<string> WorkforcePoolProvider { get; private set; }
+            public ISetting<string> WorkforcePoolProvider { get; }
 
-            public ISetting<string> PrivateServiceConnectEndpoint { get; private set; }
+            public ISetting<string> PrivateServiceConnectEndpoint { get; }
 
-            public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; private set; }
+            public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
-            public ISetting<string> DeviceCertificateSelector { get; private set; }
+            public ISetting<string> DeviceCertificateSelector { get; }
 
-            public ISetting<int> ConnectionLimit { get; private set; }
+            public ISetting<int> ConnectionLimit { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
