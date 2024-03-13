@@ -186,7 +186,10 @@ namespace Google.Solutions.IapDesktop.Application.Client
                         catch (Exception e)
                         {
                             // Ignore in Release builds.
-                            Debug.Fail(e.FullMessage());
+                            if (!Install.IsExecutingTests)
+                            {
+                                Debug.Fail(e.FullMessage());
+                            }
                         }
                     }
 

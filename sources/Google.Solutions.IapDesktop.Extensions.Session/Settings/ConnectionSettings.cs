@@ -285,54 +285,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// Create settings from a URL.
         /// </summary>
         public ConnectionSettings(IapRdpUrl url)
-            : this(url.Instance)
+            : this(
+                  url.Instance,
+
+                  //
+                  // Convert query into a dictionary and use that as a
+                  // source.
+                  //
+                  // NB. Parameters are case-insensitive.
+                  //
+                  new DictionarySettingsStore(url
+                      .Parameters
+                      .ToKeyValuePairs()
+                      .Where(kvp => kvp.Key != null && kvp.Value != null)
+                      .ToDictionary(
+                        kvp => kvp.Key, 
+                        kvp => kvp.Value,
+                        StringComparer.OrdinalIgnoreCase)))
         {
-            //
-            // Apply values from URL.
-            //
-            // NB. Ignore passwords in URLs.
-            //
-            foreach (var setting in this.Settings
-                .Where(s => !(s is ISetting<SecureString>))
-                .Cast<IAnySetting>())
-            {
-                var value = url.Parameters.Get(setting.Key);
-                if (!string.IsNullOrEmpty(value))
-                {
-                    try
-                    {
-                        setting.AnyValue = value;
-                    }
-                    catch (Exception)
-                    {
-                        // Ignore, keeping the previous value.
-                    }
-                }
-            }
         }
 
         public NameValueCollection ToUrlQuery()
         {
-            // NB. Do not allow passwords to leak into URLs.
-            var collection = new NameValueCollection();
+            var parameters = new Dictionary<string, string>();
+            var store = new DictionarySettingsStore(parameters);
+
             foreach (var setting in this.Settings
                 .Where(s => !(s is ISetting<SecureString>))
-                .Cast<IAnySetting>()
+                .Cast<IAnySetting>() // Do not allow passwords to leak into URLs.
                 .Where(s => !s.IsDefault))
             {
-                if (setting.AnyValue is Enum enumValue)
-                {
-                    // Use numeric value instead of symbol because
-                    // the numeric value is stable.
-                    collection.Add(setting.Key, ((int)setting.AnyValue).ToString());
-                }
-                else
-                {
-                    collection.Add(setting.Key, setting.AnyValue.ToString());
-                }
+                store.Write(setting);
             }
 
-            return collection;
+            return parameters.ToNameValueCollection();
         }
 
         internal ConnectionSettings OverlayBy(ConnectionSettings overlay)
