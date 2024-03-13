@@ -513,8 +513,7 @@ namespace Google.Solutions.Settings.Test
             using (var policyKey = CreatePolicySettingsKey())
             {
                 var mergedKey = new MergedSettingsStore(
-                    policyKey,
-                    key,
+                    new[] { key, policyKey },
                     MergedSettingsStore.MergeBehavior.Policy);
 
                 key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
@@ -539,8 +538,7 @@ namespace Google.Solutions.Settings.Test
             using (var policyKey = CreatePolicySettingsKey())
             {
                 var mergedKey = new MergedSettingsStore(
-                    policyKey,
-                    key,
+                    new[] { key, policyKey },
                     MergedSettingsStore.MergeBehavior.Policy);
 
                 key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
@@ -566,8 +564,7 @@ namespace Google.Solutions.Settings.Test
             using (var policyKey = CreatePolicySettingsKey())
             {
                 var mergedKey = new MergedSettingsStore(
-                    policyKey,
-                    key,
+                    new[] { key, policyKey },
                     MergedSettingsStore.MergeBehavior.Policy);
 
                 key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);

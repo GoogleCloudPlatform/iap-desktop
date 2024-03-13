@@ -28,16 +28,6 @@ namespace Google.Solutions.Settings.Test
     [TestFixture]
     public class TestMergedSettingsStore
     {
-        protected static MergedSettingsStore CreateMergedSettingsKey(
-            RegistrySettingsStore overlayStore,
-            RegistrySettingsStore lesserStore,
-            MergedSettingsStore.MergeBehavior mergeBehavior)
-        {
-            return new MergedSettingsStore(
-                overlayStore,
-                lesserStore,
-                mergeBehavior);
-        }
 
         //---------------------------------------------------------------------
         // Read - Policy.
@@ -47,8 +37,11 @@ namespace Google.Solutions.Settings.Test
         public void PolicyKeyValueEmpty_LesserKeyValueEmpty()
         {
             var mergedKey = new MergedSettingsStore(
-                DictionarySettingsStore.Empty(),
-                DictionarySettingsStore.Empty(),
+                new[] 
+                {
+                    DictionarySettingsStore.Empty(),
+                    DictionarySettingsStore.Empty()
+                },
                 MergedSettingsStore.MergeBehavior.Policy);
 
             var defaultValue = 1;
@@ -71,8 +64,11 @@ namespace Google.Solutions.Settings.Test
             var policyStore = DictionarySettingsStore.Empty();
             
             var mergedKey = new MergedSettingsStore(
-                policyStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    policyStore
+                },
                 MergedSettingsStore.MergeBehavior.Policy);
 
             var defaultValue = 1;
@@ -95,8 +91,11 @@ namespace Google.Solutions.Settings.Test
             });
 
             var mergedKey = new MergedSettingsStore(
-                policyStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    policyStore
+                },
                 MergedSettingsStore.MergeBehavior.Policy);
 
             var defaultValue = 1;
@@ -116,20 +115,28 @@ namespace Google.Solutions.Settings.Test
             {
                 { "test", "2" }
             }); ;
-            var policyStore = new DictionarySettingsStore(new Dictionary<string, string>
+            var policyStore1 = new DictionarySettingsStore(new Dictionary<string, string>
             {
                 { "test", "3" }
             });
+            var policyStore2 = new DictionarySettingsStore(new Dictionary<string, string>
+            {
+                { "test", "4" }
+            });
 
             var mergedKey = new MergedSettingsStore(
-                policyStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    policyStore1,
+                    policyStore2,
+                },
                 MergedSettingsStore.MergeBehavior.Policy);
 
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(3, setting.Value);
+            Assert.AreEqual(4, setting.Value);
             Assert.AreEqual(defaultValue, setting.DefaultValue);
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
@@ -144,8 +151,11 @@ namespace Google.Solutions.Settings.Test
         public void OverlayKeyValueEmpty_LesserKeyValueEmpty()
         {
             var mergedKey = new MergedSettingsStore(
-                DictionarySettingsStore.Empty(),
-                DictionarySettingsStore.Empty(),
+                new[]
+                {
+                    DictionarySettingsStore.Empty(),
+                    DictionarySettingsStore.Empty()
+                },
                 MergedSettingsStore.MergeBehavior.Overlay);
 
             var defaultValue = 1;
@@ -168,8 +178,11 @@ namespace Google.Solutions.Settings.Test
             var overlayStore = DictionarySettingsStore.Empty();
 
             var mergedKey = new MergedSettingsStore(
-                overlayStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    overlayStore
+                },
                 MergedSettingsStore.MergeBehavior.Overlay);
 
             var defaultValue = 1;
@@ -192,8 +205,11 @@ namespace Google.Solutions.Settings.Test
             });
 
             var mergedKey = new MergedSettingsStore(
-                overlayStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    overlayStore
+                },
                 MergedSettingsStore.MergeBehavior.Overlay);
 
             var defaultValue = 1;
@@ -212,22 +228,30 @@ namespace Google.Solutions.Settings.Test
             var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
                 { "test", "2" }
-            }); ;
-            var overlayStore = new DictionarySettingsStore(new Dictionary<string, string>
+            });
+            var overlayStore1 = new DictionarySettingsStore(new Dictionary<string, string>
             {
                 { "test", "3" }
             });
+            var overlayStore2 = new DictionarySettingsStore(new Dictionary<string, string>
+            {
+                { "test", "4" }
+            });
 
             var mergedKey = new MergedSettingsStore(
-                overlayStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    overlayStore1,
+                    overlayStore2
+                },
                 MergedSettingsStore.MergeBehavior.Overlay);
 
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(3, setting.Value);
-            Assert.AreEqual(2, setting.DefaultValue);
+            Assert.AreEqual(4, setting.Value);
+            Assert.AreEqual(3, setting.DefaultValue);
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);
@@ -244,8 +268,13 @@ namespace Google.Solutions.Settings.Test
             var lesserStore = DictionarySettingsStore.Empty();
 
             var mergedKey = new MergedSettingsStore(
-                policyStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    DictionarySettingsStore.Empty(),
+                    DictionarySettingsStore.Empty(),
+                    policyStore,
+                },
                 MergedSettingsStore.MergeBehavior.Policy);
 
             var setting = mergedKey.Read("test", "test", null, null, 0);
@@ -263,8 +292,11 @@ namespace Google.Solutions.Settings.Test
             var lesserStore = DictionarySettingsStore.Empty();
 
             var mergedKey = new MergedSettingsStore(
-                overlayStore,
-                lesserStore,
+                new[]
+                {
+                    lesserStore,
+                    overlayStore,
+                },
                 MergedSettingsStore.MergeBehavior.Overlay);
 
             var setting = mergedKey.Read("test", "test", null, null, 0);
@@ -283,8 +315,11 @@ namespace Google.Solutions.Settings.Test
         public void ClearThrowsException()
         {
             var mergedKey = new MergedSettingsStore(
-                DictionarySettingsStore.Empty(),
-                DictionarySettingsStore.Empty(),
+                new[]
+                {
+                    DictionarySettingsStore.Empty(),
+                    DictionarySettingsStore.Empty()
+                },
                 MergedSettingsStore.MergeBehavior.Policy);
 
             Assert.Throws<InvalidOperationException>(

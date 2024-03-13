@@ -5,6 +5,10 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Library for settings management</Description>
 
+    <!-- 
+      Disable checks because C# 8 isn't expressive enough to
+      deal with the various data conversions used in this library.
+    -->
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
