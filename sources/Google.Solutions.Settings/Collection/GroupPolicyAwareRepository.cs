@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
+using System.Collections.Generic;
 
 namespace Google.Solutions.Settings.Collection
 {
@@ -45,36 +46,24 @@ namespace Google.Solutions.Settings.Collection
             // NB. Policy keys might be null.
             //
 
-            if (machinePolicyKey != null && userPolicyKey != null)
+            var storesOrderedByImportance = new List<ISettingsStore>(3)
             {
-                var policy = new MergedSettingsStore(
-                    new RegistrySettingsStore(machinePolicyKey),
-                    new RegistrySettingsStore(userPolicyKey),
-                    MergedSettingsStore.MergeBehavior.Policy);
+                new RegistrySettingsStore(settingsKey)
+            };
 
-                return new MergedSettingsStore(
-                    policy,
-                    new RegistrySettingsStore(settingsKey),
-                    MergedSettingsStore.MergeBehavior.Policy);
-            }
-            else if (machinePolicyKey != null)
+            if (userPolicyKey != null)
             {
-                return new MergedSettingsStore(
-                    new RegistrySettingsStore(machinePolicyKey),
-                    new RegistrySettingsStore(settingsKey),
-                    MergedSettingsStore.MergeBehavior.Policy);
+                storesOrderedByImportance.Add(new RegistrySettingsStore(userPolicyKey));
             }
-            else if (userPolicyKey != null)
+
+            if (machinePolicyKey != null)
             {
-                return new MergedSettingsStore(
-                    new RegistrySettingsStore(userPolicyKey),
-                    new RegistrySettingsStore(settingsKey),
-                    MergedSettingsStore.MergeBehavior.Policy);
+                storesOrderedByImportance.Add(new RegistrySettingsStore(machinePolicyKey));
             }
-            else
-            {
-                return new RegistrySettingsStore(settingsKey);
-            }
+
+            return new MergedSettingsStore(
+                storesOrderedByImportance, 
+                MergedSettingsStore.MergeBehavior.Policy);
         }
 
         protected GroupPolicyAwareRepository(
@@ -87,7 +76,10 @@ namespace Google.Solutions.Settings.Collection
 
         public bool IsPolicyPresent 
         {
-            get => this.Store is MergedSettingsStore;
+            //
+            // When there's more than one store, there's a policy in play.
+            //
+            get => ((MergedSettingsStore)this.Store).Stores.Count > 1;
         }
     }
 }

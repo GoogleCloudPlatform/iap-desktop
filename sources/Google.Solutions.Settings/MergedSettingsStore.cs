@@ -21,24 +21,25 @@
 
 using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.Settings
 {
     /// <summary>
-    /// Merges settings from two registry keys.
+    /// Merges settings from multiple stores.
     /// </summary>
     public class MergedSettingsStore : ISettingsStore
     {
         /// <summary>
-        /// Store whose settings are being "overlaid".
+        /// Stores, in order of increasing importance:
+        /// 
+        /// 1. "Lesser" store whose settings are being overlaid.
+        /// (...)
+        /// N. Store containing the most important overlay settings.
         /// </summary>
-        private readonly ISettingsStore lesserStore;
-
-        /// <summary>
-        /// Store containing the overlay settings.
-        /// </summary>
-        private readonly ISettingsStore overlayStore;
+        internal IReadOnlyCollection<ISettingsStore> Stores { get; }
 
         /// <summary>
         /// Overlay behavior to apply.
@@ -61,44 +62,22 @@ namespace Google.Solutions.Settings
             Policy
         }
 
+        /// <param name="stores">Stores, in order of increasing importance</param>
+        /// <param name="mergeBehavior">Overlay behavior to apply</param>
         public MergedSettingsStore(
-            ISettingsStore overlayStore,
-            ISettingsStore lesserStore,
+            IReadOnlyCollection<ISettingsStore> stores,
             MergeBehavior mergeBehavior)
         {
-            this.overlayStore = overlayStore.ExpectNotNull(nameof(overlayStore));
-            this.lesserStore = lesserStore.ExpectNotNull(nameof(lesserStore));
+            this.Stores = stores.ExpectNotNull(nameof(stores));
             this.mergeBehavior = mergeBehavior;
+
+            Precondition.Expect(stores.Any(), nameof(stores));
         }
 
-        //---------------------------------------------------------------------
-        // ISettingsStore.
-        //---------------------------------------------------------------------
-
-        public ISetting<T> Read<T>(
-            string name,
-            string displayName,
-            string description,
-            string category,
-            T defaultValue,
-            Predicate<T> validate = null)
+        internal SettingBase<T> Merge<T>(
+            SettingBase<T> lesserSetting,
+            SettingBase<T> overlaySetting)
         {
-            var lesserSetting = (SettingBase<T>)this.lesserStore.Read(
-                name,
-                displayName,
-                description,
-                category,
-                defaultValue,
-                validate);
-
-            var overlaySetting = (SettingBase<T>)this.overlayStore.Read(
-                name,
-                displayName,
-                description,
-                category,
-                defaultValue,
-                validate);
-
             if (this.mergeBehavior == MergeBehavior.Policy)
             {
                 if (!overlaySetting.IsSpecified || !overlaySetting.IsCurrentValueValid)
@@ -150,18 +129,60 @@ namespace Google.Solutions.Settings
             }
         }
 
+        //---------------------------------------------------------------------
+        // ISettingsStore.
+        //---------------------------------------------------------------------
+
+        public ISetting<T> Read<T>(
+            string name,
+            string displayName,
+            string description,
+            string category,
+            T defaultValue,
+            Predicate<T> validate = null)
+        {
+            //
+            // Start with the least important setting.
+            //
+            var setting = (SettingBase<T>)this.Stores.First().Read(
+                name,
+                displayName,
+                description,
+                category,
+                defaultValue,
+                validate);
+
+            //
+            // Apply overlays.
+            //
+            foreach (var overlayStore in this.Stores.Skip(1))
+            {
+                var overlaySetting = (SettingBase<T>)overlayStore.Read(
+                    name,
+                    displayName,
+                    description,
+                    category,
+                    defaultValue,
+                    validate);
+
+                setting = Merge(setting, overlaySetting);
+            }
+
+            return setting;
+        }
+
         public void Write(ISetting setting)
         {
             if (this.mergeBehavior == MergeBehavior.Policy)
             {
                 //
-                // Never try to write to the policy.
+                // Never try to write to a policy.
                 //
-                this.lesserStore.Write(setting);
+                this.Stores.First().Write(setting);
             }
             else
             {
-                this.overlayStore.Write(setting);
+                this.Stores.Last().Write(setting);
             }
         }
 
@@ -177,8 +198,10 @@ namespace Google.Solutions.Settings
 
         protected virtual void Dispose(bool disposing)
         {
-            this.lesserStore.Dispose();
-            this.overlayStore.Dispose();
+            foreach (var store in this.Stores)
+            {
+                store.Dispose();
+            }
         }
 
         public void Dispose()

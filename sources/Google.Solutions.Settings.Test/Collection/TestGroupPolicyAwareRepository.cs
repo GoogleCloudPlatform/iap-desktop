@@ -93,7 +93,6 @@ namespace Google.Solutions.Settings.Test.Collection
                 null);
 
             Assert.IsFalse(repository.IsPolicyPresent);
-            Assert.IsInstanceOf<RegistrySettingsStore>(repository.Store);
         }
 
         [Test]
@@ -105,7 +104,6 @@ namespace Google.Solutions.Settings.Test.Collection
                 null);
 
             Assert.IsTrue(repository.IsPolicyPresent);
-            Assert.IsInstanceOf<MergedSettingsStore>(repository.Store);
         }
 
         [Test]
@@ -117,7 +115,6 @@ namespace Google.Solutions.Settings.Test.Collection
                 CreateUserPolicyKey());
 
             Assert.IsTrue(repository.IsPolicyPresent);
-            Assert.IsInstanceOf<MergedSettingsStore>(repository.Store);
         }
 
         [Test]
@@ -129,7 +126,6 @@ namespace Google.Solutions.Settings.Test.Collection
                 CreateUserPolicyKey());
 
             Assert.IsTrue(repository.IsPolicyPresent);
-            Assert.IsInstanceOf<MergedSettingsStore>(repository.Store);
         }
     }
 }
