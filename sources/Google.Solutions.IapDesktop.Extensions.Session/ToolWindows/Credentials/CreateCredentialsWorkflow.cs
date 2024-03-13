@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.Settings;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -104,8 +105,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 
             // Save credentials.
             settings.RdpUsername.Value = credentials.UserName;
-            settings.RdpPassword.ClearTextValue = credentials.Password;
-
+            settings.RdpPassword.SetClearTextValue(credentials.Password);
+            
             // NB. The computer might be joined to a domain, therefore force a local logon.
             settings.RdpDomain.Value = ".";
         }

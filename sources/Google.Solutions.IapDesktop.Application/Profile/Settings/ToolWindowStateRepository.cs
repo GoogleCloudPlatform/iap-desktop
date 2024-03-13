@@ -38,28 +38,28 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public class ToolWindowStateRepository : IDisposable
     {
-        private readonly RegistryKey baseKey;
+        private readonly ISettingsStore store;
 
         public ToolWindowStateRepository(RegistryKey baseKey)
         {
-            this.baseKey = baseKey;
+            this.store = new RegistrySettingsStore(baseKey);
         }
 
         public ToolWindowStateSettings GetSetting(
             string toolWindowName,
             DockState defaultState)
         {
-            return ToolWindowStateSettings.FromKey(
+            return new ToolWindowStateSettings(
                 toolWindowName,
                 defaultState,
-                this.baseKey);
+                this.store);
         }
 
         public void SetSetting(ToolWindowStateSettings settings)
         {
             if (settings.DockState.IsDirty)
             {
-                settings.DockState.Save(this.baseKey);
+                this.store.Write(settings.DockState);
             }
         }
 
@@ -75,43 +75,32 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                this.baseKey.Dispose();
-            }
+            this.store.Dispose();
         }
     }
 
     public class ToolWindowStateSettings : ISettingsCollection
     {
-        public RegistryEnumSetting<DockState> DockState { get; private set; }
+        public ISetting<DockState> DockState { get; }
 
         public IEnumerable<ISetting> Settings => new[]
         {
             this.DockState
         };
 
-        private ToolWindowStateSettings()
-        {
-        }
-
-        public static ToolWindowStateSettings FromKey(
+        internal ToolWindowStateSettings(
             string windowName,
             DockState defaultState,
-            RegistryKey registryKey)
+            ISettingsStore store)
         {
             Debug.Assert(!windowName.Contains(' '));
 
-            return new ToolWindowStateSettings()
-            {
-                DockState = RegistryEnumSetting<DockState>.FromKey(
-                    windowName,
-                    null,
-                    null,
-                    null,
-                    defaultState,
-                    registryKey)
-            };
+            this.DockState = store.Read<DockState>(
+                windowName,
+                null,
+                null,
+                null,
+                defaultState);
         }
     }
 }

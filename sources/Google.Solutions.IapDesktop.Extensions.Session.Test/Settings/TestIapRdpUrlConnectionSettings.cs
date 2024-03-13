@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.Settings;
 using NUnit.Framework;
 using System.Collections.Specialized;
 
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "bob";
-            settings.RdpPassword.ClearTextValue = "secret";
+            settings.RdpPassword.SetClearTextValue("secret");
             settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Disabled;
             settings.RdpConnectionTimeout.Value = 123;
 

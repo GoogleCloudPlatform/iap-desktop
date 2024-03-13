@@ -26,6 +26,8 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
@@ -78,14 +80,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new ArgumentException(nameof(settings));
             }
 
-            using (var key = this.projectRepository.OpenRegistryKey(project.ProjectId))
+            using (var key = new RegistrySettingsStore(
+                this.projectRepository.OpenRegistryKey(project.ProjectId)))
             {
                 if (key == null)
                 {
                     throw new KeyNotFoundException(project.ProjectId);
                 }
 
-                settings.Save(key);
+                foreach (var setting in settings.Settings.Where(s => s.IsDirty))
+                {
+                    key.Write(setting);
+                }
             }
         }
 
@@ -116,12 +122,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new ArgumentException(nameof(settings));
             }
 
-            using (var key = this.projectRepository.OpenRegistryKey(
-                zone.ProjectId,
-                ZonePrefix + zone.Name,
-                true))
+            using (var key = new RegistrySettingsStore(
+                this.projectRepository.OpenRegistryKey(
+                    zone.ProjectId,
+                    ZonePrefix + zone.Name,
+                    true)))
             {
-                settings.Save(key);
+                foreach (var setting in settings.Settings.Where(s => s.IsDirty))
+                {
+                    key.Write(setting);
+                }
             }
         }
 
@@ -152,12 +162,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new ArgumentException(nameof(settings));
             }
 
-            using (var key = this.projectRepository.OpenRegistryKey(
-                instance.ProjectId,
-                VmPrefix + instance.Name,
-                true))
+            using (var key = new RegistrySettingsStore(
+                this.projectRepository.OpenRegistryKey(
+                    instance.ProjectId,
+                    VmPrefix + instance.Name,
+                    true)))
             {
-                settings.Save(key);
+                foreach (var setting in settings.Settings.Where(s => s.IsDirty))
+                {
+                    key.Write(setting);
+                }
             }
         }
     }

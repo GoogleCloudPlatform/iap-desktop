@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //
         private const string SamplePscEndpoint = "www.googleapis.com";
 
-        private IRepository<IAccessSettings> CreateSettingsRepository(
+        private IRepository<IAccessSettings> CreateSettingsRepository( // TODO: use Dict
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);

@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 
 #pragma warning disable CA1027 // Mark enums with FlagsAttribute
@@ -54,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// </summary>
         /// <param name="resource"></param>
         internal ConnectionSettings(ResourceLocator resource)
-            : this(resource, null)
+            : this(resource, new DictionarySettingsStore(new Dictionary<string, string>()))
         {
         }
 
@@ -63,244 +64,219 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// </summary>
         public ConnectionSettings(
             ResourceLocator resource,
-            RegistryKey key)
+            RegistryKey key) : this(resource, new RegistrySettingsStore(key))
+        {
+        }
+
+        public ConnectionSettings(
+            ResourceLocator resource,
+            ISettingsStore store)
         {
             this.Resource = resource.ExpectNotNull(nameof(resource));
 
             //
             // RDP Settings.
             //
-            this.RdpUsername = RegistryStringSetting.FromKey(
+            this.RdpUsername = store.Read<string>(
                 "Username",
                 "Username",
                 "Username of a local user, SAM account name of a domain user, or UPN (user@domain).",
                 Categories.WindowsCredentials,
                 null,
-                key,
                 _ => true);
-            this.RdpPassword = RegistrySecureStringSetting.FromKey(
+            this.RdpPassword = store.Read<SecureString>(
                 "Password",
                 "Password",
                 "Windows logon password.",
                 Categories.WindowsCredentials,
-                key,
-                DataProtectionScope.CurrentUser);
-            this.RdpDomain = RegistryStringSetting.FromKey(
+                null);
+            this.RdpDomain = store.Read<string>(
                 "Domain",
                 "Domain",
                 "NetBIOS domain name or computer name. Leave blank when using UPN as username.",
                 Categories.WindowsCredentials,
                 null,
-                key,
                 _ => true);
-            this.RdpConnectionBar = RegistryEnumSetting<RdpConnectionBarState>.FromKey(
+            this.RdpConnectionBar = store.Read<RdpConnectionBarState>(
                 "ConnectionBar",
                 "Connection bar",
                 "Show connection bar in full-screen mode.",
                 Categories.RdpDisplay,
-                RdpConnectionBarState._Default,
-                key);
-            this.RdpAuthenticationLevel = RegistryEnumSetting<RdpAuthenticationLevel>.FromKey(
+                RdpConnectionBarState._Default);
+            this.RdpAuthenticationLevel = store.Read<RdpAuthenticationLevel>(
                 "AuthenticationLevel",
                 "Server authentication",
                 "Require server authentication when connecting.",
                 Categories.RdpSecurity,
-                Protocol.Rdp.RdpAuthenticationLevel._Default,
-                key);
-            this.RdpColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
+                Protocol.Rdp.RdpAuthenticationLevel._Default);
+            this.RdpColorDepth = store.Read<RdpColorDepth>(
                 "ColorDepth",
                 "Color depth",
                 "Color depth of remote desktop.",
                 Categories.RdpDisplay,
-                Protocol.Rdp.RdpColorDepth._Default,
-                key);
-            this.RdpAudioMode = RegistryEnumSetting<RdpAudioMode>.FromKey(
+                Protocol.Rdp.RdpColorDepth._Default);
+            this.RdpAudioMode = store.Read<RdpAudioMode>(
                 "AudioMode",
                 "Audio mode",
                 "Redirect audio when playing on server.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpAudioMode._Default,
-                key);
-            this.RdpUserAuthenticationBehavior = RegistryEnumSetting<RdpUserAuthenticationBehavior>.FromKey(
+                Protocol.Rdp.RdpAudioMode._Default);
+            this.RdpUserAuthenticationBehavior = store.Read<RdpUserAuthenticationBehavior>(
                 "RdpUserAuthenticationBehavior",
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                Protocol.Rdp.RdpUserAuthenticationBehavior._Default,
-                key);
-            this.RdpNetworkLevelAuthentication = RegistryEnumSetting<RdpNetworkLevelAuthentication>.FromKey(
+                Protocol.Rdp.RdpUserAuthenticationBehavior._Default);
+            this.RdpNetworkLevelAuthentication = store.Read<RdpNetworkLevelAuthentication>(
                 "NetworkLevelAuthentication",
                 "Network level authentication",
                 "Secure connection using network level authentication (NLA). " +
                     "Disable NLA only if the server uses a custom credential service provider." +
                     "Disabling NLA automatically enables server authentication.",
                 Categories.RdpSecurity,
-                Protocol.Rdp.RdpNetworkLevelAuthentication._Default,
-                key);
-            this.RdpConnectionTimeout = RegistryDwordSetting.FromKey(
+                Protocol.Rdp.RdpNetworkLevelAuthentication._Default);
+            this.RdpConnectionTimeout = store.Read<int>(
                 "ConnectionTimeout",
                 "Connection timeout",
                 "Timeout for establishing a Remote Desktop connection, in seconds. " +
                     "Use a timeout that allows sufficient time for credential prompts.",
                 Categories.RdpConnection,
                 (int)RdpParameters.DefaultConnectionTimeout.TotalSeconds,
-                key,
-                0, 300);
-            this.RdpPort = RegistryDwordSetting.FromKey(
+                Validators.InRange(0, 300));
+            this.RdpPort = store.Read<int>(
                 "RdpPort",
                 "Server port",
                 "Server port.",
                 Categories.RdpConnection,
                 RdpParameters.DefaultPort,
-                key,
-                1,
-                ushort.MaxValue);
-            this.RdpTransport = RegistryEnumSetting<SessionTransportType>.FromKey(
+                Validators.InRange(1, ushort.MaxValue));
+            this.RdpTransport = store.Read<SessionTransportType>(
                 "TransportType",
                 "Connect via",
                 $"Type of transport. Use {SessionTransportType.IapTunnel} unless " +
                     "you need to connect to a VM's internal IP address via " +
                     "Cloud VPN or Interconnect.",
                 Categories.RdpConnection,
-                SessionTransportType._Default,
-                key);
-            this.RdpRedirectClipboard = RegistryEnumSetting<RdpRedirectClipboard>.FromKey(
+                SessionTransportType._Default);
+            this.RdpRedirectClipboard = store.Read<RdpRedirectClipboard>(
                 "RedirectClipboard",
                 "Redirect clipboard",
                 "Allow clipboard contents to be shared with remote desktop.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectClipboard._Default,
-                key);
-            this.RdpRedirectPrinter = RegistryEnumSetting<RdpRedirectPrinter>.FromKey(
+                Protocol.Rdp.RdpRedirectClipboard._Default);
+            this.RdpRedirectPrinter = store.Read<RdpRedirectPrinter>(
                 "RdpRedirectPrinter",
                 "Redirect printers",
                 "Share local printers with remote desktop.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectPrinter._Default,
-                key);
-            this.RdpRedirectSmartCard = RegistryEnumSetting<RdpRedirectSmartCard>.FromKey(
+                Protocol.Rdp.RdpRedirectPrinter._Default);
+            this.RdpRedirectSmartCard = store.Read<RdpRedirectSmartCard>(
                 "RdpRedirectSmartCard",
                 "Redirect smart cards",
                 "Share local smart carrds with remote desktop.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectSmartCard._Default,
-                key);
-            this.RdpRedirectPort = RegistryEnumSetting<RdpRedirectPort>.FromKey(
+                Protocol.Rdp.RdpRedirectSmartCard._Default);
+            this.RdpRedirectPort = store.Read<RdpRedirectPort>(
                 "RdpRedirectPort",
                 "Redirect local ports",
                 "Share local ports (COM, LPT) with remote desktop.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectPort._Default,
-                key);
-            this.RdpRedirectDrive = RegistryEnumSetting<RdpRedirectDrive>.FromKey(
+                Protocol.Rdp.RdpRedirectPort._Default);
+            this.RdpRedirectDrive = store.Read<RdpRedirectDrive>(
                 "RdpRedirectDrive",
                 "Redirect drives",
                 "Share local drives with remote desktop.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectDrive._Default,
-                key);
-            this.RdpRedirectDevice = RegistryEnumSetting<RdpRedirectDevice>.FromKey(
+                Protocol.Rdp.RdpRedirectDrive._Default);
+            this.RdpRedirectDevice = store.Read<RdpRedirectDevice>(
                 "RdpRedirectDevice",
                 "Redirect devices",
                 "Share local devices with remote desktop.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectDevice._Default,
-                key);
-            this.RdpRedirectWebAuthn = RegistryEnumSetting<RdpRedirectWebAuthn>.FromKey(
+                Protocol.Rdp.RdpRedirectDevice._Default);
+            this.RdpRedirectWebAuthn = store.Read<RdpRedirectWebAuthn>(
                 "RdpRedirectWebAuthn",
                 "Redirect WebAuthn authenticators",
                 "Use local security key or Windows Hello device for WebAuthn authentication.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpRedirectWebAuthn._Default,
-                key);
-            this.RdpHookWindowsKeys = RegistryEnumSetting<RdpHookWindowsKeys>.FromKey(
+                Protocol.Rdp.RdpRedirectWebAuthn._Default);
+            this.RdpHookWindowsKeys = store.Read<RdpHookWindowsKeys>(
                 "RdpHookWindowsKeys",
                 "Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpHookWindowsKeys._Default,
-                key);
-            this.RdpRestrictedAdminMode = RegistryEnumSetting<RdpRestrictedAdminMode>.FromKey(
+                Protocol.Rdp.RdpHookWindowsKeys._Default);
+            this.RdpRestrictedAdminMode = store.Read<RdpRestrictedAdminMode>(
                 "RdpRestrictedAdminMode",
                 "Restricted Admin mode",
                 "Disable the transmission of reusable credentials to the VM. This mode requires " +
                     "a user account with local administrator privileges on the VM, and the " +
                     "VM must be configured to permit Restricted Admin mode.",
                 Categories.RdpSecurity,
-                Protocol.Rdp.RdpRestrictedAdminMode._Default,
-                key);
+                Protocol.Rdp.RdpRestrictedAdminMode._Default);
 
             //
             // SSH Settings.
             //
-            this.SshPort = RegistryDwordSetting.FromKey(
+            this.SshPort = store.Read<int>(
                 "SshPort",
                 "Server port",
                 "Server port",
                 Categories.SshConnection,
                 SshParameters.DefaultPort,
-                key,
-                1,
-                ushort.MaxValue);
-            this.SshTransport = RegistryEnumSetting<SessionTransportType>.FromKey(
+                Validators.InRange(1, ushort.MaxValue));
+            this.SshTransport = store.Read<SessionTransportType>(
                 "TransportType",
                 "Connect via",
                 $"Type of transport. Use {SessionTransportType.IapTunnel} unless " +
                     "you need to connect to a VM's internal IP address via " +
                     "Cloud VPN or Interconnect.",
                 Categories.SshConnection,
-                SessionTransportType._Default,
-                key);
-            this.SshPublicKeyAuthentication = RegistryEnumSetting<SshPublicKeyAuthentication>.FromKey(
+                SessionTransportType._Default);
+            this.SshPublicKeyAuthentication = store.Read<SshPublicKeyAuthentication>(
                 "SshPublicKeyAuthentication",
                 "Public key authentication",
                 "Automatically create an SSH key pair and publish it using OS Login or metadata keys.",
                 Categories.SshCredentials,
-                Protocol.Ssh.SshPublicKeyAuthentication._Default,
-                key);
-            this.SshUsername = RegistryStringSetting.FromKey(
+                Protocol.Ssh.SshPublicKeyAuthentication._Default);
+            this.SshUsername = store.Read<string>(
                 "SshUsername",
                 "Username",
                 "Linux username, optional",
                 Categories.SshCredentials,
                 null,
-                key,
                 username => string.IsNullOrEmpty(username) ||
                             LinuxUser.IsValidUsername(username));
-            this.SshPassword = RegistrySecureStringSetting.FromKey(
+            this.SshPassword = store.Read<SecureString>(
                 "SshPassword",
                 "Password",
                 "Password, only applicable if public key authentication is disabled",
                 Categories.SshCredentials,
-                key,
-                DataProtectionScope.CurrentUser);
-            this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
+                null);
+            this.SshConnectionTimeout = store.Read<int>(
                 "SshConnectionTimeout",
                 "Connection timeout",
                 "Timeout for establishing SSH connections, in seconds.",
                 Categories.SshConnection,
                 (int)SshParameters.DefaultConnectionTimeout.TotalSeconds,
-                key,
-                0, 300);
+                Validators.InRange(0, 300));
 
             //
             // App Settings.
             //
-            this.AppUsername = RegistryStringSetting.FromKey(
+            this.AppUsername = store.Read<string>(
                 "AppUsername",
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
                 null,
-                key,
                 username => string.IsNullOrEmpty(username) || !username.Contains(' '));
-            this.AppNetworkLevelAuthentication = RegistryEnumSetting<AppNetworkLevelAuthenticationState>.FromKey(
+            this.AppNetworkLevelAuthentication = store.Read<AppNetworkLevelAuthenticationState>(
                 "AppNetworkLevelAuthentication",
                 "Windows authentication",
                 "Use Windows authentication for SQL Server connections.",
                 Categories.AppCredentials,
-                AppNetworkLevelAuthenticationState._Default,
-                key);
+                AppNetworkLevelAuthenticationState._Default);
 
             Debug.Assert(this.Settings.All(s => s != null));
         }
@@ -317,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             // NB. Ignore passwords in URLs.
             //
             foreach (var setting in this.Settings
-                .Where(s => !(s is RegistrySecureStringSetting))
+                .Where(s => !(s is ISetting<SecureString>))
                 .Cast<IAnySetting>())
             {
                 var value = url.Parameters.Get(setting.Key);
@@ -340,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             // NB. Do not allow passwords to leak into URLs.
             var collection = new NameValueCollection();
             foreach (var setting in this.Settings
-                .Where(s => !(s is RegistrySecureStringSetting))
+                .Where(s => !(s is ISetting<SecureString>))
                 .Cast<IAnySetting>()
                 .Where(s => !s.IsDefault))
             {
@@ -368,65 +344,65 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             // Apply this.
             //
-            merged.RdpUsername = (RegistryStringSetting)
+            merged.RdpUsername = (ISetting<string>)
                 this.RdpUsername.OverlayBy(overlay.RdpUsername);
-            merged.RdpPassword = (RegistrySecureStringSetting)
+            merged.RdpPassword = (ISetting<SecureString>)
                 this.RdpPassword.OverlayBy(overlay.RdpPassword);
-            merged.RdpDomain = (RegistryStringSetting)
+            merged.RdpDomain = (ISetting<string>)
                 this.RdpDomain.OverlayBy(overlay.RdpDomain);
-            merged.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
+            merged.RdpConnectionBar = (ISetting<RdpConnectionBarState>)
                 this.RdpConnectionBar.OverlayBy(overlay.RdpConnectionBar);
-            merged.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
+            merged.RdpAuthenticationLevel = (ISetting<RdpAuthenticationLevel>)
                 this.RdpAuthenticationLevel.OverlayBy(overlay.RdpAuthenticationLevel);
-            merged.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
+            merged.RdpColorDepth = (ISetting<RdpColorDepth>)
                 this.RdpColorDepth.OverlayBy(overlay.RdpColorDepth);
-            merged.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
+            merged.RdpAudioMode = (ISetting<RdpAudioMode>)
                 this.RdpAudioMode.OverlayBy(overlay.RdpAudioMode);
-            merged.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
+            merged.RdpUserAuthenticationBehavior = (ISetting<RdpUserAuthenticationBehavior>)
                 this.RdpUserAuthenticationBehavior.OverlayBy(overlay.RdpUserAuthenticationBehavior);
-            merged.RdpNetworkLevelAuthentication = (RegistryEnumSetting<RdpNetworkLevelAuthentication>)
+            merged.RdpNetworkLevelAuthentication = (ISetting<RdpNetworkLevelAuthentication>)
                 this.RdpNetworkLevelAuthentication.OverlayBy(overlay.RdpNetworkLevelAuthentication);
-            merged.RdpConnectionTimeout = (RegistryDwordSetting)
+            merged.RdpConnectionTimeout = (ISetting<int>)
                 this.RdpConnectionTimeout.OverlayBy(overlay.RdpConnectionTimeout);
-            merged.RdpPort = (RegistryDwordSetting)
+            merged.RdpPort = (ISetting<int>)
                 this.RdpPort.OverlayBy(overlay.RdpPort);
-            merged.RdpTransport = (RegistryEnumSetting<SessionTransportType>)
+            merged.RdpTransport = (ISetting<SessionTransportType>)
                 this.RdpTransport.OverlayBy(overlay.RdpTransport);
-            merged.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
+            merged.RdpRedirectClipboard = (ISetting<RdpRedirectClipboard>)
                 this.RdpRedirectClipboard.OverlayBy(overlay.RdpRedirectClipboard);
-            merged.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
+            merged.RdpRedirectPrinter = (ISetting<RdpRedirectPrinter>)
                 this.RdpRedirectPrinter.OverlayBy(overlay.RdpRedirectPrinter);
-            merged.RdpRedirectSmartCard = (RegistryEnumSetting<RdpRedirectSmartCard>)
+            merged.RdpRedirectSmartCard = (ISetting<RdpRedirectSmartCard>)
                 this.RdpRedirectSmartCard.OverlayBy(overlay.RdpRedirectSmartCard);
-            merged.RdpRedirectPort = (RegistryEnumSetting<RdpRedirectPort>)
+            merged.RdpRedirectPort = (ISetting<RdpRedirectPort>)
                 this.RdpRedirectPort.OverlayBy(overlay.RdpRedirectPort);
-            merged.RdpRedirectDrive = (RegistryEnumSetting<RdpRedirectDrive>)
+            merged.RdpRedirectDrive = (ISetting<RdpRedirectDrive>)
                 this.RdpRedirectDrive.OverlayBy(overlay.RdpRedirectDrive);
-            merged.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
+            merged.RdpRedirectDevice = (ISetting<RdpRedirectDevice>)
                 this.RdpRedirectDevice.OverlayBy(overlay.RdpRedirectDevice);
-            merged.RdpRedirectWebAuthn = (RegistryEnumSetting<RdpRedirectWebAuthn>)
+            merged.RdpRedirectWebAuthn = (ISetting<RdpRedirectWebAuthn>)
                 this.RdpRedirectWebAuthn.OverlayBy(overlay.RdpRedirectWebAuthn);
-            merged.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
+            merged.RdpHookWindowsKeys = (ISetting<RdpHookWindowsKeys>)
                 this.RdpHookWindowsKeys.OverlayBy(overlay.RdpHookWindowsKeys);
-            merged.RdpRestrictedAdminMode = (RegistryEnumSetting<RdpRestrictedAdminMode>)
+            merged.RdpRestrictedAdminMode = (ISetting<RdpRestrictedAdminMode>)
                 this.RdpRestrictedAdminMode.OverlayBy(overlay.RdpRestrictedAdminMode);
 
-            merged.SshPort = (RegistryDwordSetting)
+            merged.SshPort = (ISetting<int>)
                 this.SshPort.OverlayBy(overlay.SshPort);
-            merged.SshTransport = (RegistryEnumSetting<SessionTransportType>)
+            merged.SshTransport = (ISetting<SessionTransportType>)
                 this.SshTransport.OverlayBy(overlay.SshTransport);
-            merged.SshPublicKeyAuthentication = (RegistryEnumSetting<SshPublicKeyAuthentication>)
+            merged.SshPublicKeyAuthentication = (ISetting<SshPublicKeyAuthentication>)
                 this.SshPublicKeyAuthentication.OverlayBy(overlay.SshPublicKeyAuthentication);
-            merged.SshUsername = (RegistryStringSetting)
+            merged.SshUsername = (ISetting<string>)
                 this.SshUsername.OverlayBy(overlay.SshUsername);
-            merged.SshPassword = (RegistrySecureStringSetting)
+            merged.SshPassword = (ISetting<SecureString>)
                 this.SshPassword.OverlayBy(overlay.SshPassword);
-            merged.SshConnectionTimeout = (RegistryDwordSetting)
+            merged.SshConnectionTimeout = (ISetting<int>)
                 this.SshConnectionTimeout.OverlayBy(overlay.SshConnectionTimeout);
 
-            merged.AppUsername = (RegistryStringSetting)
+            merged.AppUsername = (ISetting<string>)
                 this.AppUsername.OverlayBy(overlay.AppUsername);
-            merged.AppNetworkLevelAuthentication = (RegistryEnumSetting<AppNetworkLevelAuthenticationState>)
+            merged.AppNetworkLevelAuthentication = (ISetting<AppNetworkLevelAuthenticationState>)
                 this.AppNetworkLevelAuthentication.OverlayBy(overlay.AppNetworkLevelAuthentication);
 
             Debug.Assert(merged.Settings.All(s => s != null));
@@ -438,27 +414,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // RDP settings.
         //---------------------------------------------------------------------
 
-        public RegistryStringSetting RdpUsername { get; private set; }
-        public RegistrySecureStringSetting RdpPassword { get; private set; }
-        public RegistryStringSetting RdpDomain { get; private set; }
-        public RegistryEnumSetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
-        public RegistryEnumSetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
-        public RegistryEnumSetting<RdpColorDepth> RdpColorDepth { get; private set; }
-        public RegistryEnumSetting<RdpAudioMode> RdpAudioMode { get; private set; }
-        public RegistryEnumSetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
-        public RegistryEnumSetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
-        public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
-        public RegistryDwordSetting RdpPort { get; private set; }
-        public RegistryEnumSetting<SessionTransportType> RdpTransport { get; private set; }
-        public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
-        public RegistryEnumSetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
-        public RegistryEnumSetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
-        public RegistryEnumSetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
-        public RegistryEnumSetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
-        public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
-        public RegistryEnumSetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
-        public RegistryEnumSetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
-        public RegistryEnumSetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; private set; }
+        public ISetting<string> RdpUsername { get; private set; }
+        public ISetting<SecureString> RdpPassword { get; private set; }
+        public ISetting<string> RdpDomain { get; private set; }
+        public ISetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
+        public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
+        public ISetting<RdpColorDepth> RdpColorDepth { get; private set; }
+        public ISetting<RdpAudioMode> RdpAudioMode { get; private set; }
+        public ISetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
+        public ISetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
+        public ISetting<int> RdpConnectionTimeout { get; private set; }
+        public ISetting<int> RdpPort { get; private set; }
+        public ISetting<SessionTransportType> RdpTransport { get; private set; }
+        public ISetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
+        public ISetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
+        public ISetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
+        public ISetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
+        public ISetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
+        public ISetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
+        public ISetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
+        public ISetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
+        public ISetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; private set; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -497,12 +473,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // SSH settings.
         //---------------------------------------------------------------------
 
-        public RegistryDwordSetting SshPort { get; private set; }
-        public RegistryEnumSetting<SessionTransportType> SshTransport { get; private set; }
-        public RegistryStringSetting SshUsername { get; private set; }
-        public RegistrySecureStringSetting SshPassword { get; private set; }
-        public RegistryDwordSetting SshConnectionTimeout { get; private set; }
-        public RegistryEnumSetting<SshPublicKeyAuthentication> SshPublicKeyAuthentication { get; private set; }
+        public ISetting<int> SshPort { get; private set; }
+        public ISetting<SessionTransportType> SshTransport { get; private set; }
+        public ISetting<string> SshUsername { get; private set; }
+        public ISetting<SecureString> SshPassword { get; private set; }
+        public ISetting<int> SshConnectionTimeout { get; private set; }
+        public ISetting<SshPublicKeyAuthentication> SshPublicKeyAuthentication { get; private set; }
 
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
@@ -522,8 +498,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // App settings.
         //---------------------------------------------------------------------
 
-        public RegistryStringSetting AppUsername { get; private set; }
-        public RegistryEnumSetting<AppNetworkLevelAuthenticationState> AppNetworkLevelAuthentication { get; private set; }
+        public ISetting<string> AppUsername { get; private set; }
+        public ISetting<AppNetworkLevelAuthenticationState> AppNetworkLevelAuthentication { get; private set; }
 
         internal IEnumerable<ISetting> AppSettings => new ISetting[]
         {

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
@@ -66,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                     bool silent) =>
                     {
                         settings.RdpUsername.Value = "bob";
-                        settings.RdpPassword.ClearTextValue = "secret";
+                        settings.RdpPassword.SetClearTextValue("secret");
                     });
             credentialsService
                 .Setup(s => s.IsGrantedPermissionToGenerateCredentials(
@@ -113,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
-            Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("secret", settings.RdpPassword.GetClearTextValue());
             Assert.IsNull(settings.RdpDomain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
@@ -150,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 taskDialog);
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "alice";
-            settings.RdpPassword.ClearTextValue = "alicespassword";
+            settings.RdpPassword.SetClearTextValue("alicespassword");
 
             await credentialPrompt
                 .SelectCredentialsAsync(
@@ -162,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
-            Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("secret", settings.RdpPassword.GetClearTextValue());
             Assert.IsNull(settings.RdpDomain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
@@ -210,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
-            Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("secret", settings.RdpPassword.GetClearTextValue());
             Assert.IsNull(settings.RdpDomain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
@@ -289,8 +290,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "alice";
-            settings.RdpPassword.ClearTextValue = "alicespassword";
-
+            settings.RdpPassword.SetClearTextValue("alicespassword");
+            
             await credentialPrompt
                 .SelectCredentialsAsync(
                     null,
@@ -301,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(true);
 
             Assert.AreEqual("alice", settings.RdpUsername.Value);
-            Assert.AreEqual("alicespassword", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("alicespassword", settings.RdpPassword.GetClearTextValue());
             Assert.IsNull(settings.RdpDomain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
@@ -424,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "alice";
-            settings.RdpPassword.ClearTextValue = "alicespassword";
+            settings.RdpPassword.SetClearTextValue("alicespassword");
 
             await credentialPrompt
                 .SelectCredentialsAsync(
@@ -436,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(true);
 
             Assert.AreEqual("alice", settings.RdpUsername.Value);
-            Assert.AreEqual("alicespassword", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("alicespassword", settings.RdpPassword.GetClearTextValue());
             Assert.IsNull(settings.RdpDomain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
@@ -474,7 +475,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
-            Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
+            Assert.AreEqual("secret", settings.RdpPassword.GetClearTextValue());
             Assert.IsNull(settings.RdpDomain.Value);
 
             // No dialog shown.

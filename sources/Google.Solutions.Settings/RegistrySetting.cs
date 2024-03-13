@@ -626,36 +626,36 @@ namespace Google.Solutions.Settings.Registry
         }
     }
 
-    public static class RegistrySettingsExtensions // TODO: remove
-    {
-        public static void Save(
-            this IRegistrySetting setting,
-            RegistryKey backingKey)
-        {
-            Debug.Assert(setting.IsDirty);
-            if (setting.IsDefault)
-            {
-                backingKey.DeleteValue(setting.Key, false);
-            }
-            else
-            {
-                backingKey.SetValue(
-                    setting.Key,
-                    setting.RegistryValue,
-                    setting.Kind);
-            }
-        }
+    //public static class RegistrySettingsExtensions // TODO: remove
+    //{
+    //    public static void Save(
+    //        this IRegistrySetting setting,
+    //        RegistryKey backingKey)
+    //    {
+    //        Debug.Assert(setting.IsDirty);
+    //        if (setting.IsDefault)
+    //        {
+    //            backingKey.DeleteValue(setting.Key, false);
+    //        }
+    //        else
+    //        {
+    //            backingKey.SetValue(
+    //                setting.Key,
+    //                setting.RegistryValue,
+    //                setting.Kind);
+    //        }
+    //    }
 
-        public static void Save(
-            this ISettingsCollection collection,
-            RegistryKey registryKey)
-        {
-            foreach (var setting in collection.Settings
-                .Where(s => s.IsDirty)
-                .Cast<IRegistrySetting>())
-            {
-                setting.Save(registryKey);
-            }
-        }
-    }
+    //    public static void Save(
+    //        this ISettingsCollection collection,
+    //        RegistryKey registryKey)
+    //    {
+    //        foreach (var setting in collection.Settings
+    //            .Where(s => s.IsDirty)
+    //            .Cast<IRegistrySetting>())
+    //        {
+    //            setting.Save(registryKey);
+    //        }
+    //    }
+    //}
 }
