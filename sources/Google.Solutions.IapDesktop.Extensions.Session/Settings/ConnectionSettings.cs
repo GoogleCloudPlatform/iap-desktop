@@ -36,7 +36,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Security;
-using System.Security.Cryptography;
 
 #pragma warning disable CA1027 // Mark enums with FlagsAttribute
 
@@ -63,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// </summary>
         public ConnectionSettings(
             ResourceLocator resource,
-            RegistryKey key) : this(resource, new RegistrySettingsStore(key))
+            RegistryKey key) : this(resource, new RegistrySettingsStore(key)) // TODO: remove
         {
         }
 
