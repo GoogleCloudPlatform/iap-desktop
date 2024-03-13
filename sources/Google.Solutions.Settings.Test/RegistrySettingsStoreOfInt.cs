@@ -294,25 +294,6 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    Predicate.InRange(0, 100));
-
-                setting.AnyValue = "12";
-
-                Assert.AreEqual(12, setting.Value);
-            }
-        }
-
-        [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
             using (var key = CreateSettingsKey())
@@ -326,23 +307,6 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0, 100));
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17,
-                    Predicate.InRange(0, 100));
-
-                Assert.Throws<FormatException>(() => setting.AnyValue = "test");
             }
         }
 

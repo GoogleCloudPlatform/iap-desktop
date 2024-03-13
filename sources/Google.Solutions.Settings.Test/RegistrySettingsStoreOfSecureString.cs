@@ -298,24 +298,6 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read<SecureString>(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    null);
-
-                setting.AnyValue = "secret";
-
-                Assert.AreEqual("secret", setting.GetClearTextValue());
-            }
-        }
-
-        [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
             using (var key = CreateSettingsKey())

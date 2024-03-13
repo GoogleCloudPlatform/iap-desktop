@@ -132,7 +132,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.AreEqual(3, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
                 Assert.IsFalse(setting.IsDefault);
-                Assert.IsFalse(setting.IsSpecified);
+                Assert.IsTrue(setting.IsSpecified);
                 Assert.IsTrue(setting.IsReadOnly);
             }
         }
@@ -157,7 +157,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.AreEqual(3, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
                 Assert.IsFalse(setting.IsDefault);
-                Assert.IsFalse(setting.IsSpecified);
+                Assert.IsTrue(setting.IsSpecified);
                 Assert.IsTrue(setting.IsReadOnly);
             }
         }

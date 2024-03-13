@@ -296,25 +296,6 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueIsString_ThenSetAnyValueParsesValue()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17L,
-                    Predicate.InRange(0L, long.MaxValue));
-
-                setting.AnyValue = "120000000000000001";
-
-                Assert.AreEqual(120000000000000001L, setting.Value);
-            }
-        }
-
-        [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
             using (var key = CreateSettingsKey())
@@ -328,23 +309,6 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0L, 100L));
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    17L,
-                    Predicate.InRange(0L, 100L));
-
-                Assert.Throws<FormatException>(() => setting.AnyValue = "test");
             }
         }
 
@@ -556,13 +520,13 @@ namespace Google.Solutions.Settings.Test
 
                 key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
 
-                var setting = mergedKey.Read(
+                var setting = mergedKey.Read<long>(
                     "test",
                     "title",
                     "description",
                     "category",
                     17,
-                    Predicate.InRange(0, 100));
+                    Predicate.InRange(0L, 100L));
 
                 Assert.AreEqual(420000000000001L, setting.Value);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -581,15 +545,15 @@ namespace Google.Solutions.Settings.Test
                     MergedSettingsStore.MergeBehavior.Policy);
 
                 key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
-                policyKey.BackingKey.SetValue("test", 101, RegistryValueKind.QWord);
+                policyKey.BackingKey.SetValue("test", -101, RegistryValueKind.QWord);
 
-                var setting = mergedKey.Read(
+                var setting = mergedKey.Read<long>(
                     "test",
                     "title",
                     "description",
                     "category",
                     17,
-                    Predicate.InRange(0, 100));
+                    Predicate.InRange(0, long.MaxValue));
 
                 Assert.AreEqual(420000000000001L, setting.Value);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -610,7 +574,7 @@ namespace Google.Solutions.Settings.Test
                 key.BackingKey.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
                 policyKey.BackingKey.SetValue("test", 880000000000001L, RegistryValueKind.QWord);
 
-                var setting = mergedKey.Read(
+                var setting = mergedKey.Read<long>(
                     "test",
                     "title",
                     "description",

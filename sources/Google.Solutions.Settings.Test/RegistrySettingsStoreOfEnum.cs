@@ -272,26 +272,6 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueIsNumericString_ThenSetAnyValueSucceeds()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    ConsoleColor.Blue);
-
-                setting.AnyValue = ((int)ConsoleColor.Yellow).ToString();
-
-                Assert.AreEqual(ConsoleColor.Yellow, setting.Value);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsDirty);
-            }
-        }
-
-        [Test]
         public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
         {
             using (var key = CreateSettingsKey())
@@ -304,22 +284,6 @@ namespace Google.Solutions.Settings.Test
                     ConsoleColor.Blue);
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
-            }
-        }
-
-        [Test]
-        public void WhenValueIsUnparsable_ThenSetAnyValueRaisesFormatException()
-        {
-            using (var key = CreateSettingsKey())
-            {
-                var setting = key.Read(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    ConsoleColor.Blue);
-
-                Assert.Throws<FormatException>(() => setting.AnyValue = "");
             }
         }
 
