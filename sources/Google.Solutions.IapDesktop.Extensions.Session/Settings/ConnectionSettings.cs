@@ -57,15 +57,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
         }
 
-        /// <summary>
-        /// Initialize settings from a registry key.
-        /// </summary>
-        public ConnectionSettings(
-            ResourceLocator resource,
-            RegistryKey key) : this(resource, new RegistrySettingsStore(key)) // TODO: remove
-        {
-        }
-
         public ConnectionSettings(
             ResourceLocator resource,
             ISettingsStore store)
