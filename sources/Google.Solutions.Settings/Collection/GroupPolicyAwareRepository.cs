@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Settings;
 using Microsoft.Win32;
 
 namespace Google.Solutions.Settings.Collection
@@ -88,7 +87,7 @@ namespace Google.Solutions.Settings.Collection
 
         public bool IsPolicyPresent 
         {
-            get => this.Store is MergedSettingsStore; // TODO: test
+            get => this.Store is MergedSettingsStore;
         }
     }
 }
