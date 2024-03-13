@@ -140,6 +140,32 @@ namespace Google.Solutions.Settings.Test
             }
         }
 
+        [Test]
+        public void WhenRegistryValueInvalid_ThenFromKeyUsesDefaults()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                key.BackingKey.SetValue("test", 101);
+
+                var setting = key.Read(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    1,
+                    Predicate.InRange(0, 100));
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.DisplayName);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.AreEqual(1, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Save.
         //---------------------------------------------------------------------

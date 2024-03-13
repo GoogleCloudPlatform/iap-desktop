@@ -50,9 +50,18 @@ namespace Google.Solutions.Settings
             Predicate<T> validate = null)
         {
             var accessor = CreateValueAccessor<T>(name);
+            validate ??= accessor.IsValid;
 
             bool isSpecified = accessor
                 .TryRead(this.ValueSource, out var readValue);
+
+            if (isSpecified && !validate(readValue))
+            {
+                //
+                // The stored value is invalid, ignore it.
+                //
+                isSpecified = false;
+            }
 
             return new MappedSetting<T>(
                 name,
@@ -64,7 +73,7 @@ namespace Google.Solutions.Settings
                 isSpecified,
                 false,
                 accessor,
-                validate ?? accessor.IsValid);
+                validate);
         }
 
         public void Write(ISetting setting)

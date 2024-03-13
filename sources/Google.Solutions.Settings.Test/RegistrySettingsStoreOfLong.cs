@@ -526,7 +526,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    Predicate.InRange(0L, 100L));
+                    Predicate.InRange(0L, long.MaxValue));
 
                 Assert.AreEqual(420000000000001L, setting.Value);
                 Assert.IsFalse(setting.IsReadOnly);

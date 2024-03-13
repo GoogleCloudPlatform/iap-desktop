@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Security;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System;
 using System.Security;
 
 namespace Google.Solutions.Settings.Test
@@ -112,6 +113,13 @@ namespace Google.Solutions.Settings.Test
             protected override void WriteIncompatibleValue(RegistryKey key, string name)
             {
                 key.SetValue(name, "some data", RegistryValueKind.String);
+            }
+
+            [Test]
+            public void IsValid()
+            {
+                Assert.IsTrue(CreateAccessor("test").IsValid(Drink.Coffee));
+                Assert.IsFalse(CreateAccessor("test").IsValid((Drink)(-1)));
             }
         }
     }

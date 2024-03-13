@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -139,6 +140,31 @@ namespace Google.Solutions.Settings.Test
                 Assert.AreEqual("category", setting.Category);
                 Assert.AreEqual(ConsoleColor.Red, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
+            }
+        }
+
+        [Test]
+        public void WhenRegistryValueInvalid_ThenFromKeyUsesDefaults()
+        {
+            using (var key = CreateSettingsKey())
+            {
+                key.BackingKey.SetValue("test", -1);
+
+                var setting = key.Read(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.DisplayName);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
             }

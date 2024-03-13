@@ -72,6 +72,13 @@ namespace Google.Solutions.Settings.Test
         public class TestEnumValueAccessor : TestDictionaryValueAccessorBase<ConsoleColor>
         {
             protected override ConsoleColor SampleData => ConsoleColor.Magenta;
+
+            [Test]
+            public void IsValid()
+            {
+                Assert.IsTrue(CreateAccessor("test").IsValid(ConsoleColor.Blue));
+                Assert.IsFalse(CreateAccessor("test").IsValid((ConsoleColor)(-1)));
+            }
         }
     }
 }

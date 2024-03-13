@@ -211,6 +211,11 @@ namespace Google.Solutions.Settings
                 dictionary.ExpectNotNull(nameof(dictionary))[this.Name] 
                     = ((int)(object)value).ToString();
             }
+
+            public override bool IsValid(TEnum value)
+            {
+                return value.IsValidFlagCombination();
+            }
         }
     }
 }
