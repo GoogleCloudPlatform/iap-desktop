@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Security;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Accessor for a dictionary value that automatically performs

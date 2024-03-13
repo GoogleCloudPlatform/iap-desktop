@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Base implementation for a settings store.

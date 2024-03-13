@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Exposes dictionary entries as settings.

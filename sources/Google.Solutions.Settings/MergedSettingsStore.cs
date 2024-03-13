@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using System.Diagnostics;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Merges settings from two registry keys.

@@ -27,9 +27,8 @@ using System.Diagnostics;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using static Google.Solutions.Settings.Registry.DictionaryValueAccessor;
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Accessor for a registry value that automatically performs

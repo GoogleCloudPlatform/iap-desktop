@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Settings.Registry
+namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Store for settings.
