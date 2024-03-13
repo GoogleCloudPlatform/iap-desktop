@@ -82,11 +82,7 @@ namespace Google.Solutions.Settings
             set
             {
                 T typedValue;
-                if (value is string stringValue)
-                {
-                    typedValue = Parse(stringValue);
-                }
-                else if (value is null)
+                if (value is null)
                 {
                     typedValue = this.DefaultValue;
                 }
@@ -177,8 +173,6 @@ namespace Google.Solutions.Settings
         }
 
         protected abstract bool IsValid(T value);
-
-        protected abstract T Parse(string value);
 
         protected abstract SettingBase<T> CreateNew( // TODO: remove
             T value,

@@ -167,11 +167,6 @@ namespace Google.Solutions.Settings
                 return this.validate(value);
             }
 
-            protected override T Parse(string value)// TODO: remove
-            {
-                throw new NotImplementedException();
-            }
-
             public void Write(TSource key)
             {
                 if (this.IsDefault)
