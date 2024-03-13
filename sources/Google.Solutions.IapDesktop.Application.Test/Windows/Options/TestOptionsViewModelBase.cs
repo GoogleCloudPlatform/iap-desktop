@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
 using Moq;
 using NUnit.Framework;
@@ -32,9 +33,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestOptionsViewModelBase
     {
-        public abstract class SettingsRepository : RegistryRepositoryBase<ISettingsCollection>
+        public abstract class SettingsRepository : RepositoryBase<ISettingsCollection>
         {
-            public SettingsRepository() : base(null)
+            public SettingsRepository() : base(DictionarySettingsStore.Empty())
             {
             }
         }
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             public OptionsViewModel(
                 string title,
-                RegistryRepositoryBase<ISettingsCollection> settingsRepository)
+                RepositoryBase<ISettingsCollection> settingsRepository)
                 : base(title, settingsRepository)
             {
                 OnInitializationCompleted();

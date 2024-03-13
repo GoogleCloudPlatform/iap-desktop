@@ -29,7 +29,7 @@ namespace Google.Solutions.Settings.Collection
     /// Base class for settings repositories that support group policies.
     /// </summary>
     public abstract class PolicyEnabledRegistryRepository<TCollection> // TODO: Rename, drop prefix
-        : RegistryRepositoryBase<TCollection>
+        : RepositoryBase<TCollection>
         where TCollection : ISettingsCollection
     {
         private static ISettingsStore CreateMergedStore(

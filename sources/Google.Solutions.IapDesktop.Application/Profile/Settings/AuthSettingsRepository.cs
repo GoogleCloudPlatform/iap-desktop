@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// Registry-backed repository for authentication-related settings.
     /// </summary>
     public class AuthSettingsRepository :
-        RegistryRepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
+        RepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {
         public AuthSettingsRepository(RegistryKey baseKey) 
             : base(new RegistrySettingsStore(baseKey))

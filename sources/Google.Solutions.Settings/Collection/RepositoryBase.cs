@@ -28,13 +28,13 @@ namespace Google.Solutions.Settings.Collection
     /// <summary>
     /// Base class for all settings repositories.
     /// </summary>
-    public abstract class RegistryRepositoryBase<TCollection>  // TODO: Rename, drop prefix
+    public abstract class RepositoryBase<TCollection>
         : IRepository<TCollection>
         where TCollection : ISettingsCollection
     {
         protected ISettingsStore Store { get; }
 
-        protected RegistryRepositoryBase(ISettingsStore store)
+        protected RepositoryBase(ISettingsStore store)
         {
             this.Store = store.ExpectNotNull(nameof(store));
         }

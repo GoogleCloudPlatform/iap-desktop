@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// </summary>
     [Service(typeof(ITerminalSettingsRepository), ServiceLifetime.Singleton)]
     public class TerminalSettingsRepository
-        : RegistryRepositoryBase<ITerminalSettings>, ITerminalSettingsRepository
+        : RepositoryBase<ITerminalSettings>, ITerminalSettingsRepository
     {
         //
         // Use a dark gray as default (xterm 236).

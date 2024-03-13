@@ -113,7 +113,7 @@ namespace Google.Solutions.Settings
                     return lesserSetting.CreateSimilar(
                         overlaySetting.Value,
                         lesserSetting.DefaultValue,
-                        false,
+                        true,
                         true);
                 }
             }

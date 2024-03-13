@@ -47,5 +47,10 @@ namespace Google.Solutions.Settings
         {
             this.ValueSource.Clear();
         }
+
+        public static DictionarySettingsStore Empty()
+        {
+            return new DictionarySettingsStore(new Dictionary<string, string>());
+        }
     }
 }

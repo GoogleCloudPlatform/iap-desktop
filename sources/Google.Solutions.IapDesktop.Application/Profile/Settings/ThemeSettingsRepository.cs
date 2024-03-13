@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<bool> IsGdiScalingEnabled { get; }
     }
 
-    public class ThemeSettingsRepository : RegistryRepositoryBase<IThemeSettings>
+    public class ThemeSettingsRepository : RepositoryBase<IThemeSettings>
     {
         public ThemeSettingsRepository(RegistryKey key) 
             : this(new RegistrySettingsStore(key))
