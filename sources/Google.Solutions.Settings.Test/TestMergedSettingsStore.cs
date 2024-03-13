@@ -23,7 +23,7 @@ using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class TestMergedSettingsStore
@@ -79,7 +79,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     MergedSettingsStore.MergeBehavior.Policy);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(defaultValue, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
@@ -103,7 +103,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 lesserKey.BackingKey.SetValue("test", 2);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(2, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
@@ -127,7 +127,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(3, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
@@ -152,7 +152,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(3, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
@@ -178,7 +178,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     MergedSettingsStore.MergeBehavior.Override);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(defaultValue, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
@@ -202,7 +202,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 lesserKey.BackingKey.SetValue("test", 2);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(2, setting.Value);
                 Assert.AreEqual(2, setting.DefaultValue);   // New default
@@ -226,7 +226,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(3, setting.Value);
                 Assert.AreEqual(defaultValue, setting.DefaultValue);
@@ -251,7 +251,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 overlayKey.BackingKey.SetValue("test", 3);
 
                 var defaultValue = 1;
-                var setting = mergedKey.Read<int>("test", "test", null, null, defaultValue);
+                var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
                 Assert.AreEqual(3, setting.Value);
                 Assert.AreEqual(2, setting.DefaultValue);

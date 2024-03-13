@@ -23,7 +23,7 @@ using Google.Solutions.Settings.Registry;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public abstract class TestDictionaryValueAccessorBase<T>
@@ -68,7 +68,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
-         
+
             accessor.Delete(dictionary);
             accessor.Delete(dictionary);
         }

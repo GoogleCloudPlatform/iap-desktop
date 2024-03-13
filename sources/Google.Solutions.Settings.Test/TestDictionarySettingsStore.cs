@@ -24,7 +24,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class TestDictionarySettingsStore
@@ -41,17 +41,17 @@ namespace Google.Solutions.Settings.Test.Registry
             });
 
             Assert.AreEqual(
-                "a string", 
+                "a string",
                 store.Read<string>("string", "desc", null, null, null).Value);
             Assert.AreEqual(
                 -42,
-                store.Read<int>("int", "desc", null, null, 0).Value);
+                store.Read("int", "desc", null, null, 0).Value);
             Assert.AreEqual(
                 1000000000000001L,
                 store.Read<long>("long", "desc", null, null, 0).Value);
             Assert.AreEqual(
                 ConsoleColor.DarkCyan,
-                store.Read<ConsoleColor>("color", "desc", null, null, ConsoleColor.Black).Value);
+                store.Read("color", "desc", null, null, ConsoleColor.Black).Value);
         }
 
         [Test]

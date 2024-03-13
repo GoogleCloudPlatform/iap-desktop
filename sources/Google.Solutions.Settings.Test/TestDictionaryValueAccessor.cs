@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Security;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     public static class TestDictionaryValueAccessor
     {

@@ -24,7 +24,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class RegistrySettingsStoreOfEnumFlags : RegistrySettingsStoreBase
@@ -47,7 +47,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -78,7 +78,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -101,7 +101,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -129,7 +129,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -156,7 +156,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -167,7 +167,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 key.Write(setting);
 
                 Assert.AreEqual(
-                    (int)(Toppings.Cream | Toppings.Chocolate), 
+                    (int)(Toppings.Cream | Toppings.Chocolate),
                     key.BackingKey.GetValue("test"));
             }
         }
@@ -179,7 +179,7 @@ namespace Google.Solutions.Settings.Test.Registry
             {
                 key.BackingKey.SetValue("test", (int)Toppings.Cream, RegistryValueKind.DWord);
 
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -202,7 +202,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -222,7 +222,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -241,7 +241,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -261,7 +261,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -281,7 +281,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -301,7 +301,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -317,7 +317,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<Toppings>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -348,7 +348,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
-                var setting = mergedKey.Read<Toppings>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",
@@ -381,7 +381,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     -123,
                     RegistryValueKind.DWord);
 
-                var setting = mergedKey.Read<Toppings>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",
@@ -414,7 +414,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     (int)Toppings.Cream,
                     RegistryValueKind.DWord);
 
-                var setting = mergedKey.Read<Toppings>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",

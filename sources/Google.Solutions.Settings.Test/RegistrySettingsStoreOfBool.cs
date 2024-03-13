@@ -24,7 +24,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class RegistrySettingsStoreOfBool : RegistrySettingsStoreBase
@@ -38,7 +38,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -68,7 +68,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -79,7 +79,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsTrue((bool)setting.Value);
+                Assert.IsTrue(setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -91,7 +91,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -102,7 +102,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsTrue((bool)setting.Value);
+                Assert.IsTrue(setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -116,7 +116,7 @@ namespace Google.Solutions.Settings.Test.Registry
             {
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -127,7 +127,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.IsTrue((bool)setting.Value);
+                Assert.IsTrue(setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -143,7 +143,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -164,7 +164,7 @@ namespace Google.Solutions.Settings.Test.Registry
             {
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -185,7 +185,7 @@ namespace Google.Solutions.Settings.Test.Registry
             {
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -211,7 +211,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -231,7 +231,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -254,7 +254,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -274,7 +274,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -292,7 +292,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -308,7 +308,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<bool>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -328,7 +328,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -336,7 +336,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     false);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -359,7 +359,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -368,7 +368,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -381,7 +381,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, child);
 
 
-                Assert.IsTrue((bool)effective.Value);
+                Assert.IsTrue(effective.Value);
                 Assert.IsTrue(effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
@@ -392,7 +392,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -402,7 +402,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsFalse(parent.IsSpecified);
 
                 key.BackingKey.SetValue("test", 1);
-                var child = key.Read<bool>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -415,7 +415,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.IsTrue((bool)effective.Value);
+                Assert.IsTrue(effective.Value);
                 Assert.IsFalse(effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
@@ -426,7 +426,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -435,7 +435,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -448,7 +448,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.IsTrue((bool)effective.Value);
+                Assert.IsTrue(effective.Value);
                 Assert.IsTrue(effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
@@ -459,7 +459,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<bool>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -468,7 +468,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 parent.Value = true;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = key.Read<bool>(
+                var intermediate = key.Read(
                     "test",
                     "title",
                     "description",
@@ -476,7 +476,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     false);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = key.Read<bool>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -492,7 +492,7 @@ namespace Google.Solutions.Settings.Test.Registry
 
                 effective.Value = false;
 
-                Assert.IsFalse((bool)effective.Value);
+                Assert.IsFalse(effective.Value);
                 Assert.IsTrue(effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
@@ -515,7 +515,7 @@ namespace Google.Solutions.Settings.Test.Registry
 
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
 
-                var setting = mergedKey.Read<bool>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",
@@ -541,7 +541,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 key.BackingKey.SetValue("test", 1, RegistryValueKind.DWord);
                 policyKey.BackingKey.SetValue("test", 0, RegistryValueKind.DWord);
 
-                var setting = mergedKey.Read<bool>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",

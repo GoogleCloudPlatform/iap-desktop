@@ -23,7 +23,7 @@ using Google.Solutions.Settings.Registry;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class RegistrySettingsStoreOfString : RegistrySettingsStoreBase
@@ -37,7 +37,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -69,7 +69,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -95,7 +95,7 @@ namespace Google.Solutions.Settings.Test.Registry
             {
                 key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -123,7 +123,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -145,7 +145,7 @@ namespace Google.Solutions.Settings.Test.Registry
             {
                 key.BackingKey.SetValue("test", "red");
 
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -169,7 +169,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -210,7 +210,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -234,7 +234,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -255,7 +255,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<string>(
+                var setting = key.Read(
                     "test",
                     "title",
                     "description",
@@ -276,7 +276,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<string>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -285,7 +285,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     _ => true);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = key.Read<string>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -309,7 +309,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<string>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -319,7 +319,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 parent.Value = "red";
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = key.Read<string>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -344,7 +344,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<string>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -355,7 +355,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsFalse(parent.IsSpecified);
 
                 key.BackingKey.SetValue("test", "yellow");
-                var child = key.Read<string>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -381,7 +381,7 @@ namespace Google.Solutions.Settings.Test.Registry
             using (var key = CreateSettingsKey())
             {
                 key.BackingKey.SetValue("test", "red");
-                var parent = key.Read<string>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -392,7 +392,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.IsTrue(parent.IsSpecified);
 
                 key.BackingKey.SetValue("test", "green");
-                var child = key.Read<string>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -417,7 +417,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = CreateSettingsKey())
             {
-                var parent = key.Read<string>(
+                var parent = key.Read(
                     "test",
                     "title",
                     "description",
@@ -427,7 +427,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 parent.Value = "red";
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = key.Read<string>(
+                var intermediate = key.Read(
                     "test",
                     "title",
                     "description",
@@ -436,7 +436,7 @@ namespace Google.Solutions.Settings.Test.Registry
                     _ => true);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = key.Read<string>(
+                var child = key.Read(
                     "test",
                     "title",
                     "description",
@@ -476,7 +476,7 @@ namespace Google.Solutions.Settings.Test.Registry
 
                 key.BackingKey.SetValue("test", "red");
 
-                var setting = mergedKey.Read<string>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",
@@ -503,7 +503,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 key.BackingKey.SetValue("test", "red");
                 policyKey.BackingKey.SetValue("test", "BLUE");
 
-                var setting = mergedKey.Read<string>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",
@@ -530,7 +530,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 key.BackingKey.SetValue("test", "red");
                 policyKey.BackingKey.SetValue("test", "BLUE");
 
-                var setting = mergedKey.Read<string>(
+                var setting = mergedKey.Read(
                     "test",
                     "title",
                     "description",

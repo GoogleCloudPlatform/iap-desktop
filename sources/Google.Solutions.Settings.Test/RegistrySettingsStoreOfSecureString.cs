@@ -28,7 +28,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class RegistrySettingsStoreOfSecureString : RegistrySettingsStoreBase
@@ -392,7 +392,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("red", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("red", effective.Value.AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());
                 Assert.IsTrue(effective.IsDefault);
             }
@@ -414,7 +414,7 @@ namespace Google.Solutions.Settings.Test.Registry
 
                 RegistryValueAccessor.Create<SecureString>("test")
                     .Write(
-                        key.BackingKey, 
+                        key.BackingKey,
                         SecureStringExtensions.FromClearText("yellow"));
                 var child = key.Read<SecureString>(
                     "test",
@@ -429,7 +429,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("yellow", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("yellow", effective.Value.AsClearText());
                 Assert.IsNull(effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
@@ -470,7 +470,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("green", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("green", effective.Value.AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());
                 Assert.IsFalse(effective.IsDefault);
             }
@@ -514,7 +514,7 @@ namespace Google.Solutions.Settings.Test.Registry
 
                 effective.SetClearTextValue("black");
 
-                Assert.AreEqual("black", ((SecureString)effective.Value).AsClearText());
+                Assert.AreEqual("black", effective.Value.AsClearText());
                 Assert.AreEqual("red", effective.DefaultValue.AsClearText());
                 Assert.IsFalse(effective.IsDefault);
             }

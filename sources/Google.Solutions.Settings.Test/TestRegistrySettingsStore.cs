@@ -24,7 +24,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class TestRegistrySettingsStore
@@ -68,7 +68,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 //
                 // Read non-existing value.
                 //
-                var setting = key.Read<int>("test", "test", null, null, 0);
+                var setting = key.Read("test", "test", null, null, 0);
                 Assert.IsFalse(setting.IsSpecified);
 
                 //
@@ -77,7 +77,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 setting.Value = 1;
                 key.Write(setting);
 
-                setting = key.Read<int>("test", "test", null, null, 0);
+                setting = key.Read("test", "test", null, null, 0);
                 Assert.IsTrue(setting.IsSpecified);
             }
         }
@@ -91,7 +91,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 // Read non-existing value.
                 //
                 var defaultValue = -1;
-                var setting = key.Read<int>("test", "test", null, null, defaultValue);
+                var setting = key.Read("test", "test", null, null, defaultValue);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.AreEqual(defaultValue, setting.Value);
 
@@ -101,7 +101,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 setting.Value = 1;
                 key.Write(setting);
 
-                setting = key.Read<int>("test", "test", null, null, 0);
+                setting = key.Read("test", "test", null, null, 0);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.AreEqual(1, setting.Value);
             }
@@ -115,11 +115,11 @@ namespace Google.Solutions.Settings.Test.Registry
                 //
                 // Read non-existing value.
                 //
-                var setting = key.Read<int>(
+                var setting = key.Read(
                     "test",
-                    "test", 
-                    null, 
-                    null, 
+                    "test",
+                    null,
+                    null,
                     0,
                     v => v > 0);
 
@@ -144,7 +144,7 @@ namespace Google.Solutions.Settings.Test.Registry
         {
             using (var key = new RegistrySettingsStore(CreateKey()))
             {
-                var setting = key.Read<int>("test", "test", null, null, 0);
+                var setting = key.Read("test", "test", null, null, 0);
 
                 //
                 // Write non-default value.
@@ -155,7 +155,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 //
                 // Write default value.
                 //
-                setting = key.Read<int>("test", "test", null, null, 0);
+                setting = key.Read("test", "test", null, null, 0);
                 Assert.IsFalse(setting.IsDefault);
                 setting.Reset();
                 key.Write(setting);
@@ -163,7 +163,7 @@ namespace Google.Solutions.Settings.Test.Registry
                 //
                 // Status back to "not specified".
                 //
-                setting = key.Read<int>("test", "test", null, null, 0);
+                setting = key.Read("test", "test", null, null, 0);
                 Assert.IsFalse(setting.IsSpecified);
                 Assert.IsTrue(setting.IsDefault);
             }

@@ -25,7 +25,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Settings.Test.Registry
+namespace Google.Solutions.Settings.Test
 {
     public abstract class TestRegistryValueAccessorBase<T>
     {
