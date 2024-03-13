@@ -28,7 +28,7 @@ namespace Google.Solutions.Settings.Collection
     /// <summary>
     /// Base class for settings repositories that support group policies.
     /// </summary>
-    public abstract class PolicyEnabledRegistryRepository<TCollection> // TODO: Rename, drop prefix
+    public abstract class GroupPolicyAwareRepository<TCollection>
         : RepositoryBase<TCollection>
         where TCollection : ISettingsCollection
     {
@@ -77,7 +77,7 @@ namespace Google.Solutions.Settings.Collection
             }
         }
 
-        protected PolicyEnabledRegistryRepository(
+        protected GroupPolicyAwareRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey) 

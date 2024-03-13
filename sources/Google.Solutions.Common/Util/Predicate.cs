@@ -21,38 +21,21 @@
 
 using System;
 
-namespace Google.Solutions.Settings
+namespace Google.Solutions.Common.Util
 {
     /// <summary>
-    /// Store for settings.
+    /// Common predicates.
     /// </summary>
-    public interface ISettingsStore : IDisposable
+    public static class Predicate
     {
-        /// <summary>
-        /// Read a value and map it to a settings object.
-        /// </summary>
-        ISetting<T> Read<T>(
-            string name,
-            string displayName,
-            string description,
-            string category,
-            T defaultValue,
-            ValidateDelegate<T> validate = null);
+        public static Predicate<int> InRange(int minInclusive, int maxInclusive)
+        {
+            return v => v >= minInclusive && v <= maxInclusive;
+        }
 
-        /// <summary>
-        /// Write value back to the store.
-        /// </summary>
-        void Write(ISetting setting);
-
-        /// <summary>
-        /// Delete all values.
-        /// </summary>
-        void Clear();
+        public static Predicate<long> InRange(long minInclusive, long maxInclusive)
+        {
+            return v => v >= minInclusive && v <= maxInclusive;
+        }
     }
-
-    /// <summary>
-    /// Delegate for validating if a given value falls
-    /// within the permitted range of a setting.
-    /// </summary>
-    public delegate bool ValidateDelegate<T>(T value);
 }

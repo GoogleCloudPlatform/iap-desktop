@@ -318,7 +318,7 @@ namespace Google.Solutions.Settings
 
             public override bool IsValid(TEnum value)
             {
-                return value.IsDefinedFlagCombination();
+                return value.IsValidFlagCombination();
             }
         }
     }

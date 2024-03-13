@@ -128,7 +128,7 @@ namespace Google.Solutions.Settings
             protected override SettingBase<T> CreateNew(
                 T value,
                 T defaultValue,
-                bool readOnly) // TODO: remove 
+                bool readOnly) // TODO: remove overlay logic
             {
                 return new MappedSetting<T>(
                     this.Key,

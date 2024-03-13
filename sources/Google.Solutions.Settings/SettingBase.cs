@@ -109,7 +109,7 @@ namespace Google.Solutions.Settings
         // Overlay.
         //---------------------------------------------------------------------
 
-        public ISetting<T> OverlayBy(ISetting<T> overlaySetting) // TODO: remove
+        public ISetting<T> OverlayBy(ISetting<T> overlaySetting) // TODO: remove overlay logic
         {
             //
             // NB. The idea of overlaying is that you use a base setting
@@ -174,7 +174,7 @@ namespace Google.Solutions.Settings
 
         protected abstract bool IsValid(T value);
 
-        protected abstract SettingBase<T> CreateNew( // TODO: remove
+        protected abstract SettingBase<T> CreateNew( // TODO: remove overlay logic
             T value,
             T defaultValue,
             bool readOnly);

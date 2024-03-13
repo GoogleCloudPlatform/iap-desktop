@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     null,
                     null,
                     DwordFromFontSize(TerminalFont.DefaultSize),
-                    Validators.InRange(
+                    Predicate.InRange(
                         DwordFromFontSize(TerminalFont.MinimumSize),
                         DwordFromFontSize(TerminalFont.MaximumSize)));
                 this.ForegroundColorArgb = store.Read<int>(
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     null,
                     null,
                     Color.White.ToArgb(),
-                    Validators.InRange(
+                    Predicate.InRange(
                         Color.Black.ToArgb(),
                         Color.White.ToArgb()));
                 this.BackgroundColorArgb = store.Read<int>(
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     null,
                     null,
                     DefaultBackgroundColor.ToArgb(),
-                    Validators.InRange(
+                    Predicate.InRange(
                         Color.Black.ToArgb(),
                         Color.White.ToArgb()));
             }

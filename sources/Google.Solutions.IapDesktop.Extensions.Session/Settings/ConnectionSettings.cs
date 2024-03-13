@@ -142,14 +142,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "Use a timeout that allows sufficient time for credential prompts.",
                 Categories.RdpConnection,
                 (int)RdpParameters.DefaultConnectionTimeout.TotalSeconds,
-                Validators.InRange(0, 300));
+                Predicate.InRange(0, 300));
             this.RdpPort = store.Read<int>(
                 "RdpPort",
                 "Server port",
                 "Server port.",
                 Categories.RdpConnection,
                 RdpParameters.DefaultPort,
-                Validators.InRange(1, ushort.MaxValue));
+                Predicate.InRange(1, ushort.MaxValue));
             this.RdpTransport = store.Read<SessionTransportType>(
                 "TransportType",
                 "Connect via",
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Server port",
                 Categories.SshConnection,
                 SshParameters.DefaultPort,
-                Validators.InRange(1, ushort.MaxValue));
+                Predicate.InRange(1, ushort.MaxValue));
             this.SshTransport = store.Read<SessionTransportType>(
                 "TransportType",
                 "Connect via",
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Timeout for establishing SSH connections, in seconds.",
                 Categories.SshConnection,
                 (int)SshParameters.DefaultConnectionTimeout.TotalSeconds,
-                Validators.InRange(0, 300));
+                Predicate.InRange(0, 300));
 
             //
             // App Settings.

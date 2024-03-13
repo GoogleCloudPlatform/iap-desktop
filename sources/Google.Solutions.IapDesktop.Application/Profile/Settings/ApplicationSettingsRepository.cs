@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// Registry-backed repository for app settings.
     /// </summary>
     public class ApplicationSettingsRepository
-        : PolicyEnabledRegistryRepository<IApplicationSettings>
+        : GroupPolicyAwareRepository<IApplicationSettings>
     {
         public const char FullScreenDevicesSeparator = ',';
         private readonly UserProfile.SchemaVersion schemaVersion;
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     null,
                     2,              // A single retry might not be sufficient (b/323465182).
-                    Validators.InRange(0, 8));
+                    Predicate.InRange(0, 8));
                 this.TlsVersions = store.Read<SecurityProtocolType>(
                     "TlsVersions",
                     "TlsVersions",
@@ -233,21 +233,21 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     null,
                     0,
-                    Validators.InRange(0, ushort.MaxValue));
+                    Predicate.InRange(0, ushort.MaxValue));
                 this.MainWindowWidth = store.Read<int>(
                     "WindowWidth",
                     "WindowWidth",
                     null,
                     null,
                     0,
-                    Validators.InRange(0, ushort.MaxValue));
+                    Predicate.InRange(0, ushort.MaxValue));
                 this.LastUpdateCheck = store.Read<long>(
                     "LastUpdateCheck",
                     "LastUpdateCheck",
                     null,
                     null,
                     0,
-                    Validators.InRange(0, long.MaxValue));
+                    Predicate.InRange(0, long.MaxValue));
                 this.ProxyUsername = store.Read<string>(
                     "ProxyUsername",
                     "ProxyUsername",

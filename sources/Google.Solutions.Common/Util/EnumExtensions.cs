@@ -51,20 +51,10 @@ namespace Google.Solutions.Common.Util
             return v != 0 && !IsPowerOfTwo(v);
         }
 
-        public static TAttribute? GetAttribute<TAttribute>(this Enum enumValue)
-                where TAttribute : Attribute
-        {
-            return enumValue
-                .GetType()
-                .GetMember(enumValue.ToString())
-                .FirstOrDefault()?
-                .GetCustomAttribute<TAttribute>();
-        }
-
         /// <summary>
         /// Check all flags set represent valid enum values.
         /// </summary>
-        public static bool IsDefinedFlagCombination<TEnum>(this TEnum enumValue) // TODO: test
+        public static bool IsValidFlagCombination<TEnum>(this TEnum enumValue)
         {
             var numericValue = Convert.ToInt64(enumValue);
 
@@ -76,6 +66,16 @@ namespace Google.Solutions.Common.Util
                 .Aggregate((e1, e2) => e1 | e2);
 
             return (max & numericValue) == numericValue;
+        }
+
+        public static TAttribute? GetAttribute<TAttribute>(this Enum enumValue)
+                where TAttribute : Attribute
+        {
+            return enumValue
+                .GetType()
+                .GetMember(enumValue.ToString())
+                .FirstOrDefault()?
+                .GetCustomAttribute<TAttribute>();
         }
     }
 }

@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// Registry-backed repository for access-related settings.
     /// </summary>
     public class AccessSettingsRepository
-        : PolicyEnabledRegistryRepository<IAccessSettings>
+        : GroupPolicyAwareRepository<IAccessSettings>
     {
         public AccessSettingsRepository(
             RegistryKey settingsKey,
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     null,
                     16,
-                    Validators.InRange(1, 32));
+                    Predicate.InRange(1, 32));
             }
         }
     }

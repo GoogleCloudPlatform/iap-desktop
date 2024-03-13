@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(typeof(IRepository<ISshSettings>), ServiceLifetime.Singleton)]
-    public class SshSettingsRepository : PolicyEnabledRegistryRepository<ISshSettings>
+    public class SshSettingsRepository : GroupPolicyAwareRepository<ISshSettings>
     {
         private readonly UserProfile.SchemaVersion schemaVersion;
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "Validity of (OS Login/Metadata) keys in seconds",
                     null,
                     (int)SshParameters.DefaultPublicKeyValidity.TotalSeconds,
-                    Validators.InRange(
+                    Predicate.InRange(
                         (int)TimeSpan.FromMinutes(1).TotalSeconds,
                         int.MaxValue));
                 this.UsePersistentKey = store.Read<bool>(
