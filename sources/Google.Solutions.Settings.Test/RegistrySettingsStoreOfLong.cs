@@ -69,7 +69,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryValueDoesNotExist_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueDoesNotExist_ThenReadUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
@@ -93,7 +93,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
+        public void WhenRegistryKeyIsNull_ThenReadUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
@@ -117,7 +117,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenRegistryValueExists_ThenFromKeyUsesValue()
+        public void WhenRegistryValueExists_ThenReadUsesValue()
         {
             using (var key = CreateSettingsKey())
             {

@@ -141,7 +141,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenRegistryValueInvalid_ThenFromKeyUsesDefaults()
+        public void WhenRegistryValueInvalid_ThenReadUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
