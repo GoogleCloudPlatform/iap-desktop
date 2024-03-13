@@ -19,46 +19,45 @@
 // under the License.
 //
 
-using Google.Solutions.Settings.Registry;
-using Microsoft.Win32;
+using Google.Solutions.Common.Util;
 using System;
+using System.Linq;
 
 namespace Google.Solutions.Settings.Collection
 {
     /// <summary>
     /// Base class for all settings repositories.
     /// </summary>
-    public abstract class RegistryRepositoryBase<TSettings>  // TODO: Rename, drop prefix
-        : IRepository<TSettings>
-        where TSettings : ISettingsCollection
+    public abstract class RegistryRepositoryBase<TCollection>  // TODO: Rename, drop prefix
+        : IRepository<TCollection>
+        where TCollection : ISettingsCollection
     {
-        protected RegistryKey BaseKey { get; }
+        protected ISettingsStore Store { get; }
 
-        protected RegistryRepositoryBase(RegistryKey baseKey)
+        protected RegistryRepositoryBase(ISettingsStore store)
         {
-            this.BaseKey = baseKey;
+            this.Store = store.ExpectNotNull(nameof(store));
         }
 
-        public virtual TSettings GetSettings()
+        public virtual TCollection GetSettings()
         {
-            return LoadSettings(this.BaseKey);
+            return LoadSettings(this.Store);
         }
 
-        public virtual void SetSettings(TSettings settings)
+        public virtual void SetSettings(TCollection collection)
         {
-            settings.Save(this.BaseKey);
+            foreach (var setting in collection.Settings.Where(s => s.IsDirty))
+            {
+                this.Store.Write(setting);
+            }
         }
 
         public void ClearSettings()
         {
-            // Delete values, but keep any subkeys.
-            foreach (var valueName in this.BaseKey.GetValueNames())
-            {
-                this.BaseKey.DeleteValue(valueName);
-            }
+            this.Store.Clear();
         }
 
-        protected abstract TSettings LoadSettings(RegistryKey key);
+        protected abstract TCollection LoadSettings(ISettingsStore store);
 
         //---------------------------------------------------------------------
         // IDisposable.
@@ -72,10 +71,7 @@ namespace Google.Solutions.Settings.Collection
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                this.BaseKey.Dispose();
-            }
+            this.Store.Dispose();
         }
     }
 }

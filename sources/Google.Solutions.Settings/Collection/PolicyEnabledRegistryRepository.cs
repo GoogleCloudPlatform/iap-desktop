@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 
 namespace Google.Solutions.Settings.Collection
@@ -27,32 +28,66 @@ namespace Google.Solutions.Settings.Collection
     /// <summary>
     /// Base class for settings repositories that support group policies.
     /// </summary>
-    public abstract class PolicyEnabledRegistryRepository<TCollection>
+    public abstract class PolicyEnabledRegistryRepository<TCollection> // TODO: Rename, drop prefix
         : RegistryRepositoryBase<TCollection>
         where TCollection : ISettingsCollection
     {
-        private readonly RegistryKey machinePolicyKey;
-        private readonly RegistryKey userPolicyKey;
+        private static ISettingsStore CreateMergedStore(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
+        {
+            settingsKey.ExpectNotNull(nameof(settingsKey));
+
+            //
+            // NB. Machine policies override user policies, and
+            //     user policies override settings. But the policy
+            //     keys might be missing (null).
+            //
+
+            if (machinePolicyKey != null && userPolicyKey != null)
+            {
+                var policy = new MergedSettingsStore(
+                    new RegistrySettingsStore(machinePolicyKey),
+                    new RegistrySettingsStore(userPolicyKey),
+                    MergedSettingsStore.MergeBehavior.Policy);
+
+                return new MergedSettingsStore(
+                    policy,
+                    new RegistrySettingsStore(settingsKey),
+                    MergedSettingsStore.MergeBehavior.Policy);
+            }
+            else if (machinePolicyKey != null)
+            {
+                return new MergedSettingsStore(
+                    new RegistrySettingsStore(machinePolicyKey),
+                    new RegistrySettingsStore(settingsKey),
+                    MergedSettingsStore.MergeBehavior.Policy);
+            }
+            else if (userPolicyKey != null)
+            {
+                return new MergedSettingsStore(
+                    new RegistrySettingsStore(userPolicyKey),
+                    new RegistrySettingsStore(settingsKey),
+                    MergedSettingsStore.MergeBehavior.Policy);
+            }
+            else
+            {
+                return new RegistrySettingsStore(settingsKey);
+            }
+        }
 
         protected PolicyEnabledRegistryRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) : base(settingsKey)
+            RegistryKey userPolicyKey) 
+            : base(CreateMergedStore(settingsKey, machinePolicyKey, userPolicyKey))
         {
-            settingsKey.ExpectNotNull(nameof(settingsKey));
-
-            this.machinePolicyKey = machinePolicyKey;
-            this.userPolicyKey = userPolicyKey;
         }
-        protected override TCollection LoadSettings(RegistryKey key)
-            => LoadSettings(key, this.machinePolicyKey, this.userPolicyKey);
 
-        protected abstract TCollection LoadSettings(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey);
-
-        public bool IsPolicyPresent
-            => this.machinePolicyKey != null || this.userPolicyKey != null;
+        public bool IsPolicyPresent 
+        {
+            get => this.Store is MergedSettingsStore; // TODO: test
+        }
     }
 }

@@ -148,13 +148,29 @@ namespace Google.Solutions.Settings
 
         public void Write(ISetting setting)
         {
-            this.overlayStore.Write(setting);
+            if (this.mergeBehavior == MergeBehavior.Policy)
+            {
+                //
+                // Never try to write to the policy.
+                //
+                this.lesserStore.Write(setting);
+            }
+            else
+            {
+                this.overlayStore.Write(setting);
+            }
         }
 
         public void Clear() // TODO: test
         {
             throw new InvalidOperationException(
                 "A merged store cannot be cleared");
+        }
+
+        public void Dispose()
+        {
+            this.lesserStore.Dispose();
+            this.overlayStore.Dispose();
         }
     }
 }

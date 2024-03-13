@@ -63,13 +63,17 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
     public class ThemeSettingsRepository : RegistryRepositoryBase<IThemeSettings>
     {
-        public ThemeSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public ThemeSettingsRepository(RegistryKey key) 
+            : this(new RegistrySettingsStore(key))
         {
-            baseKey.ExpectNotNull(nameof(baseKey));
         }
 
-        protected override IThemeSettings LoadSettings(RegistryKey key)
-            => ThemeSettings.FromKey(key);
+        public ThemeSettingsRepository(ISettingsStore store) : base(store)
+        {
+        }
+
+        protected override IThemeSettings LoadSettings(ISettingsStore store)
+            => new ThemeSettings(store);
 
         //---------------------------------------------------------------------
         // Inner class.
@@ -86,29 +90,20 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.IsGdiScalingEnabled
             };
 
-            private ThemeSettings()
+            internal ThemeSettings(ISettingsStore store)
             {
-            }
-
-            public static ThemeSettings FromKey(RegistryKey registryKey)
-            {
-                return new ThemeSettings()
-                {
-                    Theme = RegistryEnumSetting<ApplicationTheme>.FromKey(
-                        "Theme",
-                        "Theme",
-                        null,
-                        null,
-                        ApplicationTheme._Default,
-                        registryKey),
-                    IsGdiScalingEnabled = RegistryBoolSetting.FromKey(
-                        "IsGdiScalingEnabled",
-                        "IsGdiScalingEnabled",
-                        null,
-                        null,
-                        true,
-                        registryKey)
-                };
+                this.Theme = store.Read<ApplicationTheme>(
+                    "Theme",
+                    "Theme",
+                    null,
+                    null,
+                    ApplicationTheme._Default);
+                this.IsGdiScalingEnabled = store.Read<bool>(
+                    "IsGdiScalingEnabled",
+                    "IsGdiScalingEnabled",
+                    null,
+                    null,
+                    true);
             }
         }
     }

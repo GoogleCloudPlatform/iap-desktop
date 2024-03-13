@@ -47,7 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     public class AuthSettingsRepository :
         RegistryRepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {
-        public AuthSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public AuthSettingsRepository(RegistryKey baseKey) 
+            : base(new RegistrySettingsStore(baseKey))
         {
             baseKey.ExpectNotNull(nameof(baseKey));
         }
@@ -56,8 +57,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         // SettingsRepositoryBase.
         //---------------------------------------------------------------------
 
-        protected override IAuthSettings LoadSettings(RegistryKey key)
-            => AuthSettings.FromKey(key);
+        protected override IAuthSettings LoadSettings(ISettingsStore store)
+            => new AuthSettings(store);
 
         //---------------------------------------------------------------------
         // IOidcOfflineCredentialStore
@@ -174,21 +175,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.Credentials
             };
 
-            private AuthSettings()
-            { }
-
-            public static AuthSettings FromKey(RegistryKey registryKey)
+            internal AuthSettings(ISettingsStore store)
             {
-                return new AuthSettings()
-                {
-                    Credentials = RegistrySecureStringSetting.FromKey(
-                        "Credentials",
-                        "JSON-formatted credentials",
-                        null,
-                        null,
-                        registryKey,
-                        DataProtectionScope.CurrentUser)
-                };
+                this.Credentials = store.Read<SecureString>(
+                    "Credentials",
+                    "JSON-formatted credentials",
+                    null,
+                    null,
+                    null);
             }
         }
     }

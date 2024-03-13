@@ -23,18 +23,12 @@ using Google.Solutions.Settings.Registry;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using static Google.Solutions.Settings.Registry.RegistrySettingsStore;
 
 namespace Google.Solutions.Settings.Test
 {
     [TestFixture]
     public class RegistrySettingsStoreOfInt : RegistrySettingsStoreBase
     {
-        private static ValidateDelegate<int> InRange(int minInclusive, int maxInclusive)
-        {
-            return v => v >= minInclusive && v <= maxInclusive;
-        }
-
         //---------------------------------------------------------------------
         // IsSpecified.
         //---------------------------------------------------------------------
@@ -50,7 +44,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.IsFalse(setting.IsSpecified);
                 Assert.IsTrue(setting.IsDefault);
@@ -82,7 +76,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -106,7 +100,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -132,7 +126,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
@@ -160,7 +154,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.Value = 1;
                 key.Write(setting);
@@ -182,7 +176,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.Value = setting.DefaultValue;
                 key.Write(setting);
@@ -206,7 +200,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.Value = setting.DefaultValue;
 
@@ -227,7 +221,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     0,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.Value = 0;
 
@@ -247,7 +241,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.Value = 0;
 
@@ -267,7 +261,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = -1);
             }
@@ -288,7 +282,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.Value = 1;
                 setting.AnyValue = null;
@@ -309,7 +303,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 setting.AnyValue = "12";
 
@@ -328,7 +322,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.Throws<InvalidCastException>(() => setting.AnyValue = false);
             }
@@ -345,7 +339,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.Throws<FormatException>(() => setting.AnyValue = "test");
             }
@@ -366,7 +360,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsTrue(parent.IsDefault);
 
                 var child = key.Read(
@@ -375,7 +369,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -399,7 +393,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 parent.Value = 42;
                 Assert.IsFalse(parent.IsDefault);
 
@@ -409,7 +403,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -434,7 +428,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsTrue(parent.IsDefault);
                 Assert.IsFalse(parent.IsSpecified);
 
@@ -445,7 +439,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -471,7 +465,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsFalse(parent.IsDefault);
                 Assert.IsTrue(parent.IsSpecified);
 
@@ -482,7 +476,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsFalse(child.IsDefault);
                 Assert.IsTrue(child.IsSpecified);
 
@@ -507,7 +501,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 parent.Value = 42;
                 Assert.IsFalse(parent.IsDefault);
 
@@ -517,7 +511,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
                 Assert.IsTrue(intermediate.IsDefault);
 
                 var child = key.Read(
@@ -526,7 +520,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     10,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -566,7 +560,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.AreEqual(42, setting.Value);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -593,7 +587,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.AreEqual(42, setting.Value);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -620,7 +614,7 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     17,
-                    InRange(0, 100));
+                    Validators.InRange(0, 100));
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);

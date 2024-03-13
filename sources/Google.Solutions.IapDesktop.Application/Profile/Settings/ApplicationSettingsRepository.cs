@@ -94,16 +94,9 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
         }
 
-        protected override IApplicationSettings LoadSettings(
-            RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey)
+        protected override IApplicationSettings LoadSettings(ISettingsStore store)
         {
-            return ApplicationSettings.FromKey(
-                settingsKey,
-                machinePolicyKey,
-                userPolicyKey,
-                this.schemaVersion);
+            return new ApplicationSettings(store, this.schemaVersion);
         }
 
         //---------------------------------------------------------------------
@@ -112,9 +105,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class ApplicationSettings : IApplicationSettings
         {
-            private ApplicationSettings()
-            { }
-
             public ISetting<bool> IsMainWindowMaximized { get; private set; }
 
             public ISetting<int> MainWindowHeight { get; private set; }
@@ -170,176 +160,134 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 this.LastSurveyVersion
             };
 
-            public static ApplicationSettings FromKey(
-                RegistryKey settingsKey,
-                RegistryKey machinePolicyKey,
-                RegistryKey userPolicyKey,
+            internal ApplicationSettings(
+                ISettingsStore store,
                 UserProfile.SchemaVersion schemaVersion)
             {
-                return new ApplicationSettings()
-                {
-                    //
-                    // Settings that can be overridden by policy.
-                    //
-                    // NB. Default values must be kept consistent with the
-                    //     ADMX policy templates!
-                    // NB. Machine policies override user policies, and
-                    //     user policies override settings.
-                    //
-                    IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
-                            "IsPreviewFeatureSetEnabled",
-                            "IsPreviewFeatureSetEnabled",
-                            null,
-                            null,
-                            false,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
-                            "IsUpdateCheckEnabled",
-                            "IsUpdateCheckEnabled",
-                            null,
-                            null,
-                            true,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    IsTelemetryEnabled = RegistryBoolSetting.FromKey(
-                            "IsTelemetryEnabled",
-                            "IsTelemetryEnabled",
-                            null,
-                            null,
-                            schemaVersion >= UserProfile.SchemaVersion.Version240
-                                ? true      // Auto opt-in new profiles
-                                : false,    // Opt-out existing profiles
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    ProxyUrl = RegistryStringSetting.FromKey(
-                            "ProxyUrl",
-                            "ProxyUrl",
-                            null,
-                            null,
-                            null,
-                            settingsKey,
-                            url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    ProxyPacUrl = RegistryStringSetting.FromKey(
-                            "ProxyPacUrl",
-                            "ProxyPacUrl",
-                            null,
-                            null,
-                            null,
-                            settingsKey,
-                            url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    ProxyAuthenticationRetries = RegistryDwordSetting.FromKey(
-                            "ProxyAuthenticationRetries",
-                            "ProxyAuthenticationRetries",
-                            null,
-                            null,
-                            2,              // A single retry might not be sufficient (b/323465182).
-                            settingsKey,
-                            0,
-                            8)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
-                    TlsVersions = RegistryEnumSetting<SecurityProtocolType>.FromKey(
-                            "TlsVersions",
-                            "TlsVersions",
-                            null,
-                            null,
-                            OSCapabilities.SupportedTlsVersions,
-                            settingsKey)
-                        .ApplyPolicy(userPolicyKey)
-                        .ApplyPolicy(machinePolicyKey),
+                //
+                // Settings that can be overridden by policy.
+                //
+                // NB. Default values must be kept consistent with the
+                //     ADMX policy templates!
+                //
+                this.IsPreviewFeatureSetEnabled = store.Read<bool>(
+                    "IsPreviewFeatureSetEnabled",
+                    "IsPreviewFeatureSetEnabled",
+                    null,
+                    null,
+                    false);
+                this.IsUpdateCheckEnabled = store.Read<bool>(
+                    "IsUpdateCheckEnabled",
+                    "IsUpdateCheckEnabled",
+                    null,
+                    null,
+                    true);
+                this.IsTelemetryEnabled = store.Read<bool>(
+                    "IsTelemetryEnabled",
+                    "IsTelemetryEnabled",
+                    null,
+                    null,
+                    schemaVersion >= UserProfile.SchemaVersion.Version240
+                        ? true      // Auto opt-in new profiles
+                        : false);    // Opt-out existing profiles
+                this.ProxyUrl = store.Read<string>(
+                    "ProxyUrl",
+                    "ProxyUrl",
+                    null,
+                    null,
+                    null,
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _));
+                this.ProxyPacUrl = store.Read<string>(
+                    "ProxyPacUrl",
+                    "ProxyPacUrl",
+                    null,
+                    null,
+                    null,
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _));
+                this.ProxyAuthenticationRetries = store.Read<int>(
+                    "ProxyAuthenticationRetries",
+                    "ProxyAuthenticationRetries",
+                    null,
+                    null,
+                    2,              // A single retry might not be sufficient (b/323465182).
+                    Validators.InRange(0, 8));
+                this.TlsVersions = store.Read<SecurityProtocolType>(
+                    "TlsVersions",
+                    "TlsVersions",
+                    null,
+                    null,
+                    OSCapabilities.SupportedTlsVersions);
 
-                    //
-                    // User preferences. These cannot be overridden by policy.
-                    //
-                    IsMainWindowMaximized = RegistryBoolSetting.FromKey(
-                        "IsMainWindowMaximized",
-                        "IsMainWindowMaximized",
-                        null,
-                        null,
-                        false,
-                        settingsKey),
-                    MainWindowHeight = RegistryDwordSetting.FromKey(
-                        "MainWindowHeight",
-                        "MainWindowHeight",
-                        null,
-                        null,
-                        0,
-                        settingsKey,
-                        0,
-                        ushort.MaxValue),
-                    MainWindowWidth = RegistryDwordSetting.FromKey(
-                        "WindowWidth",
-                        "WindowWidth",
-                        null,
-                        null,
-                        0,
-                        settingsKey,
-                        0,
-                        ushort.MaxValue),
-                    LastUpdateCheck = RegistryQwordSetting.FromKey(
-                        "LastUpdateCheck",
-                        "LastUpdateCheck",
-                        null,
-                        null,
-                        0,
-                        settingsKey,
-                        0,
-                        long.MaxValue),
-                    ProxyUsername = RegistryStringSetting.FromKey(
-                        "ProxyUsername",
-                        "ProxyUsername",
-                        null,
-                        null,
-                        null,
-                        settingsKey,
-                        _ => true),
-                    ProxyPassword = RegistrySecureStringSetting.FromKey(
-                        "ProxyPassword",
-                        "ProxyPassword",
-                        null,
-                        null,
-                        settingsKey,
-                        DataProtectionScope.CurrentUser),
-                    FullScreenDevices = RegistryStringSetting.FromKey(
-                        "FullScreenDevices",
-                        "FullScreenDevices",
-                        null,
-                        null,
-                        null,
-                        settingsKey,
-                        _ => true),
-                    CollapsedProjects = RegistryStringSetting.FromKey(
-                        "CollapsedProjects",
-                        "CollapsedProjects",
-                        null,
-                        null,
-                        null,
-                        settingsKey,
-                        _ => true),
-                    IsSurveyEnabled = RegistryBoolSetting.FromKey(
-                        "IsSurveyEnabled",
-                        "IsSurveyEnabled",
-                        null,
-                        null,
-                        true,
-                        settingsKey),
-                    LastSurveyVersion = RegistryStringSetting.FromKey(
-                        "LastSurveyVersion",
-                        "LastSurveyVersion",
-                        null,
-                        null,
-                        null,
-                        settingsKey,
-                        _ => true)
-                };
+                //
+                // User preferences. These cannot be overridden by policy.
+                //
+                this.IsMainWindowMaximized = store.Read<bool>(
+                    "IsMainWindowMaximized",
+                    "IsMainWindowMaximized",
+                    null,
+                    null,
+                    false);
+                this.MainWindowHeight = store.Read<int>(
+                    "MainWindowHeight",
+                    "MainWindowHeight",
+                    null,
+                    null,
+                    0,
+                    Validators.InRange(0, ushort.MaxValue));
+                this.MainWindowWidth = store.Read<int>(
+                    "WindowWidth",
+                    "WindowWidth",
+                    null,
+                    null,
+                    0,
+                    Validators.InRange(0, ushort.MaxValue));
+                this.LastUpdateCheck = store.Read<long>(
+                    "LastUpdateCheck",
+                    "LastUpdateCheck",
+                    null,
+                    null,
+                    0,
+                    Validators.InRange(0, long.MaxValue));
+                this.ProxyUsername = store.Read<string>(
+                    "ProxyUsername",
+                    "ProxyUsername",
+                    null,
+                    null,
+                    null,
+                    _ => true);
+                this.ProxyPassword = store.Read<SecureString>(
+                    "ProxyPassword",
+                    "ProxyPassword",
+                    null,
+                    null,
+                    null);
+                this.FullScreenDevices = store.Read<string>(
+                    "FullScreenDevices",
+                    "FullScreenDevices",
+                    null,
+                    null,
+                    null,
+                    _ => true);
+                this.CollapsedProjects = store.Read<string>(
+                    "CollapsedProjects",
+                    "CollapsedProjects",
+                    null,
+                    null,
+                    null,
+                    _ => true);
+                this.IsSurveyEnabled = store.Read<bool>(
+                    "IsSurveyEnabled",
+                    "IsSurveyEnabled",
+                    null,
+                    null,
+                    true);
+                this.LastSurveyVersion = store.Read<string>(
+                    "LastSurveyVersion",
+                    "LastSurveyVersion",
+                    null,
+                    null,
+                    null,
+                    _ => true);
             }
         }
     }

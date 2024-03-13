@@ -77,6 +77,16 @@ namespace Google.Solutions.Settings
 
         public abstract void Clear();
 
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------

@@ -28,7 +28,7 @@ namespace Google.Solutions.Settings.Registry
     /// <summary>
     /// Exposes a registry key's values as settings.
     /// </summary>
-    public class RegistrySettingsStore : SettingsStoreBase<RegistryKey>, IDisposable
+    public class RegistrySettingsStore : SettingsStoreBase<RegistryKey>
     {
         internal RegistryKey BackingKey { get; }
 
@@ -61,19 +61,9 @@ namespace Google.Solutions.Settings.Registry
             }
         }
 
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             this.BackingKey.Dispose();
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

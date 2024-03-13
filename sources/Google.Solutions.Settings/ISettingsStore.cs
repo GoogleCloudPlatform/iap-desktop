@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using System;
+
 namespace Google.Solutions.Settings
 {
     /// <summary>
     /// Store for settings.
     /// </summary>
-    public interface ISettingsStore
+    public interface ISettingsStore : IDisposable
     {
         /// <summary>
         /// Read a value and map it to a settings object.
@@ -53,4 +55,18 @@ namespace Google.Solutions.Settings
     /// within the permitted range of a setting.
     /// </summary>
     public delegate bool ValidateDelegate<T>(T value);
+
+    public static class Validators // TODO: rename?
+    {
+        public static ValidateDelegate<int> InRange(int minInclusive, int maxInclusive)
+        {
+            return v => v >= minInclusive && v <= maxInclusive;
+        }
+
+        public static ValidateDelegate<long> InRange(long minInclusive, long maxInclusive)
+        {
+            return v => v >= minInclusive && v <= maxInclusive;
+        }
+    }
+
 }
