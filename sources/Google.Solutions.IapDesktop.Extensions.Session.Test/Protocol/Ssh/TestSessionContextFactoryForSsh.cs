@@ -123,18 +123,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return authorization;
         }
 
-        private Mock<IProjectWorkspace> CreateProjectModelServiceMock(OperatingSystems os)
-        {
-            var modelService = new Mock<IProjectWorkspace>();
-            modelService
-                .Setup(p => p.GetNodeAsync(
-                    It.Is<ResourceLocator>(l => l == (ResourceLocator)SampleLocator),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(CreateInstanceNodeMock(os).Object);
-
-            return modelService;
-        }
-
         //---------------------------------------------------------------------
         // CreateSshSessionContext - connection settings.
         //---------------------------------------------------------------------
@@ -157,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 CreateKeyStoreMock().Object,
                 new Mock<IPlatformCredentialFactory>().Object,
                 settingsService.Object,
@@ -197,7 +184,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 CreateKeyStoreMock().Object,
                 new Mock<IPlatformCredentialFactory>().Object,
                 settingsService.Object,
@@ -247,7 +233,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 CreateKeyStoreMock().Object,
                 new Mock<IPlatformCredentialFactory>().Object,
                 settingsService.Object,
@@ -280,7 +265,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 keyStore.Object,
                 new Mock<IPlatformCredentialFactory>().Object,
                 settingsService.Object,
@@ -322,7 +306,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
                 CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock(OperatingSystems.Linux).Object,
                 keyStore.Object,
                 new Mock<IPlatformCredentialFactory>().Object,
                 settingsService.Object,

@@ -106,48 +106,6 @@ namespace Google.Solutions.Settings
         }
 
         //---------------------------------------------------------------------
-        // Overlay.
-        //---------------------------------------------------------------------
-
-        public ISetting<T> OverlayBy(ISetting<T> overlaySetting) // TODO: remove overlay logic
-        {
-            //
-            // NB. The idea of overlaying is that you use a base setting
-            // (root), overlay it with a more specific setting, overlay
-            // it with a more specific setting one again, etc... walking
-            // your way from the root to the leaf.
-            //
-
-            Debug.Assert(overlaySetting.Key == this.Key);
-            Debug.Assert(overlaySetting.DisplayName == this.DisplayName);
-            Debug.Assert(overlaySetting.Description == this.Description);
-            Debug.Assert(overlaySetting.Category == this.Category);
-
-            if (!overlaySetting.IsSpecified)
-            {
-                //
-                // Overlay does not add anything new, but own setting
-                // becomes new default.
-                //
-                return CreateNew(
-                    (T)this.Value,
-                    (T)this.Value,
-                    this.IsReadOnly);
-            }
-            else
-            {
-                //
-                // Overlay changes the effective setting, with
-                // own setting serving as the new default.
-                //
-                return CreateNew(
-                    (T)overlaySetting.Value,
-                    (T)this.Value,
-                    this.IsReadOnly);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
@@ -173,11 +131,6 @@ namespace Google.Solutions.Settings
         }
 
         protected abstract bool IsValid(T value);
-
-        protected abstract SettingBase<T> CreateNew( // TODO: remove overlay logic
-            T value,
-            T defaultValue,
-            bool readOnly);
 
         public abstract SettingBase<T> CreateSimilar(
             T value,

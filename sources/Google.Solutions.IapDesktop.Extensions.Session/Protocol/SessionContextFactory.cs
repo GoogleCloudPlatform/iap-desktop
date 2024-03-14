@@ -90,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 
         private readonly IWin32Window window;
         private readonly IAuthorization authorization;
-        private readonly IProjectWorkspace workspace;
         private readonly IKeyStore keyStore;
         private readonly IPlatformCredentialFactory credentialFactory;
         private readonly IConnectionSettingsService settingsService;
@@ -103,7 +102,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         public SessionContextFactory(
             IMainWindow window,
             IAuthorization authorization,
-            IProjectWorkspace workspace,
             IKeyStore keyStoreAdapter,
             IPlatformCredentialFactory credentialFactory,
             IConnectionSettingsService settingsService,
@@ -115,7 +113,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         {
             this.window = window.ExpectNotNull(nameof(window));
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
-            this.workspace = workspace.ExpectNotNull(nameof(workspace));
             this.keyStore = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
             this.credentialFactory = credentialFactory.ExpectNotNull(nameof(credentialFactory));
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
@@ -229,33 +226,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         {
             url.ExpectNotNull(nameof(url));
 
-            RdpParameters.ParameterSources sources;
-            ConnectionSettings settings;
-            var existingNode = await this.workspace
-                .GetNodeAsync(url.Instance, cancellationToken)
-                .ConfigureAwait(true);
-            if (existingNode is IProjectModelInstanceNode vmNode)
+            var sources = RdpParameters.ParameterSources.Url;
+            var settings = this.settingsService.GetConnectionSettings(
+                url, 
+                out var foundInInventory);
+            if (foundInInventory)
             {
                 //
-                // We have a full set of settings for this VM, so use
-                // that as basis and apply parameters from URL on top.
-                //
-                settings = this.settingsService
-                    .GetConnectionSettings(vmNode).TypedCollection
-                    .OverlayBy(new ConnectionSettings(url));
-
-                sources = RdpParameters.ParameterSources.Inventory
-                    | RdpParameters.ParameterSources.Url;
+                // This project/VM exists in the inventory, so the settings
+                // represent a merge of stored settings and URL-based
+                // settings.
+                sources |= RdpParameters.ParameterSources.Inventory;
             }
-            else
-            {
-                //
-                // We don't have that VM in the inventory, all we have is the URL.
-                //
-                settings = new ConnectionSettings(url);
-                sources = RdpParameters.ParameterSources.Url;
-            }
-
 
             if (url.TryGetParameter("CredentialCallbackUrl", out string callbackUrlRaw) &&
                 Uri.TryCreate(callbackUrlRaw, UriKind.Absolute, out var callbackUrl))

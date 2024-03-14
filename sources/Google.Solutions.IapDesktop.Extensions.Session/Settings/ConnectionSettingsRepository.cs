@@ -27,6 +27,9 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Solutions.IapDesktop.Application.Data;
+using Microsoft.Win32;
+using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
@@ -187,6 +190,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             using (var store = CreateInstanceSettingsStore(instance))
             {
                 WriteAllSettings(store, settings);
+            }
+        }
+
+        public ConnectionSettings GetInstanceSettings(
+            IapRdpUrl url,
+            out bool foundInInventory)
+        {
+            //
+            // Populate an ephermeral settings store from the
+            // URL parameters.
+            //
+            using (var urlSettingStore = new IapRdpUrlSettingsStore(url))
+            {
+                try
+                {
+                    //
+                    // We have a full set of settings for this VM, so use
+                    // that as basis and apply parameters from URL on top.
+                    //
+                    using (var storedSettingStore = CreateInstanceSettingsStore(url.Instance))
+                    using (var mergedStore = new MergedSettingsStore(
+                        new[] { storedSettingStore, urlSettingStore },
+                        MergedSettingsStore.MergeBehavior.Overlay))
+                    {
+                        foundInInventory = true;
+                        return new ConnectionSettings(url.Instance, mergedStore);
+                    }
+                }
+                catch (KeyNotFoundException)
+                {
+                    //
+                    // Project not found in inventory, all we have is the URL.
+                    //
+                    foundInInventory = false;
+                    return new ConnectionSettings(url.Instance, urlSettingStore);
+                }
             }
         }
     }
