@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
     [SkipCodeCoverage("UI code")]
     public partial class NetworkOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private NetworkOptionsViewModel viewModel;
+        private NetworkOptionsViewModel? viewModel;
 
         public NetworkOptionsSheet()
         {
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         //---------------------------------------------------------------------
 
         private void openProxyControlPanelAppletButton_Click(object sender, System.EventArgs e)
-            => this.viewModel.OpenProxyControlPanelApplet();
+            => this.viewModel?.OpenProxyControlPanelApplet();
 
         private void proxyPortTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
