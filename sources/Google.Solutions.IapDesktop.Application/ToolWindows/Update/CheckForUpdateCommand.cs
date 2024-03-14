@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         /// <summary>
         /// Last release version for which the user has taken a survey.
         /// </summary>
-        public Version LastSurveyVersion { get; set; }
+        public Version? LastSurveyVersion { get; set; }
 
         protected internal ReleaseFeedOptions FeedOptions
         {
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             return this.updatePolicy.IsUpdateCheckDue(lastCheck);
         }
 
-        internal void PromptForAction(IRelease latestRelease)
+        internal void PromptForAction(IRelease? latestRelease)
         {
             if (latestRelease == null)
             {
@@ -133,8 +133,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     DialogResult.OK);
 
                 if (!latestRelease.TryGetDownloadUrl(
-                    Install.ProcessArchitecture,
-                    out var downloadUrl))
+                        Install.ProcessArchitecture,
+                        out var downloadUrl) || 
+                    downloadUrl ==  null)
                 {
                     downloadUrl = latestRelease.DetailsUrl;
                 }

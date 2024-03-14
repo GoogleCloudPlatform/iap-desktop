@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// <summary>
         /// Settings key. This is never null.
         /// </summary>
-        public RegistryKey SettingsKey { get; private set; }
+        public RegistryKey SettingsKey { get; }
 
         /// <summary>
         /// Key for machine policies, can be null.
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// </summary>
         public RegistryKey? UserPolicyKey { get; private set; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public bool IsDefault { get; private set; }
 
@@ -97,8 +97,10 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                 ? (SchemaVersion)(uint)version
                 : SchemaVersion.Initial;
 
-        private UserProfile()
+        private UserProfile(string name, RegistryKey settingsKey)
         {
+            this.Name = name;
+            this.SettingsKey = settingsKey;
         }
 
         public static bool IsValidProfileName(string name)
@@ -186,13 +188,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                             RegistryValueKind.DWord);
                     }
 
-                    return new UserProfile()
+                    return new UserProfile(DefaultProfileName, profileKey)
                     {
-                        Name = DefaultProfileName,
                         IsDefault = true,
                         MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
                         UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
-                        SettingsKey = profileKey
                     };
                 }
                 else
@@ -206,13 +206,11 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                         throw new ProfileNotFoundException("Unknown profile: " + name);
                     }
 
-                    return new UserProfile()
+                    return new UserProfile(name, profileKey)
                     {
-                        Name = name,
                         IsDefault = false,
                         MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
                         UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
-                        SettingsKey = profileKey
                     };
                 }
             }

@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             public string? TagName { get; }
 
             [JsonProperty("html_url")]
-            public string? HtmlUrl { get; }
+            public string HtmlUrl { get; }
 
             [JsonProperty("body")]
             public string? Body { get; }
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             [JsonConstructor]
             public Release(
                 [JsonProperty("tag_name")] string? tagName,
-                [JsonProperty("html_url")] string? htmlUrl,
+                [JsonProperty("html_url")] string htmlUrl,
                 [JsonProperty("body")] string? body,
                 [JsonProperty("prerelease")] bool? prerelease,
                 [JsonProperty("assets")] List<ReleaseAsset>? assets)
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
             public IReleaseSurvey? Survey { get; internal set; }
 
-            public string? DetailsUrl => this.HtmlUrl;
+            public string DetailsUrl => this.HtmlUrl;
 
             public string? Description => this.Body;
 

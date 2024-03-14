@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// <summary>
         /// URL to website for this release.
         /// </summary>
-        string? DetailsUrl { get; }
+        string DetailsUrl { get; }
 
         /// <summary>
         /// Markdown-formatted description.

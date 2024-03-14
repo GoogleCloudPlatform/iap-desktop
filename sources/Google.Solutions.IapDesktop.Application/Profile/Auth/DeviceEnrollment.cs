@@ -134,10 +134,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             // Consider custom configuration and EV default certificate. These
             // take precedence over group policies.
             //
-            X509Certificate2 deviceCertificate = null;
-            if (ChromeCertificateSelector.TryParse(
-                settings.DeviceCertificateSelector.Value,
-                out var selector))
+            X509Certificate2? deviceCertificate = null;
+            if (settings.DeviceCertificateSelector.Value != null &&
+                ChromeCertificateSelector.TryParse(
+                    settings.DeviceCertificateSelector.Value,
+                    out var selector) &&
+                selector != null)
             {
                 deviceCertificate = FirstCertificateMatchingPolicy(
                     new ChromeAutoSelectCertificateForUrlsPolicy.Builder()

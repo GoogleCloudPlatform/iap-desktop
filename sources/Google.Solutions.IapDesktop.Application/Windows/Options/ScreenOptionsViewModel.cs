@@ -28,6 +28,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class ScreenOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
