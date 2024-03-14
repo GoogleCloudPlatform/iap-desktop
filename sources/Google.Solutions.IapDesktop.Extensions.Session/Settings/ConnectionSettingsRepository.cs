@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
@@ -56,20 +55,75 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
         }
 
+        private ISettingsStore CreateProjectSettingsStore(ProjectLocator project)
+        {
+            var key = this.projectRepository.OpenRegistryKey(project.Name);
+            if (key == null)
+            {
+                throw new KeyNotFoundException(project.Name);
+            }
+
+            return new RegistrySettingsStore(key);
+        }
+
+        private ISettingsStore CreateZoneSettingsStore(ZoneLocator zone)
+        {
+            var key = this.projectRepository.OpenRegistryKey(
+                zone.ProjectId,
+                ZonePrefix + zone.Name,
+                true);
+
+            //
+            // Return zone settings, applying project settings
+            // as defaults.
+            //
+            return new MergedSettingsStore(new[]
+                {
+                    CreateProjectSettingsStore(zone.Project),
+                    new RegistrySettingsStore(key)
+                },
+                MergedSettingsStore.MergeBehavior.Overlay);
+        }
+
+        private ISettingsStore CreateInstanceSettingsStore(InstanceLocator instance)
+        {
+            var key = this.projectRepository.OpenRegistryKey(
+                instance.ProjectId,
+                VmPrefix + instance.Name,
+                true);
+
+            //
+            // Return instance settings, applying zone and
+            // project settings as defaults.
+            //
+            return new MergedSettingsStore(new[]
+                {
+                    CreateProjectSettingsStore(instance.Project),
+                    CreateZoneSettingsStore(new ZoneLocator(instance.ProjectId, instance.Zone)),
+                    new RegistrySettingsStore(key)
+                },
+                MergedSettingsStore.MergeBehavior.Overlay);
+        }
+
+        private static void WriteAllSettings(
+            ISettingsStore store,
+            ConnectionSettings settings)
+        {
+            foreach (var setting in settings.Settings.Where(s => s.IsDirty))
+            {
+                store.Write(setting);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Projects.
         //---------------------------------------------------------------------
 
         public ConnectionSettings GetProjectSettings(ProjectLocator project)
         {
-            using (var key = this.projectRepository.OpenRegistryKey(project.Name))
+            using (var store = CreateProjectSettingsStore(project))
             {
-                if (key == null)
-                {
-                    throw new KeyNotFoundException(project.Name);
-                }
-
-                return new ConnectionSettings(project, key);
+                return new ConnectionSettings(project, store);
             }
         }
 
@@ -80,18 +134,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new ArgumentException(nameof(settings));
             }
 
-            using (var key = new RegistrySettingsStore(
-                this.projectRepository.OpenRegistryKey(project.ProjectId)))
+            using (var store = CreateProjectSettingsStore(project))
             {
-                if (key == null)
-                {
-                    throw new KeyNotFoundException(project.ProjectId);
-                }
-
-                foreach (var setting in settings.Settings.Where(s => s.IsDirty))
-                {
-                    key.Write(setting);
-                }
+                WriteAllSettings(store, settings);
             }
         }
 
@@ -101,17 +146,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public ConnectionSettings GetZoneSettings(ZoneLocator zone)
         {
-            using (var key = this.projectRepository.OpenRegistryKey(
-                zone.ProjectId,
-                ZonePrefix + zone.Name,
-                true))
+            using (var store = CreateZoneSettingsStore(zone))
             {
-                //
-                // Return zone settings, applying project settings
-                // as defaults.
-                //
-                return GetProjectSettings(zone.Project)
-                    .OverlayBy(new ConnectionSettings(zone, key));
+                return new ConnectionSettings(zone, store);
             }
         }
 
@@ -122,16 +159,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new ArgumentException(nameof(settings));
             }
 
-            using (var key = new RegistrySettingsStore(
-                this.projectRepository.OpenRegistryKey(
-                    zone.ProjectId,
-                    ZonePrefix + zone.Name,
-                    true)))
+            using (var store = CreateZoneSettingsStore(zone))
             {
-                foreach (var setting in settings.Settings.Where(s => s.IsDirty))
-                {
-                    key.Write(setting);
-                }
+                WriteAllSettings(store, settings);
             }
         }
 
@@ -141,17 +171,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public ConnectionSettings GetInstanceSettings(InstanceLocator instance)
         {
-            using (var key = this.projectRepository.OpenRegistryKey(
-                instance.ProjectId,
-                VmPrefix + instance.Name,
-                true))
+            using (var store = CreateInstanceSettingsStore(instance))
             {
-                //
-                // Return zone settings, applying zone settings
-                // as defaults.
-                //
-                return GetZoneSettings(new ZoneLocator(instance.ProjectId, instance.Zone))
-                    .OverlayBy(new ConnectionSettings(instance, key));
+                return new ConnectionSettings(instance, store);
             }
         }
 
@@ -162,16 +184,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new ArgumentException(nameof(settings));
             }
 
-            using (var key = new RegistrySettingsStore(
-                this.projectRepository.OpenRegistryKey(
-                    instance.ProjectId,
-                    VmPrefix + instance.Name,
-                    true)))
+            using (var store = CreateInstanceSettingsStore(instance))
             {
-                foreach (var setting in settings.Settings.Where(s => s.IsDirty))
-                {
-                    key.Write(setting);
-                }
+                WriteAllSettings(store, settings);
             }
         }
     }
