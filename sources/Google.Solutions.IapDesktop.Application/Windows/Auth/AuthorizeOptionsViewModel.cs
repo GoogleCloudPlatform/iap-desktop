@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         // Input properties.
         //---------------------------------------------------------------------
 
-        public WorkforcePoolProviderLocator WorkforcePoolProvider
+        public WorkforcePoolProviderLocator? WorkforcePoolProvider
         {
             get
             {
@@ -89,9 +89,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                     !string.IsNullOrEmpty(this.WorkforcePoolProviderId.Value))
                 {
                     return new WorkforcePoolProviderLocator(
-                        this.WorkforcePoolLocationId.Value,
-                        this.WorkforcePoolId.Value,
-                        this.WorkforcePoolProviderId.Value);
+                        this.WorkforcePoolLocationId.Value!,
+                        this.WorkforcePoolId.Value!,
+                        this.WorkforcePoolProviderId.Value!);
                 }
                 else
                 {

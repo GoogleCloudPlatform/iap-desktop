@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
             return new Authorization(
                 client,
-                this.DeviceEnrollment);
+                this.DeviceEnrollment.ExpectNotNull(nameof(this.DeviceEnrollment)));
         }
 
         //---------------------------------------------------------------------
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         /// * If set to null, a new Authorization is created.
         /// * If non-null, a reauthorization is performed.
         /// </summary>
-        public IAuthorization Authorization { get; private set; }
+        public IAuthorization? Authorization { get; private set; }
 
         /// <summary>
         /// Reauthorize using an existing authorization object.

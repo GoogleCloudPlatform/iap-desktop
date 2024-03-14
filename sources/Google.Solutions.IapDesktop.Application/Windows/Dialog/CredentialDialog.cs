@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             IWin32Window owner,
             string caption,
             string message,
-            out string username);
+            out string? username);
     }
 
     public enum AuthenticationPackage
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             IWin32Window owner,
             string caption,
             string message,
-            out string username)
+            out string? username)
         {
             using (var dialog = new SystemInputDialog(
                 new InputDialogParameters()
