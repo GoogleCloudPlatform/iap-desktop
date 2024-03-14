@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// <summary>
         /// Return active session, or null if no session is active.
         /// </summary>
-        ISession ActiveSession { get; }
+        ISession? ActiveSession { get; }
 
         /// <summary>
         /// Check if there is a session for a VM instance.
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 .Any();
         }
 
-        public ISession ActiveSession
+        public ISession? ActiveSession
         {
             //
             // NB. The active content might be in a float window.

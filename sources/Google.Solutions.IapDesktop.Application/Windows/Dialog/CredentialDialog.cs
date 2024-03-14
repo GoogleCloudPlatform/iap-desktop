@@ -377,9 +377,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             public static Lsa ConnectUntrusted()
             {
                 var status = NativeMethods.LsaConnectUntrusted(out var handle);
-                if (status == 0)
+                if (status == 0 && handle != null)
                 {
-                    Debug.Assert(handle != null);
                     return new Lsa(handle);
                 }
                 else

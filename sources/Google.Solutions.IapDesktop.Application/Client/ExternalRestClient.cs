@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// Perform a GET request and derialize the JSON response.
         /// </summary>
         /// <returns>null if not found or empty</returns>
-        Task<TModel> GetAsync<TModel>(
+        Task<TModel?> GetAsync<TModel>(
             Uri url,
             CancellationToken cancellationToken)
             where TModel : class;

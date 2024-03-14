@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                Release latestRelease;
+                Release? latestRelease;
                 if (!options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases))
                 {
                     //
@@ -174,7 +174,8 @@ namespace Google.Solutions.IapDesktop.Application.Client
                                    new Uri(surveyAssetUrl),
                                    cancellationToken)
                                .ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(survey.Title) &&
+                            if (survey != null &&
+                                !string.IsNullOrEmpty(survey.Title) &&
                                 !string.IsNullOrEmpty(survey.Description) &&
                                 !string.IsNullOrEmpty(survey.Url))
                             {
@@ -256,11 +257,11 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 }
             }
 
-            public IReleaseSurvey Survey { get; internal set; }
+            public IReleaseSurvey? Survey { get; internal set; }
 
-            public string DetailsUrl => this.HtmlUrl;
+            public string? DetailsUrl => this.HtmlUrl;
 
-            public string Description => this.Body;
+            public string? Description => this.Body;
 
             public bool TryGetDownloadUrl(Architecture architecture, out string? downloadUrl)
             {

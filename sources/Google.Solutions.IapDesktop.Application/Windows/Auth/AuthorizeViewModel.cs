@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         private void CancelSignIn()
         {
             Debug.Assert(this.cancelCurrentSignin != null);
-            this.cancelCurrentSignin.Cancel();
+            this.cancelCurrentSignin?.Cancel();
         }
 
         private Task TryLoadExistingAuthorizationAsync()
