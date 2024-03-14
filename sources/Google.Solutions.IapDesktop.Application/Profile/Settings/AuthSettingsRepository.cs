@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface IAuthSettings : ISettingsCollection
     {
-        ISetting<SecureString> Credentials { get; }
+        ISetting<SecureString?> Credentials { get; }
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class AuthSettings : IAuthSettings
         {
-            public ISetting<SecureString> Credentials { get; }
+            public ISetting<SecureString?> Credentials { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             internal AuthSettings(ISettingsStore store)
             {
-                this.Credentials = store.Read<SecureString>(
+                this.Credentials = store.Read<SecureString?>(
                     "Credentials",
                     "JSON-formatted credentials",
                     null,
