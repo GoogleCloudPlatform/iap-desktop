@@ -29,7 +29,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
     public class TestNtlmProxy
     {
         private static readonly Uri proxyAddress = null;
-        private static readonly NetworkCredential proxyCredential =  null;
+        private static readonly NetworkCredential proxyCredential = null;
 
         [SetUp]
         public void Setup()
@@ -64,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
                 TestProject.AdminAuthorization,
                 TestProject.UserAgent);
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 await compute
                     .ListInstancesAsync(
@@ -85,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
                 TestProject.UserAgent);
             _client = compute;
             var tasks = new List<Task>();
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 tasks.Add(compute
                     .ListInstancesAsync(

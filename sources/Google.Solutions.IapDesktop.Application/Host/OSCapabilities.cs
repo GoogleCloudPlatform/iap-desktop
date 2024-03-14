@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             get => Environment.OSVersion.Version >= Windows10_1703;
         }
 
-        public static SecurityProtocolType  SupportedTlsVersions
+        public static SecurityProtocolType SupportedTlsVersions
         {
             get
             {

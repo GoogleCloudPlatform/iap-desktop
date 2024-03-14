@@ -21,8 +21,6 @@
 
 using Google.Apis.Json;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.Platform;
 using Newtonsoft.Json;
 using System;
@@ -327,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 Debug.Assert(this.Client.Executable != null);
 
                 if (!UserEnvironment.TryResolveAppPath(
-                    this.Client.Executable!, 
+                    this.Client.Executable!,
                     out var executablePath))
                 {
                     executablePath = UserEnvironment.ExpandEnvironmentStrings(

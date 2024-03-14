@@ -21,15 +21,13 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Settings;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Solutions.IapDesktop.Application.Data;
-using Microsoft.Win32;
-using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {

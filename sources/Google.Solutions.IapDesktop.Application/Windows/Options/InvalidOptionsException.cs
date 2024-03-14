@@ -35,9 +35,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         }
 
         public InvalidOptionsException(
-            string message, 
+            string message,
             Exception innerException,
-            IHelpTopic helpTopic) 
+            IHelpTopic helpTopic)
             : base(message, innerException)
         {
             this.Help = helpTopic.ExpectNotNull(nameof(helpTopic));

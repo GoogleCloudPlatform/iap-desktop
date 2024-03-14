@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Google.Solutions.Ssh
 {
@@ -489,9 +488,9 @@ namespace Google.Solutions.Ssh
             {
                 return this.context.Send(
                     () => this.handler.Prompt(
-                        name, 
-                        instruction, 
-                        prompt, 
+                        name,
+                        instruction,
+                        prompt,
                         echo));
             }
 

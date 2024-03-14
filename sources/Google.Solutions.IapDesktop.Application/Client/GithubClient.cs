@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Json;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
@@ -31,7 +30,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.Mvvm.Theme.ControlTheme;
 
 namespace Google.Solutions.IapDesktop.Application.Client
 {
@@ -78,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 //
 
                 var allReleases = new List<IRelease>();
-                for (int pageNumber = 1; ; pageNumber++)
+                for (var pageNumber = 1; ; pageNumber++)
                 {
                     var page = await this.restAdapter
                         .GetAsync<List<Release>>(
@@ -158,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                         .Assets
                         .EnsureNotNull()
                         .FirstOrDefault(u => u.DownloadUrl.EndsWith(
-                            "survey.dat", 
+                            "survey.dat",
                             StringComparison.OrdinalIgnoreCase))?
                         .DownloadUrl;
                     if (surveyAssetUrl != null)
@@ -270,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                     .Assets
                     .EnsureNotNull()
                     .Where(u => u.DownloadUrl.EndsWith(
-                        ".msi", 
+                        ".msi",
                         StringComparison.OrdinalIgnoreCase))
                     .EnsureNotNull();
 

@@ -27,7 +27,7 @@ namespace Google.Solutions.Ssh.Native
     {
         public string Name { get; }
 
-        public HostKeyType(LIBSSH2_HOSTKEY_TYPE hostKeyType) 
+        public HostKeyType(LIBSSH2_HOSTKEY_TYPE hostKeyType)
         {
             this.Name = hostKeyType switch
             {

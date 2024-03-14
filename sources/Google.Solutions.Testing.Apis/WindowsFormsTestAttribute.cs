@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using System.Threading;
-using System.Windows.Forms;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Commands;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Testing.Apis
 {

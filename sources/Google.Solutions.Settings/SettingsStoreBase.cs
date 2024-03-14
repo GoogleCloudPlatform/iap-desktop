@@ -52,7 +52,7 @@ namespace Google.Solutions.Settings
             var accessor = CreateValueAccessor<T>(name);
             validate ??= accessor.IsValid;
 
-            bool isSpecified = accessor
+            var isSpecified = accessor
                 .TryRead(this.ValueSource, out var readValue);
 
             if (isSpecified && !validate(readValue))

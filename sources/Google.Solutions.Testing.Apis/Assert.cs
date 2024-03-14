@@ -87,7 +87,7 @@ namespace Google.Solutions.Testing.Apis
                 catch (AggregateException e)
                 {
                     StringAssert.Contains(
-                        expectedStringInMessage, 
+                        expectedStringInMessage,
                         e.FullMessage(),
                         "Expected different exception message");
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.Testing.Apis
             where TArgs : EventArgs
         {
             return AssertRaisesEventAsync<TArgs>(
-                registerEvent, 
+                registerEvent,
                 TimeSpan.FromSeconds(30));
         }
     }

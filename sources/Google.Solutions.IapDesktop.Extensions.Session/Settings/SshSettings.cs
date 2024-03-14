@@ -29,7 +29,6 @@ using Google.Solutions.Ssh.Cryptography;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using static Google.Solutions.IapDesktop.Extensions.Session.Settings.TerminalSettingsRepository;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {
@@ -76,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey,
-            UserProfile.SchemaVersion schemaVersion) 
+            UserProfile.SchemaVersion schemaVersion)
             : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
             Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));

@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 }
 
                 using (var packedOutCredential = new PackedCredential(
-                    outAuthBuffer, 
+                    outAuthBuffer,
                     outAuthBufferSize))
                 {
                     credential = packedOutCredential.Unpack();
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 }
 
                 this.Size = bufferSize;
-                this.buffer = CoTaskMemAllocSafeHandle.Alloc((int)Size);
+                this.buffer = CoTaskMemAllocSafeHandle.Alloc((int)this.Size);
 
                 if (!NativeMethods.CredPackAuthenticationBuffer(
                     NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,

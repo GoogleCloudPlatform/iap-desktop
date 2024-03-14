@@ -26,10 +26,10 @@ using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Dispatch
 {
@@ -403,16 +403,16 @@ namespace Google.Solutions.Platform.Dispatch
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern SafeCompletionPortHandle CreateIoCompletionPort(
                 IntPtr fileHandle,
-                IntPtr existingCompletionPort, 
-                IntPtr completionKey, 
+                IntPtr existingCompletionPort,
+                IntPtr completionKey,
                 int numberOfConcurrentThreads);
 
             [DllImport("Kernel32.dll", SetLastError = true)]
             internal static extern bool GetQueuedCompletionStatus(
-                SafeCompletionPortHandle completionPort, 
-                out int lpNumberOfBytesTransferred, 
-                out IntPtr lpCompletionKey, 
-                out IntPtr lpOverlapped, 
+                SafeCompletionPortHandle completionPort,
+                out int lpNumberOfBytesTransferred,
+                out IntPtr lpCompletionKey,
+                out IntPtr lpOverlapped,
                 uint dwMilliseconds);
 
             internal enum JOB_OBJECT_LIMIT

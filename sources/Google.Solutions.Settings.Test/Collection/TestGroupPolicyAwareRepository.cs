@@ -71,7 +71,7 @@ namespace Google.Solutions.Settings.Test.Collection
             public SampleRepository(
                 RegistryKey settingsKey,
                 RegistryKey machinePolicyKey,
-                RegistryKey userPolicyKey) 
+                RegistryKey userPolicyKey)
                 : base(settingsKey, machinePolicyKey, userPolicyKey)
             {
             }

@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             first.Quit();
             second.Quit();
         }
-        
+
         //---------------------------------------------------------------------
         // Object names.
         //---------------------------------------------------------------------

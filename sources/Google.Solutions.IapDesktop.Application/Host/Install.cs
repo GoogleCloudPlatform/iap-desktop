@@ -135,14 +135,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         static Install()
         {
-            var platform = 
+            var platform =
                 $"{Environment.OSVersion.VersionString}; " +
                 $"{ProcessArchitecture.ToString().ToLower()}/" +
                 $"{CpuArchitecture.ToString().ToLower()}";
 
             assemblyVersion = typeof(Install).Assembly.GetName().Version;
             UserAgent = new UserAgent(
-                "IAP-Desktop", 
+                "IAP-Desktop",
                 assemblyVersion,
                 platform);
             IsExecutingTests = Assembly.GetEntryAssembly() == null;

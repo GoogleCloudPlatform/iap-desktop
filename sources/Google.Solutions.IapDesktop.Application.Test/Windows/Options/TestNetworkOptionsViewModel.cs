@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
+using Google.Solutions.Settings;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
@@ -66,8 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             }
 
             return new ApplicationSettingsRepository(
-                this.settingsKey, 
-                policyKey, 
+                this.settingsKey,
+                policyKey,
                 null,
                 UserProfile.SchemaVersion.Current);
         }

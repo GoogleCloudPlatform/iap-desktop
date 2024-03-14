@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         private readonly IAuthorization authorization;
         private readonly IClock clock;
         private readonly IInstall install;
-        
+
         public UpdatePolicy(
             IRepository<IApplicationSettings> settingsRepository,
             IAuthorization authorization,

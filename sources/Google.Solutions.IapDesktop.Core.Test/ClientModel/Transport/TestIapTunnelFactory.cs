@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
         private static readonly UserAgent SampleUserAgent = new UserAgent(
-            "Test", 
+            "Test",
             new System.Version(1, 0),
             Environment.OSVersion.VersionString);
 

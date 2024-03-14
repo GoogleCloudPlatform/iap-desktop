@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// authentication. Supported by some client apps such as SSMS,
         /// other client apps might ignore this setting.
         /// </summary>
-        public AppNetworkLevelAuthenticationState NetworkLevelAuthentication { get; set; } 
+        public AppNetworkLevelAuthenticationState NetworkLevelAuthentication { get; set; }
             = AppNetworkLevelAuthenticationState._Default;
     }
 

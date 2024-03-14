@@ -62,19 +62,19 @@ namespace Google.Solutions.Settings.Collection
             }
 
             return new MergedSettingsStore(
-                storesOrderedByImportance, 
+                storesOrderedByImportance,
                 MergedSettingsStore.MergeBehavior.Policy);
         }
 
         protected GroupPolicyAwareRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) 
+            RegistryKey userPolicyKey)
             : base(CreateMergedStore(settingsKey, machinePolicyKey, userPolicyKey))
         {
         }
 
-        public bool IsPolicyPresent 
+        public bool IsPolicyPresent
         {
             //
             // When there's more than one store, there's a policy in play.

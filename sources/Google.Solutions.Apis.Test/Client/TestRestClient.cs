@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Client
         private const string NotFoundUrl = "http://accounts.google.com/.well-known/openid-configuration";
         private const string NoContentUrl = "https://gstatic.com/generate_204";
         private static readonly UserAgent userAgent = new UserAgent(
-            "test", 
+            "test",
             new Version(1, 0),
             Environment.OSVersion.VersionString);
 

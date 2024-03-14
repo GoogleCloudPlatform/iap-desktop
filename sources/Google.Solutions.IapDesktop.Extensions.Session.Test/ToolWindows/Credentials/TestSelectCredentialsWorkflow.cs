@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "alice";
             settings.RdpPassword.SetClearTextValue("alicespassword");
-            
+
             await credentialPrompt
                 .SelectCredentialsAsync(
                     null,

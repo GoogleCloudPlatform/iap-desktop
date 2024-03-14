@@ -20,12 +20,10 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 using System.Security;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Google.Solutions.Settings.Test

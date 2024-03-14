@@ -41,11 +41,11 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies
                 return WtsSession.GetCurrent() == WtsSession.FromProcessId(processId);
             }
             catch (DispatchException)
-            { 
+            {
                 //
                 // Process invalid or inaccessible.
                 //
-                return false; 
+                return false;
             }
         }
     }

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
@@ -36,7 +35,6 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings.Collection;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -164,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                     registration,
                     this.userAgent);
             }
-            else 
+            else
             {
                 client = new GaiaOidcClient(
                     this.gaiaEndpoint,

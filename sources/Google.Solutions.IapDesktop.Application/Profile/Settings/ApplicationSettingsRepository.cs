@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Security;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
@@ -77,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey,
-            UserProfile.SchemaVersion schemaVersion) 
+            UserProfile.SchemaVersion schemaVersion)
             : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
             Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));
@@ -85,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
 
         public ApplicationSettingsRepository(UserProfile profile)
-            :this(
+            : this(
                 profile.SettingsKey.CreateSubKey("Application"),
                 profile.MachinePolicyKey?.OpenSubKey("Application"),
                 profile.UserPolicyKey?.OpenSubKey("Application"),
@@ -125,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             public ISetting<string> ProxyUsername { get; }
 
             public ISetting<SecureString> ProxyPassword { get; }
-            
+
             public ISetting<int> ProxyAuthenticationRetries { get; }
 
             public ISetting<SecurityProtocolType> TlsVersions { get; }

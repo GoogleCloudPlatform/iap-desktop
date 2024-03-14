@@ -21,8 +21,6 @@
 
 using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
-using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
@@ -62,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
     public class ThemeSettingsRepository : RepositoryBase<IThemeSettings>
     {
-        public ThemeSettingsRepository(RegistryKey key) 
+        public ThemeSettingsRepository(RegistryKey key)
             : this(new RegistrySettingsStore(key))
         {
         }

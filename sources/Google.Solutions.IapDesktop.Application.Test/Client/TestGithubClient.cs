@@ -202,10 +202,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     new Uri($"https://api.github.com/repos/{SampleRepository}/releases/latest"),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release(
-                    "3.0.1", 
-                    null, 
+                    "3.0.1",
                     null,
-                    false, 
+                    null,
+                    false,
                     new List<GithubClient.ReleaseAsset>
                     {
                         new GithubClient.ReleaseAsset("https://github/Survey.dat")
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             var adapter = new GithubClient(
                 restAdapter.Object,
                 SampleRepository);
-            
+
             var releases = await adapter
                 .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             var adapter = new GithubClient(
                 restAdapter.Object,
                 SampleRepository);
-            
+
             var releases = await adapter
                 .ListReleasesAsync(ReleaseFeedOptions.IncludeCanaryReleases, CancellationToken.None)
                 .ConfigureAwait(false);
@@ -390,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             var adapter = new GithubClient(
                 restAdapter.Object,
                 SampleRepository);
-            
+
             var releases = await adapter
                 .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
@@ -556,7 +556,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
             Assert.IsTrue(release.TryGetDownloadUrl(
-                Application.Host.Architecture.X86, 
+                Application.Host.Architecture.X86,
                 out var downloadUrl));
             Assert.AreEqual("http://example.com/download.msi", downloadUrl);
         }

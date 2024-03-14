@@ -37,7 +37,7 @@ namespace Google.Solutions.Settings.Test
         public void PolicyKeyValueEmpty_LesserKeyValueEmpty()
         {
             var mergedKey = new MergedSettingsStore(
-                new[] 
+                new[]
                 {
                     DictionarySettingsStore.Empty(),
                     DictionarySettingsStore.Empty()
@@ -62,7 +62,7 @@ namespace Google.Solutions.Settings.Test
                 { "test", "2" }
             });
             var policyStore = DictionarySettingsStore.Empty();
-            
+
             var mergedKey = new MergedSettingsStore(
                 new[]
                 {

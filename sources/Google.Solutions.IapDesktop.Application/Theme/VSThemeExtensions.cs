@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             private readonly IControlTheme theme;
 
             public MinimizableFloatWindow(
-                DockPanel dockPanel, 
+                DockPanel dockPanel,
                 DockPane pane,
                 IControlTheme theme)
                 : base(dockPanel, pane)
@@ -102,8 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
 
             public MinimizableFloatWindow(
-                DockPanel dockPanel, 
-                DockPane pane, 
+                DockPanel dockPanel,
+                DockPane pane,
                 Rectangle bounds,
                 IControlTheme theme)
                 : base(dockPanel, pane, bounds)

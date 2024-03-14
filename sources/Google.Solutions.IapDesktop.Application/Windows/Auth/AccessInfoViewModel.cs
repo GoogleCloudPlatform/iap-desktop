@@ -24,7 +24,6 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Platform.Net;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;

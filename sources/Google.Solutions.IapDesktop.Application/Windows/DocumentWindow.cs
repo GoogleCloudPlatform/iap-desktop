@@ -110,8 +110,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
             toolTip.Show(string.Empty, this, 0);
             toolTip.Show(
-                text, 
-                this, 
+                text,
+                this,
                 new Point(this.Width / 10, this.Height / 10),
                 4000);
         }

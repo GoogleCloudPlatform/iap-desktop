@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.IapDesktop.Application.Client;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Testing.Application.Test;
 using Moq;

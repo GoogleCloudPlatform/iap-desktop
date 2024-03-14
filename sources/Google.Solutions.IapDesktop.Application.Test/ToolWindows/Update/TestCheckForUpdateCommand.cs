@@ -25,13 +25,11 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -324,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             dialog.Verify(b => b.ShowDialog(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<TaskDialogParameters>()), 
+                It.IsAny<TaskDialogParameters>()),
                 Times.Never);
         }
 
@@ -463,8 +461,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             command.Execute(null, CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(
-                ReleaseFeedOptions.None, 
-                CancellationToken.None), 
+                ReleaseFeedOptions.None,
+                CancellationToken.None),
                 Times.Once);
         }
 

@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Profile;
@@ -33,7 +31,6 @@ using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Net;

@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         }
 
         public void Bind(
-            PropertiesSheetViewModelBase viewModelBase, 
+            PropertiesSheetViewModelBase viewModelBase,
             IBindingContext bindingContext)
         {
             Debug.Assert(this.connectionLimitUpDown.Minimum == 1);

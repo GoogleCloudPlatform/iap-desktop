@@ -28,8 +28,8 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -42,6 +42,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Net;
+using Google.Solutions.Settings.Collection;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -51,9 +52,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.Apis.Auth.Gaia;
-using static System.Collections.Specialized.BitVector32;
-using Google.Solutions.Settings.Collection;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -398,7 +396,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         //
                         checkForUpdates.EnableSurveys = settings.IsSurveyEnabled.Value;
                         if (Version.TryParse(
-                            settings.LastSurveyVersion.Value, 
+                            settings.LastSurveyVersion.Value,
                             out var lastSurveyVersion))
                         {
                             checkForUpdates.LastSurveyVersion = lastSurveyVersion;

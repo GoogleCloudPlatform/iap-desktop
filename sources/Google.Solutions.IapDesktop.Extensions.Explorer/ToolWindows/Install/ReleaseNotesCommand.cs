@@ -32,10 +32,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         : OpenToolWindowCommand<IInstall, ReleaseNotesView, ReleaseNotesViewModel>
     {
         public ReleaseNotesCommand(
-            IToolWindowHost toolWindowHost) 
+            IToolWindowHost toolWindowHost)
             : base(
-                  toolWindowHost, 
-                  "Release &notes", 
+                  toolWindowHost,
+                  "Release &notes",
                   _ => true,
                   _ => true)
         {
