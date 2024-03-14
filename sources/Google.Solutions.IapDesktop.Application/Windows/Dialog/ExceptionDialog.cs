@@ -72,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             string details,
-            IHelpTopic helpTopic,
-            BugReport bugReport)
+            IHelpTopic? helpTopic,
+            BugReport? bugReport)
         {
             Debug.Assert(!(parent is Control control) || !control.InvokeRequired);
 

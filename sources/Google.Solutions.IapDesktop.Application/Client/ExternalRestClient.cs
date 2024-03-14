@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         private readonly RestClient client = new RestClient(Install.UserAgent);
 
 
-        public async Task<TModel> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
+        public async Task<TModel?> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
             where TModel : class
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(url))

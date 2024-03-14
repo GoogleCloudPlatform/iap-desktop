@@ -44,8 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            NetworkCredential inputCredential,
-            out NetworkCredential credential);
+            NetworkCredential? inputCredential,
+            out NetworkCredential? credential);
 
         /// <summary>
         /// Prompt for Windows credential using the CredUI API.
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            out NetworkCredential credential);
+            out NetworkCredential? credential);
 
         /// <summary>
         /// Prompt for a username. There's no CredUI counterpart to this.
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            out NetworkCredential credential)
+            out NetworkCredential? credential)
         {
             return PromptForWindowsCredentials(
                 owner,
@@ -104,8 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            NetworkCredential inputCredential,
-            out NetworkCredential credential)
+            NetworkCredential? inputCredential,
+            out NetworkCredential? credential)
         {
             var uiInfo = new NativeMethods.CREDUI_INFO()
             {

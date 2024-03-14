@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
             this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
 
-            this.PrivateServiceConnectEndpoint = ObservableProperty.Build<string>(null);
+            this.PrivateServiceConnectEndpoint = ObservableProperty.Build<string?>(null);
             this.IsPrivateServiceConnectEnabled = ObservableProperty.Build(false);
             this.IsPrivateServiceConnectEditable = ObservableProperty.Build(false);
 
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }
 
         public ObservableProperty<bool> IsPrivateServiceConnectEnabled { get; }
-        public ObservableProperty<string> PrivateServiceConnectEndpoint { get; }
+        public ObservableProperty<string?> PrivateServiceConnectEndpoint { get; }
         public ObservableProperty<bool> IsPrivateServiceConnectEditable { get; }
 
         public ObservableProperty<decimal> ConnectionPoolLimit { get; }

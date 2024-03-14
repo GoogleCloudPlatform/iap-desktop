@@ -76,12 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// <summary>
         /// Key for machine policies, can be null.
         /// </summary>
-        public RegistryKey MachinePolicyKey { get; private set; }
+        public RegistryKey? MachinePolicyKey { get; private set; }
 
         /// <summary>
         /// Key for user policies, can be null.
         /// </summary>
-        public RegistryKey UserPolicyKey { get; private set; }
+        public RegistryKey? UserPolicyKey { get; private set; }
 
         public string Name { get; private set; }
 

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
@@ -51,20 +52,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.PrivateServiceConnectText = route.UsePrivateServiceConnect
                 ? "Enabled" : "Disabled";
 
-            switch (this.enrollment.State)
+            this.DeviceCertificateLinkText = this.enrollment.State switch
             {
-                case DeviceEnrollmentState.Disabled:
-                    this.DeviceCertificateLinkText = "Disabled";
-                    break;
-
-                case DeviceEnrollmentState.NotEnrolled:
-                    this.DeviceCertificateLinkText = "Error";
-                    break;
-
-                case DeviceEnrollmentState.Enrolled:
-                    this.DeviceCertificateLinkText = "Enabled";
-                    break;
-            }
+                DeviceEnrollmentState.Disabled => "Disabled",
+                DeviceEnrollmentState.Enrolled => "Enabled",
+                _ => "Error",
+            };
         }
 
         //---------------------------------------------------------------------
@@ -85,6 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         public void OpenDeviceCertificateDetails(IWin32Window owner)
         {
             Debug.Assert(owner != null);
+            owner = owner.ExpectNotNull(nameof(owner));
 
             switch (this.enrollment.State)
             {

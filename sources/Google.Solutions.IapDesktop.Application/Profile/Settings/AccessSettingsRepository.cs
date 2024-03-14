@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// IP or hostname to use for Private Service Connect (PSC). 
         /// If null, PSC is diabled.
         /// </summary>
-        ISetting<string> PrivateServiceConnectEndpoint { get; }
+        ISetting<string?> PrivateServiceConnectEndpoint { get; }
 
         /// <summary>
         /// Enable BeyondCorp certificate-based access.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// AutoSelectCertificateForUrl-formatted selector for certificate.
         /// </summary>
-        ISetting<string> DeviceCertificateSelector { get; }
+        ISetting<string?> DeviceCertificateSelector { get; }
 
         /// <summary>
         /// Maximum number of connections per API endpoint.
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// When set, authentication is performed using workforce
         /// identity instead of Gaia.
         /// </summary>
-        ISetting<string> WorkforcePoolProvider { get; }
+        ISetting<string?> WorkforcePoolProvider { get; }
     }
 
     /// <summary>
@@ -89,13 +89,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         private class AccessSettings : IAccessSettings
         {
 
-            public ISetting<string> WorkforcePoolProvider { get; }
+            public ISetting<string?> WorkforcePoolProvider { get; }
 
-            public ISetting<string> PrivateServiceConnectEndpoint { get; }
+            public ISetting<string?> PrivateServiceConnectEndpoint { get; }
 
             public ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
-            public ISetting<string> DeviceCertificateSelector { get; }
+            public ISetting<string?> DeviceCertificateSelector { get; }
 
             public ISetting<int> ConnectionLimit { get; }
 
@@ -117,14 +117,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 // NB. Default values must be kept consistent with the
                 //     ADMX policy templates!
                 //
-                this.WorkforcePoolProvider = store.Read<string>(
+                this.WorkforcePoolProvider = store.Read<string?>(
                     "WorkforcePoolProvider",
                     "Workforce pool provider locator",
                     null,
                     null,
                     null, // No locator => workforce identity is disabled.
                     s => s == null || WorkforcePoolProviderLocator.TryParse(s, out var _));
-                this.PrivateServiceConnectEndpoint = store.Read<string>(
+                this.PrivateServiceConnectEndpoint = store.Read<string?>(
                     "PrivateServiceConnectEndpoint",
                     "Private Service Connect endpoint",
                     null,
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                 //
                 // User preferences. These cannot be overridden by policy.
                 //
-                this.DeviceCertificateSelector = store.Read<string>(
+                this.DeviceCertificateSelector = store.Read<string?>(
                     "DeviceCertificateSelector",
                     "DeviceCertificateSelector",
                     null,

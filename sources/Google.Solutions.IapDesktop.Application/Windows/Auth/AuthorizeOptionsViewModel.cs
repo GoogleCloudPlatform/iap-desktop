@@ -133,8 +133,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         public ObservableFunc<bool> IsOkButtonEnabled { get; }
         public ObservableProperty<bool> IsGaiaOptionChecked { get; }
         public ObservableProperty<bool> IsWorkforcePoolOptionChecked { get; }
-        public ObservableProperty<string> WorkforcePoolLocationId { get; }
-        public ObservableProperty<string> WorkforcePoolId { get; }
-        public ObservableProperty<string> WorkforcePoolProviderId { get; }
+        public ObservableProperty<string?> WorkforcePoolLocationId { get; }
+        public ObservableProperty<string?> WorkforcePoolId { get; }
+        public ObservableProperty<string?> WorkforcePoolProviderId { get; }
     }
 }

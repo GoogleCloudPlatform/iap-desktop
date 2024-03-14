@@ -43,14 +43,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<bool> IsTelemetryEnabled { get; }
         ISetting<long> LastUpdateCheck { get; }
         ISetting<bool> IsPreviewFeatureSetEnabled { get; }
-        ISetting<string> ProxyUrl { get; }
-        ISetting<string> ProxyPacUrl { get; }
-        ISetting<string> ProxyUsername { get; }
-        ISetting<SecureString> ProxyPassword { get; }
+        ISetting<string?> ProxyUrl { get; }
+        ISetting<string?> ProxyPacUrl { get; }
+        ISetting<string?> ProxyUsername { get; }
+        ISetting<SecureString?> ProxyPassword { get; }
         ISetting<int> ProxyAuthenticationRetries { get; }
         ISetting<SecurityProtocolType> TlsVersions { get; }
-        ISetting<string> FullScreenDevices { get; }
-        ISetting<string> CollapsedProjects { get; }
+        ISetting<string?> FullScreenDevices { get; }
+        ISetting<string?> CollapsedProjects { get; }
 
         /// <summary>
         /// Participate in surveys.
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Last release version for which the user has taken a survey.
         /// </summary>
-        ISetting<string> LastSurveyVersion { get; }
+        ISetting<string?> LastSurveyVersion { get; }
     }
 
     /// <summary>
@@ -74,8 +74,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey,
+            RegistryKey? machinePolicyKey,
+            RegistryKey? userPolicyKey,
             UserProfile.SchemaVersion schemaVersion)
             : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
@@ -117,25 +117,25 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<bool> IsPreviewFeatureSetEnabled { get; }
 
-            public ISetting<string> ProxyUrl { get; }
+            public ISetting<string?> ProxyUrl { get; }
 
-            public ISetting<string> ProxyPacUrl { get; }
+            public ISetting<string?> ProxyPacUrl { get; }
 
-            public ISetting<string> ProxyUsername { get; }
+            public ISetting<string?> ProxyUsername { get; }
 
-            public ISetting<SecureString> ProxyPassword { get; }
+            public ISetting<SecureString?> ProxyPassword { get; }
 
             public ISetting<int> ProxyAuthenticationRetries { get; }
 
             public ISetting<SecurityProtocolType> TlsVersions { get; }
 
-            public ISetting<string> FullScreenDevices { get; }
+            public ISetting<string?> FullScreenDevices { get; }
 
-            public ISetting<string> CollapsedProjects { get; }
+            public ISetting<string?> CollapsedProjects { get; }
 
             public ISetting<bool> IsSurveyEnabled { get; }
 
-            public ISetting<string> LastSurveyVersion { get; }
+            public ISetting<string?> LastSurveyVersion { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
@@ -186,14 +186,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     null,
                     schemaVersion >= UserProfile.SchemaVersion.Version240); // Auto opt-in new profiles
-                this.ProxyUrl = store.Read<string>(
+                this.ProxyUrl = store.Read<string?>(
                     "ProxyUrl",
                     "ProxyUrl",
                     null,
                     null,
                     null,
                     url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _));
-                this.ProxyPacUrl = store.Read<string>(
+                this.ProxyPacUrl = store.Read<string?>(
                     "ProxyPacUrl",
                     "ProxyPacUrl",
                     null,
@@ -244,27 +244,27 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     0,
                     Predicate.InRange(0, long.MaxValue));
-                this.ProxyUsername = store.Read<string>(
+                this.ProxyUsername = store.Read<string?>(
                     "ProxyUsername",
                     "ProxyUsername",
                     null,
                     null,
                     null,
                     _ => true);
-                this.ProxyPassword = store.Read<SecureString>(
+                this.ProxyPassword = store.Read<SecureString?>(
                     "ProxyPassword",
                     "ProxyPassword",
                     null,
                     null,
                     null);
-                this.FullScreenDevices = store.Read<string>(
+                this.FullScreenDevices = store.Read<string?>(
                     "FullScreenDevices",
                     "FullScreenDevices",
                     null,
                     null,
                     null,
                     _ => true);
-                this.CollapsedProjects = store.Read<string>(
+                this.CollapsedProjects = store.Read<string?>(
                     "CollapsedProjects",
                     "CollapsedProjects",
                     null,
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     null,
                     true);
-                this.LastSurveyVersion = store.Read<string>(
+                this.LastSurveyVersion = store.Read<string?>(
                     "LastSurveyVersion",
                     "LastSurveyVersion",
                     null,

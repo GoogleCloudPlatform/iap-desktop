@@ -121,7 +121,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             return obj is WorkforcePoolProviderLocator locator && Equals(locator);
         }
 
-        public static bool operator ==(WorkforcePoolProviderLocator obj1, WorkforcePoolProviderLocator obj2)
+        public static bool operator ==(WorkforcePoolProviderLocator? obj1, WorkforcePoolProviderLocator? obj2)
         {
             if (obj1 is null)
             {
@@ -131,7 +131,7 @@ namespace Google.Solutions.Apis.Auth.Iam
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(WorkforcePoolProviderLocator obj1, WorkforcePoolProviderLocator obj2)
+        public static bool operator !=(WorkforcePoolProviderLocator? obj1, WorkforcePoolProviderLocator? obj2)
         {
             return !(obj1 == obj2);
         }
