@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             {
                 this.cancellationSource.Cancel();
             }
-            catch 
+            catch
             {
                 //
                 // Canceallation may fail if the task has been completed
@@ -121,7 +121,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 //
                 Exception exception = null;
                 var tx = asyncFunc(tokenSource.Token).ContinueWith(
-                    t => {
+                    t =>
+                    {
                         dialog.Finish();
 
                         if (t.IsFaulted)

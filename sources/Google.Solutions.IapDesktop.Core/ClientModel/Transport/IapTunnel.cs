@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
@@ -35,7 +33,6 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.IapDesktop.Core.ClientModel.Transport.IapTunnel;
 
 namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 {
@@ -337,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
                         portFinder.AddSeed(Encoding.ASCII.GetBytes(profile.TargetInstance.Name));
                         portFinder.AddSeed(BitConverter.GetBytes(profile.TargetPort));
 
-                        for (int attempt = 0; ; attempt++)
+                        for (var attempt = 0; ; attempt++)
                         {
                             var localEndpoint = new IPEndPoint(
                                 IPAddress.Loopback,

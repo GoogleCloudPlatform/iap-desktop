@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
             ITransport transport,
             AppProtocolParameters parameters)
         {
-            string? arguments = this.ArgumentsTemplate;
+            var arguments = this.ArgumentsTemplate;
             if (arguments != null)
             {
                 //
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         public bool IsUsernameRequired
         {
-            get => this.ArgumentsTemplate != null && 
+            get => this.ArgumentsTemplate != null &&
                 this.ArgumentsTemplate.Contains("{username}");
         }
     }

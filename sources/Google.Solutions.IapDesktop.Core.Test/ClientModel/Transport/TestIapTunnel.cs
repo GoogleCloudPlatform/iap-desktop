@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Protocol;
@@ -27,9 +26,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -253,8 +250,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             }
 
             protected internal override IIapListener CreateListener(
-                ISshRelayTarget target, 
-                ITransportPolicy policy, 
+                ISshRelayTarget target,
+                ITransportPolicy policy,
                 IPEndPoint localEndpoint)
             {
                 this.ProbedPorts.Add((ushort)localEndpoint.Port);
@@ -281,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 new Mock<ISshRelayTarget>().Object,
                 CancellationToken.None));
-            
+
             Assert.AreEqual(5, factory.ProbedPorts.Count);
             Assert.AreEqual(5, factory.ProbedPorts.Distinct().Count());
         }

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
@@ -173,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             {
                 try
                 {
-                    return await 
+                    return await
                         RunWithUserFeedbackAsync(
                             jobDescription,
                             jobFunc)

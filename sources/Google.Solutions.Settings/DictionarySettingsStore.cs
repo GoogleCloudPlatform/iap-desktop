@@ -54,7 +54,7 @@ namespace Google.Solutions.Settings
         // Overrides.
         //---------------------------------------------------------------------
 
-        private protected override IValueAccessor<IDictionary<string, string>, T> 
+        private protected override IValueAccessor<IDictionary<string, string>, T>
             CreateValueAccessor<T>(string valueName)
         {
             return DictionaryValueAccessor.Create<T>(valueName);

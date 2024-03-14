@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using System.Threading;
 using System.Threading.Tasks;
 

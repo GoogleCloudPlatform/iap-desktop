@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;

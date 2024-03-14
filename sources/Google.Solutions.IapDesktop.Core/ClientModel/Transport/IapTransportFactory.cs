@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         // IIapTransportFactory.
         //---------------------------------------------------------------------
 
-        [SuppressMessage("Usage", 
+        [SuppressMessage("Usage",
             "VSTHRD002:Avoid problematic synchronous waits",
             Justification = "Explicit check")]
         public IEnumerable<IIapTunnel> Pool

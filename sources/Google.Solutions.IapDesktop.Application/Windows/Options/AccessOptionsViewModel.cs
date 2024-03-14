@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.PrivateServiceConnectEndpoint.Value =
                 settings.PrivateServiceConnectEndpoint.Value;
             this.IsPrivateServiceConnectEnabled.Value =
-                !settings.PrivateServiceConnectEndpoint.IsDefault; 
+                !settings.PrivateServiceConnectEndpoint.IsDefault;
             this.IsPrivateServiceConnectEditable.Value =
                 !settings.PrivateServiceConnectEndpoint.IsReadOnly;
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 (int)this.ConnectionPoolLimit.Value;
 
             if (this.ProbePrivateServiceConnectEndpoint &&
-                settings.PrivateServiceConnectEndpoint.Value 
+                settings.PrivateServiceConnectEndpoint.Value
                 is var pscEndpoint &&
                 pscEndpoint != null)
             {
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public ObservableProperty<bool> IsPrivateServiceConnectEnabled { get; }
         public ObservableProperty<string> PrivateServiceConnectEndpoint { get; }
-        public ObservableProperty<bool> IsPrivateServiceConnectEditable{ get; }
+        public ObservableProperty<bool> IsPrivateServiceConnectEditable { get; }
 
         public ObservableProperty<decimal> ConnectionPoolLimit { get; }
     }

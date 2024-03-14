@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Interop;
-using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using System;
 using System.Linq;

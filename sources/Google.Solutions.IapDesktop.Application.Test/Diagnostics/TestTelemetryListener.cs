@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Apis.Analytics;
-using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Host;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;

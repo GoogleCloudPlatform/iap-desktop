@@ -72,7 +72,7 @@ namespace Google.Solutions.Testing.Application.Views
         //---------------------------------------------------------------------
 
         public Task<T> RunAsync<T>(
-            JobDescription jobDescription, 
+            JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
             // Run on UI thread to avoid multthreading issues in tests.

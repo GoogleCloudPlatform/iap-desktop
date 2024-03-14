@@ -20,21 +20,21 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Platform.Net;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.Client;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -69,8 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             }
 
             return new ApplicationSettingsRepository(
-                baseKey, 
-                policyKey, 
+                baseKey,
+                policyKey,
                 null,
                 UserProfile.SchemaVersion.Current);
         }

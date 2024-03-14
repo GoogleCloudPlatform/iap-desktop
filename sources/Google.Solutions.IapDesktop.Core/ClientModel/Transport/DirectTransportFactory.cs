@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         private class Transport : DisposableBase, ITransport
         {
             public Transport(
-                IProtocol protocol, 
+                IProtocol protocol,
                 IPEndPoint endpoint,
                 InstanceLocator target)
             {

@@ -20,18 +20,18 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
-using Moq;
-using NUnit.Framework;
-using System;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
+using Moq;
+using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile
 {

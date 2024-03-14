@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 client.Object,
                 new Mock<IDeviceEnrollment>().Object);
 
-            int eventsRaised = 0;
+            var eventsRaised = 0;
             authorization.Reauthorized += (_, __) => eventsRaised++;
 
             await authorization
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 client.Object,
                 new Mock<IDeviceEnrollment>().Object);
 
-            int eventsRaised = 0;
+            var eventsRaised = 0;
             authorization.Reauthorized += (_, __) => eventsRaised++;
 
             // First session.

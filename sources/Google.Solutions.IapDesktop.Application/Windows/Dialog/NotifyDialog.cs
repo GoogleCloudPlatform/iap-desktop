@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public class NotifyDialog : INotifyDialog
     {
         public void ShowBalloon(string title, string message)
-        { 
+        {
             title.ExpectNotEmpty(nameof(title));
             message.ExpectNotEmpty(nameof(message));
 

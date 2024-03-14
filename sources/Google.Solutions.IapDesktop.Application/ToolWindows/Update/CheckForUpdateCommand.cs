@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Net;
 using System;
@@ -103,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             else if (IsUpdateAdvised(latestRelease))
             {
                 var nameOfUpdate = this.updatePolicy.GetReleaseTrack(latestRelease) switch
-                { 
+                {
                     ReleaseTrack.Canary => "An optional update",
                     ReleaseTrack.Critical => "A critical security update",
                     _ => "An update",
@@ -134,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     DialogResult.OK);
 
                 if (!latestRelease.TryGetDownloadUrl(
-                    Install.ProcessArchitecture, 
+                    Install.ProcessArchitecture,
                     out var downloadUrl))
                 {
                     downloadUrl = latestRelease.DetailsUrl;
@@ -166,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     dialogParameters);
             }
             else if (
-                latestRelease.Survey != null && 
+                latestRelease.Survey != null &&
                 this.EnableSurveys &&
                 (this.LastSurveyVersion == null || this.LastSurveyVersion < latestRelease.TagVersion))
             {
@@ -251,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
         {
             var latestRelease = await this.feed
                .FindLatestReleaseAsync(
-                    this.FeedOptions, 
+                    this.FeedOptions,
                     CancellationToken.None)
                .ConfigureAwait(true);
 

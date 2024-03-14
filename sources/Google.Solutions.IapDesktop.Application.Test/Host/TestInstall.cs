@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 Environment.OSVersion.VersionString,
                 Install.UserAgent.Platform);
             StringAssert.Contains(
-                $"{Install.ProcessArchitecture.ToString().ToLower()}/", 
+                $"{Install.ProcessArchitecture.ToString().ToLower()}/",
                 Install.UserAgent.Platform);
             StringAssert.Contains(
                 $"/{Install.CpuArchitecture.ToString().ToLower()}",

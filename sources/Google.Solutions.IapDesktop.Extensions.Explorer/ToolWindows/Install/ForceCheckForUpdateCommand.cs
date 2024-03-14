@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
             // NB. The FeedOptions make sure won't suggest canary updates
             // if the user isn't on the canary track.
             //
-            Debug.Assert(!release.IsCanaryRelease || 
+            Debug.Assert(!release.IsCanaryRelease ||
                 this.FeedOptions == ReleaseFeedOptions.IncludeCanaryReleases);
 
             if (release.TagVersion == null ||

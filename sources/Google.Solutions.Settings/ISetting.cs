@@ -84,7 +84,7 @@ namespace Google.Solutions.Settings
         /// <summary>
         /// Assign value, converting data types if necessary.
         /// </summary>
-        object AnyValue { get;set; }
+        object AnyValue { get; set; }
 
         /// <summary>
         /// Returns the type of setting.
@@ -114,7 +114,7 @@ namespace Google.Solutions.Settings
         }
 
         public static void SetClearTextValue(
-            this ISetting<SecureString> setting, 
+            this ISetting<SecureString> setting,
             string value)
         {
             setting.Value = SecureStringExtensions.FromClearText(value);

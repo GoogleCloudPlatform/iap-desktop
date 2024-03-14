@@ -69,8 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             public General(HelpClient helpClient)
                 : base(
-                      "&Documentation", 
-                      HelpTopics.General, 
+                      "&Documentation",
+                      HelpTopics.General,
                       helpClient)
             {
                 this.ShortcutKeys = Keys.F1;
@@ -83,8 +83,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             public Shortcuts(HelpClient helpClient)
                 : base(
-                      "Keyboard &shortcuts", 
-                      HelpTopics.Shortcuts, 
+                      "Keyboard &shortcuts",
+                      HelpTopics.Shortcuts,
                       helpClient)
             {
             }
@@ -96,8 +96,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             public IapOverview(HelpClient helpClient)
                 : base(
-                      "&IAP TCP forwarding overview", 
-                      HelpTopics.IapOverview, 
+                      "&IAP TCP forwarding overview",
+                      HelpTopics.IapOverview,
                       helpClient)
             {
             }

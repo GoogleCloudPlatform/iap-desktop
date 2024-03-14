@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public Type ViewModel => typeof(GeneralOptionsViewModel);
 
         public void Bind(
-            PropertiesSheetViewModelBase viewModelBase, 
+            PropertiesSheetViewModelBase viewModelBase,
             IBindingContext bindingContext)
         {
             var viewModel = (GeneralOptionsViewModel)viewModelBase;

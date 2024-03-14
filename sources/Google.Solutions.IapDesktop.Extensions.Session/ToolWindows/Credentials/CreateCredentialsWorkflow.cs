@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             // Save credentials.
             settings.RdpUsername.Value = credentials.UserName;
             settings.RdpPassword.SetClearTextValue(credentials.Password);
-            
+
             // NB. The computer might be joined to a domain, therefore force a local logon.
             settings.RdpDomain.Value = ".";
         }

@@ -19,9 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;

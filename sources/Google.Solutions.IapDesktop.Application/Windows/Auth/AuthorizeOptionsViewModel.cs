@@ -79,8 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         // Input properties.
         //---------------------------------------------------------------------
 
-        public WorkforcePoolProviderLocator WorkforcePoolProvider 
-        { 
+        public WorkforcePoolProviderLocator WorkforcePoolProvider
+        {
             get
             {
                 if (this.IsWorkforcePoolOptionChecked.Value &&

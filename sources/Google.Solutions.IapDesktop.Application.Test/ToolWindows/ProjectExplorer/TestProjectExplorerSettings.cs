@@ -23,7 +23,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer;
 using Microsoft.Win32;
 using NUnit.Framework;
 

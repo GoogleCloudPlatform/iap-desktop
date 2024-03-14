@@ -69,7 +69,7 @@ namespace Google.Solutions.Common.Util
         /// an empty array.
         /// </summary>
         public static T[] ExpectNotNullOrZeroSized<T>(
-            this T[]? array, 
+            this T[]? array,
             string argumentName)
         {
             if (array == null)

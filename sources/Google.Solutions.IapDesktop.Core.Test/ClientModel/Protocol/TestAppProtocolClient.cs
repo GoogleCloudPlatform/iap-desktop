@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var client = new AppProtocolClient("doesnotexist.exe", null);
 
             Assert.IsNull(client.FormatArguments(
-                transport.Object, 
+                transport.Object,
                 new AppProtocolParameters()));
         }
 

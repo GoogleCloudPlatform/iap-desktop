@@ -20,20 +20,14 @@
 //
 
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Binding;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows

@@ -28,7 +28,6 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Security;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
@@ -46,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     public class AuthSettingsRepository :
         RepositoryBase<IAuthSettings>, IOidcOfflineCredentialStore
     {
-        public AuthSettingsRepository(RegistryKey baseKey) 
+        public AuthSettingsRepository(RegistryKey baseKey)
             : base(new RegistrySettingsStore(baseKey))
         {
             baseKey.ExpectNotNull(nameof(baseKey));

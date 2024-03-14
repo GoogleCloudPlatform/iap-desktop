@@ -19,11 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Threading;
-using Google.Solutions.IapDesktop.Application.Host;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {

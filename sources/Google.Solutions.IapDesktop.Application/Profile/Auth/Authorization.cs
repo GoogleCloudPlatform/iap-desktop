@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Auth;
-using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Platform.Net;
@@ -39,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
 
         private void SetOrSpliceSession(IOidcSession newSession)
         {
-            newSession.ExpectNotNull(nameof(newSession));   
+            newSession.ExpectNotNull(nameof(newSession));
 
             if (this.session != null)
             {
@@ -136,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class BrowserCodeReceiver : LoopbackCodeReceiver 
+        private class BrowserCodeReceiver : LoopbackCodeReceiver
         {
             private readonly BrowserPreference browserPreference;
 

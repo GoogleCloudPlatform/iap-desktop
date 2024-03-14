@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
@@ -38,7 +39,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 {

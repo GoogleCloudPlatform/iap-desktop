@@ -178,8 +178,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 NativeMethods.ReleaseCapture();
                 _ = NativeMethods.SendMessage(
-                    this.Handle, 
-                    NativeMethods.WM_NCLBUTTONDOWN, 
+                    this.Handle,
+                    NativeMethods.WM_NCLBUTTONDOWN,
                     NativeMethods.HT_CAPTION, 0);
             }
         }

@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Security;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
 using System.Security;
 
 namespace Google.Solutions.Settings.Test

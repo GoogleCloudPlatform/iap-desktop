@@ -42,8 +42,8 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -57,13 +57,15 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Diagnostics;
-using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform;
 using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Platform.Security;
+using Google.Solutions.Platform.Security.Cryptography;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;
@@ -76,9 +78,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
-using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Platform.Security.Cryptography;
-using Google.Solutions.Settings.Collection;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -474,7 +473,7 @@ namespace Google.Solutions.IapDesktop
                     //
                     preAuthLayer.GetService<IHttpProxyAdapter>().ActivateSettings(appSettings);
 
-                    PscAndMtlsAwareHttpClientFactory.NtlmProxyAuthenticationRetries = 
+                    PscAndMtlsAwareHttpClientFactory.NtlmProxyAuthenticationRetries =
                         (ushort)appSettings.ProxyAuthenticationRetries.Value;
                 }
                 catch (Exception)

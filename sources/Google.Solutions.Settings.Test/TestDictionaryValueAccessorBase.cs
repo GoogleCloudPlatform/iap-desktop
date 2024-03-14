@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Settings;
 using NUnit.Framework;
 using System.Collections.Generic;
 

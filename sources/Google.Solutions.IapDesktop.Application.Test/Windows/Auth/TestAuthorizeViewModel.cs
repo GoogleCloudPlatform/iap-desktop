@@ -20,18 +20,14 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Auth;
-using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -72,10 +68,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
             public AuthorizeViewModelWithMockSigninAdapter()
                 : this(
-                      new Mock<IInstall>().Object, 
+                      new Mock<IInstall>().Object,
                       new Mock<IOidcOfflineCredentialStore>().Object)
             {
-                    
+
             }
 
             private protected override Application.Profile.Auth.Authorization CreateAuthorization()

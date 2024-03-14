@@ -33,6 +33,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.Platform.Security.Cryptography;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
 using Microsoft.Win32;
 using Moq;
@@ -41,7 +42,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 {

@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
         internal ITransportPolicy CreateTransportPolicy()
         {
-            if (this.processFactory is IWin32ProcessSet set && 
+            if (this.processFactory is IWin32ProcessSet set &&
                 this.protocol.Client != null)
             {
                 //

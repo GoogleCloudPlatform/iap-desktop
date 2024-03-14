@@ -20,16 +20,16 @@
 //
 
 using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.CloudSecurityToken.v1;
 using Google.Apis.Json;
+using Google.Solutions.Apis.Auth;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System;
-using Google.Solutions.Apis.Auth;
-using Google.Apis.CloudSecurityToken.v1;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Testing.Apis.Auth
 {
@@ -48,7 +48,7 @@ namespace Google.Solutions.Testing.Apis.Auth
             this.SubjectToken = subjectToken;
         }
 
-        internal override string PrincipalId => 
+        internal override string PrincipalId =>
             "principal://iam.googleapis.com/locations/global" +
             $"/workforcePools/{this.PoolId}/subject/{this.Username}";
 

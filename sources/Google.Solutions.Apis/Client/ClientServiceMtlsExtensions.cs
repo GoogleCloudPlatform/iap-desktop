@@ -19,16 +19,10 @@
 // under the License.
 //
 
-using Google.Apis.Services;
-using Google.Solutions.Common.Util;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-
 namespace Google.Solutions.Apis.Client
 {
     internal static class ClientServiceMtlsExtensions
     {
-        
+
     }
 }

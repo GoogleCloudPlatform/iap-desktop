@@ -22,7 +22,6 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;

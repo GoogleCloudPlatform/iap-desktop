@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Client;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
+using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Google.Solutions.Settings.Collection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 {
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //
         private const string SamplePscEndpoint = "www.googleapis.com";
 
-        private IRepository<IAccessSettings> CreateSettingsRepository( 
+        private IRepository<IAccessSettings> CreateSettingsRepository(
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
@@ -344,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
         [Test]
         public void WhenPscEndpointInvalid_ThenApplyChangesThrowsException()
-        { 
+        {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
             settingsRepository.SetSettings(settings);

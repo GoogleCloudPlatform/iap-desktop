@@ -24,7 +24,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -228,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 
             var sources = RdpParameters.ParameterSources.Url;
             var settings = this.settingsService.GetConnectionSettings(
-                url, 
+                url,
                 out var foundInInventory);
             if (foundInInventory)
             {

@@ -25,7 +25,6 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Json;
-using Google.Apis.Logging.v2.Data;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
@@ -37,7 +36,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Policy;
 
 namespace Google.Solutions.Testing.Apis.Integration
 {
@@ -47,7 +45,7 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         public static readonly string InvalidProjectId = "invalid-0000";
 
-        private static GoogleCredential adminCredential;
+        private static readonly GoogleCredential adminCredential;
 
         /// <summary>
         /// Test configuration, loaded from file.
@@ -100,7 +98,7 @@ namespace Google.Solutions.Testing.Apis.Integration
             Configuration = NewtonsoftJsonSerializer
                 .Instance
                 .Deserialize<ConfigurationSection>(File.ReadAllText(configFile));
-            if (string.IsNullOrEmpty(Configuration.ProjectId) )
+            if (string.IsNullOrEmpty(Configuration.ProjectId))
             {
                 throw new ApplicationException(
                     $"The configuration file {configFile} is incomplete.");

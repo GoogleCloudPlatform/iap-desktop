@@ -208,7 +208,7 @@ namespace Google.Solutions.Settings
 
             public override void Write(IDictionary<string, string> dictionary, TEnum value)
             {
-                dictionary.ExpectNotNull(nameof(dictionary))[this.Name] 
+                dictionary.ExpectNotNull(nameof(dictionary))[this.Name]
                     = ((int)(object)value).ToString();
             }
 

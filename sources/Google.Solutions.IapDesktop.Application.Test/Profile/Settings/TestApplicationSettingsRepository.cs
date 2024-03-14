@@ -53,8 +53,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -74,8 +74,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -107,8 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -197,8 +197,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -377,8 +377,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -393,8 +393,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    policyKey, 
+                    settingsKey,
+                    policyKey,
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -409,8 +409,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     policyKey,
                     UserProfile.SchemaVersion.Current);
 

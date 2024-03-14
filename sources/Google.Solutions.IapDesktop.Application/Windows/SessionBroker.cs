@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -27,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
@@ -56,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// Download a file from the remote VM.
         /// </summary>
         Task DownloadFilesAsync();
-        
+
         /// <summary>
         /// Upload a file to the remote VM.
         /// </summary>
@@ -75,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// <summary>
         /// Switch focus to this session.
         /// </summary>
-        void ActivateSession(); 
+        void ActivateSession();
     }
 
     /// <summary>
@@ -133,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         //---------------------------------------------------------------------
         // ISessionBroker.
         //---------------------------------------------------------------------
-        
+
         public ICommandContainer<ISession> SessionMenu { get; }
 
         public bool IsConnected(InstanceLocator vmInstance)

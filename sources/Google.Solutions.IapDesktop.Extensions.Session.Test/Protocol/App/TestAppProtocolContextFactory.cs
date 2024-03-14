@@ -27,6 +27,8 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
@@ -34,8 +36,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Settings.Collection;
-using Google.Solutions.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 {
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "user";
-            settings.RdpPassword.SetClearTextValue("password"); 
+            settings.RdpPassword.SetClearTextValue("password");
             settings.RdpDomain.Value = "domain";
 
             var settingsService = CreateSettingsService(settings);

@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public string LastUpdateCheck { get; private set; }
 
         public ObservableProperty<bool> IsTelemetryEditable { get; }
-                                          
+
         public ObservableProperty<bool> IsTelemetryEnabled { get; }
     }
 }

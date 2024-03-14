@@ -124,7 +124,7 @@ namespace Google.Solutions.Settings
             else if (typeof(T) == typeof(SecureString))
             {
                 return (RegistryValueAccessor<T>)(object)new SecureStringValueAccessor(
-                    name, 
+                    name,
                     DataProtectionScope.CurrentUser);
             }
             else if (typeof(T).IsEnum)

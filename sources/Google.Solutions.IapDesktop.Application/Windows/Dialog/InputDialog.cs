@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Dialog

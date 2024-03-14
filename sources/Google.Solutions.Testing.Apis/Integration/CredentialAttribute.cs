@@ -67,7 +67,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     .Append(TestProject.ProjectId)
                     .Append(string.Join(",", this.Roles));
 
-                var specificationRaw = 
+                var specificationRaw =
                     Encoding.UTF8.GetBytes(specification.ToString());
 
                 return (this.Type == PrincipalType.Gaia ? "s" : "i") +

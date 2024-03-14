@@ -78,7 +78,7 @@ namespace Google.Solutions.Testing.Apis.Auth
 
     internal class TemporaryGaiaSession : TemporarySession, IGaiaOidcSession
     {
-        public TemporaryGaiaSession(string username, ICredential apiCredential) 
+        public TemporaryGaiaSession(string username, ICredential apiCredential)
             : base(username, apiCredential)
         {
         }
@@ -97,8 +97,8 @@ namespace Google.Solutions.Testing.Apis.Auth
     internal class TemporaryWorkforcePoolSession : TemporarySession, IWorkforcePoolSession
     {
         public TemporaryWorkforcePoolSession(
-            TemporaryWorkforcePoolSubject subject, 
-            ICredential apiCredential) 
+            TemporaryWorkforcePoolSubject subject,
+            ICredential apiCredential)
             : base(subject.Username, apiCredential)
         {
             this.PrincipalIdentifier = subject.PrincipalId;

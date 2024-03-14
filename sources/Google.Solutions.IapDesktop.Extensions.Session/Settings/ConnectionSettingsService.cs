@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Settings.Collection;
@@ -104,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         }
 
         public ConnectionSettings GetConnectionSettings(
-            IapRdpUrl url, 
+            IapRdpUrl url,
             out bool foundInInventory)
         {
             return this.repository.GetInstanceSettings(url, out foundInInventory);

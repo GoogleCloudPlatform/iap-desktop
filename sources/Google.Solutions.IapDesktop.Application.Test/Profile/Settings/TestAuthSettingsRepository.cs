@@ -21,14 +21,11 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
-using Google.Solutions.Settings;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Google.Solutions.Testing.Apis;
+using Google.Solutions.Settings;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 {
