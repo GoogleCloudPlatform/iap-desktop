@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// </summary>
         bool TryActivateSession(
             InstanceLocator vmInstance,
-            out ISession session);
+            out ISession? session);
 
         /// <summary>
         /// Return a list of all sessions.
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public bool TryActivateSession(
             InstanceLocator vmInstance,
-            out ISession session)
+            out ISession? session)
         {
             var existingSession = this.mainForm.MainPanel
                 .Documents
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
     public class SessionEndedEvent : SessionBrokerEventBase
     {
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         public SessionEndedEvent(InstanceLocator vmInstance) : base(vmInstance)
         {

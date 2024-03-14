@@ -108,7 +108,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                 this.Provider.GetHashCode();
         }
 
-        public bool Equals(WorkforcePoolProviderLocator other)
+        public bool Equals(WorkforcePoolProviderLocator? other)
         {
             return other is object &&
                 this.Location == other.Location &&
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Auth.Iam
                 this.Provider == other.Provider;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is WorkforcePoolProviderLocator locator && Equals(locator);
         }

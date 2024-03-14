@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             this.exceptionDialog = exceptionDialog.ExpectNotNull(nameof(exceptionDialog));
         }
 
-        private IWin32Window GetMainWindow()
+        private static IWin32Window? GetMainWindow()
         {
             var mainWindowHwnd = Process.GetCurrentProcess().MainWindowHandle;
             return mainWindowHwnd == IntPtr.Zero ? null : new Win32Window(mainWindowHwnd);
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         }
 
         public void OnCommandFailed(
-            IWin32Window window,
+            IWin32Window? window,
             ICommandBase command,
             Exception exception)
         {
