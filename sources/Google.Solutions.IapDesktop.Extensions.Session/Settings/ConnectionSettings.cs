@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -268,46 +267,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 AppNetworkLevelAuthenticationState._Default);
 
             Debug.Assert(this.Settings.All(s => s != null));
-        }
-
-        /// <summary>
-        /// Create settings from a URL.
-        /// </summary>
-        public ConnectionSettings(IapRdpUrl url)
-            : this(
-                  url.Instance,
-
-                  //
-                  // Convert query into a dictionary and use that as a
-                  // source.
-                  //
-                  // NB. Parameters are case-insensitive.
-                  //
-                  new DictionarySettingsStore(url
-                      .Parameters
-                      .ToKeyValuePairs()
-                      .Where(kvp => kvp.Key != null && kvp.Value != null)
-                      .ToDictionary(
-                        kvp => kvp.Key, 
-                        kvp => kvp.Value,
-                        StringComparer.OrdinalIgnoreCase)))
-        {
-        }
-
-        public NameValueCollection ToUrlQuery()
-        {
-            var parameters = new Dictionary<string, string>();
-            var store = new DictionarySettingsStore(parameters);
-
-            foreach (var setting in this.Settings
-                .Where(s => !(s is ISetting<SecureString>))
-                .Cast<IAnySetting>() // Do not allow passwords to leak into URLs.
-                .Where(s => !s.IsDefault))
-            {
-                store.Write(setting);
-            }
-
-            return parameters.ToNameValueCollection();
         }
 
         internal ConnectionSettings OverlayBy(ConnectionSettings overlay)

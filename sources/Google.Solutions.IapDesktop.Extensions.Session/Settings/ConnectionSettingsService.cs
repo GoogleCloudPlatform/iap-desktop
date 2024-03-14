@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -31,8 +32,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     public interface IConnectionSettingsService
     {
         bool IsConnectionSettingsAvailable(IProjectModelNode node);
+
         IPersistentSettingsCollection<ConnectionSettings> GetConnectionSettings(
             IProjectModelNode node);
+
+        ConnectionSettings GetConnectionSettings(
+           IapRdpUrl url,
+           out bool foundInInventory);
     }
 
     [Service(typeof(IConnectionSettingsService))]
@@ -95,6 +101,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             {
                 throw new ArgumentException("Unsupported node type: " + node.GetType().Name);
             }
+        }
+
+        public ConnectionSettings GetConnectionSettings(
+            IapRdpUrl url, 
+            out bool foundInInventory)
+        {
+            return this.repository.GetInstanceSettings(url, out foundInInventory);
         }
     }
 }
