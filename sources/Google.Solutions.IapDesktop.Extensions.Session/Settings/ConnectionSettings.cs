@@ -269,103 +269,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             Debug.Assert(this.Settings.All(s => s != null));
         }
 
-        internal ConnectionSettings OverlayBy(ConnectionSettings overlay)
-        {
-            overlay.ExpectNotNull(nameof(overlay));
-
-            var merged = new ConnectionSettings(overlay.Resource);
-
-            //
-            // Apply this.
-            //
-            merged.RdpUsername = this.RdpUsername.OverlayBy(overlay.RdpUsername);
-            merged.RdpPassword = this.RdpPassword.OverlayBy(overlay.RdpPassword);
-            merged.RdpDomain = this.RdpDomain.OverlayBy(overlay.RdpDomain);
-            merged.RdpConnectionBar = 
-                this.RdpConnectionBar.OverlayBy(overlay.RdpConnectionBar);
-            merged.RdpAuthenticationLevel =
-                this.RdpAuthenticationLevel.OverlayBy(overlay.RdpAuthenticationLevel);
-            merged.RdpColorDepth =
-                this.RdpColorDepth.OverlayBy(overlay.RdpColorDepth);
-            merged.RdpAudioMode = 
-                this.RdpAudioMode.OverlayBy(overlay.RdpAudioMode);
-            merged.RdpUserAuthenticationBehavior = 
-                this.RdpUserAuthenticationBehavior.OverlayBy(overlay.RdpUserAuthenticationBehavior);
-            merged.RdpNetworkLevelAuthentication = 
-                this.RdpNetworkLevelAuthentication.OverlayBy(overlay.RdpNetworkLevelAuthentication);
-            merged.RdpConnectionTimeout =
-                this.RdpConnectionTimeout.OverlayBy(overlay.RdpConnectionTimeout);
-            merged.RdpPort = 
-                this.RdpPort.OverlayBy(overlay.RdpPort);
-            merged.RdpTransport = 
-                this.RdpTransport.OverlayBy(overlay.RdpTransport);
-            merged.RdpRedirectClipboard = 
-                this.RdpRedirectClipboard.OverlayBy(overlay.RdpRedirectClipboard);
-            merged.RdpRedirectPrinter = 
-                this.RdpRedirectPrinter.OverlayBy(overlay.RdpRedirectPrinter);
-            merged.RdpRedirectSmartCard =
-                this.RdpRedirectSmartCard.OverlayBy(overlay.RdpRedirectSmartCard);
-            merged.RdpRedirectPort =
-                this.RdpRedirectPort.OverlayBy(overlay.RdpRedirectPort);
-            merged.RdpRedirectDrive = 
-                this.RdpRedirectDrive.OverlayBy(overlay.RdpRedirectDrive);
-            merged.RdpRedirectDevice = 
-                this.RdpRedirectDevice.OverlayBy(overlay.RdpRedirectDevice);
-            merged.RdpRedirectWebAuthn =
-                this.RdpRedirectWebAuthn.OverlayBy(overlay.RdpRedirectWebAuthn);
-            merged.RdpHookWindowsKeys =
-                this.RdpHookWindowsKeys.OverlayBy(overlay.RdpHookWindowsKeys);
-            merged.RdpRestrictedAdminMode =
-                this.RdpRestrictedAdminMode.OverlayBy(overlay.RdpRestrictedAdminMode);
-
-            merged.SshPort = 
-                this.SshPort.OverlayBy(overlay.SshPort);
-            merged.SshTransport =
-                this.SshTransport.OverlayBy(overlay.SshTransport);
-            merged.SshPublicKeyAuthentication =
-                this.SshPublicKeyAuthentication.OverlayBy(overlay.SshPublicKeyAuthentication);
-            merged.SshUsername = 
-                this.SshUsername.OverlayBy(overlay.SshUsername);
-            merged.SshPassword =
-                this.SshPassword.OverlayBy(overlay.SshPassword);
-            merged.SshConnectionTimeout =
-                this.SshConnectionTimeout.OverlayBy(overlay.SshConnectionTimeout);
-
-            merged.AppUsername =
-                this.AppUsername.OverlayBy(overlay.AppUsername);
-            merged.AppNetworkLevelAuthentication = 
-                this.AppNetworkLevelAuthentication.OverlayBy(overlay.AppNetworkLevelAuthentication);
-
-            Debug.Assert(merged.Settings.All(s => s != null));
-
-            return merged;
-        }
-
         //---------------------------------------------------------------------
         // RDP settings.
         //---------------------------------------------------------------------
 
-        public ISetting<string> RdpUsername { get; private set; }
-        public ISetting<SecureString> RdpPassword { get; private set; }
-        public ISetting<string> RdpDomain { get; private set; }
-        public ISetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
-        public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
-        public ISetting<RdpColorDepth> RdpColorDepth { get; private set; }
-        public ISetting<RdpAudioMode> RdpAudioMode { get; private set; }
-        public ISetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
-        public ISetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
-        public ISetting<int> RdpConnectionTimeout { get; private set; }
-        public ISetting<int> RdpPort { get; private set; }
-        public ISetting<SessionTransportType> RdpTransport { get; private set; }
-        public ISetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
-        public ISetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
-        public ISetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
-        public ISetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
-        public ISetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
-        public ISetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
-        public ISetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; private set; }
-        public ISetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
-        public ISetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; private set; }
+        public ISetting<string> RdpUsername { get; }
+        public ISetting<SecureString> RdpPassword { get; }
+        public ISetting<string> RdpDomain { get; }
+        public ISetting<RdpConnectionBarState> RdpConnectionBar { get; }
+        public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; }
+        public ISetting<RdpColorDepth> RdpColorDepth { get; }
+        public ISetting<RdpAudioMode> RdpAudioMode { get; }
+        public ISetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; }
+        public ISetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; }
+        public ISetting<int> RdpConnectionTimeout { get; }
+        public ISetting<int> RdpPort { get; }
+        public ISetting<SessionTransportType> RdpTransport { get; }
+        public ISetting<RdpRedirectClipboard> RdpRedirectClipboard { get; }
+        public ISetting<RdpRedirectPrinter> RdpRedirectPrinter { get; }
+        public ISetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; }
+        public ISetting<RdpRedirectPort> RdpRedirectPort { get; }
+        public ISetting<RdpRedirectDrive> RdpRedirectDrive { get; }
+        public ISetting<RdpRedirectDevice> RdpRedirectDevice { get; }
+        public ISetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; }
+        public ISetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; }
+        public ISetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {

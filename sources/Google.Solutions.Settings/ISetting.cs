@@ -103,11 +103,6 @@ namespace Google.Solutions.Settings
         /// Returns the default value, which might be inherited.
         /// </summary>
         T DefaultValue { get; }
-
-        /// <summary>
-        /// Overlay the setting with defaults from the ancestry,
-        /// </summary>
-        ISetting<T> OverlayBy(ISetting<T> setting);
     }
 
     public static class SecureStringSettingExtensions

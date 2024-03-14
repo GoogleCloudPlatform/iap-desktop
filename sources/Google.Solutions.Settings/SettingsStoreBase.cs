@@ -134,24 +134,6 @@ namespace Google.Solutions.Settings
                 this.validate = validate.ExpectNotNull(nameof(validate));
             }
 
-            protected override SettingBase<T> CreateNew(
-                T value,
-                T defaultValue,
-                bool readOnly) // TODO: remove overlay logic
-            {
-                return new MappedSetting<T>(
-                    this.Key,
-                    this.DisplayName,
-                    this.Description,
-                    this.Category,
-                    value,
-                    defaultValue,
-                    Equals(value, defaultValue),
-                    readOnly,
-                    this.accessor,
-                    this.validate);
-            }
-
             public override SettingBase<T> CreateSimilar(
                 T value,
                 T defaultValue,
