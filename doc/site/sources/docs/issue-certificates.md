@@ -1,37 +1,32 @@
-# Use BeyondCorp certificate-based access
-
-IAP Desktop supports 
-[BeyondCorp certificate-based access :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access).
-When you enable certificate-based access, all connections to Google Cloud APIs are secured using mutual TLS and you can
-use [enterprise certificate conditions :octicons-link-external-16:](https://cloud.google.com/access-context-manager/docs)
-to control access to Google Cloud resources.
-
-!!!note
-
-    This feature requires a BeyondCorp subscription. For a comparison between the
-    features available to Google Cloud customers and what is available with BeyondCorp Enterprise,
-    see [BeyondCorp Enterprise pricing :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/pricing).
+# Deploy certificates using Active Directory Certificate Services
 
 
-This guide describes how to do the following:
 
-1.  Configure Active Directory Certificate Services to issue a certificate that's suitable for BeyondCorp.
-1.  Configure Chrome to participate in Chrome browser management and deploy a special browser extension.
-1.  Configure certificate-based access in Google Cloud and IAP Desktop.
+## Configure Chrome
 
 
-## Configure Active Directory Certificate Services 
+1.  Configure Chrome [to automatically enroll in Chrome browser management](https://support.google.com/chrome/a/answer/9301891?hl=en#zippy=%2Cenroll-browsers-on-windows)
+1.  Use Chrome browser management to [deploy Endpoint Verification](https://cloud.google.com/endpoint-verification/docs/quickstart)
 
-...in the user's personal certificate store. 
+## Configure Active Directory
+
+You can configure [certificate-based access](setup-caa-with-a-beyondcorp-certificate-access-policy)
+so that it used certificates issued by Active Directory Certificate Services.
+
+This guide describes how to configure Active Directory Certificate Services to issue
+suitable certificates.
+
+### Create a certificate template
 
 ...Although it's possible to let BeyondCorp use certificates from an existing template,
 it's best to create a dedicated template for BeyondCorp.
 
 ...use settings that help prevent the cert from being abused for other purposes such as Kerberos auth.
 
-### Create a certificate template
 
 To create the certificate template, do the following:
+
+![Certificate template](images/caa-adcs-template.png){ width="250", align=right }
 
 1.  Open the **Certificate Templates** MMC snap-in.
 1.  Right-click the **User** template and select **All tasks > Duplicate template**.
@@ -73,8 +68,6 @@ To create the certificate template, do the following:
 
 1.  On the **Subject name** tab, select **Build from Active Directory information** and 
     configure the following settings:
-    
-    ![Certificate template](images/caa-adcs-template.png){ width="250" align="right"}
 
     *   **Subject name format**: **Common name**
     *   **Include e-mail name in subject name**: **disabled**
@@ -108,7 +101,7 @@ To create the certificate template, do the following:
 
 
 
-### Issue the certificate
+### Issue the Certificate
 
 ...use the template to issue certs
 
@@ -129,7 +122,7 @@ You can now manually request certificates on domain-joined workstations by doing
     
 1.  Click **Enroll**.
 
-### Set up auto-enrollment
+### Set up certificate auto-enrollment
 
 You can automate the process of requesting certificates by configuring auto-enrollment
 using a group policy object (GPO):
@@ -160,31 +153,10 @@ a group policy refresh, run `gpupdate /force`.
 
 
 
-## Configure Chrome
-
-
-### Deploy Endpoint Verification
-
-To let Chrome participate in Chrome browser management and deploy a special browser extension, do the following:
-
-1.  Configure Chrome [to automatically enroll in Chrome browser management](https://support.google.com/chrome/a/answer/9301891?hl=en#zippy=%2Cenroll-browsers-on-windows).
-1.  Use Chrome browser management to [deploy Endpoint Verification](https://cloud.google.com/endpoint-verification/docs/quickstart).
-
 ### Configure certificate selection
-
-Chrome and IAP Desktop automatically determine the right certificate to use based on 
-the [Chrome `AutoSelectCertificateForUrls`](https://cloud.google.com/beyondcorp-enterprise/docs/enable-cba-enterprise-certificates#configure_users_browser_to_use_your_enterprise_certificate)
-policy. You can manage this policy using the [Chrome group policy templates :octicons-link-external-16:](https://support.google.com/chrome/a/answer/187202).
-
 
 
 ..automatically select the certificate
-
-
-!!!note
-    IAP Desktop does not support Chrome Browser Cloud Management. You must configure the
-    `AutoSelectCertificateForUrls` policy using a group policy.
-
 
 1.  Make sure you've [installed the Chrome policy templates](https://support.google.com/chrome/a/answer/187202?hl=en#zippy=%2Cwindows).
 1.  Open the **Group Policy Management Console** MMC snap-in.
@@ -220,9 +192,7 @@ you can do the following:
 1.  Verify that the **AutoSelectCertificateForUrls** policy is listed under **Chrome policies**.
 
 
-## Configure certificate-based access
-
-### Upload the CA certificate
+### Upload the certificate
 
 1.  In the Google Admin console, go to **Devices > Networks > Certificates**
 1.  Select the organizational unit for which you want to configure certificate-based authentication.
@@ -233,16 +203,3 @@ you can do the following:
     1.  Under **Certificate Authority**, set **Endpoint Verification** to **enabled**
     1.  Click **Add**.
     
-
-### Enable certificate-based access in IAP Desktop
-
-To enable certificate-based access in IAP Desktop, do the following:
-
-1.  In the application, select **Tools > Options**.
-1.  Select **Secure connections to Google Cloud by using certificate-based access**.    
-1.  Click **OK**.
-1.  Close IAP Desktop and launch it again.
-
-Optionally, [configure a group policy](group-policies.md)
-to automatically enable certificate-based access for your users.
-

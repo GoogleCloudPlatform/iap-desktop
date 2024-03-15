@@ -9,7 +9,7 @@ For a full list of settings that you can control using group policies, see [Grou
 To configure policies, you first have to install the IAP Desktop Policy Templates:
 
 1.  Download the `PolicyTemplates` package from the [downloads page](https://github.com/GoogleCloudPlatform/iap-desktop/releases).
-1.  Extract the package int the `PolicyDefinitions` folder of your 
+1.  Extract the package into the `PolicyDefinitions` folder of your 
     [central store :octicons-link-external-16:](https://docs.microsoft.com/en-us/troubleshoot/windows-server/group-policy/create-central-store-domain-controller).
 
 You can now use the IAP Desktop Policy Templates to configure policies:
