@@ -112,9 +112,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         private void FlyoutWindow_Deactivate(object sender, EventArgs e)
         {
+            //
             // Window lost focus -> automatically close to imitate a tooltip
             // behavior.
-
+            //
             Close();
         }
 

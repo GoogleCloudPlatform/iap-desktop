@@ -35,6 +35,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
     [ComVisible(false)]
@@ -404,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         // Factory and MVVM binding.
         //---------------------------------------------------------------------
 
-        private object? boundWindow;
+        private object boundWindow;
 
         /// <summary>
         /// Gets or creates a MVVM-enabled tool window and prepares it for viewing. 

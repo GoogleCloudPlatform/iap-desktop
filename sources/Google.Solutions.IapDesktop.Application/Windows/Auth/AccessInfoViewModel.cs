@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         // Actions.
         //---------------------------------------------------------------------
 
-        private void OpenDeviceCertificate(IWin32Window owner)
+        private void OpenDeviceCertificate(IWin32Window? owner)
         {
             //
             // NB. Use parent handle instead of this.View as the flyout
@@ -72,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             X509Certificate2UI.DisplayCertificate(
                 this.enrollment.Certificate,
-                owner.Handle);
+                owner?.Handle ?? IntPtr.Zero);
         }
 
-        public void OpenDeviceCertificateDetails(IWin32Window owner)
+        public void OpenDeviceCertificateDetails(IWin32Window? owner)
         {
             Debug.Assert(owner != null);
             owner = owner.ExpectNotNull(nameof(owner));

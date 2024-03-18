@@ -39,14 +39,14 @@ namespace Google.Solutions.Mvvm.Binding
     {
         private T value;
 
-        public bool HasValue
+        public readonly bool HasValue
         {
             get => this.value != null;
         }
 
         public T Value
         {
-            get 
+            readonly get 
             {
                 if (this.value == null)
                 {
@@ -72,7 +72,8 @@ namespace Google.Solutions.Mvvm.Binding
         {
             return value.Value;
         }
-        public override string ToString()
+
+        public readonly override string ToString()
         {
             if (!this.HasValue)
             {

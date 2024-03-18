@@ -219,6 +219,8 @@ dotnet_style_prefer_conditional_expression_over_return = true:silent
 dotnet_style_explicit_tuple_names = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
 
+# 	Null check can be simplified (if null check)
+dotnet_diagnostic.IDE0270.severity = none
 
 # VSTHRD103: Call async methods when in an async method
 dotnet_diagnostic.VSTHRD103.severity = suggestion
