@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Security;
+using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
 using System.Security;
@@ -30,11 +31,14 @@ namespace Google.Solutions.Settings.ComponentModel
     /// Exposes a SecureString-typed setting as a masked
     /// property in the .NET component model.
     /// </summary>
-    public class MaskedSettingDescriptor : SettingDescriptor<SecureString>
+    public class MaskedSettingDescriptor : SettingDescriptor
     {
+        private readonly ISetting<SecureString> setting;
+
         public MaskedSettingDescriptor(ISetting<SecureString> setting)
             : base(setting)
         {
+            this.setting = setting.ExpectNotNull(nameof(setting));
         }
 
         public override Type PropertyType
@@ -52,7 +56,7 @@ namespace Google.Solutions.Settings.ComponentModel
 
         public override object GetValue(object component)
         {
-            return this.Setting.IsDefault
+            return this.setting.IsDefault
                 ? null
                 : "********";
         }
@@ -70,7 +74,7 @@ namespace Google.Solutions.Settings.ComponentModel
             }
             else
             {
-                this.Setting.Value = SecureStringExtensions.FromClearText((string)value);
+                this.setting.Value = SecureStringExtensions.FromClearText((string)value);
             }
         }
     }

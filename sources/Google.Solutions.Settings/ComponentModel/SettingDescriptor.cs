@@ -32,14 +32,14 @@ namespace Google.Solutions.Settings.ComponentModel
     /// This class can be used to expose one or more settings in a
     /// PropertyGrid.
     /// </summary>
-    public class SettingDescriptor<T> : PropertyDescriptor
+    public class SettingDescriptor : PropertyDescriptor
     {
-        protected ISetting<T> Setting { get; }
+        private readonly IAnySetting setting;
 
-        public SettingDescriptor(ISetting<T> setting)
+        public SettingDescriptor(ISetting setting)
             : base(setting.Key, null)
         {
-            this.Setting = setting.ExpectNotNull(nameof(setting));
+            this.setting = (IAnySetting)setting.ExpectNotNull(nameof(setting));
         }
 
         //---------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override string Name
         {
-            get => this.Setting.Key;
+            get => this.setting.Key;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override string DisplayName
         {
-            get => this.Setting.DisplayName;
+            get => this.setting.DisplayName;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override string Description
         {
-            get => this.Setting.Description;
+            get => this.setting.Description;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override string Category
         {
-            get => this.Setting.Category;
+            get => this.setting.Category;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override bool IsBrowsable
         {
-            get => this.Setting.DisplayName != null;
+            get => this.setting.DisplayName != null;
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override Type ComponentType
         {
-            get => typeof(ISetting<T>);
+            get => typeof(ISetting);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override bool IsReadOnly
         {
-            get => this.Setting.IsReadOnly;
+            get => this.setting.IsReadOnly;
         }
 
         /// <summary>
@@ -107,37 +107,33 @@ namespace Google.Solutions.Settings.ComponentModel
         /// </summary>
         public override Type PropertyType
         {
-            get => this.Setting.ValueType;
+            get => this.setting.ValueType;
         }
 
         public override bool CanResetValue(object component)
         {
-            Debug.Assert(component == this.Setting);
+            Debug.Assert(component == this.setting);
             return true;
         }
 
         public override object GetValue(object component)
         {
-            Debug.Assert(component == this.Setting);
-            return this.Setting.AnyValue;
+            return this.setting.AnyValue;
         }
 
         public override void ResetValue(object component)
         {
-            Debug.Assert(component == this.Setting);
-            this.Setting.Reset();
+            this.setting.Reset();
         }
 
         public override void SetValue(object component, object value)
         {
-            Debug.Assert(component == this.Setting);
-            this.Setting.AnyValue = value;
+            this.setting.AnyValue = value;
         }
 
         public override bool ShouldSerializeValue(object component)
         {
-            Debug.Assert(component == this.Setting);
-            return !this.Setting.IsDefault;
+            return !this.setting.IsDefault;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
                 .Empty()
                 .Read<string>("key", "display name", "description", "category", "default");
 
-            var descriptor = new SettingDescriptor<string>(setting);
+            var descriptor = new SettingDescriptor(setting);
 
             Assert.AreEqual("key", descriptor.Name);
             Assert.AreEqual("display name", descriptor.DisplayName);
@@ -44,7 +44,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             Assert.IsTrue(descriptor.IsBrowsable);
             Assert.IsFalse(descriptor.IsReadOnly);
 
-            Assert.AreEqual(typeof(ISetting<string>), descriptor.ComponentType);
+            Assert.AreEqual(typeof(ISetting), descriptor.ComponentType);
             Assert.AreEqual(typeof(string), descriptor.PropertyType);
         }
 
@@ -55,7 +55,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
                 .Empty()
                 .Read<string>("key", null, null, null, "default");
 
-            var descriptor = new SettingDescriptor<string>(setting);
+            var descriptor = new SettingDescriptor(setting);
 
             Assert.AreEqual("key", descriptor.Name);
             Assert.IsNull(descriptor.DisplayName);
@@ -73,7 +73,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
                 .Read<string>("key", "display name", "description", "category", "default");
 
 
-            var descriptor = new SettingDescriptor<string>(setting);
+            var descriptor = new SettingDescriptor(setting);
             
             //
             // Set value.

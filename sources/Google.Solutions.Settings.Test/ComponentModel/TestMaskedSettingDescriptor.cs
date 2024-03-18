@@ -21,7 +21,6 @@
 
 using Google.Solutions.Settings.ComponentModel;
 using NUnit.Framework;
-using System.Net.Sockets;
 using System.Security;
 
 namespace Google.Solutions.Settings.Test.ComponentModel

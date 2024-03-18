@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Security;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
+using Google.Solutions.Settings.ComponentModel;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
                     {
                         if (s is ISetting<SecureString> secureStringSetting)
                         {
-                            return new SecureStringSettingDescriptor(secureStringSetting);
+                            return new MaskedSettingDescriptor(secureStringSetting);
                         }
                         else
                         {
@@ -66,95 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
         }
 
         public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-            => GetProperties();
-
-        private class SettingDescriptor : PropertyDescriptor
         {
-            private readonly IAnySetting setting;
-
-            public SettingDescriptor(IAnySetting setting)
-                : base(setting.Key, null)
-            {
-                this.setting = setting;
-            }
-
-            public override string Name => this.setting.Key;
-            public override string DisplayName => this.setting.DisplayName;
-            public override string Description => this.setting.Description;
-            public override string Category => this.setting.Category;
-            public override bool IsBrowsable => true;
-
-            public override Type ComponentType => null;
-
-            public override bool IsReadOnly => false;
-
-            public override Type PropertyType => this.setting.ValueType;
-
-            public override bool CanResetValue(object component)
-            {
-                return true;
-            }
-
-            public override object GetValue(object component)
-            {
-                return this.setting.AnyValue;
-            }
-
-            public override void ResetValue(object component)
-            {
-                this.setting.Reset();
-            }
-
-            public override void SetValue(object component, object value)
-            {
-                this.setting.AnyValue = value;
-            }
-
-            public override bool ShouldSerializeValue(object component)
-            {
-                return !this.setting.IsDefault;
-            }
-        }
-
-        private class SecureStringSettingDescriptor : SettingDescriptor
-        {
-            private readonly ISetting<SecureString> setting;
-
-            public SecureStringSettingDescriptor(ISetting<SecureString> setting)
-                : base(setting)
-            {
-                this.setting = setting;
-            }
-
-            public override Type PropertyType => typeof(string);
-
-            // Mask value as password.
-            public override AttributeCollection Attributes
-                => new AttributeCollection(new PasswordPropertyTextAttribute(true));
-
-            public override object GetValue(object component)
-            {
-                return this.setting.IsDefault
-                    ? null
-                    : "********";
-            }
-
-            public override void SetValue(object component, object value)
-            {
-                //
-                // NB. Avoid converting null to a SecureString as this results
-                // in an empty string - which would then be treated as non-default.
-                //
-
-                if (value == null)
-                {
-                    ResetValue(component);
-                }
-                else
-                {
-                    this.setting.Value = SecureStringExtensions.FromClearText((string)value);
-                }
-            }
+            return GetProperties();
         }
     }
 }
