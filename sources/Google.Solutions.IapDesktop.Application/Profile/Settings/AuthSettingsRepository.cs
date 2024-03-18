@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         private class CredentialBlob
         {
             /// <summary>
-            /// OAuth refres token.
+            /// OAuth refresh token.
             /// </summary>
             [JsonProperty("refresh_token")]
             public string RefreshToken { get; }
