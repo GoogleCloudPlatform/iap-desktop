@@ -104,11 +104,10 @@ nav:
     - 'Secure access to your VMs':
       - 'Connect to Google Cloud': connect-to-google-cloud.md
       - 'Control access to VMs': control-access-to-vms.md
-      - 'Use certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
+      - 'Set up certificate-based access': setup-caa-with-a-beyondcorp-certificate-access-policy.md
     - 'Manage IAP Desktop across workstations':
       - 'Deploy automatically': 'group-policies-deployment.md'
       - 'Customize IAP Desktop': 'group-policies.md'
-      - 'Deploy certificates': 'issue-certificates.md'
     - 'Integrate IAP Desktop':
       - 'Launch from a web browser': 'connect-by-url.md'
   - 'Reference':
