@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
     [SkipCodeCoverage("UI code")]
     public partial class NetworkOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private NetworkOptionsViewModel? viewModel;
+        private Bound<NetworkOptionsViewModel> viewModel;
 
         public NetworkOptionsSheet()
         {
@@ -40,74 +40,74 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
         public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
         {
-            this.viewModel = (NetworkOptionsViewModel)viewModelBase;
+            this.viewModel.Value = (NetworkOptionsViewModel)viewModelBase;
 
             this.proxyBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyEditable,
                 bindingContext);
 
             this.useSystemRadioButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsSystemProxyServerEnabled,
                 bindingContext);
             this.openProxyControlPanelAppletButton.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsSystemProxyServerEnabled,
                 bindingContext);
 
             this.useCustomRadioButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsCustomProxyServerEnabled,
                 bindingContext);
             this.addressLabel.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsCustomProxyServerEnabled,
                 bindingContext);
             this.proxyServerTextBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsCustomProxyServerEnabled,
                 bindingContext);
             this.proxyServerTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.ProxyServer,
                 bindingContext);
             this.proxyPortTextBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsCustomProxyServerEnabled,
                 bindingContext);
             this.proxyPortTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.ProxyPort,
                 bindingContext);
 
             this.usePacRadioButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAutoConfigurationEnabled,
                 bindingContext);
             this.pacAddressLabel.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAutoConfigurationEnabled,
                 bindingContext);
             this.proxyPacTextBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAutoConfigurationEnabled,
                 bindingContext);
             this.proxyPacTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.ProxyAutoconfigurationAddress,
                 bindingContext);
 
@@ -117,44 +117,44 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             this.proxyAuthCheckBox.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAuthenticationEnabled,
                 bindingContext);
             this.proxyAuthCheckBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsCustomProxyServerOrProxyAutoConfigurationEnabled,
                 bindingContext);
 
             this.proxyAuthUsernameTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.ProxyUsername,
                 bindingContext);
             this.proxyAuthUsernameTextBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAuthenticationEnabled,
                 bindingContext);
             this.proxyAuthUsernameLabel.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAuthenticationEnabled,
                 bindingContext);
 
             this.proxyAuthPasswordTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.ProxyPassword,
                 bindingContext);
             this.proxyAuthPasswordTextBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAuthenticationEnabled,
                 bindingContext);
             this.proxyAuthPasswordLabel.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                this.viewModel.Value,
                 m => m.IsProxyAuthenticationEnabled,
                 bindingContext);
         }
@@ -164,12 +164,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         //---------------------------------------------------------------------
 
         private void openProxyControlPanelAppletButton_Click(object sender, System.EventArgs e)
-            => this.viewModel?.OpenProxyControlPanelApplet();
+        {
+            this.viewModel.Value.OpenProxyControlPanelApplet();
+        }
 
         private void proxyPortTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) &&
-                !this.viewModel.IsValidProxyPort(this.proxyPortTextBox.Text + e.KeyChar))
+                !this.viewModel.Value.IsValidProxyPort(this.proxyPortTextBox.Text + e.KeyChar))
             {
                 // Invalid input -> ignore.
                 e.Handled = true;

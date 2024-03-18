@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
     public abstract partial class PropertiesInspectorViewBase
         : ProjectExplorerTrackingToolWindow<IPropertiesInspectorViewModel>
     {
-        private IPropertiesInspectorViewModel viewModel;
+        private Bound<IPropertiesInspectorViewModel> viewModel;
 
         public PropertiesInspectorViewBase(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockRightAutoHide)
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             IPropertiesInspectorViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
             this.propertyGrid.EnableRichTextDescriptions();
 
             this.panel.BindReadonlyObservableProperty(
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 
         private void SetInspectedObject(object? obj)
         {
-            Debug.Assert(this.viewModel != null, "Bind has been called");
+            Debug.Assert(this.viewModel.HasValue, "Bind has been called");
 
             //
             // NB. The PropertyGrid displays a snapshot, if any of the
@@ -123,9 +123,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!this.InvokeRequired, "running on UI thread");
-            Debug.Assert(this.viewModel != null, "Bind has been called");
+            Debug.Assert(this.viewModel.HasValue, "Bind has been called");
 
-            await this.viewModel.SwitchToModelAsync(node)
+            await this.viewModel.Value.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            this.viewModel.SaveChanges();
+            this.viewModel.Value.SaveChanges();
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
                 // The grid does not notice this change, so we need to explicitly
                 // save and refresh.
 
-                this.viewModel.SaveChanges();
+                this.viewModel.Value.SaveChanges();
                 this.propertyGrid.Refresh();
             }
         }
