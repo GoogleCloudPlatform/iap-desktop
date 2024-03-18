@@ -268,7 +268,7 @@ namespace Google.Solutions.Settings.Test
                     Toppings.None);
 
                 setting.Value = Toppings.None;
-                setting.AnyValue = null;
+                ((IAnySetting)setting).AnyValue = null;
 
                 Assert.AreEqual(Toppings.None, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
@@ -280,7 +280,7 @@ namespace Google.Solutions.Settings.Test
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read(
+                var setting = (IAnySetting)key.Read(
                     "test",
                     "title",
                     "description",

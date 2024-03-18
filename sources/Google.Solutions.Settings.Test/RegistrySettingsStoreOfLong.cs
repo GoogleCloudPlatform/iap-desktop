@@ -286,7 +286,7 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0L, 100L));
 
                 setting.Value = 1L;
-                setting.AnyValue = null;
+                ((IAnySetting)setting).AnyValue = null;
 
                 Assert.AreEqual(17L, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
@@ -298,7 +298,7 @@ namespace Google.Solutions.Settings.Test
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read(
+                var setting = (IAnySetting)key.Read(
                     "test",
                     "title",
                     "description",

@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
                         }
                         else
                         {
-                            return new SettingDescriptor((IAnySetting)s);
+                            return new SettingDescriptor(s);
                         }
                     })
                     .ToArray());

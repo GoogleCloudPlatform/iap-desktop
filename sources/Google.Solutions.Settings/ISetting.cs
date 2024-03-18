@@ -79,20 +79,10 @@ namespace Google.Solutions.Settings
         bool IsReadOnly { get; }
     }
 
-    public interface IAnySetting : ISetting // TODO: make internal
-    {
-        /// <summary>
-        /// Assign value, converting data types if necessary.
-        /// </summary>
-        object AnyValue { get; set; }
-
-        /// <summary>
-        /// Returns the type of setting.
-        /// </summary>
-        Type ValueType { get; }
-    }
-
-    public interface ISetting<T> : ISetting, IAnySetting
+    /// <summary>
+    /// Typed setting.
+    /// </summary>
+    public interface ISetting<T> : ISetting
     {
         /// <summary>
         /// Return current value of setting.
@@ -103,6 +93,23 @@ namespace Google.Solutions.Settings
         /// Returns the default value, which might be inherited.
         /// </summary>
         T DefaultValue { get; }
+    }
+
+    /// <summary>
+    /// Internal helper interface that allows automatic
+    /// data type conversion.
+    /// </summary>
+    internal interface IAnySetting : ISetting
+    {
+        /// <summary>
+        /// Assign value, converting data types if necessary.
+        /// </summary>
+        object AnyValue { get; set; }
+
+        /// <summary>
+        /// Returns the type of setting.
+        /// </summary>
+        Type ValueType { get; }
     }
 
     public static class SecureStringSettingExtensions

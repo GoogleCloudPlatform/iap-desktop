@@ -311,7 +311,7 @@ namespace Google.Solutions.Settings.Test
                     Predicate.InRange(0, 100));
 
                 setting.Value = 1;
-                setting.AnyValue = null;
+                ((IAnySetting)setting).AnyValue = null;
 
                 Assert.AreEqual(17, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
@@ -323,7 +323,7 @@ namespace Google.Solutions.Settings.Test
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read(
+                var setting = (IAnySetting)key.Read(
                     "test",
                     "title",
                     "description",
