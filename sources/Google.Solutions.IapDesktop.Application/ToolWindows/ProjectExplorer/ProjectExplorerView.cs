@@ -440,7 +440,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             }
         }
 
-        public IProjectModelNode SelectedNode => this.viewModel.SelectedNode?.ModelNode;
+        public IProjectModelNode? SelectedNode => this.viewModel.SelectedNode?.ModelNode;
 
         internal class NodeTreeView : BindableTreeView<ProjectExplorerViewModel.ViewModelNode>
         { }

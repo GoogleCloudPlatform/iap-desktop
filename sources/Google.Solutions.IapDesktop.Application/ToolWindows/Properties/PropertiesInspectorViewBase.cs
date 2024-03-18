@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
             };
         }
 
-        private void SetInspectedObject(object obj)
+        private void SetInspectedObject(object? obj)
         {
             Debug.Assert(this.viewModel != null, "Bind has been called");
 

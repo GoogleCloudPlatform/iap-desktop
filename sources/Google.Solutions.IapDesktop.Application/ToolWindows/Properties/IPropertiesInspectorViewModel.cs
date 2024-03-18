@@ -27,8 +27,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Properties
 {
     public interface IPropertiesInspectorViewModel
     {
-        IObservableProperty<string> InformationText { get; }
-        IObservableProperty<object> InspectedObject { get; }
+        IObservableProperty<string?> InformationText { get; }
+        IObservableProperty<object?> InspectedObject { get; }
         IObservableProperty<string> WindowTitle { get; }
 
         Task SwitchToModelAsync(IProjectModelNode node);
