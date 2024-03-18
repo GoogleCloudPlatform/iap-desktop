@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         // Factory and MVVM binding.
         //---------------------------------------------------------------------
 
-        private object boundWindow;
+        private object? boundWindow;
 
         /// <summary>
         /// Gets or creates a MVVM-enabled tool window and prepares it for viewing. 
