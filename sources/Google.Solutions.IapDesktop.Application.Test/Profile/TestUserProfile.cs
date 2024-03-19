@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => UserProfile.CreateProfile(CreateInstall(), null));
+                () => UserProfile.CreateProfile(CreateInstall(), null!));
         }
 
         [Test]

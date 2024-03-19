@@ -409,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "inaccessible-1"),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", null));
+                .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", new Exception()));
 
             this.projectRepository.AddProject(new ProjectLocator("project-2"));
             this.projectRepository.AddProject(new ProjectLocator("inaccessible-1"));
@@ -715,7 +715,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public async Task WhenSessionEventFired_ThenIsConnectedIsUpdated()
         {
             // Capture event handlers that the view model will register.
-            Func<SessionStartedEvent, Task> sessionStartedEventHandler = null;
+            Func<SessionStartedEvent, Task>? sessionStartedEventHandler = null;
             this.eventServiceMock.Setup(e => e.Subscribe(
                     It.IsAny<Func<SessionStartedEvent, Task>>()))
                 .Callback<Func<SessionStartedEvent, Task>>(e => sessionStartedEventHandler = e);
@@ -739,21 +739,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
-            await sessionStartedEventHandler(
+            await sessionStartedEventHandler!(
                     new SessionStartedEvent((InstanceLocator)instances[0].Locator))
                 .ConfigureAwait(true);
 
             Assert.IsTrue(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
-            await sessionEndedEventHandler(
+            await sessionEndedEventHandler!(
                     new SessionEndedEvent((InstanceLocator)instances[0].Locator))
                 .ConfigureAwait(true);
 
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
-            await sessionStartedEventHandler(
+            await sessionStartedEventHandler!(
                     new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")))
                 .ConfigureAwait(true);
 
@@ -818,7 +818,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenInstanceStateChanges_ThenProjectIsReloaded()
         {
-            Func<InstanceStateChangedEvent, Task> eventHandler = null;
+            Func<InstanceStateChangedEvent, Task>? eventHandler = null;
             this.eventServiceMock.Setup(e => e.Subscribe(
                     It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
                 .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
@@ -830,7 +830,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             Assert.IsNotNull(eventHandler);
 
-            await eventHandler(new InstanceStateChangedEvent(
+            await eventHandler!(new InstanceStateChangedEvent(
                 new InstanceLocator(
                     SampleProjectId,
                     SampleLinuxInstanceInZone1.Zone,

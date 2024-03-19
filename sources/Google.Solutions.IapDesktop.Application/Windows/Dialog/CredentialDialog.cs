@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// Prompt for Windows credential using the CredUI API.
         /// </summary>
         DialogResult PromptForWindowsCredentials(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             string message,
             AuthenticationPackage package,
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// Prompt for Windows credential using the CredUI API.
         /// </summary>
         DialogResult PromptForWindowsCredentials(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             string message,
             AuthenticationPackage package,
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// Prompt for a username. There's no CredUI counterpart to this.
         /// </summary>
         DialogResult PromptForUsername(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             string message,
             out string? username);
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.themeService = themeService.ExpectNotNull(nameof(themeService));
         }
         public DialogResult PromptForWindowsCredentials(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             string message,
             AuthenticationPackage package,
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         }
 
         public DialogResult PromptForWindowsCredentials(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             string message,
             AuthenticationPackage package,
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         }
 
         public DialogResult PromptForUsername(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             string message,
             out string? username)

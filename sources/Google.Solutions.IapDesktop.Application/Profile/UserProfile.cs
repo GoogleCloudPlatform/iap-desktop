@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
             this.SettingsKey = settingsKey;
         }
 
-        public static bool IsValidProfileName(string name)
+        public static bool IsValidProfileName(string? name)
         {
             return name != null &&
                 !name.Equals(DefaultProfileName, StringComparison.OrdinalIgnoreCase) &&
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// </summary>
         public static UserProfile OpenProfile(
             IInstall install,
-            string name)
+            string? name)
         {
             install.ExpectNotNull(nameof(install));
             if (name != null && !IsValidProfileName(name))

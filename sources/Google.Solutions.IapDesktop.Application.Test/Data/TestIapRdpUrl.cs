@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         [Test]
         public void WhenStringIsNull_ThenFromStringThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => IapRdpUrl.FromString(null));
+            Assert.Throws<ArgumentNullException>(() => IapRdpUrl.FromString(null!));
         }
 
         [Test]

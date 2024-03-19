@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.DetailsUrl).Returns(detailsUrl);
 
-            string downloadUrl = null;
+            string? downloadUrl = null;
             release
                 .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
                 .Returns(false);
@@ -303,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         public void WhenReleaseHasNoSurvey_ThenPromptForActionReturns()
         {
             var release = new Mock<IRelease>();
-            release.SetupGet(r => r.Survey).Returns((IReleaseSurvey)null);
+            release.SetupGet(r => r.Survey).Returns((IReleaseSurvey?)null);
 
             var dialog = new Mock<ITaskDialog>();
 
@@ -458,7 +458,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
 
-            command.Execute(null, CancellationToken.None);
+            command.Execute(
+                new Mock<IMainWindow>().Object, 
+                CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(
                 ReleaseFeedOptions.None,
@@ -478,7 +480,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
 
-            command.Execute(null, CancellationToken.None);
+            command.Execute(
+                new Mock<IMainWindow>().Object, 
+                CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(
                 ReleaseFeedOptions.IncludeCanaryReleases,
