@@ -193,7 +193,7 @@ namespace Google.Solutions.Settings.Test
 
                 key.BackingKey.DeleteValue("test");
 
-                setting.AnyValue = null;
+                ((IAnySetting)setting).AnyValue = null;
                 key.Write(setting);
 
                 Assert.IsNull(key.BackingKey.GetValue("test"));
@@ -261,7 +261,7 @@ namespace Google.Solutions.Settings.Test
                     false);
 
                 setting.Value = true;
-                setting.AnyValue = null;
+                ((IAnySetting)setting).AnyValue = null;
 
                 Assert.AreEqual(false, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
@@ -273,7 +273,7 @@ namespace Google.Solutions.Settings.Test
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read(
+                var setting = (IAnySetting)key.Read(
                     "test",
                     "title",
                     "description",

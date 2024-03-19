@@ -300,7 +300,7 @@ namespace Google.Solutions.Settings.Test
         {
             using (var key = CreateSettingsKey())
             {
-                var setting = key.Read<SecureString>(
+                var setting = (IAnySetting)key.Read<SecureString>(
                     "test",
                     "title",
                     "description",
