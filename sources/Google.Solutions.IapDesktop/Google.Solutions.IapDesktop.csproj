@@ -26,14 +26,6 @@
     <PackageReference Include="Google.Apis.Compute.v1" Version="1.66.0.3286" />
     <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-
-    <!-- 
-      These packages contain tools and we must use specific versions of them. 
-      Comment out these references before running Update-Package.
-    -->
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="5.1.23" />
-    <PackageReference Include="WiX" Version="3.11.2" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
