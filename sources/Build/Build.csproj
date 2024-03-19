@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Google.Solutions.IapDesktop.props" />
   
-  <!-- The sole purpose of this project is to pull in build tools -->
+  <!-- NB. The sole purpose of this project is to pull in build tools. -->
+  
   <PropertyGroup>
     <!-- Include net6.0 because some tools don't work with netfx -->
-    <TargetFrameworks>$(DefaultTargetFramework);net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>$(DefaultTargetFramework);net6.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <!-- 
