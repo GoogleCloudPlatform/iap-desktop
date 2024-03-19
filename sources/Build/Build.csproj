@@ -2,16 +2,16 @@
   <Import Project="..\Google.Solutions.IapDesktop.props" />
   
   <!-- NB. The sole purpose of this project is to pull in build tools. -->
-  
+
   <PropertyGroup>
-    <!-- Include net6.0 because some tools don't work with netfx -->
-    <TargetFrameworks>$(DefaultTargetFramework);net6.0</TargetFrameworks>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <!-- 
       These packages contain tools and we must use specific versions of them. 
-      Comment out these references before running Update-Package.
-    -->
+      Comment out these references before running a solution-wide Update-Package.
+    -->    
+    
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="5.1.23" />
     <PackageReference Include="WiX" Version="3.11.2" />
