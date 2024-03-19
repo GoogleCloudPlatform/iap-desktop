@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -48,12 +49,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         // Ctor.
         //---------------------------------------------------------------------
 
-        public DocumentWindow()
+        #pragma warning disable CS8618 // Uninitialzed, non-nullable fields
+        protected DocumentWindow()
         {
             Debug.Assert(
                 this.DesignMode,
                 "Constructor is for designer only");
         }
+        #pragma warning restore CS8618
 
         public DocumentWindow(
             IServiceProvider serviceProvider)

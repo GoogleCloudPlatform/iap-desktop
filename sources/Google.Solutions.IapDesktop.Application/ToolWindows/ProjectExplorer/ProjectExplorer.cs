@@ -30,11 +30,25 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
     public interface IProjectExplorer
     {
+        /// <summary>
+        /// Open the dialog to add a project.
+        /// </summary>
+        /// <returns></returns>
         Task ShowAddProjectDialogAsync();
 
-        IProjectModelNode SelectedNode { get; }
+        /// <summary>
+        /// Return the currently selected node, if any.
+        /// </summary>
+        IProjectModelNode? SelectedNode { get; }
 
+        /// <summary>
+        /// Return the context commands for the node context menu.
+        /// </summary>
         ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+
+        /// <summary>
+        /// Return the context commands for the window toolbar.
+        /// </summary>
         ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
     }
 
@@ -50,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             this.view = window.Bind();
         }
 
-        public IProjectModelNode SelectedNode
+        public IProjectModelNode? SelectedNode
             => this.view.SelectedNode;
 
         public ICommandContainer<IProjectModelNode> ContextMenuCommands

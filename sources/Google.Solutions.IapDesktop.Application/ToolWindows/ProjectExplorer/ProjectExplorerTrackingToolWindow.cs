@@ -30,6 +30,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
     [ComVisible(false)]

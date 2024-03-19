@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// <summary>
         /// Value provided by user.
         /// </summary>
-        public string Value { get; private set; }
+        public string? Value { get; private set; }
 
         public SystemInputDialog(InputDialogParameters parameters)
         {
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         private static void ValidateIsNullOrEmpty(
             string input,
             out bool valid,
-            out string warning)
+            out string? warning)
         {
             valid = !string.IsNullOrEmpty(input);
             warning = null;

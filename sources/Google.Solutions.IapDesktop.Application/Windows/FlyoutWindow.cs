@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     {
         public Color BorderColor { get; set; } = SystemColors.ActiveBorder;
 
-        public IWin32Window FlyoutOwner { get; private set; }
+        public IWin32Window? FlyoutOwner { get; private set; }
 
         protected FlyoutWindow()
         {
@@ -112,9 +112,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         private void FlyoutWindow_Deactivate(object sender, EventArgs e)
         {
+            //
             // Window lost focus -> automatically close to imitate a tooltip
             // behavior.
-
+            //
             Close();
         }
 

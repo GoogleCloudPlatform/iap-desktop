@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
     public class HttpProxyAdapter : IHttpProxyAdapter
     {
         private readonly object configLock = new object();
-        private static readonly IWebProxy defaultProxy;
+        private static readonly IWebProxy? defaultProxy;
 
         static HttpProxyAdapter()
         {
@@ -79,8 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
         public void ActivateCustomProxySettings(
             Uri proxyAddress,
-            IEnumerable<string> bypassList,
-            ICredentials credentials)
+            IEnumerable<string>? bypassList,
+            ICredentials? credentials)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 proxyAddress,
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
         public void ActivateProxyAutoConfigSettings(
             Uri pacAddress,
-            ICredentials credentials)
+            ICredentials? credentials)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
                 pacAddress,
@@ -158,13 +158,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
         public void ActivateSettings(IApplicationSettings settings)
         {
-            NetworkCredential GetProxyCredential()
+            NetworkCredential? GetProxyCredential()
             {
                 if (!string.IsNullOrEmpty(settings.ProxyUsername.Value))
                 {
                     return new NetworkCredential(
                         settings.ProxyUsername.Value,
-                        (SecureString)settings.ProxyPassword.Value);
+                        settings.ProxyPassword.Value);
                 }
                 else
                 {

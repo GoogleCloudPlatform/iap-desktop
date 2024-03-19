@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             var parameters = eventData.PayloadNames
                 .Zip(
                     eventData.Payload,
-                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString()))
+                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString() ?? string.Empty))
                 .ToDictionary();
 
             //

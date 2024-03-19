@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics;
 
 #pragma warning disable CA1822 // Mark members as static
+#nullable disable
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {

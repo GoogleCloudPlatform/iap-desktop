@@ -21,9 +21,11 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
@@ -51,27 +53,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.PrivateServiceConnectText = route.UsePrivateServiceConnect
                 ? "Enabled" : "Disabled";
 
-            switch (this.enrollment.State)
+            this.DeviceCertificateLinkText = this.enrollment.State switch
             {
-                case DeviceEnrollmentState.Disabled:
-                    this.DeviceCertificateLinkText = "Disabled";
-                    break;
-
-                case DeviceEnrollmentState.NotEnrolled:
-                    this.DeviceCertificateLinkText = "Error";
-                    break;
-
-                case DeviceEnrollmentState.Enrolled:
-                    this.DeviceCertificateLinkText = "Enabled";
-                    break;
-            }
+                DeviceEnrollmentState.Disabled => "Disabled",
+                DeviceEnrollmentState.Enrolled => "Enabled",
+                _ => "Error",
+            };
         }
 
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
-        private void OpenDeviceCertificate(IWin32Window owner)
+        private void OpenDeviceCertificate(IWin32Window? owner)
         {
             //
             // NB. Use parent handle instead of this.View as the flyout
@@ -79,12 +73,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             X509Certificate2UI.DisplayCertificate(
                 this.enrollment.Certificate,
-                owner.Handle);
+                owner?.Handle ?? IntPtr.Zero);
         }
 
-        public void OpenDeviceCertificateDetails(IWin32Window owner)
+        public void OpenDeviceCertificateDetails(IWin32Window? owner)
         {
             Debug.Assert(owner != null);
+            owner = owner.ExpectNotNull(nameof(owner));
 
             switch (this.enrollment.State)
             {

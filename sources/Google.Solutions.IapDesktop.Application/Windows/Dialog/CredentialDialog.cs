@@ -44,8 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            NetworkCredential inputCredential,
-            out NetworkCredential credential);
+            NetworkCredential? inputCredential,
+            out NetworkCredential? credential);
 
         /// <summary>
         /// Prompt for Windows credential using the CredUI API.
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            out NetworkCredential credential);
+            out NetworkCredential? credential);
 
         /// <summary>
         /// Prompt for a username. There's no CredUI counterpart to this.
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             IWin32Window owner,
             string caption,
             string message,
-            out string username);
+            out string? username);
     }
 
     public enum AuthenticationPackage
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            out NetworkCredential credential)
+            out NetworkCredential? credential)
         {
             return PromptForWindowsCredentials(
                 owner,
@@ -104,8 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             AuthenticationPackage package,
-            NetworkCredential inputCredential,
-            out NetworkCredential credential)
+            NetworkCredential? inputCredential,
+            out NetworkCredential? credential)
         {
             var uiInfo = new NativeMethods.CREDUI_INFO()
             {
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             IWin32Window owner,
             string caption,
             string message,
-            out string username)
+            out string? username)
         {
             using (var dialog = new SystemInputDialog(
                 new InputDialogParameters()
@@ -377,9 +377,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             public static Lsa ConnectUntrusted()
             {
                 var status = NativeMethods.LsaConnectUntrusted(out var handle);
-                if (status == 0)
+                if (status == 0 && handle != null)
                 {
-                    Debug.Assert(handle != null);
                     return new Lsa(handle);
                 }
                 else

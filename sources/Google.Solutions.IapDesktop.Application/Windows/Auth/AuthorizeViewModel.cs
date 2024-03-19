@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         private readonly IRepository<IAccessSettings> accessSettings;
         private readonly UserAgent userAgent;
 
-        private CancellationTokenSource cancelCurrentSignin = null;
+        private CancellationTokenSource? cancelCurrentSignin = null;
 
         public AuthorizeViewModel(
             ServiceEndpoint<GaiaOidcClient> gaiaEndpoint,
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             Precondition.ExpectNotNull(this.ClientRegistrations, nameof(this.ClientRegistrations));
 
             OidcIssuer issuer;
-            WorkforcePoolProviderLocator providerLocator = null;
+            WorkforcePoolProviderLocator? providerLocator = null;
             if (this.accessSettings.GetSettings().WorkforcePoolProvider.Value
                 is var provider &&
                 !string.IsNullOrEmpty(provider) &&
@@ -156,9 +156,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
                 client = new WorkforcePoolClient(
                     this.stsEndpoint,
-                    this.DeviceEnrollment,
+                    this.DeviceEnrollment.ExpectNotNull(nameof(this.DeviceEnrollment)),
                     this.offlineStore,
-                    providerLocator,
+                    providerLocator!,
                     registration,
                     this.userAgent);
             }
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             {
                 client = new GaiaOidcClient(
                     this.gaiaEndpoint,
-                    this.DeviceEnrollment,
+                    this.DeviceEnrollment.ExpectNotNull(nameof(this.DeviceEnrollment)),
                     this.offlineStore,
                     registration,
                     this.userAgent);
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
             return new Authorization(
                 client,
-                this.DeviceEnrollment);
+                this.DeviceEnrollment.ExpectNotNull(nameof(this.DeviceEnrollment)));
         }
 
         //---------------------------------------------------------------------
@@ -184,17 +184,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         /// <summary>
         /// One or more requires scopes haven't been granted.
         /// </summary>
-        public EventHandler<RecoverableExceptionEventArgs> OAuthScopeNotGranted;
+        public EventHandler<RecoverableExceptionEventArgs>? OAuthScopeNotGranted;
 
         /// <summary>
         /// An error occurred that might be due to network misconfiguration.
         /// </summary>
-        public EventHandler<RecoverableExceptionEventArgs> NetworkError;
+        public EventHandler<RecoverableExceptionEventArgs>? NetworkError;
 
         /// <summary>
         /// User requested to show options.
         /// </summary>
-        public EventHandler<EventArgs> ShowOptions;
+        public EventHandler<EventArgs>? ShowOptions;
 
         //---------------------------------------------------------------------
         // Input properties.
@@ -203,13 +203,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         /// <summary>
         /// Device enrollment, must be initialized.
         /// </summary>
-        public IDeviceEnrollment DeviceEnrollment { get; set; }
+        public IDeviceEnrollment? DeviceEnrollment { get; set; }
 
         /// <summary>
         /// List of client registrations. There must be at least one
         /// registration for each supported issuer.
         /// </summary>
-        public IList<OidcClientRegistration> ClientRegistrations { get; set; }
+        public IList<OidcClientRegistration>? ClientRegistrations { get; set; }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         /// * If set to null, a new Authorization is created.
         /// * If non-null, a reauthorization is performed.
         /// </summary>
-        public IAuthorization Authorization { get; private set; }
+        public IAuthorization? Authorization { get; private set; }
 
         /// <summary>
         /// Reauthorize using an existing authorization object.
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         private void CancelSignIn()
         {
             Debug.Assert(this.cancelCurrentSignin != null);
-            this.cancelCurrentSignin.Cancel();
+            this.cancelCurrentSignin?.Cancel();
         }
 
         private Task TryLoadExistingAuthorizationAsync()

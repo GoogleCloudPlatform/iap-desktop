@@ -31,6 +31,8 @@ using Google.Solutions.Settings.Collection;
 using System;
 using System.Reflection;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class GeneralOptionsViewModel : OptionsViewModelBase<IApplicationSettings>

@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         DialogResult Prompt(
             IWin32Window owner,
             InputDialogParameters parameters,
-            out string input);
+            out string? input);
     }
 
     public struct InputDialogParameters
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public delegate void ValidationCallback(
             string input,
             out bool valid,
-            out string warning);
+            out string? warning);
     }
 
     public class InputDialog : IInputDialog
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public DialogResult Prompt(
             IWin32Window owner,
             InputDialogParameters parameters,
-            out string input)
+            out string? input)
         {
             parameters.ExpectValid();
 

@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             var completionSource = new TaskCompletionSource<T>();
             var cts = new CancellationTokenSource();
 
-            Exception exception = null;
+            Exception? exception = null;
 
             var feedback = this.host.ShowFeedback(jobDescription, cts);
 

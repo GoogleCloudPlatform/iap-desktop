@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal abstract class VSThemeRuleSetBase
     {
-        private static Bitmap listBackgroundImage;
+        private static Bitmap? listBackgroundImage;
 
         private readonly IconInverter darkModeIconInverter;
 
@@ -257,7 +257,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private void StyleDropDownButton(DropDownButton button)
         {
-            StyleToolStrip(button.Menu);
+            if (button.Menu != null)
+            {
+                StyleToolStrip(button.Menu);
+            }
         }
 
         private void StyleLabel(Label label)

@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// URL of VM to connect to (for browser integration).
         /// </summary>
-        public IapRdpUrl StartupUrl { get; set; } = null;
+        public IapRdpUrl? StartupUrl { get; set; } = null;
 
         /// <summary>
         /// Enable logging.
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Custom profile to load.
         /// </summary>
-        public string Profile { get; set; } = null;
+        public string? Profile { get; set; } = null;
 
         /// <summary>
         /// Launched after completion of an installation/upgrade.

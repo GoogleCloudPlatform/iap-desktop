@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         // IContextCommand.
         //---------------------------------------------------------------------
 
-        public virtual Image Image { get; set; } = null;
+        public virtual Image? Image { get; set; } = null;
 
         public virtual Keys ShortcutKeys { get; set; } = Keys.None;
 

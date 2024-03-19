@@ -6,7 +6,6 @@
     <Description>IAP Desktop</Description>
     
     <UseWindowsForms>True</UseWindowsForms>
-    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />

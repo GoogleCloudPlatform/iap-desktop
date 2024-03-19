@@ -24,6 +24,8 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class AppearanceOptionsViewModel : OptionsViewModelBase<IThemeSettings>

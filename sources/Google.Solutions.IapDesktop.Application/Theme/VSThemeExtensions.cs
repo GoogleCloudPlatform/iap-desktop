@@ -18,6 +18,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Interop;
@@ -90,12 +91,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private class MinimizableFloatWindow : FloatWindow
         {
-            private readonly IControlTheme theme;
+            private readonly IControlTheme? theme;
 
             public MinimizableFloatWindow(
                 DockPanel dockPanel,
                 DockPane pane,
-                IControlTheme theme)
+                IControlTheme? theme)
                 : base(dockPanel, pane)
             {
                 this.theme = theme;
@@ -105,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 DockPanel dockPanel,
                 DockPane pane,
                 Rectangle bounds,
-                IControlTheme theme)
+                IControlTheme? theme)
                 : base(dockPanel, pane, bounds)
             {
                 this.theme = theme;
@@ -200,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         internal class FloatWindowFactory : DockPanelExtender.IFloatWindowFactory
         {
-            public IControlTheme Theme { get; set; }
+            public IControlTheme? Theme { get; set; }
 
             public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
             {
@@ -228,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public DockPaneFactory(DockPanelExtender.IDockPaneFactory factory)
             {
                 Debug.Assert(factory != null);
-                this.factory = factory;
+                this.factory = factory.ExpectNotNull(nameof(factory));
             }
 
             public DockPane CreateDockPane(
@@ -287,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     //
                     // Make this a first-class window.
                     //
-                    pane.FloatWindow.FormBorderStyle = FormBorderStyle.Sizable;
+                    pane.FloatWindow!.FormBorderStyle = FormBorderStyle.Sizable;
                     pane.FloatWindow.ShowInTaskbar = true;
                     pane.FloatWindow.Owner = null;
 

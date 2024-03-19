@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public interface IAuthSettings : ISettingsCollection
     {
-        ISetting<SecureString> Credentials { get; }
+        ISetting<SecureString?> Credentials { get; }
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         // IOidcOfflineCredentialStore
         //---------------------------------------------------------------------
 
-        public bool TryRead(out OidcOfflineCredential credential)
+        public bool TryRead(out OidcOfflineCredential? credential)
         {
             credential = null;
 
@@ -109,21 +109,43 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// </summary>
         private class CredentialBlob
         {
+            /// <summary>
+            /// OAuth refresh token.
+            /// </summary>
             [JsonProperty("refresh_token")]
-            public string RefreshToken { get; set; }
+            public string RefreshToken { get; }
 
+            /// <summary>
+            /// Cached ID token, can be null for backwards compatibility.
+            /// </summary>
             [JsonProperty("id_token")]
-            public string IdToken { get; set; }
+            public string? IdToken { get; }
 
+            /// <summary>
+            /// Space-separated list of scopes that the credentials grant
+            /// access to.
+            /// </summary>
             [JsonProperty("scope")]
-            public string Scope { get; set; }
+            public string Scope { get; }
 
             /// <summary>
             /// Issuer of credential. For backwards compatibility,
             /// a null/empty value is interpreted as Gaia.
             /// </summary>
             [JsonProperty("issuer")]
-            public string Issuer { get; set; }
+            public string? Issuer { get; }
+
+            public CredentialBlob(
+                [JsonProperty("issuer")] string? issuer,
+                [JsonProperty("refresh_token")] string refreshToken,
+                [JsonProperty("id_token")] string? idToken,
+                [JsonProperty("scope")] string scope)
+            {
+                this.Issuer = issuer;
+                this.Scope = scope;
+                this.RefreshToken = refreshToken;
+                this.IdToken = idToken;
+            }
 
             public OidcOfflineCredential ToOidcOfflineCredential()
             {
@@ -148,15 +170,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             public static CredentialBlob FromOidcOfflineCredential(
                 OidcOfflineCredential offlineCredential)
             {
-                return new CredentialBlob()
-                {
-                    Issuer = offlineCredential.Issuer == OidcIssuer.Sts
+                return new CredentialBlob(
+                    offlineCredential.Issuer == OidcIssuer.Sts
                         ? "sts"
                         : null,
-                    RefreshToken = offlineCredential.RefreshToken,
-                    IdToken = offlineCredential.IdToken,
-                    Scope = offlineCredential.Scope
-                };
+                    offlineCredential.RefreshToken,
+                    offlineCredential.IdToken,
+                    offlineCredential.Scope);
             }
         }
 
@@ -166,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         private class AuthSettings : IAuthSettings
         {
-            public ISetting<SecureString> Credentials { get; }
+            public ISetting<SecureString?> Credentials { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
@@ -175,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             internal AuthSettings(ISettingsStore store)
             {
-                this.Credentials = store.Read<SecureString>(
+                this.Credentials = store.Read<SecureString?>(
                     "Credentials",
                     "JSON-formatted credentials",
                     null,

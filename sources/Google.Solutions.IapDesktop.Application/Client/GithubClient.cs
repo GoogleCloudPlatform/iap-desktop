@@ -108,13 +108,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// <summary>
         /// Find the latest available update.
         /// </summary>
-        public async Task<IRelease> FindLatestReleaseAsync(
+        public async Task<IRelease?> FindLatestReleaseAsync(
             ReleaseFeedOptions options,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                Release latestRelease;
+                Release? latestRelease;
                 if (!options.HasFlag(ReleaseFeedOptions.IncludeCanaryReleases))
                 {
                     //
@@ -174,7 +174,8 @@ namespace Google.Solutions.IapDesktop.Application.Client
                                    new Uri(surveyAssetUrl),
                                    cancellationToken)
                                .ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(survey.Title) &&
+                            if (survey != null &&
+                                !string.IsNullOrEmpty(survey.Title) &&
                                 !string.IsNullOrEmpty(survey.Description) &&
                                 !string.IsNullOrEmpty(survey.Url))
                             {
@@ -199,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
             }
         }
 
-        public Task<IRelease> FindLatestReleaseAsync(
+        public Task<IRelease?> FindLatestReleaseAsync(
             CancellationToken cancellationToken)
         {
             return FindLatestReleaseAsync(ReleaseFeedOptions.None, cancellationToken);
@@ -212,27 +213,27 @@ namespace Google.Solutions.IapDesktop.Application.Client
         public class Release : IRelease
         {
             [JsonProperty("tag_name")]
-            public string TagName { get; }
+            public string? TagName { get; }
 
             [JsonProperty("html_url")]
             public string HtmlUrl { get; }
 
             [JsonProperty("body")]
-            public string Body { get; }
+            public string? Body { get; }
 
             [JsonProperty("assets")]
-            public List<ReleaseAsset> Assets { get; }
+            public List<ReleaseAsset>? Assets { get; }
 
             [JsonProperty("prerelease")]
             public bool IsCanaryRelease { get; }
 
             [JsonConstructor]
             public Release(
-                [JsonProperty("tag_name")] string tagName,
+                [JsonProperty("tag_name")] string? tagName,
                 [JsonProperty("html_url")] string htmlUrl,
-                [JsonProperty("body")] string body,
+                [JsonProperty("body")] string? body,
                 [JsonProperty("prerelease")] bool? prerelease,
-                [JsonProperty("assets")] List<ReleaseAsset> assets)
+                [JsonProperty("assets")] List<ReleaseAsset>? assets)
             {
                 this.TagName = tagName;
                 this.HtmlUrl = htmlUrl;
@@ -241,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 this.Assets = assets;
             }
 
-            public Version TagVersion
+            public Version? TagVersion
             {
                 get
                 {
@@ -256,13 +257,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
                 }
             }
 
-            public IReleaseSurvey Survey { get; internal set; }
+            public IReleaseSurvey? Survey { get; internal set; }
 
             public string DetailsUrl => this.HtmlUrl;
 
-            public string Description => this.Body;
+            public string? Description => this.Body;
 
-            public bool TryGetDownloadUrl(Architecture architecture, out string downloadUrl)
+            public bool TryGetDownloadUrl(Architecture architecture, out string? downloadUrl)
             {
                 var msiFiles = this
                     .Assets

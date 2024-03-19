@@ -35,6 +35,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
     [ComVisible(false)]

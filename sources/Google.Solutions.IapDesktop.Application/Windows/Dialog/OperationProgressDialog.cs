@@ -71,9 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 UnsafeNativeMethods.PROGDLG.OPDONTDISPLAYSOURCEPATH |
                 UnsafeNativeMethods.PROGDLG.OPDONTDISPLAYSOURCEPATH |
                 UnsafeNativeMethods.PROGDLG.OPDONTDISPLAYLOCATIONS |
-                (owner != null
-                    ? UnsafeNativeMethods.PROGDLG.MODAL
-                    : UnsafeNativeMethods.PROGDLG.NORMAL);
+                UnsafeNativeMethods.PROGDLG.MODAL;
 
             return new Operation(
                 owner,

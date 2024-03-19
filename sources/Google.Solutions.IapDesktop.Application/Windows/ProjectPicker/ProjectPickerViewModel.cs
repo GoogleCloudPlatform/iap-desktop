@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1031 // Do not catch general exception types
+#nullable disable
 
 namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
 {
