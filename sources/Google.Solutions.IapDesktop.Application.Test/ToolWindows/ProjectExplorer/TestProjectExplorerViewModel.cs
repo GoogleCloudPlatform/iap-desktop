@@ -91,14 +91,47 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private ProjectRepository projectRepository;
-        private Mock<IResourceManagerClient> resourceManagerAdapterMock;
-        private IProjectExplorerSettings projectExplorerSettings;
+        [SetUp]
+        public void SetUp()
+        {
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+        }
+
+        private ProjectRepository CreateProjectRepository()
+        {
+            return new ProjectRepository(this.hkcu.CreateSubKey(TestKeyPath));
+        }
+
+        private Mock<IResourceManagerClient> CreateResourceManagerClient()
+        {
+            var client = new Mock<IResourceManagerClient>();
+            client
+                .Setup(a => a.GetProjectAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = SampleProjectId,
+                    Name = $"[{SampleProjectId}]"
+                });
+            return client;
+        }
+
+        private IProjectExplorerSettings CreateProjectExplorerSettings()
+        {
+            return new ProjectExplorerSettings(
+                new ApplicationSettingsRepository(
+                    this.hkcu.CreateSubKey(TestKeyPath),
+                    null,
+                    null,
+                    UserProfile.SchemaVersion.Current), 
+                false);
+        }
 
         private Mock<IComputeEngineClient> CreateComputeEngineClient()
         {
-            var computeClientMock = new Mock<IComputeEngineClient>();
-            computeClientMock
+            var client = new Mock<IComputeEngineClient>();
+            client
                 .Setup(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -107,48 +140,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     SampleWindowsInstanceInZone1,
                     SampleLinuxInstanceInZone1
                 });
-            return computeClientMock;
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var settingsRepository = new ApplicationSettingsRepository(
-                this.hkcu.CreateSubKey(TestKeyPath),
-                null,
-                null,
-                UserProfile.SchemaVersion.Current);
-            this.projectRepository = new ProjectRepository(
-                this.hkcu.CreateSubKey(TestKeyPath));
-            this.projectExplorerSettings = new ProjectExplorerSettings(
-                settingsRepository, false);
-
-            this.resourceManagerAdapterMock = new Mock<IResourceManagerClient>();
-            this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
-                {
-                    ProjectId = SampleProjectId,
-                    Name = $"[{SampleProjectId}]"
-                });
+            return client;
         }
 
         private ProjectExplorerViewModel CreateViewModel(
             IComputeEngineClient computeClient,
+            IResourceManagerClient resourceManagerClient,
+            IProjectRepository projectRepository,
+            IProjectExplorerSettings projectExplorerSettings,
             IEventQueue eventQueue,
             ISessionBroker sessionBroker,
             ICloudConsoleClient cloudConsoleClient)
         {
             var workspace = new ProjectWorkspace(
                 computeClient,
-                this.resourceManagerAdapterMock.Object,
-                this.projectRepository,
+                resourceManagerClient,
+                projectRepository,
                 eventQueue);
 
             return new ProjectExplorerViewModel(
-                this.projectExplorerSettings,
+                projectExplorerSettings,
                 new SynchronousJobService(),
                 eventQueue,
                 sessionBroker,
@@ -184,6 +195,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -198,6 +212,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
                 computeClient.Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -232,6 +249,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -255,6 +275,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -277,6 +300,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -304,6 +330,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
                 computeClient.Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -335,6 +364,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -364,6 +396,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -376,6 +411,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -396,6 +434,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -420,10 +461,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectRemoved_ThenViewModelIsUpdated()
         {
-            this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                projectRepository,
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -452,7 +497,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenMultipleProjectsAdded_ThenProjectsAreOrderedByDisplayName()
         {
-            this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
+            var resourceManagerClient = CreateResourceManagerClient();
+            resourceManagerClient.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "project-2"),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
@@ -460,17 +506,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     ProjectId = "project-2",
                     Name = "project-2"  // Same as id
                 });
-            this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
+            resourceManagerClient.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "inaccessible-1"),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", new Exception()));
 
-            this.projectRepository.AddProject(new ProjectLocator("project-2"));
-            this.projectRepository.AddProject(new ProjectLocator("inaccessible-1"));
-            this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(new ProjectLocator("project-2"));
+            projectRepository.AddProject(new ProjectLocator("inaccessible-1"));
+            projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                resourceManagerClient.Object,
+                projectRepository,
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -493,6 +543,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -528,6 +581,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -573,6 +629,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -609,6 +668,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -645,6 +707,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -691,6 +756,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -737,6 +805,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -795,6 +866,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 sessionBroker.Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -828,6 +902,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 eventQueue.Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -881,6 +958,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 sessionBroker.Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -909,6 +989,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -945,6 +1028,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
                 computeClient.Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 eventQueue.Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -978,6 +1064,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1004,6 +1093,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1033,6 +1125,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 consoleClient.Object);
@@ -1059,6 +1154,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 consoleClient.Object);
@@ -1088,6 +1186,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 consoleClient.Object);
@@ -1116,6 +1217,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 consoleClient.Object);
@@ -1142,6 +1246,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 consoleClient.Object);
@@ -1170,6 +1277,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 consoleClient.Object);
@@ -1196,6 +1306,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1212,6 +1325,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1237,6 +1353,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1265,6 +1384,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1292,6 +1414,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                CreateProjectExplorerSettings(),
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1313,10 +1438,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectAddedAndSavedAsCollapsed_ThenProjectIsCollapsed()
         {
-            this.projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
+            var projectExplorerSettings = CreateProjectExplorerSettings();
+            projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                projectExplorerSettings,
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1338,10 +1467,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectRemoved_ThenProjectIsRemovedFromSettings()
         {
-            this.projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
+            var projectExplorerSettings = CreateProjectExplorerSettings();
+            projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                projectExplorerSettings,
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1355,15 +1488,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(false);
 
             CollectionAssert.DoesNotContain(
-                this.projectExplorerSettings.CollapsedProjects,
+                projectExplorerSettings.CollapsedProjects,
                 new ProjectLocator(SampleProjectId));
         }
 
         [Test]
         public async Task WhenProjectExpandedOrCollapsed_ThenSettingsAreUpdated()
         {
+            var projectExplorerSettings = CreateProjectExplorerSettings();
+
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
+                CreateResourceManagerClient().Object,
+                CreateProjectRepository(),
+                projectExplorerSettings,
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
@@ -1386,7 +1524,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             project.IsExpanded = false;
 
             CollectionAssert.Contains(
-                this.projectExplorerSettings.CollapsedProjects,
+                projectExplorerSettings.CollapsedProjects,
                 project.ProjectNode.Project);
 
             project.IsExpanded = true;
@@ -1394,7 +1532,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             project.IsExpanded = true;
 
             CollectionAssert.DoesNotContain(
-                this.projectExplorerSettings.CollapsedProjects,
+                projectExplorerSettings.CollapsedProjects,
                 project.ProjectNode.Project);
         }
     }
