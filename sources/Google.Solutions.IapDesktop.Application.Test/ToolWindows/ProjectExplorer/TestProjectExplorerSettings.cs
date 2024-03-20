@@ -33,14 +33,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
-        private ApplicationSettingsRepository settingsRepository;
-
-        [SetUp]
-        public void SetUp()
+        private ApplicationSettingsRepository CreateSettingsRepository()
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.settingsRepository = new ApplicationSettingsRepository(
+            return new ApplicationSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null,
@@ -54,7 +51,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenNoValueSaved_ThenCollapsedProjectsReturnsEmptySet()
         {
-            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, true))
+            var settingsRepository = CreateSettingsRepository();
+
+            using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, true))
             {
                 Assert.IsNotNull(explorerSettings.CollapsedProjects);
                 CollectionAssert.IsEmpty(explorerSettings.CollapsedProjects);
@@ -64,11 +63,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenValueSaved_ThenCollapsedProjectsReturnsSavedValue()
         {
-            var settings = this.settingsRepository.GetSettings();
-            settings.CollapsedProjects.Value = "  project-1,, project-2,";
-            this.settingsRepository.SetSettings(settings);
+            var settingsRepository = CreateSettingsRepository();
 
-            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, true))
+            var settings = settingsRepository.GetSettings();
+            settings.CollapsedProjects.Value = "  project-1,, project-2,";
+            settingsRepository.SetSettings(settings);
+
+            using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, true))
             {
                 Assert.IsNotNull(explorerSettings.CollapsedProjects);
                 CollectionAssert.AreEquivalent(
@@ -84,13 +85,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenDisposed_ThenCollapsedProjectsAreSaved()
         {
-            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, false))
+            var settingsRepository = CreateSettingsRepository();
+
+            using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, false))
             {
                 explorerSettings.CollapsedProjects.Add(new ProjectLocator("project-1"));
                 explorerSettings.CollapsedProjects.Add(new ProjectLocator("project-2"));
             }
 
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             Assert.AreEqual("project-1,project-2", settings.CollapsedProjects.Value);
         }
     }

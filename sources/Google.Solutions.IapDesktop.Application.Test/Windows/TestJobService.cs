@@ -71,31 +71,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             }
         }
 
-        private Mock<IAuthorization> authorization = null;
-        private Mock<IJobHost> jobHost = null;
-        private JobService jobService = null;
-
-        [SetUp]
-        public void SetUp()
+        private Mock<IJobHost> CreateJobHost()
         {
-            this.authorization = new Mock<IAuthorization>();
-
-            var invoker = new SynchronousInvoker();
-
-            this.jobHost = new Mock<IJobHost>();
-            this.jobHost.SetupGet(h => h.Invoker).Returns(invoker);
-            this.jobHost.Setup(h => h.ShowFeedback(
+            var jobHost = new Mock<IJobHost>();
+            jobHost.SetupGet(h => h.Invoker).Returns(new SynchronousInvoker());
+            jobHost.Setup(h => h.ShowFeedback(
                 It.IsNotNull<JobDescription>(),
                 It.IsNotNull<CancellationTokenSource>())).Returns(new UserFeedback());
 
-            this.jobService = new JobService(this.authorization.Object, this.jobHost.Object);
+            return jobHost;
         }
 
         [Test]
         public async Task WhenReauthRequired_ThenReauthConfirmationIsPrompted()
         {
+            var jobHost = CreateJobHost();
+            var jobService = new JobService(
+                new Mock<IAuthorization>().Object,
+                jobHost.Object);
+
             var funcCall = 0;
-            var result = await this.jobService
+            var result = await jobService
                 .RunAsync(
                     new JobDescription("test"),
                     token =>
@@ -117,14 +113,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual("data", result);
 
-            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
+            jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
 
         [Test]
         public async Task WhenReauthConfirmed_ThenFuncIsRepeated()
         {
+            var jobHost = CreateJobHost();
+            var jobService = new JobService(
+                new Mock<IAuthorization>().Object,
+                jobHost.Object);
+
             var funcCall = 0;
-            var result = await this.jobService
+            var result = await jobService
                 .RunAsync(
                     new JobDescription("test"),
                     token =>
@@ -151,13 +152,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         [Test]
         public void WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated()
         {
-            this.jobHost
+            var jobHost = CreateJobHost();
+            var jobService = new JobService(
+                new Mock<IAuthorization>().Object,
+                jobHost.Object);
+
+            jobHost
                 .Setup(h => h.Reauthorize())
                 .Throws(new TaskCanceledException("reauth aborted"));
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
-                this.jobService.RunAsync<string>(
+                jobService.RunAsync<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -169,14 +175,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     }).Wait();
             });
 
-            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
+            jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
 
         [Test]
         public async Task WhenReauthRequired_ThenReauthConfirmationIsPrompted_WithAggregateException()
         {
+            var jobHost = CreateJobHost();
+            var jobService = new JobService(
+                new Mock<IAuthorization>().Object,
+                jobHost.Object);
+
             var funcCall = 0;
-            var result = await this.jobService
+            var result = await jobService
                 .RunAsync(
                     new JobDescription("test"),
                     token =>
@@ -199,14 +210,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual("data", result);
 
-            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
+            jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
 
         [Test]
         public async Task WhenReauthConfirmed_ThenFuncIsRepeated_WithAggregateException()
         {
+            var jobHost = CreateJobHost();
+            var jobService = new JobService(
+                new Mock<IAuthorization>().Object,
+                jobHost.Object);
+
             var funcCall = 0;
-            var result = await this.jobService
+            var result = await jobService
                 .RunAsync(
                     new JobDescription("test"),
                     token =>
@@ -234,13 +250,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         [Test]
         public void WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated_WithAggregateException()
         {
-            this.jobHost
+            var jobHost = CreateJobHost();
+            var jobService = new JobService(
+                new Mock<IAuthorization>().Object,
+                jobHost.Object);
+
+            jobHost
                 .Setup(h => h.Reauthorize())
                 .Throws(new TaskCanceledException("reauth aborted"));
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
-                this.jobService.RunAsync<string>(
+                jobService.RunAsync<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -253,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     }).Wait();
             });
 
-            this.jobHost.Verify(h => h.Reauthorize(), Times.Once);
+            jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
     }
 }
