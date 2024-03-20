@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             return new ProjectRepository(this.hkcu.CreateSubKey(TestKeyPath));
         }
 
-        private Mock<IResourceManagerClient> CreateResourceManagerClient()
+        private static Mock<IResourceManagerClient> CreateResourceManagerClient()
         {
             var client = new Mock<IResourceManagerClient>();
             client
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             return client;
         }
 
-        private IProjectExplorerSettings CreateProjectExplorerSettings()
+        private ProjectExplorerSettings CreateProjectExplorerSettings()
         {
             return new ProjectExplorerSettings(
                 new ApplicationSettingsRepository(
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 false);
         }
 
-        private Mock<IComputeEngineClient> CreateComputeEngineClient()
+        private static Mock<IComputeEngineClient> CreateComputeEngineClient()
         {
             var client = new Mock<IComputeEngineClient>();
             client
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             return client;
         }
 
-        private ProjectExplorerViewModel CreateViewModel(
+        private static ProjectExplorerViewModel CreateViewModel(
             IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerClient,
             IProjectRepository projectRepository,
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             };
         }
 
-        private async Task<ObservableCollection<ProjectExplorerViewModel.ViewModelNode>> GetInstancesAsync(
+        private static async Task<ObservableCollection<ProjectExplorerViewModel.ViewModelNode>> GetInstancesAsync(
             ProjectExplorerViewModel viewModel)
         {
             var projects = await viewModel.RootNode
@@ -392,8 +392,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenNoProjectsAdded_ThenProjectsIsEmpty()
         {
-            var computeClient = CreateComputeEngineClient();
-
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
                 CreateResourceManagerClient().Object,
