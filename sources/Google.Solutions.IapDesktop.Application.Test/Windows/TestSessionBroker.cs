@@ -38,11 +38,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
         private class MockSession : DockContent, ISession
         {
+            public MockSession(InstanceLocator instance)
+            {
+                this.Instance = instance;
+            }
+
             public bool IsConnected { get; set; } = true;
 
             public bool CanTransferFiles { get; set; } = false;
 
-            public InstanceLocator Instance { get; set; }
+            public InstanceLocator Instance { get; }
 
             public bool IsClosing { get; set; } = false;
 
@@ -97,10 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 var broker = new SessionBroker(form);
 
-                var session = new MockSession()
-                {
-                    Instance = new InstanceLocator("project-1", "zone-1", "other-1")
-                };
+                var session = new MockSession(
+                    new InstanceLocator("project-1", "zone-1", "other-1"));
                 new DockContent().Show(form.MainPanel, DockState.Document);
                 session.Show(form.MainPanel, DockState.Document);
 
@@ -115,9 +118,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 var broker = new SessionBroker(form);
 
-                var session = new MockSession()
+                var session = new MockSession(SampleLocator)
                 {
-                    Instance = SampleLocator,
                     IsClosing = false
                 };
                 session.Show(form.MainPanel, DockState.Document);
@@ -133,9 +135,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 var broker = new SessionBroker(form);
 
-                var session = new MockSession()
+                var session = new MockSession(SampleLocator)
                 {
-                    Instance = SampleLocator,
                     IsClosing = true
                 };
                 session.Show(form.MainPanel, DockState.Document);
@@ -166,9 +167,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 var broker = new SessionBroker(form);
 
-                var session = new MockSession()
+                var session = new MockSession(SampleLocator)
                 {
-                    Instance = SampleLocator,
                     IsClosing = false
                 };
                 session.Show(form.MainPanel, DockState.Document);
@@ -187,9 +187,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 var broker = new SessionBroker(form);
 
-                var session = new MockSession()
+                var session = new MockSession(SampleLocator)
                 {
-                    Instance = SampleLocator,
                     IsClosing = true
                 };
                 session.Show(form.MainPanel, DockState.Document);
