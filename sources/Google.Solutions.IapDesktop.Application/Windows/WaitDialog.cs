@@ -33,10 +33,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         private bool disposed = false;
 
         private readonly CancellationTokenSource cancellationSource;
-        private readonly IWin32Window parent;
+        private readonly IWin32Window? parent;
 
         public WaitDialog(
-            IWin32Window parent,
+            IWin32Window? parent,
             string message,
             CancellationTokenSource cancellationSource)
         {
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         /// (incl. TaskCancellationExceptions).
         /// </summary>
         public static void Wait(
-            IWin32Window parent,
+            IWin32Window? parent,
             string message,
             Func<CancellationToken, Task> asyncFunc)
         {

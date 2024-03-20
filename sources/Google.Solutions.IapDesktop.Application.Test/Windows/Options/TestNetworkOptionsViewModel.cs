@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         private ApplicationSettingsRepository CreateSettingsRepository(
-            IDictionary<string, object> policies = null)
+            IDictionary<string, object>? policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
 

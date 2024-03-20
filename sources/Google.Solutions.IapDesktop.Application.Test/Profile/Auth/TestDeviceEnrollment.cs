@@ -119,16 +119,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             -----END CERTIFICATE-----";
 
         private const string TestKeyPath = @"Software\Google\__Test";
-        private AccessSettingsRepository settingsRepository;
-
-        [SetUp]
-        public void SetUp()
-        {
+        
+        private static AccessSettingsRepository CreateSettingsRepository()
+        { 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var settingsKey = hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new AccessSettingsRepository(settingsKey, null, null);
+            return new AccessSettingsRepository(settingsKey, null, null);
         }
 
         //---------------------------------------------------------------------
@@ -138,15 +136,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Disable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = false;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -166,10 +166,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenUsingDefaultCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
@@ -181,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -190,10 +192,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenUsingDefaultCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
@@ -205,20 +209,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate.Subject);
+            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate!.Subject);
         }
 
         [Test]
         public void WhenUsingDefaultCertificateSelectorAndCertificateOnlyInComputerStore_ThenStateIsNotEnrolled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
@@ -230,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -243,8 +249,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenUsingCustomCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settings.DeviceCertificateSelector.Value =
                 @"{
@@ -254,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                         }
                     }
                 }";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
@@ -266,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -275,8 +283,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenUsingCustomCertificateSelectorButCertificateDoesNotPermitClientAuth_ThenStateIsNotEnrolled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settings.DeviceCertificateSelector.Value =
                 @"{
@@ -286,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                         }
                     }
                 }";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
@@ -300,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -309,8 +319,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         [Test]
         public void WhenUsingCustomCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
             settings.DeviceCertificateSelector.Value =
                 @"{
@@ -320,7 +332,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                         }
                     }
                 }";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
@@ -332,11 +344,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Example", enrollment.Certificate.Subject);
+            Assert.AreEqual("CN=Example", enrollment.Certificate!.Subject);
         }
     }
 }

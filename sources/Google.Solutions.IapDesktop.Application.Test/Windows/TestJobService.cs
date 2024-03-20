@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             public bool InvokeRequired => false;
 
-            public IAsyncResult BeginInvoke(Delegate method, object[] args)
+            public IAsyncResult? BeginInvoke(Delegate method, object[] args)
             {
                 method.DynamicInvoke(args);
                 return null;
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 throw new NotImplementedException();
             }
 
-            public object Invoke(Delegate method, object[] args)
+            public object? Invoke(Delegate method, object[] args)
             {
                 method.DynamicInvoke(args);
                 return null;

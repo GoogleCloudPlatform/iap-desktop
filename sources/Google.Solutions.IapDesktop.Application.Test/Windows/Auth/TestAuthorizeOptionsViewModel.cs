@@ -37,9 +37,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
 
         private static Mock<IRepository<IAccessSettings>> CreateSettingsRepository(
-            WorkforcePoolProviderLocator provider)
+            WorkforcePoolProviderLocator? provider)
         {
-            var setting = new Mock<ISetting<string>>();
+            var setting = new Mock<ISetting<string?>>();
             setting.SetupGet(s => s.Value).Returns(provider?.ToString());
 
             var settings = new Mock<IAccessSettings>();

@@ -720,7 +720,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     It.IsAny<Func<SessionStartedEvent, Task>>()))
                 .Callback<Func<SessionStartedEvent, Task>>(e => sessionStartedEventHandler = e);
 
-            Func<SessionEndedEvent, Task> sessionEndedEventHandler = null;
+            Func<SessionEndedEvent, Task>? sessionEndedEventHandler = null;
             this.eventServiceMock.Setup(e => e.Subscribe(
                     It.IsAny<Func<SessionEndedEvent, Task>>()))
                 .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);

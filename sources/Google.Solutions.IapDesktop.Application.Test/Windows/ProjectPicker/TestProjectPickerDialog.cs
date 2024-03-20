@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         [Test]
         public async Task WhenStaticModelProjectsIsNull_ThenListProjectsReturnsEmptyList()
         {
-            var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.StaticModel(null);
+            var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.StaticModel(null!);
 
             var result = await model
                 .ListProjectsAsync(null, 100, CancellationToken.None)
