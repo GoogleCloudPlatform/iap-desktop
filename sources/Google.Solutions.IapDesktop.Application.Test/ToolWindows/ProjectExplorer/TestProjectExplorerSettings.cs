@@ -33,15 +33,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
-        private ApplicationSettingsRepository CreateSettingsRepository()
+        private static ApplicationSettingsRepository CreateSettingsRepository()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            return new ApplicationSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                null,
-                null,
-                UserProfile.SchemaVersion.Current);
+            using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+            {
+                hkcu.DeleteSubKeyTree(TestKeyPath, false);
+                return new ApplicationSettingsRepository(
+                    hkcu.CreateSubKey(TestKeyPath),
+                    null,
+                    null,
+                    UserProfile.SchemaVersion.Current);
+            }
         }
 
         //---------------------------------------------------------------------

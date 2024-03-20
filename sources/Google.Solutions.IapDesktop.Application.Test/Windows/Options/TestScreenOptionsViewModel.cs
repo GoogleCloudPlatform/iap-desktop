@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
         }
 
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
         }
 
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
         }
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsTrue(viewModel.Devices
                 .First(d => d.DeviceName == Screen.PrimaryScreen.DeviceName)
                 .IsSelected);
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
 
             viewModel.Devices.First().IsSelected = true;
 

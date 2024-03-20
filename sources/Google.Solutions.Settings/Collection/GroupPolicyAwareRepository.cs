@@ -32,7 +32,7 @@ namespace Google.Solutions.Settings.Collection
         : RepositoryBase<TCollection>
         where TCollection : ISettingsCollection
     {
-        private static ISettingsStore CreateMergedStore(
+        private static MergedSettingsStore CreateMergedStore(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey)
