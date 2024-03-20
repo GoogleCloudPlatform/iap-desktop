@@ -91,9 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private ApplicationSettingsRepository settingsRepository;
         private ProjectRepository projectRepository;
-
         private Mock<IResourceManagerClient> resourceManagerAdapterMock;
         private IProjectExplorerSettings projectExplorerSettings;
 
@@ -116,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public void SetUp()
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.settingsRepository = new ApplicationSettingsRepository(
+            var settingsRepository = new ApplicationSettingsRepository(
                 this.hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null,
@@ -124,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             this.projectRepository = new ProjectRepository(
                 this.hkcu.CreateSubKey(TestKeyPath));
             this.projectExplorerSettings = new ProjectExplorerSettings(
-                this.settingsRepository, false);
+                settingsRepository, false);
 
             this.resourceManagerAdapterMock = new Mock<IResourceManagerClient>();
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
