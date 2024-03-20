@@ -37,6 +37,7 @@ using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Internal.Execution;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -93,12 +94,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         private ApplicationSettingsRepository settingsRepository;
         private ProjectRepository projectRepository;
 
-        private Mock<IComputeEngineClient> computeClientMock;
         private Mock<IResourceManagerClient> resourceManagerAdapterMock;
-        private Mock<ICloudConsoleClient> cloudConsoleServiceMock;
-        private Mock<IEventQueue> eventServiceMock;
-        private Mock<ISessionBroker> sessionBrokerMock;
         private IProjectExplorerSettings projectExplorerSettings;
+
+        private Mock<IComputeEngineClient> CreateComputeEngineClient()
+        {
+            var computeClientMock = new Mock<IComputeEngineClient>();
+            computeClientMock
+                .Setup(a => a.ListInstancesAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[]
+                {
+                    SampleWindowsInstanceInZone1,
+                    SampleLinuxInstanceInZone1
+                });
+            return computeClientMock;
+        }
 
         [SetUp]
         public void SetUp()
@@ -123,37 +135,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     ProjectId = SampleProjectId,
                     Name = $"[{SampleProjectId}]"
                 });
-
-            this.computeClientMock = new Mock<IComputeEngineClient>();
-            this.computeClientMock.Setup(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[]
-                {
-                    SampleWindowsInstanceInZone1,
-                    SampleLinuxInstanceInZone1
-                });
-
-            this.cloudConsoleServiceMock = new Mock<ICloudConsoleClient>();
-            this.eventServiceMock = new Mock<IEventQueue>();
-            this.sessionBrokerMock = new Mock<ISessionBroker>();
         }
 
-        private ProjectExplorerViewModel CreateViewModel()
+        private ProjectExplorerViewModel CreateViewModel(
+            IComputeEngineClient computeClient,
+            IEventQueue eventQueue,
+            ISessionBroker sessionBroker,
+            ICloudConsoleClient cloudConsoleClient)
         {
             var workspace = new ProjectWorkspace(
-                this.computeClientMock.Object,
+                computeClient,
                 this.resourceManagerAdapterMock.Object,
                 this.projectRepository,
-                new Mock<IEventQueue>().Object);
+                eventQueue);
 
             return new ProjectExplorerViewModel(
                 this.projectExplorerSettings,
                 new SynchronousJobService(),
-                this.eventServiceMock.Object,
-                this.sessionBrokerMock.Object,
+                eventQueue,
+                sessionBroker,
                 workspace,
-                this.cloudConsoleServiceMock.Object)
+                cloudConsoleClient)
             {
                 View = new Control()
             };
@@ -182,7 +184,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenUsingDefaultSettings_ThenWindowsAndLinuxIsIncluded()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             Assert.IsTrue(viewModel.IsWindowsIncluded);
             Assert.IsTrue(viewModel.IsLinuxIncluded);
@@ -191,7 +197,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenOsFilterChanged_ThenViewModelIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var computeClient = CreateComputeEngineClient();
+            var viewModel = CreateViewModel(
+                computeClient.Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
@@ -211,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, instances.Count);
 
             // Reapplying filter must not cause reload.
-            this.computeClientMock.Verify(
+            computeClient.Verify(
                 a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -220,7 +232,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenIsWindowsIncludedChanged_ThenEventIsFired()
         {
-            var initialViewModel = CreateViewModel();
+            var initialViewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             var eventCount = 0;
             initialViewModel.OnPropertyChange(
                 m => m.IsWindowsIncluded,
@@ -238,7 +255,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenIsLinuxIncludedChanged_ThenEventIsFired()
         {
-            var initialViewModel = CreateViewModel();
+            var initialViewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
             var eventCount = 0;
             initialViewModel.OnPropertyChange(
                 m => m.IsLinuxIncluded,
@@ -256,7 +277,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenOperatingSystemFilterChanged_ThenEventIsFired()
         {
-            var initialViewModel = CreateViewModel();
+            var initialViewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
             var eventCount = 0;
             initialViewModel.OnPropertyChange(
                 m => m.OperatingSystemsFilter,
@@ -278,7 +303,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenInstanceFilterChanged_ThenViewModelIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var computeClient = CreateComputeEngineClient();
+            var viewModel = CreateViewModel(
+                computeClient.Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+            
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -295,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, instances.Count);
 
             // Reapplying filter must not cause reload.
-            this.computeClientMock.Verify(
+            computeClient.Verify(
                 a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -304,7 +335,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenInstanceFilterChanged_ThenEventIsFired()
         {
-            var initialViewModel = CreateViewModel();
+            var initialViewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             var eventCount = 0;
             initialViewModel.OnPropertyChange(
                 m => m.InstanceFilter,
@@ -326,7 +362,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenNoProjectsAdded_ThenProjectsIsEmpty()
         {
-            var viewModel = CreateViewModel();
+            var computeClient = CreateComputeEngineClient();
+
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             CollectionAssert.IsEmpty(viewModel.Projects);
         }
@@ -334,7 +376,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectAdded_ThenProjectsIsNotEmpty()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
@@ -350,7 +396,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectAdded_ThenViewModelIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             var initialProjectsList = await viewModel
                 .ExpandRootAsync()
                 .ConfigureAwait(false);
@@ -373,7 +424,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         {
             this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             var initialProjectsList = await viewModel
                 .ExpandRootAsync()
                 .ConfigureAwait(false);
@@ -415,7 +471,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             this.projectRepository.AddProject(new ProjectLocator("inaccessible-1"));
             this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             var projects = (await viewModel
                 .ExpandRootAsync()
@@ -433,7 +493,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenReloadProjectsIsTrue_ThenRefreshReloadsProjects()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -463,7 +528,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenReloadProjectsIsFalse_ThenRefreshReloadsZones()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -503,7 +573,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsNull_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -534,7 +609,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsRoot_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -565,7 +645,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsProject_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -606,7 +691,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsZone_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -647,7 +737,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsInstance_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -695,11 +790,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenInstanceConnected_ThenIsConnectedIsTrue()
         {
-            this.sessionBrokerMock.Setup(b => b.IsConnected(
+            var sessionBroker = new Mock<ISessionBroker>();
+            sessionBroker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(true);
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                sessionBroker.Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -714,18 +815,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSessionEventFired_ThenIsConnectedIsUpdated()
         {
+            var eventQueue = new Mock<IEventQueue>();
+
             // Capture event handlers that the view model will register.
             Func<SessionStartedEvent, Task>? sessionStartedEventHandler = null;
-            this.eventServiceMock.Setup(e => e.Subscribe(
+            eventQueue.Setup(e => e.Subscribe(
                     It.IsAny<Func<SessionStartedEvent, Task>>()))
                 .Callback<Func<SessionStartedEvent, Task>>(e => sessionStartedEventHandler = e);
 
             Func<SessionEndedEvent, Task>? sessionEndedEventHandler = null;
-            this.eventServiceMock.Setup(e => e.Subscribe(
+            eventQueue.Setup(e => e.Subscribe(
                     It.IsAny<Func<SessionEndedEvent, Task>>()))
                 .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                eventQueue.Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -768,11 +876,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenInstanceConnected_ThenNodeUsesRightIcon()
         {
-            this.sessionBrokerMock.Setup(b => b.IsConnected(
+            var sessionBroker = new Mock<ISessionBroker>();
+            sessionBroker.Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(true);
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                sessionBroker.Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -791,11 +905,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenInstanceDisonnected_ThenNodeUsesRightIcon()
         {
-            this.sessionBrokerMock.Setup(b => b.IsConnected(
+            new Mock<ISessionBroker>().Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
                 .Returns(false);
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -818,12 +937,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenInstanceStateChanges_ThenProjectIsReloaded()
         {
+            var eventQueue = new Mock<IEventQueue>();
+
             Func<InstanceStateChangedEvent, Task>? eventHandler = null;
-            this.eventServiceMock.Setup(e => e.Subscribe(
-                    It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
+            eventQueue
+                .Setup(e => e.Subscribe(It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
                 .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
 
-            var viewModel = CreateViewModel();
+            var computeClient = CreateComputeEngineClient();
+            var viewModel = CreateViewModel(
+                computeClient.Object,
+                eventQueue.Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -838,7 +965,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 true));
 
             // Event must not cause reload.
-            this.computeClientMock.Verify(
+            computeClient.Verify(
                 a => a.ListInstancesAsync(
                     It.Is<string>(p => p == SampleProjectId),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -851,7 +978,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsProject_ThenUnloadSelectedProjectAsyncUnloadsProject()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -872,7 +1004,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectAsyncDoesNothing()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -895,7 +1032,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsProject_ThenOpenInCloudConsoleOpensInstancesList()
         {
-            var viewModel = CreateViewModel();
+            var consoleClient = new Mock<ICloudConsoleClient>();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                consoleClient.Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -907,7 +1050,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = projects[0];
             viewModel.OpenInCloudConsole();
 
-            this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceList(
+            consoleClient.Verify(c => c.OpenInstanceList(
                 It.Is<ProjectLocator>(l => l.Name == SampleProjectId)),
                 Times.Once);
         }
@@ -915,7 +1058,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsZone_ThenUnloadSelectedProjectOpensInstancesList()
         {
-            var viewModel = CreateViewModel();
+            var consoleClient = new Mock<ICloudConsoleClient>();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                consoleClient.Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -930,7 +1079,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = zones[0];
             viewModel.OpenInCloudConsole();
 
-            this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceList(
+            consoleClient.Verify(c => c.OpenInstanceList(
                 It.Is<ZoneLocator>(l => l.Name == "zone-1")),
                 Times.Once);
         }
@@ -938,7 +1087,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectOpensInstanceDetails()
         {
-            var viewModel = CreateViewModel();
+            var consoleClient = new Mock<ICloudConsoleClient>();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                consoleClient.Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -948,7 +1103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = instances[0];
             viewModel.OpenInCloudConsole();
 
-            this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceDetails(
+            consoleClient.Verify(c => c.OpenInstanceDetails(
                 It.IsAny<InstanceLocator>()),
                 Times.Once);
         }
@@ -960,7 +1115,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsProject_ThenConfigureIapAccessOpensProjectConfig()
         {
-            var viewModel = CreateViewModel();
+            var consoleClient = new Mock<ICloudConsoleClient>();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                consoleClient.Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -972,7 +1133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = projects[0];
             viewModel.ConfigureIapAccess();
 
-            this.cloudConsoleServiceMock.Verify(c => c.OpenIapSecurity(
+            consoleClient.Verify(c => c.OpenIapSecurity(
                 It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
@@ -980,7 +1141,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsZone_ThenConfigureIapAccessOpensProjectConfig()
         {
-            var viewModel = CreateViewModel();
+            var consoleClient = new Mock<ICloudConsoleClient>();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                consoleClient.Object);
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -995,7 +1161,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = zones[0];
             viewModel.ConfigureIapAccess();
 
-            this.cloudConsoleServiceMock.Verify(c => c.OpenIapSecurity(
+            consoleClient.Verify(c => c.OpenIapSecurity(
                 It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
@@ -1003,7 +1169,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsInstance_ThenConfigureIapAccessOpensProjectConfig()
         {
-            var viewModel = CreateViewModel();
+            var consoleClient = new Mock<ICloudConsoleClient>();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                consoleClient.Object);
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -1013,7 +1184,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = instances[0];
             viewModel.ConfigureIapAccess();
 
-            this.cloudConsoleServiceMock.Verify(c => c.OpenIapSecurity(
+            consoleClient.Verify(c => c.OpenIapSecurity(
                 It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
@@ -1025,7 +1196,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public void WhenSelectedNodeIsRoot_ThenCommandVisiblityIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
             viewModel.SelectedNode = viewModel.RootNode;
 
             Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
@@ -1037,7 +1212,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsProject_ThenCommandVisiblityIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -1057,7 +1237,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsZone_ThenCommandVisiblityIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -1080,7 +1265,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenSelectedNodeIsInstance_ThenCommandVisiblityIsUpdated()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
@@ -1102,7 +1292,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectAddedAndNotSavedAsCollapsed_ThenProjectIsExpanded()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
@@ -1122,7 +1316,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public async Task WhenProjectAddedAndSavedAsCollapsed_ThenProjectIsCollapsed()
         {
             this.projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
-            var viewModel = CreateViewModel();
+
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
@@ -1142,7 +1341,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public async Task WhenProjectRemoved_ThenProjectIsRemovedFromSettings()
         {
             this.projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
-            var viewModel = CreateViewModel();
+
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
@@ -1160,7 +1364,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenProjectExpandedOrCollapsed_ThenSettingsAreUpdated()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(
+                CreateComputeEngineClient().Object,
+                new Mock<IEventQueue>().Object,
+                new Mock<ISessionBroker>().Object,
+                new Mock<ICloudConsoleClient>().Object);
 
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
