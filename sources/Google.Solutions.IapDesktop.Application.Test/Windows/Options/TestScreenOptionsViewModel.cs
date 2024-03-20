@@ -39,15 +39,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             RegistryHive.CurrentUser,
             RegistryView.Default);
 
-        private ApplicationSettingsRepository settingsRepository;
-
-        [SetUp]
-        public void SetUp()
+        private ApplicationSettingsRepository CreateSettingsRepository()
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new ApplicationSettingsRepository(
+            return new ApplicationSettingsRepository(
                 baseKey,
                 null,
                 null,
@@ -61,38 +58,44 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void WhenKeyIsMissing_ThenNoDevicesAreSelected()
         {
-            var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+            var settingsRepository = CreateSettingsRepository();
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            var viewModel = new ScreenOptionsViewModel(
+                settingsRepository);
+
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
         }
 
         [Test]
         public void WhenKeyIsEmpty_ThenNoDevicesAreSelected()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+
+            var settings = settingsRepository.GetSettings();
             settings.FullScreenDevices.Value = "";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+                settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
         }
 
         [Test]
         public void WhenKeyContainsUnknownDevice_ThenNoDevicesAreSelected()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+
+            var settings = settingsRepository.GetSettings();
             settings.FullScreenDevices.Value = "unknown\\device,and junk";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+                settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
         }
 
@@ -100,14 +103,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void WhenKeyContainsDevices_ThenDevicesAreSelected()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+
+            var settings = settingsRepository.GetSettings();
             settings.FullScreenDevices.Value = "unknown," + Screen.PrimaryScreen.DeviceName;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+                settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
             Assert.IsTrue(viewModel.Devices
                 .First(d => d.DeviceName == Screen.PrimaryScreen.DeviceName)
                 .IsSelected);
@@ -116,11 +121,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void WhenDeviceSelected_ThenIsDirtyIsSet()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+                settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
+            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
 
             viewModel.Devices.First().IsSelected = true;
 
@@ -130,29 +137,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public async Task WhenAllDevicesDeselected_ThenKeyIsRemoved()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+
+            var settings = settingsRepository.GetSettings();
             settings.FullScreenDevices.Value = "unknown\\device,and junk";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+                settingsRepository);
 
             viewModel.Devices.First().IsSelected = true;
             viewModel.Devices.First().IsSelected = false;
 
             await viewModel.ApplyChangesAsync();
 
-            Assert.IsNull(this.settingsRepository.GetSettings().FullScreenDevices.Value);
+            Assert.IsNull(settingsRepository.GetSettings().FullScreenDevices.Value);
         }
 
         [Test]
         public async Task WhenDeviceSelected_ThenKeyIsUpdated()
         {
-            var settings = this.settingsRepository.GetSettings();
-            this.settingsRepository.SetSettings(settings);
+            var settingsRepository = CreateSettingsRepository();
+
+            var settings = settingsRepository.GetSettings();
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new ScreenOptionsViewModel(
-                this.settingsRepository);
+                settingsRepository);
 
             viewModel.Devices.First().IsSelected = true;
 
@@ -160,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             Assert.AreEqual(
                 Screen.PrimaryScreen.DeviceName,
-                this.settingsRepository.GetSettings().FullScreenDevices.Value);
+                settingsRepository.GetSettings().FullScreenDevices.Value);
         }
     }
 }

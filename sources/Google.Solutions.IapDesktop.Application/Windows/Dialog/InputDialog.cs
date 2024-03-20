@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public interface IInputDialog
     {
         DialogResult Prompt(
-            IWin32Window owner,
+            IWin32Window? owner,
             InputDialogParameters parameters,
             out string? input);
     }
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         }
 
         public DialogResult Prompt(
-            IWin32Window owner,
+            IWin32Window? owner,
             InputDialogParameters parameters,
             out string? input)
         {

@@ -35,9 +35,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             private readonly AutoResetEvent runningEvent = new AutoResetEvent(false);
             private readonly AutoResetEvent quitEvent = new AutoResetEvent(false);
 
-            public string[] FirstInvocationArgs = null;
-            public string[] SubsequentInvocationArgs = null;
-            public Exception SubsequentInvocationException = null;
+            public string[]? FirstInvocationArgs = null;
+            public string[]? SubsequentInvocationArgs = null;
+            public Exception? SubsequentInvocationException = null;
 
             public Singleton(string name) : base(name)
             {

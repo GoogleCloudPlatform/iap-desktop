@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     /// Repository that underlies the project model and 
     /// keeps track of a user's projects.
     /// </summary>
-    public interface IProjectRepository
+    public interface IProjectRepository : IDisposable
     {
         /// <summary>
         /// Add a project and save changes.

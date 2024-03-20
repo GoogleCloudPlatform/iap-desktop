@@ -73,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     {
         public AccessSettingsRepository(
             RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey)
+            RegistryKey? machinePolicyKey,
+            RegistryKey? userPolicyKey)
             : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
         }

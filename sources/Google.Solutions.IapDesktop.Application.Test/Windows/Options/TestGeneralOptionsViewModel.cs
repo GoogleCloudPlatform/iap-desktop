@@ -45,18 +45,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private Mock<IBrowserProtocolRegistry> protocolRegistryMock;
-        private Mock<ITelemetryCollector> telemetryCollectorMock;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
-            this.telemetryCollectorMock = new Mock<ITelemetryCollector>();
-        }
-
         private IRepository<IApplicationSettings> CreateSettingsRepository(
-            IDictionary<string, object> policies = null)
+            IDictionary<string, object>? policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
@@ -89,8 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsTrue(viewModel.IsUpdateCheckEnabled.Value);
@@ -107,8 +97,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
@@ -130,8 +120,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
@@ -148,8 +138,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
             viewModel.IsUpdateCheckEnabled.Value = false;
 
@@ -165,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
@@ -182,8 +172,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.AreEqual("never", viewModel.LastUpdateCheck);
@@ -199,8 +189,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
@@ -216,8 +206,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);
@@ -232,16 +222,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public async Task WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
         {
             var settingsRepository = CreateSettingsRepository();
+            var protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
+
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                protocolRegistryMock.Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
             viewModel.IsBrowserIntegrationEnabled.Value = true;
 
             await viewModel.ApplyChangesAsync();
 
-            this.protocolRegistryMock.Verify(r => r.Register(
+            protocolRegistryMock.Verify(r => r.Register(
                     It.Is<string>(s => s == IapRdpUrl.Scheme),
                     It.Is<string>(s => s == Install.ProductName),
                     It.IsAny<string>()),
@@ -252,20 +244,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         public async Task WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
         {
             var settingsRepository = CreateSettingsRepository();
+            var protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
+
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                protocolRegistryMock.Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
             viewModel.IsBrowserIntegrationEnabled.Value = false;
 
             await viewModel.ApplyChangesAsync();
 
-            this.protocolRegistryMock.Verify(r => r.Unregister(
+            protocolRegistryMock.Verify(r => r.Unregister(
                     It.Is<string>(s => s == IapRdpUrl.Scheme)),
                 Times.Once);
         }
-
 
         //---------------------------------------------------------------------
         // Telemetry.
@@ -281,8 +274,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsTrue(viewModel.IsTelemetryEnabled.Value);
@@ -299,8 +292,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
@@ -322,8 +315,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
@@ -338,10 +331,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             settings.IsTelemetryEnabled.Value = false;
             settingsRepository.SetSettings(settings);
 
+            var telemetryCollectorMock = new Mock<ITelemetryCollector>();
+
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                telemetryCollectorMock.Object,
                 new HelpClient());
             viewModel.IsTelemetryEnabled.Value = true;
 
@@ -350,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             settings = settingsRepository.GetSettings();
             Assert.IsTrue(settings.IsTelemetryEnabled.Value);
 
-            this.telemetryCollectorMock.VerifySet(t => t.Enabled = true, Times.Once);
+            telemetryCollectorMock.VerifySet(t => t.Enabled = true, Times.Once);
         }
 
         [Test]
@@ -361,10 +356,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             settings.IsTelemetryEnabled.Value = true;
             settingsRepository.SetSettings(settings);
 
+            var telemetryCollectorMock = new Mock<ITelemetryCollector>();
+
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                telemetryCollectorMock.Object,
                 new HelpClient());
             viewModel.IsTelemetryEnabled.Value = false;
 
@@ -373,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             settings = settingsRepository.GetSettings();
             Assert.IsFalse(settings.IsTelemetryEnabled.Value);
 
-            this.telemetryCollectorMock.VerifySet(t => t.Enabled = false, Times.Once);
+            telemetryCollectorMock.VerifySet(t => t.Enabled = false, Times.Once);
         }
 
         [Test]
@@ -382,8 +379,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
-                this.protocolRegistryMock.Object,
-                this.telemetryCollectorMock.Object,
+                new Mock<IBrowserProtocolRegistry>().Object,
+                 new Mock<ITelemetryCollector>().Object,
                 new HelpClient());
 
             Assert.IsFalse(viewModel.IsDirty.Value);

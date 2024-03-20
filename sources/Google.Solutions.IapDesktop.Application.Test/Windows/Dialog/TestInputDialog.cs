@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             void validate(
                 string value,
                 out bool valid,
-                out string warning)
+                out string? warning)
             {
                 valid = int.TryParse(value, out var _);
                 warning = valid

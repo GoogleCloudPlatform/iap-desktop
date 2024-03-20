@@ -35,84 +35,93 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser, RegistryView.Default);
 
-        private ProjectRepository repository = null;
-
-        [SetUp]
-        public void SetUp()
+        private ProjectRepository CreateProjectRepository()
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            this.repository = new ProjectRepository(baseKey);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.repository?.Dispose();
+            return new ProjectRepository(baseKey);
         }
 
         [Test]
         public void WhenNoProjectsAdded_ListProjectsReturnsEmptyList()
         {
-            var projects = this.repository.ListProjectsAsync().Result;
+            using (var repository = CreateProjectRepository())
+            {
+                var projects = repository.ListProjectsAsync().Result;
 
-            Assert.IsFalse(projects.Any());
+                Assert.IsFalse(projects.Any());
+            }
         }
 
         [Test]
         public void WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
         {
-            this.repository.AddProject(new ProjectLocator("test-123"));
-            this.repository.AddProject(new ProjectLocator("test-123"));
+            using (var repository = CreateProjectRepository())
+            {
+                repository.AddProject(new ProjectLocator("test-123"));
+                repository.AddProject(new ProjectLocator("test-123"));
 
-            var projects = this.repository.ListProjectsAsync().Result;
+                var projects = repository.ListProjectsAsync().Result;
 
-            Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.AreEqual(1, projects.Count());
+                Assert.AreEqual("test-123", projects.First().ProjectId);
+            }
         }
 
         [Test]
         public void WhenProjectsDeleted_ListProjectsExcludesProject()
         {
-            this.repository.AddProject(new ProjectLocator("test-123"));
-            this.repository.AddProject(new ProjectLocator("test-456"));
-            this.repository.RemoveProject(new ProjectLocator("test-456"));
-            this.repository.RemoveProject(new ProjectLocator("test-456"));
+            using (var repository = CreateProjectRepository())
+            {
+                repository.AddProject(new ProjectLocator("test-123"));
+                repository.AddProject(new ProjectLocator("test-456"));
+                repository.RemoveProject(new ProjectLocator("test-456"));
+                repository.RemoveProject(new ProjectLocator("test-456"));
 
-            var projects = this.repository.ListProjectsAsync().Result;
+                var projects = repository.ListProjectsAsync().Result;
 
-            Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.AreEqual(1, projects.Count());
+                Assert.AreEqual("test-123", projects.First().ProjectId);
+            }
         }
 
         [Test]
         public void WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
         {
-            this.repository.AddProject(new ProjectLocator("test-123"));
-            using (var key = this.repository.OpenRegistryKey("test-123"))
+            using (var repository = CreateProjectRepository())
             {
-                Assert.IsNotNull(key);
+                repository.AddProject(new ProjectLocator("test-123"));
+                using (var key = repository.OpenRegistryKey("test-123"))
+                {
+                    Assert.IsNotNull(key);
+                }
             }
         }
 
         [Test]
         public void WhenProjectExists_ThenCreateRegistryKeyWithSubkeyReturnsKey()
         {
-            this.repository.AddProject(new ProjectLocator("test-123"));
-            using (var key = this.repository.OpenRegistryKey("test-123", "subkey", true))
+            using (var repository = CreateProjectRepository())
             {
-                Assert.IsNotNull(key);
+                repository.AddProject(new ProjectLocator("test-123"));
+                using (var key = repository.OpenRegistryKey("test-123", "subkey", true))
+                {
+                    Assert.IsNotNull(key);
+                }
             }
         }
 
         [Test]
         public void WhenSubkeyDoesNotExist_ThenOpenRegistryReturnsNull()
         {
-            this.repository.AddProject(new ProjectLocator("test-123"));
-            using (var key = this.repository.OpenRegistryKey("test-123", "subkey", false))
+            using (var repository = CreateProjectRepository())
             {
-                Assert.IsNull(key);
+                repository.AddProject(new ProjectLocator("test-123"));
+                using (var key = repository.OpenRegistryKey("test-123", "subkey", false))
+                {
+                    Assert.IsNull(key);
+                }
             }
         }
     }

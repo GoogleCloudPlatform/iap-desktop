@@ -37,8 +37,11 @@ namespace Google.Solutions.IapDesktop.Application.Test
     [TestFixture]
     public class TestNtlmProxy
     {
-        private static readonly Uri proxyAddress = null;
-        private static readonly NetworkCredential proxyCredential = null;
+        //
+        // Initialize these members for manual testing.
+        //
+        private static readonly Uri? proxyAddress = null;
+        private static readonly NetworkCredential? proxyCredential = null;
 
         [SetUp]
         public void Setup()
@@ -73,8 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.Test
             }
         }
 
-        public static ComputeEngineClient _client;
-
         [Test]
         public async Task ParallelRequests()
         {
@@ -82,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
                 ComputeEngineClient.CreateEndpoint(ServiceRoute.Public),
                 TestProject.AdminAuthorization,
                 TestProject.UserAgent);
-            _client = compute;
+            
             var tasks = new List<Task>();
             for (var i = 0; i < 10; i++)
             {

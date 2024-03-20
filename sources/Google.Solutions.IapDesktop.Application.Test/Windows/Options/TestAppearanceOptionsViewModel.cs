@@ -35,15 +35,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             RegistryHive.CurrentUser,
             RegistryView.Default);
 
-        private ThemeSettingsRepository settingsRepository;
-
-        [SetUp]
-        public void SetUp()
+        private ThemeSettingsRepository CreateSettingsRepository()
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new ThemeSettingsRepository(baseKey);
+            return new ThemeSettingsRepository(baseKey);
         }
 
         //---------------------------------------------------------------------
@@ -53,11 +50,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void WhenSelectedThemeChanged_ThenDirtyFlagIsSet()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             Assert.AreNotEqual(
                 ApplicationTheme._Default,
                 ApplicationTheme.Dark);
 
-            var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
+            var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             Assert.IsFalse(viewModel.IsDirty.Value);
 
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
@@ -72,7 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void WhenGdiScalingChanged_ThenDirtyFlagIsSet()
         {
-            var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
+            var settingsRepository = CreateSettingsRepository();
+
+            var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             Assert.IsTrue(viewModel.IsGdiScalingEnabled.Value);
 
             viewModel.IsGdiScalingEnabled.Value = false;
@@ -87,6 +88,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void LoadReadsSettings()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             Assert.AreNotEqual(
                 ApplicationTheme._Default,
                 ApplicationTheme.Dark);
@@ -94,12 +97,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             //
             // Persist non-default values.
             //
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             settings.Theme.Value = ApplicationTheme.Dark;
             settings.IsGdiScalingEnabled.Value = false;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
-            var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
+            var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             Assert.AreEqual(ApplicationTheme.Dark, viewModel.SelectedTheme.Value);
             Assert.IsFalse(viewModel.IsGdiScalingEnabled.Value);
         }
@@ -107,16 +110,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public async Task SaveUpdatesSettings()
         {
+            var settingsRepository = CreateSettingsRepository();
+
             Assert.AreNotEqual(
                 ApplicationTheme._Default,
                 ApplicationTheme.Dark);
 
-            var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
+            var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
             viewModel.IsGdiScalingEnabled.Value = false;
             await viewModel.ApplyChangesAsync();
 
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             Assert.AreEqual(ApplicationTheme.Dark, settings.Theme.Value);
             Assert.IsFalse(settings.IsGdiScalingEnabled.Value);
         }

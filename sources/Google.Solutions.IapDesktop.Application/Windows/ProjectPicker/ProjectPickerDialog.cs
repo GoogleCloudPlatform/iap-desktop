@@ -149,14 +149,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             }
 
             public async Task<FilteredProjectList> ListProjectsAsync(
-                string prefix,
+                string? prefix,
                 int maxResults,
                 CancellationToken cancellationToken)
             {
                 return await this.resourceManager.ListProjectsAsync(
                         string.IsNullOrEmpty(prefix)
                             ? null // All projects.
-                            : ProjectFilter.ByTerm(prefix),
+                            : ProjectFilter.ByTerm(prefix!),
                         maxResults,
                         cancellationToken)
                     .ConfigureAwait(false);
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             }
 
             public Task<FilteredProjectList> ListProjectsAsync(
-                string prefix,
+                string? prefix,
                 int maxResults,
                 CancellationToken cancellationToken)
             {

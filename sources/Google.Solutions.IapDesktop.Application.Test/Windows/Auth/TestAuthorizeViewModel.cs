@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
             {
                 viewModel.Client
                     .Setup(a => a.TryAuthorizeSilentlyAsync(It.IsAny<CancellationToken>()))
-                    .ReturnsAsync((IOidcSession)null);
+                    .ReturnsAsync((IOidcSession?)null);
 
                 await viewModel.TryLoadExistingAuthorizationCommand
                     .ExecuteAsync(CancellationToken.None)
@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                authorization = viewModel.Authorization;
+                authorization = viewModel.Authorization!;
             }
 
             // Reauthorize.

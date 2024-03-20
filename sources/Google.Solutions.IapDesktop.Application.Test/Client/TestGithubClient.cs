@@ -38,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
     public class TestGithubClient : ApplicationFixtureBase
     {
         private const string SampleRepository = "google/sample";
+        private const string SampleDetailsUrl = "https://example.com/";
 
         //---------------------------------------------------------------------
         // FindLatestReleaseAsync.
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GithubClient.Release)null);
+                .ReturnsAsync((GithubClient.Release?)null);
 
             var adapter = new GithubClient(
                 restAdapter.Object,
@@ -94,11 +95,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<GithubClient.Release>
                 {
-                    new GithubClient.Release("3.0.1", null, null, true, null),
-                    new GithubClient.Release("1.0.0", null, null, null, null),
-                    new GithubClient.Release("1.0.1", null, null, false, null),
-                    new GithubClient.Release("2.0.1", null, null, true, null),
-                    new GithubClient.Release("4.0.1", null, null, true, null),
+                    new GithubClient.Release("3.0.1", SampleDetailsUrl, null, true, null),
+                    new GithubClient.Release("1.0.0", SampleDetailsUrl, null, null, null),
+                    new GithubClient.Release("1.0.1", SampleDetailsUrl, null, false, null),
+                    new GithubClient.Release("2.0.1", SampleDetailsUrl, null, true, null),
+                    new GithubClient.Release("4.0.1", SampleDetailsUrl, null, true, null),
                 });
 
             var adapter = new GithubClient(
@@ -109,7 +110,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.IncludeCanaryReleases, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("4.0.1", latest.TagVersion.ToString());
+            Assert.IsNotNull(latest);
+            Assert.AreEqual("4.0.1", latest!.TagVersion!.ToString());
         }
 
         [Test]
@@ -121,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     new Uri(
                         $"https://api.github.com/repos/{SampleRepository}/releases/latest"),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubClient.Release("3.0.1", null, null, false, null));
+                .ReturnsAsync(new GithubClient.Release("3.0.1", SampleDetailsUrl, null, false, null));
 
             var adapter = new GithubClient(
                 restAdapter.Object,
@@ -131,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("3.0.1", latest.TagVersion.ToString());
+            Assert.AreEqual("3.0.1", latest?.TagVersion?.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -146,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<GithubClient.Release>(
                     new Uri($"https://api.github.com/repos/{SampleRepository}/releases/latest"),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubClient.Release("3.0.1", null, null, false, null));
+                .ReturnsAsync(new GithubClient.Release("3.0.1", SampleDetailsUrl, null, false, null));
 
             var adapter = new GithubClient(
                 restAdapter.Object,
@@ -156,7 +158,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(latest.Survey);
+            Assert.IsNotNull(latest);
+            Assert.IsNull(latest!.Survey);
         }
 
         [Test]
@@ -169,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release(
                     "3.0.1",
-                    null,
+                    SampleDetailsUrl,
                     null,
                     false,
                     new List<GithubClient.ReleaseAsset>
@@ -190,7 +193,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(latest.Survey);
+            Assert.IsNotNull(latest);
+            Assert.IsNull(latest!.Survey);
         }
 
         [Test]
@@ -203,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release(
                     "3.0.1",
-                    null,
+                    SampleDetailsUrl,
                     null,
                     false,
                     new List<GithubClient.ReleaseAsset>
@@ -227,8 +231,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(latest.Survey);
-            Assert.AreEqual("title", latest.Survey.Title);
+            Assert.IsNotNull(latest);
+            Assert.IsNotNull(latest!.Survey);
+            Assert.AreEqual("title", latest!.Survey!.Title);
             Assert.AreEqual("description", latest.Survey.Description);
             Assert.AreEqual("http://survey.example.com/", latest.Survey.Url);
         }
@@ -265,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<List<GithubClient.Release>>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((List<GithubClient.Release>)null);
+                .ReturnsAsync((List<GithubClient.Release>?)null);
 
             var adapter = new GithubClient(
                 restAdapter.Object,
@@ -288,8 +293,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<GithubClient.Release>
                 {
-                    new GithubClient.Release("1.0.0", null, null, false, null),
-                    new GithubClient.Release("3.1.1", null, null, false, null),
+                    new GithubClient.Release("1.0.0", SampleDetailsUrl, null, false, null),
+                    new GithubClient.Release("3.1.1", SampleDetailsUrl, null, false, null),
                 });
             restAdapter
                 .Setup(a => a.GetAsync<List<GithubClient.Release>>(
@@ -299,9 +304,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<GithubClient.Release>
                 {
-                    new GithubClient.Release("2.0.0", null, null, false, null),
-                    new GithubClient.Release(null,    null, null, false, null),
-                    new GithubClient.Release("2.0.1", null, null, false, null),
+                    new GithubClient.Release("2.0.0", SampleDetailsUrl, null, false, null),
+                    new GithubClient.Release(null,    SampleDetailsUrl, null, false, null),
+                    new GithubClient.Release("2.0.1", SampleDetailsUrl, null, false, null),
                 });
             restAdapter
                 .Setup(a => a.GetAsync<List<GithubClient.Release>>(
@@ -328,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     "2.0.0",
                     "1.0.0",
                 },
-                releases.Select(r => r.TagVersion.ToString()));
+                releases.Select(r => r.TagVersion!.ToString()));
         }
 
         [Test]
@@ -343,10 +348,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<GithubClient.Release>
                 {
-                    new GithubClient.Release("3.0.1", null, null, true, null),
-                    new GithubClient.Release("1.0.0", null, null, null, null),
-                    new GithubClient.Release("1.0.1", null, null, false, null),
-                    new GithubClient.Release("2.0.1", null, null, true, null),
+                    new GithubClient.Release("3.0.1", SampleDetailsUrl, null, true, null),
+                    new GithubClient.Release("1.0.0", SampleDetailsUrl, null, null, null),
+                    new GithubClient.Release("1.0.1", SampleDetailsUrl, null, false, null),
+                    new GithubClient.Release("2.0.1", SampleDetailsUrl, null, true, null),
                 });
 
             var adapter = new GithubClient(
@@ -366,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     "1.0.1",
                     "1.0.0",
                 },
-                releases.Select(r => r.TagVersion.ToString()));
+                releases.Select(r => r.TagVersion!.ToString()));
         }
 
         [Test]
@@ -381,10 +386,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<GithubClient.Release>
                 {
-                    new GithubClient.Release("3.0.1", null, null, true, null),
-                    new GithubClient.Release("1.0.0", null, null, null, null),
-                    new GithubClient.Release("1.0.1", null, null, false, null),
-                    new GithubClient.Release("2.0.1", null, null, true, null),
+                    new GithubClient.Release("3.0.1", SampleDetailsUrl, null, true, null),
+                    new GithubClient.Release("1.0.0", SampleDetailsUrl, null, null, null),
+                    new GithubClient.Release("1.0.1", SampleDetailsUrl, null, false, null),
+                    new GithubClient.Release("2.0.1", SampleDetailsUrl, null, true, null),
                 });
 
             var adapter = new GithubClient(
@@ -402,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     "1.0.1",
                     "1.0.0",
                 },
-                releases.Select(r => r.TagVersion.ToString()));
+                releases.Select(r => r.TagVersion!.ToString()));
         }
 
         //---------------------------------------------------------------------
@@ -417,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubClient.Release("1.2.3.4", null, null, false, null));
+                .ReturnsAsync(new GithubClient.Release("1.2.3.4", SampleDetailsUrl, null, false, null));
 
             var adapter = new GithubClient(
                 restAdapter.Object,
@@ -427,7 +432,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.AreEqual(new Version(1, 2, 3, 4), release.TagVersion);
+            Assert.AreEqual(new Version(1, 2, 3, 4), release!.TagVersion);
         }
 
         [Test]
@@ -438,7 +443,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .Setup(a => a.GetAsync<GithubClient.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubClient.Release("not a version", null, null, false, null));
+                .ReturnsAsync(new GithubClient.Release("not a version", SampleDetailsUrl, null, false, null));
 
             var adapter = new GithubClient(
                 restAdapter.Object,
@@ -448,7 +453,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsNull(release.TagVersion);
+            Assert.IsNull(release!.TagVersion);
         }
 
         //---------------------------------------------------------------------
@@ -465,7 +470,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release(
                     "1.2.3.4",
-                    null,
+                    SampleDetailsUrl,
                     null,
                     null,
                     new List<GithubClient.ReleaseAsset>()
@@ -481,7 +486,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsFalse(release.TryGetDownloadUrl(
+            Assert.IsFalse(release!.TryGetDownloadUrl(
                 Application.Host.Architecture.X86,
                 out var downloadUrl));
             Assert.IsNull(downloadUrl);
@@ -497,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release(
                     "1.2.3.4",
-                    null,
+                    SampleDetailsUrl,
                     null,
                     null,
                     new List<GithubClient.ReleaseAsset>()
@@ -517,7 +522,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
 
-            Assert.IsTrue(release.TryGetDownloadUrl(
+            Assert.IsTrue(release!.TryGetDownloadUrl(
                 Application.Host.Architecture.X86,
                 out var downloadUrlX86));
             Assert.AreEqual("http://example.com/download.x86.MSI", downloadUrlX86);
@@ -538,7 +543,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubClient.Release(
                     "1.2.3.4",
-                    null,
+                    SampleDetailsUrl,
                     null,
                     null,
                     new List<GithubClient.ReleaseAsset>()
@@ -555,7 +560,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsTrue(release.TryGetDownloadUrl(
+            Assert.IsTrue(release!.TryGetDownloadUrl(
                 Application.Host.Architecture.X86,
                 out var downloadUrl));
             Assert.AreEqual("http://example.com/download.msi", downloadUrl);
@@ -576,7 +581,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsTrue(release.TagVersion.Major >= 1);
+            Assert.IsNotNull(release!.TagVersion);
+            Assert.IsTrue(release.TagVersion!.Major >= 1);
 
             Assert.IsTrue(release.TryGetDownloadUrl(
                 Application.Host.Architecture.X86,

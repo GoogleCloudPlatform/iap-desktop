@@ -52,14 +52,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
         public class PocoWithProperty
         {
             [Browsable(true)]
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         public class Settings : ISettingsCollection
         {
             IEnumerable<ISetting> ISettingsCollection.Settings => new ISetting[]
             {
-                new DictionarySettingsStore(new Dictionary<string, string>()).Read<string>(
+                new DictionarySettingsStore(new Dictionary<string, string>())
+                .Read<string?>(
                     "test",
                     "title",
                     "description",
@@ -71,12 +72,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
 
         public class SampleViewModel<T> : ViewModelBase, IPropertiesInspectorViewModel
         {
-            public readonly ObservableProperty<string> informationText = ObservableProperty.Build<string>(null);
-            public readonly ObservableProperty<object> inspectedObject = ObservableProperty.Build<object>(null);
-            public readonly ObservableProperty<string> windowTitle = ObservableProperty.Build<string>(null);
+            public readonly ObservableProperty<string?> informationText = ObservableProperty.Build<string?>(null);
+            public readonly ObservableProperty<object?> inspectedObject = ObservableProperty.Build<object?>(null);
+            public readonly ObservableProperty<string> windowTitle = ObservableProperty.Build<string>("");
 
-            public IObservableProperty<string> InformationText => this.informationText;
-            public IObservableProperty<object> InspectedObject => this.inspectedObject;
+            public IObservableProperty<string?> InformationText => this.informationText;
+            public IObservableProperty<object?> InspectedObject => this.inspectedObject;
             public IObservableProperty<string> WindowTitle => this.windowTitle;
 
             public void SaveChanges()
