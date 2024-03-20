@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                authorization = viewModel.Authorization;
+                authorization = viewModel.Authorization!;
             }
 
             // Reauthorize.
