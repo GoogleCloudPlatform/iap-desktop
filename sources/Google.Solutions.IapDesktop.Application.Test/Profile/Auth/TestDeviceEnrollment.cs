@@ -119,9 +119,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             -----END CERTIFICATE-----";
 
         private const string TestKeyPath = @"Software\Google\__Test";
-        
+
         private static AccessSettingsRepository CreateSettingsRepository()
-        { 
+        {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var settingsKey = hkcu.CreateSubKey(TestKeyPath);

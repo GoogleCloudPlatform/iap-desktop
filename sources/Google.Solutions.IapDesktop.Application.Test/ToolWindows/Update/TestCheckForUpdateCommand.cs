@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IBrowser>().Object);
 
             command.Execute(
-                new Mock<IMainWindow>().Object, 
+                new Mock<IMainWindow>().Object,
                 CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(
@@ -481,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IBrowser>().Object);
 
             command.Execute(
-                new Mock<IMainWindow>().Object, 
+                new Mock<IMainWindow>().Object,
                 CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(

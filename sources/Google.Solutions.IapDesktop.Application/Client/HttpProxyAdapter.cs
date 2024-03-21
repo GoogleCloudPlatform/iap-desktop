@@ -28,7 +28,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Security;
 
 #pragma warning disable CA1810 // Initialize reference type static fields inline
 

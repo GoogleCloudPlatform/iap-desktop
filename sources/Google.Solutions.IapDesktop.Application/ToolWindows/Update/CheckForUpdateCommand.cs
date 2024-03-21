@@ -134,8 +134,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 
                 if (!latestRelease.TryGetDownloadUrl(
                         Install.ProcessArchitecture,
-                        out var downloadUrl) || 
-                    downloadUrl ==  null)
+                        out var downloadUrl) ||
+                    downloadUrl == null)
                 {
                     downloadUrl = latestRelease.DetailsUrl;
                 }

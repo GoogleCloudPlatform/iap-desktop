@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
                 ComputeEngineClient.CreateEndpoint(ServiceRoute.Public),
                 TestProject.AdminAuthorization,
                 TestProject.UserAgent);
-            
+
             var tasks = new List<Task>();
             for (var i = 0; i < 10; i++)
             {

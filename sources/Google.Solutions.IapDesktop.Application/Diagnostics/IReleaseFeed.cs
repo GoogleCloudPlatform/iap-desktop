@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         /// Get download URL of installer package.
         /// </summary>
         bool TryGetDownloadUrl(
-            Architecture architecture, 
+            Architecture architecture,
             out string? downloadUrl);
     }
 

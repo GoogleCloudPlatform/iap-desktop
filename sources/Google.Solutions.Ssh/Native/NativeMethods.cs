@@ -27,7 +27,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
+
+#if DEBUG
 using System.Threading;
+#endif
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments

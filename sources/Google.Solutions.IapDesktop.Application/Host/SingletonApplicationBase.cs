@@ -29,7 +29,10 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+
+#if DEBUG
 using System.Windows.Forms;
+#endif
 
 #pragma warning disable CA1031 // catch Exception
 #pragma warning disable VSTHRD002 // Avoid problematic synchronous waits

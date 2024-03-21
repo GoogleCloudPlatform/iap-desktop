@@ -37,7 +37,6 @@ using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal.Execution;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -124,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     this.hkcu.CreateSubKey(TestKeyPath),
                     null,
                     null,
-                    UserProfile.SchemaVersion.Current), 
+                    UserProfile.SchemaVersion.Current),
                 false);
         }
 
@@ -336,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 new Mock<IEventQueue>().Object,
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
-            
+
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);

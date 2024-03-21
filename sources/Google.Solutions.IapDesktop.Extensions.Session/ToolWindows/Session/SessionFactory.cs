@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -36,6 +35,10 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
+
+#if DEBUG
+using Google.Solutions.Common.Diagnostics;
+#endif
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
@@ -156,11 +159,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                         await Task.WhenAll(credentialTask, transportTask)
                             .ConfigureAwait(true);
 
+                        #pragma warning disable VSTHRD103
                         return new AuthorizationResult<TCredential>
                         {
                             Credential = credentialTask.Result,
                             Transport = transportTask.Result
                         };
+                        #pragma warning restore VSTHRD103 
                     }
                     catch
                     {

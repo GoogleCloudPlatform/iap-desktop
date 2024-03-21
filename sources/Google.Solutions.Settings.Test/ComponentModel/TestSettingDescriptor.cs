@@ -74,7 +74,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
 
             var descriptor = new SettingDescriptor(setting);
-            
+
             //
             // Set value.
             //
