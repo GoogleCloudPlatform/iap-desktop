@@ -43,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindowViewBase : DockContent
     {
-        private readonly IExceptionDialog exceptionDialog;
         private readonly DockPanel panel;
 
         /// <summary>
@@ -96,17 +95,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         }
 
         public ToolWindowViewBase(
-            IServiceProvider serviceProvider,
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository,
             DockState defaultDockState) : this()
         {
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.panel = serviceProvider.GetService<IMainWindow>().MainPanel;
-            var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
+            this.panel = mainWindow
+                .ExpectNotNull(nameof(mainWindow))
+                .MainPanel;
 
             // Read persisted window state.
-            var state = stateRepository.GetSetting(
-                GetType().Name, // Unique name of tool window
-                defaultDockState);
+            var state = stateRepository
+                .ExpectNotNull(nameof(stateRepository))
+                .GetSetting(
+                    GetType().Name, // Unique name of tool window
+                    defaultDockState);
             this.restoreState = state.DockState.Value;
 
             // Save persisted window state.
@@ -514,33 +516,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 Bind();
 
                 this.view.ShowWindow();
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Utility methods.
-        //---------------------------------------------------------------------
-
-        protected async Task InvokeActionAsync(
-            Func<Task> action,
-            string actionName)
-        {
-            Debug.Assert(
-                actionName.Contains("ing "),
-                "Action name should be formatted like 'Doing something'");
-
-            try
-            {
-                await action().ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.exceptionDialog
-                    .Show(this, $"{actionName} failed", e);
             }
         }
     }

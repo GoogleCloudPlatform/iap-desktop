@@ -89,7 +89,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
             this.refreshButton.Text = "Refresh";
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
             // addButton
             // 

@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -67,7 +68,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             => this.toolbarCommands.Value;
 
         public ProjectExplorerView(IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.DockLeft)
+            : base(
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<ToolWindowStateRepository>(),
+                  DockState.DockLeft)
         {
             InitializeComponent();
 
@@ -179,6 +183,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                 c => c.Checked,
                 viewModel,
                 m => m.IsWindowsIncluded,
+                bindingContext);
+            this.refreshButton.BindObservableCommand(
+                viewModel,
+                m => m.RefreshSelectedNodeCommand,
                 bindingContext);
 
             //
@@ -340,11 +348,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         // Tool bar event handlers.
         //---------------------------------------------------------------------
 
-        private async void refreshButton_Click(object sender, EventArgs args)
-            => await InvokeActionAsync(
-                () => this.viewModel.Value.RefreshSelectedNodeAsync(),
-                "Refreshing projects").ConfigureAwait(true);
-
         private async void addButton_Click(object sender, EventArgs args)
             => await AddNewProjectAsync().ConfigureAwait(true);
 
@@ -403,10 +406,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
 
             if (e.KeyCode == Keys.F5)
             {
-                InvokeActionAsync(
-                        () => this.viewModel.Value.RefreshSelectedNodeAsync(),
-                        "Refreshing projects")
-                    .ContinueWith(_ => { });
+                this.refreshButton.PerformClick();
             }
             else if (e.KeyCode == Keys.F3 || (e.Control && e.KeyCode == Keys.F))
             {

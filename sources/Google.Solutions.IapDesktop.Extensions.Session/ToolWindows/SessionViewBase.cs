@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -41,10 +43,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows
             this.bindingContext = bindingContext;
         }
 
-        protected SessionViewBase(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        protected SessionViewBase(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository,
+            IBindingContext bindingContext)
+            : base(mainWindow, stateRepository)
         {
-            this.bindingContext = serviceProvider.GetService<IBindingContext>();
+            this.bindingContext = bindingContext.ExpectNotNull(nameof(bindingContext));
         }
 
         public void ActivateSession()

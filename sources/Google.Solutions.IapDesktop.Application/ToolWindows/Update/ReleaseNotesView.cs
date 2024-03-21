@@ -19,10 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
-using System;
 using System.Drawing;
 using System.Threading;
 
@@ -30,8 +30,10 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 {
     public partial class ReleaseNotesView : DocumentWindow, IView<ReleaseNotesViewModel>
     {
-        public ReleaseNotesView(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public ReleaseNotesView(
+            IMainWindow mainWindow, 
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository)
         {
             InitializeComponent();
 

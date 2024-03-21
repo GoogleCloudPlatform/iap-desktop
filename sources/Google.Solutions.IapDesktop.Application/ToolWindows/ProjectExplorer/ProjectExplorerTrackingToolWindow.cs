@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -52,7 +53,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             IServiceProvider serviceProvider,
             DockState defaultDockState)
             : base(
-                  serviceProvider,
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<ToolWindowStateRepository>(),
                   defaultDockState)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();

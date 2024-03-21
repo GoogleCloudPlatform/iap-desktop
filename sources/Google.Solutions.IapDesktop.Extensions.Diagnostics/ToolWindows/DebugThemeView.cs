@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -37,16 +38,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     [Service]
     public partial class DebugThemeView : ToolWindowViewBase, IView<DebugThemeViewModel>
     {
-        public DebugThemeView(IServiceProvider serviceProvider)
-            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
+        public DebugThemeView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository,
+            IThemeService themeService)
+            : base(mainWindow, stateRepository, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
         {
             InitializeComponent();
 
-            var palette = serviceProvider
-                .GetService<IThemeService>()
-                .DockPanelTheme
-                .ColorPalette;
-
+            var palette = themeService.DockPanelTheme.ColorPalette;
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);
         }
 

@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -56,8 +57,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             this.AllowDrop = true;
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(SshTerminalPane_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(SshTerminalPane_DragEnter);
+            this.DragEnter += (sender, args) => 
+                new DelegateCommand<DragEventHandler, DragEventArgs>(
+                    "File upload",
+                    args =>
+                    {
+                        if (args.Data.GetDataPresent(DataFormats.FileDrop) &&
+                            SshTerminalViewModel
+                                .GetDroppableFiles(args.Data.GetData(DataFormats.FileDrop))
+                                .Any())
+                        {
+                            args.Effect = DragDropEffects.Copy;
+                        }
+                    },
+                    bindingContext)
+                .Execute(sender, args);
+            this.DragDrop += (sender, args) => 
+                new DelegateCommand<DragEventHandler, DragEventArgs>(
+                    "File upload",
+                    args =>
+                    {
+                        var dropData = args.Data.GetData(DataFormats.FileDrop);
+                        var files = SshTerminalViewModel.GetDroppableFiles(dropData);
+
+                        return this.viewModel.UploadFilesAsync(files);
+                    },
+                    bindingContext)
+                .Execute(sender, args);
         }
 
         private void OnAuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
@@ -111,35 +137,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 "Drag a local file and drop it here to upload it to the VM.");
 
             return Task.CompletedTask;
-        }
-
-        //---------------------------------------------------------------------
-        // Window events.
-        //---------------------------------------------------------------------
-
-        private void SshTerminalPane_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
-                SshTerminalViewModel
-                    .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop))
-                    .Any())
-            {
-                e.Effect = DragDropEffects.Copy;
-            }
-        }
-
-        private async void SshTerminalPane_DragDrop(object sender, DragEventArgs e)
-        {
-            await InvokeActionAsync(
-                    () =>
-                    {
-                        var files = SshTerminalViewModel
-                            .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop));
-
-                        return this.viewModel.UploadFilesAsync(files);
-                    },
-                    "Uploading files")
-                .ConfigureAwait(true);
         }
     }
 }

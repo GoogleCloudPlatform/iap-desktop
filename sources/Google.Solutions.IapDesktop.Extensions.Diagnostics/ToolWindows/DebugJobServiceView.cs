@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -34,8 +35,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     [Service]
     public partial class DebugJobServiceView : ToolWindowViewBase, IView<DebugJobServiceViewModel>
     {
-        public DebugJobServiceView(IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.DockRightAutoHide)
+        public DebugJobServiceView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository, DockState.DockRightAutoHide)
         {
             InitializeComponent();
         }

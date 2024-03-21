@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Interop;
 using System;
@@ -58,10 +59,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 #pragma warning restore CS8618
 
         public DocumentWindow(
-            IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.Document)
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository, DockState.Document)
         {
-            this.MainWindow = serviceProvider.GetService<IMainWindow>();
+            this.MainWindow = mainWindow;
 
             this.DockAreas = DockAreas.Document | DockAreas.Float;
 
