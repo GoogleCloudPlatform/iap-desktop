@@ -516,32 +516,5 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 this.view.ShowWindow();
             }
         }
-
-        //---------------------------------------------------------------------
-        // Utility methods.
-        //---------------------------------------------------------------------
-
-        protected async Task InvokeActionAsync(
-            Func<Task> action,
-            string actionName)
-        {
-            Debug.Assert(
-                actionName.Contains("ing "),
-                "Action name should be formatted like 'Doing something'");
-
-            try
-            {
-                await action().ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.exceptionDialog
-                    .Show(this, $"{actionName} failed", e);
-            }
-        }
     }
 }

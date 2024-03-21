@@ -402,10 +402,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
 
             if (e.KeyCode == Keys.F5)
             {
-                InvokeActionAsync(
-                        () => this.viewModel.Value.RefreshSelectedNodeAsync(),
-                        "Refreshing projects")
-                    .ContinueWith(_ => { });
+                this.refreshButton.PerformClick();
             }
             else if (e.KeyCode == Keys.F3 || (e.Control && e.KeyCode == Keys.F))
             {
