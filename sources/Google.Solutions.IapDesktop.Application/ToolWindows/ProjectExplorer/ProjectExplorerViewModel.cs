@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Settings.Collection;
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,10 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             this.sessionBroker = sessionBroker;
             this.workspace = workspace;
             this.cloudConsoleService = cloudConsoleService;
+
+            this.RefreshSelectedNodeCommand = ObservableCommand.Build(
+                "Refresh",
+                RefreshSelectedNodeAsync);
 
             this.RootNode = new CloudViewModelNode(this);
 
@@ -189,6 +194,12 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     .ToList();
             }
         }
+
+        //---------------------------------------------------------------------
+        // Commands.
+        //---------------------------------------------------------------------
+
+        public ObservableCommand RefreshSelectedNodeCommand { get; }
 
         //---------------------------------------------------------------------
         // Observable properties.

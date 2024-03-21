@@ -180,6 +180,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                 viewModel,
                 m => m.IsWindowsIncluded,
                 bindingContext);
+            this.refreshButton.BindObservableCommand(
+                viewModel,
+                m => m.RefreshSelectedNodeCommand,
+                bindingContext);
 
             //
             // Context menu.
@@ -339,11 +343,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         //---------------------------------------------------------------------
         // Tool bar event handlers.
         //---------------------------------------------------------------------
-
-        private async void refreshButton_Click(object sender, EventArgs args)
-            => await InvokeActionAsync(
-                () => this.viewModel.Value.RefreshSelectedNodeAsync(),
-                "Refreshing projects").ConfigureAwait(true);
 
         private async void addButton_Click(object sender, EventArgs args)
             => await AddNewProjectAsync().ConfigureAwait(true);

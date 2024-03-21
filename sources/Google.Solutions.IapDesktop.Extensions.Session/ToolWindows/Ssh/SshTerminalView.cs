@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             this.AllowDrop = true;
             this.DragEnter += (sender, args) => 
-                new DelegateCommand<DragEventHandler, DragEventArgs>( // TODO: move to view model!
+                new DelegateCommand<DragEventHandler, DragEventArgs>(
                     "File upload",
                     args =>
                     {
