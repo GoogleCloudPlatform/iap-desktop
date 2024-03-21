@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     handler,
                     bindingContext.Object);
 
-                command.Invoke(form, EventArgs.Empty);
+                command.Execute(form, EventArgs.Empty);
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandExecuted(command),
@@ -72,7 +72,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     handler,
                     bindingContext.Object);
 
-                command.Invoke(form, EventArgs.Empty);
+                command.Execute(form, EventArgs.Empty);
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
@@ -102,7 +102,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     handler,
                     bindingContext.Object);
 
-                command.Invoke(form, EventArgs.Empty);
+                command.Execute(form, EventArgs.Empty);
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandFailed(
@@ -135,7 +135,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     handler,
                     bindingContext.Object);
 
-                command.Invoke(form, EventArgs.Empty);
+                command.Execute(form, EventArgs.Empty);
 
                 bindingContext.Verify(
                     ctx => ctx.OnCommandExecuted(command),

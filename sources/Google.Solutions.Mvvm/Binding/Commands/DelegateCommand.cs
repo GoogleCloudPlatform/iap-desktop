@@ -38,6 +38,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         where THandler : Delegate
         where TEventArgs : EventArgs
     {
+        private readonly EventHandler<TEventArgs> handler;
         public DelegateCommand(
             string text,
             Action<TEventArgs> execute,
@@ -64,7 +65,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            this.Invoke = invokeHandler;
+            this.handler = invokeHandler;
         }
 
         public DelegateCommand(
@@ -93,24 +94,15 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            this.Invoke = invokeHandler;
+            this.handler = invokeHandler;
         }
 
         /// <summary>
         /// Delegate to assign to an event handler.
         /// </summary>
-        public EventHandler<TEventArgs> Invoke { get; }
-    }
-
-    /// <summary>
-    /// Specializations for typed delegates.
-    /// </summary>
-    public static class DelegateCommandExtensions
-    {
-        public static DragEventHandler DragDelegate(
-            this DelegateCommand<DragEventHandler, DragEventArgs> command)
+        public void Execute(object sender, TEventArgs args)
         {
-            return (sender, args) => command.Invoke(sender, args);
+            this.handler(sender, args);
         }
     }
 }

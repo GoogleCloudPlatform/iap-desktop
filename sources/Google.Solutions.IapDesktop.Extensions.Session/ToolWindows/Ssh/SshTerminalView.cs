@@ -57,29 +57,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             this.AllowDrop = true;
-            this.DragEnter += new DelegateCommand<DragEventHandler, DragEventArgs>(
-                "File upload",
-                args =>
-                {
-                    if (args.Data.GetDataPresent(DataFormats.FileDrop) &&
-                        SshTerminalViewModel
-                            .GetDroppableFiles(args.Data.GetData(DataFormats.FileDrop))
-                            .Any())
+            this.DragEnter += (sender, args) => 
+                new DelegateCommand<DragEventHandler, DragEventArgs>( // TODO: move to view model!
+                    "File upload",
+                    args =>
                     {
-                        args.Effect = DragDropEffects.Copy;
-                    }
-                },
-                bindingContext).DragDelegate();
-            this.DragDrop += new DelegateCommand<DragEventHandler, DragEventArgs>(
-                "File upload",
-                args =>
-                {
-                    var dropData = args.Data.GetData(DataFormats.FileDrop);
-                    var files = SshTerminalViewModel.GetDroppableFiles(dropData);
+                        if (args.Data.GetDataPresent(DataFormats.FileDrop) &&
+                            SshTerminalViewModel
+                                .GetDroppableFiles(args.Data.GetData(DataFormats.FileDrop))
+                                .Any())
+                        {
+                            args.Effect = DragDropEffects.Copy;
+                        }
+                    },
+                    bindingContext)
+                .Execute(sender, args);
+            this.DragDrop += (sender, args) => 
+                new DelegateCommand<DragEventHandler, DragEventArgs>(
+                    "File upload",
+                    args =>
+                    {
+                        var dropData = args.Data.GetData(DataFormats.FileDrop);
+                        var files = SshTerminalViewModel.GetDroppableFiles(dropData);
 
-                    return this.viewModel.UploadFilesAsync(files);
-                },
-                bindingContext).DragDelegate();
+                        return this.viewModel.UploadFilesAsync(files);
+                    },
+                    bindingContext)
+                .Execute(sender, args);
         }
 
         private void OnAuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
