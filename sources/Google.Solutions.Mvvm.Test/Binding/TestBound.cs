@@ -95,7 +95,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Value = "test"
             };
 
-            string stringValue = bound.Value;
+            var stringValue = bound.Value;
             Assert.AreEqual("test", stringValue);
         }
 

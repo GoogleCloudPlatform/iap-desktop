@@ -20,9 +20,12 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
+#if DEBUG
+using System.Collections.Generic;
+#endif
 
 #pragma warning disable CA1810 // Initialize reference type static fields inline
 

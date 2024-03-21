@@ -38,7 +38,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels;
@@ -50,6 +49,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+#if DEBUG
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics;
+#endif
 
 namespace Google.Solutions.IapDesktop.Extensions.Session
 {

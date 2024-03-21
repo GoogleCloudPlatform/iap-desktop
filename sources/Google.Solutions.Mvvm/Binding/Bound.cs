@@ -46,14 +46,14 @@ namespace Google.Solutions.Mvvm.Binding
 
         public T Value
         {
-            readonly get 
+            readonly get
             {
                 if (this.value == null)
                 {
                     throw new InvalidOperationException(
                         "The variable has not been bound yet");
                 }
-                
+
                 return this.value.ExpectNotNull(nameof(this.value));
             }
             set
