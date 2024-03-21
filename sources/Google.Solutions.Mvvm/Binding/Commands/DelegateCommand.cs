@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
@@ -37,15 +38,44 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     {
         public DelegateCommand(
             string text,
-            EventHandler<TEventArgs> handler,
+            Action<TEventArgs> execute,
             IBindingContext bindingContext) : base(text)
         {
             void invokeHandler(object sender, TEventArgs args)
             {
                 try
                 {
-                    handler(sender, args);
+                    execute(args);
                     
+                    bindingContext.OnCommandExecuted(this);
+                }
+                catch (Exception e) when (e.IsCancellation())
+                {
+                    // Ignore.
+                }
+                catch (Exception e)
+                {
+                    bindingContext.OnCommandFailed(
+                        (sender as Control)?.FindForm(),
+                        this,
+                        e);
+                }
+            }
+
+            this.Delegate = (THandler)(Delegate)(EventHandler<TEventArgs>)invokeHandler;
+        }
+
+        public DelegateCommand(
+            string text,
+            Func<TEventArgs, Task> executeAsync,
+            IBindingContext bindingContext) : base(text)
+        {
+            async void invokeHandler(object sender, TEventArgs args)
+            {
+                try
+                {
+                    await executeAsync(args).ConfigureAwait(true);
+
                     bindingContext.OnCommandExecuted(this);
                 }
                 catch (Exception e) when (e.IsCancellation())

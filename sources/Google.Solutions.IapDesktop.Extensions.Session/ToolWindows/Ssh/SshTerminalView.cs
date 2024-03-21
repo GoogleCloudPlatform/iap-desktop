@@ -22,7 +22,6 @@
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Diagnostics;
 using System.Linq;

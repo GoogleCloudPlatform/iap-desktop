@@ -32,10 +32,14 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
     [TestFixture]
     public class TestDelegateCommand
     {
+        //---------------------------------------------------------------------
+        // Synchronous.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenCommandSucceeds_ThenContextIsNotified()
+        public void WhenSynchronousExecutionSucceeds_ThenContextIsNotified()
         {
-            void handler(object sender, EventArgs args) { }
+            void handler(EventArgs args) { }
 
             using (var form = new Form())
             {
@@ -54,9 +58,9 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandThrowsException_ThenContextIsNotified()
+        public void WhenSynchronousExecutionThrowsException_ThenContextIsNotified()
         {
-            void handler(object sender, EventArgs args) {
+            void handler(EventArgs args) {
                 throw new ArgumentException();
             }
 
@@ -83,9 +87,9 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandThrowsTaskCancelledException_ThenContextIsNotNotified()
+        public void WhenSynchronousExecutionThrowsTaskCancelledException_ThenContextIsNotNotified()
         {
-            void handler(object sender, EventArgs args)
+            void handler(EventArgs args)
             {
                 throw new TaskCanceledException();
             }
@@ -109,6 +113,33 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 bindingContext.Verify(
                     ctx => ctx.OnCommandExecuted(command),
                     Times.Never);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Asynchronous.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenAsynchronousExecutionSucceeds_ThenContextIsNotified()
+        {
+            Task handler(EventArgs args) { 
+                return Task.CompletedTask;
+            }
+
+            using (var form = new Form())
+            {
+                var bindingContext = new Mock<IBindingContext>();
+                var command = new DelegateCommand<EventHandler<EventArgs>, EventArgs>(
+                    "Test",
+                    handler,
+                    bindingContext.Object);
+
+                command.Delegate(form, EventArgs.Empty);
+
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandExecuted(command),
+                    Times.Once);
             }
         }
     }
