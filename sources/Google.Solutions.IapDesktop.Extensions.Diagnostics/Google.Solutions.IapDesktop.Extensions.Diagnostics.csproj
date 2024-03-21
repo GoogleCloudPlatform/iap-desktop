@@ -5,7 +5,6 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Management extension</Description>
     <UseWindowsForms>true</UseWindowsForms>
-    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />

@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     [Service]
     public partial class DebugDockingView : ToolWindowViewBase, IView<DebugDockingViewModel>
     {
-        private DebugDockingViewModel viewModel;
+        private Bound<DebugDockingViewModel> viewModel;
 
         public DebugDockingView(
             IMainWindow mainWindow,
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
                 v => v.SelectedObject,
                 bindingContext);
 
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
         }
 
         //---------------------------------------------------------------------
@@ -68,46 +68,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 
         protected override void OnUserVisibilityChanged(bool visible)
         {
+            var viewModel = this.viewModel.Value;
 
-            this.viewModel.WriteOutput($"{this.IsActivated}\r\n");
-            this.viewModel.WriteOutput($"{this.IsHidden}\r\n");
-            this.viewModel.WriteOutput($"{this.IsFloat}\r\n");
-            this.viewModel.WriteOutput($"{this.VisibleState}\r\n");
-            this.viewModel.WriteOutput($"{this.DockState}\r\n");
-            this.viewModel.WriteOutput($"{this.Pane.ActiveContent == this}\r\n");
-            this.viewModel.WriteOutput($"\r\n");
+            viewModel.WriteOutput($"{this.IsActivated}\r\n");
+            viewModel.WriteOutput($"{this.IsHidden}\r\n");
+            viewModel.WriteOutput($"{this.IsFloat}\r\n");
+            viewModel.WriteOutput($"{this.VisibleState}\r\n");
+            viewModel.WriteOutput($"{this.DockState}\r\n");
+            viewModel.WriteOutput($"{this.Pane.ActiveContent == this}\r\n");
+            viewModel.WriteOutput($"\r\n");
 
-            if (this.IsActivated != this.viewModel.Snapshot.Value.IsActivated)
+            if (this.IsActivated != viewModel.Snapshot.Value.IsActivated)
             {
-                this.viewModel.WriteOutput($"IsActivated: {this.viewModel.Snapshot.Value.IsActivated} -> {this.IsActivated}\r\n");
+                viewModel.WriteOutput($"IsActivated: {viewModel.Snapshot.Value.IsActivated} -> {this.IsActivated}\r\n");
             }
 
-            if (this.IsHidden != this.viewModel.Snapshot.Value.IsHidden)
+            if (this.IsHidden != viewModel.Snapshot.Value.IsHidden)
             {
-                this.viewModel.WriteOutput($"IsHidden: {this.viewModel.Snapshot.Value.IsHidden} -> {this.IsHidden}\r\n");
+                viewModel.WriteOutput($"IsHidden: {viewModel.Snapshot.Value.IsHidden} -> {this.IsHidden}\r\n");
             }
 
-            if (this.IsFloat != this.viewModel.Snapshot.Value.IsFloat)
+            if (this.IsFloat != viewModel.Snapshot.Value.IsFloat)
             {
-                this.viewModel.WriteOutput($"IsFloat: {this.viewModel.Snapshot.Value.IsFloat} -> {this.IsFloat}\r\n");
+                viewModel.WriteOutput($"IsFloat: {viewModel.Snapshot.Value.IsFloat} -> {this.IsFloat}\r\n");
             }
 
-            if (this.VisibleState != this.viewModel.Snapshot.Value.VisibleState)
+            if (this.VisibleState != viewModel.Snapshot.Value.VisibleState)
             {
-                this.viewModel.WriteOutput($"VisibleState: {this.viewModel.Snapshot.Value.VisibleState} -> {this.VisibleState}\r\n");
+                viewModel.WriteOutput($"VisibleState: {viewModel.Snapshot.Value.VisibleState} -> {this.VisibleState}\r\n");
             }
 
-            if (this.DockState != this.viewModel.Snapshot.Value.DockState)
+            if (this.DockState != viewModel.Snapshot.Value.DockState)
             {
-                this.viewModel.WriteOutput($"DockState: {this.viewModel.Snapshot.Value.DockState} -> {this.DockState}\r\n");
+                viewModel.WriteOutput($"DockState: {viewModel.Snapshot.Value.DockState} -> {this.DockState}\r\n");
             }
 
-            if (this.IsUserVisible != this.viewModel.Snapshot.Value.IsUserVisible)
+            if (this.IsUserVisible != viewModel.Snapshot.Value.IsUserVisible)
             {
-                this.viewModel.WriteOutput($"IsUserVisible: {this.viewModel.Snapshot.Value.IsUserVisible} -> {this.IsUserVisible}\r\n");
+                viewModel.WriteOutput($"IsUserVisible: {viewModel.Snapshot.Value.IsUserVisible} -> {this.IsUserVisible}\r\n");
             }
 
-            this.viewModel.Snapshot.Value = new DebugDockingViewModel.StateSnapshot()
+            viewModel.Snapshot.Value = new DebugDockingViewModel.StateSnapshot()
             {
                 IsActivated = this.IsActivated,
                 IsHidden = this.IsHidden,
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.viewModel.ClearOutput();
+            this.viewModel.Value.ClearOutput();
         }
     }
 }

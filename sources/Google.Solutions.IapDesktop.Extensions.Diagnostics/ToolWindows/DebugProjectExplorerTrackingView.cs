@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
         : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>,
           IView<DebugProjectExplorerTrackingViewModel>
     {
-        private DebugProjectExplorerTrackingViewModel viewModel;
+        private Bound<DebugProjectExplorerTrackingViewModel> viewModel;
 
         public DebugProjectExplorerTrackingView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
                 viewModel,
                 m => m.InstanceName,
                 bindingContext);
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
         }
 
         //---------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
         {
             if (node is IProjectModelInstanceNode vmNode)
             {
-                this.viewModel.Node.Value = vmNode;
+                this.viewModel.Value.Node.Value = vmNode;
             }
             else
             {
