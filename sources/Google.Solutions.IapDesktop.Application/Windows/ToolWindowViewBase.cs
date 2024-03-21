@@ -95,16 +95,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         }
 
         public ToolWindowViewBase(
-            IServiceProvider serviceProvider,
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository,
             DockState defaultDockState) : this()
         {
-            this.panel = serviceProvider.GetService<IMainWindow>().MainPanel;
-            var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
+            this.panel = mainWindow
+                .ExpectNotNull(nameof(mainWindow))
+                .MainPanel;
 
             // Read persisted window state.
-            var state = stateRepository.GetSetting(
-                GetType().Name, // Unique name of tool window
-                defaultDockState);
+            var state = stateRepository
+                .ExpectNotNull(nameof(stateRepository))
+                .GetSetting(
+                    GetType().Name, // Unique name of tool window
+                    defaultDockState);
             this.restoreState = state.DockState.Value;
 
             // Save persisted window state.

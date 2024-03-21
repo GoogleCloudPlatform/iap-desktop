@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -30,8 +31,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     [Service]
     public partial class DebugCommonControlsView : ToolWindowViewBase, IView<DebugCommonControlsViewModel>
     {
-        public DebugCommonControlsView(IServiceProvider serviceProvider)
-            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
+        public DebugCommonControlsView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(
+                  mainWindow, 
+                  stateRepository, 
+                  WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
         {
             InitializeComponent();
 

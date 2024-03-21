@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -67,7 +68,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             => this.toolbarCommands.Value;
 
         public ProjectExplorerView(IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.DockLeft)
+            : base(
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<ToolWindowStateRepository>(),
+                  DockState.DockLeft)
         {
             InitializeComponent();
 

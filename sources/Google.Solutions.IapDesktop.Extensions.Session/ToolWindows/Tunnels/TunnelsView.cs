@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -35,8 +36,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels
     [SkipCodeCoverage("All logic in view model")]
     public partial class TunnelsView : ToolWindowViewBase, IView<TunnelsViewModel>
     {
-        public TunnelsView(IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.DockBottomAutoHide)
+        public TunnelsView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository, DockState.DockBottomAutoHide)
         {
             InitializeComponent();
 

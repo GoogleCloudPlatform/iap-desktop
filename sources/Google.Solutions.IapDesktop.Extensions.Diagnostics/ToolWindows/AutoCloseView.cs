@@ -19,18 +19,20 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {
     [Service]
     public partial class AutoCloseView : DocumentWindow, IView<AutoCloseViewModel>
     {
-        public AutoCloseView(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public AutoCloseView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository)
         {
             InitializeComponent();
         }

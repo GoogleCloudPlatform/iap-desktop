@@ -132,7 +132,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         //---------------------------------------------------------------------
 
         public RdpView(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+            : base(
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<ToolWindowStateRepository>(),
+                  serviceProvider.GetService<IBindingContext>())
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventQueue>();

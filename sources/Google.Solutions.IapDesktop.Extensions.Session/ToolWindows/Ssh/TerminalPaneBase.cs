@@ -21,6 +21,8 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
@@ -70,7 +72,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
 
         internal TerminalViewBase(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+            : base(
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<ToolWindowStateRepository>(),
+                  serviceProvider.GetService<IBindingContext>())
         {
             InitializeComponent();
 

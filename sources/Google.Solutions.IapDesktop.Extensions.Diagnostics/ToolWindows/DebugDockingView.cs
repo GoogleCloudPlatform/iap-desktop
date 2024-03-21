@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -33,8 +34,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     {
         private DebugDockingViewModel viewModel;
 
-        public DebugDockingView(IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.DockRightAutoHide)
+        public DebugDockingView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository, DockState.DockRightAutoHide)
         {
             InitializeComponent();
             this.TabText = this.Text;

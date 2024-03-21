@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
@@ -30,8 +31,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     [Service]
     public partial class DebugServiceRegistryView : DocumentWindow, IView<DebugServiceRegistryViewModel>
     {
-        public DebugServiceRegistryView(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public DebugServiceRegistryView(
+            IMainWindow mainWindow,
+            ToolWindowStateRepository stateRepository)
+            : base(mainWindow, stateRepository)
         {
             InitializeComponent();
         }
