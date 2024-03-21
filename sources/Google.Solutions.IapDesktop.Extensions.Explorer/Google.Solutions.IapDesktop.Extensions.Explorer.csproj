@@ -5,7 +5,6 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Management extension</Description>
     <UseWindowsForms>true</UseWindowsForms>
-    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="ToolWindows\Install\About.md" />
