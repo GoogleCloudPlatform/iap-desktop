@@ -12,9 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
-    <PackageReference Include="Google.Apis" Version="1.66.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
+    <PackageReference Include="Google.Apis" Version="1.67.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.67.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.67.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
