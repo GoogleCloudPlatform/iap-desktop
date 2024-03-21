@@ -24,6 +24,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
+
 namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
@@ -62,7 +64,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            this.Delegate = (THandler)(Delegate)(EventHandler<TEventArgs>)invokeHandler;
+            this.Invoke = invokeHandler;
         }
 
         public DelegateCommand(
@@ -91,12 +93,24 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            this.Delegate = (THandler)(Delegate)(EventHandler<TEventArgs>)invokeHandler;
+            this.Invoke = invokeHandler;
         }
 
         /// <summary>
         /// Delegate to assign to an event handler.
         /// </summary>
-        public THandler Delegate { get; }
+        public EventHandler<TEventArgs> Invoke { get; }
+    }
+
+    /// <summary>
+    /// Specializations for typed delegates.
+    /// </summary>
+    public static class DelegateCommandExtensions
+    {
+        public static DragEventHandler DragDelegate(
+            this DelegateCommand<DragEventHandler, DragEventArgs> command)
+        {
+            return (sender, args) => command.Invoke(sender, args);
+        }
     }
 }
