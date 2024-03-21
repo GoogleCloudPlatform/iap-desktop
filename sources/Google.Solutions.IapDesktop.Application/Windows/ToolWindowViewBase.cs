@@ -43,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindowViewBase : DockContent
     {
-        private readonly IExceptionDialog exceptionDialog;
         private readonly DockPanel panel;
 
         /// <summary>
@@ -99,7 +98,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             IServiceProvider serviceProvider,
             DockState defaultDockState) : this()
         {
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.panel = serviceProvider.GetService<IMainWindow>().MainPanel;
             var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
 
