@@ -9,7 +9,7 @@
     <PostBuildEvent />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.67.0" />
     <PackageReference Include="Google.Solutions.ThirdParty.Libssh2" Version="1.11.0.34" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
