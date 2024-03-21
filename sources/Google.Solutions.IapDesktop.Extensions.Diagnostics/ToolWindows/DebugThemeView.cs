@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             public override string Category => this.category;
 
             public override Type ComponentType
-                => null;
+                => this.value.GetType();
 
             public override bool IsReadOnly => true;
 

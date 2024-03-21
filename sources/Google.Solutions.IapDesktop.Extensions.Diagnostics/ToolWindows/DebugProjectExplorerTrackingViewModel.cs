@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
     {
         public DebugProjectExplorerTrackingViewModel()
         {
-            this.Node = ObservableProperty.Build<IProjectModelInstanceNode>(null);
+            this.Node = ObservableProperty.Build<IProjectModelInstanceNode?>(null);
             this.InstanceName = ObservableProperty.Build(
                 this.Node,
                 n => n?.DisplayName);
@@ -40,8 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public ObservableProperty<IProjectModelInstanceNode> Node { get; }
+        public ObservableProperty<IProjectModelInstanceNode?> Node { get; }
 
-        public ObservableFunc<string> InstanceName { get; }
+        public ObservableFunc<string?> InstanceName { get; }
     }
 }
