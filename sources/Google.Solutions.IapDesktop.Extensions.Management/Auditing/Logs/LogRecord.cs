@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,28 +36,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
     public class LogRecord
     {
         [JsonProperty("insertId")]
-        public string InsertId { get; set; }
+        public string? InsertId { get; set; }
 
         [JsonProperty("logName")]
-        public string LogName { get; set; }
+        public string? LogName { get; set; }
 
         [JsonProperty("severity")]
-        public string Severity { get; set; }
+        public string? Severity { get; set; }
 
         [JsonProperty("resource")]
-        public ResourceRecord Resource { get; set; }
+        public ResourceRecord? Resource { get; set; }
 
         [JsonProperty("timestamp")]
-        public DateTime Timestamp { get; set; }
+        public DateTime? Timestamp { get; set; }
 
         [JsonProperty("protoPayload")]
-        public AuditLogRecord ProtoPayload { get; set; }
+        public AuditLogRecord? ProtoPayload { get; set; }
 
         [JsonProperty("operation")]
-        public OperationRecord Operation { get; set; }
+        public OperationRecord? Operation { get; set; }
 
         [JsonProperty("labels")]
-        public IDictionary<string, string> Labels { get; set; }
+        public IDictionary<string, string>? Labels { get; set; }
 
         //---------------------------------------------------------------------
         // Derived part.
@@ -68,7 +69,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
             // LogName has the format
             // projects/<project-ud>/logs/cloudaudit.googleapis.com%2F<type>'
             //
-            var parts = this.LogName.Split('/');
+            var parts = this.LogName
+                .ExpectNotNull(nameof(this.LogName))
+                .Split('/');
             if (parts.Length != 4)
             {
                 throw new ArgumentException(
@@ -80,23 +83,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
 
         public string ProjectId => SplitLogName()[1];
 
-        public bool IsSystemEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Fsystem_event");
+        public bool IsSystemEvent
+        {
+            get => this.LogName?.EndsWith("cloudaudit.googleapis.com%2Fsystem_event") ?? false;
+        }
 
-        public bool IsActivityEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Factivity");
+        public bool IsActivityEvent
+        {
+            get => this.LogName?.EndsWith("cloudaudit.googleapis.com%2Factivity") ?? false;
+        }
 
-        public bool IsDataAccessEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Fdata_access");
+        public bool IsDataAccessEvent
+        {
+            get => this.LogName?.EndsWith("cloudaudit.googleapis.com%2Fdata_access") ?? false;
+        }
 
         //---------------------------------------------------------------------
         // Parsing.
         //---------------------------------------------------------------------
 
-        public static LogRecord Deserialize(JsonReader reader)
+        public static LogRecord? Deserialize(JsonReader reader)
         {
             var serializer = JsonSerializer.Create();
             return serializer.Deserialize<LogRecord>(reader);
         }
 
-        public static LogRecord Deserialize(string json)
+        public static LogRecord? Deserialize(string json)
         {
             using (var reader = new JsonTextReader(new StringReader(json)))
             {
@@ -114,21 +126,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
     public class ResourceRecord
     {
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         [JsonProperty("labels")]
-        public IDictionary<string, string> Labels { get; set; }
+        public IDictionary<string, string>? Labels { get; set; }
     }
 
     public class OperationRecord
     {
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonProperty("last")]
-        public bool IsLast { get; set; }
+        public bool? IsLast { get; set; }
 
         [JsonProperty("first")]
-        public bool IsFirst { get; set; }
+        public bool? IsFirst { get; set; }
     }
 }

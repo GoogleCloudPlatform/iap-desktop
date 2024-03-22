@@ -59,10 +59,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
         }
 
         internal static string CreateFilterString(
-            IEnumerable<string> zones,
-            IEnumerable<ulong> instanceIds,
-            IEnumerable<string> methods,
-            IEnumerable<string> severities,
+            IEnumerable<string>? zones,
+            IEnumerable<ulong>? instanceIds,
+            IEnumerable<string>? methods,
+            IEnumerable<string>? severities,
             DateTime startTime)
         {
             Debug.Assert(startTime.Kind == DateTimeKind.Utc);

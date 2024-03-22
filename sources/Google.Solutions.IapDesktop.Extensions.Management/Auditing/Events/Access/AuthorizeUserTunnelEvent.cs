@@ -58,9 +58,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         // Record-specific fields.
         //---------------------------------------------------------------------
 
-        public string DestinationHost =>
+        public string? DestinationHost =>
             base.LogRecord.ProtoPayload.RequestMetadata?["destinationAttributes"]?.Value<string>("ip");
-        public string DestinationPort =>
+        public string? DestinationPort =>
             base.LogRecord.ProtoPayload.RequestMetadata?["destinationAttributes"]?.Value<string>("port");
 
         public ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])

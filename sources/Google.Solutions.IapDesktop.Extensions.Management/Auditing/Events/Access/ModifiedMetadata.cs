@@ -25,7 +25,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
 {
     internal static class ModifiedMetadata
     {
-        internal static string[] ExtractModifiedMetadataKeys(
+        internal static string[]? ExtractModifiedMetadataKeys(
             LogRecord record,
             string fieldName)
         {

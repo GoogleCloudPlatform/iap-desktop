@@ -33,11 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
         public abstract EventCategory Category { get; }
         public LogRecord LogRecord { get; }
 
-        public DateTime Timestamp => this.LogRecord.Timestamp;
+        public DateTime? Timestamp => this.LogRecord.Timestamp;
 
-        public string Severity => this.LogRecord.Severity;
+        public string? Severity => this.LogRecord.Severity;
 
-        public string Principal
+        public string? Principal
         {
             get
             {
@@ -65,21 +65,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             }
         }
 
-        public StatusInfo Status
+        public StatusInfo? Status
         {
             get => this.LogRecord.ProtoPayload?.Status?.Message != null
                 ? this.LogRecord.ProtoPayload?.Status
                 : null;
         }
 
-        public string SourceHost
+        public string? SourceHost
         {
-            get => this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
+            get => this.LogRecord.ProtoPayload?.RequestMetadata?.Value<string>("callerIp");
         }
 
-        public string UserAgent
+        public string? UserAgent
         {
-            get => this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
+            get => this.LogRecord.ProtoPayload?.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
         }
 
         public string UserAgentShort
@@ -118,14 +118,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             }
         }
 
-        public string DeviceState
+        public string? DeviceState
             => this.LogRecord
                 .ProtoPayload?
                 .Metadata?
                 .Value<string>("device_state")
                 .NullIfEmpty();
 
-        public string DeviceId
+        public string? DeviceId
             => this.LogRecord
                 .ProtoPayload?
                 .Metadata?
