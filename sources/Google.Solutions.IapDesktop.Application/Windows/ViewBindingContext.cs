@@ -69,10 +69,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             //
             var parent = window ?? GetMainWindow();
 
+            //
+            // Log exception, but don't include the full error message
+            // because it might contain project names or other PII.
+            //
             ApplicationEventSource.Log.CommandFailed(
                 command.Id,
                 command.GetType().FullName(),
-                exception.FullMessage());
+                exception.Unwrap().GetType().Name);
 
             this.exceptionDialog.Show(
                 parent,
