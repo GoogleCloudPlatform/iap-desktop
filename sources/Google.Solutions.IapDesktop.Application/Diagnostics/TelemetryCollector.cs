@@ -50,16 +50,19 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         private readonly MeasurementSession session;
         private readonly IMeasurementClient client;
         private readonly QueueUserWorkItem queueUserWorkItem;
+        private readonly IReadOnlyCollection<KeyValuePair<string, string>> defaultParameters;
 
         public delegate bool QueueUserWorkItem(WaitCallback callback);
 
         internal TelemetryCollector(
             IMeasurementClient client,
             IInstall install,
+            IReadOnlyCollection<KeyValuePair<string, string>> defaultParameters,
             QueueUserWorkItem queueUserWorkItem)
         {
             this.client = client.ExpectNotNull(nameof(client));
-            this.queueUserWorkItem = queueUserWorkItem;
+            this.defaultParameters = defaultParameters.ExpectNotNull(nameof(defaultParameters));
+            this.queueUserWorkItem = queueUserWorkItem.ExpectNotNull(nameof(queueUserWorkItem));
             install.ExpectNotNull(nameof(install));
 
             //
@@ -78,10 +81,12 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
 
         public TelemetryCollector(
             IMeasurementClient client,
-            IInstall install)
+            IInstall install,
+            IReadOnlyCollection<KeyValuePair<string, string>> defaultParameters)
             : this(
                   client,
                   install,
+                  defaultParameters,
                   ThreadPool.QueueUserWorkItem)
         {
         }
@@ -104,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
                 _ = this.client.CollectEventAsync(
                         this.session,
                         eventName,
-                        parameters,
+                        this.defaultParameters.Concat(parameters),
                         CancellationToken.None)
                     .ContinueWith(
                         t => ApplicationTraceSource.Log.TraceError(t.Exception),
@@ -154,10 +159,6 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
 
                     case ApplicationEventSource.CommandFailedId:
                         Collect("app_cmd_failed", eventData);
-                        break;
-
-                    case ApplicationEventSource.ThemeLoadedId:
-                        Collect("app_theme_loaded", eventData);
                         break;
                 }
             }

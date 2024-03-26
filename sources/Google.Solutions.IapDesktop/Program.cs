@@ -525,7 +525,16 @@ namespace Google.Solutions.IapDesktop
                         Install.UserAgent,
                         AnalyticsStream.ApiKey,
                         AnalyticsStream.MeasurementId),
-                    install)
+                    install,
+                    new Dictionary<string, string>()
+                    {
+                        { DefaultParameters.UserAgent, Install.UserAgent.ToApplicationName() },
+                        { DefaultParameters.UserAgentArchitecture, Install.ProcessArchitecture.ToString() },
+                        { DefaultParameters.UserAgentPlatformVersion, Environment.OSVersion.Version.ToString() },
+                        { "wmdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
+                        { "wmdpi", DeviceCapabilities.Get().SystemDpi.ToString() },
+                        { "ent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
+                    })
                 {
                     Enabled = appSettings.IsTelemetryEnabled.Value
                 });

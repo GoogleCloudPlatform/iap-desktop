@@ -40,7 +40,6 @@ namespace Google.Solutions.IapDesktop.Application
 
         public const int CommandExecutedId = 1;
         public const int CommandFailedId = 2;
-        public const int ThemeLoadedId = 3;
 
         [Event(CommandExecutedId, Level = EventLevel.Informational)]
         internal void CommandExecuted(string id)
@@ -52,11 +51,5 @@ namespace Google.Solutions.IapDesktop.Application
             string type,
             string error)
             => WriteEvent(CommandFailedId, id, type, error);
-
-        [Event(ThemeLoadedId, Level = EventLevel.Informational)]
-        internal void ThemeLoaded(
-            int systemDpi,
-            bool darkMode)
-            => WriteEvent(ThemeLoadedId, systemDpi, darkMode);
     }
 }
