@@ -93,8 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             var parameters = eventData.PayloadNames
                 .Zip(
                     eventData.Payload,
-                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString() ?? string.Empty))
-                .ToDictionary();
+                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString() ?? string.Empty));
 
             //
             // Force call to be performed on a thread pool thread so that we never
