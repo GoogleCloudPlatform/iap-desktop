@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Analytics
         Task CollectEventAsync(
             MeasurementSession session,
             string eventName,
-            IDictionary<string, string> parameters,
+            IEnumerable<KeyValuePair<string, string>> parameters,
             CancellationToken cancellationToken);
     }
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.Apis.Analytics
         public async Task CollectEventAsync(
             MeasurementSession session,
             string eventName,
-            IDictionary<string, string>? parameters,
+            IEnumerable<KeyValuePair<string, string>>? parameters,
             CancellationToken cancellationToken)
         {
             session.ExpectNotNull(nameof(session));
@@ -103,29 +103,29 @@ namespace Google.Solutions.Apis.Analytics
             {
                 await this.service
                     .CollectAsync(
-                    new MeasurementService.MeasurementRequest()
-                    {
-                        DebugMode = session.DebugMode,
-                        ClientId = session.ClientId,
-                        UserId = session.UserId,
-                        UserProperties = session
-                                .UserProperties
-                                .EnsureNotNull()
-                                .ToDictionary(
-                                    kvp => kvp.Key,
-                                    kvp => new MeasurementService.PropertySection(kvp.Value)),
-                        Events = new[]
-                            {
-                                new MeasurementService.EventSection()
+                        new MeasurementService.MeasurementRequest()
+                        {
+                            DebugMode = session.DebugMode,
+                            ClientId = session.ClientId,
+                            UserId = session.UserId,
+                            UserProperties = session
+                                    .UserProperties
+                                    .EnsureNotNull()
+                                    .ToDictionary(
+                                        kvp => kvp.Key,
+                                        kvp => new MeasurementService.PropertySection(kvp.Value)),
+                            Events = new[]
                                 {
-                                    Name = eventName,
-                                    Parameters = parameters
-                                        .EnsureNotNull()
-                                        .Concat(session.GenerateParameters())
-                                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                                    new MeasurementService.EventSection()
+                                    {
+                                        Name = eventName,
+                                        Parameters = parameters
+                                            .EnsureNotNull()
+                                            .Concat(session.GenerateParameters())
+                                            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                                    }
                                 }
-                            }
-                    },
+                        },
                         cancellationToken)
                     .ConfigureAwait(false);
             }

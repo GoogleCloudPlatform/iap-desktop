@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
@@ -56,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
             var listener = new TelemetryCollector(
                 client.Object,
                 CreateInstall().Object,
+                new Dictionary<string, string>(),
                 SynchronousQueueUserWorkItem);
 
             listener.Enabled = true;
@@ -80,6 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
             var listener = new TelemetryCollector(
                 client.Object,
                 CreateInstall().Object,
+                new Dictionary<string, string>(),
                 SynchronousQueueUserWorkItem);
 
             listener.Enabled = false;
@@ -92,7 +95,69 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
                 c => c.CollectEventAsync(
                     It.IsAny<MeasurementSession>(),
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<IEnumerable<KeyValuePair<string, string>>>(),
+                    It.IsAny<CancellationToken>()),
+                Times.AtLeastOnce);
+        }
+
+        //---------------------------------------------------------------------
+        // Collect.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void CollectIncludesDefaultParameters()
+        {
+
+            var client = new Mock<IMeasurementClient>();
+            var listener = new TelemetryCollector(
+                client.Object,
+                CreateInstall().Object,
+                new Dictionary<string, string>()
+                {
+                    { "default-1", "1" },
+                    { "default-2", "2" }
+                },
+                SynchronousQueueUserWorkItem)
+            {
+                Enabled = true
+            };
+
+            ApplicationEventSource.Log.CommandExecuted("test-command");
+
+            client.Verify(
+                c => c.CollectEventAsync(
+                    It.IsAny<MeasurementSession>(),
+                    It.IsAny<string>(),
+                    It.Is<IEnumerable<KeyValuePair<string, string>>>(p => p
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                        .ContainsKey("default-1")),
+                    It.IsAny<CancellationToken>()),
+                Times.AtLeastOnce);
+        }
+
+        [Test]
+        public void CollectIncludesEventParameters()
+        {
+
+            var client = new Mock<IMeasurementClient>();
+            var listener = new TelemetryCollector(
+                client.Object,
+                CreateInstall().Object,
+                new Dictionary<string, string>(),
+                SynchronousQueueUserWorkItem)
+            {
+                Enabled = true
+            };
+
+            ApplicationEventSource.Log.CommandExecuted("test-command");
+
+            client.Verify(
+                c => c.CollectEventAsync(
+                    It.IsAny<MeasurementSession>(),
+                    It.IsAny<string>(),
+                    It.Is<IEnumerable<KeyValuePair<string, string>>>(p => p
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                        .ContainsKey("id")),
                     It.IsAny<CancellationToken>()),
                 Times.AtLeastOnce);
         }
