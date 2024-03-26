@@ -102,15 +102,14 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             //
             this.queueUserWorkItem(_ =>
             {
-                _ = this.client
-                    .CollectEventAsync(
+                _ = this.client.CollectEventAsync(
                         this.session,
                         eventName,
                         parameters,
                         CancellationToken.None)
                     .ContinueWith(
                         t => ApplicationTraceSource.Log.TraceError(t.Exception),
-                        TaskContinuationOptions.NotOnFaulted);
+                        TaskContinuationOptions.OnlyOnFaulted);
             });
         }
 
