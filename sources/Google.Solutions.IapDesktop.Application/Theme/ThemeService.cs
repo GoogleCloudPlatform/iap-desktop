@@ -112,6 +112,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme))
                 .AddRuleSet(new GdiScalingRuleset());
 
+            ApplicationEventSource.Log.ThemeLoaded(
+                DeviceCapabilities.Get().SystemDpi,
+                vsTheme.IsDark);
+
             //
             // Apply the resulting theme to the different kinds of windows we have.
             //
