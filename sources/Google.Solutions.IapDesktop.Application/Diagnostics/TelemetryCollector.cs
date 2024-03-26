@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -156,6 +156,10 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
 
                     case ApplicationEventSource.CommandFailedId:
                         Collect("app_cmd_failed", eventData);
+                        break;
+
+                    case ApplicationEventSource.ThemeLoadedId:
+                        Collect("app_theme_loaded", eventData);
                         break;
                 }
             }
