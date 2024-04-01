@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -50,16 +50,19 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
         private readonly MeasurementSession session;
         private readonly IMeasurementClient client;
         private readonly QueueUserWorkItem queueUserWorkItem;
+        private readonly IReadOnlyCollection<KeyValuePair<string, string>> defaultParameters;
 
         public delegate bool QueueUserWorkItem(WaitCallback callback);
 
         internal TelemetryCollector(
             IMeasurementClient client,
             IInstall install,
+            IReadOnlyCollection<KeyValuePair<string, string>> defaultParameters,
             QueueUserWorkItem queueUserWorkItem)
         {
             this.client = client.ExpectNotNull(nameof(client));
-            this.queueUserWorkItem = queueUserWorkItem;
+            this.defaultParameters = defaultParameters.ExpectNotNull(nameof(defaultParameters));
+            this.queueUserWorkItem = queueUserWorkItem.ExpectNotNull(nameof(queueUserWorkItem));
             install.ExpectNotNull(nameof(install));
 
             //
@@ -78,10 +81,12 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
 
         public TelemetryCollector(
             IMeasurementClient client,
-            IInstall install)
+            IInstall install,
+            IReadOnlyCollection<KeyValuePair<string, string>> defaultParameters)
             : this(
                   client,
                   install,
+                  defaultParameters,
                   ThreadPool.QueueUserWorkItem)
         {
         }
@@ -93,8 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             var parameters = eventData.PayloadNames
                 .Zip(
                     eventData.Payload,
-                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString() ?? string.Empty))
-                .ToDictionary();
+                    (n, v) => new KeyValuePair<string, string>(n, v?.ToString() ?? string.Empty));
 
             //
             // Force call to be performed on a thread pool thread so that we never
@@ -105,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
                 _ = this.client.CollectEventAsync(
                         this.session,
                         eventName,
-                        parameters,
+                        this.defaultParameters.Concat(parameters),
                         CancellationToken.None)
                     .ContinueWith(
                         t => ApplicationTraceSource.Log.TraceError(t.Exception),
