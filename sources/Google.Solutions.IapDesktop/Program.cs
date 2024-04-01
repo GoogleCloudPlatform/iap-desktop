@@ -531,9 +531,9 @@ namespace Google.Solutions.IapDesktop
                         { DefaultParameters.UserAgent, Install.UserAgent.ToApplicationName() },
                         { DefaultParameters.UserAgentArchitecture, Install.ProcessArchitecture.ToString() },
                         { DefaultParameters.UserAgentPlatformVersion, Environment.OSVersion.Version.ToString() },
-                        { "wmdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
-                        { "wmdpi", DeviceCapabilities.Get().SystemDpi.ToString() },
-                        { "ent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
+                        { "osdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
+                        { "osdpi", DeviceCapabilities.Get().SystemDpi.ToString() },
+                        { "apent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
                     })
                 {
                     Enabled = appSettings.IsTelemetryEnabled.Value
