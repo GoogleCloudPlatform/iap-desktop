@@ -835,6 +835,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
+        private unsafe void SendKeysUnsafe(
+            int keyDataLength,
+            bool* keyUpPtr,
+            int* keyDataPtr)
+        {
+            this.client.Focus();
+            this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+        }
+
+        /// <summary>
+        /// Simulate a key chord to show the security screen.
+        /// </summary>
         public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
@@ -851,6 +863,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        /// <summary>
+        /// Simulate a key chord toopen task manager.
+        /// </summary>
         public void ShowTaskManager()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
@@ -867,15 +882,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-        private unsafe void SendKeysUnsafe(
-            int keyDataLength,
-            bool* keyUpPtr,
-            int* keyDataPtr)
-        {
-            this.client.Focus();
-            this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
-        }
-
+        /// <summary>
+        /// Send a sequence of virtual keys. Keys may use modifiers.
+        /// </summary>
         public void SendKeys(IEnumerable<Keys> keys)
         {
             foreach (var key in keys)
