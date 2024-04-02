@@ -35,14 +35,14 @@ namespace Google.Solutions.Mvvm.Test.Input
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyUnknown_ThenToVirtualKeysThrowsException()
+        public void WhenTextContainsUnmappedChar_ThenToVirtualKeysThrowsException()
         {
             Assert.Throws<FormatException>(
                 () => KeyboardLayout.Current.ToVirtualKeys("Ä!").ToList());
         }
 
         [Test]
-        public void WhenKeysValid_ThenToVirtualKeysReturnsChords()
+        public void WhenTextValid_ThenToVirtualKeysReturnsChords()
         {
             var chords = KeyboardLayout.Current.ToVirtualKeys("Abc!");
 
@@ -53,6 +53,22 @@ namespace Google.Solutions.Mvvm.Test.Input
                     Keys.B,
                     Keys.C,
                     Keys.D1 | Keys.Shift
+                },
+                chords);
+        }
+
+        [Test]
+        public void WhenTextContainsCarriageReturns_ThenToVirtualKeysReturnsChords()
+        {
+            var chords = KeyboardLayout.Current.ToVirtualKeys("1\r\n2\r").ToList();
+
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    Keys.D1,
+                    Keys.Enter | Keys.Control,
+                    Keys.D2,
+                    Keys.Enter
                 },
                 chords);
         }

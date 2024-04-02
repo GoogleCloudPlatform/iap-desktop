@@ -47,8 +47,17 @@ namespace Google.Solutions.Mvvm.Input
         /// <returns>Virtual keys, with modifiers</returns>
         public IEnumerable<Keys> ToVirtualKeys(string text)
         {
-            foreach (var ch in text)
+            for (int i = 0; i < text.Length; i++)
             {
+                var ch = text[i];
+                if (ch == '\r' && i < text.Length - 2 && text[i + 1] == '\n')
+                {
+                    //
+                    // Ignore a CR if it's part of a CRLF.
+                    //
+                    continue;
+                }
+
                 var result = NativeMethods.VkKeyScanEx(ch, this.hkl);
 
                 if (result == ushort.MaxValue)
