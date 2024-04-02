@@ -24,14 +24,17 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Input;
 using MSTSCLib;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -57,7 +60,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private readonly DeferredCallback deferResize;
         private Form parentForm = null;
-        private int keysSent = 0;
 
         public RdpClient()
         {
@@ -829,16 +831,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.client.Connect();
         }
 
+        //---------------------------------------------------------------------
+        // Synthetic input.
+        //---------------------------------------------------------------------
+
         public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                SendKeys(
-                    Keys.ControlKey,
-                    Keys.Menu,
-                    Keys.Delete);
+                //
+                // The RDP control sometimes swallows the first key combination
+                // that is sent. So start by a harmless ESC.
+                //
+                SendKeys(new[] {
+                    Keys.Escape,
+                    Keys.Control | Keys.Alt | Keys.Delete });
             }
         }
 
@@ -848,31 +857,65 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                SendKeys(
-                    Keys.ControlKey,
-                    Keys.ShiftKey,
-                    Keys.Escape);
+                //
+                // The RDP control sometimes swallows the first key combination
+                // that is sent. So start by a harmless ESC.
+                //
+                SendKeys(new[] { 
+                    Keys.Escape,
+                    Keys.Control | Keys.Shift | Keys.Escape });
             }
         }
 
-        public void SendKeys(params Keys[] keys)
+        private unsafe void SendKeysUnsafe(
+            int keyDataLength,
+            bool* keyUpPtr,
+            int* keyDataPtr)
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
+            this.client.Focus();
+            this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+        }
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+        public void SendKeys(IEnumerable<Keys> keys)
+        {
+            foreach (var key in keys)
             {
-                this.client.Focus();
+                //
+                // Convert each key (which might contain modifiers)
+                // into a sequence of scan codes.
+                //
+                var scanCodes = KeyboardLayout.Current.ToScanCodes(key).ToArray();
 
-                var nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
+                //
+                // Convert scan codes into simulated DOWN- and UP- key 
+                // presses.
+                //
+                var keyUp = new short[scanCodes.Length * 2];
+                var keyData = new int[scanCodes.Length * 2];
 
-                if (this.keysSent++ == 0)
+                for (int i = 0; i < scanCodes.Length; i++)
                 {
-                    // The RDP control sometimes swallows the first key combination
-                    // that is sent. So start by a harmless ESC.
-                    SendKeys(Keys.Escape);
+                    //
+                    // Generate DOWN key presses.
+                    //
+                    keyUp[i] = 0;
+                    keyData[i] = (int)scanCodes[i];
+
+                    //
+                    // Generate UP key presses (in reverse order).
+                    //
+                    keyUp[keyUp.Length - 1 - i] = 1;
+                    keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
                 }
 
-                nonScriptable.SendKeys(keys);
+                unsafe
+                {
+                    fixed (short* keyUpPtr = keyUp)
+                    fixed (int* keyDataPtr = keyData)
+                    {
+                        SendKeysUnsafe(keyData.Length, (bool*)keyUpPtr, keyDataPtr);
+                    }
+                }
             }
         }
 
