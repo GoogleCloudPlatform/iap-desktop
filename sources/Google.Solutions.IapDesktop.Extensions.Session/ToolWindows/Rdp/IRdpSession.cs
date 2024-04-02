@@ -34,6 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         void ShowTaskManager();
 
+        void SendText(string text);
+
         bool CanEnterFullScreen { get; }
     }
 

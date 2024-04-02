@@ -883,38 +883,82 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         /// <summary>
+        /// Simulate keys to type a piece of text.
+        /// </summary>
+        public void SendText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+
+            SendKeys(KeyboardLayout.Current.ToVirtualKeys(text));
+        }
+
+        /// <summary>
         /// Send a sequence of virtual keys. Keys may use modifiers.
         /// </summary>
         public void SendKeys(IEnumerable<Keys> keys)
         {
+            // TODO: handle CRLF
+            // TODO: handle umlauts
+
             foreach (var key in keys)
             {
                 //
-                // Convert each key (which might contain modifiers)
+                // Convert virtual key code (which might contain modifiers)
                 // into a sequence of scan codes.
                 //
                 var scanCodes = KeyboardLayout.Current.ToScanCodes(key).ToArray();
 
-                //
-                // Convert scan codes into simulated DOWN- and UP- key 
-                // presses.
-                //
-                var keyUp = new short[scanCodes.Length * 2];
-                var keyData = new int[scanCodes.Length * 2];
+                short[] keyUp;
+                int[] keyData;
 
-                for (int i = 0; i < scanCodes.Length; i++)
+                //
+                // If the translates to multiple scan codes, we have to send
+                // separate DOWN and UP keystrokes for each scan code.
+                //
+                // Curiously, we must not do this for "normal" characters 
+                // (single scan code), otherwise we end up with duplicate
+                // characters.
+                //
+
+                //
+                // NB. According to MSDN, scan codes need to be sent
+                // in "WM_KEYDOWN lParam format", but that seems incorrect.
+                //
+
+                if (scanCodes.Length > 1)
                 {
                     //
-                    // Generate DOWN key presses.
+                    // Convert scan codes into simulated DOWN- and UP- key 
+                    // presses.
                     //
-                    keyUp[i] = 0;
-                    keyData[i] = (int)scanCodes[i];
+                    keyUp = new short[scanCodes.Length * 2];
+                    keyData = new int[scanCodes.Length * 2];
 
+                    for (int i = 0; i < scanCodes.Length; i++)
+                    {
+                        //
+                        // Generate DOWN key presses.
+                        //
+                        keyUp[i] = 0;
+                        keyData[i] = (int)scanCodes[i];
+
+                        //
+                        // Generate UP key presses (in reverse order).
+                        //
+                        keyUp[keyUp.Length - 1 - i] = 1;
+                        keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
+                    }
+                }
+                else
+                {
                     //
-                    // Generate UP key presses (in reverse order).
+                    // Generate DOWN key press only.
                     //
-                    keyUp[keyUp.Length - 1 - i] = 1;
-                    keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
+                    keyUp = new short[] { 0 };
+                    keyData = new int[] { (int)scanCodes[0] };
                 }
 
                 unsafe

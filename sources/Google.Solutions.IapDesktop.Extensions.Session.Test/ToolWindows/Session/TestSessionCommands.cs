@@ -296,6 +296,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         //---------------------------------------------------------------------
+        // TypeClipboardText.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenTypeClipboardTextIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var connectedSession = new Mock<IRdpSession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.TypeClipboardText.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenTypeClipboardTextIsDisabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var closedSession = new Mock<IRdpSession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            var sshSession = new Mock<ISshTerminalSession>();
+            sshSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.TypeClipboardText.QueryState(closedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.TypeClipboardText.QueryState(sshSession.Object));
+        }
+
+        //---------------------------------------------------------------------
         // DownloadFiles.
         //---------------------------------------------------------------------
 
