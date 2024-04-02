@@ -46,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpRedirectWebAuthn RedirectWebAuthn { get; set; } = RdpRedirectWebAuthn._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
         public RdpRestrictedAdminMode RestrictedAdminMode { get; set; } = RdpRestrictedAdminMode._Default;
+        public RdpSessionType SessionType { get; set; } = RdpSessionType._Default;
 
         /// <summary>
         /// Sources where these parameters were obtained from.
@@ -240,4 +241,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         _Default = Disabled
     }
 
+    public enum RdpSessionType
+    {
+        /// <summary>
+        /// Normal user session, might consume a CAL.
+        /// </summary>
+        User = 0,
+
+        /// <summary>
+        /// Admin session, equivalent to "mstsc /admin".
+        /// </summary>
+        Admin = 1,
+
+        [Browsable(false)]
+        _Default = User
+    }
 }

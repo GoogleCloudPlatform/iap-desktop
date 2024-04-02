@@ -199,6 +199,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "VM must be configured to permit Restricted Admin mode.",
                 Categories.RdpSecurity,
                 Protocol.Rdp.RdpRestrictedAdminMode._Default);
+            this.RdpSessionType = store.Read<RdpSessionType>(
+                "RdpSessionType",
+                "Session type",
+                "Type of RDP session. Use an Admin session to administer an RDS server without " +
+                    "consuming a CAL, otherwise use a User session.",
+                Categories.RdpSecurity,
+                Protocol.Rdp.RdpSessionType._Default);
 
             //
             // SSH Settings.
@@ -291,6 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<RdpRedirectWebAuthn> RdpRedirectWebAuthn { get; }
         public ISetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; }
         public ISetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; }
+        public ISetting<RdpSessionType> RdpSessionType { get; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -323,6 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpNetworkLevelAuthentication,
             this.RdpAuthenticationLevel,
             this.RdpRestrictedAdminMode,
+            this.RdpSessionType,
         };
 
         //---------------------------------------------------------------------

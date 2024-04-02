@@ -125,6 +125,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+        /// <summary>
+        /// Connect to the server for administrative purposes, equivalent
+        /// to running "mstsc /admin". Only relevant for RDS.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableAdminMode
+        {
+            get => this.clientAdvancedSettings.ConnectToAdministerServer;
+            set => this.clientAdvancedSettings.ConnectToAdministerServer = value;
+        }
+
         //---------------------------------------------------------------------
         // Security properties.
         //---------------------------------------------------------------------

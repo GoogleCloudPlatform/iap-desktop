@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.AreEqual(RdpRedirectWebAuthn._Default, parameters.RedirectWebAuthn);
             Assert.AreEqual(RdpHookWindowsKeys._Default, parameters.HookWindowsKeys);
             Assert.AreEqual(RdpRestrictedAdminMode._Default, parameters.RestrictedAdminMode);
+            Assert.AreEqual(RdpSessionType._Default, parameters.SessionType);
         }
     }
 }
