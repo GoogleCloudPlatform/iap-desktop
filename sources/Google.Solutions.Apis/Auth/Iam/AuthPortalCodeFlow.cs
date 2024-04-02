@@ -48,7 +48,7 @@ namespace Google.Solutions.Apis.Auth.Iam
         {
             return new RequestUrl(new Uri(this.initializer.AuthorizationServerUrl))
             {
-                ClientId = base.ClientSecrets.ClientId,
+                ClientId = this.initializer.ClientId,
                 Scope = string.Join(" ", base.Scopes),
                 RedirectUri = redirectUri,
                 ProviderName = this.initializer.Provider.ToString()
@@ -65,6 +65,8 @@ namespace Google.Solutions.Apis.Auth.Iam
 
             public WorkforcePoolProviderLocator Provider { get; set; }
 
+            public string ClientId { get; }
+
             protected Initializer(
                 ServiceEndpointDirections directions,
                 IDeviceEnrollment deviceEnrollment,
@@ -76,12 +78,21 @@ namespace Google.Solutions.Apis.Auth.Iam
                       new Uri(directions.BaseUri, "/v1/oauthtoken").ToString())
             {
                 this.Provider = provider;
-                this.ClientSecrets = clientSecrets;
 
                 //
-                // Unlike the Gaia API, the /v1/oauthtoken ignores client secrets when
-                // passed as POST parameters. Therefore, inject them as header too.
+                // Unlike the Gaia API, the /v1/oauthtoken API expects client
+                // credentials to be passed as Basic auth header.
                 //
+                // Trying to pass client credentials as POST paramarers
+                // would cause a HTTP/400 error.
+                //
+                // Initialize the base class with basic credentials so that it
+                // won't inject ant POST parameters, and configure the underlying
+                // HTTP client to always inject a Basic auth header instead.
+                //
+                this.ClientId = clientSecrets.ClientId;
+                this.ClientSecrets = new ClientSecrets();
+
                 var clientSecretAuth = Convert.ToBase64String(
                     Encoding.UTF8.GetBytes($"{clientSecrets.ClientId}:{clientSecrets.ClientSecret}"));
 
