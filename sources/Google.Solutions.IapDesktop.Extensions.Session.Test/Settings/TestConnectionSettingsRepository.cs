@@ -91,6 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpTransport.IsDefault);
             Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
             Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
+            Assert.IsTrue(settings.RdpSessionType.IsDefault);
         }
 
         [Test]
@@ -186,6 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpTransport.IsDefault);
             Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
             Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
+            Assert.IsTrue(settings.RdpSessionType.IsDefault);
         }
 
         [Test]
@@ -264,6 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpTransport.IsDefault);
             Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
             Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
+            Assert.IsTrue(settings.RdpSessionType.IsDefault);
         }
 
         [Test]

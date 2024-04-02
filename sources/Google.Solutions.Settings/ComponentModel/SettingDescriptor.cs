@@ -112,7 +112,6 @@ namespace Google.Solutions.Settings.ComponentModel
 
         public override bool CanResetValue(object component)
         {
-            Debug.Assert(component == this.setting);
             return true;
         }
 
