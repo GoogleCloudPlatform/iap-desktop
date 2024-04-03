@@ -201,6 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.rdpClient.ServerPort = this.viewModel.Port;
                 this.rdpClient.Password = this.viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                 this.rdpClient.ConnectionTimeout = this.viewModel.Parameters.ConnectionTimeout;
+                this.rdpClient.EnableAdminMode = this.viewModel.Parameters.SessionType == RdpSessionType.Admin;
 
                 //
                 // Connection security settings.
@@ -287,7 +288,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 this.rdpClient.KeyboardHookMode =
                     (int)this.viewModel.Parameters.HookWindowsKeys;
-
 
                 //
                 // Set hotkey to trigger OnFocusReleasedEvent. This should be
