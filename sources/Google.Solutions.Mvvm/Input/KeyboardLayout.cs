@@ -42,50 +42,40 @@ namespace Google.Solutions.Mvvm.Input
         }
 
         /// <summary>
-        /// Convert a string into a sequence of virtual key chords.
+        /// Map a character to the corresponding virtual key, including 
+        /// modifiers. 
+        /// 
+        /// This only works if the character is represented on the 
+        /// current keyboard layout.
         /// </summary>
-        /// <returns>Virtual keys, with modifiers</returns>
-        public IEnumerable<Keys> ToVirtualKeys(string text)
+        public bool TryMapVirtualKey(char ch, out Keys vk)
         {
-            for (int i = 0; i < text.Length; i++)
+            var result = NativeMethods.VkKeyScanEx(ch, this.hkl);
+
+            if (result == ushort.MaxValue)
             {
-                var ch = text[i];
-                if (ch == '\r' && i < text.Length - 2 && text[i + 1] == '\n')
-                {
-                    //
-                    // Ignore a CR if it's part of a CRLF.
-                    //
-                    continue;
-                }
-
-                var result = NativeMethods.VkKeyScanEx(ch, this.hkl);
-
-                if (result == ushort.MaxValue)
-                {
-                    throw new FormatException(
-                        $"The character '{ch}' cannot be mapped to a virtual key " +
-                        $"using the current keyboard layout");
-                }
-
-                //
-                // The low-order byte of the return value contains the virtual-key code.
-                //
-                var vk = (Keys)(result & 0xFF);
-
-                //
-                // The high-order byte contains the shift state.
-                //
-                var shiftState = (ShiftState)((result & 0xFF00) >> 8);
-
-                //
-                // Combine the two.
-                //
-                vk |= shiftState.HasFlag(ShiftState.Shift) ? Keys.Shift : Keys.None;
-                vk |= shiftState.HasFlag(ShiftState.Control) ? Keys.Control : Keys.None;
-                vk |= shiftState.HasFlag(ShiftState.Alt) ? Keys.Alt : Keys.None;
-
-                yield return vk;
+                vk = Keys.None;
+                return false;
             }
+
+            //
+            // The low-order byte of the return value contains the virtual-key code.
+            //
+            vk = (Keys)(result & 0xFF);
+
+            //
+            // The high-order byte contains the shift state.
+            //
+            var shiftState = (ShiftState)((result & 0xFF00) >> 8);
+
+            //
+            // Combine the two.
+            //
+            vk |= shiftState.HasFlag(ShiftState.Shift) ? Keys.Shift : Keys.None;
+            vk |= shiftState.HasFlag(ShiftState.Control) ? Keys.Control : Keys.None;
+            vk |= shiftState.HasFlag(ShiftState.Alt) ? Keys.Alt : Keys.None;
+
+            return true;
         }
 
         /// <summary>

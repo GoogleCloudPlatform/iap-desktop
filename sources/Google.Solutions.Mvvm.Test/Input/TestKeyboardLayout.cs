@@ -21,7 +21,6 @@
 
 using Google.Solutions.Mvvm.Input;
 using NUnit.Framework;
-using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -31,46 +30,26 @@ namespace Google.Solutions.Mvvm.Test.Input
     public class TestKeyboardLayout
     {
         //---------------------------------------------------------------------
-        // ToVirtualKeys.
+        // TryMapVirtualKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTextContainsUnmappedChar_ThenToVirtualKeysThrowsException()
+        public void WhenCharUnmapped_ThenTryMapVirtualKeyReturnsFalse()
         {
-            Assert.Throws<FormatException>(
-                () => KeyboardLayout.Current.ToVirtualKeys("Ä!").ToList());
+            Assert.IsFalse(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _));
         }
 
         [Test]
-        public void WhenTextValid_ThenToVirtualKeysReturnsChords()
+        public void WhenCharMapped_ThenTryMapVirtualKeyReturnsTrue()
         {
-            var chords = KeyboardLayout.Current.ToVirtualKeys("Abc!");
+            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk));
+            Assert.AreEqual(Keys.A | Keys.Shift, vk);
 
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    Keys.A | Keys.Shift,
-                    Keys.B,
-                    Keys.C,
-                    Keys.D1 | Keys.Shift
-                },
-                chords);
-        }
+            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('a', out vk));
+            Assert.AreEqual(Keys.A, vk);
 
-        [Test]
-        public void WhenTextContainsCarriageReturns_ThenToVirtualKeysReturnsChords()
-        {
-            var chords = KeyboardLayout.Current.ToVirtualKeys("1\r\n2\r").ToList();
-
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    Keys.D1,
-                    Keys.Enter | Keys.Control,
-                    Keys.D2,
-                    Keys.Enter
-                },
-                chords);
+            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('1', out vk));
+            Assert.AreEqual(Keys.D1, vk);
         }
 
         //---------------------------------------------------------------------

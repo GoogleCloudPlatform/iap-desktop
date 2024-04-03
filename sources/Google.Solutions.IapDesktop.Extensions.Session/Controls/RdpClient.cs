@@ -835,13 +835,93 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
-        private unsafe void SendKeysUnsafe(
+        private unsafe void SendScanCodesUnsafe(
             int keyDataLength,
             bool* keyUpPtr,
             int* keyDataPtr)
         {
+            //
+            // NB. According to MSDN, scan codes need to be sent
+            // in "WM_KEYDOWN lParam format", but that seems incorrect.
+            //
+
             this.client.Focus();
             this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+        }
+
+        private void SendScanCodes(
+            short[] keyUp,
+            int[] keyData)
+        {
+            unsafe
+            {
+                fixed (short* keyUpPtr = keyUp)
+                fixed (int* keyDataPtr = keyData)
+                {
+                    SendScanCodesUnsafe(keyData.Length, (bool*)keyUpPtr, keyDataPtr);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Send a sequence of virtual keys. Keys may use modifiers.
+        /// </summary>
+        private void SendVirtualKey(Keys virtualKey)
+        {
+            //
+            // Convert virtual key code (which might contain modifiers)
+            // into a sequence of scan codes.
+            //
+            var scanCodes = KeyboardLayout.Current
+                .ToScanCodes(virtualKey)
+                .ToArray();
+
+            //
+            // If the key translates to multiple scan codes, we have to send
+            // separate DOWN and UP keystrokes for each scan code.
+            //
+            // Curiously, we must not do this for "normal" characters 
+            // (single scan code), otherwise we end up with duplicate
+            // characters.
+            //
+
+            short[] keyUp;
+            int[] keyData;
+
+            if (scanCodes.Length > 1)
+            {
+                //
+                // Convert scan codes into simulated DOWN- and UP- key 
+                // presses.
+                //
+                keyUp = new short[scanCodes.Length * 2];
+                keyData = new int[scanCodes.Length * 2];
+
+                for (int i = 0; i < scanCodes.Length; i++)
+                {
+                    //
+                    // Generate DOWN key presses.
+                    //
+                    keyUp[i] = 0;
+                    keyData[i] = (int)scanCodes[i];
+
+                    //
+                    // Generate UP key presses (in reverse order).
+                    //
+                    keyUp[keyUp.Length - 1 - i] = 1;
+                    keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
+                }
+            }
+            else
+            {
+                //
+                // Generate DOWN key press only.
+                //
+                keyUp = new short[] { 0 };
+                keyData = new int[] { (int)scanCodes[0] };
+            }
+
+            SendScanCodes(keyUp, keyData);
         }
 
         /// <summary>
@@ -857,9 +937,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                SendKeys(new[] {
-                    Keys.Escape,
-                    Keys.Control | Keys.Alt | Keys.Delete });
+                SendVirtualKey(Keys.Escape);
+                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
             }
         }
 
@@ -876,9 +955,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                SendKeys(new[] { 
-                    Keys.Escape,
-                    Keys.Control | Keys.Shift | Keys.Escape });
+                SendVirtualKey(Keys.Escape);
+                SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
         }
 
@@ -892,81 +970,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 return;
             }
 
-            SendKeys(KeyboardLayout.Current.ToVirtualKeys(text));
-        }
+            var keyboardLayout = KeyboardLayout.Current;
 
-        /// <summary>
-        /// Send a sequence of virtual keys. Keys may use modifiers.
-        /// </summary>
-        public void SendKeys(IEnumerable<Keys> keys)
-        {
-            // TODO: handle CRLF
-            // TODO: handle umlauts
-
-            foreach (var key in keys)
+            for (int i = 0; i < text.Length; i++)
             {
-                //
-                // Convert virtual key code (which might contain modifiers)
-                // into a sequence of scan codes.
-                //
-                var scanCodes = KeyboardLayout.Current.ToScanCodes(key).ToArray();
-
-                short[] keyUp;
-                int[] keyData;
-
-                //
-                // If the translates to multiple scan codes, we have to send
-                // separate DOWN and UP keystrokes for each scan code.
-                //
-                // Curiously, we must not do this for "normal" characters 
-                // (single scan code), otherwise we end up with duplicate
-                // characters.
-                //
-
-                //
-                // NB. According to MSDN, scan codes need to be sent
-                // in "WM_KEYDOWN lParam format", but that seems incorrect.
-                //
-
-                if (scanCodes.Length > 1)
+                var ch = text[i];
+                if (ch == '\r' && i < text.Length - 2 && text[i + 1] == '\n')
                 {
                     //
-                    // Convert scan codes into simulated DOWN- and UP- key 
-                    // presses.
+                    // Ignore a CR if it's part of a CRLF.
                     //
-                    keyUp = new short[scanCodes.Length * 2];
-                    keyData = new int[scanCodes.Length * 2];
+                    continue;
+                }
 
-                    for (int i = 0; i < scanCodes.Length; i++)
-                    {
-                        //
-                        // Generate DOWN key presses.
-                        //
-                        keyUp[i] = 0;
-                        keyData[i] = (int)scanCodes[i];
-
-                        //
-                        // Generate UP key presses (in reverse order).
-                        //
-                        keyUp[keyUp.Length - 1 - i] = 1;
-                        keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
-                    }
+                if (keyboardLayout.TryMapVirtualKey(ch, out var vk))
+                {
+                    //
+                    // This is a "mormal" character with a corresponding
+                    // virtual key on the current keyboard layout.
+                    //
+                    SendVirtualKey(vk);
                 }
                 else
                 {
                     //
-                    // Generate DOWN key press only.
+                    // This is a ligature or any kind of character that
+                    // has no corresponding virtual on the current keyboard layout.
                     //
-                    keyUp = new short[] { 0 };
-                    keyData = new int[] { (int)scanCodes[0] };
-                }
-
-                unsafe
-                {
-                    fixed (short* keyUpPtr = keyUp)
-                    fixed (int* keyDataPtr = keyData)
+                    // Converting the character to a Alt+0nnn sequence doesn't
+                    // work reliably, so we just send a '?'.
+                    //
+                    if (keyboardLayout.TryMapVirtualKey('?', out var questionMark))
                     {
-                        SendKeysUnsafe(keyData.Length, (bool*)keyUpPtr, keyDataPtr);
+                        SendVirtualKey(questionMark);
                     }
                 }
             }
