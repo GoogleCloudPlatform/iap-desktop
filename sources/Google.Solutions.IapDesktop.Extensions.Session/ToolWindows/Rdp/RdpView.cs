@@ -502,9 +502,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.rdpClient.ShowTaskManager();
         }
 
-        public void SendKeys(params Keys[] keys)
+        public void SendText(string text)
         {
-            this.rdpClient.SendKeys(keys);
+            this.rdpClient.SendText(text);
         }
 
         public bool CanTransferFiles

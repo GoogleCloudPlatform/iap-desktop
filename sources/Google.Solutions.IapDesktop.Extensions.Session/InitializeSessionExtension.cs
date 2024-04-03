@@ -301,6 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.DownloadFiles);
             menu.AddCommand(sessionCommands.UploadFiles);
+            menu.AddCommand(sessionCommands.TypeClipboardText);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
             menu.AddSeparator();

@@ -24,14 +24,17 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Input;
 using MSTSCLib;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -57,7 +60,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private readonly DeferredCallback deferResize;
         private Form parentForm = null;
-        private int keysSent = 0;
 
         public RdpClient()
         {
@@ -829,50 +831,180 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.client.Connect();
         }
 
+        //---------------------------------------------------------------------
+        // Synthetic input.
+        //---------------------------------------------------------------------
+
+        private unsafe void SendScanCodesUnsafe(
+            int keyDataLength,
+            bool* keyUpPtr,
+            int* keyDataPtr)
+        {
+            //
+            // NB. According to MSDN, scan codes need to be sent
+            // in "WM_KEYDOWN lParam format", but that seems incorrect.
+            //
+
+            this.client.Focus();
+            this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+        }
+
+        private void SendScanCodes(
+            short[] keyUp,
+            int[] keyData)
+        {
+            unsafe
+            {
+                fixed (short* keyUpPtr = keyUp)
+                fixed (int* keyDataPtr = keyData)
+                {
+                    SendScanCodesUnsafe(keyData.Length, (bool*)keyUpPtr, keyDataPtr);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Send a sequence of virtual keys. Keys may use modifiers.
+        /// </summary>
+        private void SendVirtualKey(Keys virtualKey)
+        {
+            //
+            // Convert virtual key code (which might contain modifiers)
+            // into a sequence of scan codes.
+            //
+            var scanCodes = KeyboardLayout.Current
+                .ToScanCodes(virtualKey)
+                .ToArray();
+
+            //
+            // If the key translates to multiple scan codes, we have to send
+            // separate DOWN and UP keystrokes for each scan code.
+            //
+            // Curiously, we must not do this for "normal" characters 
+            // (single scan code), otherwise we end up with duplicate
+            // characters.
+            //
+
+            short[] keyUp;
+            int[] keyData;
+
+            if (scanCodes.Length > 1)
+            {
+                //
+                // Convert scan codes into simulated DOWN- and UP- key 
+                // presses.
+                //
+                keyUp = new short[scanCodes.Length * 2];
+                keyData = new int[scanCodes.Length * 2];
+
+                for (int i = 0; i < scanCodes.Length; i++)
+                {
+                    //
+                    // Generate DOWN key presses.
+                    //
+                    keyUp[i] = 0;
+                    keyData[i] = (int)scanCodes[i];
+
+                    //
+                    // Generate UP key presses (in reverse order).
+                    //
+                    keyUp[keyUp.Length - 1 - i] = 1;
+                    keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
+                }
+            }
+            else
+            {
+                //
+                // Generate DOWN key press only.
+                //
+                keyUp = new short[] { 0 };
+                keyData = new int[] { (int)scanCodes[0] };
+            }
+
+            SendScanCodes(keyUp, keyData);
+        }
+
+        /// <summary>
+        /// Simulate a key chord to show the security screen.
+        /// </summary>
         public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                SendKeys(
-                    Keys.ControlKey,
-                    Keys.Menu,
-                    Keys.Delete);
+                //
+                // The RDP control sometimes swallows the first key combination
+                // that is sent. So start by a harmless ESC.
+                //
+                SendVirtualKey(Keys.Escape);
+                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
             }
         }
 
+        /// <summary>
+        /// Simulate a key chord toopen task manager.
+        /// </summary>
         public void ShowTaskManager()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                SendKeys(
-                    Keys.ControlKey,
-                    Keys.ShiftKey,
-                    Keys.Escape);
+                //
+                // The RDP control sometimes swallows the first key combination
+                // that is sent. So start by a harmless ESC.
+                //
+                SendVirtualKey(Keys.Escape);
+                SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
         }
 
-        public void SendKeys(params Keys[] keys)
+        /// <summary>
+        /// Simulate keys to type a piece of text.
+        /// </summary>
+        public void SendText(string text)
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            if (string.IsNullOrEmpty(text))
             {
-                this.client.Focus();
+                return;
+            }
 
-                var nonScriptable = (IMsRdpClientNonScriptable5)this.client.GetOcx();
+            var keyboardLayout = KeyboardLayout.Current;
 
-                if (this.keysSent++ == 0)
+            for (int i = 0; i < text.Length; i++)
+            {
+                var ch = text[i];
+                if (ch == '\r' && i < text.Length - 2 && text[i + 1] == '\n')
                 {
-                    // The RDP control sometimes swallows the first key combination
-                    // that is sent. So start by a harmless ESC.
-                    SendKeys(Keys.Escape);
+                    //
+                    // Ignore a CR if it's part of a CRLF.
+                    //
+                    continue;
                 }
 
-                nonScriptable.SendKeys(keys);
+                if (keyboardLayout.TryMapVirtualKey(ch, out var vk))
+                {
+                    //
+                    // This is a "mormal" character with a corresponding
+                    // virtual key on the current keyboard layout.
+                    //
+                    SendVirtualKey(vk);
+                }
+                else
+                {
+                    //
+                    // This is a ligature or any kind of character that
+                    // has no corresponding virtual on the current keyboard layout.
+                    //
+                    // Converting the character to a Alt+0nnn sequence doesn't
+                    // work reliably, so we just send a '?'.
+                    //
+                    if (keyboardLayout.TryMapVirtualKey('?', out var questionMark))
+                    {
+                        SendVirtualKey(questionMark);
+                    }
+                }
             }
         }
 
