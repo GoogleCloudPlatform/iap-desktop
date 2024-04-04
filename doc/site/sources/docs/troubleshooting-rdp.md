@@ -1,17 +1,106 @@
 # Troubleshooting Remote Desktop issues
 
-## :material-message-alert: "Your credentials did not work" dialogs are shown, despite saved credentials
+## :material-message-alert: Copy/paste doesn't work
+
+**Symptom**: Unable to copy and paste text or files over RDP
+
+This behavior can be caused by an invalid configuration or group policies.
+
+### Verify your connection settings in IAP Desktop 
+
+IAP Desktop lets you enable or disable clipboard sharing for individual VMs, entire zones, or projects. To verify
+that clipboard sharing is enabled for the affected VM, do the following:
+
+1.  In the **Project Explorer** window, right-click the affected VM and select **Connection settings**.
+1.  In the **Connection settings** window, under **Remote Desktop Resources** verify that **Redirect clipboard** is set to **enabled**.
+
+### Verify `rdpclip` is running
+
+Clipboard sharing requires that `rdpclip.exe` is running in your remote session. To verify that this
+process is running, do the following:
+
+1.  On the remote VM, right-click the **Start** button and select **Windows PowerShell**.
+1.  Run the following PowerShell command:
+
+        Get-Process | 
+          ? {$_.SessionId -eq (Get-Process -PID $PID).SessionId} | 
+          ? {$_.ProcessName -eq "rdpclip"}
+
+    You should see output similar to the following:
+    
+        Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+        -------  ------    -----      -----     ------     --  -- -----------
+            345      14     3564       8164       4.44   3156   2 rdpclip
+
+    If the output doesn't indicate a running `rdpclip` process, restart `rdpclip` or try signing out
+    and signing in again.
+
+### Check local policies
+
+If your local computer is managed by an organization, it's possible that your organization
+has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://learn.microsoft.com/en-us/azure/virtual-desktop/configure-device-redirections#disable-redirection-on-the-local-device).
+To check if this is the case, do the following:
+
+1.  On your local computer, right-click the **Start** button and select **Windows PowerShell**.
+1.  Run the following PowerShell command:
+
+        "HKLM:\SOFTWARE\Microsoft\Terminal Server Client",
+        "HKCU:\SOFTWARE\Microsoft\Terminal Server Client",
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Terminal Server Client",
+        "HKCU:\SOFTWARE\WOW6432Node\Microsoft\Terminal Server Client" |
+          % {Get-ItemProperty -Path $_ -Name "DisableClipboardRedirection" -ErrorAction SilentlyContinue } | 
+          ? {$_.DisableClipboardRedirection -eq 1}
+
+    If you see output similar to the following, then there is a policy that disallows copy and paste:
+    
+        DisableClipboardRedirection : 1
+        PSPath                      : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Terminal Server Client
+        PSParentPath                : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft
+        PSChildName                 : Terminal Server Client
+        PSDrive                     : HKLM
+        PSProvider                  : Microsoft.PowerShell.Core\Registry
+
+    If the output is empty, then your local computer allows copy/paste, but it's possible that the remote VM doesn't.
+    
+### Check remote policies
+
+If the remote VM is managed by an organization, it's possible that your organization
+has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_CLIENT_CLIPBOARD).
+To check if this is the case, do the following:
+
+
+1.  On the remote VM, right-click the **Start** button and select **Windows PowerShell**.
+1.  Run the following PowerShell command:
+
+        "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services",
+        "HKCU:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" |
+          % {Get-ItemProperty -Path $_ -Name "fDisableClip" -ErrorAction SilentlyContinue } | 
+          ? {$_.fDisableClip -eq 1}
+
+
+    If you see output similar to the following, then there is a policy that disallows copy and paste:
+    
+        fDisableClip : 1
+        PSPath       : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+        PSParentPath : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT
+        PSChildName  : Terminal Services
+        PSDrive      : HKLM
+        PSProvider   : Microsoft.PowerShell.Core\Registry
+
+    If the output is empty, then the VM allows copy/paste.
+    
+## :material-message-alert: "Your credentials did not work" when using saved credentials
 
 **Symptom**: You've configured valid credentials, but each time you try to connect to a VM, the _Your credentials did not work_ dialog appears. 
 After re-entering the same credentials again, the connection succeeds.
 
-This issue can be caused by the [Always prompt for password upon connection :octicons-link-external-16:](https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD) 
+This issue can be the intentional effect of the
+[Always prompt for password upon connection :octicons-link-external-16:](https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD) 
 group policy setting. This policy is configured by default on [CIS hardened images :octicons-link-external-16:](https://www.cisecurity.org/cis-hardened-images/google/).
 
-IAP Desktop cannot distinguish between genuine authentication failures and prompts triggered by this policy.
+To mitigate this issue, avoid saving passwords for affected Windows VMs and enter credentials manually instead.
 
-## Credentials are rejected
-
+## :material-message-alert: "Your credentials did not work"
 
 **Symptom**: You've configured valid credentials, but each time you try to connect to a VM, the _Your credentials did not work_ 
 dialog appears. Re-entering the credentials does not solve the issue.
