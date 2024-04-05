@@ -166,6 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.RedirectWebAuthn = settings.RdpRedirectWebAuthn.Value;
             context.Parameters.HookWindowsKeys = settings.RdpHookWindowsKeys.Value;
             context.Parameters.RestrictedAdminMode = settings.RdpRestrictedAdminMode.Value;
+            context.Parameters.SessionType = settings.RdpSessionType.Value;
 
             return context;
         }

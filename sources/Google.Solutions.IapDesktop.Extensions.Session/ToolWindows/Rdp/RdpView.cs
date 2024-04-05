@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
 using System;
@@ -113,6 +114,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.Mode = mode;
         }
 
+        private bool IsRdsSessionHostRedirectionError(Exception e)
+        {
+            try
+            {
+                //
+                // When connecting to an RDSH in non-admin mode, we might
+                // be redirected to a different RDSH. This redirect always
+                // fails because it's using the internal IP address, not
+                // the tunnel address.
+                //
+                // The control sets the Server property to the redirect
+                // address, and we can use that to detect this situation.
+                //
+                return e is RdpDisconnectedException disconnected &&
+                    disconnected.DisconnectReason == 516 && // Unable to establish a connection
+                    this.rdpClient.Server != this.viewModel.Server;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         private async Task ShowErrorAndClose(string caption, Exception e)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
@@ -121,7 +144,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     .PublishAsync(new SessionAbortedEvent(this.Instance, e))
                     .ConfigureAwait(true);
 
-                this.exceptionDialog.Show(this, caption, e);
+                if (IsRdsSessionHostRedirectionError(e))
+                {
+                    this.exceptionDialog.Show(
+                        this, 
+                        caption,
+                        new RdsRedirectException(
+                            "The server initiated a redirect to a different " +
+                            "server. IAP Desktop does not support redirects.\n\n" +
+                            "To connect to a RD Session Host, change your connection settings " +
+                            "to use an 'Admin' session.",
+                            e));
+                }
+                else
+                {
+                    this.exceptionDialog.Show(this, caption, e);
+                }
 
                 Close();
             }
@@ -574,6 +612,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
 
             base.OnDockEnd();
+        }
+
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        private class RdsRedirectException : RdpException
+        {
+            public RdsRedirectException(string message, Exception inner) 
+                : base(message, inner)
+            {
+            }
         }
     }
 }

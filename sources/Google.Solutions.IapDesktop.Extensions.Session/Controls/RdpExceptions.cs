@@ -30,16 +30,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     public abstract class RdpException : ApplicationException
     {
-        protected RdpException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
         protected RdpException()
         {
         }
 
         protected RdpException(string message) : base(message)
+        {
+        }
+        protected RdpException(string message, Exception inner)
+            : base(message, inner)
         {
         }
 
