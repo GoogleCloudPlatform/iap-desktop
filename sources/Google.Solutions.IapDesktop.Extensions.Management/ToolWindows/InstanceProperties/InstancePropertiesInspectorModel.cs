@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             this.IsSoleTenant = this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
-            this.IsPreemptible = this.instanceDetails.Scheduling.Preemptible == true;
+            this.IsPreemptible = this.instanceDetails.Scheduling?.Preemptible == true;
 
             //
             // OS Inventory data.
